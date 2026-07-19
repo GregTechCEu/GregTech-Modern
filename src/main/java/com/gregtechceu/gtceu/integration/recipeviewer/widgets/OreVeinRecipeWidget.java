@@ -184,19 +184,19 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
     public static String getOreName(GTOreDefinition oreDefinition) {
         ResourceLocation id = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY).getKey(oreDefinition);
+                .registryOrThrow(GTRegistries.Keys.ORE_VEIN).getKey(oreDefinition);
         return "gtceu.jei.ore_vein." + id.getPath();
     }
 
     public static String getFluidName(BedrockFluidDefinition fluid) {
         ResourceLocation id = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY).getKey(fluid);
+                .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).getKey(fluid);
         return "gtceu.jei.bedrock_fluid." + id.getPath();
     }
 
     public static String getBedrockOreName(BedrockOreDefinition oreDefinition) {
         ResourceLocation id = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY).getKey(oreDefinition);
+                .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE).getKey(oreDefinition);
         return "gtceu.jei.bedrock_ore." + id.getPath();
     }
 

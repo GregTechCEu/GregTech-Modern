@@ -389,13 +389,13 @@ public class MixinHelpers {
         KJSCallWrapper.updateRegistryAccessContainer(registries);
 
         KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postOreVeinEvent,
-                registries.registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY));
+                registries.registryOrThrow(GTRegistries.Keys.ORE_VEIN));
 
         KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postBedrockFluidEvent,
-                registries.registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY));
+                registries.registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID));
 
         KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postBedrockOreEvent,
-                registries.registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY));
+                registries.registryOrThrow(GTRegistries.Keys.BEDROCK_ORE));
     }
 
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {

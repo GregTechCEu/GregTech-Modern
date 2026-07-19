@@ -29,8 +29,10 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
@@ -47,68 +49,86 @@ import java.util.*;
 
 public final class GTRegistries {
 
-    // spotless:off
     private static final LinkedHashMap<ResourceLocation, Registry<?>> LOAD_ORDER = new LinkedHashMap<>();
 
-    // server (datapack) registries' keys
-    public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN_REGISTRY = makeRegistryKey(GTCEu.id("ore_vein"));
-    public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID_REGISTRY = makeRegistryKey(GTCEu.id("bedrock_fluid"));
-    public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE_REGISTRY = makeRegistryKey(GTCEu.id("bedrock_ore"));
+    // spotless:off
+    public static final class Keys {
+        private Keys() {}
 
-    // static registries' keys
-    public static final ResourceKey<Registry<Element>> ELEMENT_REGISTRY = makeRegistryKey(GTCEu.id("element"));
-    public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX_REGISTRY = makeRegistryKey(GTCEu.id("tag_prefix"));
-    public static final ResourceKey<Registry<Material>> MATERIAL_REGISTRY = makeRegistryKey(GTCEu.id("material"));
-    public static final ResourceKey<Registry<MachineDefinition>> MACHINE_REGISTRY = makeRegistryKey(GTCEu.id("machine"));
-    public static final ResourceKey<Registry<CoverDefinition>> COVER_REGISTRY = makeRegistryKey(GTCEu.id("cover"));
+        // Material related registries
+        public static final ResourceKey<Registry<Material>> MATERIAL = makeRegistryKey(GTCEu.id("material"));
+        public static final ResourceKey<Registry<Element>> ELEMENT = makeRegistryKey(GTCEu.id("element"));
+        public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX = makeRegistryKey(GTCEu.id("tag_prefix"));
+        public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET = makeRegistryKey(GTCEu.id("material_icon_set"));
 
-    public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPE_REGISTRY = makeRegistryKey(GTCEu.id("recipe_type"));
-    public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY_REGISTRY = makeRegistryKey(GTCEu.id("recipe_category"));
-    public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY_REGISTRY = makeRegistryKey(GTCEu.id("recipe_capability"));
-    public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION_REGISTRY = makeRegistryKey(GTCEu.id("recipe_condition"));
-    public static final ResourceKey<Registry<ChanceLogic>> CHANCE_LOGIC_REGISTRY = makeRegistryKey(GTCEu.id("chance_logic"));
-    public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER_REGISTRY = makeRegistryKey(GTCEu.id("placeholder"));
-    public static final ResourceKey<Registry<ToolBehaviorType<?>>> TOOL_BEHAVIOR_REGISTRY = makeRegistryKey(GTCEu.id("tool_behavior"));
-    public static final ResourceKey<Registry<SoundEntry>> SOUND_REGISTRY = makeRegistryKey(GTCEu.id("sound"));
-    public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER_REGISTRY = makeRegistryKey(GTCEu.id("dimension_marker"));
-    public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION_REGISTRY = makeRegistryKey(GTCEu.id("medical_condition"));
-    public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET_REGISTRY = makeRegistryKey(GTCEu.id("material_icon_set"));
-    public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_REGISTRY = makeRegistryKey(GTCEu.id("pattern_error"));
-    public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER_REGISTRY = makeRegistryKey(GTCEu.id("world_gen_layer"));
+        // Recipe related registries
+
+        /**
+         * Use {@link Registries#RECIPE_TYPE} instead of this. This only exists to simplify KubeJS registration.
+         *
+         * @see Registries#RECIPE_TYPE
+         */
+        @ApiStatus.Internal
+        public static final ResourceKey<Registry<RecipeType<?>>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
+        public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = makeRegistryKey(GTCEu.id("recipe_category"));
+        public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = makeRegistryKey(GTCEu.id("recipe_capability"));
+        public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(GTCEu.id("recipe_condition"));
+        public static final ResourceKey<Registry<ChanceLogic>> CHANCE_LOGIC = makeRegistryKey(GTCEu.id("chance_logic"));
+
+        // Datapack registries
+
+        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID = makeRegistryKey(GTCEu.id("bedrock_fluid"));
+        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE = makeRegistryKey(GTCEu.id("bedrock_ore"));
+        public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = makeRegistryKey(GTCEu.id("ore_vein"));
+
+        // Other registries
+
+        public static final ResourceKey<Registry<CoverDefinition>> COVER = makeRegistryKey(GTCEu.id("cover"));
+        public static final ResourceKey<Registry<MachineDefinition>> MACHINE = makeRegistryKey(GTCEu.id("machine"));
+
+        public static final ResourceKey<Registry<SoundEntry>> SOUND = makeRegistryKey(GTCEu.id("sound"));
+
+        public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(GTCEu.id("dimension_marker"));
+        public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
+        public static final ResourceKey<Registry<ToolBehaviorType<?>>> TOOL_BEHAVIOR = makeRegistryKey(GTCEu.id("tool_behavior"));
+        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
+        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
+        public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
+    }
 
     // GT Registries
 
     // Material related registries
 
-    public static final Registry<Element> ELEMENTS = makeRegistry(ELEMENT_REGISTRY);
+    public static final Registry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
     public static final MaterialRegistry MATERIALS = makeMaterialRegistry();
-    public static final Registry<TagPrefix> TAG_PREFIXES = makeRegistry(TAG_PREFIX_REGISTRY);
-    public static final Registry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(MATERIAL_ICON_SET_REGISTRY);
+    public static final Registry<TagPrefix> TAG_PREFIXES = makeRegistry(Keys.TAG_PREFIX);
+    public static final Registry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(Keys.MATERIAL_ICON_SET);
 
     // Recipe related registries
 
-    public static final Registry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(RECIPE_CATEGORY_REGISTRY);
-    public static final Registry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(RECIPE_CAPABILITY_REGISTRY);
-    public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(RECIPE_CONDITION_REGISTRY);
-    public static final Registry<ChanceLogic> CHANCE_LOGICS = makeRegistry(CHANCE_LOGIC_REGISTRY);
+    public static final Registry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
+    public static final Registry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
+    public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
+    public static final Registry<ChanceLogic> CHANCE_LOGICS = makeRegistry(Keys.CHANCE_LOGIC);
 
     // Other registries
 
-    public static final Registry<MachineDefinition> MACHINES = makeRegistry(MACHINE_REGISTRY);
-    public static final Registry<CoverDefinition> COVERS = makeRegistry(COVER_REGISTRY);
+    public static final Registry<MachineDefinition> MACHINES = makeRegistry(Keys.MACHINE);
+    public static final Registry<CoverDefinition> COVERS = makeRegistry(Keys.COVER);
 
-    public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(WORLD_GEN_LAYER_REGISTRY);
+    public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
-    public static final Registry<ToolBehaviorType<?>> TOOL_BEHAVIORS = makeRegistry(TOOL_BEHAVIOR_REGISTRY);
-    public static final Registry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(DIMENSION_MARKER_REGISTRY, false);
-    public static final Registry<MedicalCondition> MEDICAL_CONDITIONS =  makeRegistry(MEDICAL_CONDITION_REGISTRY);
-    public static final Registry<Placeholder> PLACEHOLDERS = makeRegistry(PLACEHOLDER_REGISTRY);
-    public static final Registry<PatternError.PatternErrorType> PATTERN_ERRORS = makeRegistry(PATTERN_ERROR_REGISTRY);
-    public static final Registry<SoundEntry> SOUNDS = makeRegistry(SOUND_REGISTRY, false);
+    public static final Registry<ToolBehaviorType<?>> TOOL_BEHAVIORS = makeRegistry(Keys.TOOL_BEHAVIOR);
+    public static final Registry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER, false);
+    public static final Registry<MedicalCondition> MEDICAL_CONDITIONS =  makeRegistry(Keys.MEDICAL_CONDITION);
+    public static final Registry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
+    public static final Registry<PatternError.PatternErrorType> PATTERN_ERRORS = makeRegistry(Keys.PATTERN_ERROR_TYPE);
+    public static final Registry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND, false);
 
     // spotless:on
 
-    public static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
+    private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
         return ResourceKey.createRegistryKey(registryId);
     }
 
@@ -125,8 +145,8 @@ public final class GTRegistries {
     }
 
     private static MaterialRegistry makeMaterialRegistry() {
-        MaterialRegistry registry = new MaterialRegistry(MATERIAL_REGISTRY);
-        LOAD_ORDER.put(MATERIAL_REGISTRY.location(), registry);
+        MaterialRegistry registry = new MaterialRegistry(Keys.MATERIAL);
+        LOAD_ORDER.put(Keys.MATERIAL.location(), registry);
         return registry;
     }
 

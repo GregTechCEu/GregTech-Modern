@@ -126,7 +126,7 @@ public class GTOreVeins {
     }
 
     public static ResourceKey<GTOreDefinition> create(ResourceLocation id) {
-        var key = ResourceKey.create(GTRegistries.ORE_VEIN_REGISTRY, id);
+        var key = ResourceKey.create(GTRegistries.Keys.ORE_VEIN, id);
         ALL_KEYS.add(key);
         return key;
     }

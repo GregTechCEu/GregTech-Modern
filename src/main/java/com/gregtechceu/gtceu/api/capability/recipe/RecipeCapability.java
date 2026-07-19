@@ -194,7 +194,7 @@ public abstract class RecipeCapability<T> {
     private static DataResult<Holder.Reference<RecipeCapability<?>>> safeReference(Holder<RecipeCapability<?>> value) {
         return value.getDelegate() instanceof Holder.Reference<RecipeCapability<?>> reference ?
                 DataResult.success(reference) : DataResult.error(
-                        () -> "Unregistered holder in " + GTRegistries.RECIPE_CAPABILITY_REGISTRY + ": " + value);
+                        () -> "Unregistered holder in " + GTRegistries.Keys.RECIPE_CAPABILITY + ": " + value);
     }
 
     /**

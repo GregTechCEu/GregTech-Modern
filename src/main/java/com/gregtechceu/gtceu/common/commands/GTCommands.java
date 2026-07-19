@@ -69,7 +69,7 @@ public class GTCommands {
         dispatcher.register(literal("gtceu")
                 .then(literal("place_vein")
                         .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
-                        .then(argument("vein", ResourceKeyArgument.key(GTRegistries.ORE_VEIN_REGISTRY))
+                        .then(argument("vein", ResourceKeyArgument.key(GTRegistries.Keys.ORE_VEIN))
                                 .executes(context -> {
                                     return GTCommands.placeVein(context, BlockPos.containing(context.getSource().getPosition()));
                                 })
@@ -277,7 +277,7 @@ public class GTCommands {
     private static int placeVein(CommandContext<CommandSourceStack> context,
                                  BlockPos sourcePos) throws CommandSyntaxException {
         Holder.Reference<GTOreDefinition> vein = ResourceKeyArgumentAccessor.callResolveKey(context, "vein",
-                GTRegistries.ORE_VEIN_REGISTRY, ERROR_INVALID_VEIN);
+                GTRegistries.Keys.ORE_VEIN, ERROR_INVALID_VEIN);
         ResourceLocation id = vein.key().location();
 
         ChunkPos chunkPos = new ChunkPos(sourcePos);

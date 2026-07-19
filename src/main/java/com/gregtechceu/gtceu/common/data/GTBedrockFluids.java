@@ -43,7 +43,7 @@ public class GTBedrockFluids {
             GTCEu.id("nether_natural_gas_deposit"));
 
     public static ResourceKey<BedrockFluidDefinition> create(ResourceLocation id) {
-        var key = ResourceKey.create(GTRegistries.BEDROCK_FLUID_REGISTRY, id);
+        var key = ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, id);
         ALL_KEYS.add(key);
         return key;
     }
