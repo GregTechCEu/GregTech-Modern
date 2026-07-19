@@ -170,7 +170,8 @@ public class LargeSteamTurbine {
         });
         helper.runAtTickTime(17 * 5, () -> {
             final var outputHatch = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(2, 4, 2));
-            helper.assertTrue(outputHatch.tank.getFluidInTank(0).getAmount() == 128 * 5, "Should have exactly 128 * 5 distilled water");
+            helper.assertTrue(outputHatch.tank.getFluidInTank(0).getAmount() == 128 * 5,
+                    "Should have exactly 128 * 5 distilled water");
             helper.succeed();
         });
     }
@@ -224,7 +225,6 @@ public class LargeSteamTurbine {
             helper.succeed();
         });
     }
-
 
     @GameTest(template = "lst_with_lava", timeoutTicks = 50 + 1)
     public static void LstRefusesToRunOnWrongFluid(GameTestHelper helper) {
