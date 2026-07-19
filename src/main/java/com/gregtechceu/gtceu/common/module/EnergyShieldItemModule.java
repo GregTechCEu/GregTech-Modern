@@ -96,6 +96,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
                         d -> "%.0f%%".formatted(d * 100))
                 .progress(Text.lang("gtceu.module.gui.hp"),
                         () -> getDamageReduction(module) * 1d / getMaxDamageReduction(module),
-                        d -> "%d/%d HP".formatted(getDamageReduction(module), getMaxDamageReduction(module)));
+                        d -> "%d/%d HP".formatted((int) (d * getMaxDamageReduction(module)),
+                                getMaxDamageReduction(module)));
     }
 }
