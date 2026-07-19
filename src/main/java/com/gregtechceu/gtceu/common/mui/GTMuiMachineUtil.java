@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 
 import net.minecraftforge.items.IItemHandler;
 

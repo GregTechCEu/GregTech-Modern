@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.api.machine.trait.recipe;
 
 public interface RecipeHandlerGroup {
 

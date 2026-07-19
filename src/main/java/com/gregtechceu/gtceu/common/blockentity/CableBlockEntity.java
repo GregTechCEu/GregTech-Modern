@@ -318,7 +318,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
-        level.getLightEngine().checkBlock(worldPosition);
+        getLevel().getLightEngine().checkBlock(worldPosition);
     }
 
     @ClientFieldChangeListener(fieldName = "temperature")
@@ -339,7 +339,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             float yPos = Direction.UP.getStepY() * 0.76f + getBlockPos().getY() + 0.25f;
             float zPos = Direction.UP.getStepZ() * 0.76f + getBlockPos().getZ() + 0.25f;
 
-            float horizontalDirection = level.random.nextFloat() * 2 * Mth.PI;
+            float horizontalDirection = getLevel().random.nextFloat() * 2 * Mth.PI;
             float xSpd = Mth.sin(horizontalDirection) * 0.1f;
             float ySpd = Direction.UP.getStepY() * 0.1f + 0.2f + 0.1f * level.random.nextFloat();
             float zSpd = Mth.cos(horizontalDirection) * 0.1f;

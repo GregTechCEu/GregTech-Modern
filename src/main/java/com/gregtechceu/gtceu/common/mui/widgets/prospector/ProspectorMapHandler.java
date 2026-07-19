@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui.widgets.prospector;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectingUpdatePacket;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
@@ -32,6 +33,7 @@ import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,14 +57,19 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
     private final StringValue searchValue;
     private final DynamicSyncHandler syncHandler;
+
+    // client-only; null on server side
+    private @Nullable ProspectorMapTexture<T> texture;
     @Getter
-    private final ProspectorMapTexture<T> texture;
+    private boolean darkMode = true;
 
     // runtime
     @Getter
     private @Nullable String selected = null;
-    private final Set<T> items = new HashSet<>();
+    // keyed by uniqueId so entries are deduplicated across chunks
+    private final Map<String, T> items = new Object2ObjectOpenHashMap<>();
     private int chunkIndex = 0;
+    private String lastSearch = "";
 
     public ProspectorMapHandler(ProspectorMode<T> mode, int chunkRadius, int scanInterval,
                                 StringValue searchValue, DynamicSyncedWidget<?> searchListWidget,
@@ -79,9 +86,24 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         this.player = player;
         this.playerChunkPos = player.chunkPosition();
 
-        this.texture = new ProspectorMapTexture<>(this);
-        background(this.texture);
-        size(this.texture.getImageWidth(), this.texture.getImageHeight());
+        if (GTCEu.isClientSide()) {
+            this.texture = new ProspectorMapTexture<>(this);
+            background(this.texture);
+            size(this.texture.getImageWidth(), this.texture.getImageHeight());
+
+            tooltipAutoUpdate(true);
+            tooltipDynamic(tooltip -> {
+                tooltip.clearText();
+                List<T[]> cells = getHoveredChunkCells();
+                if (cells.isEmpty()) return;
+                List<Component> lines = new ArrayList<>();
+                this.mode.appendTooltips(cells, lines, null);
+                lines.forEach(tooltip::addLine);
+            });
+        } else {
+            int diameter = (chunkRadius * 2 - 1) * 16 + 1;
+            size(diameter, diameter);
+        }
 
         panelSyncManager.onServerTick(this::scanOres);
     }
@@ -90,7 +112,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         return new DynamicSyncHandler()
                 .widgetProvider((syncManager, buf) -> {
                     ProspectingUpdatePacket<T> packet = ProspectingUpdatePacket.read(this.mode, buf);
-                    if (syncManager.isClient()) {
+                    if (syncManager.isClient() && this.texture != null) {
                         this.texture.updateTexture(packet);
                     }
                     this.addOresToList(packet.data);
@@ -99,7 +121,14 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                             .collapseDisabledChildren()
                             .expanded()
                             .sizeRel(1f)
-                            .children(this.items, item -> {
+                            .onUpdateListener(list -> {
+                                String current = searchValue.getStringValue();
+                                if (!Objects.equals(current, this.lastSearch)) {
+                                    this.lastSearch = current;
+                                    list.getScrollData().scrollTo(list.getScrollArea(), 0);
+                                }
+                            })
+                            .children(this.items.values(), item -> {
                                 String uniqueId = mode.getUniqueId(item);
                                 Component description = mode.getDescription(item);
 
@@ -117,7 +146,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                                             if (Strings.isNullOrEmpty(searched)) {
                                                 return true;
                                             } else {
-                                                return description.getString().toLowerCase().contains(searched);
+                                                return description.getString().toLowerCase()
+                                                        .contains(searched.toLowerCase());
                                             }
                                         })
                                         .child(Flow.row()
@@ -169,7 +199,11 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     private void addOresToList(T[][][] data) {
         for (int x = 0; x < mode.cellSize; x++) {
             for (int z = 0; z < mode.cellSize; z++) {
-                Collections.addAll(this.items, data[x][z]);
+                for (T item : data[x][z]) {
+                    if (item != null) {
+                        this.items.putIfAbsent(mode.getUniqueId(item), item);
+                    }
+                }
             }
         }
     }
@@ -178,7 +212,16 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         if (!Objects.equals(this.selected, uniqueID)) {
             this.selected = uniqueID;
 
-            if (isClient) {
+            if (isClient && this.texture != null) {
+                this.texture.loadToImage();
+            }
+        }
+    }
+
+    public void setDarkMode(boolean darkMode) {
+        if (this.darkMode != darkMode) {
+            this.darkMode = darkMode;
+            if (this.texture != null) {
                 this.texture.loadToImage();
             }
         }
@@ -201,16 +244,55 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                 Component.translatable("behavior.prospector.added_waypoint",
                         clickedItem.name.copy().withStyle(style -> style.withColor(clickedItem.color))),
                 false);
+        this.getContext().getScreen().getMainPanel().closeIfOpen();
 
         Interactable.playButtonClickSound();
         return Result.SUCCESS;
     }
 
+    /**
+     * @return every non-empty data cell of the chunk currently under the cursor, or an empty list if the
+     *         cursor is off the map.
+     */
+    private List<T[]> getHoveredChunkCells() {
+        if (this.texture == null) return List.of();
+        int relX = getContext().getMouseX();
+        int relZ = getContext().getMouseY();
+
+        int mapPixels = (this.chunkRadius * 2 - 1) * 16;
+        if (relX < 0 || relZ < 0 || relX >= mapPixels || relZ >= mapPixels) {
+            return List.of();
+        }
+
+        int chunkX = relX / 16;
+        int chunkZ = relZ / 16;
+        int cellSize = this.mode.cellSize;
+        List<T[]> cells = new ArrayList<>();
+        for (int i = 0; i < cellSize; i++) {
+            for (int j = 0; j < cellSize; j++) {
+                T[] cell = this.texture.data[chunkX * cellSize + i][chunkZ * cellSize + j];
+                if (cell != null && cell.length > 0) {
+                    cells.add(cell);
+                }
+            }
+        }
+        return cells;
+    }
+
     private @Nullable WaypointItem getClickedVein(double mouseX, double mouseY) {
-        int chunkX = (int) (mouseX - getArea().x()) / 16;
-        int chunkZ = (int) (mouseY - getArea().y()) / 16;
-        int offsetX = (int) (mouseX - getArea().x()) % 16;
-        int offsetZ = (int) (mouseY - getArea().y()) % 16;
+        if (this.texture == null) return null;
+        int relX = (int) mouseX;
+        int relZ = (int) mouseY;
+
+        int mapPixels = (this.chunkRadius * 2 - 1) * 16;
+        if (relX < 0 || relZ < 0 || relX >= mapPixels || relZ >= mapPixels) {
+            return null;
+        }
+
+        int chunkX = relX / 16;
+        int chunkZ = relZ / 16;
+        int offsetX = relX % 16;
+        int offsetZ = relZ % 16;
         int xDiff = chunkX - (this.chunkRadius - 1);
         int zDiff = chunkZ - (this.chunkRadius - 1);
 
@@ -218,21 +300,14 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         int z = SectionPos.sectionToBlockCoord(player.chunkPosition().z + zDiff) + offsetZ;
         int y = player.level().getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
 
-        if (chunkX < 0 || chunkZ < 0 || chunkX >= this.chunkRadius * 2 - 1 || chunkZ >= this.chunkRadius * 2 - 1) {
-            return null;
-        }
-
         BlockPos pos = new BlockPos(x, y, z);
         // If the ores are filtered use its name
-        if (this.getSelected() != null) {
-            for (T item : this.items) {
-                String uniqueId = mode.getUniqueId(item);
-                if (!this.getSelected().equals(uniqueId)) continue;
-
-                Component name = mode.getDescription(item);
-                int color = mode.getItemColor(item);
-                return new WaypointItem(pos, uniqueId, name, color);
-            }
+        T item = this.items.get(this.getSelected());
+        if (item != null) {
+            Component name = mode.getDescription(item);
+            int color = mode.getItemColor(item);
+            String uniqueId = mode.getUniqueId(item);
+            return new WaypointItem(pos, uniqueId, name, color);
         }
 
         // If the cursor is over an ore use its name

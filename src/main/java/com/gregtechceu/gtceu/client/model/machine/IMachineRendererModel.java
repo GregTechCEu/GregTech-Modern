@@ -34,7 +34,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> {
     default @NotNull List<BakedQuad> getRenderQuads(@Nullable T machine, @Nullable BlockAndTintGetter level,
                                                     @Nullable BlockPos pos, @Nullable BlockState blockState,
                                                     @Nullable Direction side, RandomSource rand,
-                                                    @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                                    ModelData modelData, @Nullable RenderType renderType) {
         return Collections.emptyList();
     }
 
@@ -51,7 +51,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> {
     }
 
     default boolean shouldRender(T machine, Vec3 cameraPos) {
-        return Vec3.atCenterOf(machine.self().getBlockPos()).closerThan(cameraPos, this.getViewDistance());
+        return Vec3.atCenterOf(machine.getBlockPos()).closerThan(cameraPos, this.getViewDistance());
     }
 
     default int getViewDistance() {
@@ -59,7 +59,7 @@ public interface IMachineRendererModel<T extends IMachineFeature> {
     }
 
     default AABB getRenderBoundingBox(T machine) {
-        BlockPos pos = machine.self().getBlockPos();
+        BlockPos pos = machine.getBlockPos();
         return new AABB(pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
     }
 

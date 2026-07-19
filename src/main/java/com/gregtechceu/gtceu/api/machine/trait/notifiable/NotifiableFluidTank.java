@@ -1,8 +1,11 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -17,7 +20,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -61,6 +63,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             this.storages[i] = new CustomFluidTank(capacity);
             this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
@@ -74,6 +77,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         if (io == IO.IN) {
             this.allowSameFluids = true;
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(int slots, int capacity, IO io) {
@@ -90,9 +94,29 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         notifyListeners();
     }
 
+    protected void onLockedFluidChanged() {
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
+        var newFluid = this.lockedFluid.getFluid();
+        if (newFluid.isEmpty()) {
+            this.setFilter(stack -> true);
+            this.onContentsChanged();
+            return;
+        }
+        for (int i = 0; i < this.getTanks(); i++) {
+            if (this.getFluidInTank(i).isEmpty()) continue;
+            if (!this.getFluidInTank(i).isFluidEqual(newFluid)) {
+                // Fluid in a tank that doesn't equal the new locked fluid
+                this.lockedFluid.setFluid(FluidStack.EMPTY);
+                return;
+            }
+        }
+        this.setFilter(stack -> stack.isFluidEqual(newFluid));
+        this.onContentsChanged();
+    }
+
     @Override
-    public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                            boolean simulate) {
+    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                   boolean simulate) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left;
 
@@ -221,7 +245,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public int getPriority() {
-        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() : HIGH - getTanks();
+        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() :
+                IFilteredHandler.HIGH - getTanks();
     }
 
     public boolean isLocked() {

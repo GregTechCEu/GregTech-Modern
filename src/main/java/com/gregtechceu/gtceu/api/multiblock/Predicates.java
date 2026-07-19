@@ -34,7 +34,6 @@ import net.minecraft.world.level.material.Fluid;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -84,9 +83,9 @@ public class Predicates {
      * }
      */
 
-    public static PatternPredicate machines(MachineDefinition... definitions) {
-        Validate.noNullElements(definitions, "MachineDefinition array has null element at index %s");
-        return blocks(Arrays.stream(definitions).map(MachineDefinition::get).toArray(MetaMachineBlock[]::new));
+    public static PatternPredicate machines(@Nullable MachineDefinition... definitions) {
+        return blocks(Arrays.stream(definitions).filter(Objects::nonNull).map(MachineDefinition::get)
+                .toArray(MetaMachineBlock[]::new));
     }
 
     public static PatternPredicate blockTag(TagKey<Block> tag) {

@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
@@ -48,8 +49,9 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     private boolean hasItemHandler;
 
     public DualHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
-        super(info, tier, io);
-        this.tank = attachTrait(new NotifiableFluidTank((int) Math.sqrt(getInventorySize()),
+        super(info, tier, io, new NotifiableItemStackHandler(getDualHatchInventorySize(tier), io));
+
+        this.tank = attachTrait(new NotifiableFluidTank((int) Math.sqrt(getDualHatchInventorySize(tier)),
                 getTankCapacity(INITIAL_TANK_CAPACITY, getTier()), io));
     }
 
@@ -61,9 +63,8 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         return initialCapacity * (1 << (tier - 6));
     }
 
-    @Override
-    public int getInventorySize() {
-        return (int) Math.pow((getTier() - 4), 2);
+    public static int getDualHatchInventorySize(int tier) {
+        return (int) Math.pow((tier - 4), 2);
     }
 
     @Override
@@ -163,9 +164,9 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         String slotGroupName = "inv_slot_group";
-        SlotGroup slotGroup = new SlotGroup(slotGroupName, getInventorySize());
+        SlotGroup slotGroup = new SlotGroup(slotGroupName, getDualHatchInventorySize(getTier()));
         mainWidget.child(SlotGroupWidget.builder()
-                .matrix(Arrays.stream(GTMuiMachineUtil.createSquareMatrix(getInventorySize(), 'I'))
+                .matrix(Arrays.stream(GTMuiMachineUtil.createSquareMatrix(getDualHatchInventorySize(getTier()), 'I'))
                         .map(s -> s + 'F')
                         .toArray(String[]::new))
                 .key('I', i -> {

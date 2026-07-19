@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
@@ -51,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 public class QuantumTankMachine extends TieredMachine implements IControllable,
-                                IDropSaveMachine, IMuiMachine {
+                                IMuiMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
@@ -106,16 +105,6 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
             syncDataHolder.markClientSyncFieldDirty("storedAmount");
             syncDataHolder.markClientSyncFieldDirty("stored");
         }
-    }
-
-    @Override
-    public boolean savePickClone() {
-        return false;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
     }
 
     //////////////////////////////////////
@@ -188,7 +177,8 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
+        if (clone || stored.isEmpty()) return;
         tag.put("stored", stored.writeToNBT(new CompoundTag()));
         tag.putLong("storedAmount", storedAmount);
     }
