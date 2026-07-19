@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentBlockCondition;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -124,7 +123,8 @@ public class GTRecipeSerializerTest {
                 "AdjacentFluidCondition did not deserialize properly");
 
         JsonObject jsonConfig = condition.serialize(helper.getLevel().registryAccess());
-        AdjacentFluidCondition newCondition = (AdjacentFluidCondition) AdjacentFluidCondition.deserialize(helper.getLevel().registryAccess(), jsonConfig);
+        AdjacentFluidCondition newCondition = (AdjacentFluidCondition) AdjacentFluidCondition
+                .deserialize(helper.getLevel().registryAccess(), jsonConfig);
 
         helper.assertTrue(equalHolderSetLists(newCondition.getOrInitFluids(null), fluidSetIn),
                 "AdjacentFluidCondition did not deserialize properly");
@@ -150,7 +150,8 @@ public class GTRecipeSerializerTest {
                 "AdjacentBlockCondition did not deserialize properly");
 
         JsonObject jsonConfig = condition.serialize(helper.getLevel().registryAccess());
-        AdjacentBlockCondition newCondition = (AdjacentBlockCondition) AdjacentBlockCondition.deserialize(helper.getLevel().registryAccess(), jsonConfig);
+        AdjacentBlockCondition newCondition = (AdjacentBlockCondition) AdjacentBlockCondition
+                .deserialize(helper.getLevel().registryAccess(), jsonConfig);
 
         helper.assertTrue(equalHolderSetLists(newCondition.getOrInitBlocks(null), blockSetIn),
                 "AdjacentBlockCondition did not deserialize properly");
