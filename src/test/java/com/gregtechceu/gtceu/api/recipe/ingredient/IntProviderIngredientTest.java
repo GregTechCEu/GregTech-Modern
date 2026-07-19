@@ -212,15 +212,18 @@ public class IntProviderIngredientTest {
     @GameTest(template = "empty", batch = "RangedIngredients")
     public static void rangedIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
+
         // This will print a "Cannot get items" warning to the log. Ignore it.
-        helper.assertTrue(ingredient.getItems().length == 0, "A ranged ingredient " +
-                "should not return items!");
+        helper.assertTrue(ingredient.getItems().length == 0,
+                "A ranged ingredient should not return items!");
+
         ingredient.rollSampledCount();
         var stacks = ingredient.collapse().getItems();
-        helper.assertTrue(stacks.length == 1, "Replaced IntProviderIngredient should only " +
-                "return 1 item when made with 1 item");
-        helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()),
+        helper.assertTrue(stacks.length == 1,
+                "Replaced IntProviderIngredient should only return 1 item when made with 1 item");
+helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()),
                 "Replaced IntProviderIngredient should have item equal to what it was made with");
+
         helper.succeed();
     }
 

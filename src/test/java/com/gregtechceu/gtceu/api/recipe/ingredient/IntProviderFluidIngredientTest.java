@@ -217,15 +217,18 @@ public class IntProviderFluidIngredientTest {
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
     public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
+
         // This will print a "Cannot get stacks" warning to the log. Ignore it.
-        helper.assertTrue(ingredient.getStacks().length == 0, "A ranged fluid ingredient " +
-                "should not return items!");
+        helper.assertTrue(ingredient.getStacks().length == 0,
+                "A ranged fluid ingredient should not return items!");
+
         ingredient.rollSampledCount();
         var stacks = ingredient.collapse().getStacks();
-        helper.assertTrue(stacks.length == 1, "Replaced IntProviderFluidIngredient should only " +
-                "return 1 fluid when made with 1 fluid");
+        helper.assertTrue(stacks.length == 1,
+                "Replaced IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid");
         helper.assertTrue(stacks[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
                 "Replaced IntProviderFluidIngredient should have fluid equal to what it was made with");
+
         helper.succeed();
     }
 

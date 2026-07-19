@@ -244,9 +244,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 }
             }
         }
-        for (var handler : outputs.values()) {
-            for (var iterator = handler.listIterator(); iterator.hasNext();) {
-                var content = iterator.next();
+        for (List<Content> output : outputs.values()) {
+            for (ListIterator<Content> iterator = output.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
                     iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
@@ -262,44 +262,32 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.tickInputs.clear();
         this.tickOutputs.clear();
 
-        for (var capability : lastDisplayedRecipe.tickInputs.keySet()) {
-            var handler = lastDisplayedRecipe.tickInputs.get(capability);
-            for (var iterator = handler.listIterator(); iterator.hasNext();) {
-                var content = iterator.next();
+        for (var entry : lastDisplayedRecipe.tickInputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
                     content = new Content(ranged.collapse(), content.chance(), content.maxChance());
                     ranged.reset();
                 }
-                tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+                this.tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
             }
         }
-        for (var capability : lastDisplayedRecipe.tickOutputs.keySet()) {
-            var handler = lastDisplayedRecipe.tickOutputs.get(capability);
-            for (var iterator = handler.listIterator(); iterator.hasNext();) {
-                var content = iterator.next();
+        for (var entry : lastDisplayedRecipe.tickOutputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
                     content = new Content(ranged.collapse(), content.chance(), content.maxChance());
                     ranged.reset();
                 }
-                tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+                this.tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
             }
         }
-    }
-
-    public List<Content> getFullContents() {
-        return Stream
-                .concat(inputs.values().stream(), outputs.values().stream())
-                .flatMap(List::stream)
-                .toList();
-    }
-
-    public List<Content> getFullTickContents() {
-        return Stream
-                .concat(tickInputs.values().stream(), tickOutputs.values().stream())
-                .flatMap(List::stream)
-                .toList();
     }
 
     public int getTotalRuns() {
