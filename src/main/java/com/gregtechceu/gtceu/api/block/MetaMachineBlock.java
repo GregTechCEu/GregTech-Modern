@@ -279,6 +279,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
+
         var machine = MetaMachine.getMachine(world, pos);
         if (machine == null) return InteractionResult.FAIL;
         ItemStack itemStack = player.getItemInHand(hand);
@@ -290,8 +291,9 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
         InteractionResult machineInteractResult = InteractionResult.PASS;
 
-        if (!itemStack.isEmpty())
+        if (!itemStack.isEmpty()) {
             machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        }
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
         machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
