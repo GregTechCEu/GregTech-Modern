@@ -13,6 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -49,5 +51,13 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.jetpack", module.getModuleItem().getHoverName()));
+    }
+
+    @Override
+    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+        return super.getSettings(module, psm, id)
+                .bool(Text.lang("metaarmor.hud.hover_mode"),
+                        () -> module.getAppliedTo().getOrCreateTag().getBoolean("hover"),
+                        b -> module.getAppliedTo().getOrCreateTag().putBoolean("hover", b));
     }
 }
