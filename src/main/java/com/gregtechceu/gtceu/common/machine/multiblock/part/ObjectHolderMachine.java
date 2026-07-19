@@ -90,7 +90,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMa
                 .center()
                 .coverChildren()
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(heldItems, 1).slotGroup(orbGroup))
+                        .slot(new ModularSlot(heldItems.storage, 1).slotGroup(orbGroup))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY)
                         .marginLeft(30)
                         .marginRight(30)
@@ -101,7 +101,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMa
                         .pos(75, 0))
 
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(heldItems, 0).slotGroup(objectGroup))
+                        .slot(new ModularSlot(heldItems.storage, 0).slotGroup(objectGroup).accessibility(false, true))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.RESEARCH_STATION_OVERLAY)
                         .marginLeft(30)
                         .marginRight(30)

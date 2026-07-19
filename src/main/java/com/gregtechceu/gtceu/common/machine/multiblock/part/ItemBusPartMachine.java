@@ -70,7 +70,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
         this(info, tier, io,
-                new NotifiableItemStackHandler(getInventorySize(tier), io, io.support(IO.IN) ? IO.BOTH : io));
+                new NotifiableItemStackHandler(getInventorySize(tier), io));
     }
 
     /**

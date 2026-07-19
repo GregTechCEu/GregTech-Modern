@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 
 import net.minecraftforge.items.IItemHandler;
 
@@ -29,6 +31,9 @@ public class GTMuiMachineUtil {
                                                                PanelSyncManager syncManager,
                                                                String... matrix) {
         SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
+        if (itemHandler instanceof NotifiableItemStackHandler handler) {
+            GTCEu.LOGGER.warn("NotifiableItemStackHandler passed");
+        }
 
         return SlotGroupWidget.builder()
                 .matrix(matrix)
