@@ -23,15 +23,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SteamHatchPartMachine extends FluidHatchPartMachine {
 
-    public static final int INITIAL_TANK_CAPACITY = 64 * FluidType.BUCKET_VOLUME;
+    public static final int INITIAL_TANK_CAPACITY_STEAM = 64 * FluidType.BUCKET_VOLUME;
     public static final boolean IS_STEEL = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
 
     public SteamHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY, 1, args);
+        super(holder, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY_STEAM, 1);
     }
 
     @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         return super.createTank(initialCapacity, slots)
                 .setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Steam.getFluidTag()));
     }

@@ -329,6 +329,7 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack());
 
         var multiHatchMaterials = new Material[] {
+                GTMaterials.Steel, GTMaterials.Aluminium, GTMaterials.StainlessSteel,
                 GTMaterials.Titanium, GTMaterials.TungstenSteel, GTMaterials.NiobiumTitanium,
                 GTMaterials.Iridium, GTMaterials.Naquadah, GTMaterials.Neutronium
         };
@@ -341,31 +342,20 @@ public class MetaTileEntityLoader {
             var importHatch = GTMachines.FLUID_IMPORT_HATCH[tier];
             var exportHatch = GTMachines.FLUID_EXPORT_HATCH[tier];
 
-            var importHatch4x = GTMachines.FLUID_IMPORT_HATCH_4X[tier];
-            var exportHatch4x = GTMachines.FLUID_EXPORT_HATCH_4X[tier];
-            var importHatch9x = GTMachines.FLUID_IMPORT_HATCH_9X[tier];
-            var exportHatch9x = GTMachines.FLUID_EXPORT_HATCH_9X[tier];
+            var importHatchMulti = GTMachines.FLUID_IMPORT_HATCH_MULTI[tier];
+            var exportHatchMulti = GTMachines.FLUID_EXPORT_HATCH_MULTI[tier];
 
             VanillaRecipeHelper.addShapedRecipe(
-                    provider, true, "fluid_import_hatch_4x_" + tierName,
-                    importHatch4x.asStack(), "P", "M",
+                    provider, true, "fluid_import_hatch_multi_" + tierName,
+                    importHatchMulti.asStack(), "P", "M",
                     'M', importHatch.asStack(),
                     'P', new MaterialEntry(TagPrefix.pipeQuadrupleFluid, material));
             VanillaRecipeHelper.addShapedRecipe(
-                    provider, true, "fluid_export_hatch_4x_" + tierName,
-                    exportHatch4x.asStack(), "M", "P",
+                    provider, true, "fluid_export_hatch_multi_" + tierName,
+                    exportHatchMulti.asStack(), "M", "P",
                     'M', exportHatch.asStack(),
                     'P', new MaterialEntry(TagPrefix.pipeQuadrupleFluid, material));
-            VanillaRecipeHelper.addShapedRecipe(
-                    provider, true, "fluid_import_hatch_9x_" + tierName,
-                    importHatch9x.asStack(), "P", "M",
-                    'M', importHatch.asStack(),
-                    'P', new MaterialEntry(TagPrefix.pipeNonupleFluid, material));
-            VanillaRecipeHelper.addShapedRecipe(
-                    provider, true, "fluid_export_hatch_9x_" + tierName,
-                    exportHatch9x.asStack(), "M", "P",
-                    'M', exportHatch.asStack(),
-                    'P', new MaterialEntry(TagPrefix.pipeNonupleFluid, material));
+
         }
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "rotor_holder_hv", GTMachines.ROTOR_HOLDER[HV].asStack(),

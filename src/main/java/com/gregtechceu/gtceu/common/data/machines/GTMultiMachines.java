@@ -829,8 +829,8 @@ public class GTMultiMachines {
                         .where('S', GTMultiMachines.CLEANROOM.getBlock())
                         .where(' ', Blocks.AIR)
                         .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.HV], Direction.NORTH)
+                        .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.HV], Direction.NORTH)
                         .where('H', GTMachines.HULL[GTValues.HV], Direction.NORTH)
                         .where('D', GTMachines.DIODE[GTValues.HV], Direction.NORTH)
                         .where('O',

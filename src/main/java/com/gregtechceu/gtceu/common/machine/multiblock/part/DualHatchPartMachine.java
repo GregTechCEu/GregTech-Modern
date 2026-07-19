@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.LargeStackSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -19,17 +19,18 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidType;
 
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.api.GTValues.UHV;
+import static com.gregtechceu.gtceu.api.GTValues.UV;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DualHatchPartMachine extends ItemBusPartMachine {
 
-    public static final int INITIAL_TANK_CAPACITY = 16 * FluidType.BUCKET_VOLUME;
     @Persisted
     public final NotifiableFluidTank tank;
 
@@ -39,26 +40,18 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     private boolean hasFluidHandler;
     private boolean hasItemHandler;
 
-    public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io);
-        this.tank = createTank(INITIAL_TANK_CAPACITY, (int) Math.sqrt(getInventorySize()), args);
+        this.tank = createTank(FluidHatchPartMachine.INITIAL_TANK_CAPACITY, FluidHatchPartMachine.TANKS[tier]);
     }
 
     ////////////////////////////////
     // ***** Initialization ******//
     ////////////////////////////////
 
-    public static int getTankCapacity(int initialCapacity, int tier) {
-        return initialCapacity * (1 << (tier - 6));
-    }
-
-    @Override
-    public int getInventorySize() {
-        return (int) Math.pow((getTier() - 4), 2);
-    }
-
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
-        return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
+        return new NotifiableFluidTank(this, slots, FluidHatchPartMachine.getTankCapacity(initialCapacity, getTier()),
+                io);
     }
 
     @Override
@@ -158,30 +151,79 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
     @Override
     public Widget createUIWidget() {
-        int slots = getInventorySize();
-        int tanks = (int) Math.sqrt(slots);
-        var group = new WidgetGroup(0, 0, 18 * (tanks + 1) + 16, 18 * tanks + 16);
-        var container = new WidgetGroup(4, 4, 18 * (tanks + 1) + 8, 18 * tanks + 8);
-
-        int index = 0;
-        for (int y = 0; y < tanks; y++) {
-            for (int x = 0; x < tanks; x++) {
-                container.addWidget(new SlotWidget(
-                        getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                        .setBackgroundTexture(GuiTextures.SLOT)
-                        .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
-            }
+        int itemRows = LINE_NUM[getTier()];
+        int itemColumns = (getInventorySize() + itemRows - 1) / itemRows;
+        int tankRows = FluidHatchPartMachine.LINE_NUM[getTier()];
+        int tankColumns = (tank.getTanks() + tankRows - 1) / tankRows;
+        int columns = Math.max(itemColumns, tankColumns);
+        int rows = itemRows + tankRows;
+        if (getTier() == UV) {
+            columns = 10;
+            rows = 6;
+        } else if (getTier() == UHV) {
+            columns = 10;
+            rows = 10;
         }
+        var group = new WidgetGroup(0, 0, 18 * columns + 16, 18 * rows + 16);
+        var container = new WidgetGroup(4, 4, 18 * columns + 8, 18 * rows + 8);
 
-        index = 0;
-        for (int y = 0; y < tanks; y++) {
-            container.addWidget(new TankWidget(
-                    tank.getStorages()[index++], 4 + tanks * 18, 4 + y * 18, true, io.support(IO.IN))
-                    .setBackground(GuiTextures.FLUID_SLOT));
+        if (getTier() == UHV) {
+            int tankIndex = 0;
+            for (int x = 0; x < 10; x++) {
+                addTankWidget(container, tankIndex++, x, 0);
+            }
+            for (int y = 1; y < 9; y++) {
+                addTankWidget(container, tankIndex++, 0, y);
+                addTankWidget(container, tankIndex++, 9, y);
+            }
+            for (int x = 0; x < 10; x++) {
+                addTankWidget(container, tankIndex++, x, 9);
+            }
+            addItemGrid(container, 1, 1, 8, 8);
+        } else if (getTier() == UV) {
+            int tankIndex = 0;
+            for (int y = 0; y < 6; y++) {
+                for (int x = 0; x < 2; x++) {
+                    addTankWidget(container, tankIndex++, x, y);
+                    addTankWidget(container, tankIndex++, x + 8, y);
+                }
+            }
+            addItemGrid(container, 2, 0, 6, 6);
+        } else {
+            addItemGrid(container, 0, 0, itemColumns, itemRows);
+            addTankGrid(container, 0, itemRows, tankColumns, tankRows);
         }
 
         container.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(container);
         return group;
+    }
+
+    private void addItemGrid(WidgetGroup container, int startX, int startY, int columns, int rows) {
+        int index = 0;
+        for (int y = 0; y < rows && index < getInventorySize(); y++) {
+            for (int x = 0; x < columns && index < getInventorySize(); x++) {
+                container.addWidget(new LargeStackSlotWidget(
+                        getInventory().storage, index++, 4 + (startX + x) * 18, 4 + (startY + y) * 18, true,
+                        io.support(IO.IN))
+                        .setBackgroundTexture(GuiTextures.SLOT)
+                        .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
+            }
+        }
+    }
+
+    private void addTankGrid(WidgetGroup container, int startX, int startY, int columns, int rows) {
+        int index = 0;
+        for (int y = 0; y < rows && index < tank.getTanks(); y++) {
+            for (int x = 0; x < columns && index < tank.getTanks(); x++) {
+                addTankWidget(container, index++, startX + x, startY + y);
+            }
+        }
+    }
+
+    private void addTankWidget(WidgetGroup container, int index, int x, int y) {
+        container.addWidget(new TankWidget(
+                tank.getStorages()[index], 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
+                .setBackground(GuiTextures.FLUID_SLOT));
     }
 }

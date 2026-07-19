@@ -5,6 +5,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.Collections;
 /** Item handler whose per-slot capacity may exceed an item's normal stack size. */
 public class LargeStackItemHandler extends CustomItemStackHandler {
 
+    @Getter
     private final int multiplier;
 
     public LargeStackItemHandler(int size, int multiplier) {

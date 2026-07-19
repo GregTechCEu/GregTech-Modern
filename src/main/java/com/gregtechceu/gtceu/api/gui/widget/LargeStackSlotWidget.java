@@ -72,10 +72,12 @@ public class LargeStackSlotWidget extends SlotWidget {
             }
 
             if (!stack.isEmpty()) {
-                String amount = slotReference.getMaxStackSize(slotReference.getItem()) == 0 ? null :
-                        TextFormattingUtil.formatLongToCompactString(stack.getCount(), 3);
                 DrawerHelper.drawItemStack(graphics, stack, pos.x + 1, pos.y + 1, -1, "");
-                if (amount != null) drawAmount(graphics, amount, pos);
+                if (stack.getCount() != 1) {
+                    String amount = slotReference.getMaxStackSize(slotReference.getItem()) == 0 ? null :
+                            TextFormattingUtil.formatLongToCompactString(stack.getCount(), 3);
+                    if (amount != null) drawAmount(graphics, amount, pos);
+                }
             }
         }
 

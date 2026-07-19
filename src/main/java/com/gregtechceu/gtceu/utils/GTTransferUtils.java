@@ -144,6 +144,41 @@ public class GTTransferUtils {
         transferItemsFiltered(source, dest, filter, Integer.MAX_VALUE);
     }
 
+    public static int transferLargeStackFiltered(@NotNull IItemHandler source,
+                                                 @NotNull IItemHandler dest,
+                                                 @NotNull Predicate<ItemStack> filter,
+                                                 int transferLimit) {
+        int toTransfer = transferLimit;
+
+        for (int i = 0; i < source.getSlots() && toTransfer > 0; i++) {
+            while (toTransfer > 0) {
+                ItemStack stack = source.getStackInSlot(i);
+                if (stack.isEmpty() || !filter.test(stack)) {
+                    break;
+                }
+
+                ItemStack canExtract = source.extractItem(i, toTransfer, true);
+                if (canExtract.isEmpty()) {
+                    break;
+                }
+
+                int canInsert = canExtract.getCount() -
+                        ItemHandlerHelper.insertItemStacked(dest, canExtract, true).getCount();
+
+                if (canInsert <= 0) {
+                    break;
+                }
+
+                ItemStack extracted = source.extractItem(i, canInsert, false);
+                ItemStack remainder = ItemHandlerHelper.insertItemStacked(dest, extracted, false);
+
+                toTransfer -= canInsert - remainder.getCount();
+            }
+        }
+
+        return transferLimit - toTransfer;
+    }
+
     public static void moveInventoryItems(IItemHandlerModifiable sourceInventory,
                                           IItemHandlerModifiable targetInventory) {
         for (int srcIndex = 0; srcIndex < sourceInventory.getSlots(); srcIndex++) {

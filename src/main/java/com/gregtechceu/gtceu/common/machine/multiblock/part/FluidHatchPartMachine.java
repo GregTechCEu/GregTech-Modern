@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IAllowSameUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -52,11 +53,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
+public class FluidHatchPartMachine extends TieredIOPartMachine
+                                   implements IDistinctPart, IMachineLife, IHasCircuitSlot, IAllowSameUIProvider {
 
-    public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidType.BUCKET_VOLUME;
-    public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidType.BUCKET_VOLUME;
-    public static final int INITIAL_TANK_CAPACITY_9X = FluidType.BUCKET_VOLUME;
+    public static final int INITIAL_TANK_CAPACITY = 8 * FluidType.BUCKET_VOLUME;
+    public static final int[] TANKS = { 0, 2, 3, 4, 5, 12, 14, 18, 24, 36 };
+    public static final int[] LINE_NUM = { 0, 1, 1, 1, 1, 2, 2, 3, 4, 6 };
 
     @Persisted
     public final NotifiableFluidTank tank;
@@ -75,13 +77,10 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IDisti
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
 
-    // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
-    // We can't use fields here because those won't be available while createTank() is called.
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots,
-                                 Object... args) {
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots) {
         super(holder, tier, io);
         this.slots = slots;
-        this.tank = createTank(initialCapacity, slots, args);
+        this.tank = createTank(initialCapacity, slots);
 
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
     }
@@ -89,12 +88,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IDisti
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
     }
 
     public static int getTankCapacity(int initialCapacity, int tier) {
-        return initialCapacity * (1 << Math.min(9, tier));
+        return initialCapacity * (1 << 2 * tier);
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
@@ -229,12 +228,10 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IDisti
 
         if (io == IO.IN) {
             if (this.slots == 1) newDefinition = GTMachines.FLUID_EXPORT_HATCH[this.getTier()];
-            else if (this.slots == 4) newDefinition = GTMachines.FLUID_EXPORT_HATCH_4X[this.getTier()];
-            else if (this.slots == 9) newDefinition = GTMachines.FLUID_EXPORT_HATCH_9X[this.getTier()];
+            else newDefinition = GTMachines.FLUID_EXPORT_HATCH_MULTI[this.getTier()];
         } else if (io == IO.OUT) {
             if (this.slots == 1) newDefinition = GTMachines.FLUID_IMPORT_HATCH[this.getTier()];
-            else if (this.slots == 4) newDefinition = GTMachines.FLUID_IMPORT_HATCH_4X[this.getTier()];
-            else if (this.slots == 9) newDefinition = GTMachines.FLUID_IMPORT_HATCH_9X[this.getTier()];
+            else newDefinition = GTMachines.FLUID_IMPORT_HATCH_MULTI[this.getTier()];
         }
         if (newDefinition == null) return false;
 
@@ -261,6 +258,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IDisti
 
     @Override
     public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        attachAllowSameConfigurators(right);
         if (this.io == IO.IN) {
             if (isCircuitSlotEnabled()) {
                 left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
@@ -350,8 +348,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IDisti
     }
 
     protected Widget createMultiSlotGUI() {
-        int rowSize = (int) Math.sqrt(slots);
-        int colSize = rowSize;
+        int colSize = LINE_NUM[getTier()];
+        int rowSize = slots / colSize;
         if (slots == 8) {
             rowSize = 4;
             colSize = 2;

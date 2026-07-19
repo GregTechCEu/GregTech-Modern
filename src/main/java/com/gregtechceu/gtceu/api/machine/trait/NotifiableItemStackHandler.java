@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.NBTPredicateItemS
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.PartialNBTItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.StrictNBTItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.LargeStackItemHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -27,6 +28,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
@@ -183,7 +185,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
                     int count = current.getCount();
                     ItemStack output = outputStack.copyWithCount(amount);
                     if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
-                        if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
+                        if (count < storage.getSlotLimit(slot)) {
                             var remainder = storage.insertItem(slot, output, simulate);
                             if (remainder.getCount() < amount) {
                                 changed = true;
@@ -292,7 +294,16 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentItemHandler(level, pos, facing)
-                    .ifPresent(adj -> GTTransferUtils.transferItemsFiltered(this, adj, filter));
+                    .ifPresent(adj -> outputItemsFiltered(adj, filter));
+        }
+    }
+
+    private void outputItemsFiltered(@NotNull IItemHandler dest, @NotNull Predicate<ItemStack> filter) {
+        if (storage instanceof LargeStackItemHandler largeStackItemHandler &&
+                largeStackItemHandler.getMultiplier() > 1) {
+            GTTransferUtils.transferLargeStackFiltered(storage, dest, filter, Integer.MAX_VALUE);
+        } else {
+            GTTransferUtils.transferItemsFiltered(storage, dest, filter);
         }
     }
 

@@ -917,6 +917,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.energy_storage_capacity", "§cEnergy Capacity: §r%d EU");
         provider.add("gtceu.universal.tooltip.energy_tier_range", "§aAllowed Voltage Tiers: §f%s §f- %s");
         provider.add("gtceu.universal.tooltip.item_storage_capacity", "§6Item Slots: §f%d");
+        provider.add("gtceu.universal.tooltip.item_storage_multiplier", "§6Item Stack Multiplier: §f%d");
         provider.add("gtceu.universal.tooltip.item_storage_total", "§6Item Capacity: §f%d items");
         provider.add("gtceu.universal.tooltip.item_stored", "§dItem Stored: §f%s, %d items");
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");

@@ -23,8 +23,8 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
     private final String autoTooltipKey;
 
-    public SteamItemBusPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
-        super(holder, 1, io, args);
+    public SteamItemBusPartMachine(IMachineBlockEntity holder, IO io) {
+        super(holder, 1, io);
         autoTooltipKey = io == IO.IN ? "gtceu.gui.item_auto_input.tooltip" : "gtceu.gui.item_auto_output.tooltip";
     }
 

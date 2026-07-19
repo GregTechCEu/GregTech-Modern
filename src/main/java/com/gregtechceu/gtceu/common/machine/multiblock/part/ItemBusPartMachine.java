@@ -6,22 +6,28 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.gui.widget.LargeStackSlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.feature.IAllowSameUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.LargeStackItemHandler;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
@@ -50,7 +56,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
+public class ItemBusPartMachine extends TieredIOPartMachine
+                                implements IDistinctPart, IMachineLife, IHasCircuitSlot, IAllowSameUIProvider {
+
+    public static final int[] INVENTORY_SIZE = { 1, 4, 6, 8, 10, 18, 21, 24, 36, 64 };
+    public static final int[] LINE_NUM = { 1, 2, 2, 2, 2, 3, 3, 4, 6, 8 };
 
     @Getter
     @Persisted
@@ -73,9 +83,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
-    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io);
-        this.inventory = createInventory(args);
+        this.inventory = createInventory();
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
         filterHandler = FilterHandlers.item(this);
     }
@@ -84,8 +94,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     // ***** Initialization ******//
     //////////////////////////////////////
     protected int getInventorySize() {
-        int sizeRoot = 1 + Math.min(9, getTier());
-        return sizeRoot * sizeRoot;
+        return INVENTORY_SIZE[getTier()];
+    }
+
+    public static int getSlotMultiplier(int tier) {
+        return 1 << (2 * tier);
     }
 
     protected boolean matchesFilter(ItemStack stack) {
@@ -94,8 +107,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         return true;
     }
 
-    protected NotifiableItemStackHandler createInventory(Object... args) {
-        return new NotifiableItemStackHandler(this, getInventorySize(), io).setFilter(this::matchesFilter);
+    protected NotifiableItemStackHandler createInventory() {
+        return new NotifiableItemStackHandler(this, getInventorySize(), io, io,
+                i -> new LargeStackItemHandler(i, getSlotMultiplier(getTier())))
+                .setFilter(this::matchesFilter);
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
@@ -258,8 +273,19 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     // ********** GUI ***********//
     //////////////////////////////////////
 
+    protected void refundAll(ClickData clickData) {
+        if (!clickData.isRemote) {
+            this.setWorkingEnabled(false);
+            getInventory().exportToNearby(getFrontFacing());
+        }
+    }
+
     public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        attachAllowSameConfigurators(right);
         if (this.io == IO.IN) {
+            left.attachConfigurators(
+                    new ButtonConfigurator(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("\ud83d\udd19")),
+                            this::refundAll));
             if (isCircuitSlotEnabled()) {
                 left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             }
@@ -272,12 +298,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
 
     @Override
     public Widget createUIWidget() {
-        int rowSize = (int) Math.sqrt(getInventorySize());
-        int colSize = rowSize;
-        if (getInventorySize() == 8) {
-            rowSize = 4;
-            colSize = 2;
-        }
+        int colSize = LINE_NUM[getTier()];
+        int rowSize = INVENTORY_SIZE[getTier()] / colSize;
+
         var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
         var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
         int index = 0;
@@ -288,7 +311,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.addWidget(
-                        new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
+                        new LargeStackSlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true,
+                                io.support(IO.IN))
                                 .setBackgroundTexture(GuiTextures.SLOT)
                                 .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
             }

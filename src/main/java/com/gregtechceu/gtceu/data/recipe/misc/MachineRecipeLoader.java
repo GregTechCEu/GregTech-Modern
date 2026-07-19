@@ -1589,28 +1589,18 @@ public class MachineRecipeLoader {
         for (int tier : GTMachineUtils.MULTI_HATCH_TIERS) {
             var tierName = VN[tier].toLowerCase(Locale.ROOT);
 
-            var importHatch4x = FLUID_IMPORT_HATCH_4X[tier];
-            var exportHatch4x = FLUID_EXPORT_HATCH_4X[tier];
-            var importHatch9x = FLUID_IMPORT_HATCH_9X[tier];
-            var exportHatch9x = FLUID_EXPORT_HATCH_9X[tier];
+            var importHatch = FLUID_IMPORT_HATCH_MULTI[tier];
+            var exportHatch = FLUID_EXPORT_HATCH_MULTI[tier];
 
             VanillaRecipeHelper.addShapedRecipe(
                     provider, "fluid_hatch_4x_output_to_input_" + tierName,
-                    importHatch4x.asStack(), "d", "B",
-                    'B', exportHatch4x.asStack());
+                    importHatch.asStack(), "d", "B",
+                    'B', exportHatch.asStack());
             VanillaRecipeHelper.addShapedRecipe(
                     provider, "fluid_hatch_4x_input_to_output_" + tierName,
-                    exportHatch4x.asStack(), "d", "B",
-                    'B', importHatch4x.asStack());
+                    exportHatch.asStack(), "d", "B",
+                    'B', importHatch.asStack());
 
-            VanillaRecipeHelper.addShapedRecipe(
-                    provider, "fluid_hatch_9x_output_to_input_" + tierName,
-                    importHatch9x.asStack(), "d", "B",
-                    'B', exportHatch9x.asStack());
-            VanillaRecipeHelper.addShapedRecipe(
-                    provider, "fluid_hatch_9x_input_to_output_" + tierName,
-                    exportHatch9x.asStack(), "d", "B",
-                    'B', importHatch9x.asStack());
         }
 
         for (int tier : GTMachineUtils.DUAL_HATCH_TIERS) {
