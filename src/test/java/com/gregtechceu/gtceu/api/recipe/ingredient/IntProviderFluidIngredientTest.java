@@ -219,8 +219,10 @@ public class IntProviderFluidIngredientTest {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
 
         // This will print a "Cannot get stacks" warning to the log. Ignore it.
+        GTCEu.LOGGER.warn("This test will warn that it cannot get stacks. This is supposed to happen.");
         helper.assertTrue(ingredient.getStacks().length == 0,
-                "A ranged fluid ingredient should not return items!");
+                "A ranged fluid ingredient should not return fluids!");
+        GTCEu.LOGGER.warn("If you are reading this line it means the test passed.");
 
         ingredient.rollSampledCount();
         var stacks = ingredient.collapse().getStacks();

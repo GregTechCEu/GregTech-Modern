@@ -214,8 +214,10 @@ public class IntProviderIngredientTest {
         var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
 
         // This will print a "Cannot get items" warning to the log. Ignore it.
+        GTCEu.LOGGER.warn("This test will warn that it cannot get items. This is supposed to happen.");
         helper.assertTrue(ingredient.getItems().length == 0,
                 "A ranged ingredient should not return items!");
+        GTCEu.LOGGER.warn("If you are reading this line it means the test passed.");
 
         ingredient.rollSampledCount();
         var stacks = ingredient.collapse().getItems();
