@@ -125,6 +125,12 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
+    public void onMachineDestroyed() {
+        if (filterHandler.isFilterPresent())
+            Block.popResource(getLevel(), getBlockPos(), filterHandler.getFilterItem());
+    }
+
+    @Override
     public void onPaintingColorChanged(int color) {
         getHandlerList().setColor(color, true);
     }

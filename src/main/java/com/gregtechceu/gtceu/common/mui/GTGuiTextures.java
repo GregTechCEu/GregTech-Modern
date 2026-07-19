@@ -215,6 +215,8 @@ public interface GTGuiTextures {
             "textures/gui/widget/button_distinct_buses.png",
             16, 32, 16, 16, ColorType.DEFAULT);
 
+    UITexture[] BUTTON_BATCH = slice("textures/gui/widget/button_batch.png", 16, 32, 16, 16, ColorType.DEFAULT);
+
     UITexture[] FLUID_TRANSFER_MODE_OVERLAY = slice(
             "textures/gui/overlay/fluid_transfer_mode_overlay.png",
             18, 18 * 3, 18, 18, ColorType.DEFAULT);
