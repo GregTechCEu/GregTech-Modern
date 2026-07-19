@@ -253,7 +253,7 @@ public class CommonProxy {
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
-            // --spacer--
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(GTRegistrate::createIgnoringListenerErrors);
         } else if (event.getRegistryKey() == Registries.BLOCK) {
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
