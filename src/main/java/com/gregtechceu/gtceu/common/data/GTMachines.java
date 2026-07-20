@@ -1207,12 +1207,6 @@ public class GTMachines {
         }
 
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
-
-        for (MachineDefinition machine : GTRegistries.MACHINES) {
-            for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
-                MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
-            }
-        }
     }
 
     public static MachineDefinition get(String name) {

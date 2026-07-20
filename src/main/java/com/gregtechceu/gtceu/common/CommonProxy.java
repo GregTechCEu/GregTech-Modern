@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
@@ -197,7 +199,7 @@ public class CommonProxy {
 
     // Fire post material events after all other material registry events.
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onRegisterLowest(RegisterEvent event) {
+    public void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
@@ -225,11 +227,18 @@ public class CommonProxy {
                     }
                 }
             });
+        } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
+            // Prepare machine render states after all machines have been registered
+            for (MachineDefinition machine : GTRegistries.MACHINES) {
+                for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
+                    MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
+                }
+            }
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void registerMaterialContent(RegisterEvent event) {
+    public void registerMaterialContent(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.BLOCK) {
             GTCEu.LOGGER.info("Generating material blocks...");
 
@@ -254,6 +263,7 @@ public class CommonProxy {
             GTMaterialItems.generateMaterialItems();
             GTMaterialItems.generateTools();
             GTMaterialItems.generateArmors();
+            GTMaterialItems.registerToolHandlers();
 
         } else if (event.getRegistryKey() == Registries.FLUID) {
             GTFluids.registerMaterialFluids();

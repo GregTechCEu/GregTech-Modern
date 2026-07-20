@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
@@ -26,6 +27,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import com.gregtechceu.gtceu.core.mixins.BuiltInRegistriesAccessor;
+import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.MappedRegistry;
@@ -184,14 +186,12 @@ public final class GTRegistries {
     }
 
     // ignore the generics and hope the registered objects are still correctly typed :3
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     private static void actuallyRegister(RegisterEvent event) {
-        for (Registry reg : TO_REGISTER.rowKeySet()) {
-            event.register(reg.key(), helper -> {
-                TO_REGISTER.row(reg).forEach(helper::register);
-            });
+        if (!TO_REGISTER.containsRow(event.getVanillaRegistry())) return;
+        for (var entry: TO_REGISTER.row(event.getVanillaRegistry()).entrySet()) {
+            event.register((ResourceKey<? extends Registry<Object>>) event.getRegistryKey(), entry.getKey(), entry::getValue);
         }
-        TO_REGISTER.clear();
     }
 
     private static void onUnfreeze(RegisterEvent event) {
@@ -204,7 +204,7 @@ public final class GTRegistries {
 
     public static void init(IEventBus eventBus) {
         eventBus.addListener(EventPriority.HIGHEST, GTRegistries::onUnfreeze);
-        eventBus.addListener(EventPriority.LOW, GTRegistries::actuallyRegister);
+        eventBus.addListener(GTRegistries::actuallyRegister);
         MinecraftForge.EVENT_BUS.addListener(GTRegistries::onFreeze);
     }
 
