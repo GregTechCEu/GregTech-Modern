@@ -235,8 +235,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
         super.registerRecipeSchemas(event);
 
-        for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
-            event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
+        for (var entry : GTRegistries.RECIPE_TYPES) {
+            event.register(entry.getRegistryName(), GTRecipeSchema.SCHEMA);
         }
         var ns = event.namespace(GTCEu.MOD_ID);
         ns.put("shaped", new WrappingRecipeSchemaType(ns, GTCEu.id("shaped"),

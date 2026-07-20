@@ -50,11 +50,6 @@ public class GTRecipeTypes {
     public static final String MULTIBLOCK = "multiblock";
     public static final String DUMMY = "dummy";
 
-    static {
-        GTRegistries.RECIPE_TYPES.unfreeze();
-        GTRegistries.RECIPE_CATEGORIES.unfreeze();
-    }
-
     //////////////////////////////////////
     // ********* Steam **********//
     //////////////////////////////////////
@@ -703,17 +698,13 @@ public class GTRecipeTypes {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
-        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
+        GTRegistries.register(GTRegistries.RECIPE_TYPES, recipeType.registryName, recipeType);
         return recipeType;
     }
 
     public static void init() {
         GCYMRecipeTypes.init();
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
-        }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
-        GTRegistries.RECIPE_TYPES.freeze();
 
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("machine"),
                 GTRecipeSerializer.SERIALIZER);

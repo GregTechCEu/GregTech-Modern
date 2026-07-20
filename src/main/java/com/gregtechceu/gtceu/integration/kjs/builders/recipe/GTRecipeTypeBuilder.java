@@ -1,12 +1,17 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.recipe;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -42,6 +47,11 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         this.maxTooltips = 4;
         this.smallRecipeMap = null;
         this.iconSupplier = null;
+    }
+
+    @Override
+    public RegistryInfo<GTRecipeType> getRegistryType() {
+        return GTRegistryInfo.RECIPE_TYPE;
     }
 
     public GTRecipeTypeBuilder category(String category) {
@@ -107,8 +117,10 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     }
 
     @Override
-    public GTRecipeType register() {
-        var type = GTRecipeTypes.register(name, category);
+    public GTRecipeType createObject() {
+        var type = new GTRecipeType(id, category);
+        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, id, type);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, id, new GTRecipeSerializer());
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
         if (this.layout != null) {
@@ -121,6 +133,6 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.setMaxTooltips(maxTooltips);
         type.setSmallRecipeMap(smallRecipeMap);
         type.setIconSupplier(iconSupplier);
-        return value = type;
+        return type;
     }
 }

@@ -48,7 +48,6 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.security.Key;
 import java.util.*;
 
 @SuppressWarnings("unused")
@@ -71,13 +70,7 @@ public final class GTRegistries {
 
         // Recipe related registries
 
-        /**
-         * Use {@link Registries#RECIPE_TYPE} instead of this. This only exists to simplify KubeJS registration.
-         *
-         * @see Registries#RECIPE_TYPE
-         */
-        @ApiStatus.Internal
-        public static final ResourceKey<Registry<RecipeType<?>>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
+        public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
         public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = makeRegistryKey(GTCEu.id("recipe_category"));
         public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = makeRegistryKey(GTCEu.id("recipe_capability"));
         public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(GTCEu.id("recipe_condition"));
@@ -116,11 +109,11 @@ public final class GTRegistries {
 
     // Recipe related registries
 
-    public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
-    public static final GTRegistry.RL<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry.RL<>(GTCEu.id("recipe_category"));
-    public static final GTRegistry.RL<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry.RL<>(GTCEu.id("recipe_capability"));
-    public static final GTRegistry.RL<RecipeConditionType<?>> RECIPE_CONDITIONS = new GTRegistry.RL<>(GTCEu.id("recipe_condition"));
-    public static final GTRegistry.RL<ChanceLogic> CHANCE_LOGICS = new GTRegistry.RL<>(GTCEu.id("chance_logic"));
+    public static final MappedRegistry<GTRecipeType> RECIPE_TYPES = makeRegistry(Keys.RECIPE_TYPE);
+    public static final MappedRegistry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
+    public static final MappedRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
+    public static final MappedRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
+    public static final MappedRegistry<ChanceLogic> CHANCE_LOGICS = makeRegistry(Keys.CHANCE_LOGIC);
 
     // Worldgen related registries
 
@@ -152,7 +145,7 @@ public final class GTRegistries {
 
     @SuppressWarnings("unchecked")
     private static <T, R extends WritableRegistry<T>> R makeRegistry(ResourceKey<Registry<T>> key, R registry) {
-        BuiltInRegistriesAccessor.gtceu$getWRITABLE_REGISTRY().register((ResourceKey<WritableRegistry<?>>) (Object) key,
+        BuiltInRegistriesAccessor.gtceu$getWritableRegistry().register((ResourceKey<WritableRegistry<?>>) (Object) key,
                 registry, Lifecycle.stable());
         LOAD_ORDER.add(key.location());
         REGISTRIES.put((ResourceKey<Registry<?>>)(Object)key, registry);

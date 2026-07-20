@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface BuiltInRegistriesAccessor {
 
     @Accessor("WRITABLE_REGISTRY")
-    static WritableRegistry<WritableRegistry<?>> gtceu$getWRITABLE_REGISTRY() {
+    static WritableRegistry<WritableRegistry<?>> gtceu$getWritableRegistry() {
         throw new AssertionError();
     }
 }

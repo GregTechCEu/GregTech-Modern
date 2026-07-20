@@ -34,16 +34,12 @@ public class GTRecipeCategories {
 
     public static GTRecipeCategory register(String categoryName, @NotNull GTRecipeType recipeType) {
         GTRecipeCategory category = new GTRecipeCategory(categoryName, recipeType);
-        GTRegistries.RECIPE_CATEGORIES.register(category.registryKey, category);
+        GTRegistries.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
         return category;
     }
 
     public static void init() {
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.RECIPE_CATEGORIES.getRegistryName());
-        }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
-        GTRegistries.RECIPE_CATEGORIES.freeze();
     }
 
     public static GTRecipeCategory get(String name) {

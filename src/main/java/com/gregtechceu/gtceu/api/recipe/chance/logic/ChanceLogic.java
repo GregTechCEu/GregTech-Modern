@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
@@ -30,9 +31,7 @@ import java.util.List;
  */
 public abstract class ChanceLogic {
 
-    static {
-        GTRegistries.CHANCE_LOGICS.unfreeze();
-    }
+    public static final Codec<ChanceLogic> CODEC = GTRegistries.CHANCE_LOGICS.byNameCodec();
 
     /**
      * Chanced Output Logic where any ingredients succeeding their roll will be produced
@@ -277,7 +276,7 @@ public abstract class ChanceLogic {
     };
 
     public ChanceLogic(ResourceLocation id) {
-        GTRegistries.CHANCE_LOGICS.register(id, this);
+        GTRegistries.register(GTRegistries.CHANCE_LOGICS, id, this);
     }
 
     private ChanceLogic(String id) {
@@ -363,6 +362,5 @@ public abstract class ChanceLogic {
     @ApiStatus.Internal
     public static void init() {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.CHANCE_LOGICS, ChanceLogic.class));
-        GTRegistries.CHANCE_LOGICS.freeze();
     }
 }

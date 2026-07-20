@@ -50,8 +50,8 @@ public class GTRegistryInfo<K, V> {
 
     public static final GTRegistryInfo<ResourceLocation, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
     public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
-    public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
-    public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class);
+    public static final RegistryInfo<GTRecipeType> RECIPE_TYPE = RegistryInfo.of(GTRegistries.Keys.RECIPE_TYPE, GTRecipeType.class);
+    public static final RegistryInfo<GTRecipeCategory> RECIPE_CATEGORY = RegistryInfo.of(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategory.class);
     public static final RegistryInfo<MachineDefinition> MACHINE = RegistryInfo.of(GTRegistries.Keys.MACHINE, MachineDefinition.class);
     public static final GTRegistryInfo<ResourceLocation, MaterialIconSet> MATERIAL_ICON_SET = add(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class);
     public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
