@@ -338,8 +338,8 @@ public class ComponentItem extends Item
     @Override
     public boolean hasCraftingRemainingItem(ItemStack stack) {
         for (IItemComponent component : components) {
-            if (component instanceof IRecipeRemainder recipeRemainder) {
-                return recipeRemainder.getRecipeRemained(stack) != ItemStack.EMPTY;
+            if (component instanceof IRecipeRemainder) {
+                return true;
             }
         }
         return super.hasCraftingRemainingItem(stack);

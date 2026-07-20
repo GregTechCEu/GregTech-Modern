@@ -2171,6 +2171,12 @@ public class GTItems {
 
     public static ItemEntry<Item> WIRELESS;
     public static ItemEntry<Item> CAMERA;
+    public static ItemEntry<ComponentItem> TOOL_BOX = REGISTRATE.item("tool_box", ComponentItem::create)
+            .lang("Tool Box")
+            .properties(p -> p.stacksTo(1))
+            .model((ctx, prov) -> prov.generated(ctx::getEntry, prov.modLoc("item/tool_box/closed")))
+            .onRegister(attach(ToolBoxBehavior.INSTANCE))
+            .register();
     public static ItemEntry<ComponentItem> TERMINAL = REGISTRATE.item("terminal", ComponentItem::create)
             .lang("Terminal")
             .properties(p -> p.stacksTo(1))

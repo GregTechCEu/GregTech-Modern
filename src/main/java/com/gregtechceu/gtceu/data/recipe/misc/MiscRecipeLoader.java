@@ -37,6 +37,8 @@ public class MiscRecipeLoader {
                 "SGS", "PBP", "PWP", 'S', new MaterialEntry(screw, WroughtIron), 'G', Tags.Items.GLASS_PANES, 'B',
                 new ItemStack(Items.BOOK),
                 'P', new MaterialEntry(plate, WroughtIron), 'W', new MaterialEntry(wireGtSingle, RedAlloy));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "tool_box", TOOL_BOX.asStack(),
+                "SGS", "SSS", 'S', new MaterialEntry(plate, Bronze), 'G', Tags.Items.CHESTS_WOODEN);
         // Machine Memory Card Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_memory_card", MACHINE_MEMORY_CARD.asStack(),
                 "PWP", "SLS", "PPP", 'P', new MaterialEntry(plate, Steel), 'W',
@@ -517,7 +519,7 @@ public class MiscRecipeLoader {
                     .duration(200)
                     .save(provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "cake_from_dough", new ItemStack(Items.CAKE),
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "cake_from_dough", new ItemStack(Items.CAKE),
                     "MMM", "SES", " D ",
                     'E', Items.EGG,
                     'S', Items.SUGAR,
@@ -554,7 +556,7 @@ public class MiscRecipeLoader {
                     .duration(200)
                     .save(provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "cake", new ItemStack(Items.CAKE),
+            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, "cake", new ItemStack(Items.CAKE),
                     "BBB", "SMS", "DDD",
                     'B', Items.SWEET_BERRIES,
                     'S', Items.SUGAR,

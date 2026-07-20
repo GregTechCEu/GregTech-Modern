@@ -14,8 +14,10 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.item.ToolBoxBehavior;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -259,6 +261,18 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
 
                         if (toolsToMatch.stream().allMatch(Objects::isNull)) {
                             return;
+                        }
+                    }
+
+                    if (itemStack.is(GTItems.TOOL_BOX.asItem())) {
+                        CustomItemStackHandler inventory = ToolBoxBehavior.getInventory(itemStack);
+                        for (int slot = 0; slot < inventory.getSlots(); slot++) {
+                            ItemStack toolStack = inventory.getStackInSlot(slot);
+                            if (!toolStack.isEmpty() && ToolHelper.is(toolStack, toolToMatch)) {
+                                fixProblemWithTool(i, toolStack, entityPlayer);
+                                inventory.setStackInSlot(slot, toolStack);
+                                break;
+                            }
                         }
                     }
                 }

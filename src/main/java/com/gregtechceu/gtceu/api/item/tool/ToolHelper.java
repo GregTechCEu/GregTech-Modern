@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.recipe.ingredient.ToolIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -138,6 +139,14 @@ public class ToolHelper {
      */
     public static GTToolType getToolFromSymbol(char symbol) {
         return symbols.get(symbol);
+    }
+
+    public static ToolIngredient getIngredientFromSymbol(char symbol) {
+        GTToolType toolType = getToolFromSymbol(symbol);
+        if (toolType == null) {
+            throw new IllegalArgumentException("No tool type with symbol '%s'".formatted(symbol));
+        }
+        return new ToolIngredient(toolType);
     }
 
     @UnmodifiableView

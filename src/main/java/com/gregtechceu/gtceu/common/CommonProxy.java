@@ -237,6 +237,7 @@ public class CommonProxy {
         event.enqueueWork(() -> {
             CraftingHelper.register(NBTPredicateIngredient.TYPE, NBTPredicateIngredient.Serializer.INSTANCE);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
+            CraftingHelper.register(ToolIngredient.TYPE, ToolIngredient.Serializer.INSTANCE);
 
             if (GTCEu.Mods.isCCTweakedLoaded()) {
                 GTCEu.LOGGER.info("CC: Tweaked found. Enabling integration...");

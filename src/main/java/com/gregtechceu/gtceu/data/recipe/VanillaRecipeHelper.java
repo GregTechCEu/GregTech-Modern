@@ -378,7 +378,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
+            builder.define(c, ToolHelper.getIngredientFromSymbol(c));
         }
         builder.save(provider);
 
@@ -479,7 +479,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
+            builder.define(c, ToolHelper.getIngredientFromSymbol(c));
         }
         builder.save(provider);
 
@@ -551,7 +551,7 @@ public class VanillaRecipeHelper {
         }
         for (var it = foundTools.iterator(); it.hasNext();) {
             char c = it.nextChar();
-            builder.define(c, ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
+            builder.define(c, ToolHelper.getIngredientFromSymbol(c));
         }
 
         builder.save(provider);
@@ -618,7 +618,7 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemProviderEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
-                builder.requires(ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
+                builder.requires(ToolHelper.getIngredientFromSymbol(c));
             }
         }
         builder.save(provider);
