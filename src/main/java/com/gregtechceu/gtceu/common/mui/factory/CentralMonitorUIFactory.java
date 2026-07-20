@@ -226,7 +226,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .background(texture, new BorderDrawable(colorSupplier, 1), Text.dynamic(() -> {
                             if (component == null || component.getDataItems() == null) return Component.empty();
                             BlockPos target = group.getTargetRaw();
-                            boolean isTarget = target != null && target.asLong() == component.getComponentPos().asLong();
+                            boolean isTarget = target != null &&
+                                    target.asLong() == component.getComponentPos().asLong();
                             if (isTarget) return Component.literal(String.valueOf(group.getDataSlot() + 1));
                             else return Component.empty();
                         }))
