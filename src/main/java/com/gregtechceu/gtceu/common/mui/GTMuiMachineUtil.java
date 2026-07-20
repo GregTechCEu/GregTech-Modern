@@ -15,13 +15,12 @@ import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.UnaryOperator;
 
 public class GTMuiMachineUtil {
-
-    private static final int MAX_LOG_SPAM_FOR_ITEMSTACKHANDLER_ABUSE = 3; // 3 seems reasonable
-    private static AtomicInteger currentLogSpam = new AtomicInteger(0);
+    private static AtomicBoolean currentLogSpam = new AtomicBoolean(false);
 
     public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler, String slotGroupName,
                                                                int maxSlots, char key, PanelSyncManager syncManager,
@@ -35,15 +34,12 @@ public class GTMuiMachineUtil {
                                                                PanelSyncManager syncManager,
                                                                String... matrix) {
         SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
-        var currentLogSpamHere = currentLogSpam.get();
-        if (currentLogSpamHere < MAX_LOG_SPAM_FOR_ITEMSTACKHANDLER_ABUSE &&
+        if (!currentLogSpam.getAndSet(true) &&
                 itemHandler instanceof NotifiableItemStackHandler handler) {
-            GTCEu.LOGGER.warn(String.format(
-                    "Logging warning here, %d left until this warning is silenced to avoid log spam, IO=%s",
-                    MAX_LOG_SPAM_FOR_ITEMSTACKHANDLER_ABUSE - currentLogSpamHere, handler.getHandlerIO().name()),
+            GTCEu.LOGGER.warn(
+                    "NotifiableItemStackHandler passed instead of its internal storage. IO={}", handler.getHandlerIO().name(),
                     new Exception(
-                            "NotifiableItemStackHandler passed instead of its internal storage; this may NOT be a bug"));
-            currentLogSpam.getAndIncrement();
+                            "NotifiableItemStackHandler passed instead of its internal storage."));
         }
 
         return SlotGroupWidget.builder()
