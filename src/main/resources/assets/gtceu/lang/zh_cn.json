@@ -2403,6 +2403,8 @@
     "gtceu.gui.overclock.off": "X",
     "gtceu.gui.overclock.range": "可用电压级 [%s，%s]",
     "gtceu.gui.overclock.title": "超频电压级",
+    "gtceu.gui.refund_all_fluid": "将所有流体返回到正面的容器",
+    "gtceu.gui.refund_all_item": "将所有物品返回到正面的容器",
     "gtceu.gui.silktouch.disabled.0": "精准采集已禁用：单击启用。",
     "gtceu.gui.silktouch.disabled.1": "§7切换需要机器待机。",
     "gtceu.gui.silktouch.enabled.0": "精准采集已启用：单击禁用。",

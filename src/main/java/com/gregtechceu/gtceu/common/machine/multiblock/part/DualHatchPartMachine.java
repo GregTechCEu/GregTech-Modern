@@ -2,14 +2,18 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.LargeStackSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
+import com.gregtechceu.gtceu.api.machine.trait.CatalystFluidHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
@@ -18,14 +22,20 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.GTValues.UHV;
 import static com.gregtechceu.gtceu.api.GTValues.UV;
+import static com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine.INITIAL_TANK_CAPACITY;
+import static com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine.getShareTankSlots;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -37,12 +47,21 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     @Nullable
     protected ISubscription tankSubs;
 
+    @Getter
+    @Persisted
+    protected final NotifiableFluidTank shareTank;
+
     private boolean hasFluidHandler;
     private boolean hasItemHandler;
 
     public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
-        super(holder, tier, io);
-        this.tank = createTank(FluidHatchPartMachine.INITIAL_TANK_CAPACITY, FluidHatchPartMachine.TANKS[tier]);
+        super(holder, tier, io, true);
+        this.tank = createTank(INITIAL_TANK_CAPACITY, FluidHatchPartMachine.TANKS[tier]);
+        this.shareTank = new CatalystFluidHandler(this,
+                io == IO.IN ? getShareTankSlots(getTier()) : 0,
+                INITIAL_TANK_CAPACITY, IO.IN, IO.NONE)
+                .shouldSearchContent(false);
+        shareTank.setCapabilityValidator(dir -> false);
     }
 
     ////////////////////////////////
@@ -50,8 +69,8 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     ////////////////////////////////
 
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
-        return new NotifiableFluidTank(this, slots, FluidHatchPartMachine.getTankCapacity(initialCapacity, getTier()),
-                io);
+        return new NotifiableFluidTank(this, slots,
+                FluidHatchPartMachine.getTankCapacity(initialCapacity, getTier()), io);
     }
 
     @Override
@@ -225,5 +244,24 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         container.addWidget(new TankWidget(
                 tank.getStorages()[index], 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
                 .setBackground(GuiTextures.FLUID_SLOT));
+    }
+
+    @Override
+    public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        super.attachConfigurators(left, right);
+        if (this.io == IO.IN && shareTank.getTanks() != 0) {
+            right.attachConfigurators(new FancyTankConfigurator(
+                    shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
+                    .setTooltips(List.of(
+                            Component.translatable("gui.gtceu.share_inventory.desc.1"))));
+        }
+    }
+
+    @Override
+    protected void refundAll(ClickData clickData) {
+        super.refundAll(clickData);
+        if (!clickData.isRemote) {
+            tank.exportToNearby(getFrontFacing());
+        }
     }
 }

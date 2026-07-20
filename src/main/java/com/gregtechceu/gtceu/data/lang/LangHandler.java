@@ -1272,6 +1272,8 @@ public class LangHandler {
         provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
         provider.add("gtceu.gui.output_setting.title", "Output Settings");
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
+        provider.add("gtceu.gui.refund_all_item", "Returns all items to the container in front");
+        provider.add("gtceu.gui.refund_all_fluid", "Returns all fluids to the container in front");
         multiLang(provider, "gtceu.gui.output_setting.tooltips", "left-click to tune the item auto output",
                 "right-click to tune the fluid auto output.");
         provider.add("gtceu.gui.item_auto_output.allow_input.enabled",

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
@@ -9,13 +10,16 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAllowSameUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.CatalystFluidHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -23,6 +27,9 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
+import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -48,6 +55,8 @@ import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -76,13 +85,25 @@ public class FluidHatchPartMachine extends TieredIOPartMachine
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
+    @Getter
+    @Persisted
+    protected final NotifiableFluidTank shareTank;
 
     public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots) {
+        this(holder, tier, io, initialCapacity, slots, false);
+    }
+
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots,
+                                 boolean enableShareTank) {
         super(holder, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots);
-
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
+        this.shareTank = new CatalystFluidHandler(this,
+                enableShareTank && io == IO.IN ? getShareTankSlots(getTier()) : 0,
+                initialCapacity, IO.IN, IO.NONE)
+                .shouldSearchContent(false);
+        shareTank.setCapabilityValidator(dir -> false);
     }
 
     //////////////////////////////////////
@@ -96,12 +117,24 @@ public class FluidHatchPartMachine extends TieredIOPartMachine
         return initialCapacity * (1 << 2 * tier);
     }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        }
+    }
+
+    public static int getShareTankSlots(int tier) {
+        if (tier <= GTValues.HV) {
+            return 0;
+        } else if (tier <= GTValues.IV) {
+            return 4;
+        } else if (tier <= GTValues.ZPM) {
+            return 9;
+        } else {
+            return 16;
         }
     }
 
@@ -256,12 +289,29 @@ public class FluidHatchPartMachine extends TieredIOPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
+    protected void refundAll(ClickData clickData) {
+        if (!clickData.isRemote) {
+            this.setWorkingEnabled(false);
+            tank.exportToNearby(getFrontFacing());
+        }
+    }
+
     @Override
     public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
         attachAllowSameConfigurators(right);
         if (this.io == IO.IN) {
+            left.attachConfigurators(
+                    new ButtonConfigurator(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("\ud83d\udd19")),
+                            this::refundAll)
+                            .setTooltips(List.of(Component.translatable("gtceu.gui.refund_all_fluid"))));
             if (isCircuitSlotEnabled()) {
                 left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            }
+            if (shareTank.getTanks() != 0) {
+                right.attachConfigurators(new FancyTankConfigurator(
+                        shareTank.getStorages(), Component.translatable("gui.gtceu.share_tank.title"))
+                        .setTooltips(List.of(
+                                Component.translatable("gui.gtceu.share_inventory.desc.1"))));
             }
             IDistinctPart.super.attachConfigurators(left, right);
         } else {

@@ -2403,6 +2403,8 @@
   "gtceu.gui.overclock.off": "X",
   "gtceu.gui.overclock.range": "Available Tiers [%s, %s]",
   "gtceu.gui.overclock.title": "Overclock Tier",
+  "gtceu.gui.refund_all_fluid": "Returns all fluids to the container in front",
+  "gtceu.gui.refund_all_item": "Returns all items to the container in front",
   "gtceu.gui.silktouch.disabled.0": "Silk Touch Disabled: Click to Enable.",
   "gtceu.gui.silktouch.disabled.1": "§7Switching requires an idle machine.",
   "gtceu.gui.silktouch.enabled.0": "Silk Touch Enabled: Click to Disable.",

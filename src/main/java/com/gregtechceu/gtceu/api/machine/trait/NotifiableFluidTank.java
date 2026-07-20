@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIng
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.transfer.fluid.SimpleFluidTankList;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -22,6 +23,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -37,11 +40,15 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Persisted
     @Getter
     protected final CustomFluidTank[] storages;
+    private final SimpleFluidTankList tanks;
     @Persisted
     @Getter
     protected boolean allowSameFluids;
     private Boolean isEmpty;
-
+    @Accessors(fluent = true)
+    @Getter
+    @Setter
+    private boolean shouldSearchContent = true;
     @Persisted
     @DescSynced
     @Getter
@@ -53,6 +60,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         super(machine);
         this.handlerIO = io;
         this.storages = new CustomFluidTank[slots];
+        this.tanks = new SimpleFluidTankList(storages);
         this.capabilityIO = capabilityIO;
         for (int i = 0; i < this.storages.length; i++) {
             this.storages[i] = new CustomFluidTank(capacity);
@@ -64,6 +72,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         super(machine);
         this.handlerIO = io;
         this.storages = storages.toArray(CustomFluidTank[]::new);
+        this.tanks = new SimpleFluidTankList(this.storages);
         this.capabilityIO = capabilityIO;
         for (CustomFluidTank storage : this.storages) {
             storage.setOnContentsChanged(this::onContentsChanged);
@@ -344,7 +353,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         for (Direction facing : facings) {
             var filter = getMachine().getFluidCapFilter(facing, IO.OUT);
             GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
-                    .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(this, adj, filter));
+                    .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(tanks, adj, filter));
         }
     }
 

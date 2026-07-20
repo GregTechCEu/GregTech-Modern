@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.widget.LargeStackSlotWidget;
@@ -12,17 +10,19 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.ButtonConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAllowSameUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.CatalystItemHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.LargeStackItemHandler;
+import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -52,6 +52,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -76,18 +78,25 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
     @Persisted
-    @DescSynced
-    private boolean isDistinct = false;
+    protected final NotifiableItemStackHandler shareInventory;
+    @Getter
     @Persisted
     @DescSynced
-    @Getter
-    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
+    private boolean isDistinct = false;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io) {
+        this(holder, tier, io, false);
+    }
+
+    public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, boolean enableShareInventory) {
         super(holder, tier, io);
         this.inventory = createInventory();
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
-        filterHandler = FilterHandlers.item(this);
+        this.shareInventory = new CatalystItemHandler(this,
+                enableShareInventory && io == IO.IN ? getShareInventorySlots(getTier()) : 0,
+                IO.IN, IO.NONE)
+                .shouldSearchContent(false);
+        shareInventory.setCapabilityValidator(dir -> false);
     }
 
     //////////////////////////////////////
@@ -97,13 +106,28 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         return INVENTORY_SIZE[getTier()];
     }
 
+    public static int getShareInventorySlots(int tier) {
+        if (tier <= GTValues.HV) {
+            return 0;
+        } else if (tier <= GTValues.IV) {
+            return 4;
+        } else if (tier <= GTValues.ZPM) {
+            return 9;
+        } else {
+            return 16;
+        }
+    }
+
     public static int getSlotMultiplier(int tier) {
         return 1 << (2 * tier);
     }
 
     protected boolean matchesFilter(ItemStack stack) {
-        if (filterHandler.isFilterPresent())
-            return filterHandler.getFilter().test(stack);
+        if (io == IO.IN) return true;
+        var cover = getCoverContainer().getCoverAtSide(getFrontFacing().getOpposite());
+        if (cover instanceof ItemFilterCover itemFilterCover) {
+            return itemFilterCover.getItemFilter().test(stack);
+        }
         return true;
     }
 
@@ -113,8 +137,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 .setFilter(this::matchesFilter);
     }
 
-    protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
+        if (io == IO.IN) {
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
@@ -126,10 +150,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void onMachineRemoved() {
         clearInventory(getInventory().storage);
-
-        if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-            clearInventory(circuitInventory.storage);
-        }
+        clearInventory(shareInventory.storage);
     }
 
     @Override
@@ -285,9 +306,16 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         if (this.io == IO.IN) {
             left.attachConfigurators(
                     new ButtonConfigurator(new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("\ud83d\udd19")),
-                            this::refundAll));
+                            this::refundAll)
+                            .setTooltips(List.of(Component.translatable("gtceu.gui.refund_all_item"))));
             if (isCircuitSlotEnabled()) {
                 left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            }
+            if (shareInventory.getSlots() != 0) {
+                right.attachConfigurators(new FancyInvConfigurator(
+                        shareInventory.storage, Component.translatable("gui.gtceu.share_inventory.title"))
+                        .setTooltips(List.of(
+                                Component.translatable("gui.gtceu.share_inventory.desc.1"))));
             }
             IDistinctPart.super.attachConfigurators(left, right);
 
@@ -304,10 +332,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
         var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
         int index = 0;
-        if (this.io == IO.OUT) {
-            group.addWidget(filterHandler.createFilterSlotUI(71 + (18 * rowSize) / 2, 35 + 9 * rowSize)
-                    .setHoverTooltips(Component.translatable("cover.item_filter.title")));
-        }
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.addWidget(
