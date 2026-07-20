@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -75,7 +74,6 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.KubeGTRegistryEventHandler;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -253,7 +251,24 @@ public class CommonProxy {
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
-            // --spacer--
+
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
+                // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
+                GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
+                AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
+                if (accessor.getDoDatagen().get()) {
+                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
+                            .asMap(accessor.getDatagens())
+                            .get(ProviderType.LANG);
+                    providers.addFirst(
+                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, namespace));
+                }
+
+                ModList.get().getModContainerById(namespace)
+                        .map(ModContainer::getEventBus)
+                        .ifPresent(registrate::registerEventListeners);
+            });
+
         } else if (event.getRegistryKey() == Registries.BLOCK) {
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
@@ -281,25 +296,6 @@ public class CommonProxy {
         }
     }
 
-    private static void postInitMaterials(Registry<Material> registry) {
-        // Register all material manager registries, for materials with mod ids.
-        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
-            // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
-            if (accessor.getDoDatagen().get()) {
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
-                providers.addFirst(
-                        (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, namespace));
-            }
-
-            ModList.get().getModContainerById(namespace)
-                    .map(ModContainer::getEventBus)
-                    .ifPresent(registrate::registerEventListeners);
-        });
-    }
-
     @SubscribeEvent
     public static void registerRegistries(NewRegistryEvent event) {
         GTRegistries.getRegistries().forEach(event::register);
@@ -317,7 +313,6 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonProxy::postInitMaterials);
         GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 
