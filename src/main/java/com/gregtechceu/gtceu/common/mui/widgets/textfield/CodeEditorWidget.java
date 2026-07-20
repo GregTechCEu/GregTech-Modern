@@ -66,8 +66,11 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
     public List<Component> getTextAsComponents() {
         if (language() == null) return handler.getTextAsComponents();
         if (getSyncHandler().getSyncManager().isClient()) {
-            if (formattedText != null && notEditedForSomeTime()) return formattedText;
-            else return language().formatCode(this.handler.getTextAsString(), langContext);
+            if (formattedText != null && notEditedForSomeTime() &&
+                    formattedText.size() == handler.getText().size()) {
+                return formattedText;
+            }
+            return language().formatCode(this.handler.getTextAsString(), langContext);
         } else {
             return language().formatCode(this.stringValue.getStringValue(), langContext);
         }
