@@ -38,7 +38,6 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpo
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -71,7 +70,6 @@ public class GTMachines {
 
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
-        GTRegistries.MACHINES.unfreeze();
     }
 
     //////////////////////////////////////
@@ -1208,12 +1206,7 @@ public class GTMachines {
             GTAEMachines.init();
         }
 
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
-        }
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
-
-        GTRegistries.MACHINES.freeze();
 
         for (MachineDefinition machine : GTRegistries.MACHINES) {
             for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {

@@ -1,22 +1,22 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
 
 @SuppressWarnings("unused")
-public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
+public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition>
+                                       implements IMachineBuilderKJS {
 
     @HideFromJS
     @Getter
@@ -25,6 +25,12 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     public KJSWrappingMachineBuilder(ResourceLocation id, KJSTieredMachineBuilder tieredBuilder) {
         super(id);
         this.tieredBuilder = tieredBuilder;
+        this.dummyBuilder = true;
+    }
+
+    @Override
+    public RegistryInfo<MachineDefinition> getRegistryType() {
+        return GTRegistryInfo.MACHINE;
     }
 
     public KJSWrappingMachineBuilder tiers(int... tiers) {
@@ -68,7 +74,12 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     }
 
     @Override
-    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
+    public void generateMachineModels() {
+        tieredBuilder.generateMachineModels();
+    }
+
+    @Override
+    public void generateAssetJsons(AssetJsonGenerator generator) {
         tieredBuilder.generateAssetJsons(generator);
     }
 
@@ -78,15 +89,7 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> {
     }
 
     @Override
-    public MachineDefinition register() {
-        tieredBuilder.register();
-        for (var def : tieredBuilder.get()) {
-            if (def != null) {
-                return value = def;
-            }
-        }
-        // should never happen.
-        throw new IllegalStateException("Empty tiered machine builder " + Arrays.toString(tieredBuilder.get()) +
-                " With id " + tieredBuilder.id);
+    public MachineDefinition createObject() {
+        return tieredBuilder.createObject();
     }
 }

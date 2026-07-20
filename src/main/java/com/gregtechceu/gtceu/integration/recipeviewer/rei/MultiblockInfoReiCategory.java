@@ -49,7 +49,7 @@ public class MultiblockInfoReiCategory extends
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        GTRegistries.MACHINES.values().stream()
+        GTRegistries.MACHINES.stream()
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
                 .filter(MultiblockMachineDefinition::isRenderXEIPreview)

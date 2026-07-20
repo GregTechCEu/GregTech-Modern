@@ -45,11 +45,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import net.minecraftforge.registries.IdMappingEvent;
 import net.minecraftforge.registries.RegisterEvent;
-import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.security.Key;
 import java.util.*;
 
 @SuppressWarnings("unused")
@@ -133,7 +131,7 @@ public final class GTRegistries {
     // Other registries
 
     public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
-    public static final GTRegistry.RL<MachineDefinition> MACHINES = new GTRegistry.RL<>(GTCEu.id("machine"));
+    public static final MappedRegistry<MachineDefinition> MACHINES = makeRegistry(Keys.MACHINE);
     public static final MappedRegistry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND);
     public static final MappedRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER);
     public static final MappedRegistry<MedicalCondition> MEDICAL_CONDITIONS = makeRegistry(Keys.MEDICAL_CONDITION);

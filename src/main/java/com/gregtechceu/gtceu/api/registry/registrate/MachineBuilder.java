@@ -25,11 +25,10 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
-import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -57,8 +56,6 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.latvian.mods.kubejs.client.LangEventJS;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -67,6 +64,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,17 +80,16 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 @RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine,
-        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>>
-                           extends BuilderBase<DEFINITION> {
+        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>> {
 
+    public final ResourceLocation id;
     protected final GTRegistrate registrate;
     protected final String name;
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected MachineInstanceFactory<MACHINE> instanceFactory;
-
-    protected final Function<ResourceLocation, DEFINITION> definition;
+    protected Function<ResourceLocation, DEFINITION> definition;
     @Nullable
     @Getter
     private MachineBuilder.ModelInitializer model = null;
@@ -162,7 +159,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
-        super(new ResourceLocation(registrate.getModid(), name));
+        id = registrate.makeResourceLocation(name);
         this.registrate = registrate;
         this.name = name;
         this.blockFactory = blockFactory;
@@ -633,20 +630,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return definition.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
-    @Override
-    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
-        super.generateAssetJsons(generator);
-        KJSCallWrapper.generateAssetJsons(generator, this, this.value);
-    }
-
-    @Override
-    public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
-        if (langValue() != null) {
-            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
-        }
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void setupStateDefinition(MachineDefinition definition) {
         StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(
@@ -738,8 +721,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setDefaultPaintingColor(paintingColor);
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
-        GTRegistries.MACHINES.register(definition.getId(), definition);
-        return value = definition;
+        GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
+        return definition;
     }
 
     @FunctionalInterface
@@ -819,27 +802,4 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
     // spotless:on
 
-    protected static final class KJSCallWrapper {
-
-        public static <D extends MachineDefinition> void generateAssetJsons(@Nullable AssetJsonGenerator generator,
-                                                                            MachineBuilder<D, ?, ?> builder,
-                                                                            D definition) {
-            if (builder.model() == null && builder.blockModel() == null) return;
-
-            final ResourceLocation id = definition.getId();
-            // if generator is null, we're making the block models through GT
-            if (generator == null) {
-                // Fake a data provider for the GT model builders
-                var context = new DataGenContext<>(definition::getBlock, definition.getName(), id);
-                if (builder.blockModel() != null) {
-                    builder.blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);
-                } else {
-                    GTMachineModels.createMachineModel(builder.model())
-                            .accept(context, RuntimeBlockstateProvider.INSTANCE);
-                }
-            } else {
-                generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
-            }
-        }
-    }
 }

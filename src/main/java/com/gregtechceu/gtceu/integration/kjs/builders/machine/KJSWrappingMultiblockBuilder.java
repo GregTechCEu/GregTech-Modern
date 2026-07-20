@@ -1,34 +1,35 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-
-public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition> {
+public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
+                                          implements IMachineBuilderKJS {
 
     @HideFromJS
     @Getter
     private final KJSTieredMultiblockBuilder tieredBuilder;
 
-    public KJSWrappingMultiblockBuilder(ResourceLocation id, KJSTieredMultiblockBuilder tieredBuilder) {
+    public KJSWrappingMultiblockBuilder(ResourceLocation id) {
         super(id);
-        this.tieredBuilder = tieredBuilder;
+        this.tieredBuilder = new KJSTieredMultiblockBuilder(this.id);
+        this.dummyBuilder = true;
+    }
+
+    @Override
+    public RegistryInfo<MachineDefinition> getRegistryType() {
+        return GTRegistryInfo.MACHINE;
     }
 
     public KJSWrappingMultiblockBuilder tiers(int... tiers) {
@@ -52,7 +53,12 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     @Override
-    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
+    public void generateMachineModels() {
+        tieredBuilder.generateMachineModels();
+    }
+
+    @Override
+    public void generateAssetJsons(AssetJsonGenerator generator) {
         tieredBuilder.generateAssetJsons(generator);
     }
 
@@ -62,32 +68,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     @Override
-    public MultiblockMachineDefinition register() {
-        tieredBuilder.register();
-        for (var def : tieredBuilder.get()) {
-            if (def != null) {
-                return value = def;
-            }
-        }
-        // should never happen.
-        throw new IllegalStateException("Empty tiered multiblock builder " + Arrays.toString(tieredBuilder.get()) +
-                " With id " + tieredBuilder.id);
-    }
-
-    public static MultiblockMachineBuilder<?, WorkableElectricMultiblockMachine, ?> createKJSMulti(ResourceLocation id) {
-        return new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
-                WorkableElectricMultiblockMachine::new);
-    }
-
-    public static MultiblockMachineBuilder<?, MultiblockControllerMachine, ?> createKJSMulti(ResourceLocation id,
-                                                                                             KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        return new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
-                machine::create);
+    public MultiblockMachineDefinition createObject() {
+        return tieredBuilder.createObject();
     }
 }
