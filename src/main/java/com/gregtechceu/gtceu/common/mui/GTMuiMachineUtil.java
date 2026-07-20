@@ -38,8 +38,7 @@ public class GTMuiMachineUtil {
                 itemHandler instanceof NotifiableItemStackHandler handler) {
             GTCEu.LOGGER.warn(
                     "NotifiableItemStackHandler passed instead of its internal storage. IO={}", handler.getHandlerIO().name(),
-                    new Exception(
-                            "NotifiableItemStackHandler passed instead of its internal storage."));
+                    new Throwable());
         }
 
         return SlotGroupWidget.builder()
