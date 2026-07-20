@@ -30,6 +30,18 @@ inputs:
     description: Create-Enough-Items repository.
     required: false
     default: CTNH-Team/Create-Enough-Items
+  cei_ref:
+    description: CEI ref
+    required: false
+    default: dev
+  ctnh_astral_repository:
+    description: CTNH-Astral repository.
+    required: false
+    default: CTNH-Team/CTNH-Astral
+  ctnh_astral_ref:
+    description: CTNH-Astral ref.
+    required: false
+    default: dev
   ctnh_bio_repository:
     description: CTNH-Bio repository.
     required: false
@@ -146,7 +158,14 @@ runs:
         repository: ${{ inputs.ctnh_mana_repository }}
         ref: ${{ inputs.ctnh_mana_ref }}
         path: CTNH-Modules/modules/CTNH-Mana
-
+    - name: Checkout CTNH-Astral
+      if: ${{ inputs.module_name != 'CTNH-Astral' }}
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
+        repository: ${{ inputs.ctnh_astral_repository }}
+        ref: ${{ inputs.ctnh_astral_ref }}
+        path: CTNH-Modules/modules/CTNH-Astral
     - name: Checkout CTPP
       if: ${{ inputs.module_name != 'CTPP' }}
       uses: actions/checkout@v4
