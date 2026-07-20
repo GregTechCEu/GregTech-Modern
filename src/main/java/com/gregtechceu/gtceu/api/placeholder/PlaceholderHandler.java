@@ -68,11 +68,7 @@ public class PlaceholderHandler {
     }
 
     public static void addPlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.register(placeholder.getId(), placeholder);
-    }
-
-    public static void addOrOverridePlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getId(), placeholder);
+        GTRegistries.register(GTRegistries.PLACEHOLDERS, placeholder.getId(), placeholder);
     }
 
     public static @Nullable Placeholder getPlaceholder(String str) {
@@ -339,7 +335,7 @@ public class PlaceholderHandler {
                                 .paddingBottom(5)
                                 .excludeAreaInRecipeViewer()
                                 .fullHeight()
-                                .children(GTRegistries.PLACEHOLDERS.values()
+                                .children(GTRegistries.PLACEHOLDERS
                                         .stream()
                                         .map(Placeholder::getName)
                                         .sorted()

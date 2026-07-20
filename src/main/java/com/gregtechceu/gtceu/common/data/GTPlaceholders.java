@@ -66,10 +66,6 @@ import java.util.*;
 
 public class GTPlaceholders {
 
-    static {
-        GTRegistries.PLACEHOLDERS.unfreeze();
-    }
-
     public static int countItems(String id, @Nullable IItemHandler itemHandler) {
         if (itemHandler == null) return 0;
         int cnt = 0;
@@ -352,28 +348,31 @@ public class GTPlaceholders {
                 return true;
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
 
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2, true);
-                if (GTStringUtils.equals(args.get(0), "get")) {
-                    Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
-                    if (direction == null)
-                        throw new InvalidArgsException();
-                    return MultiLineComponent.literal(ctx.level()
-                            .getSignal(ctx.pos().relative(direction), direction));
-                } else if (GTStringUtils.equals(args.get(0), "set")) {
-                    int power = PlaceholderUtils.toInt(args.get(1));
-                    PlaceholderUtils.checkRange("redstone power", 0, 15, power);
-                    if (ctx.cover() == null) throw new NotSupportedException();
-                    ctx.cover().setRedstoneSignalOutput(power);
-                    return MultiLineComponent.empty();
+        if (!ConfigHolder.INSTANCE.compat.createCompat || !GTCEu.Mods.isCreateLoaded()) {
+            PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    PlaceholderUtils.checkArgs(args, 2, true);
+                    if (GTStringUtils.equals(args.get(0), "get")) {
+                        Direction direction = Direction.byName(GTStringUtils.componentsToString(args.get(1)));
+                        if (direction == null)
+                            throw new InvalidArgsException();
+                        return MultiLineComponent.literal(ctx.level()
+                                .getSignal(ctx.pos().relative(direction), direction));
+                    } else if (GTStringUtils.equals(args.get(0), "set")) {
+                        int power = PlaceholderUtils.toInt(args.get(1));
+                        PlaceholderUtils.checkRange("redstone power", 0, 15, power);
+                        if (ctx.cover() == null) throw new NotSupportedException();
+                        ctx.cover().setRedstoneSignalOutput(power);
+                        return MultiLineComponent.empty();
+                    }
+                    throw new InvalidArgsException();
                 }
-                throw new InvalidArgsException();
-            }
-        });
+            });
+        }
         PlaceholderHandler.addPlaceholder(new Placeholder("previousText") {
 
             @Override
@@ -1196,7 +1195,6 @@ public class GTPlaceholders {
         }
 
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.PLACEHOLDERS, Placeholder.class));
-        GTRegistries.PLACEHOLDERS.freeze();
     }
 
     @OnlyIn(Dist.CLIENT)

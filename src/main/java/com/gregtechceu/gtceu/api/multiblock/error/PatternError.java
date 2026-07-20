@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class PatternError {
 
-    public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERRORS.codec()
+    public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERROR_TYPES.byNameCodec()
             .dispatch(PatternError::type, PatternErrorType::codec);
 
     @Getter
