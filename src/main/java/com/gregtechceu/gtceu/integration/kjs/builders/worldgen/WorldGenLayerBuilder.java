@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.level.gen.ruletest.AnyMatchRuleTest;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @Accessors(fluent = true, chain = true)
-public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
+public class WorldGenLayerBuilder extends BuilderBase<IWorldGenLayer> {
 
     public transient List<IWorldGenLayer.RuleTestSupplier> targets = new ObjectArrayList<>();
     public transient List<ResourceLocation> dimensions = new ObjectArrayList<>();
@@ -26,12 +28,8 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
     }
 
     @Override
-    public SimpleWorldGenLayer register() {
-        this.value = new SimpleWorldGenLayer(
-                this.id,
-                () -> new AnyMatchRuleTest(targets.stream().map(IWorldGenLayer.RuleTestSupplier::get).toList()),
-                Set.copyOf(dimensions));
-        return value;
+    public RegistryInfo<IWorldGenLayer> getRegistryType() {
+        return GTRegistryInfo.WORLD_GEN_LAYER;
     }
 
     public WorldGenLayerBuilder targets(IWorldGenLayer.RuleTestSupplier... targets) {
@@ -42,5 +40,13 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
     public WorldGenLayerBuilder dimensions(ResourceLocation... dimension) {
         this.dimensions.addAll(Arrays.asList(dimension));
         return this;
+    }
+
+    @Override
+    public IWorldGenLayer createObject() {
+        return new SimpleWorldGenLayer(
+                this.id,
+                () -> new AnyMatchRuleTest(targets.stream().map(IWorldGenLayer.RuleTestSupplier::get).toList()),
+                Set.copyOf(dimensions), false);
     }
 }

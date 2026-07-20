@@ -48,6 +48,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.security.Key;
 import java.util.*;
 
 @SuppressWarnings("unused")
@@ -126,11 +127,11 @@ public final class GTRegistries {
     public static final GTRegistry.RL<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry.RL<>(GTCEu.id("bedrock_fluid"));
     public static final GTRegistry.RL<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry.RL<>(GTCEu.id("bedrock_ore"));
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
-    public static final GTRegistry.RL<IWorldGenLayer> WORLD_GEN_LAYERS = new GTRegistry.RL<>(GTCEu.id("world_gen_layer"));
+    public static final MappedRegistry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
     // Other registries
 
-    public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
+    public static final MappedRegistry<CoverDefinition> COVERS = makeRegistry(Keys.COVER);
     public static final MappedRegistry<MachineDefinition> MACHINES = makeRegistry(Keys.MACHINE);
     public static final MappedRegistry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND);
     public static final MappedRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER);

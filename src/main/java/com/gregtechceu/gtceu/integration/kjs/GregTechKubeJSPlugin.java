@@ -167,23 +167,18 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                         new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
                 true);
         GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)),
-                false);
+                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
         GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class,
-                KJSSteamMachineBuilder::new, false);
+                KJSSteamMachineBuilder::new);
         GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)),
-                false);
-        GTRegistryInfo.MACHINE.addType("multiblock",
-                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
-                KJSWrappingMultiblockBuilder::createKJSMulti, false);
+                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
+        GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilderWrapper.class,
+                MultiblockMachineBuilderWrapper::createKJSMulti);
         GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
-                (id) -> new KJSWrappingMultiblockBuilder(id, new KJSTieredMultiblockBuilder(id)), false);
-        GTRegistryInfo.MACHINE.addType("primitive",
-                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
-                (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new),
-                false);
+                KJSWrappingMultiblockBuilder::new);
+        GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderWrapper.class,
+                (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
 
         GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
 

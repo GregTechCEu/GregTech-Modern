@@ -55,7 +55,7 @@ public class GTRegistryInfo<K, V> {
     public static final RegistryInfo<MachineDefinition> MACHINE = RegistryInfo.of(GTRegistries.Keys.MACHINE, MachineDefinition.class);
     public static final GTRegistryInfo<ResourceLocation, MaterialIconSet> MATERIAL_ICON_SET = add(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class);
     public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
-    public static final GTRegistryInfo<ResourceLocation, IWorldGenLayer> WORLD_GEN_LAYER = add(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class);
+    public static final RegistryInfo<IWorldGenLayer> WORLD_GEN_LAYER = RegistryInfo.of(GTRegistries.Keys.WORLD_GEN_LAYER, IWorldGenLayer.class);
     public static final GTRegistryInfo<ResourceLocation, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
     public static final RegistryInfo<DimensionMarker> DIMENSION_MARKER = RegistryInfo.of(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarker.class);
 

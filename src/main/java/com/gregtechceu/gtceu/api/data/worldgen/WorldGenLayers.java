@@ -16,10 +16,6 @@ import java.util.Set;
 
 public class WorldGenLayers {
 
-    static {
-        GTRegistries.WORLD_GEN_LAYERS.unfreeze();
-    }
-
     public static final SimpleWorldGenLayer STONE = new SimpleWorldGenLayer(
             GTCEu.id("stone"), () -> new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
             Set.of(Level.OVERWORLD.location()));
@@ -38,9 +34,5 @@ public class WorldGenLayers {
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerWorldgenLayers);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.WORLD_GEN_LAYERS.getRegistryName());
-        }
-        GTRegistries.WORLD_GEN_LAYERS.freeze();
     }
 }

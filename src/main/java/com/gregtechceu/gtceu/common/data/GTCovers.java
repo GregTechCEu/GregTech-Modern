@@ -34,10 +34,6 @@ public class GTCovers {
     public static final int[] ALL_TIERS_WITH_ULV = GTValues.tiersBetween(GTValues.ULV,
             GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
 
-    static {
-        GTRegistries.COVERS.unfreeze();
-    }
-
     public final static CoverDefinition FACADE = register("facade", FacadeCover::new,
             () -> () -> FacadeCoverRenderer.INSTANCE);
 
@@ -128,7 +124,7 @@ public class GTCovers {
     public static CoverDefinition register(ResourceLocation id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
                                            Supplier<Supplier<ICoverRenderer>> coverRenderer) {
         var definition = new CoverDefinition(id, behaviorCreator, coverRenderer);
-        GTRegistries.COVERS.register(definition.getId(), definition);
+        GTRegistries.register(GTRegistries.COVERS, definition.getId(), definition);
         return definition;
     }
 
@@ -155,6 +151,5 @@ public class GTCovers {
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerCovers);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.COVERS, CoverDefinition.class));
-        GTRegistries.COVERS.freeze();
     }
 }
