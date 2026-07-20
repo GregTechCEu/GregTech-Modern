@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 
 public class MaterialIconSetBuilder extends BuilderBase<MaterialIconSet> {
@@ -14,13 +16,18 @@ public class MaterialIconSetBuilder extends BuilderBase<MaterialIconSet> {
         parent = MaterialIconSet.DULL;
     }
 
+    @Override
+    public RegistryInfo<MaterialIconSet> getRegistryType() {
+        return GTRegistryInfo.MATERIAL_ICON_SET;
+    }
+
     public MaterialIconSetBuilder parent(MaterialIconSet parent) {
         this.parent = parent;
         return this;
     }
 
     @Override
-    public MaterialIconSet register() {
-        return value = new MaterialIconSet(this.id.getPath(), parent);
+    public MaterialIconSet createObject() {
+        return new MaterialIconSet(this.id, parent, parent == null, false);
     }
 }

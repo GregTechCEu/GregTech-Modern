@@ -103,9 +103,9 @@ public final class GTRegistries {
     // spotless:off
 
     public static final MaterialRegistry MATERIALS = new MaterialRegistry();
-    public static final GTRegistry.RL<Element> ELEMENTS = new GTRegistry.RL<>(GTCEu.id("element"));
-    public static final GTRegistry.RL<TagPrefix> TAG_PREFIXES = new GTRegistry.RL<>(GTCEu.id("tag_prefix"));
-    public static final GTRegistry.RL<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry.RL<>(GTCEu.id("material_icon_set"));
+    public static final MappedRegistry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
+    public static final MappedRegistry<TagPrefix> TAG_PREFIXES = makeRegistry(Keys.TAG_PREFIX);
+    public static final MappedRegistry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(Keys.MATERIAL_ICON_SET);
 
     // Recipe related registries
 

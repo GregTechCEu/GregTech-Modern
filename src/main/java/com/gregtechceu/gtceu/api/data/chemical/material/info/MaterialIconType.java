@@ -1,8 +1,12 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.events.MaterialIconTypeEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Minecraft;
@@ -129,10 +133,16 @@ public record MaterialIconType(String name) {
     }
 
     public static void init() {
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistryInfo.MATERIAL_ICON_TYPE.registryKey);
+        if (GTCEu.Mods.isKubeJSLoaded()) KJSEventWrapper.materialIconType();
+    }
+
+    public static final class KJSEventWrapper {
+
+        public static void materialIconType() {
+            GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialIconTypeEventJS());
         }
     }
+
 
     public static MaterialIconType getByName(String name) {
         return ICON_TYPES.get(name);

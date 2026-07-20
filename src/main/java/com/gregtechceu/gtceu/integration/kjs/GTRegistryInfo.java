@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -14,7 +12,6 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
@@ -25,7 +22,6 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 
-import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -48,15 +44,14 @@ public class GTRegistryInfo<K, V> {
 
     // spotless:off
 
-    public static final GTRegistryInfo<ResourceLocation, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
+    public static final RegistryInfo<Element> ELEMENT = RegistryInfo.of(GTRegistries.Keys.ELEMENT, Element.class);
     public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
     public static final RegistryInfo<GTRecipeType> RECIPE_TYPE = RegistryInfo.of(GTRegistries.Keys.RECIPE_TYPE, GTRecipeType.class);
     public static final RegistryInfo<GTRecipeCategory> RECIPE_CATEGORY = RegistryInfo.of(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategory.class);
     public static final RegistryInfo<MachineDefinition> MACHINE = RegistryInfo.of(GTRegistries.Keys.MACHINE, MachineDefinition.class);
-    public static final GTRegistryInfo<ResourceLocation, MaterialIconSet> MATERIAL_ICON_SET = add(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class);
-    public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
+    public static final RegistryInfo<MaterialIconSet> MATERIAL_ICON_SET = RegistryInfo.of(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSet.class);
     public static final RegistryInfo<IWorldGenLayer> WORLD_GEN_LAYER = RegistryInfo.of(GTRegistries.Keys.WORLD_GEN_LAYER, IWorldGenLayer.class);
-    public static final GTRegistryInfo<ResourceLocation, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
+    public static final RegistryInfo<TagPrefix> TAG_PREFIX = RegistryInfo.of(GTRegistries.Keys.TAG_PREFIX, TagPrefix.class);
     public static final RegistryInfo<DimensionMarker> DIMENSION_MARKER = RegistryInfo.of(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarker.class);
 
     // spotless:on

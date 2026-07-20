@@ -6,16 +6,12 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
 
+@SuppressWarnings("unused")
 public class GTElements {
-
-    static {
-        GTRegistries.ELEMENTS.unfreeze();
-    }
 
     public static final Element H = createAndRegister(GTCEu.id("Hydrogen"), 1, 0, -1, null, "Hydrogen", "H", false);
     public static final Element D = createAndRegister(GTCEu.id("Deuterium"), 1, 1, -1, "H", "Deuterium", "D", true);
@@ -226,17 +222,13 @@ public class GTElements {
                                             String decayTo,
                                             String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        GTRegistries.ELEMENTS.register(id, element);
+        GTRegistries.register(GTRegistries.ELEMENTS, id, element);
         return element;
     }
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerElements);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ELEMENTS, Element.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.ELEMENTS.getRegistryName());
-        }
-        GTRegistries.ELEMENTS.freeze();
     }
 
     /**

@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
@@ -70,19 +69,11 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
 
-    static {
-        GTRegistries.TAG_PREFIXES.unfreeze();
-    }
-
     public static final Map<TagPrefix, OreType> ORES = new Object2ObjectLinkedOpenHashMap<>();
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TAG_PREFIXES, TagPrefix.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.TAG_PREFIXES.getRegistryName());
-        }
-        GTRegistries.TAG_PREFIXES.freeze();
     }
 
     /**
@@ -1084,7 +1075,7 @@ public class TagPrefix {
         this.idPattern = "%s_" + getLowerCaseName();
         this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
-        GTRegistries.TAG_PREFIXES.register(id, this);
+        GTRegistries.register(GTRegistries.TAG_PREFIXES, id, this);
     }
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
@@ -1210,7 +1201,7 @@ public class TagPrefix {
      */
     @Deprecated(since = "8.0.0")
     public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
-        return GTRegistries.TAG_PREFIXES.getOrDefault(GTCEu.id(prefixName), replacement);
+        return GTRegistries.TAG_PREFIXES.getOptional(GTCEu.id(prefixName)).orElse(replacement);
     }
 
     public @Unmodifiable List<TagKey<Item>> getItemParentTags() {
@@ -1399,7 +1390,7 @@ public class TagPrefix {
      */
     @Deprecated(since = "8.0.0")
     public static Collection<TagPrefix> values() {
-        return GTRegistries.TAG_PREFIXES.values();
+        return GTRegistries.TAG_PREFIXES.stream().toList();
     }
 
     @Override

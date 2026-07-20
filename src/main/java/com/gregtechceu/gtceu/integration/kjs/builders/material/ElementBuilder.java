@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTElements;
 
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 

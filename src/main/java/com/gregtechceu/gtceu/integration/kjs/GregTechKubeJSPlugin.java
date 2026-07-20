@@ -56,8 +56,6 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
@@ -79,9 +77,8 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconSetBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconTypeBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
@@ -153,8 +150,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
                 true);
-        GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
-                true);
 
         GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
@@ -182,7 +177,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
 
-        GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
+        GTRegistryInfo.TAG_PREFIX.addType("basic", TagPrefixBuilder.class, TagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
 
         GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new,
