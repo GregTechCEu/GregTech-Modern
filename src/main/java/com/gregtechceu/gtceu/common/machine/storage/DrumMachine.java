@@ -118,7 +118,7 @@ public class DrumMachine extends MetaMachine {
                 return InteractionResult.CONSUME;
             }
         }
-        return getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return super.onUseWithItem(context);
     }
 
     @Override
