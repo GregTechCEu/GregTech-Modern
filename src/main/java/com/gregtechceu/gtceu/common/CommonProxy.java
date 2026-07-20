@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifiers;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
@@ -26,6 +27,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
@@ -99,12 +101,15 @@ public class CommonProxy {
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
+        GTRegistries.init(eventBus);
+
         GTValueProviderTypes.init(eventBus);
         GTPlacementModifiers.init(eventBus);
         GTGlobalLootModifiers.init(eventBus);
         GTLootConditions.init(eventBus);
         GTLootFunctions.init(eventBus);
         GTFeatures.init(eventBus);
+        GTPlacementModifiers.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
@@ -169,6 +174,7 @@ public class CommonProxy {
         KeyBind.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
+        ChestGenHooks.init(modBus);
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
