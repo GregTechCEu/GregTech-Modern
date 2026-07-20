@@ -44,6 +44,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
@@ -273,6 +274,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("FactoryBlockPattern", MultiblockPatternBuilder.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
+        event.add("RelativeDirection", RelativeDirection.class);
         // Recipe related
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTRecipeCategories", GTRecipeCategories.class);

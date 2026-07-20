@@ -260,7 +260,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         if (fluidContents != null && !slot.isFluidEmpty()) {
             Set<Fluid> fluidTypes = slot.getFluidTypes();
             for (Object obj : fluidContents) {
-                if (!(obj instanceof SizedFluidIngredient ing) || ing.getFluids().length == 0 ||Arrays.stream(ing.getFluids()).allMatch(FluidStack::isEmpty)) {
+                if (!(obj instanceof SizedFluidIngredient ing) || ing.getFluids().length == 0 ||
+                        Arrays.stream(ing.getFluids()).allMatch(FluidStack::isEmpty)) {
                     continue;
                 }
                 for (FluidStack stack : ing.getFluids()) {
@@ -297,7 +298,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
 
         @Override
-        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, boolean simulate) {
+        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+                                                       boolean simulate) {
             if (io != IO.IN || slot.isItemEmpty()) {
                 return left;
             }
@@ -340,7 +342,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         @Override
         public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
-                                                       boolean simulate) {
+                                                            boolean simulate) {
             if (io != IO.IN || slot.isFluidEmpty()) return left;
             return slot.handleFluidInternal(left, simulate);
         }
@@ -386,7 +388,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
 
         @Override
-        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, boolean simulate) {
+        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+                                                       boolean simulate) {
             return left;
         }
 
@@ -430,7 +433,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         @Override
         public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
-                                                       boolean simulate) {
+                                                            boolean simulate) {
             return left;
         }
 
@@ -690,8 +693,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         syncManager.registerServerSyncedAction("refundButtonPressed", packet -> refundAll());
 
-        return MachineUIPanelBuilder.panelBuilder(this).leftConfigurators(f ->
-                f.child(new ButtonWidget<>() // Shared items subpanel
+        return MachineUIPanelBuilder.panelBuilder(this).leftConfigurators(f -> f.child(new ButtonWidget<>() // Shared
+                                                                                                            // items
+                                                                                                            // subpanel
                 .size(18)
                 .onMousePressed((context, b) -> {
                     if (b == InputConstants.MOUSE_BUTTON_LEFT) {
