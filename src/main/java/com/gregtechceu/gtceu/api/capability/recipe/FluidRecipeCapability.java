@@ -335,14 +335,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public List<?> getXEIIngredients(List<FluidIngredient> contents, GTRecipeDefinition recipe, IO io) {
-        var list = createXEIContainerContents(contents, recipe, io);
-        return list.stream()
-                .map(FluidEntryList::getStacks)
-                .map(fluidStacks -> fluidStacks.stream()
-                        .map(fluidStack -> EmiStack.of(fluidStack.getFluid(), fluidStack.getTag(),
-                                fluidStack.getAmount()))
-                        .toList())
-                .map(EmiIngredient::of)
-                .toList();
+        List<EmiIngredient> emiIngredients = new ArrayList<>();
+        for (var content : contents) {
+            var list = mapFluid(content).getStacks().stream()
+                    .map(fluidStack -> EmiStack.of(fluidStack.getFluid(), fluidStack.getTag(), fluidStack.getAmount())
+                            .setChance(content.getChance()))
+                    .toList();
+            emiIngredients.add(EmiIngredient.of(list));
+        }
+        return emiIngredients;
     }
 }

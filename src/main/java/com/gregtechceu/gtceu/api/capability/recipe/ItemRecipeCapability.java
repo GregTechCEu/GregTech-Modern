@@ -393,11 +393,13 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
 
     @Override
     public List<?> getXEIIngredients(List<ItemIngredient> contents, GTRecipeDefinition recipe, IO io) {
-        var list = createXEIContainerContents(contents, recipe, io);
-        return list.stream()
-                .map(ItemEntryList::getStacks)
-                .map(stacks -> stacks.stream().map(EmiStack::of).toList())
-                .map(EmiIngredient::of)
-                .toList();
+        List<EmiIngredient> emiIngredients = new ArrayList<>();
+        for (var content : contents) {
+            var list = mapItem(content).getStacks().stream()
+                    .map(stack -> EmiStack.of(stack).setChance(content.getChance()))
+                    .toList();
+            emiIngredients.add(EmiIngredient.of(list));
+        }
+        return emiIngredients;
     }
 }
