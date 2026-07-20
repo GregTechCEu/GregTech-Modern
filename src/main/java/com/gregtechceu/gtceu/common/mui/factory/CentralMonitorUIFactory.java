@@ -213,9 +213,9 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         }).draggable(true).size(160, 80));
                 IntSupplier colorSupplier = () -> {
                     if (component == null) return 0;
-                    boolean inGroup = group.contains(component.getBlockPos());
+                    boolean inGroup = group.contains(component.getComponentPos());
                     BlockPos target = group.getTargetRaw();
-                    boolean isTarget = target != null && target.asLong() == component.getBlockPos().asLong();
+                    boolean isTarget = target != null && target.asLong() == component.getComponentPos().asLong();
                     if (inGroup && isTarget) return 0xFFFF00FF;
                     else if (inGroup) return 0xFFFF0000;
                     else if (isTarget) return 0xFF0000FF;
@@ -226,7 +226,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .background(texture, new BorderDrawable(colorSupplier, 1), Text.dynamic(() -> {
                             if (component == null || component.getDataItems() == null) return Component.empty();
                             BlockPos target = group.getTargetRaw();
-                            boolean isTarget = target != null && target.asLong() == component.getBlockPos().asLong();
+                            boolean isTarget = target != null && target.asLong() == component.getComponentPos().asLong();
                             if (isTarget) return Component.literal(String.valueOf(group.getDataSlot() + 1));
                             else return Component.empty();
                         }))
@@ -237,13 +237,13 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                     int button = mouseData.mouseButton();
                                     if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                                         if (!component.isMonitor()) return;
-                                        if (group.contains(component.getBlockPos())) {
-                                            group.remove(component.getBlockPos());
+                                        if (group.contains(component.getComponentPos())) {
+                                            group.remove(component.getComponentPos());
                                         } else {
-                                            group.add(component.getBlockPos());
+                                            group.add(component.getComponentPos());
                                         }
                                     } else if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
-                                        group.setTarget(component.getBlockPos());
+                                        group.setTarget(component.getComponentPos());
                                         groupSync.setValue(groups, true, false);
                                         if (slotDialogHandler != null) {
                                             slotDialogHandler.openPanel();
