@@ -293,8 +293,11 @@ public class FisherMachine extends TieredEnergyMachine
                         .child(new ProgressWidget()
                                 .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
                                 .value(progressPercent))
-                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
-                                "output_item_inv", cache.getSize(), 'i',
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache.storage,
+                                "output_item_inv", cache.getSize(), 'i', slot -> {
+                                    slot.getSlot().accessibility(false, true);
+                                    return slot;
+                                },
                                 syncManager, outputItemGrid))
                         .padding(4, 0));
     }

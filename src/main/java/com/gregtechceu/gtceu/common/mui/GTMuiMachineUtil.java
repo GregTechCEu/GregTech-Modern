@@ -16,10 +16,10 @@ import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.UnaryOperator;
 
 public class GTMuiMachineUtil {
+
     private static AtomicBoolean currentLogSpam = new AtomicBoolean(false);
 
     public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler, String slotGroupName,
@@ -33,13 +33,12 @@ public class GTMuiMachineUtil {
                                                                UnaryOperator<ItemSlot> slotModifier,
                                                                PanelSyncManager syncManager,
                                                                String... matrix) {
-        SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
-        if (!currentLogSpam.getAndSet(true) &&
-                itemHandler instanceof NotifiableItemStackHandler handler) {
-            GTCEu.LOGGER.warn(
-                    "NotifiableItemStackHandler passed instead of its internal storage. IO={}", handler.getHandlerIO().name(),
+        // Error ONCE upon NotifiableItemStackHandler occurrence
+        if (itemHandler instanceof NotifiableItemStackHandler && !currentLogSpam.getAndSet(true))
+            GTCEu.LOGGER.error("createSlotGroupFromInventory called with a NotifiableItemStackHandler directly",
                     new Throwable());
-        }
+
+        SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
 
         return SlotGroupWidget.builder()
                 .matrix(matrix)
