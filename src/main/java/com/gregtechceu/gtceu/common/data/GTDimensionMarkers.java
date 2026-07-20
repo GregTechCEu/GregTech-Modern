@@ -72,9 +72,6 @@ public class GTDimensionMarkers {
 
     public static void init() {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.DIMENSION_MARKERS.getRegistryName());
-        }
         GTRegistries.DIMENSION_MARKERS.freeze();
     }
 }

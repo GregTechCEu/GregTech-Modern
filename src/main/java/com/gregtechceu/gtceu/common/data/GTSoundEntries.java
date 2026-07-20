@@ -13,10 +13,6 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTSoundEntries {
 
-    static {
-        GTRegistries.SOUNDS.unfreeze();
-    }
-
     // Machine Sounds
     public static final SoundEntry FORGE_HAMMER = REGISTRATE.sound("forge_hammer").build();
     public static final SoundEntry MACERATOR = REGISTRATE.sound("macerator").build();
@@ -63,8 +59,6 @@ public class GTSoundEntries {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
         GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
         registerSounds();
-
-        GTRegistries.SOUNDS.freeze();
     }
 
     private static void registerSounds() {

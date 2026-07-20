@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.DevProperties;
@@ -24,6 +25,7 @@ import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 
+import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -55,7 +57,7 @@ public class GTRegistryInfo<K, V> {
     public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
     public static final GTRegistryInfo<ResourceLocation, IWorldGenLayer> WORLD_GEN_LAYER = add(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class);
     public static final GTRegistryInfo<ResourceLocation, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
-    public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
+    public static final RegistryInfo<DimensionMarker> DIMENSION_MARKER = RegistryInfo.of(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarker.class);
 
     // spotless:on
 

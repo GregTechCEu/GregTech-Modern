@@ -3,12 +3,15 @@ package com.gregtechceu.gtceu.common.commands;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
-import com.gregtechceu.gtceu.common.commands.arguments.MedicalConditionArgument;
 
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceKeyArgument;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -32,6 +35,8 @@ public class MedicalConditionCommands {
             Component.translatable("command.gtceu.medical_condition.give.failed"));
     private static final SimpleCommandExceptionType ERROR_CLEAR_SPECIFIC_FAILED = new SimpleCommandExceptionType(
             Component.translatable("command.gtceu.medical_condition.clear.specific.failed"));
+    private static final DynamicCommandExceptionType ERROR_UNKNOWN_ITEM = new DynamicCommandExceptionType(
+            id -> Component.translatable("argument.item.id.invalid", id));
 
     // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
@@ -64,27 +69,27 @@ public class MedicalConditionCommands {
                                         .executes(ctx -> {
                                             return clearMedicalConditions(ctx.getSource(), EntityArgument.getPlayers(ctx, "targets"), null);
                                         })
-                                        .then(argument("condition", MedicalConditionArgument.medicalCondition())
+                                        .then(argument("condition", ResourceKeyArgument.key(GTRegistries.Keys.MEDICAL_CONDITION))
                                                 .executes(ctx -> {
                                                     Collection<ServerPlayer> targets = EntityArgument.getPlayers(ctx, "targets");
-                                                    MedicalCondition condition = MedicalConditionArgument.getCondition(ctx, "condition");
-                                                    return clearMedicalConditions(ctx.getSource(), targets, condition);
+                                                    Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(ctx, "condition", GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_ITEM);
+                                                    return clearMedicalConditions(ctx.getSource(), targets, condition.get());
                                                 }))))
                         .then(literal("apply")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                 .then(argument("targets", EntityArgument.players())
-                                        .then(argument("condition", MedicalConditionArgument.medicalCondition())
+                                        .then(argument("condition", ResourceKeyArgument.key(GTRegistries.Keys.MEDICAL_CONDITION))
                                                 .executes(ctx -> {
-                                                    MedicalCondition condition = MedicalConditionArgument.getCondition(ctx, "condition");
+                                                    Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(ctx, "condition", GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_ITEM);
                                                     Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
-                                                    return applyMedicalConditions(ctx.getSource(), players, condition, 20);
+                                                    return applyMedicalConditions(ctx.getSource(), players, condition.get(), 20);
                                                 })
                                                 .then(argument("progression", FloatArgumentType.floatArg())
                                                         .executes(ctx -> {
-                                                            MedicalCondition condition = MedicalConditionArgument.getCondition(ctx, "condition");
+                                                            Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(ctx, "condition", GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_ITEM);
                                                             Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
                                                             float progression = FloatArgumentType.getFloat(ctx, "progression");
-                                                            return applyMedicalConditions(ctx.getSource(), players, condition, progression);
+                                                            return applyMedicalConditions(ctx.getSource(), players, condition.get(), progression);
                                                         }))))));
     }
     // spotless:on

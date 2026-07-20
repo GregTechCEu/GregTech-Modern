@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
-import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
@@ -75,12 +74,18 @@ import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
-import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconSetBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.BasicTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -185,7 +190,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
 
-        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarker.Builder.class, DimensionMarker.Builder::new,
+        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new,
                 true);
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
