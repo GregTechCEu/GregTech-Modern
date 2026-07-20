@@ -1,16 +1,24 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
+
+import java.util.Objects;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class GTSoundEntries {
 
     // Machine Sounds
@@ -58,12 +66,14 @@ public class GTSoundEntries {
         AddonFinder.getAddons().forEach(IGTAddon::registerSounds);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
         GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
-        registerSounds();
     }
 
-    private static void registerSounds() {
-        for (SoundEntry entry : GTRegistries.SOUNDS) {
-            entry.register(soundEvent -> ForgeRegistries.SOUND_EVENTS.register(soundEvent.getLocation(), soundEvent));
+    @SubscribeEvent
+    public static void registerSounds(RegisterEvent registerEvent) {
+        if (Objects.equals(registerEvent.getForgeRegistry(), ForgeRegistries.SOUND_EVENTS)) {
+            for (SoundEntry entry : GTRegistries.SOUNDS) {
+                entry.register(soundEvent -> registerEvent.register(Registries.SOUND_EVENT, soundEvent.getLocation(), () -> soundEvent));
+            }
         }
     }
 }
