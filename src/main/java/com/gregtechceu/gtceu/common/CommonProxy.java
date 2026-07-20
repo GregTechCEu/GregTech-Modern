@@ -46,12 +46,12 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.ItemStack;
@@ -62,6 +62,7 @@ import net.minecraftforge.common.crafting.IntersectionIngredient;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -76,8 +77,11 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.List;
+
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class CommonProxy {
 
@@ -107,7 +111,6 @@ public class CommonProxy {
         GTLootConditions.init(eventBus);
         GTLootFunctions.init(eventBus);
         GTFeatures.init(eventBus);
-        GTPlacementModifiers.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
@@ -148,7 +151,6 @@ public class CommonProxy {
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
-        GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
         GTPatternErrors.init();
@@ -191,40 +193,73 @@ public class CommonProxy {
         GTCEu.LOGGER.info("Registering addon Materials");
         MaterialEvent materialEvent = new MaterialEvent();
         ModLoader.get().postEvent(materialEvent);
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialRegistry();
-        }
+    }
 
-        // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
-        // Block entirely new Materials from being added in the Post event
-        GTRegistries.MATERIALS.closeRegistry();
-        ModLoader.get().postEvent(new PostMaterialEvent());
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialModification();
-        }
-
-        // Register all material manager registries, for materials with mod ids.
-        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
-            // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
-            if (accessor.getDoDatagen().get()) {
-                // noinspection UnstableApiUsage
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
-                NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
-                        .generate((RegistrateLangProvider) provider, namespace);
-                if (providers == null) {
-                    accessor.getDatagens().put(ProviderType.LANG, generator);
-                } else {
-                    providers.add(0, generator);
-                }
+    // Fire post material events after all other material registry events.
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onRegisterLowest(RegisterEvent event) {
+        if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
+            // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
+            // Block entirely new Materials from being added in the Post event
+            GTCEu.LOGGER.info("Firing material register late event");
+            GTRegistries.MATERIALS.closeRegistry();
+            ModLoader.get().postEventWrapContainerInModOrder(new PostMaterialEvent());
+            if (GTCEu.Mods.isKubeJSLoaded()) {
+                KJSEventWrapper.materialModification();
             }
-        });
 
-        // Freeze Material Registry before processing Items, Blocks, and Fluids
-        GTRegistries.MATERIALS.freeze();
-        /* End Material Registration */
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
+                // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
+                var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
+                AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
+                if (accessor.getDoDatagen().get()) {
+                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
+                            .asMap(accessor.getDatagens())
+                            .get(ProviderType.LANG);
+                    NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
+                            .generate((RegistrateLangProvider) provider, namespace);
+                    if (providers == null) {
+                        accessor.getDatagens().put(ProviderType.LANG, generator);
+                    } else {
+                        providers.add(0, generator);
+                    }
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void registerMaterialContent(RegisterEvent event) {
+        if (event.getRegistryKey() == Registries.BLOCK) {
+            GTCEu.LOGGER.info("Generating material blocks...");
+
+            // Material Blocks
+            REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
+            GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
+            GTMaterialBlocks.generateOreBlocks();        // Ore Blocks
+            GTMaterialBlocks.generateOreIndicators();    // Ore Indicators
+
+            // Material Pipes/Wires
+            REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
+            GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
+            GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
+            GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
+
+            GTMaterialBlocks.finaliseMaterialBlocks();
+
+        } else if (event.getRegistryKey() == Registries.ITEM) {
+            GTCEu.LOGGER.info("Generating material items...");
+
+            // Material Items & Tools
+            GTMaterialItems.generateMaterialItems();
+            GTMaterialItems.generateTools();
+            GTMaterialItems.generateArmors();
+
+        } else if (event.getRegistryKey() == Registries.FLUID) {
+            GTFluids.registerMaterialFluids();
+        } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
+            GTBlockEntities.init();
+        }
     }
 
     @SubscribeEvent
@@ -311,10 +346,6 @@ public class CommonProxy {
     }
 
     public static final class KJSEventWrapper {
-
-        public static void materialRegistry() {
-            GTRegistryInfo.registerFor(GTRegistries.MATERIALS.getRegistryName());
-        }
 
         public static void materialModification() {
             GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());

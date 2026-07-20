@@ -102,7 +102,7 @@ public final class GTRegistries {
 
     // spotless:off
 
-    public static final MaterialRegistry MATERIALS = new MaterialRegistry();
+    public static final MaterialRegistry MATERIALS = makeRegistry(Keys.MATERIAL, new MaterialRegistry());
     public static final MappedRegistry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
     public static final MappedRegistry<TagPrefix> TAG_PREFIXES = makeRegistry(Keys.TAG_PREFIX);
     public static final MappedRegistry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(Keys.MATERIAL_ICON_SET);

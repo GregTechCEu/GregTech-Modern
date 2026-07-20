@@ -79,10 +79,13 @@ import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconSetBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
+
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
+import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -108,9 +111,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
-import dev.latvian.mods.kubejs.client.LangEventJS;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
-import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.kubejs.recipe.KubeJSRecipeEventHandler;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
@@ -141,6 +141,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void initStartup() {
         super.initStartup();
+
+        for (var registry: GTRegistries.getRegistries()) {
+            GTCEuStartupEvents.REGISTRY.post(new GTRegistryEventJS<>(RegistryInfo.of(registry.key())));
+        }
     }
 
     @Override
@@ -151,7 +155,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
                 true);
 
-        GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
+        GTRegistryInfo.MATERIAL.addType("basic", MaterialBuilderWrapper.class, MaterialBuilderWrapper::new, true);
 
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
         GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
@@ -194,27 +198,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTCEuServerEvents.GROUP.register();
     }
 
-    @Override
-    public void generateDataJsons(DataJsonGenerator generator) {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateDataJsons(generator));
-    }
-
     public static void generateMachineBlockModels() {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> {
+        GTRegistryInfo.MACHINE.forEach(builderBase -> {
             try {
                 builderBase.generateAssetJsons(null);
             } catch (IllegalStateException ignored) {}
         });
-    }
-
-    @Override
-    public void generateAssetJsons(AssetJsonGenerator generator) {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateAssetJsons(generator));
-    }
-
-    @Override
-    public void generateLang(LangEventJS event) {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateLang(event));
     }
 
     @Override

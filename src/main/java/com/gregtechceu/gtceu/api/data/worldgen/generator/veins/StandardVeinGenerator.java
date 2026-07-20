@@ -47,7 +47,7 @@ public class StandardVeinGenerator extends VeinGenerator {
                     .apply(instance, StandardVeinGenerator::new));
 
     public static final Codec<StandardVeinGenerator> CODEC_LIST = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec())
+            Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.byNameCodec())
                     .fieldOf("targets").forGetter(ext -> ext.blocks))
             .apply(instance, StandardVeinGenerator::new));
 
