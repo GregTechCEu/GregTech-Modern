@@ -287,7 +287,8 @@ public class FisherMachine extends TieredEnergyMachine
                         .margin(2, 3)
                         .childPadding(4)
                         .child(new ItemSlot()
-                                .slot(new ModularSlot(baitHandler.storage, 0).singletonSlotGroup(0).accessibility(true, true))
+                                .slot(new ModularSlot(baitHandler.storage, 0).singletonSlotGroup(0).accessibility(true,
+                                        true))
                                 .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY))
                         .child(new ProgressWidget()
                                 .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)

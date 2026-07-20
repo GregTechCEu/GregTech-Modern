@@ -15,9 +15,13 @@ import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.UnaryOperator;
 
 public class GTMuiMachineUtil {
+
+    private static final int MAX_LOG_SPAM_FOR_ITEMSTACKHANDLER_ABUSE = 3; // 3 seems reasonable
+    private static AtomicInteger currentLogSpam = new AtomicInteger(0);
 
     public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler, String slotGroupName,
                                                                int maxSlots, char key, PanelSyncManager syncManager,
@@ -31,8 +35,15 @@ public class GTMuiMachineUtil {
                                                                PanelSyncManager syncManager,
                                                                String... matrix) {
         SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
-        if (itemHandler instanceof NotifiableItemStackHandler handler) {
-            GTCEu.LOGGER.warn("NotifiableItemStackHandler passed");
+        var currentLogSpamHere = currentLogSpam.get();
+        if (currentLogSpamHere < MAX_LOG_SPAM_FOR_ITEMSTACKHANDLER_ABUSE &&
+                itemHandler instanceof NotifiableItemStackHandler handler) {
+            GTCEu.LOGGER.warn(String.format(
+                    "Logging warning here, %d left until this warning is silenced to avoid log spam, IO=%s",
+                    MAX_LOG_SPAM_FOR_ITEMSTACKHANDLER_ABUSE - currentLogSpamHere, handler.getHandlerIO().name()),
+                    new Exception(
+                            "NotifiableItemStackHandler passed instead of its internal storage; this may NOT be a bug"));
+            currentLogSpam.getAndIncrement();
         }
 
         return SlotGroupWidget.builder()
