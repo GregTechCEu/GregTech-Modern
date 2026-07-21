@@ -290,6 +290,12 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         return recipeTypes[index];
     }
 
+    public void cycleActiveRecipeType() {
+        int newActiveRecipeType = (getActiveRecipeType() + 1) % recipeTypes.length;
+        setActiveRecipeType(newActiveRecipeType);
+        getRecipeLogic().updateTickSubscription();
+    }
+
     /**
      * Sets a recipe type of the machine.
      * FOR INTERNAL / TESTING USE ONLY!
@@ -314,6 +320,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         List<IWidget> widgets = super.getWidgetsForDisplay(syncManager);
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addParallelLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addBatchModeLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addSubtickParallelsLine(this, syncManager));

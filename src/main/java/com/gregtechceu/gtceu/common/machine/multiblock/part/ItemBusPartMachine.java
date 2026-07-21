@@ -128,6 +128,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public void onMachineDestroyed() {
         if (filterHandler.isFilterPresent())
             Block.popResource(getLevel(), getBlockPos(), filterHandler.getFilterItem());
+        super.onMachineDestroyed();
     }
 
     @Override
