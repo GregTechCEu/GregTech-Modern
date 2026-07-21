@@ -21,9 +21,9 @@ public class MultiblockStructureProvider implements IBlockComponentProvider, ISe
         if (blockAccessor.getServerData().contains("hasError")) {
             boolean hasError = blockAccessor.getServerData().getBoolean("hasError");
             if (hasError) {
-                iTooltip.add(Component.translatable("gtceu.top.invalid_structure").withStyle(ChatFormatting.RED));
+                iTooltip.add(Component.translatable("gtceu.jade.invalid_structure").withStyle(ChatFormatting.RED));
             } else {
-                iTooltip.add(Component.translatable("gtceu.top.valid_structure").withStyle(ChatFormatting.GREEN));
+                iTooltip.add(Component.translatable("gtceu.jade.valid_structure").withStyle(ChatFormatting.GREEN));
             }
         }
     }

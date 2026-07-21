@@ -31,14 +31,14 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 var tag = data.getCompound("cableData");
                 long voltage = tag.getLong("currentVoltage");
                 double amperage = tag.getDouble("currentAmperage");
-                iTooltip.add(Component.translatable("gtceu.top.cable_voltage"));
+                iTooltip.add(Component.translatable("gtceu.jade.cable_voltage"));
                 if (voltage != 0) {
                     iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage)]));
                     iTooltip.append(Component.literal(" / "));
                 }
                 iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(tag.getLong("maxVoltage"))]));
 
-                iTooltip.add(Component.translatable("gtceu.top.cable_amperage"));
+                iTooltip.add(Component.translatable("gtceu.jade.cable_amperage"));
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }

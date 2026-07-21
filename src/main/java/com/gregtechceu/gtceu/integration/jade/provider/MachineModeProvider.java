@@ -29,7 +29,7 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
             int currentRecipeTypeIndex = serverData.getInt("CurrentRecipeType");
             ListTag recipeTypesTagList = serverData.getList("RecipeTypes", StringTag.TAG_STRING);
             if (blockAccessor.showDetails()) {
-                iTooltip.add(Component.translatable("gtceu.top.machine_mode"));
+                iTooltip.add(Component.translatable("gtceu.jade.machine_mode"));
                 for (int i = 0; i < recipeTypesTagList.size(); i++) {
                     ResourceLocation recipeType = new ResourceLocation(recipeTypesTagList.getString(i));
                     MutableComponent text;
@@ -45,7 +45,7 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
             } else {
                 ResourceLocation recipeType = new ResourceLocation(
                         recipeTypesTagList.getString(currentRecipeTypeIndex));
-                iTooltip.add(Component.translatable("gtceu.top.machine_mode").append(
+                iTooltip.add(Component.translatable("gtceu.jade.machine_mode").append(
                         Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
             }
         }

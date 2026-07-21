@@ -177,7 +177,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
                 }
             }
             if (!outputItems.isEmpty() || !outputFluids.isEmpty()) {
-                tooltip.add(Component.translatable("gtceu.top.recipe_output"));
+                tooltip.add(Component.translatable("gtceu.jade.recipe_output"));
             }
             addItemTooltips(tooltip, outputItems);
             addFluidTooltips(tooltip, outputFluids);

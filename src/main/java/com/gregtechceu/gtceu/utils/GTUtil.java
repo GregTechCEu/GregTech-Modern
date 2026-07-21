@@ -617,17 +617,17 @@ public class GTUtil {
     public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
             case 0 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
-                    Component.translatable("gtceu.top.maintenance.wrench"));
+                    Component.translatable("gtceu.jade.maintenance.wrench"));
             case 1 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
-                    Component.translatable("gtceu.top.maintenance.screwdriver"));
+                    Component.translatable("gtceu.jade.maintenance.screwdriver"));
             case 2 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
-                    Component.translatable("gtceu.top.maintenance.soft_mallet"));
+                    Component.translatable("gtceu.jade.maintenance.soft_mallet"));
             case 3 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
-                    Component.translatable("gtceu.top.maintenance.hard_hammer"));
+                    Component.translatable("gtceu.jade.maintenance.hard_hammer"));
             case 4 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
-                    Component.translatable("gtceu.top.maintenance.wire_cutter"));
+                    Component.translatable("gtceu.jade.maintenance.wire_cutter"));
             default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
-                    Component.translatable("gtceu.top.maintenance.crowbar"));
+                    Component.translatable("gtceu.jade.maintenance.crowbar"));
         };
     }
 

@@ -31,7 +31,7 @@ public class MEPatternBufferProvider implements IBlockComponentProvider, IServer
             CompoundTag serverData = blockAccessor.getServerData();
             if (!serverData.getBoolean("formed")) return;
 
-            iTooltip.add(Component.translatable("gtceu.top.proxies_bound", serverData.getInt("proxies"))
+            iTooltip.add(Component.translatable("gtceu.jade.proxies_bound", serverData.getInt("proxies"))
                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
             readBufferTag(iTooltip, serverData);
         }

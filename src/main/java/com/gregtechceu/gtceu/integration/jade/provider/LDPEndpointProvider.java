@@ -25,10 +25,10 @@ public class LDPEndpointProvider implements IBlockComponentProvider, IServerData
             String outputDirection = blockAccessor.getServerData().getString("outputDirection");
 
             iTooltip.add(Component.translatable(
-                    isFormed ? "gtceu.top.ldp_endpoint.is_formed" : "gtceu.top.ldp_endpoint.not_formed"));
-            iTooltip.add(Component.translatable("gtceu.top.ldp_endpoint.io_type", Component.translatable(ioType)
+                    isFormed ? "gtceu.jade.ldp_endpoint.is_formed" : "gtceu.jade.ldp_endpoint.not_formed"));
+            iTooltip.add(Component.translatable("gtceu.jade.ldp_endpoint.io_type", Component.translatable(ioType)
                     .withStyle(ioType.contains("import") ? ChatFormatting.GREEN : ChatFormatting.RED)));
-            iTooltip.add(Component.translatable("gtceu.top.ldp_endpoint.output_direction",
+            iTooltip.add(Component.translatable("gtceu.jade.ldp_endpoint.output_direction",
                     FormattingUtil.toEnglishName((outputDirection))));
         }
     }

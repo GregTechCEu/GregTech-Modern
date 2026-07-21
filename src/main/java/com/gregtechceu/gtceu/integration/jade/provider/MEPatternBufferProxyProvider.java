@@ -23,12 +23,12 @@ public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IS
             CompoundTag serverData = blockAccessor.getServerData();
             if (!serverData.getBoolean("formed")) return;
             if (!serverData.getBoolean("bound")) {
-                iTooltip.add(Component.translatable("gtceu.top.buffer_not_bound").withStyle(ChatFormatting.RED));
+                iTooltip.add(Component.translatable("gtceu.jade.buffer_not_bound").withStyle(ChatFormatting.RED));
                 return;
             }
 
             int[] pos = serverData.getIntArray("pos");
-            iTooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
+            iTooltip.add(Component.translatable("gtceu.jade.buffer_bound_pos", pos[0], pos[1], pos[2])
                     .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
 
             MEPatternBufferProvider.readBufferTag(iTooltip, serverData);

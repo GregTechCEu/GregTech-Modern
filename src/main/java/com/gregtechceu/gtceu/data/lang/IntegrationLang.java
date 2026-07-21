@@ -103,83 +103,83 @@ public class IntegrationLang {
 
     /** Jade */
     private static void initWailaLikeLang(GTLangProvider provider) {
-        provider.add("gtceu.top.working_disabled", "Working Disabled");
-        provider.add("gtceu.top.energy_consumption", "Using");
-        provider.add("gtceu.top.energy_production", "Producing");
+        provider.add("gtceu.jade.working_disabled", "Working Disabled");
+        provider.add("gtceu.jade.energy_consumption", "Using");
+        provider.add("gtceu.jade.energy_production", "Producing");
 
         // Transformers
-        provider.add("gtceu.top.transform_up", "§cStep Up§r %s");
-        provider.add("gtceu.top.transform_down", "§aStep Down§r %s");
-        provider.add("gtceu.top.transform_input", "§6Input:§r %s");
-        provider.add("gtceu.top.transform_output", "§9Output:§r %s");
-        provider.add("gtceu.top.convert_eu", "Converting §eEU§r -> §cFE§r");
-        provider.add("gtceu.top.convert_fe", "Converting §cFE§r -> §eEU§r");
+        provider.add("gtceu.jade.transform_up", "§cStep Up§r %s");
+        provider.add("gtceu.jade.transform_down", "§aStep Down§r %s");
+        provider.add("gtceu.jade.transform_input", "§6Input:§r %s");
+        provider.add("gtceu.jade.transform_output", "§9Output:§r %s");
+        provider.add("gtceu.jade.convert_eu", "Converting §eEU§r -> §cFE§r");
+        provider.add("gtceu.jade.convert_fe", "Converting §cFE§r -> §eEU§r");
 
         // Generators
-        provider.add("gtceu.top.fuel_min_consume", "Needs");
-        provider.add("gtceu.top.fuel_none", "No fuel");
+        provider.add("gtceu.jade.fuel_min_consume", "Needs");
+        provider.add("gtceu.jade.fuel_none", "No fuel");
 
         // Multiblock Structures
-        provider.add("gtceu.top.invalid_structure", "Structure Incomplete");
-        provider.add("gtceu.top.valid_structure", "Structure Formed");
-        provider.add("gtceu.top.obstructed_structure", "Structure Obstructed");
+        provider.add("gtceu.jade.invalid_structure", "Structure Incomplete");
+        provider.add("gtceu.jade.valid_structure", "Structure Formed");
+        provider.add("gtceu.jade.obstructed_structure", "Structure Obstructed");
 
         // Maintenance
-        provider.add("gtceu.top.maintenance_fixed", "Maintenance Fine");
-        provider.add("gtceu.top.maintenance_broken", "Needs Maintenance");
-        provider.add("gtceu.top.maintenance.wrench", "Pipe is loose");
-        provider.add("gtceu.top.maintenance.screwdriver", "Screws are loose");
-        provider.add("gtceu.top.maintenance.soft_mallet", "Something is stuck");
-        provider.add("gtceu.top.maintenance.hard_hammer", "Plating is dented");
-        provider.add("gtceu.top.maintenance.wire_cutter", "Wires burned out");
-        provider.add("gtceu.top.maintenance.crowbar", "That doesn't belong there");
+        provider.add("gtceu.jade.maintenance_fixed", "Maintenance Fine");
+        provider.add("gtceu.jade.maintenance_broken", "Needs Maintenance");
+        provider.add("gtceu.jade.maintenance.wrench", "Pipe is loose");
+        provider.add("gtceu.jade.maintenance.screwdriver", "Screws are loose");
+        provider.add("gtceu.jade.maintenance.soft_mallet", "Something is stuck");
+        provider.add("gtceu.jade.maintenance.hard_hammer", "Plating is dented");
+        provider.add("gtceu.jade.maintenance.wire_cutter", "Wires burned out");
+        provider.add("gtceu.jade.maintenance.crowbar", "That doesn't belong there");
 
         // Steam Venting
-        provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
-        provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
+        provider.add("gtceu.jade.exhaust_vent_direction", "Exhaust Vent: %s");
+        provider.add("gtceu.jade.exhaust_vent_blocked", "Blocked");
 
         // Primitive Pump
-        provider.add("gtceu.top.primitive_pump_production", "Production: %s mB/s");
+        provider.add("gtceu.jade.primitive_pump_production", "Production: %s mB/s");
 
         // Ender Link Cover??
-        provider.add("gtceu.top.filter.label", "Filter:");
-        provider.add("gtceu.top.link_cover.color", "Color:");
-        provider.add("gtceu.top.mode.export", "Exporting");
-        provider.add("gtceu.top.mode.import", "Importing");
+        provider.add("gtceu.jade.filter.label", "Filter:");
+        provider.add("gtceu.jade.link_cover.color", "Color:");
+        provider.add("gtceu.jade.mode.export", "Exporting");
+        provider.add("gtceu.jade.mode.import", "Importing");
 
         // Extra Cover Provider
-        provider.add("gtceu.top.unit.items", "Items");
-        provider.add("gtceu.top.unit.fluid_milibuckets", "L");
-        provider.add("gtceu.top.unit.fluid_buckets", "kL");
+        provider.add("gtceu.jade.unit.items", "Items");
+        provider.add("gtceu.jade.unit.fluid_milibuckets", "L");
+        provider.add("gtceu.jade.unit.fluid_buckets", "kL");
 
         // Recipe Provider
-        provider.add("gtceu.top.recipe_output", "Recipe Outputs:");
-        provider.add("gtceu.top.item_auto_output", "Item Output: %s");
-        provider.add("gtceu.top.fluid_auto_output", "Fluid Output: %s");
+        provider.add("gtceu.jade.recipe_output", "Recipe Outputs:");
+        provider.add("gtceu.jade.item_auto_output", "Item Output: %s");
+        provider.add("gtceu.jade.fluid_auto_output", "Fluid Output: %s");
 
         // IO Provider
-        provider.add("gtceu.top.auto_output", "Auto Output");
-        provider.add("gtceu.top.allow_output_input", "Allow Input");
+        provider.add("gtceu.jade.auto_output", "Auto Output");
+        provider.add("gtceu.jade.allow_output_input", "Allow Input");
 
         // Cable Provider
-        provider.add("gtceu.top.cable_voltage", "Voltage: ");
-        provider.add("gtceu.top.cable_amperage", "Amperage: ");
+        provider.add("gtceu.jade.cable_voltage", "Voltage: ");
+        provider.add("gtceu.jade.cable_amperage", "Amperage: ");
 
         // Machine Mode Provider
-        provider.add("gtceu.top.machine_mode", "Machine Mode: ");
+        provider.add("gtceu.jade.machine_mode", "Machine Mode: ");
 
         // Color Provider
-        provider.add("gtceu.top.stained", "Colored: %s");
+        provider.add("gtceu.jade.stained", "Colored: %s");
 
         // Proxy/Buffers
-        provider.add("gtceu.top.buffer_not_bound", "Buffer Not Currently Bound");
-        provider.add("gtceu.top.buffer_bound_pos", "Bound To - X: %s, Y: %s, Z: %s");
-        provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
+        provider.add("gtceu.jade.buffer_not_bound", "Buffer Not Currently Bound");
+        provider.add("gtceu.jade.buffer_bound_pos", "Bound To - X: %s, Y: %s, Z: %s");
+        provider.add("gtceu.jade.proxies_bound", "Buffer Proxies Bound: %s");
 
-        provider.add("gtceu.top.energy_stored", " / %d EU");
-        provider.add("gtceu.top.progress_computation", " / %s CWU");
-        provider.add("gtceu.top.progress_sec", " / %s s");
-        provider.add("gtceu.top.progress_tick", " / %s t");
+        provider.add("gtceu.jade.energy_stored", " / %d EU");
+        provider.add("gtceu.jade.progress_computation", " / %s CWU");
+        provider.add("gtceu.jade.progress_sec", " / %s s");
+        provider.add("gtceu.jade.progress_tick", " / %s t");
 
         provider.add("gtceu.jade.energy_stored", "%d / %d EU");
         provider.add("gtceu.jade.progress_computation", "%s / %s CWU");
@@ -225,15 +225,15 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
-        provider.add("gtceu.top.energy_stored", " / %d EU");
-        provider.add("gtceu.top.progress_computation", " / %s CWU");
-        provider.add("gtceu.top.progress_sec", " / %s s");
-        provider.add("gtceu.top.progress_tick", " / %s t");
+        provider.add("gtceu.jade.energy_stored", " / %d EU");
+        provider.add("gtceu.jade.progress_computation", " / %s CWU");
+        provider.add("gtceu.jade.progress_sec", " / %s s");
+        provider.add("gtceu.jade.progress_tick", " / %s t");
 
-        provider.add("gtceu.top.ldp_endpoint.is_formed", "§aPipeline Formed§r");
-        provider.add("gtceu.top.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
-        provider.add("gtceu.top.ldp_endpoint.io_type", "IO Type: %s");
-        provider.add("gtceu.top.ldp_endpoint.output_direction", "Output Direction: %s");
+        provider.add("gtceu.jade.ldp_endpoint.is_formed", "§aPipeline Formed§r");
+        provider.add("gtceu.jade.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
+        provider.add("gtceu.jade.ldp_endpoint.io_type", "IO Type: %s");
+        provider.add("gtceu.jade.ldp_endpoint.output_direction", "Output Direction: %s");
     }
 
     private static void initMinimapLang(GTLangProvider provider) {

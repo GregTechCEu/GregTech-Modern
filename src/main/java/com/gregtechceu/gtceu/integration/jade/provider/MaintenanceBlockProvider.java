@@ -70,10 +70,10 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
                         }
                     }
                 } else {
-                    iTooltip.add(Component.translatable("gtceu.top.maintenance_broken").withStyle(ChatFormatting.RED));
+                    iTooltip.add(Component.translatable("gtceu.jade.maintenance_broken").withStyle(ChatFormatting.RED));
                 }
             } else {
-                iTooltip.add(Component.translatable("gtceu.top.maintenance_fixed").withStyle(ChatFormatting.GREEN));
+                iTooltip.add(Component.translatable("gtceu.jade.maintenance_fixed").withStyle(ChatFormatting.GREEN));
             }
         }
     }

@@ -110,9 +110,9 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                     }
 
                     if (isInput) {
-                        tooltip.add(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("gtceu.jade.energy_consumption").append(" ").append(text));
                     } else {
-                        tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
+                        tooltip.add(Component.translatable("gtceu.jade.energy_production").append(" ").append(text));
                     }
                 }
             }
