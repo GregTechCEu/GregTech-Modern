@@ -208,6 +208,22 @@ public class GTMuiWidgets {
                 "gtceu.gui.fluid_input_from_output");
     }
 
+    public static ButtonWidget<?> createRecipeTypeButton(WorkableElectricMultiblockMachine workableMultiblock,
+                                                         PanelSyncManager syncManager) {
+        syncManager.registerSyncedAction("nextRecipeType", false, true, (buf) -> {
+            workableMultiblock.cycleActiveRecipeType();
+        });
+        return new ButtonWidget<>()
+                .onMousePressed((context, button) -> {
+                    syncManager.callSyncedAction("nextRecipeType");
+                    return true;
+                })
+                .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
+                .size(18)
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip")))
+                .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
+    }
+
     private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
                                                            Supplier<ItemStack> circuitGetter) {
         return new IntSyncValue(() -> {
