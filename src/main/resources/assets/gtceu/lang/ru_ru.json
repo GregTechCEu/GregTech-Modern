@@ -6176,5 +6176,6 @@
     "gtceu.predicate_error.steam.missing_steam_hatch": "Отсуствует Паровой люк",
     "gtceu.top.cable_overloaded": "§4ПЕРЕГРЕВ: %s%%§r",
     "item.gtceu.gui_module": "GUI модуль",
-    "item.gtceu.tool.behavior.shears": "§aСадовник: §fСтрижет блоки и мобов"
+    "item.gtceu.tool.behavior.shears": "§aСадовник: §fСтрижет блоки и мобов",
+    "gtceu.pattern_error.mismatch_coils": "Разные катушки: %s и %s в точке (%d, %d, %d)"
 }
