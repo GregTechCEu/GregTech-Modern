@@ -405,6 +405,14 @@ public class RecipeHelper {
         return amount % divisor == 0 && amount / divisor >= 25;
     }
 
+    /**
+     * Rolls the value of all Ranged Ingredients in a recipe and replaces them with appropriate Sized Ingredients.
+     * Called once after successful recipe search, immediately before {@link RecipeLogic#handleRecipeIO(GTRecipe, IO)}.
+     *
+     * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
+     * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
+     * @return a copy of the input recipe with all ranged ingredients replaced
+     */
     public static GTRecipe doPrerolls(GTRecipe recipe,
                                       IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         GTRecipe runningRecipe = recipe.copy();
@@ -430,6 +438,15 @@ public class RecipeHelper {
         return runningRecipe;
     }
 
+
+    /**
+    * Rolls the value of all per-tick Ranged Ingredients in a recipe and replaces them with appropriate Sized Ingredients.
+     * Called every tick while a recipe is running, immediately before {@link RecipeLogic#handleTickRecipeIO(GTRecipe, IO)}.
+    *
+    * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
+    * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
+    * @return a copy of the input recipe with all per-tick ranged ingredients replaced
+    */
     public static GTRecipe doTickPrerolls(GTRecipe recipe,
                                           IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                                           GTRecipe lastDisplayedRecipe) {
