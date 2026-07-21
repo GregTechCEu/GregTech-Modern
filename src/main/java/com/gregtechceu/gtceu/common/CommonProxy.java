@@ -262,7 +262,7 @@ public class CommonProxy {
             GTMaterialItems.generateMaterialItems();
             GTMaterialItems.generateTools();
             GTMaterialItems.generateArmors();
-            GTMaterialItems.registerToolHandlers();
+            if (GTCEu.Mods.isJadeLoaded()) GTMaterialItems.JadeCallWrapper.registerToolHandlers();
 
         } else if (event.getRegistryKey() == Registries.FLUID) {
             GTFluids.registerMaterialFluids();

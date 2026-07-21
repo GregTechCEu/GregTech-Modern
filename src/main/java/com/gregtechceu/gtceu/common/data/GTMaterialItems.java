@@ -166,13 +166,15 @@ public class GTMaterialItems {
         }
     }
 
-    public static void registerToolHandlers() {
-        GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
-                return;
-            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0),
-                    map.values().stream().filter(Objects::nonNull).filter(ItemProviderEntry::isPresent)
-                            .map(ItemProviderEntry::asItem).toArray(Item[]::new)));
-        });
+    public static class JadeCallWrapper {
+        public static void registerToolHandlers() {
+            GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
+                if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
+                    return;
+                HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0),
+                        map.values().stream().filter(Objects::nonNull).filter(ItemProviderEntry::isPresent)
+                                .map(ItemProviderEntry::asItem).toArray(Item[]::new)));
+            });
+        }
     }
 }
