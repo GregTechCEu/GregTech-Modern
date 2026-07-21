@@ -126,6 +126,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected int duration;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
+    protected int lastEmptySearchInputVersion = -1;
     @SaveField
     @Getter
     protected long totalContinuousRunningTime;
@@ -197,6 +198,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         duration = 0;
         isActive = false;
         lastFailedMatches = null;
+        lastEmptySearchInputVersion = -1;
         waitingReason = null;
         failureReasons.clear();
         if (status != Status.SUSPEND) {
@@ -265,7 +267,15 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             } else if (lastRecipe != null) {
                 findAndHandleRecipe();
             } else if (!keepSubscribing || getMachine().getOffsetTimer() % 5 == 0) {
-                findAndHandleRecipe();
+                int inputVersion = getRLMachine().getRecipeVersions().inputVersion;
+                boolean searchWouldBeIdentical = lastFailedMatches == null &&
+                        lastEmptySearchInputVersion == inputVersion;
+                if (!searchWouldBeIdentical) {
+                    findAndHandleRecipe();
+                    if (lastRecipe == null && lastFailedMatches == null && failureReasonMap.isEmpty()) {
+                        lastEmptySearchInputVersion = inputVersion;
+                    }
+                }
                 if (lastFailedMatches != null) {
                     for (GTRecipe match : lastFailedMatches) {
                         if (checkMatchedRecipeAvailable(match)) break;
