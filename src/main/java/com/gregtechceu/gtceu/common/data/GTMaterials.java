@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -275,6 +276,10 @@ public class GTMaterials {
             return GTMaterials.NULL;
         }
         return mat;
+    }
+
+    public static Material get(ResourceLocation id) {
+        return GTRegistries.MATERIALS.getOrThrow(id);
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {

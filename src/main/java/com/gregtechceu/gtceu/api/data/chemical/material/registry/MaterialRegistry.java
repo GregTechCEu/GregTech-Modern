@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
@@ -46,12 +45,17 @@ public class MaterialRegistry extends MappedRegistry<Material> {
         return null;
     }
 
+    public Material getOrThrow(ResourceLocation id) {
+        return getOrThrow(ResourceKey.create(GTRegistries.Keys.MATERIAL, id));
+    }
+
     @Override
     public Holder.Reference<Material> registerMapping(int id, ResourceKey<Material> key, Material value,
                                                       Lifecycle lifecycle) {
         if (registrationPhase == Phase.CLOSED || registrationPhase == Phase.FROZEN) {
             throw new IllegalStateException(
-                    "Failed to register material %s. Materials cannot be registered in the PostMaterialEvent (or after)!".formatted(key));
+                    "Failed to register material %s. Materials cannot be registered in the PostMaterialEvent (or after)!"
+                            .formatted(key));
         }
         usedNamespaces.add(key.location().getNamespace());
         return super.registerMapping(id, key, value, lifecycle);

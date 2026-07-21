@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
+
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
