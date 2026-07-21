@@ -86,6 +86,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -96,7 +97,11 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -349,68 +354,44 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("CapeRegistry", CapeRegistry.class);
     }
 
+    private <T> void registryObjectTypeWrapper(TypeWrappers typeWrappers, Class<T> clazz, ResourceKey<Registry<T>> registry) {
+        typeWrappers.register(clazz, (ctx, o) -> {
+            o = Wrapper.unwrapped(o);
+            if (clazz.isInstance(o)) return clazz.cast(o);
+            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
+            if (wrapper == null) return null;
+            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(registry).get(wrapper.wrapped());
+        });
+    }
+
     @Override
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         super.registerTypeWrappers(type, typeWrappers);
-        typeWrappers.registerSimple(GTRecipeType.class, o -> {
-            if (o instanceof Wrapper w) {
-                o = w.unwrap();
-            }
-            if (o instanceof GTRecipeType recipeType) return recipeType;
-            if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
-            return null;
-        });
-        typeWrappers.registerSimple(GTRecipeCategory.class, o -> {
-            if (o instanceof Wrapper w) {
-                o = w.unwrap();
-            }
-            if (o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
-            if (o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
-            return null;
+
+        registryObjectTypeWrapper(typeWrappers, GTRecipeType.class, GTRegistries.Keys.RECIPE_TYPE);
+        registryObjectTypeWrapper(typeWrappers, GTRecipeCategory.class, GTRegistries.Keys.RECIPE_CATEGORY);
+        registryObjectTypeWrapper(typeWrappers, ChanceLogic.class, GTRegistries.Keys.CHANCE_LOGIC);
+
+        registryObjectTypeWrapper(typeWrappers, Element.class, GTRegistries.Keys.ELEMENT);
+        registryObjectTypeWrapper(typeWrappers, Material.class, GTRegistries.Keys.MATERIAL);
+        registryObjectTypeWrapper(typeWrappers, MaterialIconSet.class, GTRegistries.Keys.MATERIAL_ICON_SET);
+        registryObjectTypeWrapper(typeWrappers, MachineDefinition.class, GTRegistries.Keys.MACHINE);
+        registryObjectTypeWrapper(typeWrappers, TagPrefix.class, GTRegistries.Keys.TAG_PREFIX);
+        registryObjectTypeWrapper(typeWrappers, IWorldGenLayer.class, GTRegistries.Keys.WORLD_GEN_LAYER);
+        registryObjectTypeWrapper(typeWrappers, MedicalCondition.class, GTRegistries.Keys.MEDICAL_CONDITION);
+
+
+        typeWrappers.register(RecipeCapability.class, (ctx, o) -> {
+            o = Wrapper.unwrapped(o);
+            if (o instanceof RecipeCapability<?> recipeCapability) return recipeCapability;
+            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
+            if (wrapper == null) return null;
+            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(wrapper.wrapped());
         });
 
-        typeWrappers.registerSimple(Element.class, o -> {
-            if (o instanceof Element element) return element;
-            if (o instanceof CharSequence chars) return GTRegistries.ELEMENTS.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(Material.class, o -> {
-            if (o instanceof Material material) return material;
-            if (o instanceof CharSequence chars) return GTMaterials.get(chars.toString());
-            return null;
-        });
-        typeWrappers.registerSimple(MachineDefinition.class, o -> {
-            if (o instanceof MachineDefinition definition) return definition;
-            if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
-            return null;
-        });
-
-        typeWrappers.registerSimple(TagPrefix.class, o -> {
-            if (o instanceof TagPrefix tagPrefix) return tagPrefix;
-            if (o instanceof CharSequence chars) return GTRegistries.TAG_PREFIXES.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
-        typeWrappers.registerSimple(RecipeCapability.class, o -> {
-            if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof ResourceLocation loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
-            if (o instanceof CharSequence chars)
-                return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        typeWrappers.registerSimple(ChanceLogic.class, o -> {
-            if (o instanceof ChanceLogic capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(GTCEu.id(chars.toString()));
-            return null;
-        });
         typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
+        typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
 
-        typeWrappers.registerSimple(MaterialIconSet.class, o -> {
-            if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return GTRegistries.MATERIAL_ICON_SETS
-                    .get(GTCEu.id(chars.toString()));
-            return null;
-        });
         typeWrappers.registerSimple(MaterialStack.class, o -> {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
@@ -425,12 +406,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             return null;
         });
 
-        typeWrappers.registerSimple(IWorldGenLayer.class, o -> {
-            if (o instanceof IWorldGenLayer layer) return layer;
-            if (o instanceof CharSequence chars) return GTRegistries.WORLD_GEN_LAYERS
-                    .get(GTCEu.id(chars.toString()));
-            return null;
-        });
         typeWrappers.registerSimple(HeightRangePlacement.class, o -> {
             if (o instanceof HeightRangePlacement placement) return placement;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
@@ -462,11 +437,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.registerSimple(IndicatorPlacement.class, o -> {
             if (o instanceof IndicatorPlacement placement) return placement;
             if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
-            return null;
-        });
-        typeWrappers.registerSimple(MedicalCondition.class, o -> {
-            if (o instanceof MedicalCondition condition) return condition;
-            if (o instanceof CharSequence str) return GTRegistries.MEDICAL_CONDITIONS.get(GTCEu.id(str.toString()));
             return null;
         });
         typeWrappers.registerSimple(IWorldGenLayer.RuleTestSupplier.class, o -> {
@@ -545,7 +515,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             builder.recipeType.setMinRecipeConditions(builder.conditions.size());
         }
         if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
-            builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.get(gtRecipe.getValue(GTRecipeSchema.CATEGORY));
+            builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.getOptional(gtRecipe.getValue(GTRecipeSchema.CATEGORY)).orElseThrow();
         }
         builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
 

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -36,7 +36,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
-    public transient TieredCreationFunction machine;
+    public transient MachineInstanceFactory.Tiered<? extends MultiblockControllerMachine> machine;
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
 
@@ -45,7 +45,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         this.dummyBuilder = true;
     }
 
-    public KJSTieredMultiblockBuilder(ResourceLocation id, TieredCreationFunction machine) {
+    public KJSTieredMultiblockBuilder(ResourceLocation id, MachineInstanceFactory.Tiered<? extends MultiblockControllerMachine> machine) {
         super(id);
         this.machine = machine;
         this.dummyBuilder = true;
@@ -105,7 +105,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
             MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> builder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace())
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
-                            holder -> machine.create(holder, tier));
+                            holder -> machine.buildMachine(holder, tier));
 
             builder.workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
@@ -115,12 +115,6 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
             anyDefinition = this.machines[tier];
         }
         return Objects.requireNonNull(anyDefinition);
-    }
-
-    @FunctionalInterface
-    public interface TieredCreationFunction {
-
-        MultiblockControllerMachine create(BlockEntityCreationInfo info, int tier);
     }
 
     @FunctionalInterface
