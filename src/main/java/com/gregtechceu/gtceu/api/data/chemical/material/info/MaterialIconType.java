@@ -139,7 +139,7 @@ public record MaterialIconType(String name) {
     public static final class KJSEventWrapper {
 
         public static void materialIconType() {
-            GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialIconTypeEventJS());
+            GTCEuStartupEvents.MATERIAL_ICON_TYPE.post(new MaterialIconTypeEventJS());
         }
     }
 
