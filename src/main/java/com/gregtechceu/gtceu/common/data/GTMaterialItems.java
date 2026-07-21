@@ -18,7 +18,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
-import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.tterrag.registrate.providers.ProviderType;
@@ -28,7 +27,6 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import snownee.jade.addon.harvest.HarvestToolProvider;
 import snownee.jade.addon.harvest.SimpleToolHandler;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -167,6 +165,7 @@ public class GTMaterialItems {
     }
 
     public static class JadeCallWrapper {
+
         public static void registerToolHandlers() {
             GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
                 if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))

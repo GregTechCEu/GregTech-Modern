@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.GenericEvent;

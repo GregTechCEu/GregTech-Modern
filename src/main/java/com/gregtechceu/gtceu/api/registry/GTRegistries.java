@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.registry;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -24,9 +22,8 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-
 import com.gregtechceu.gtceu.core.mixins.BuiltInRegistriesAccessor;
-import com.mojang.serialization.Lifecycle;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
@@ -42,9 +39,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
-
 import net.minecraftforge.registries.IdMappingEvent;
 import net.minecraftforge.registries.RegisterEvent;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -148,7 +148,7 @@ public final class GTRegistries {
         BuiltInRegistriesAccessor.gtceu$getWritableRegistry().register((ResourceKey<WritableRegistry<?>>) (Object) key,
                 registry, Lifecycle.stable());
         LOAD_ORDER.add(key.location());
-        REGISTRIES.put((ResourceKey<Registry<?>>)(Object)key, registry);
+        REGISTRIES.put((ResourceKey<Registry<?>>) (Object) key, registry);
         return registry;
     }
 
@@ -187,8 +187,9 @@ public final class GTRegistries {
     @SuppressWarnings({ "unchecked" })
     private static void actuallyRegister(RegisterEvent event) {
         if (!TO_REGISTER.containsRow(event.getVanillaRegistry())) return;
-        for (var entry: TO_REGISTER.row(event.getVanillaRegistry()).entrySet()) {
-            event.register((ResourceKey<? extends Registry<Object>>) event.getRegistryKey(), entry.getKey(), entry::getValue);
+        for (var entry : TO_REGISTER.row(event.getVanillaRegistry()).entrySet()) {
+            event.register((ResourceKey<? extends Registry<Object>>) event.getRegistryKey(), entry.getKey(),
+                    entry::getValue);
         }
     }
 
@@ -205,7 +206,6 @@ public final class GTRegistries {
         eventBus.addListener(GTRegistries::actuallyRegister);
         MinecraftForge.EVENT_BUS.addListener(GTRegistries::onFreeze);
     }
-
 
     public static void init() {}
 

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.FluidVeinBuilderJS;
+
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.event.EventJS;

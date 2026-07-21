@@ -76,11 +76,10 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconSetBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
-
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
@@ -114,6 +113,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -134,7 +134,6 @@ import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
-import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.*;
 import java.util.Map;
@@ -151,7 +150,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void initStartup() {
         super.initStartup();
 
-        for (var registry: GTRegistries.getRegistries()) {
+        for (var registry : GTRegistries.getRegistries()) {
             GTCEuStartupEvents.REGISTRY.post(new GTRegistryEventJS<>(RegistryInfo.of(registry.key())));
         }
     }
@@ -205,7 +204,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @SubscribeEvent
     public void registerMachines(RegisterEvent event) {
         if (event.getRegistryKey().equals(GTRegistries.Keys.MACHINE)) {
-            for (var builder: GTRegistryInfo.MACHINE) {
+            for (var builder : GTRegistryInfo.MACHINE) {
                 builder.createObject();
             }
         }
@@ -354,13 +353,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("CapeRegistry", CapeRegistry.class);
     }
 
-    private <T> void registryObjectTypeWrapper(TypeWrappers typeWrappers, Class<T> clazz, ResourceKey<Registry<T>> registry) {
+    private <T> void registryObjectTypeWrapper(TypeWrappers typeWrappers, Class<T> clazz,
+                                               ResourceKey<Registry<T>> registry) {
         typeWrappers.register(clazz, (ctx, o) -> {
             o = Wrapper.unwrapped(o);
             if (clazz.isInstance(o)) return clazz.cast(o);
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(registry).get(wrapper.wrapped());
+            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(registry)
+                    .get(wrapper.wrapped());
         });
     }
 
@@ -380,13 +381,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         registryObjectTypeWrapper(typeWrappers, IWorldGenLayer.class, GTRegistries.Keys.WORLD_GEN_LAYER);
         registryObjectTypeWrapper(typeWrappers, MedicalCondition.class, GTRegistries.Keys.MEDICAL_CONDITION);
 
-
         typeWrappers.register(RecipeCapability.class, (ctx, o) -> {
             o = Wrapper.unwrapped(o);
             if (o instanceof RecipeCapability<?> recipeCapability) return recipeCapability;
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(wrapper.wrapped());
+            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
+                    .registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(wrapper.wrapped());
         });
 
         typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
@@ -515,7 +516,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             builder.recipeType.setMinRecipeConditions(builder.conditions.size());
         }
         if (gtRecipe.getValue(GTRecipeSchema.CATEGORY) != null) {
-            builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES.getOptional(gtRecipe.getValue(GTRecipeSchema.CATEGORY)).orElseThrow();
+            builder.recipeCategory = GTRegistries.RECIPE_CATEGORIES
+                    .getOptional(gtRecipe.getValue(GTRecipeSchema.CATEGORY)).orElseThrow();
         }
         builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
 

@@ -16,13 +16,13 @@ public class GameDataMixin {
 
     // Make GT register events fire first, even before minecraft registries.
     @ModifyVariable(
-            method = "postRegisterEvents",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Set;addAll(Ljava/util/Collection;)Z",
-                    ordinal = 1,
-                    shift = At.Shift.AFTER),
-            name = "ordered")
+                    method = "postRegisterEvents",
+                    at = @At(
+                             value = "INVOKE",
+                             target = "Ljava/util/Set;addAll(Ljava/util/Collection;)Z",
+                             ordinal = 1,
+                             shift = At.Shift.AFTER),
+                    name = "ordered")
     private static Set<ResourceLocation> gtceuFirst(Set<ResourceLocation> ordered) {
         return ordered.stream()
                 .sorted((a, b) -> {

@@ -4,19 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import snownee.jade.addon.harvest.HarvestToolProvider;
-import snownee.jade.addon.harvest.SimpleToolHandler;
 import snownee.jade.api.*;
-
-import java.util.Objects;
 
 @WailaPlugin
 public class GTJadePlugin implements IWailaPlugin {

@@ -54,6 +54,7 @@ public final class GTRecipeConditions {
     private static <T extends RecipeCondition<T>> RecipeConditionType<T> register(String name,
                                                                                   RecipeConditionType.ConditionFactory<T> factory,
                                                                                   Codec<T> codec) {
-        return GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, GTCEu.id(name), new RecipeConditionType<>(factory, codec));
+        return GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, GTCEu.id(name),
+                new RecipeConditionType<>(factory, codec));
     }
 }

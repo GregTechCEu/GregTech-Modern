@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.mojang.serialization.Lifecycle;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
@@ -13,13 +12,15 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -41,7 +42,8 @@ public class MaterialRegistry extends MappedRegistry<Material> {
     }
 
     @Override
-    public Holder.Reference<Material> registerMapping(int id, ResourceKey<Material> key, Material value, Lifecycle lifecycle) {
+    public Holder.Reference<Material> registerMapping(int id, ResourceKey<Material> key, Material value,
+                                                      Lifecycle lifecycle) {
         if (registrationPhase == Phase.CLOSED || registrationPhase == Phase.FROZEN) {
             GTCEu.LOGGER.error(
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material {}...",

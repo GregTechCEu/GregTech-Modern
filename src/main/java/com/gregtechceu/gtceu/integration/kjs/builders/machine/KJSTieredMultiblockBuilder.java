@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
@@ -45,7 +45,8 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
         this.dummyBuilder = true;
     }
 
-    public KJSTieredMultiblockBuilder(ResourceLocation id, MachineInstanceFactory.Tiered<? extends MultiblockControllerMachine> machine) {
+    public KJSTieredMultiblockBuilder(ResourceLocation id,
+                                      MachineInstanceFactory.Tiered<? extends MultiblockControllerMachine> machine) {
         super(id);
         this.machine = machine;
         this.dummyBuilder = true;

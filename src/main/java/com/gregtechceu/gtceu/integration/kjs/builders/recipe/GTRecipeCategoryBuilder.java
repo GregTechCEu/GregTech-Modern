@@ -7,12 +7,12 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import dev.latvian.mods.kubejs.registry.BuilderBase;
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 

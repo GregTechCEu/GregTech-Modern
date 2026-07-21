@@ -119,7 +119,8 @@ public class MaterialIconSet {
     }
 
     @ApiStatus.Internal
-    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset, boolean isRootIconset, boolean register) {
+    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset, boolean isRootIconset,
+                           boolean register) {
         this.id = id;
 
         if (id.getPath().contains("/"))

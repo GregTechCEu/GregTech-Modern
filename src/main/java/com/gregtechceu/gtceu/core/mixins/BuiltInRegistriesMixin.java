@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.Registry;
@@ -21,9 +20,9 @@ public class BuiltInRegistriesMixin {
     }
 
     @WrapOperation(method = "validate",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/core/Registry;forEach(Ljava/util/function/Consumer;)V",
-                    remap = false))
+                   at = @At(value = "INVOKE",
+                            target = "Lnet/minecraft/core/Registry;forEach(Ljava/util/function/Consumer;)V",
+                            remap = false))
     private static <T extends Registry<?>> void gtceu$skipRegistryValidation(Registry<T> instance, Consumer<T> consumer,
                                                                              Operation<Void> original) {
         Consumer<T> callback = (t) -> {

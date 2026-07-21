@@ -72,7 +72,8 @@ public class GTSoundEntries {
     public static void registerSounds(RegisterEvent registerEvent) {
         if (Objects.equals(registerEvent.getForgeRegistry(), ForgeRegistries.SOUND_EVENTS)) {
             for (SoundEntry entry : GTRegistries.SOUNDS) {
-                entry.register(soundEvent -> registerEvent.register(Registries.SOUND_EVENT, soundEvent.getLocation(), () -> soundEvent));
+                entry.register(soundEvent -> registerEvent.register(Registries.SOUND_EVENT, soundEvent.getLocation(),
+                        () -> soundEvent));
             }
         }
     }
