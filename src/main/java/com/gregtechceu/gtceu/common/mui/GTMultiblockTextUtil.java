@@ -393,6 +393,24 @@ public class GTMultiblockTextUtil {
     }
 
     @SuppressWarnings("unchecked")
+    public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
+        StringSyncValue recipeType = syncManager.getOrCreateSyncHandler("recipeTypeComponent", StringSyncValue.class,
+                () -> new StringSyncValue(
+                        () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().registryName.getPath())));
+
+        // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
+        // on client side.
+        return Text
+                .dynamic(() -> Component.translatable("gtceu.gui.machinemode",
+                        Component.literal(recipeType.getStringValue())
+                                .withStyle(ChatFormatting.GOLD))
+                        .withStyle(ChatFormatting.GRAY))
+                .asWidget()
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.title")))
+                .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
+    }
+
+    @SuppressWarnings("unchecked")
     public static DynamicWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                   PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>) syncManager.getOrCreateSyncHandler(

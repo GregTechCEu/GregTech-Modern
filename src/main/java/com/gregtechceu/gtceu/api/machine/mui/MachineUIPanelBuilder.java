@@ -95,6 +95,12 @@ public class MachineUIPanelBuilder {
                     machine instanceof WorkableElectricMultiblockMachine workableElectric) {
                 attachRight.child(GTMuiWidgets.createBatchModeButton(workableElectric));
             }
+
+            if (machine.getDefinition().getRecipeTypes().length > 1 &&
+                    machine instanceof WorkableElectricMultiblockMachine workableMachine) {
+                attachRight.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
+            }
+
         }
 
         leftConfigurators.accept(attachLeft);
