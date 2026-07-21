@@ -394,7 +394,7 @@ public class GTMultiblockTextUtil {
 
     @SuppressWarnings("unchecked")
     public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
-        StringSyncValue recipeType = syncManager.getOrCreateSyncHandler("recipeTypeComponent", StringSyncValue.class,
+        StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
                 () -> new StringSyncValue(
                         () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().registryName.getPath())));
 
@@ -402,7 +402,7 @@ public class GTMultiblockTextUtil {
         // on client side.
         return Text
                 .dynamic(() -> Component.translatable("gtceu.gui.machinemode",
-                        Component.literal(recipeType.getStringValue())
+                        Component.literal(recipeTypeName.getStringValue())
                                 .withStyle(ChatFormatting.GOLD))
                         .withStyle(ChatFormatting.GRAY))
                 .asWidget()
