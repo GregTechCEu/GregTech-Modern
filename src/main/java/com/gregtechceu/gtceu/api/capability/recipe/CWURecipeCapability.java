@@ -31,6 +31,11 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
         return true;
     }
 
+    @Override
+    public boolean canCacheRecipeSearch() {
+        return false;
+    }
+
     public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine) {
         return machine.getTraits(NotifiableComputationContainer.TYPE);
     }
