@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.api.data;
 
+import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class DimensionMarker {
@@ -62,5 +66,33 @@ public class DimensionMarker {
             stack.setHoverName(Component.translatable(overrideName));
         }
         return stack;
+    }
+
+    @Setter
+    @Accessors(fluent = true, chain = true)
+    public static class Builder {
+
+        private ResourceLocation id;
+        private Supplier<Item> iconSupplier;
+        private int tier = 0;
+        @Nullable
+        private String overrideName;
+
+        public Builder(ResourceLocation dimKey) {
+            id = dimKey;
+        }
+
+        public DimensionMarker buildAndRegister() {
+            Objects.requireNonNull(id);
+            Objects.requireNonNull(iconSupplier, "iconSupplier cannot be null;");
+            Preconditions.checkArgument(tier > 0 && tier < MAX_TIER, "Tier must be between 0 and " + MAX_TIER);
+            DimensionMarker marker = new DimensionMarker(tier, iconSupplier, overrideName);
+            marker.register(id);
+            return marker;
+        }
+
+        public DimensionMarker register() {
+            return buildAndRegister();
+        }
     }
 }
