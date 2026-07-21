@@ -48,6 +48,8 @@ public class IntProviderIngredientTest {
     // items used in recipes. Up top here for quick replacements.
     private static final ItemStack CR_IN = new ItemStack(Items.GREEN_STAINED_GLASS);
     private static final ItemStack CR_OUT = new ItemStack(Items.BRICK_SLAB);
+    private static final ItemStack CR_TICK_IN = new ItemStack(Items.ORANGE_STAINED_GLASS);
+    private static final ItemStack CR_TICK_OUT = new ItemStack(Items.BRICKS);
     private static final ItemStack LCR_IN = new ItemStack(Items.BLACK_STAINED_GLASS);
     private static final ItemStack LCR_OUT = new ItemStack(Items.BRICK_STAIRS);
     private static final ItemStack LCENT_IN = new ItemStack(Items.LIME_STAINED_GLASS);
@@ -125,6 +127,48 @@ public class IntProviderIngredientTest {
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
                 .inputItems(LCENT_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 4))
+                .EUt(GTValues.V[GTValues.IV])
+                .duration(4)
+                .buildRawRecipe());
+
+        CRHandler.addStaging(CR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_ranged_tick_input_item_cr"))
+                .perTick(true)
+                .inputItemsRanged(CR_TICK_IN, UniformInt.of(0, 9))
+                .perTick(false)
+                .inputItems(COBBLE)
+                .outputItems(STONE)
+                .EUt(GTValues.V[GTValues.HV])
+                .duration(2)
+                .buildRawRecipe());
+
+        CRHandler.addStaging(CR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_ranged_tick_output_item_cr"))
+                .inputItems(CR_TICK_OUT)
+                .perTick(true)
+                .outputItemsRanged(STONE, UniformInt.of(0, 9))
+                .perTick(false)
+                .EUt(GTValues.V[GTValues.HV])
+                .duration(2)
+                .buildRawRecipe());
+
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_ranged_tick_input_item_cent"))
+                .perTick(true)
+                .inputItemsRanged(CR_TICK_IN, UniformInt.of(0, 4))
+                .perTick(false)
+                .inputItems(COBBLE)
+                .outputItems(STONE)
+                .EUt(GTValues.V[GTValues.IV])
+                .duration(4)
+                .buildRawRecipe());
+
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_ranged_tick_output_item_cent"))
+                .inputItems(CR_TICK_OUT)
+                .perTick(true)
+                .outputItemsRanged(STONE, UniformInt.of(0, 4))
+                .perTick(false)
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(4)
                 .buildRawRecipe());
@@ -1015,5 +1059,283 @@ public class IntProviderIngredientTest {
             });
         }
         TestUtils.succeedAfterTest(helper);
+    }
+
+    // Test for singleblock machine with per-tick ranged item input
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    public static void singleblockRangedTickItemInput(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+
+        itemIn.setStackInSlot(0, CR_TICK_IN.copyWithCount(64));
+        itemIn.setStackInSlot(1, COBBLE.copyWithCount(REPLICAS));
+        // 1t to turn on, 2t per recipe run
+        // get the result of each roll independently
+        int[] addedRolls = new int[REPLICAS];
+        for (int i = 0; i < REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(2 * i + 1, () -> {
+                addedRolls[finalI] = itemIn.getStackInSlot(0).getCount();
+            });
+        }
+        // check the results of all rolls together
+        helper.runAfterDelay(REPLICAS * 2 + 1, () -> {
+            ItemStack results = itemIn.getStackInSlot(0);
+            int upperLimit = 64 - (REPLICAS * 0);
+            int lowerLimit = 64 - (REPLICAS * 9);
+            helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), STONE.copyWithCount(REPLICAS)),
+                    "Singleblock CR didn't complete correct number of recipes, completed [" +
+                            itemOut.getStackInSlot(0).getCount() + "] not [" + REPLICAS + "]");
+            helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
+                    "Singleblock CR didn't consume correct number of items, consumed [" +
+                            (64 - results.getCount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+            helper.assertFalse((results.getCount() == lowerLimit),
+                    "Singleblock CR rolled max value on every roll");
+            helper.assertFalse((results.getCount() == upperLimit),
+                    "Singleblock CR rolled min value on every roll");
+
+            // check if all the rolls were equal, but not min/max
+            int[] rolls = new int[REPLICAS];
+            rolls[0] = 64 - addedRolls[0];
+            boolean allEqual = false;
+            for (int i = 1; i < REPLICAS; i++) {
+                rolls[i] = addedRolls[i - 1] - addedRolls[i];
+                if (rolls[i] == rolls[i - 1]) {
+                    allEqual = true;
+                } else {
+                    allEqual = false;
+                    break;
+                }
+            }
+            helper.assertFalse(allEqual,
+                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+            helper.succeed();
+        });
+    }
+
+    // Test for singleblock machine with per-tick ranged item output
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    public static void singleblockRangedTickItemOutput(GameTestHelper helper) {
+        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
+                helper.getBlockEntity(new BlockPos(0, 1, 0)));
+
+        machine.setRecipeType(CR_RECIPE_TYPE);
+        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
+        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
+                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+
+        itemIn.setStackInSlot(0, CR_TICK_OUT.copyWithCount(REPLICAS));
+        // 1t to turn on, 2t per recipe run
+        // get the result of each roll independently
+        int[] addedRolls = new int[REPLICAS];
+        for (int i = 0; i < REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(2 * i + 3, () -> {
+                addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
+            });
+        }
+        // check the results of all rolls together
+        helper.runAfterDelay(REPLICAS * 2 + 1, () -> {
+            helper.assertTrue(itemIn.getStackInSlot(0).isEmpty(),
+                    "Singleblock CR didn't complete correct number of recipes, completed [" +
+                            itemIn.getStackInSlot(0).getCount() + "] not [" + REPLICAS + "]");
+            ItemStack results = itemOut.getStackInSlot(0);
+            helper.assertTrue(TestUtils.isItemWithinRange(results, REPLICAS, REPLICAS * 9),
+                    "Singleblock CR didn't produce correct number of items, produced [" +
+                            results.getCount() + "] not [" + REPLICAS + "-" + (REPLICAS * 9) + "]");
+            helper.assertFalse((results.getCount() == REPLICAS * 9),
+                    "Singleblock CR rolled max value on every roll");
+            helper.assertFalse((results.getCount() == REPLICAS * 0),
+                    "Singleblock CR rolled min value on every roll");
+
+            // check if all the rolls were equal, but not min/max
+            int[] rolls = new int[REPLICAS];
+            rolls[0] = addedRolls[0];
+            boolean allEqual = false;
+            for (int i = 1; i < REPLICAS; i++) {
+                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+                if (rolls[i] == rolls[i - 1]) {
+                    allEqual = true;
+                } else {
+                    allEqual = false;
+                    break;
+                }
+            }
+            helper.assertFalse(allEqual,
+                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+            helper.succeed();
+        });
+    }
+
+
+    // test for multiblock machine with Batching and 16x Parallels with per-tick ranged item input
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+            batch = "RangedIngredients")
+    public static void multiblockLCentRangedTickItemInput16ParallelBatched(GameTestHelper helper) {
+        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+
+        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
+        NotifiableItemStackHandler itemOut = busHolder.outputBus1.getInventory();
+
+        int batches = 16;
+        int parallels = 16;
+        busHolder.controller.setBatchEnabled(true);
+        busHolder.parallelHatch.setCurrentParallel(parallels);
+
+        int j;
+        int stacks = batches * parallels / 64;
+
+        for (j = 0; j < stacks; j++) {
+            itemIn.setStackInSlot(j, COBBLE.copyWithCount((batches * parallels / stacks)));
+        }
+        for (int k = j; k < stacks + batches; k++) {
+            itemIn.setStackInSlot(k, LCENT_IN.copyWithCount(64));
+        }
+
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
+        // 16 parallels
+        // check the results of all rolls together
+        // repeat recipe MULTI_REPLICAS times
+        int[] rolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(75 * finalI, () -> {
+                ItemStack results = itemIn.getStackInSlot(0);
+                int upperLimit = 64 - (batches * parallels * 0);
+                int lowerLimit = 64 - (batches * parallels * 4);
+                int completed = batches * parallels * finalI;
+                helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
+                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                STONE.copyWithCount(completed)),
+                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
+                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
+                helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
+                        "Batched Parallel LCent didn't consume correct number of items, consumed " +
+                                (64 - results.getCount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+
+                rolls[finalI - 1] = 64 - results.getCount();
+
+                // reset for a rerun
+                int l;
+                for (l = 0; l < stacks; l++) {
+                    itemIn.setStackInSlot(l,
+                            COBBLE.copyWithCount((batches * parallels / stacks)));
+                }
+                for (int k = l; k < stacks + batches; k++) {
+                    itemIn.setStackInSlot(k, LCENT_IN.copyWithCount(64));
+                }
+            });
+        }
+
+        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
+            // check if each roll was a multiple of run count
+            boolean sus = false;
+            for (int i = 0; i < MULTI_REPLICAS; i++) {
+                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+                    sus = true;
+                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged item input test iteration " + i + " consumed [" +
+                            rolls[i] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+                            "). If this message only appears once, this is likely a false positive.");
+                } else {
+                    sus = false;
+                    break;
+                }
+            }
+
+            helper.assertFalse(sus, "Batched Parallel LCent ranged item input test rolled exactly even to" +
+                    " Batch * Parallel count on every iteration");
+            helper.succeed();
+        });
+    }
+
+    // test for multiblock machine with Batching 16x Parallels with per-tick ranged item output
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+            batch = "RangedIngredients")
+    public static void multiblockLCentRangedTickItemOutput16ParallelBatched(GameTestHelper helper) {
+        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+
+        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
+        NotifiableItemStackHandler itemOut = busHolder.outputBus1.getInventory();
+
+        int batches = 16;
+        int parallels = 16;
+        busHolder.controller.setBatchEnabled(true);
+        busHolder.parallelHatch.setCurrentParallel(parallels);
+
+        for (int j = 0; j < batches; j++) {
+            itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
+        }
+
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
+        // 16 parallels
+        // check the results of all rolls together
+        // repeat recipe MULTI_REPLICAS times
+        int[] rolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(75 * finalI, () -> {
+                int runs = finalI * batches * parallels;
+                helper.assertTrue(itemIn.isEmpty(),
+                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
+                                (runs - itemIn.getTotalContentAmount()) + "] not [" + runs +
+                                "]\nCurrent machine state: " +
+                                busHolder.controller.recipeLogic.getStatus() + "\nFailed recipes follow:\n" +
+                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
+                int lowerLimit = batches * parallels * 0;
+                int upperLimit = batches * parallels * 4;
+                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
+                        "Batched Parallel LCent didn't produce correct number of items, produced [" +
+                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
+
+                rolls[finalI - 1] = resultCount;
+
+                // reset for a rerun
+                for (int j = 0; j < batches; j++) {
+                    itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
+                }
+                // Don't overflow the output bus
+                for (int j = 0; j < itemOut.getSize(); j++) {
+                    itemOut.setStackInSlot(j, ItemStack.EMPTY);
+                }
+            });
+        }
+
+        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
+            // check if each roll was a multiple of run count
+            boolean sus = false;
+
+            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
+                sus = true;
+                GTCEu.LOGGER.warn("Batched Parallel LCent ranged item output test iteration " + 1 + " produced [" +
+                        rolls[0] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+                        "). If this message only appears once, this is likely a false positive.");
+            }
+            for (int i = 1; i < MULTI_REPLICAS; i++) {
+                if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
+                    sus = true;
+                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged item output test iteration " + (i + 1) +
+                            " produced [" + rolls[i] + "] items, a multiple of its Batch * Parallel count (" +
+                            (batches * parallels) + "). If this message only appears once, this is likely" +
+                            " a false positive.");
+                } else {
+                    sus = false;
+                    break;
+                }
+            }
+
+            helper.assertFalse(sus, "Batched Parallel LCent ranged item output test rolled exactly even to" +
+                    " Batch * Parallel count on every iteration");
+            helper.succeed();
+        });
     }
 }
