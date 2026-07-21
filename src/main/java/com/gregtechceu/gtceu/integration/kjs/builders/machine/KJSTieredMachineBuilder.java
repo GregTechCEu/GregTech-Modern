@@ -149,12 +149,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
     }
 
     @FunctionalInterface
-    public interface CreationFunction<T extends MetaMachine> {
-
-        T create(BlockEntityCreationInfo info);
-    }
-
-    @FunctionalInterface
     public interface DefinitionFunction {
 
         void apply(int tier, MachineBuilder<?, ?, ?> builder);

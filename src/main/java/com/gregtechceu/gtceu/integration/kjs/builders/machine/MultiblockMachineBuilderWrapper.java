@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.function.*;
 
 @SuppressWarnings("unused")
-public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
+public class MultiblockMachineBuilderWrapper extends BuilderBase<MachineDefinition>
                                              implements IMachineBuilderKJS {
 
     private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
@@ -411,12 +411,12 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
-                                                                 KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
+                                                                 MachineInstanceFactory<? extends MultiblockControllerMachine> machine) {
         var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                machine::create);
+                machine);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 }

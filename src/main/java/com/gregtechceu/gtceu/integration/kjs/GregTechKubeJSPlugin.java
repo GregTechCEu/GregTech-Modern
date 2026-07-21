@@ -165,21 +165,16 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
                 true);
 
-        GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
-                true);
-        GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
-        GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class,
-                KJSSteamMachineBuilder::new);
-        GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
+        GTRegistryInfo.MACHINE.addType("simple", KJSTieredMachineBuilder.class,
+                (id) -> new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false), true);
+        GTRegistryInfo.MACHINE.addType("custom", KJSTieredMachineBuilder.class, KJSTieredMachineBuilder::new);
+        GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
+        GTRegistryInfo.MACHINE.addType("generator", KJSTieredMachineBuilder.class,
+                (id) -> new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true));
         GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilderWrapper.class,
                 MultiblockMachineBuilderWrapper::createKJSMulti);
-        GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
-                KJSWrappingMultiblockBuilder::new);
+        GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSTieredMultiblockBuilder.class,
+                KJSTieredMultiblockBuilder::new);
         GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderWrapper.class,
                 (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
 
