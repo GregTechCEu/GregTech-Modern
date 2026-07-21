@@ -1,16 +1,10 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
@@ -37,6 +31,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
@@ -52,7 +47,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     @SaveField
     private int minStackSize = 1;
     @Getter
-    @Setter
     @SaveField
     private int ticksPerCycle = 40;
 
@@ -60,8 +54,11 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     private Predicate<GenericStack> autoPullTest;
 
     public MEStockingBusPartMachine(BlockEntityCreationInfo info) {
-        super(info);
+        super(info, new ExportOnlyAEStockingItemList(CONFIG_SIZE));
         this.autoPullTest = $ -> false;
+        setOffsetBound(ticksPerCycle);
+        this.aeItemHandler = (ExportOnlyAEItemList) getInventory();
+        ((ExportOnlyAEStockingItemList) getInventory()).setStockingBusPartMachine(this);
     }
 
     /////////////////////////////////
@@ -69,21 +66,15 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
     /////////////////////////////////
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
-        super.addedToController(controller);
-        IMEStockingPart.super.addedToController(controller);
+    public void addedToController(MultiblockControllerMachine controller, String name) {
+        super.addedToController(controller, name);
+        IMEStockingPart.super.addedToController(controller, name);
     }
 
     @Override
     public void removedFromController(MultiblockControllerMachine controller) {
         IMEStockingPart.super.removedFromController(controller);
         super.removedFromController(controller);
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createInventory() {
-        this.aeItemHandler = new ExportOnlyAEStockingItemList(this, CONFIG_SIZE);
-        return this.aeItemHandler;
     }
 
     /////////////////////////////////
@@ -123,10 +114,12 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         }
     }
 
-    @Override
-    public void attachSideTabs(TabsWidget sideTabs) {
-        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
-    }
+    /*
+     * @Override
+     * public void attachSideTabs(TabsWidget sideTabs) {
+     * sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
+     * }
+     */
 
     @Override
     protected void flushInventory() {
@@ -157,7 +150,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         // Otherwise, we need to test for if the item is configured
         // in any stocking bus in the multi (besides ourselves).
         for (MultiblockControllerMachine controller : getControllers()) {
-            for (IMultiPart part : controller.getParts()) {
+            for (MultiblockPartMachine part : controller.getParts()) {
                 if (part instanceof MEStockingBusPartMachine bus) {
                     // We don't need to check for ourselves, as this case is handled elsewhere.
                     if (bus == this || bus.isDistinct()) continue;
@@ -182,6 +175,11 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
                 updateInventorySubscription();
             }
         }
+    }
+
+    public void setTicksPerCycle(int ticksPerCycle) {
+        this.ticksPerCycle = ticksPerCycle;
+        setOffsetBound(ticksPerCycle);
     }
 
     /**
@@ -248,17 +246,6 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         aeItemHandler.clearInventory(index);
     }
 
-    ///////////////////////////////
-    // ********** GUI ***********//
-    ///////////////////////////////
-
-    @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IMEStockingPart.super.attachConfigurators(configuratorPanel);
-        super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
-    }
-
     @Override
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
@@ -289,7 +276,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("AutoPull", true);
         tag.putByte("GhostCircuit",
-                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+                (byte) circuitSlot.getCurrentCircuit());
         return tag;
     }
 
@@ -298,7 +285,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         if (tag.getBoolean("AutoPull")) {
             // if being set to auto-pull, no need to read the configured slots
             this.setAutoPull(true);
-            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
             return;
         }
         // set auto pull first to avoid issues with clearing the config after reading from the data stick
@@ -306,15 +293,26 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         super.readConfigFromTag(provider, tag);
     }
 
-    private class ExportOnlyAEStockingItemList extends ExportOnlyAEItemList {
+    private static class ExportOnlyAEStockingItemList extends ExportOnlyAEItemList {
 
-        public ExportOnlyAEStockingItemList(MetaMachine holder, int slots) {
-            super(holder, slots, ExportOnlyAEStockingItemSlot::new);
+        @Getter
+        @Nullable
+        MEStockingBusPartMachine stockingBusPartMachine;
+
+        public ExportOnlyAEStockingItemList(int slots) {
+            super(slots, ExportOnlyAEStockingItemSlot::new);
+        }
+
+        public void setStockingBusPartMachine(@Nullable MEStockingBusPartMachine stockingBusPartMachine) {
+            this.stockingBusPartMachine = stockingBusPartMachine;
+            for (var slot : inventory) {
+                ((ExportOnlyAEStockingItemSlot) (slot)).setStockingBusPartMachine(stockingBusPartMachine);
+            }
         }
 
         @Override
         public boolean isAutoPull() {
-            return autoPull;
+            return Objects.requireNonNull(getStockingBusPartMachine()).isAutoPull();
         }
 
         @Override
@@ -327,13 +325,18 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
             boolean inThisBus = super.hasStackInConfig(stack, false);
             if (inThisBus) return true;
             if (checkExternal) {
-                return testConfiguredInOtherPart(stack);
+                return Objects.requireNonNull(getStockingBusPartMachine()).testConfiguredInOtherPart(stack);
             }
             return false;
         }
     }
 
-    private class ExportOnlyAEStockingItemSlot extends ExportOnlyAEItemSlot {
+    private static class ExportOnlyAEStockingItemSlot extends ExportOnlyAEItemSlot {
+
+        @Getter
+        @Setter
+        @Nullable
+        MEStockingBusPartMachine stockingBusPartMachine;
 
         public ExportOnlyAEStockingItemSlot() {
             super();
@@ -345,16 +348,17 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (slot == 0 && this.stock != null) {
+            if (slot == 0 && this.stock != null && stockingBusPartMachine != null) {
                 if (this.config != null) {
                     // Extract the items from the real net to either validate (simulate)
                     // or extract (modulate) when this is called
-                    if (!isOnline()) return ItemStack.EMPTY;
-                    MEStorage aeNetwork = getMainNode().getGrid().getStorageService().getInventory();
+                    if (!stockingBusPartMachine.isOnline()) return ItemStack.EMPTY;
+                    MEStorage aeNetwork = stockingBusPartMachine.getMainNode().getGrid().getStorageService()
+                            .getInventory();
 
                     Actionable action = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
                     var key = config.what();
-                    long extracted = aeNetwork.extract(key, amount, action, actionSource);
+                    long extracted = aeNetwork.extract(key, amount, action, stockingBusPartMachine.actionSource);
 
                     if (extracted > 0) {
                         ItemStack resultStack = key instanceof AEItemKey itemKey ?

@@ -9,9 +9,11 @@ import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
+import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
@@ -40,6 +42,23 @@ public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap>
     @Override
     public String toString() {
         return "capability_map";
+    }
+
+    @Override
+    public boolean matches(RecipeMatchContext cx, CapabilityMap value, ReplacementMatchInfo match) {
+        for (var entry : value.entrySet()) {
+            ContentJS<?> content = GTRecipeComponents.VALID_CAPS.get(entry.getKey());
+            if (content == null) {
+                continue;
+            }
+            List<Content> values = entry.getValue();
+            for (int i = 0; i < values.size(); i++) {
+                if (content.matches(cx, values.get(i), match)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

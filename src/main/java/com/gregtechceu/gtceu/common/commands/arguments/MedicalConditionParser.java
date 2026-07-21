@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.commands.arguments;
 
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
@@ -58,15 +59,12 @@ public class MedicalConditionParser {
 
     private void readMedicalCondition() throws CommandSyntaxException {
         int i = this.reader.getCursor();
+        ResourceLocation id = ResourceLocation.read(this.reader);
 
-        while (reader.canRead() && ResourceLocation.isAllowedInResourceLocation(reader.peek())) {
-            reader.skip();
-        }
-        String name = reader.getString().substring(i, reader.getCursor());
-        MedicalCondition condition = MedicalCondition.CONDITIONS.get(name);
+        MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
         if (condition == null) {
             this.reader.setCursor(i);
-            throw ERROR_UNKNOWN_CONDITION.createWithContext(this.reader, name);
+            throw ERROR_UNKNOWN_CONDITION.createWithContext(this.reader, id.toString());
         }
         this.result = condition;
     }
@@ -77,6 +75,6 @@ public class MedicalConditionParser {
     }
 
     private CompletableFuture<Suggestions> suggestMedicalCondition(SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(MedicalCondition.CONDITIONS.keySet(), builder);
+        return SharedSuggestionProvider.suggestResource(GTRegistries.MEDICAL_CONDITIONS.keySet(), builder);
     }
 }

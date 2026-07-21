@@ -56,7 +56,7 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
                     }
                 }
             }
-        // spotless:off
+            // spotless:off
         } else if (itemStack.canPerformAction(GTItemAbilities.INTERACT_WITH_COVER) ||
                 itemStack.canPerformAction(GTItemAbilities.CROWBAR_REMOVE_COVER)) {
             return hasCoverSupplier == null || hasCoverSupplier.getAsBoolean();

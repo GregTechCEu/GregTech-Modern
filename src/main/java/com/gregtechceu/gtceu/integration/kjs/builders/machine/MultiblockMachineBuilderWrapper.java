@@ -1,19 +1,16 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -56,10 +53,10 @@ import java.util.function.*;
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
                                              implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?> internal;
+    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id,
-                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?> internal) {
+                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal) {
         super(id);
         this.internal = internal;
         this.dummyBuilder = true;
@@ -70,7 +67,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
+    public MultiblockMachineBuilderWrapper pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         internal.pattern(pattern);
         return this;
     }
@@ -80,28 +77,18 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partSorter(Comparator<IMultiPart> partSorter) {
+    public MultiblockMachineBuilderWrapper partSorter(Comparator<MultiblockPartMachine> partSorter) {
         internal.partSorter(partSorter);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         internal.partAppearance(partAppearance);
         return this;
     }
 
     public MultiblockMachineBuilderWrapper additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
         internal.additionalDisplay(additionalDisplay);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
-        internal.shapeInfo(shape);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
-        internal.shapeInfos(shapes);
         return this;
     }
 
@@ -120,8 +107,8 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper blockEntityFactory(Function<BlockEntityCreationInfo, MetaMachine> machine) {
-        internal.blockEntityFactory(machine);
+    public MultiblockMachineBuilderWrapper blockEntityFactory(MachineInstanceFactory machine) {
+        internal.instanceFactory(machine);
         return this;
     }
 
@@ -388,11 +375,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public MultiblockMachineBuilderWrapper regressWhenWaiting(boolean regressWhenWaiting) {
         internal.regressWhenWaiting(regressWhenWaiting);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper editableUI(@Nullable EditableMachineUI editableUI) {
-        internal.editableUI(editableUI);
         return this;
     }
 

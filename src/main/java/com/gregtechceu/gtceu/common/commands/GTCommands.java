@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.network.packets.SPacketStartProspectionShare;
 import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
 
 import net.minecraft.commands.CommandBuildContext;
@@ -26,6 +26,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
@@ -66,12 +67,6 @@ public class GTCommands {
     // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(literal("gtceu")
-                .then(literal("ui_editor")
-                        .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
-                        .executes(context -> {
-                            GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
-                            return 1;
-                        }))
                 .then(literal("place_vein")
                         .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
                         .then(argument("vein", ResourceKeyArgument.key(GTRegistries.ORE_VEIN_REGISTRY))
@@ -139,6 +134,17 @@ public class GTCommands {
                                         .executes(ctx -> {
                                             ServerPlayer player = ctx.getSource().getPlayerOrException();
                                             return setActiveCape(ctx.getSource(), player, null);
+                                        })))
+                        .then(literal("share_prospection_data")
+                                .then(argument("player", EntityArgument.player())
+                                        .executes(ctx -> {
+                                            // resolve both players server-side (uses the server player list),
+                                            // then ask the sender's client to read its cache and send the data
+                                            ServerPlayer sender = ctx.getSource().getPlayerOrException();
+                                            ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
+                                            PacketDistributor.sendToPlayer(sender,
+                                                    new SPacketStartProspectionShare(receiver.getUUID()));
+                                            return 1;
                                         })))));
     }
     // spotless:on

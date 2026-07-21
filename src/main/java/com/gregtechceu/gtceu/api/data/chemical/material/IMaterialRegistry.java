@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.core.IMappedRegistryAccess;
+import com.gregtechceu.gtceu.core.mixins.MappedRegistryAccessor;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -83,7 +83,7 @@ public interface IMaterialRegistry extends Iterable<Material> {
     /**
      *
      * @return {@code true} if this registry is frozen, {@code false} otherwise
-     * @see IMappedRegistryAccess#gtceu$isFrozen()
+     * @see MappedRegistryAccessor#gtceu$isFrozen()
      */
     boolean isFrozen();
 }

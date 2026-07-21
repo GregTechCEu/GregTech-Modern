@@ -49,7 +49,7 @@ public class EnderCoversTest {
                 GTItems.COVER_ENDER_FLUID_LINK.asStack(), Direction.UP);
         cover1.setIo(IO.IN);
         cover2.setIo(IO.OUT);
-        tank1.getFluidHandlerCap(Direction.UP, false).fill(new FluidStack(Fluids.WATER, 1000),
+        tank1.getFluidHandlerCap(null, false).fill(new FluidStack(Fluids.WATER, 1000),
                 IFluidHandler.FluidAction.EXECUTE);
         helper.runAtTickTime(20, () -> {
             helper.assertTrue(TestUtils.isFluidStackEqual(
@@ -76,7 +76,7 @@ public class EnderCoversTest {
         cover1.setIo(IO.IN);
         cover2.setIo(IO.OUT);
         ItemStack stack = new ItemStack(Items.DIAMOND, 64);
-        chest1.getItemHandlerCap(Direction.UP, false).insertItem(0, stack, false);
+        chest1.getItemHandlerCap(null, false).insertItem(0, stack, false);
         helper.runAtTickTime(20, () -> {
             helper.assertTrue(
                     ItemStack.isSameItem(chest2.getStored(), stack) && chest2.getStoredAmount() == stack.getCount(),

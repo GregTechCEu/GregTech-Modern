@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -31,8 +32,8 @@ public class GTDamageTypes {
         ctx.register(RADIATION, new DamageType("gtceu.radiation", 0));
         ctx.register(TURBINE, new DamageType("gtceu.turbine", 0));
 
-        for (var entry : MedicalCondition.CONDITIONS.entrySet()) {
-            String name = entry.getKey();
+        for (var entry : GTRegistries.MEDICAL_CONDITIONS.entrySet()) {
+            String name = entry.getKey().location().getPath();
             MedicalCondition condition = entry.getValue();
             ctx.register(condition.getDamageType(),
                     new DamageType("gtceu.medical_condition." + name, DamageScaling.NEVER, 0));

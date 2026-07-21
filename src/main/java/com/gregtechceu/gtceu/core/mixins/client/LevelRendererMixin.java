@@ -18,12 +18,14 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.FastColor;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -33,10 +35,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
+import com.llamalad7.mixinextras.expression.Definition;
+import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -54,10 +56,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.*;
+import java.util.SortedSet;
 
 @Mixin(value = LevelRenderer.class, priority = 500)
-@OnlyIn(Dist.CLIENT)
 public abstract class LevelRendererMixin {
 
     @Shadow
@@ -75,17 +76,18 @@ public abstract class LevelRendererMixin {
     @Shadow
     private @Nullable ClientLevel level;
 
-    @Unique
-    private final RandomSource gtceu$modelRandom = RandomSource.create();
-
-    @Inject(method = "renderLevel",
-            at = @At(value = "INVOKE",
-                     target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;long2ObjectEntrySet()Lit/unimi/dsi/fastutil/objects/ObjectSet;"))
+    @Definition(id = "long2ObjectEntrySet",
+                method = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;long2ObjectEntrySet()Lit/unimi/dsi/fastutil/objects/ObjectSet;",
+                remap = false)
+    @Definition(id = "destructionProgress", field = "destructionProgress")
+    @Expression("this.destructionProgress.long2ObjectEntrySet()")
+    @Inject(method = "renderLevel", at = @At("MIXINEXTRAS:EXPRESSION"))
     private void renderLevel(DeltaTracker partialTick, boolean renderBlockOutline, Camera camera,
-                             GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f viewMatrix,
-                             Matrix4f projectionMatrix, CallbackInfo ci,
+                             GameRenderer gameRenderer, LightTexture lightTexture,
+                             Matrix4f frustumMatrix, Matrix4f projectionMatrix,
+                             CallbackInfo ci,
                              @Local(ordinal = 0) PoseStack poseStack) {
-        if (minecraft.player == null || minecraft.level == null) return;
+        if (minecraft.player == null || level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
         if (minecraft.player.isShiftKeyDown() ||

@@ -60,7 +60,6 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
                 blocks = List.of(pos);
             } else {
                 blocks = getStrippableBlocks(aoeDefinition, context);
-                blocks.add(context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;

@@ -4,29 +4,39 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import lombok.Setter;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
     @SaveField
@@ -37,14 +47,12 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     @SaveField
     @SyncToClient
     @Getter
+    @Setter
     protected int globalTransferSizeMillibuckets = 1;
     @SaveField
     @SyncToClient
     @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
-
-    private @Nullable NumberInputWidget<Integer> stackSizeInput;
-    private @Nullable EnumSelectorWidget<BucketMode> stackSizeBucketModeInput;
 
     public AdvancedFluidVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -68,7 +76,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     private void voidOverflow(IFluidHandlerModifiable fluidHandler) {
-        var fluidAmounts = enumerateDistinctFluids(fluidHandler, TransferDirection.EXTRACT);
+        var fluidAmounts = enumerateDistinctFluids(fluidHandler, PumpCover.TransferDirection.EXTRACT);
 
         for (var entry : Object2LongMaps.fastIterable(fluidAmounts)) {
             var stack = entry.getKey();
@@ -95,7 +103,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     public void setVoidingMode(VoidingMode voidingMode) {
         this.voidingMode = voidingMode;
         syncDataHolder.markClientSyncFieldDirty("voidingMode");
-        configureStackSizeInput();
 
         if (!this.isRemote()) {
             configureFilter();
@@ -105,34 +112,38 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     private void setTransferBucketMode(BucketMode transferBucketMode) {
         this.transferBucketMode = transferBucketMode;
         syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
-
-        if (stackSizeInput == null) return;
-        stackSizeInput.setValue(getCurrentBucketModeTransferSize());
     }
 
     //////////////////////////////////////
     // *********** GUI ***********//
-    //////////////////////////////////////
 
     @Override
-    protected @NotNull String getUITitle() {
-        return "cover.fluid.voiding.advanced.title";
-    }
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
-    @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
+        EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
+                this::getVoidingMode, this::setVoidingMode);
+        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalTransferSizeMillibuckets,
+                this::setGlobalTransferSizeMillibuckets);
+        EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
+                this::setBucketMode);
 
-        this.stackSizeInput = new IntInputWidget(35, 20, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(1)
-                .setMax(Integer.MAX_VALUE);
-        configureStackSizeInput();
-        group.addWidget(this.stackSizeInput);
+        syncManager.syncValue("voidingMode", voidingMode);
+        syncManager.syncValue("voidingLimit", voidingLimit);
 
-        this.stackSizeBucketModeInput = new EnumSelectorWidget<>(121, 20, 20, 20, BucketMode.values(),
-                transferBucketMode, this::setTransferBucketMode);
-        group.addWidget(this.stackSizeBucketModeInput);
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(VoidingMode.class)
+                .value(voidingMode)
+                .buttonTooltipSupplier((v) -> () -> Component.translatable(v.getTooltip()))
+                .overlay(16, GTGuiTextures.VOIDING_MODES)
+                .lang(Text.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
+                .build()
+                .marginTop(2));
+
+        column.child(
+                GTMuiWidgets
+                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> getVoidingMode().maxStackSize)
+                        .setEnabledIf($ -> shouldShowStackSize()));
     }
 
     private int getCurrentBucketModeTransferSize() {
@@ -149,16 +160,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
             filter.setMaxStackSize(voidingMode == VoidingMode.VOID_ANY ? 1 : Integer.MAX_VALUE);
         }
-
-        configureStackSizeInput();
-    }
-
-    private void configureStackSizeInput() {
-        if (this.stackSizeInput == null || stackSizeBucketModeInput == null)
-            return;
-
-        this.stackSizeInput.setVisible(shouldShowStackSize());
-        this.stackSizeBucketModeInput.setVisible(shouldShowStackSize());
     }
 
     private boolean shouldShowStackSize() {
@@ -172,11 +173,10 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putInt("voidingMode", getVoidingMode().ordinal());
         tag.putInt("voidSize", getGlobalTransferSizeMillibuckets());
         tag.putInt("voidBucketMode", getTransferBucketMode().ordinal());
-        return super.copyConfig(tag);
     }
 
     @Override

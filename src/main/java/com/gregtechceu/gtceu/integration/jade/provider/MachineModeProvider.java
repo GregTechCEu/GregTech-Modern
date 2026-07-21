@@ -12,24 +12,49 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class MachineModeProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public class MachineModeProvider extends MachineInfoProvider<MetaMachine, CompoundTag> {
+
+    public MachineModeProvider() {
+        super(GTCEu.id("machine_mode"), MetaMachine.class);
+    }
 
     @Override
-    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        CompoundTag serverData = blockAccessor.getServerData();
-        if (serverData.contains("RecipeTypes") && serverData.contains("CurrentRecipeType")) {
-            int currentRecipeTypeIndex = serverData.getInt("CurrentRecipeType");
-            ListTag recipeTypesTagList = serverData.getList("RecipeTypes", StringTag.TAG_STRING);
-            if (blockAccessor.showDetails()) {
-                iTooltip.add(Component.translatable("gtceu.top.machine_mode"));
+    protected CompoundTag write(MetaMachine machine) {
+        var compoundTag = new CompoundTag();
+        GTRecipeType[] recipeTypes = machine.getDefinition().getRecipeTypes();
+        if (recipeTypes.length > 1) {
+            if (machine instanceof IRecipeLogicMachine recipeLogicMachine) {
+                ListTag recipeTypesTagList = new ListTag();
+                GTRecipeType currentRecipeType = recipeLogicMachine.getRecipeType();
+                int currentRecipeTypeIndex = -1;
+                for (int i = 0; i < recipeTypes.length; i++) {
+                    if (recipeTypes[i] == currentRecipeType) {
+                        currentRecipeTypeIndex = i;
+                    }
+                    recipeTypesTagList.add(StringTag.valueOf(recipeTypes[i].registryName.toString()));
+                }
+                compoundTag.put("RecipeTypes", recipeTypesTagList);
+                compoundTag.putInt("CurrentRecipeType", currentRecipeTypeIndex);
+            }
+        }
+        return compoundTag;
+    }
+
+    @Override
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
+        if (data.contains("RecipeTypes") && data.contains("CurrentRecipeType")) {
+            int currentRecipeTypeIndex = data.getInt("CurrentRecipeType");
+            ListTag recipeTypesTagList = data.getList("RecipeTypes", StringTag.TAG_STRING);
+            if (block.showDetails()) {
+                tooltip.add(Component.translatable("gtceu.top.machine_mode"));
                 for (int i = 0; i < recipeTypesTagList.size(); i++) {
                     ResourceLocation recipeType = ResourceLocation.parse(recipeTypesTagList.getString(i));
                     MutableComponent text;
@@ -40,42 +65,15 @@ public class MachineModeProvider implements IBlockComponentProvider, IServerData
                     }
                     text.append(
                             Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath())));
-                    iTooltip.add(text);
+                    tooltip.add(text);
                 }
             } else {
                 ResourceLocation recipeType = ResourceLocation.parse(
                         recipeTypesTagList.getString(currentRecipeTypeIndex));
-                iTooltip.add(Component.translatable("gtceu.top.machine_mode").append(
+                tooltip.add(Component.translatable("gtceu.top.machine_mode").append(
                         Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));
             }
-        }
-    }
 
-    @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MetaMachine blockEntity) {
-            @Nullable
-            GTRecipeType[] recipeTypes = blockEntity.getDefinition().getRecipeTypes();
-            if (recipeTypes.length > 1) {
-                if (blockEntity instanceof IRecipeLogicMachine recipeLogicMachine) {
-                    ListTag recipeTypesTagList = new ListTag();
-                    GTRecipeType currentRecipeType = recipeLogicMachine.getRecipeType();
-                    int currentRecipeTypeIndex = -1;
-                    for (int i = 0; i < recipeTypes.length; i++) {
-                        if (recipeTypes[i] == currentRecipeType) {
-                            currentRecipeTypeIndex = i;
-                        }
-                        recipeTypesTagList.add(StringTag.valueOf(recipeTypes[i].registryName.toString()));
-                    }
-                    compoundTag.put("RecipeTypes", recipeTypesTagList);
-                    compoundTag.putInt("CurrentRecipeType", currentRecipeTypeIndex);
-                }
-            }
         }
-    }
-
-    @Override
-    public ResourceLocation getUid() {
-        return GTCEu.id("machine_mode");
     }
 }

@@ -40,7 +40,7 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         data.putInt("Progress", capability.getProgress());
         data.putInt("MaxProgress", capability.getMaxProgress());
         // Check if IWorkable is a research station and add flag to data
-        if (capability instanceof ResearchStationMachine rsm) {
+        if (capability instanceof ResearchStationMachine) {
             data.putBoolean("Research", true);
         }
     }

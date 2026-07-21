@@ -2,60 +2,49 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-
-import net.minecraft.Util;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiFunction;
 
-/**
- * @author h3tr
- * @date 2023/7/15
- * @implNote BlockBreakerMachine
- */
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BlockBreakerMachine extends TieredEnergyMachine
-                                 implements IFancyUIMachine, IControllable {
+                                 implements IMuiMachine, IControllable {
 
     @SaveField
     protected final NotifiableItemStackHandler cache;
-    @Getter
-    @SaveField
-    protected final CustomItemStackHandler chargerInventory;
     @Nullable
-    protected TickableSubscription batterySubs, breakerSubs;
+    protected TickableSubscription breakerSubs;
     @Nullable
     protected ISubscription energySubs;
     private final int inventorySize;
@@ -70,17 +59,21 @@ public class BlockBreakerMachine extends TieredEnergyMachine
 
     @Getter
     @SaveField
+    protected final BatterySlotTrait batterySlot;
+
+    @Getter
+    @SaveField
     @SyncToClient
     private boolean isWorkingEnabled = true;
 
     public BlockBreakerMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
+        super(info, tier, false);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.cache = createCacheItemHandler();
-        this.chargerInventory = createChargerItemHandler();
+        this.cache = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT));
+        this.batterySlot = attachTrait(new BatterySlotTrait(energyContainer));
         this.energyPerTick = GTValues.V[tier - 1];
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
-        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(cache));
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
     }
 
@@ -95,34 +88,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         return efficiencyMultiplier;
     }
 
-    //////////////////////////////////////
-    // ***** Initialization *****//
-    //////////////////////////////////////
-
-    protected CustomItemStackHandler createChargerItemHandler() {
-        var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
-    }
-
-    protected NotifiableItemStackHandler createCacheItemHandler() {
-        return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateBreakerSubscription));
-            }
-            energySubs = energyContainer.addChangedListener(() -> {
-                this.updateBatterySubscription();
-                this.updateBreakerSubscription();
-            });
-            chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
+            scheduleForNextServerTick(this::updateBreakerSubscription);
+            energySubs = energyContainer.addChangedListener(this::updateBreakerSubscription);
         }
     }
 
@@ -136,14 +107,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
-        cache.dropInventoryInWorld();
-    }
-
-    @Override
-    public void onNeighborChanged(net.minecraft.world.level.block.Block block, BlockPos fromPos, boolean isMoving) {
+    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
         updateBreakerSubscription();
     }
@@ -178,9 +142,9 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         var remainder = tryFillCache(drop);
                         if (!remainder.isEmpty()) {
                             if (autoOutput.getItemOutputDirection() == null) {
-                                net.minecraft.world.level.block.Block.popResource(getLevel(), getBlockPos(), remainder);
+                                Block.popResource(getLevel(), getBlockPos(), remainder);
                             } else {
-                                net.minecraft.world.level.block.Block.popResource(getLevel(),
+                                Block.popResource(getLevel(),
                                         getBlockPos().relative(autoOutput.getItemOutputDirection()),
                                         remainder);
                             }
@@ -220,8 +184,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     }
 
     private List<ItemStack> tryDestroyBlockAndGetDrops(BlockPos pos) {
-        List<ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(getLevel().getBlockState(pos),
-                (ServerLevel) getLevel(), pos, null, null, ItemStack.EMPTY);
+        List<ItemStack> drops = Block.getDrops(getLevel().getBlockState(pos), (ServerLevel) getLevel(), pos, null, null,
+                ItemStack.EMPTY);
         getLevel().destroyBlock(pos, false);
         return drops;
     }
@@ -249,20 +213,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     // ******* Auto Output *******//
     //////////////////////////////////////
 
-    protected void updateBatterySubscription() {
-        if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true))
-            batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
-        else if (batterySubs != null) {
-            batterySubs.unsubscribe();
-            batterySubs = null;
-        }
-    }
-
-    protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false))
-            updateBatterySubscription();
-    }
-
     public void setWorkingEnabled(boolean workingEnabled) {
         isWorkingEnabled = workingEnabled;
         syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
@@ -272,77 +222,25 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-                var template = createTemplate(inventorySize).createDefault();
-                var energyBar = createEnergyBar().createDefault();
-                var batterySlot = createBatterySlot().createDefault();
-                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-                batterySlot.setSelfPosition(
-                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-                energyGroup.addWidget(energyBar);
-                energyGroup.addWidget(batterySlot);
-                var group = new WidgetGroup(0, 0,
-                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                        Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-                var size = group.getSize();
-                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
 
-                template.setSelfPosition(new Position(
-                        (size.width - 4 - template.getSize().width) / 2 + 4,
-                        (size.height - template.getSize().height) / 2));
+    // TODO: Needs EIO type side selection widget when that's done
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        var outputItemGrid = GTMuiWidgets.createGrid(cache.getSize(), (int) Math.sqrt(cache.getSize()), true, 'i');
 
-                group.addWidget(energyGroup);
-                group.addWidget(template);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof BlockBreakerMachine blockBreakerMachine) {
-                    createTemplate(inventorySize).setupUI(template, blockBreakerMachine);
-                    createEnergyBar().setupUI(template, blockBreakerMachine);
-                    createBatterySlot().setupUI(template, blockBreakerMachine);
-                }
-            }));
-
-    protected static EditableUI<SlotWidget, BlockBreakerMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-            return slotWidget;
-        }, (slotWidget, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-        });
-    }
-
-    protected static EditableUI<WidgetGroup, BlockBreakerMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
-            int rowSize = (int) Math.sqrt(inventorySize);
-            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8, rowSize * 18 + 8);
-            for (int y = 0; y < rowSize; y++) {
-                for (int x = 0; x < rowSize; x++) {
-                    int index = y * rowSize + x;
-                    SlotWidget slotWidget = new SlotWidget();
-                    slotWidget.initTemplate();
-                    slotWidget.setSelfPosition(new Position(4 + x * 18, 4 + y * 18));
-                    slotWidget.setBackground(GuiTextures.SLOT);
-                    slotWidget.setId("slot_" + index);
-                    main.addWidget(slotWidget);
-                }
-            }
-            main.setBackground(GuiTextures.BACKGROUND_INVERSE);
-            return main;
-        }, (group, machine) -> {
-            WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
-                if (index >= 0 && index < machine.cache.getSlots()) {
-                    slot.setHandlerSlot(machine.cache, index);
-                    slot.setCanTakeItems(true);
-                    slot.setCanPutItems(false);
-                }
-            });
-        });
+        mainWidget
+                .name("content")
+                .coverChildrenWidth()
+                .coverChildrenHeight(54)
+                .child(Flow.row()
+                        .name("mainRow")
+                        .center()
+                        .coverChildren()
+                        .margin(2, 3)
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                                "output_item_inv", cache.getSize(), 'i',
+                                syncManager, outputItemGrid))
+                        .padding(4, 0));
     }
 }

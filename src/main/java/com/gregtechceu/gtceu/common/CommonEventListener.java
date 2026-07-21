@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -14,8 +12,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastPro
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
@@ -23,12 +23,11 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
-import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
@@ -75,6 +74,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,6 +83,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.*;
@@ -115,13 +116,18 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void tickPlayerInventoryHazards(PlayerTickEvent.Post event) {
+    public static void tickPlayerHazards(PlayerTickEvent.Post event) {
         if (event.getEntity().level().isClientSide) {
             return;
         }
 
         Player player = event.getEntity();
-        IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        // update the tracker every second, including clearing everything when the config changes.
+        if (player.tickCount % 20 != 0) {
+            return;
+        }
+
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
             for (MedicalCondition medicalCondition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(medicalCondition);
@@ -133,22 +139,23 @@ public class CommonEventListener {
         if (inventory == null) {
             return;
         }
+
         tracker.tick();
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            Material material = HazardProperty.getValidHazardMaterial(stack);
-            if (material.isNull() || !material.hasProperty(PropertyKey.HAZARD)) {
+            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
+            if (entry.material().isNull()) {
                 continue;
             }
-            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(material);
+            tracker.progressRelatedCondition(entry, stack.getCount());
         }
     }
 
@@ -180,6 +187,28 @@ public class CommonEventListener {
         ItemStack toolStack = event.getPlayer().getItemInHand(event.getPlayer().getUsedItemHand());
         if (toolStack.getItem() instanceof IGTTool tool) {
             tool.definition$onBlockStartBreak(toolStack, event.getPos(), event.getPlayer());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onItemUseFinished(LivingEntityUseItemEvent.Finish event) {
+        if (!(event.getEntity() instanceof Player player) || player.level().isClientSide) {
+            return;
+        }
+
+        ItemStack usedItem = event.getItem();
+        if (usedItem.getItem().getFoodProperties(usedItem, player) != null) {
+            return;
+        }
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+
+        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
+        if (entry.material().isNull()) {
+            return;
+        }
+        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+        if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
+            tracker.progressRelatedCondition(entry, 1);
         }
     }
 
@@ -238,7 +267,7 @@ public class CommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
-            MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
+            // MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
             ServerCache.instance.invalidateWorld(serverLevel);
         } else if (event.getLevel().isClientSide()) {
             ClientCacheManager.saveCaches(event.getLevel().registryAccess());
@@ -255,17 +284,18 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void serverStopped(ServerStoppedEvent event) {
         ServerCache.instance.clear();
-        VirtualEnderRegistry.release();
     }
 
     @SubscribeEvent
     public static void serverStopping(ServerStoppingEvent event) {
-        var levels = event.getServer().getAllLevels();
-        for (var level : levels) {
-            if (!level.isClientSide()) {
-                MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
-            }
-        }
+        /*
+         * var levels = event.getServer().getAllLevels();
+         * for (var level : levels) {
+         * if (!level.isClientSide()) {
+         * MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
+         * }
+         * }
+         */
     }
 
     @SubscribeEvent
@@ -341,10 +371,7 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void onEntityDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
-            if (tracker == null) {
-                return;
-            }
+            MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             for (MedicalCondition condition : tracker.getMedicalConditions().keySet()) {
                 tracker.removeMedicalCondition(condition);
             }
@@ -404,6 +431,39 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void onTooltipEvent(ItemTooltipEvent event) {
         TooltipsHandler.appendTooltips(event.getItemStack(), event.getFlags(), event.getToolTip(), event.getContext());
+    }
+
+    @SubscribeEvent
+    public static void modifyBreakSpeed(PlayerEvent.BreakSpeed event) {
+        Player player = event.getEntity();
+        for (ItemStack stack : player.getArmorSlots()) {
+            if (!(stack.getItem() instanceof ArmorComponentItem componentItem)) {
+                continue;
+            }
+            if (!(componentItem.getArmorLogic() instanceof IJetpack jetpack) || !jetpack.removeMiningSpeedPenalty()) {
+                continue;
+            }
+            // undo flight mining speed debuff
+            if (!player.onGround()) {
+                event.setNewSpeed(event.getNewSpeed() * 5);
+            }
+            // and also underwater debuff
+            if (player.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) && stack.getEnchantmentLevel(
+                    event.getEntity().level().registryAccess().holderOrThrow(Enchantments.AQUA_AFFINITY)) == 0) {
+                event.setNewSpeed(event.getNewSpeed() * 5);
+            }
+        }
+
+        MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) {
+            return;
+        }
+        if (player.getAttributes().hasModifier(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_ID)) {
+            float miningFatigueModifier = (float) player.getAttributes()
+                    .getModifierValue(Attributes.ATTACK_SPEED, Symptom.SYMPTOM_MINING_FATIGUE_ID);
+            // mimic how AttributeInstance handles MULTIPLY_BASE modifiers
+            event.setNewSpeed(event.getNewSpeed() + event.getNewSpeed() * miningFatigueModifier);
+        }
     }
 
     @SubscribeEvent
@@ -494,7 +554,7 @@ public class CommonEventListener {
     }
 
     public static void addAlloyBlastProperties(PostMaterialEvent event) {
-        for (Material material : GTCEuAPI.materialManager) {
+        for (Material material : GTRegistries.MATERIALS) {
             if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
                 addAlloyBlastProperty(material);
             }
@@ -522,7 +582,7 @@ public class CommonEventListener {
             return;
         }
 
-        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
+        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty());
         material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN,
                 new FluidBuilder().state(FluidState.LIQUID));
     }

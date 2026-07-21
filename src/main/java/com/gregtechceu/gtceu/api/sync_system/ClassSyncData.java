@@ -6,16 +6,19 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Static data for {@link ISyncManaged} classes.
@@ -44,15 +47,22 @@ public final class ClassSyncData {
     private final Set<FieldSyncData> clientSyncFields = new ObjectOpenHashSet<>();
     @Getter
     private final Set<FieldSyncData> serverSaveFields = new ObjectOpenHashSet<>();
+    @Getter
+    private @Nullable Supplier<?> clientsideConstructor = null;
 
     private ClassSyncData(Class<?> clazz) {
+        var isManaged = ISyncManaged.class.isAssignableFrom(clazz);
+
+        if (!isManaged)
+            throw new IllegalArgumentException(
+                    "Cannot create class sync data for non sync managed class " + clazz.getName());
+
         MethodHandles.Lookup privateLookup;
         try {
             privateLookup = MethodHandles.privateLookupIn(clazz, LOOKUP);
         } catch (IllegalAccessException e) {
             GTCEu.LOGGER.error("Sync: Failed to create method handle lookup for class {}", clazz);
-            GTCEu.LOGGER.error(e.getMessage());
-            return;
+            throw new RuntimeException(e);
         }
 
         Map<String, List<MethodHandle>> changeListeners = new HashMap<>();
@@ -94,8 +104,7 @@ public final class ClassSyncData {
             } catch (IllegalAccessException e) {
                 GTCEu.LOGGER.error("Sync: Failed to acquire variable handle for field {} {}", field.getName(),
                         clazz.getName());
-                GTCEu.LOGGER.error(e.getMessage());
-                continue;
+                throw new RuntimeException(e);
             }
 
             FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),
@@ -106,7 +115,7 @@ public final class ClassSyncData {
         }
 
         Class<?> parent = clazz.getSuperclass();
-        if (parent != Object.class) {
+        if (ISyncManaged.class.isAssignableFrom(parent)) {
             ClassSyncData parentHandles = CACHE.get(parent);
             managedFields.addAll(parentHandles.managedFields);
             clientSyncFields.addAll(parentHandles.clientSyncFields);
@@ -125,5 +134,14 @@ public final class ClassSyncData {
         managedFields.stream().filter(f -> Objects.equals(f.fieldName, fieldName))
                 .findFirst()
                 .ifPresent(fieldData -> fieldData.setTransformer(transformer));
+    }
+
+    /**
+     * Allows this class to be instantiated on the client when being synced.
+     * 
+     * @param ctor The constructor/supplier to be called when instantiating this class on the client.
+     */
+    public void setClientsideConstructor(@Nullable Supplier<?> ctor) {
+        clientsideConstructor = ctor;
     }
 }

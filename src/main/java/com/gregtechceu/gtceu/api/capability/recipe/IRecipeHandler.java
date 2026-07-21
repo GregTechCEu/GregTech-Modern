@@ -30,9 +30,12 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      * @param recipe   recipe.
      * @param left     left contents for to be handled.
      * @param simulate simulate.
-     * @return left contents for continue handling by other proxies. <br>
-     *         null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
+     * @return left contents for continue handling by other proxies.
+     *         <br>
+     *         An empty list means nothing is left, i.e. handling finished successfully. Return the (now empty) input
+     *         list as the handling-done mark. Returning {@code null} is not allowed.
      */
+    @NotNull
     List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, boolean simulate);
 
     /**
@@ -71,7 +74,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return getCapability().copyInner((K) content);
     }
 
-    default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, boolean simulate) {
+    default @NotNull List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, boolean simulate) {
         List<K> contents = new ObjectArrayList<>(left.size());
         for (Object leftObj : left) {
             contents.add(copyContent(leftObj));

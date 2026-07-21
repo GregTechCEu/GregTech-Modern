@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -34,13 +35,16 @@ public class FluidVeinIcon implements MapIcon {
     @Getter
     private final ChunkPos chunkPos;
     @Getter
+    private final Component name;
+    @Getter
     private final ProspectorMode.FluidInfo fluidInfo;
     @Setter
     private int size;
     private Icon icon;
 
-    public FluidVeinIcon(ChunkPos chunkPos, ProspectorMode.FluidInfo fluidInfo) {
+    public FluidVeinIcon(ChunkPos chunkPos, Component name, ProspectorMode.FluidInfo fluidInfo) {
         this.chunkPos = chunkPos;
+        this.name = name;
         this.fluidInfo = fluidInfo;
         this.size = 1;
     }
@@ -48,10 +52,6 @@ public class FluidVeinIcon implements MapIcon {
     public boolean isEnabled() {
         return FTBChunksOptions.showLayer("bedrock_fluids") &&
                 (fluidInfo.left() > 0 || !FTBChunksOptions.hideDepleted());
-    }
-
-    public String getName() {
-        return FluidRenderLayer.getName(fluidInfo).getString();
     }
 
     public int getColor() {
@@ -65,7 +65,7 @@ public class FluidVeinIcon implements MapIcon {
 
     @Override
     public double getIconScale(MapType mapType) {
-        return mapType.isMinimap() ? FTBChunksClientConfig.MINIMAP_ZOOM.get() : size;
+        return mapType.isMinimap() ? FTBChunksClientConfig.MINIMAP_ZOOM.get() : this.size;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class FluidVeinIcon implements MapIcon {
                             var pos = getMiddleBlock();
                             var waypoint = new WaypointImpl(WaypointType.DEFAULT, mapDimension, pos);
                             if (!waypointManager.getAllWaypoints().contains(waypoint)) {
-                                waypointManager.addWaypointAt(pos, getName())
+                                waypointManager.addWaypointAt(pos, this.getName().getString())
                                         .setColor(getColor())
                                         .setHidden(false);
                                 baseScreen.refreshWidgets();
@@ -111,7 +111,7 @@ public class FluidVeinIcon implements MapIcon {
 
     @Override
     public void addTooltip(TooltipList list) {
-        FluidRenderLayer.getTooltip(fluidInfo).forEach(list::add);
+        FluidRenderLayer.getTooltip(this.name, this.fluidInfo).forEach(list::add);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class FluidVeinIcon implements MapIcon {
 
     public Icon getIcon(int alpha, boolean mouseOver) {
         var color = getColor();
-        var fluidIcon = Icon.getIcon(IClientFluidTypeExtensions.of(fluidInfo.fluid()).getStillTexture())
+        var fluidIcon = Icon.getIcon(IClientFluidTypeExtensions.of(this.fluidInfo.fluid()).getStillTexture())
                 .withColor(Color4I.rgba(color).withAlpha(alpha));
         if (mouseOver) {
             fluidIcon = fluidIcon.withBorder(Color4I.rgba(color), false);
@@ -135,9 +135,9 @@ public class FluidVeinIcon implements MapIcon {
         if (!mapType.isMinimap() || !isEnabled()) {
             return;
         }
-        if (icon == null) {
-            icon = getIcon(200, false);
+        if (this.icon == null) {
+            this.icon = getIcon(200, false);
         }
-        icon.draw(graphics, x, y, w, h);
+        this.icon.draw(graphics, x, y, w, h);
     }
 }

@@ -4,11 +4,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -22,11 +19,11 @@ import org.jetbrains.annotations.Nullable;
 @Accessors(chain = true, fluent = true)
 public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
+    private final transient String name;
     @Setter
     private transient GTRecipeType recipeType;
     @Setter
-    @Nullable
-    private transient IGuiTexture icon;
+    private transient CategoryIcon icon;
     @Setter
     private transient boolean isXEIVisible;
     @Setter
@@ -35,10 +32,21 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
     public GTRecipeCategoryBuilder(ResourceLocation id) {
         super(id);
+        name = id.getPath();
         recipeType = GTRecipeTypes.DUMMY_RECIPES;
         icon = null;
         isXEIVisible = true;
         langValue = null;
+    }
+
+    public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
+        this.icon = new CategoryIcon(location);
+        return this;
+    }
+
+    public GTRecipeCategoryBuilder setItemIcon(ItemStack stack) {
+        this.icon = new CategoryIcon(stack);
+        return this;
     }
 
     @Override
@@ -53,15 +61,5 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
         return GTRecipeCategories.register(id, recipeType)
                 .setIcon(icon)
                 .setXEIVisible(isXEIVisible);
-    }
-
-    public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
-        this.icon = new ResourceTexture(location.withPrefix("textures/").withSuffix(".png"));
-        return this;
-    }
-
-    public GTRecipeCategoryBuilder setItemIcon(ItemStack... stacks) {
-        this.icon = new ItemStackTexture(stacks);
-        return this;
     }
 }

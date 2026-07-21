@@ -61,10 +61,9 @@ Lets look at how we implement it in `QuantumChest`.
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            // you cant call ItemTransferHelper.getItemTransfer while chunk is loading, so lets defer it next tick.
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-        }
+        
+        // you cant call ItemTransferHelper.getItemTransfer while chunk is loading, so lets defer it next tick.
+        scheduleForNextServerTick(this::updateAutoOutputSubscription);
         // add a listener to listen the changes of inner inventory. (for ex, if inventory not empty anymore, we may need to unpdate logic)
         exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
     }

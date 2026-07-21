@@ -140,7 +140,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             if (canUseEnergy && sprinting) {
                 if (runningTimer == 0) {
                     runningTimer = RUNNING_TIMER;
-                    item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
+                    if (!player.isCreative()) {
+                        item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
+                    }
                 }
             }
             if (canUseEnergy && (player.onGround() || player.isInWater()) && sprinting) {

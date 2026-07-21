@@ -28,8 +28,8 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_REC
 @GameTestHolder(GTCEu.MOD_ID)
 public class OverclockLogicTest {
 
-    static GTRecipeType LCR_RECIPE_TYPE;
-    static GTRecipeType CR_RECIPE_TYPE;
+    private static GTRecipeType LCR_RECIPE_TYPE;
+    private static GTRecipeType CR_RECIPE_TYPE;
 
     @BeforeBatch(batch = "OverclockLogic")
     public static void prepare(ServerLevel level) {
@@ -93,7 +93,7 @@ public class OverclockLogicTest {
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
         WorkableMultiblockMachine controller = helper.getBlockEntity(new BlockPos(1, 2, 0));
-        TestUtils.formMultiblock(controller);
+        TestUtils.formMultiblock(helper, controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = helper.getBlockEntity(new BlockPos(2, 1, 0));
         ItemBusPartMachine inputBus2 = helper.getBlockEntity(new BlockPos(2, 2, 0));

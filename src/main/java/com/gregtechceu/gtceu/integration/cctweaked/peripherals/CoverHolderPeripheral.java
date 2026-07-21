@@ -43,6 +43,7 @@ public class CoverHolderPeripheral implements GenericPeripheral {
                     direction,
                     cover.itemStackHandler,
                     cover,
+                    null,
                     new MultiLineComponent(cover.getText()),
                     cover.getPlaceholderUUID())).toString());
         } else return MethodResult.of(false, "invalid cover");

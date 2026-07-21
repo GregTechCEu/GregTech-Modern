@@ -7,8 +7,7 @@ title: Item/Fluid/Energy Storage
 
 !!! note
 
-    In general, these containers should be created as `final` fields (that's what we need for the
-    [SyncData](../SyncData/index.md) system).  
+    In general, these containers should be created as `final` fields.  
     Set their base arguments in the constructor (you can pass args for subclasses to modify).
 
 
@@ -47,7 +46,6 @@ To do so, use either of the following interfaces:
 - `IFluidTransfer`
 - `IEnergyContainer`
 
-
 ## Specialized proxy implementations
 
 In case you have special requirements to your containers, you may be able to use one of these implementations in
@@ -61,67 +59,9 @@ They generally act as a proxy to the underlying container(s), while also handlin
 - `FluidTransferList`
 - `EnergyContainerList`
 
-
 ### IO-specific container proxies
 
 For proxying multiple containers, limited to a specific IO direction.
 
 - `IOItemTransferList`
 - `IOFluidTransferList`  
-
-
-### Rate-Limited proxies
-
-!!! warning inline end "Not merged yet<br>_Branch: `mi-ender-link`_"
-
-If you need to proxy any item or fluid container that needs to be rate limited for insertion and extraction, you can
-use either of the following classes:
-
-- `LimitingItemTransferProxy`
-- `LimitingFluidTransferProxy`
-
-The transfer limit passed as a constructor parameter will not renew automatically. Your container will therefore stop
-transferring anything once this limit is reached.
-
-If you want to make this a rate limit instead, you will have to schedule a task that regularly resets the transfer
-limit to the maximum value for your task's interval:
-
-??? example "Example Usage"
-
-    ```java
-    public class MyCover extends CoverBehavior {
-        private LimitingFluidTransferProxy transferProxy;
-        private ConditionalSubscriptionHandler rateLimitSubscription;
-        
-        public MyCover(IFluidTransfer myFluidTransfer) {
-            super(/* ... */);
-            
-            transferProxy = new LimitingFluidTransferProxy(
-                    myFluidTransfer,
-                    0L // Initial limit of 0, will be updated regularly in isRateLimitRefreshActive()
-            );
-            rateLimitSubscription = new ConditionalSubscriptionHandler(
-                    this,
-                    this::resetTransferRateLimit, 
-                    this::isRateLimitRefreshActive
-            );
-        }
-        
-        @Override
-        public void onLoad() {
-            super.onLoad();
-            rateLimitSubscription.initialize(coverHolder.getLevel());
-        }
-        
-        private void resetTransferRateLimit() {
-            if (transferProxy == null)
-                return;
-    
-            transferProxy.setRemainingTransfer(transferRate.getMilliBuckets() * 20);
-        }
-        
-        private boolean isRateLimitRefreshActive() {
-            // ...
-        }
-    }
-    ```

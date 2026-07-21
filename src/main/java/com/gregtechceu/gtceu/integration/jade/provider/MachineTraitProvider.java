@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,8 +19,14 @@ import snownee.jade.api.config.IPluginConfig;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * Jade provider which provides info for a machine trait.
+ * 
+ * @param <T>       Machine trait class
+ * @param <TagType> Info data tag type
+ */
 @ParametersAreNonnullByDefault
-public abstract class MachineTraitProvider<T extends MachineTrait>
+public abstract class MachineTraitProvider<T extends MachineTrait, TagType extends Tag>
                                           implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Getter
@@ -32,25 +39,26 @@ public abstract class MachineTraitProvider<T extends MachineTrait>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void appendTooltip(ITooltip iTooltip, BlockAccessor block, IPluginConfig iPluginConfig) {
         var be = block.getBlockEntity();
         if (be == null || !block.getServerData().contains(uid.toString(), CompoundTag.TAG_COMPOUND)) return;
 
         var serverData = block.getServerData().getCompound(uid.toString());
-        addTooltip(serverData, iTooltip, block.getPlayer(), block, be, iPluginConfig);
+        addTooltip((TagType) serverData, iTooltip, block.getPlayer(), block, be, iPluginConfig);
     }
 
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         var be = blockAccessor.getBlockEntity();
         if (be instanceof MetaMachine machine) {
-            T t = machine.getTraitHolder().getTrait(traitType);
-            if (t != null) write(compoundTag.getCompound(uid.toString()), blockAccessor, t);
+            T t = machine.getTrait(traitType);
+            if (t != null) compoundTag.put(uid.toString(), write(t));
         }
     }
 
-    protected abstract void write(CompoundTag data, BlockAccessor blockAccessor, T trait);
+    protected abstract TagType write(T trait);
 
-    protected abstract void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+    protected abstract void addTooltip(TagType data, ITooltip tooltip, Player player, BlockAccessor block,
                                        BlockEntity blockEntity, IPluginConfig config);
 }

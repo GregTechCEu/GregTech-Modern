@@ -89,7 +89,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_tiny_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_TINY)
+                    .notConsumable(GTItems.SHAPE_MOLD_TINY_PIPE)
                     .inputFluids(material.getFluid(L / 2))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) / 2)
@@ -130,7 +130,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_SMALL)
+                    .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
                     .inputFluids(material.getFluid(L))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()))
@@ -171,7 +171,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_normal_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_NORMAL)
+                    .notConsumable(GTItems.SHAPE_MOLD_NORMAL_PIPE)
                     .inputFluids(material.getFluid(L * 3))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 3)
@@ -212,7 +212,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_LARGE)
+                    .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
                     .inputFluids(material.getFluid(L * 6))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 6)
@@ -252,7 +252,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_huge_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_HUGE)
+                    .notConsumable(GTItems.SHAPE_MOLD_HUGE_PIPE)
                     .inputFluids(material.getFluid(L * 12))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 24)

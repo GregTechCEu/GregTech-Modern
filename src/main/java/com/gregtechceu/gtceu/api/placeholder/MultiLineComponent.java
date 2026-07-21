@@ -13,6 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 @Accessors(chain = true)
@@ -161,7 +166,17 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.append(MultiLineComponent.of(c.withStyle(style)));
             out.appendNewline();
         }
-        if (!out.isEmpty()) out.remove(out.size() - 1);
+        if (!out.isEmpty()) out.removeLast();
+        return out;
+    }
+
+    public MultiLineComponent withStyle(UnaryOperator<Style> style) {
+        MultiLineComponent out = MultiLineComponent.empty();
+        for (MutableComponent c : this) {
+            out.append(MultiLineComponent.of(c.withStyle(style)));
+            out.appendNewline();
+        }
+        if (!out.isEmpty()) out.removeLast();
         return out;
     }
 
@@ -171,7 +186,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.append(c.withStyle(style));
             out.appendNewline();
         }
-        if (!out.isEmpty()) out.remove(out.size() - 1);
+        if (!out.isEmpty()) out.removeLast();
         return out;
     }
 

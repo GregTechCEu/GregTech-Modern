@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,6 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.IItemDecorator;
 
+import brachy.modularui.drawable.GuiDraw;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,11 +35,19 @@ public class GTLampItemOverlayRenderer implements IItemDecorator {
 
         RenderSystem.disableDepthTest();
         if (!lampData.bloom()) {
-            GuiTextures.LAMP_NO_BLOOM.draw(graphics, 0, 0, xPosition, yPosition, 16, 16);
+            var texture = GTGuiTextures.LAMP_NO_BLOOM;
+            GuiDraw.drawTexture(graphics.pose().last().pose(), texture.location, xPosition, yPosition, xPosition + 16,
+                    yPosition + 16, texture.u0, texture.v0,
+                    texture.u1, texture.v1);
         }
+
         if (!lampData.lit()) {
-            GuiTextures.LAMP_NO_LIGHT.draw(graphics, 0, 0, xPosition, yPosition, 16, 16);
+            var texture = GTGuiTextures.LAMP_NO_LIGHT;
+            GuiDraw.drawTexture(graphics.pose().last().pose(), texture.location, xPosition, yPosition, xPosition + 16,
+                    yPosition + 16, texture.u0, texture.v0,
+                    texture.u1, texture.v1);
         }
+        RenderSystem.enableDepthTest();
         return true;
     }
 }

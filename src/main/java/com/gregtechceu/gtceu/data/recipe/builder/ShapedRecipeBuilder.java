@@ -34,7 +34,7 @@ public class ShapedRecipeBuilder {
     @Setter
     protected ResourceLocation id;
     @Setter
-    protected String group;
+    protected String group = "";
     @Setter
     protected RecipeCategory category = RecipeCategory.MISC;
 

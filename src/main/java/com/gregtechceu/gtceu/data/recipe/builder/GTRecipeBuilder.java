@@ -99,8 +99,6 @@ public class GTRecipeBuilder {
     public int chance = ChanceLogic.getMaxChancedValue();
     @Setter
     public int maxChance = ChanceLogic.getMaxChancedValue();
-    @Setter
-    public int tierChanceBoost = 0;
     private boolean itemMaterialInfo = false;
     private boolean fluidMaterialInfo = false;
     private boolean removePreviousMatInfo = false;
@@ -179,7 +177,7 @@ public class GTRecipeBuilder {
     }
 
     protected Content makeContent(Object o) {
-        return new Content(o, chance, maxChance, tierChanceBoost);
+        return new Content(o, chance, maxChance);
     }
 
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T obj) {
@@ -741,115 +739,97 @@ public class GTRecipeBuilder {
         return notConsumable(IntCircuitIngredient.circuit(configuration));
     }
 
-    public GTRecipeBuilder chancedInput(Ingredient stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedInput(Ingredient stack, int chance) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         inputItems(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedInput(SizedIngredient stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedInput(SizedIngredient stack, int chance) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         inputItems(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedInput(SizedFluidIngredient stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedInput(SizedFluidIngredient stack, int chance) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         inputFluids(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(Ingredient stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(Ingredient stack, int chance) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         outputItems(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(SizedIngredient stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(SizedIngredient stack, int chance) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         outputItems(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(SizedFluidIngredient stack, int chance, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(SizedFluidIngredient stack, int chance) {
         if (checkChanceAndPrintError(chance)) {
             return this;
         }
         int lastChance = this.chance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
         outputFluids(stack);
         this.chance = lastChance;
-        this.tierChanceBoost = lastTierChanceBoost;
         return this;
     }
 
-    public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
-        return chancedInput(SizedIngredient.of(stack.getItem(), stack.getCount()), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedInput(ItemStack stack, int chance) {
+        return chancedInput(SizedIngredient.of(stack.getItem(), stack.getCount()), chance);
     }
 
-    public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
-        return chancedInput(SizedFluidIngredient.of(stack), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedInput(FluidStack stack, int chance) {
+        return chancedInput(SizedFluidIngredient.of(stack), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
-        return chancedOutput(SizedIngredient.of(stack.getItem(), stack.getCount()), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(ItemStack stack, int chance) {
+        return chancedOutput(SizedIngredient.of(stack.getItem(), stack.getCount()), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {
-        return chancedOutput(SizedFluidIngredient.of(stack), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(FluidStack stack, int chance) {
+        return chancedOutput(SizedFluidIngredient.of(stack), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-        return chancedOutput(ChemicalHelper.get(tag, mat), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-        return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int count, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(ItemStack stack, String fraction, int tierChanceBoost) {
+    public GTRecipeBuilder chancedOutput(ItemStack stack, String fraction) {
         if (stack.isEmpty()) {
             return this;
         }
@@ -889,33 +869,29 @@ public class GTRecipeBuilder {
 
         int lastChance = this.chance;
         int lastMaxChance = this.maxChance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
         this.maxChance = maxChance;
-        this.tierChanceBoost = tierChanceBoost;
         outputItems(stack);
         this.chance = lastChance;
         this.maxChance = lastMaxChance;
-        this.tierChanceBoost = lastTierChanceBoost;
 
         return this;
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
-                                         int tierChanceBoost) {
-        return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, int count, String fraction) {
+        return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction);
     }
 
-    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, String fraction, int tierChanceBoost) {
-        return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, String fraction) {
+        return chancedOutput(prefix, material, 1, fraction);
     }
 
-    public GTRecipeBuilder chancedOutput(Item item, int count, String fraction, int tierChanceBoost) {
-        return chancedOutput(new ItemStack(item, count), fraction, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(Item item, int count, String fraction) {
+        return chancedOutput(new ItemStack(item, count), fraction);
     }
 
-    public GTRecipeBuilder chancedOutput(Item item, String fraction, int tierChanceBoost) {
-        return chancedOutput(item, 1, fraction, tierChanceBoost);
+    public GTRecipeBuilder chancedOutput(Item item, String fraction) {
+        return chancedOutput(item, 1, fraction);
     }
 
     public GTRecipeBuilder chancedFluidOutput(FluidStack stack, String fraction, int tierChanceBoost) {
@@ -958,14 +934,11 @@ public class GTRecipeBuilder {
 
         int lastChance = this.chance;
         int lastMaxChance = this.maxChance;
-        int lastTierChanceBoost = this.tierChanceBoost;
         this.chance = chance;
         this.maxChance = maxChance;
-        this.tierChanceBoost = tierChanceBoost;
         outputFluids(stack);
         this.chance = lastChance;
         this.maxChance = lastMaxChance;
-        this.tierChanceBoost = lastTierChanceBoost;
 
         return this;
     }
@@ -1564,11 +1537,11 @@ public class GTRecipeBuilder {
         var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
-            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.getFirst().content);
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.getFirst().content());
             Item out = null;
             int outputCount = 0;
 
-            if (currOutput.getContainedCustom() instanceof IntProviderIngredient intProvider) {
+            if (currOutput.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProvider) {
                 ItemStack[] items = intProvider.getInner().getItems();
                 if (items.length > 0) {
                     out = items[0].getItem();
@@ -1615,11 +1588,11 @@ public class GTRecipeBuilder {
     private void removeExistingMaterialInfo() {
         var itemOutputs = output.get(ItemRecipeCapability.CAP);
         if (itemOutputs.size() == 1) {
-            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.getFirst().content);
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.getFirst().content());
             Item out = null;
             int outputCount = 0;
 
-            if (currOutput.getContainedCustom() instanceof IntProviderIngredient intProvider) {
+            if (currOutput.ingredient().getCustomIngredient() instanceof IntProviderIngredient intProvider) {
                 ItemStack[] items = intProvider.getInner().getItems();
                 if (items.length > 0) {
                     out = items[0].getItem();
@@ -1667,7 +1640,7 @@ public class GTRecipeBuilder {
         if (table.getOrDefault(capability, List.of()).size() + addedEntries > max) {
             String io = isInput ? "inputs" : "outputs";
             GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
-                    id, io, capability.name, io, max);
+                    id, io, capability.id, io, max);
         }
     }
 
@@ -1679,7 +1652,7 @@ public class GTRecipeBuilder {
                 io = "Tick " + io.toLowerCase(Locale.ROOT);
             }
             int size = (perTick ? tickOutput : output).getOrDefault(cap, List.of()).size();
-            GTCEu.LOGGER.error("{} {} {} of recipe {} is empty", io, cap.name, size + index, id);
+            GTCEu.LOGGER.error("{} {} {} of recipe {} is empty", io, cap.id, size + index, id);
             return true;
         }
         return false;
@@ -1700,7 +1673,7 @@ public class GTRecipeBuilder {
     public EnergyStack EUt() {
         if (!tickInput.containsKey(EURecipeCapability.CAP)) return EnergyStack.EMPTY;
         if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return EnergyStack.EMPTY;
-        return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).getFirst().content);
+        return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).getFirst().content());
     }
 
     public int getSolderMultiplier() {

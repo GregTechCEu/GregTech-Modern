@@ -6,14 +6,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
-import com.mojang.serialization.Codec;
-
 import java.util.Set;
 
 public interface IWorldGenLayer extends StringRepresentable {
-
-    Codec<IWorldGenLayer> CODEC = Codec.stringResolver(StringRepresentable::getSerializedName,
-            WorldGeneratorUtils.WORLD_GEN_LAYERS::get);
 
     boolean isApplicableForLevel(ResourceKey<Level> level);
 

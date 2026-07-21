@@ -50,7 +50,7 @@ public class GTOreDefinition {
             IntProvider.NON_NEGATIVE_CODEC.fieldOf("cluster_size").forGetter(GTOreDefinition::clusterSize),
             Codec.floatRange(0.0F, 1.0F).fieldOf("density").forGetter(GTOreDefinition::density),
             Codec.INT.fieldOf("weight").forGetter(GTOreDefinition::weight),
-            IWorldGenLayer.CODEC.fieldOf("layer").forGetter(GTOreDefinition::layer),
+            GTRegistries.WORLD_GEN_LAYERS.byNameCodec().fieldOf("layer").forGetter(GTOreDefinition::layer),
             ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter)),
             HeightRangePlacement.CODEC.fieldOf("height_range").forGetter(GTOreDefinition::heightRange),
             Codec.floatRange(0.0F, 1.0F).fieldOf("discard_chance_on_air_exposure").forGetter(GTOreDefinition::discardChanceOnAirExposure),

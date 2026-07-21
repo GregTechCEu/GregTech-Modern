@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
@@ -35,7 +35,8 @@ public class DummyRecipeUtils {
         }
 
         @Override
-        public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+        public @NotNull List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
+                                                            boolean simulate) {
             for (var it = left.listIterator(); it.hasNext();) {
                 EnergyStack stack = it.next();
                 if (stack.isEmpty()) {
@@ -61,7 +62,7 @@ public class DummyRecipeUtils {
 
             }
 
-            return left.isEmpty() ? null : left;
+            return left;
         }
 
         @Override

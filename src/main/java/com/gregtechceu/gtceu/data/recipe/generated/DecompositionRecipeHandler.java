@@ -51,11 +51,16 @@ public final class DecompositionRecipeHandler {
             if (component.material().hasProperty(PropertyKey.DUST)) {
                 outputs.add(ChemicalHelper.get(dust, component.material(), (int) component.amount()));
             } else if (component.material().hasProperty(PropertyKey.FLUID)) {
-                fluidOutputs.add(component.material().getFluid((int) (1000 * component.amount())));
+                FluidStack componentFluid = component.material().getFluid((int) (1000 * component.amount()));
+                if (!componentFluid.isEmpty()) {
+                    fluidOutputs.add(componentFluid);
+                }
             }
         }
 
         if (outputs.size() > 6 || fluidOutputs.size() > 6) return;
+
+        if (outputs.isEmpty() && fluidOutputs.isEmpty()) return;
 
         // only reduce items
         boolean hasDust = material.hasProperty(PropertyKey.DUST);
@@ -116,7 +121,9 @@ public final class DecompositionRecipeHandler {
         if (hasDust) {
             builder.inputItems(dust, material, GTMath.saturatedCast(totalInputAmount));
         } else {
-            builder.inputFluids(material.getFluid(1000));
+            FluidStack inputFluid = material.getFluid(1000);
+            if (inputFluid.isEmpty()) return;
+            builder.inputFluids(inputFluid);
         }
 
         // register recipe

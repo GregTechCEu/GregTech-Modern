@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -57,7 +58,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
     @Nullable
     private VeinGenerator veinGenerator;
     @Setter
-    private List<IndicatorGenerator> indicatorGenerators;
+    private List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();;
 
     public OreVeinDefinitionBuilder(ResourceLocation id) {
         super(id);
@@ -77,9 +78,20 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder dimensions(Collection<ResourceKey<Level>> dimensions) {
-        this.dimensionFilter = new HashSet<>(dimensions);
+    public OreVeinDefinitionBuilder dimensions(Collection<?> dimensions) {
+        Set<ResourceKey<Level>> keys = new HashSet<>();
+        for (Object dim : dimensions) {
+            keys.add(wrapDimension(dim));
+        }
+        this.dimensionFilter = keys;
         return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static ResourceKey<Level> wrapDimension(Object dim) {
+        if (dim instanceof ResourceKey<?> key) return (ResourceKey<Level>) key;
+        if (dim instanceof ResourceLocation rl) return ResourceKey.create(Registries.DIMENSION, rl);
+        return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim.toString()));
     }
 
     public OreVeinDefinitionBuilder heightRangeUniform(int min, int max) {
@@ -213,9 +225,14 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public GTOreDefinition createObject() {
+        var registries = RegistryAccessContainer.current;
+        HolderGetter<Biome> biomeParse = registries == null ? null :
+                registries.access().lookupOrThrow(Registries.BIOME);
         return new GTOreDefinition(clusterSize, density, weight, layer,
                 Set.copyOf(dimensionFilter), heightRange, discardChanceOnAirExposure,
-                biomes, biomeWeightModifier, veinGenerator, indicatorGenerators,
-                RegistryAccessContainer.current.access().lookupOrThrow(Registries.BIOME));
+                biomes == null ? HolderSet.empty() : biomes,
+                biomeWeightModifier == null ? BiomeWeightModifier.EMPTY : biomeWeightModifier,
+                veinGenerator, indicatorGenerators,
+                biomeParse);
     }
 }

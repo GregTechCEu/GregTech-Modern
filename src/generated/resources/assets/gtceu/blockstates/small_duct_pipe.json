@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/small_duct_pipe"
+    "variants": {
+        "": {
+            "model": "gtceu:block/small_duct_pipe"
+        }
     }
-  }
 }

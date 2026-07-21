@@ -129,6 +129,19 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
     }
 
     /**
+     * Called when the equipped item is right-clicked.
+     *
+     * @param stack             the stack being used
+     * @param player            the player clicking the entity
+     * @param interactionTarget the entity clicked
+     * @param hand              the hand holding the item
+     */
+    default InteractionResult onInteractLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
+                                                     InteractionHand hand) {
+        return InteractionResult.PASS;
+    }
+
+    /**
      * Called when a block is right-clicked with this Item
      *
      * @param context The UseOnContext used to determine the result.

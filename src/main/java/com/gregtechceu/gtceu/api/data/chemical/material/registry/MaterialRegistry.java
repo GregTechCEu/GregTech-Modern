@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.core.mixins.MappedRegistryAccessor;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
@@ -110,7 +111,7 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
 
     @Override
     public boolean isFrozen() {
-        return this.gtceu$isFrozen();
+        return ((MappedRegistryAccessor) (Object) this).gtceu$isFrozen();
     }
 
     public void close() {

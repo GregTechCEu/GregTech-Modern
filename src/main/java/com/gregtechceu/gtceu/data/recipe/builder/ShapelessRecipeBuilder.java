@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -15,16 +14,13 @@ import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 @Accessors(chain = true, fluent = true)
 public class ShapelessRecipeBuilder {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
     @Setter
-    protected String group;
+    protected String group = "";
     @Setter
     private CraftingBookCategory category = CraftingBookCategory.MISC;
 
@@ -32,7 +28,7 @@ public class ShapelessRecipeBuilder {
     @Setter
     protected ResourceLocation id;
 
-    public ShapelessRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapelessRecipeBuilder(ResourceLocation id) {
         this.id = id;
     }
 
@@ -69,17 +65,13 @@ public class ShapelessRecipeBuilder {
         return this;
     }
 
-    protected ResourceLocation defaultId() {
-        return BuiltInRegistries.ITEM.getKey(output.getItem());
-    }
-
     public ShapelessRecipe build() {
-        return new ShapelessRecipe(Objects.requireNonNullElse(this.group, ""), this.category,
+        return new ShapelessRecipe(this.group, this.category,
                 this.output, this.ingredients);
     }
 
     public void save(RecipeOutput consumer) {
-        var recipeId = id == null ? defaultId() : id;
+        var recipeId = id;
 
         consumer.accept(recipeId.withPrefix("shapeless/"), build(), null);
     }

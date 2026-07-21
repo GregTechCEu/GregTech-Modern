@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
@@ -57,7 +57,7 @@ public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestConditi
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        MachineOwner owner = recipeLogic.machine.self().getOwner();
+        MachineOwner owner = recipeLogic.getMachine().getOwner();
         if (owner == null) return false;
         for (var player : owner.getMembers()) {
             QuestsProgress questsProgress = QuestProgressHandler

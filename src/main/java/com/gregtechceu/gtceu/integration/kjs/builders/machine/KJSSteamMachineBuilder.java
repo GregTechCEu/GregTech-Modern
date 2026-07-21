@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -30,7 +30,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @Setter
     public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private @Nullable MachineBuilder<?, ?> lowPressureBuilder = null, highPressureBuilder = null;
+    private @Nullable MachineBuilder<?, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
     @Nullable
     private MachineDefinition lpObject = null, hpObject = null;
 
@@ -116,6 +116,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @FunctionalInterface
     public interface SteamDefinitionFunction {
 
-        void apply(boolean isHighPressure, MachineBuilder<?, ?> builder);
+        void apply(boolean isHighPressure, MachineBuilder<?, ?, ?> builder);
     }
 }

@@ -3,8 +3,7 @@
     "default_model": {
         "parent": "block/block",
         "textures": {
-            "side": "gtceu:block/material_sets/dull/wire_side",
-            "cover": "minecraft:block/stone"
+            "side": "gtceu:block/cover/cover_back_plate"
         },
         "elements": [
             {
@@ -13,7 +12,6 @@
                 "faces": {
                     "down":  { "texture": "#side",  "cullface": "down"  },
                     "up":    { "texture": "#side",  "cullface": "up"    },
-                    "north": { "texture": "#cover", "cullface": "north" },
                     "south": { "texture": "#side",  "cullface": "south" },
                     "west":  { "texture": "#side",  "cullface": "west"  },
                     "east":  { "texture": "#side",  "cullface": "east"  }

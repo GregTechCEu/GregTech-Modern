@@ -1,0 +1,122 @@
+name: Log Commits for Version Sync
+
+on:
+  push:
+    branches:
+      - '1.20.1'
+      - '1.21'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: log-commits-to-project
+  cancel-in-progress: false
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create an issue on the project board for this push
+        env:
+          GH_TOKEN: ${{ secrets.VERSION_SYNC_PROJECT_TOKEN }}
+          PROJECT_BOARD_URL: ${{ secrets.VERSION_SYNC_PROJECT_BOARD_URL }}
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{ github.repository }}
+          TARGET_REPO: ${{ secrets.VERSION_SYNC_PROJECT_REPO }}
+          AFTER: ${{ github.event.after }}
+          HEAD_COMMIT_MSG: ${{ github.event.head_commit.message }}
+          COMMITS_JSON: ${{ toJSON(github.event.commits) }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::PROJECT_TOKEN secret is not set; a PAT with the 'project' scope is required."
+            exit 1
+          fi
+          if ! gh api user --jq '.login' >/dev/null 2>&1; then
+            echo "::error::PROJECT_TOKEN failed to authenticate against the GitHub API."
+            exit 1
+          fi
+
+          if [ -z "${PROJECT_BOARD_URL:-}" ]; then
+            echo "::error::PROJECT_BOARD_URL secret is not set."
+            exit 1
+          fi
+          if [[ "$PROJECT_BOARD_URL" =~ github\.com/(users|orgs)/([^/]+)/projects/([0-9]+) ]]; then
+            OWNER="${BASH_REMATCH[2]}"
+            NUMBER="${BASH_REMATCH[3]}"
+          else
+            echo "::error::PROJECT_BOARD_URL '$PROJECT_BOARD_URL' is not a valid project board URL."
+            exit 1
+          fi
+
+          # each branch's commits need porting to the other branch
+          case "$BRANCH" in
+            1.20.1) STATUS_NAME="To Port 1.20->1.21" ;;
+            1.21)   STATUS_NAME="To Port 1.21->1.20" ;;
+            *)      STATUS_NAME="" ;;
+          esac
+
+          # build a markdown list item for each commit in this push, skipping any
+          # commit whose associated PR carries the "Ignore Version Sync" label
+          LINES_FILE="$(mktemp)"
+          while read -r commit; do
+            [ -n "$commit" ] || continue
+            sha="$(jq -r '.id' <<<"$commit")"
+            short="${sha:0:7}"
+            title="$(jq -r '.message' <<<"$commit" | head -n1)"
+            url="$(jq -r '.url' <<<"$commit")"
+
+            ignored="$(gh api "repos/$REPO/commits/$sha/pulls" \
+              --jq 'any(.[]; .labels[].name == "Ignore Version Sync")')"
+            if [ "$ignored" = "true" ]; then
+              echo "Commit $short belongs to a PR labeled 'Ignore Version Sync', skipping."
+              continue
+            fi
+
+            printf -- '- [`%s`](%s) %s\n' "$short" "$url" "$title" >>"$LINES_FILE"
+          done < <(jq -c '.[]' <<<"$COMMITS_JSON")
+
+          if [ ! -s "$LINES_FILE" ]; then
+            echo "No commits to add to the board."
+            exit 0
+          fi
+          COUNT="$(wc -l <"$LINES_FILE" | tr -d ' ')"
+
+          # resolve the project's node id and its "Status" field/option ids by name
+          PROJECT_ID="$(gh project view "$NUMBER" --owner "$OWNER" --format json --jq '.id')"
+          FIELDS_JSON="$(gh project field-list "$NUMBER" --owner "$OWNER" --format json)"
+          FIELD_ID="$(jq -r '.fields[] | select(.name == "Status") | .id' <<<"$FIELDS_JSON")"
+          OPTION_ID=""
+          if [ -n "$STATUS_NAME" ]; then
+            OPTION_ID="$(jq -r --arg n "$STATUS_NAME" \
+              '.fields[] | select(.name == "Status") | .options[] | select(.name == $n) | .id' \
+              <<<"$FIELDS_JSON")"
+            if [ -z "$OPTION_ID" ]; then
+              echo "::error::Board has no 'Status' option named '$STATUS_NAME'."
+              exit 1
+            fi
+          fi
+
+          # create a single issue for this push
+          BODY="$(printf 'Commits pushed to `%s` (up to `%s`):\n\n%s\n' \
+            "$BRANCH" "${AFTER:0:7}" "$(cat "$LINES_FILE")")"
+          HEAD_TITLE="$(printf '%s' "$HEAD_COMMIT_MSG" | head -n1)"
+          ISSUE_URL="$(gh issue create --repo "$TARGET_REPO" \
+            --title "$HEAD_TITLE" \
+            --body "$BODY")"
+          echo "Created issue $ISSUE_URL"
+
+          # add it to the board
+          ITEM_ID="$(gh project item-add "$NUMBER" --owner "$OWNER" --url "$ISSUE_URL" \
+            --format json --jq '.id')"
+
+          # set its label to the correct port direction for this branch
+          if [ -n "$OPTION_ID" ]; then
+            gh project item-edit --id "$ITEM_ID" --project-id "$PROJECT_ID" \
+              --field-id "$FIELD_ID" --single-select-option-id "$OPTION_ID"
+            echo "Set status to '$STATUS_NAME'."
+          fi
+
+          echo "Added issue to board with $COUNT commit(s)."

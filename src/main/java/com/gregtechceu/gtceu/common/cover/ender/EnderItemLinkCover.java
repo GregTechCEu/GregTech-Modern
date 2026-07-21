@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
@@ -15,17 +13,18 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -37,9 +36,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
 
     protected static final int TRANSFER_RATE = 8;
 
-    @SaveField
-    @SyncToClient
-    protected VirtualItemStorage storage;
+    protected VirtualItemStorage storage = new VirtualItemStorage();
     protected int itemsLeftToTransferLastSecond;
     @Getter
     @SaveField
@@ -50,18 +47,11 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
         super(definition, coverHolder, attachedSide);
         itemsLeftToTransferLastSecond = TRANSFER_RATE * 20;
         filterHandler = FilterHandlers.item(this);
-        if (!isRemote()) setEntry(VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), EntryTypes.ENDER_ITEM,
-                getChannelName()));
     }
 
     @Override
     public boolean canAttach() {
         return true;
-    }
-
-    @Override
-    protected String identifier() {
-        return "EILink#";
     }
 
     @Override
@@ -101,14 +91,24 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
         };
     }
 
+    @Override
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
+        if (!(entry instanceof VirtualItemStorage itemStorage)) return new ParentWidget<>().size(w, h);
+        manager.getOrCreateSlot("ender_item_link_cover_" + index, 0,
+                () -> new ModularSlot(itemStorage.getHandler(), 0));
+        return new ItemSlot()
+                .syncHandler("ender_item_link_cover_" + index)
+                .marginLeft(3)
+                .size(w, h);
+    }
+
     public @Nullable IItemHandler getOwnItemHandler() {
         return coverHolder.getItemHandlerCap(attachedSide, false);
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.put("filter", filterHandler.getFilterItem().save(coverHolder.getLevel().registryAccess()));
-        return super.copyConfig(tag);
     }
 
     @Override
@@ -119,25 +119,11 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     }
 
     @Override
-    public @NotNull List<ItemStack> getAdditionalDrops() {
+    public List<ItemStack> getAdditionalDrops() {
         var list = super.getAdditionalDrops();
         if (!filterHandler.getFilterItem().isEmpty()) {
             list.add(filterHandler.getFilterItem());
         }
         return list;
-    }
-
-    @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
-        WidgetGroup group = new WidgetGroup(x, y, width, height);
-        for (int i = 0; i < ((VirtualItemStorage) entry).getHandler().getSlots(); i++) {
-            group.addWidget(new SlotWidget(((VirtualItemStorage) entry).getHandler(), i, 8 * i, 0, canClick, canClick));
-        }
-        return group;
-    }
-
-    @Override
-    protected String getUITitle() {
-        return "cover.ender_item_link.title";
     }
 }

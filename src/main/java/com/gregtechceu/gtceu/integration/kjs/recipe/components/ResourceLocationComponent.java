@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
+import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
+import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
 public class ResourceLocationComponent implements RecipeComponent<ResourceLocation> {
@@ -23,6 +25,11 @@ public class ResourceLocationComponent implements RecipeComponent<ResourceLocati
     @Override
     public TypeInfo typeInfo() {
         return TypeInfo.of(ResourceLocation.class).or(TypeInfo.STRING);
+    }
+
+    @Override
+    public ResourceLocation wrap(RecipeScriptContext cx, Object from) {
+        return ID.kjs(from);
     }
 
     @Override

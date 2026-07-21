@@ -30,9 +30,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.function.TriFunction;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -43,7 +41,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@NoArgsConstructor
 public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
     public static final MapCodec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
@@ -59,6 +56,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     private IntProvider radius = ConstantInt.of(5);
     private FloatProvider density = ConstantFloat.of(0.2f);
     private IndicatorPlacement placement = IndicatorPlacement.SURFACE;
+
+    public SurfaceIndicatorGenerator() {}
 
     public SurfaceIndicatorGenerator(Either<BlockState, Material> block, IntProvider radius, FloatProvider density,
                                      IndicatorPlacement placement) {
@@ -135,12 +134,12 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         return WorldGeneratorUtils.groupByChunks(positions).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        entry -> createPlacer(level, entry.getValue(), blockState)));
+                        entry -> createPlacer(entry.getValue(), blockState)));
     }
 
-    private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY,
+    private OreIndicatorPlacer createPlacer(List<BlockPos> positionsWithoutY,
                                             BlockState blockState) {
-        return (access) -> {
+        return (access, level) -> {
             var positions = positionsWithoutY.stream()
                     .map(pos -> placement.resolver.apply(level, access, pos))
                     .filter(pos -> !level.isOutsideBuildHeight(pos))
@@ -221,11 +220,11 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         }
 
         @Override
-        public @NotNull String getSerializedName() {
+        public String getSerializedName() {
             return name().toLowerCase(Locale.ROOT);
         }
 
-        public static @NotNull IndicatorPlacement getByName(String name) {
+        public static IndicatorPlacement getByName(String name) {
             return IndicatorPlacement.valueOf(name.toUpperCase(Locale.ROOT));
         }
     }

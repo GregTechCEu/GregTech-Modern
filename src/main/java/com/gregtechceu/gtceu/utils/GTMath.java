@@ -1,16 +1,28 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.utils.math.ParseResult;
+import com.gregtechceu.gtceu.utils.math.PostfixPercentOperator;
+import com.gregtechceu.gtceu.utils.math.SIPrefix;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import com.ezylang.evalex.BaseException;
+import com.ezylang.evalex.Expression;
+import com.ezylang.evalex.config.ExpressionConfiguration;
+import com.ezylang.evalex.data.EvaluationValue;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -19,11 +31,56 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class GTMath {
 
-    public static long clamp(long value, long min, long max) {
-        return Math.max(min, Math.min(max, value));
+    public static final float PI = (float) Math.PI;
+    public static final float PI2 = 2f * PI;
+    public static final float PI_HALF = PI / 2f;
+    public static final float PI_QUART = PI / 4f;
+
+    public static final ExpressionConfiguration MATH_CFG = ExpressionConfiguration.builder()
+            .arraysAllowed(false)
+            .structuresAllowed(false)
+            .stripTrailingZeros(true)
+            .build()
+            .withAdditionalOperators()
+            .withAdditionalOperators(org.apache.commons.lang3.tuple.Pair.of("%", new PostfixPercentOperator()));
+
+    public static ParseResult parseExpression(String expression) {
+        return parseExpression(expression, Double.NaN, false);
     }
+
+    public static ParseResult parseExpression(String expression, boolean useSiPrefixes) {
+        return parseExpression(expression, Double.NaN, useSiPrefixes);
+    }
+
+    public static ParseResult parseExpression(String expression, double defaultValue) {
+        return parseExpression(expression, defaultValue, true);
+    }
+
+    public static ParseResult parseExpression(String expression, double defaultValue, boolean useSiPrefixes) {
+        if (expression == null || expression.isEmpty()) {
+            return ParseResult.success(EvaluationValue.numberValue(new BigDecimal(defaultValue)));
+        }
+
+        Expression e = new Expression(expression, MATH_CFG);
+        if (useSiPrefixes) {
+            SIPrefix.addAllToExpression(e);
+        }
+        try {
+            return ParseResult.success(e.evaluate());
+        } catch (BaseException exception) {
+            return ParseResult.failure(exception);
+        }
+    }
+
+    public static final Vector3fc UNIT_X = new Vector3f(1f, 0f, 0f);
+    public static final Vector3fc UNIT_Y = new Vector3f(0f, 1f, 0f);
+    public static final Vector3fc UNIT_Z = new Vector3f(0f, 0f, 1f);
 
     public static int lerpInt(double delta, int start, int end) {
         return start + Mth.floor(delta * (end - start));
@@ -58,7 +115,7 @@ public class GTMath {
     public static int[] split(long value) {
         IntArrayList result = new IntArrayList();
         while (value > 0) {
-            int intValue = (int) Math.min(value, Integer.MAX_VALUE);
+            int intValue = (int) java.lang.Math.min(value, Integer.MAX_VALUE);
             result.add(intValue);
             value -= intValue;
         }
@@ -94,6 +151,39 @@ public class GTMath {
         return q;
     }
 
+    public static long clamp(long v, long min, long max) {
+        return Math.max(min, Math.min(max, v));
+    }
+
+    public static float clamp(float v, float min, float max) {
+        return Math.max(min, Math.min(max, v));
+    }
+
+    public static int cycler(int x, int min, int max) {
+        return x < min ? max : (x > max ? min : x);
+    }
+
+    public static float cycler(float x, float min, float max) {
+        return x < min ? max : (x > max ? min : x);
+    }
+
+    public static double cycler(double x, double min, double max) {
+        return x < min ? max : (x > max ? min : x);
+    }
+
+    public static int gridIndex(int x, int y, int size, int width) {
+        x = x / size;
+        y = y / size;
+
+        return x + y * width / size;
+    }
+
+    public static int gridRows(int count, int size, int width) {
+        double x = count * size / (double) width;
+
+        return count <= 0 ? 1 : (int) Math.ceil(x);
+    }
+
     public static float min(float @NotNull... values) {
         // noinspection ConstantValue
         if (values == null || values.length == 0) throw new IllegalArgumentException();
@@ -108,13 +198,41 @@ public class GTMath {
         return min;
     }
 
+    public static int min(int @NotNull... values) {
+        // noinspection ConstantValue
+        if (values == null || values.length == 0) throw new IllegalArgumentException();
+        if (values.length == 1) return values[0];
+        if (values.length == 2) return Math.min(values[0], values[1]);
+        int min = Integer.MAX_VALUE;
+        for (int i : values) {
+            if (i < min) {
+                min = i;
+            }
+        }
+        return min;
+    }
+
     public static float max(float @NotNull... values) {
         // noinspection ConstantValue
         if (values == null || values.length == 0) throw new IllegalArgumentException();
         if (values.length == 1) return values[0];
         if (values.length == 2) return Math.max(values[0], values[1]);
-        float max = Float.MIN_VALUE;
+        float max = -Float.MAX_VALUE;
         for (float i : values) {
+            if (i > max) {
+                max = i;
+            }
+        }
+        return max;
+    }
+
+    public static int max(int @NotNull... values) {
+        // noinspection ConstantValue
+        if (values == null || values.length == 0) throw new IllegalArgumentException();
+        if (values.length == 1) return values[0];
+        if (values.length == 2) return Math.max(values[0], values[1]);
+        int max = Integer.MIN_VALUE;
+        for (int i : values) {
             if (i > max) {
                 max = i;
             }
@@ -153,5 +271,63 @@ public class GTMath {
             }
         }
         return Pair.of(new Vector3f(x1, y1, z1), new Vector3f(x2, y2, z2));
+    }
+
+    public static float arithmeticGeometricMean(float a, float b) {
+        return arithmeticGeometricMean(a, b, 5);
+    }
+
+    public static float arithmeticGeometricMean(float a, float b, int iterations) {
+        a = (a + b) / 2;
+        b = Mth.sqrt(a * b);
+        if (--iterations == 0) return a;
+        return arithmeticGeometricMean(a, b, iterations);
+    }
+
+    public static double rescaleLinear(double v, double fromMin, double fromMax, double toMin, double toMax) {
+        v = (v - fromMin) / (fromMax - fromMin); // reverse lerp
+        return toMin + (toMax - toMin) * v; // forward lerp
+    }
+
+    public static float rescaleLinear(float v, float fromMin, float fromMax, float toMin, float toMax) {
+        v = (v - fromMin) / (fromMax - fromMin); // reverse lerp
+        return toMin + (toMax - toMin) * v; // forward lerp
+    }
+
+    public static int intPlaces(BigDecimal x) {
+        return Math.max(1, x.precision() - x.scale());
+    }
+
+    public static int intPlaces(double x) {
+        if (x == 0.0) return 1;
+        x = Math.abs(x);
+        int d = (int) Math.floor(Math.log10(x)) + 1;
+        // correct rounding errors
+        if (Math.pow(10, d - 1) > x) d--;
+        return Math.max(d, 1);
+    }
+
+    public static Vec3 getFirstPerpendicular(Vec3 a, Vec3 b) {
+        Vec3 normal = a.subtract(b).normalize();
+        if (normal.equals(Vec3.ZERO)) return Vec3.ZERO;
+
+        Vec3 up = Math.abs(normal.y) < 0.99 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
+
+        return normal.cross(up).normalize();
+    }
+
+    public static Vec3 getSecondPerpendicular(Vec3 a, Vec3 b) {
+        Vec3 normal = a.subtract(b).normalize();
+        if (normal.equals(Vec3.ZERO)) return Vec3.ZERO;
+
+        Vec3 law = getFirstPerpendicular(a, b);
+
+        return normal.cross(law).normalize();
+    }
+
+    public static Vec3 getCenter(BlockPos a, BlockPos b) {
+        Vec3 ac = a.getCenter();
+        Vec3 bc = b.getCenter();
+        return ac.add(bc).scale(0.5F);
     }
 }

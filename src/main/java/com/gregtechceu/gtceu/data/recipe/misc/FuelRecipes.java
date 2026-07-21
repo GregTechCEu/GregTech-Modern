@@ -14,7 +14,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class FuelRecipes {
 
     public static void init(RecipeOutput provider) {
-        // furnace fuel-based recipes are handled in SteamBoilerLogic for dynamic burn time (and data map) support.
+        // furnace fuel-based recipes are handled by BoilerFuelLogic for dynamic burn time + data map support.
 
         // override the default fluid recipes for lava and creosote
         STEAM_BOILER_RECIPES.recipeBuilder("minecraft_lava")

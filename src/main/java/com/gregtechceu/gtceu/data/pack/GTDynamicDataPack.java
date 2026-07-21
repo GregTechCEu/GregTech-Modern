@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -21,10 +19,6 @@ import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.neoforged.neoforge.common.data.DataMapProvider;
-import net.neoforged.neoforge.registries.DataMapLoader;
-import net.neoforged.neoforge.registries.datamaps.DataMapFile;
-import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
@@ -118,22 +112,6 @@ public class GTDynamicDataPack implements PackResources {
             GTCEu.LOGGER.error("duplicate loot table: {}", lootTableId);
         }
         addResource(fileName, lootTableJson);
-    }
-
-    public static <T, R> void addDataMap(DataMapType<R, T> type, DataMapProvider.Builder<T, R> builder,
-                                         HolderLookup.Provider provider) {
-        ResourceLocation dataMapId = type.id()
-                .withPrefix(DataMapLoader.getFolderLocation(type.registryKey().location()) + "/");
-
-        JsonElement dataMapJson = DataMapFile.codec(type.registryKey(), type)
-                .encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), builder.build().carrier())
-                .getOrThrow();
-        byte[] dataMapBytes = dataMapJson.toString().getBytes(StandardCharsets.UTF_8);
-        Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
-        if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(dataMapId, parent, dataMapBytes);
-        }
-        addResource(dataMapId, dataMapBytes);
     }
 
     /**

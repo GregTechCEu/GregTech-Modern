@@ -100,7 +100,6 @@ public class ElementMaterials {
                 .ore()
                 .color(0x73d73d).secondaryColor(0x184537).iconSet(METALLIC)
                 .appendFlags(STD_METAL)
-                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.BERYLLIOSIS, false)
                 .element(GTElements.Be)
                 .buildAndRegister();
 

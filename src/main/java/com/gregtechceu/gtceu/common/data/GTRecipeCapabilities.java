@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -18,10 +17,10 @@ public class GTRecipeCapabilities {
     public final static RecipeCapability<Integer> CWU = CWURecipeCapability.CAP;
 
     public static void init() {
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(ITEM.name), ITEM);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(FLUID.name), FLUID);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(BLOCK_STATE.name), BLOCK_STATE);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(EU.name), EU);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, GTCEu.id(CWU.name), CWU);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, ITEM.id, ITEM);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, FLUID.id, FLUID);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, BLOCK_STATE.id, BLOCK_STATE);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, EU.id, EU);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, CWU.id, CWU);
     }
 }

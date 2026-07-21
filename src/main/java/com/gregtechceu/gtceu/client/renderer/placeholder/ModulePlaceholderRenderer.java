@@ -22,7 +22,8 @@ public class ModulePlaceholderRenderer implements IPlaceholderRenderer {
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
                 if (component instanceof IMonitorModuleItem module) {
-                    module.getRenderer(stack).render(machine, group, partialTick, poseStack, buffer, packedLight,
+                    module.getRenderer(stack, machine, group).render(machine, group, partialTick, poseStack, buffer,
+                            packedLight,
                             packedOverlay);
                 }
             }

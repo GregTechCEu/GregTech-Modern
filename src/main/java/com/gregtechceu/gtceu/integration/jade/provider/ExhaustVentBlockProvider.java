@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.trait.ExhaustVentMachineTrait;
+import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -18,24 +18,23 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElementHelper;
 
-public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMachineTrait> {
+public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMachineTrait, CompoundTag> {
 
     public ExhaustVentBlockProvider() {
         super(GTCEu.id("exhaust_vent_info"), ExhaustVentMachineTrait.TYPE);
     }
 
     @Override
-    protected void write(CompoundTag compoundTag, BlockAccessor blockAccessor, ExhaustVentMachineTrait trait) {
-        var direction = trait.getVentingDirection();
-        compoundTag.putString("ventDirection", direction.getName());
-        var level = blockAccessor.getLevel();
-        var pos = blockAccessor.getPosition().relative(direction);
-        if (level != null) {
-            var key = BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock());
-            compoundTag.putString("ventBlock", key.toString());
-        }
+    protected CompoundTag write(ExhaustVentMachineTrait trait) {
+        var compoundTag = new CompoundTag();
+        var pos = trait.getBlockPos().relative(trait.getVentingDirection());
+        var key = BuiltInRegistries.BLOCK.getKey(trait.getLevel().getBlockState(pos).getBlock());
+
+        compoundTag.putString("ventDirection", trait.getVentingDirection().getName());
+        compoundTag.putString("ventBlock", key.toString());
         compoundTag.putBoolean("ventBlocked", trait.isVentingBlocked());
         compoundTag.putBoolean("needsVenting", trait.isNeedsVenting());
+        return compoundTag;
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -74,8 +74,9 @@ public class DiodePartMachine extends TieredIOPartMachine {
         long tierVoltage = GTValues.V[getTier()];
 
         this.amps = 1;
-        this.energyContainer = new NotifiableEnergyContainer(this, tierVoltage * MAX_AMPS * 2, tierVoltage, MAX_AMPS,
-                tierVoltage, MAX_AMPS);
+        this.energyContainer = attachTrait(
+                new NotifiableEnergyContainer(tierVoltage * MAX_AMPS * 2, tierVoltage, MAX_AMPS,
+                        tierVoltage, MAX_AMPS));
 
         reinitializeEnergyContainer();
     }

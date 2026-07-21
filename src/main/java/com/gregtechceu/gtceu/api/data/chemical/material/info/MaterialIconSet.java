@@ -1,59 +1,60 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
-import com.google.common.base.Preconditions;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
+import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 public class MaterialIconSet {
 
-    public static final Map<String, MaterialIconSet> ICON_SETS = new HashMap<>();
-    public static final MaterialIconSet DULL = new MaterialIconSet("dull", null, true);
-    public static final MaterialIconSet METALLIC = new MaterialIconSet("metallic");
-    public static final MaterialIconSet MAGNETIC = new MaterialIconSet("magnetic", METALLIC);
-    public static final MaterialIconSet SHINY = new MaterialIconSet("shiny", METALLIC);
-    public static final MaterialIconSet BRIGHT = new MaterialIconSet("bright", SHINY);
-    public static final MaterialIconSet DIAMOND = new MaterialIconSet("diamond", SHINY);
-    public static final MaterialIconSet EMERALD = new MaterialIconSet("emerald", DIAMOND);
-    public static final MaterialIconSet GEM_HORIZONTAL = new MaterialIconSet("gem_horizontal", EMERALD);
-    public static final MaterialIconSet GEM_VERTICAL = new MaterialIconSet("gem_vertical", EMERALD);
-    public static final MaterialIconSet RUBY = new MaterialIconSet("ruby", EMERALD);
-    public static final MaterialIconSet OPAL = new MaterialIconSet("opal", RUBY);
-    public static final MaterialIconSet GLASS = new MaterialIconSet("glass", RUBY);
-    public static final MaterialIconSet NETHERSTAR = new MaterialIconSet("netherstar", GLASS);
-    public static final MaterialIconSet FINE = new MaterialIconSet("fine");
-    public static final MaterialIconSet SAND = new MaterialIconSet("sand", FINE);
-    public static final MaterialIconSet WOOD = new MaterialIconSet("wood", FINE);
-    public static final MaterialIconSet ROUGH = new MaterialIconSet("rough", FINE);
-    public static final MaterialIconSet FLINT = new MaterialIconSet("flint", ROUGH);
-    public static final MaterialIconSet LIGNITE = new MaterialIconSet("lignite", ROUGH);
-    public static final MaterialIconSet QUARTZ = new MaterialIconSet("quartz", ROUGH);
-    public static final MaterialIconSet CERTUS = new MaterialIconSet("certus", QUARTZ);
-    public static final MaterialIconSet LAPIS = new MaterialIconSet("lapis", QUARTZ);
-    public static final MaterialIconSet FLUID = new MaterialIconSet("fluid");
-    public static final MaterialIconSet RADIOACTIVE = new MaterialIconSet("radioactive", METALLIC);
+    public static final MaterialIconSet DULL = new MaterialIconSet(GTCEu.id("dull"), null, true);
+    public static final MaterialIconSet METALLIC = new MaterialIconSet(GTCEu.id("metallic"));
+    public static final MaterialIconSet MAGNETIC = new MaterialIconSet(GTCEu.id("magnetic"), METALLIC);
+    public static final MaterialIconSet SHINY = new MaterialIconSet(GTCEu.id("shiny"), METALLIC);
+    public static final MaterialIconSet BRIGHT = new MaterialIconSet(GTCEu.id("bright"), SHINY);
+    public static final MaterialIconSet DIAMOND = new MaterialIconSet(GTCEu.id("diamond"), SHINY);
+    public static final MaterialIconSet EMERALD = new MaterialIconSet(GTCEu.id("emerald"), DIAMOND);
+    public static final MaterialIconSet GEM_HORIZONTAL = new MaterialIconSet(GTCEu.id("gem_horizontal"), EMERALD);
+    public static final MaterialIconSet GEM_VERTICAL = new MaterialIconSet(GTCEu.id("gem_vertical"), EMERALD);
+    public static final MaterialIconSet RUBY = new MaterialIconSet(GTCEu.id("ruby"), EMERALD);
+    public static final MaterialIconSet OPAL = new MaterialIconSet(GTCEu.id("opal"), RUBY);
+    public static final MaterialIconSet GLASS = new MaterialIconSet(GTCEu.id("glass"), RUBY);
+    public static final MaterialIconSet NETHERSTAR = new MaterialIconSet(GTCEu.id("netherstar"), GLASS);
+    public static final MaterialIconSet FINE = new MaterialIconSet(GTCEu.id("fine"));
+    public static final MaterialIconSet SAND = new MaterialIconSet(GTCEu.id("sand"), FINE);
+    public static final MaterialIconSet WOOD = new MaterialIconSet(GTCEu.id("wood"), FINE);
+    public static final MaterialIconSet ROUGH = new MaterialIconSet(GTCEu.id("rough"), FINE);
+    public static final MaterialIconSet FLINT = new MaterialIconSet(GTCEu.id("flint"), ROUGH);
+    public static final MaterialIconSet LIGNITE = new MaterialIconSet(GTCEu.id("lignite"), ROUGH);
+    public static final MaterialIconSet QUARTZ = new MaterialIconSet(GTCEu.id("quartz"), ROUGH);
+    public static final MaterialIconSet CERTUS = new MaterialIconSet(GTCEu.id("certus"), QUARTZ);
+    public static final MaterialIconSet LAPIS = new MaterialIconSet(GTCEu.id("lapis"), QUARTZ);
+    public static final MaterialIconSet FLUID = new MaterialIconSet(GTCEu.id("fluid"));
+    public static final MaterialIconSet RADIOACTIVE = new MaterialIconSet(GTCEu.id("radioactive"), METALLIC);
 
     // Implementation -----------------------------------------------------------------------------------------------
 
-    private static int idCounter = 0;
+    public final ResourceLocation id;
     public final String name;
-    public final int id;
     public final boolean isRootIconset;
 
     /**
      * This can be null if {@link MaterialIconSet#isRootIconset} is true,
      * otherwise it will be Nonnull
      */
+    @Nullable
     public final MaterialIconSet parentIconset;
 
     /**
      * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
      *
+     * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation)} instead
      * @param name the name of the iconset
      */
+    @Deprecated(since = "8.0.0")
     public MaterialIconSet(@NotNull String name) {
         this(name, MaterialIconSet.DULL);
     }
@@ -61,9 +62,11 @@ public class MaterialIconSet {
     /**
      * Create a new MaterialIconSet whose parent is one of your choosing
      *
+     * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation, MaterialIconSet)} instead
      * @param name          the name of the iconset
      * @param parentIconset the parent iconset
      */
+    @Deprecated(since = "8.0.0")
     public MaterialIconSet(@NotNull String name, @NotNull MaterialIconSet parentIconset) {
         this(name, parentIconset, false);
     }
@@ -71,27 +74,63 @@ public class MaterialIconSet {
     /**
      * Create a new MaterialIconSet which is a root
      * 
+     * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation, MaterialIconSet, boolean)} instead
      * @param name          the name of the iconset
      * @param parentIconset the parent iconset, should be null if this should be a root iconset
      * @param isRootIconset true if this should be a root iconset, otherwise false
      */
+    @Deprecated(since = "8.0.0")
     public MaterialIconSet(@NotNull String name, @Nullable MaterialIconSet parentIconset, boolean isRootIconset) {
-        this.name = name.toLowerCase(Locale.ENGLISH);
-        Preconditions.checkArgument(!ICON_SETS.containsKey(this.name),
-                "MaterialIconSet " + this.name + " already registered!");
-        this.id = idCounter++;
-        this.isRootIconset = isRootIconset;
-        this.parentIconset = parentIconset;
-        ICON_SETS.put(this.name, this);
+        this(GTCEu.id(name), parentIconset, isRootIconset);
     }
 
-    public static MaterialIconSet getByName(@NotNull String name) {
-        return ICON_SETS.get(name.toLowerCase(Locale.ENGLISH));
+    /**
+     * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
+     *
+     * @param id the id of the iconset
+     */
+    public MaterialIconSet(@NotNull ResourceLocation id) {
+        this(id, MaterialIconSet.DULL);
+    }
+
+    /**
+     * Create a new MaterialIconSet whose parent is one of your choosing
+     *
+     * @param id            the id of the iconset
+     * @param parentIconset the parent iconset
+     */
+    public MaterialIconSet(@NotNull ResourceLocation id, @NotNull MaterialIconSet parentIconset) {
+        this(id, parentIconset, false);
+    }
+
+    /**
+     * Create a new MaterialIconSet which is a root
+     *
+     * @param id            the id of the iconset
+     * @param parentIconset the parent iconset, should be null if this should be a root iconset
+     * @param isRootIconset true if this should be a root iconset, otherwise false
+     */
+    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset,
+                           boolean isRootIconset) {
+        this.id = id;
+
+        if (id.getPath().contains("/"))
+            throw new IllegalArgumentException("MaterialIconSet id cannot have '/' %s".formatted(id));
+
+        this.name = id.getPath();
+        this.isRootIconset = isRootIconset;
+        this.parentIconset = parentIconset;
+
+        GTRegistries.register(GTRegistries.MATERIAL_ICON_SETS, this.id, this);
+    }
+
+    public String getName() {
+        return id.getPath();
     }
 
     @Override
     public String toString() {
-        return name;
+        return id.toString();
     }
 
     public static void init() {}

@@ -22,7 +22,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -38,8 +37,6 @@ public class WorldGeneratorUtils {
     public static final RuleTest END_ORE_REPLACEABLES = new TagMatchTest(CustomTags.ENDSTONE_ORE_REPLACEABLES);
 
     private static final Map<ServerLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
-
-    public static final SortedMap<String, IWorldGenLayer> WORLD_GEN_LAYERS = new Object2ObjectLinkedOpenHashMap<>();
 
     public static final HashBiMap<ResourceLocation, MapCodec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap
             .create();
@@ -82,13 +79,6 @@ public class WorldGeneratorUtils {
         return oreVeinCache.computeIfAbsent(level, WorldOreVeinCache::new).getEntry(biome);
     }
 
-    public static Optional<String> getWorldGenLayerKey(IWorldGenLayer layer) {
-        return WORLD_GEN_LAYERS.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(layer))
-                .map(Entry::getKey)
-                .findFirst();
-    }
-
     public static boolean isSameDimension(ResourceKey<Level> first, ResourceKey<Level> second) {
         return first == second;
     }
@@ -100,7 +90,7 @@ public class WorldGeneratorUtils {
                 Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, Object2ObjectOpenHashMap::new)));
     }
 
-    public static <T> Map<ChunkPos, List<BlockPos>> groupByChunks(Collection<BlockPos> positions) {
+    public static Map<ChunkPos, List<BlockPos>> groupByChunks(Collection<BlockPos> positions) {
         return positions.stream().collect(Collectors.groupingBy(ChunkPos::new));
     }
 

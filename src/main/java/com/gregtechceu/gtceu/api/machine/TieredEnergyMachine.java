@@ -2,97 +2,67 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.trait.EnvironmentalExplosionTrait;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
+import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 
 import net.minecraft.util.Mth;
 
 import lombok.Getter;
 
-import java.util.function.Function;
-
-public class TieredEnergyMachine extends TieredMachine implements ITieredMachine {
+/**
+ * A singleblock tiered machine with an energy container.
+ */
+public class TieredEnergyMachine extends TieredMachine {
 
     @SaveField
     @SyncToClient
     public final NotifiableEnergyContainer energyContainer;
+
     @Getter
     protected final EnvironmentalExplosionTrait environmentalExplosionTrait;
 
+    /**
+     * Creates a {@link TieredEnergyMachine} using the given energy container.<br>
+     *
+     *
+     * @param info            {@link BlockEntityCreationInfo}
+     * @param tier            Machine/voltage tier
+     * @param energyContainer The enegery container to attach
+     * @see NotifiableEnergyContainer
+     */
     public TieredEnergyMachine(BlockEntityCreationInfo info, int tier,
-                               Function<TieredEnergyMachine, NotifiableEnergyContainer> energyContainerSupplier) {
+                               NotifiableEnergyContainer energyContainer) {
         super(info, tier);
-        energyContainer = energyContainerSupplier.apply(this);
-        environmentalExplosionTrait = new EnvironmentalExplosionTrait(this, tier, tier * 10,
-                () -> energyContainer.getEnergyStored() > 0);
+        this.energyContainer = attachTrait(energyContainer);
+        environmentalExplosionTrait = attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10,
+                () -> energyContainer.getEnergyStored() > 0));
     }
 
-    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
-
-        long tierVoltage = GTValues.V[tier];
-        if (isEnergyEmitter()) {
-            energyContainer = NotifiableEnergyContainer.emitterContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
-        } else {
-            energyContainer = NotifiableEnergyContainer.receiverContainer(this,
-                    tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
-        }
-        environmentalExplosionTrait = new EnvironmentalExplosionTrait(this, tier, tier * 10,
-                () -> energyContainer.getEnergyStored() > 0);
+    /**
+     * Creates a {@link TieredEnergyMachine} with a default energy container.<br>
+     * Defaults to a container with a capacity of 64A @ the given voltage tier, and a max input/output amperage of 1A @
+     * the given voltage tier.
+     *
+     * @param info        {@link BlockEntityCreationInfo}
+     * @param tier        Machine/voltage tier
+     * @param emitsEnergy If the energy container should receive or emit energy.
+     * @see NotifiableEnergyContainer
+     */
+    public TieredEnergyMachine(BlockEntityCreationInfo info, int tier, boolean emitsEnergy) {
+        this(info, tier,
+                emitsEnergy ? NotifiableEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
+                        1) :
+                        NotifiableEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier],
+                                1));
     }
 
-    //////////////////////////////////////
-    // ********** MISC ***********//
-    //////////////////////////////////////
     @Override
     public int getAnalogOutputSignal() {
         long energyStored = energyContainer.getEnergyStored();
         long energyCapacity = energyContainer.getEnergyCapacity();
         float f = energyCapacity == 0L ? 0.0f : energyStored / (energyCapacity * 1.0f);
         return Mth.floor(f * 14.0f) + (energyStored > 0 ? 1 : 0);
-    }
-
-    /**
-     * Determines max input or output amperage used by this meta tile entity
-     * if emitter, it determines size of energy packets it will emit at once
-     * if receiver, it determines max input energy per request
-     *
-     * @return max amperage received or emitted by this machine
-     */
-    protected long getMaxInputOutputAmperage() {
-        return 1L;
-    }
-
-    /**
-     * Determines if this meta tile entity is in energy receiver or emitter mode
-     *
-     * @return true if machine emits energy to network, false it it accepts energy from network
-     */
-    protected boolean isEnergyEmitter() {
-        return false;
-    }
-
-    /**
-     * Create an energy bar widget.
-     */
-    protected static EditableUI<ProgressWidget, TieredEnergyMachine> createEnergyBar() {
-        return new EditableUI<>("energy_container", ProgressWidget.class, () -> {
-            var progressBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 18, 60,
-                    new ProgressTexture(IGuiTexture.EMPTY, GuiTextures.ENERGY_BAR_BASE));
-            progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
-            progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
-            return progressBar;
-        }, (progressBar, machine) -> progressBar.setProgressSupplier(
-                () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity()));
     }
 }

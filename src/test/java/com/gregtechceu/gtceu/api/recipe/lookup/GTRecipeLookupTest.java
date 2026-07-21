@@ -204,7 +204,7 @@ public class GTRecipeLookupTest {
                 recipe -> recipe.inputs
                         .getOrDefault(ItemRecipeCapability.CAP, List.of())
                         .stream()
-                        .allMatch(content -> ((SizedIngredient) content.getContent()).count() > 4));
+                        .allMatch(content -> ((SizedIngredient) content.content()).count() > 4));
         helper.assertTrue(SMELT_CHERRY_WOOD.equals(resultRecipe),
                 "GT Recipe should be smelt_cherry_wood, instead was " + resultRecipe);
 
@@ -213,7 +213,7 @@ public class GTRecipeLookupTest {
         resultRecipe = DB.find(ingredients, recipe -> recipe.inputs
                 .getOrDefault(ItemRecipeCapability.CAP, List.of())
                 .stream()
-                .allMatch(content -> ((SizedIngredient) content.getContent()).count() > 32));
+                .allMatch(content -> ((SizedIngredient) content.content()).count() > 32));
         helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
 
         helper.succeed();

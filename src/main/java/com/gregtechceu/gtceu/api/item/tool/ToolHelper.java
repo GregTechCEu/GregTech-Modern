@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -377,13 +377,13 @@ public class ToolHelper {
                     if (prefix.isEmpty()) {
                         for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                drops.add(ItemRecipeCapability.CAP.of(output.content).copy().getItems()[0]);
+                                drops.add(ItemRecipeCapability.CAP.of(output.content()).copy().getItems()[0]);
                             }
                         }
                     } else if (TagPrefix.ORES.containsKey(prefix)) {
                         for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
+                                ItemStack output = ItemRecipeCapability.CAP.of(content.content()).getItems()[0];
                                 // Only apply fortune on ore -> crushed forge hammer recipes
                                 if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
                                     output = output.copy();

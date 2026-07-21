@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -43,25 +43,26 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
+public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeOutputProvider() {
         super(GTCEu.id("recipe_output_info"), RecipeLogic.TYPE);
     }
 
     @Override
-    protected void write(CompoundTag data, BlockAccessor accessor, RecipeLogic recipeLogic) {
+    protected CompoundTag write(RecipeLogic recipeLogic) {
+        CompoundTag data = new CompoundTag();
+
         if (!recipeLogic.isWorking()) {
-            return;
+            return data;
         }
         data.putBoolean("Working", recipeLogic.isWorking());
         GTRecipe recipe = recipeLogic.getLastRecipe();
         if (recipe == null) {
-            return;
+            return data;
         }
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int chanceTier = recipeTier + recipe.ocLevel;
-        var function = recipe.getType().getChanceFunction();
         var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
         var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
         int runs = recipe.getTotalRuns();
@@ -72,14 +73,13 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
         ListTag itemTags = new ListTag();
         for (Content item : itemContents) {
             CompoundTag itemTag;
-            SizedIngredient content = ItemRecipeCapability.CAP.of(item.content);
+            SizedIngredient content = ItemRecipeCapability.CAP.of(item.content());
             if (content.ingredient().getCustomIngredient() instanceof IntProviderIngredient provider) {
 
                 // don't roll for output but do copy for chance and batch
                 IntProviderIngredient chanced = provider;
-                if (item.chance < item.maxChance) {
-                    double countD = (double) runs *
-                            function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                if (item.chance() < item.maxChance()) {
+                    double countD = ((double) runs * item.chance()) / item.maxChance();
                     chanced = ItemRecipeCapability.CAP.copyWithModifier(provider,
                             ContentModifier.multiplier(countD));
                 }
@@ -92,10 +92,9 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
                 itemTag = ItemStack.CODEC.encodeStart(ops, stack)
                         .map(tag -> (CompoundTag) tag)
                         .getOrThrow();
-                if (item.chance < item.maxChance) {
+                if (item.chance() < item.maxChance()) {
                     int count = stack.getCount();
-                    double countD = (double) count * runs *
-                            function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
+                    double countD = ((double) count * runs * item.chance()) / item.maxChance();
                     count = Math.max(1, (int) Math.round(countD));
                     itemTag.putInt("Count", count);
                 }
@@ -109,21 +108,20 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
 
         ListTag fluidTags = new ListTag();
         for (var fluid : fluidContents) {
-            FluidIngredient ingredient = FluidRecipeCapability.CAP.of(fluid.getContent()).ingredient();
+            FluidIngredient ingredient = FluidRecipeCapability.CAP.of(fluid.content()).ingredient();
             var fluidTag = new CompoundTag();
             if (ingredient instanceof IntProviderFluidIngredient provider) {
                 // don't bother rolling output for nothing
                 fluidTag = IntProviderFluidIngredient.CODEC.codec().encodeStart(ops, provider)
                         .map(tag -> (CompoundTag) tag)
                         .getOrThrow();
-                if (fluid.chance < fluid.maxChance) {
-                    double countD = (double) runs *
-                            function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                    provider = (IntProviderFluidIngredient) FluidRecipeCapability.CAP.copyWithModifier(provider,
+                if (fluid.chance() < fluid.maxChance()) {
+                    double countD = ((double) runs * fluid.chance()) / fluid.maxChance();
+                    provider = FluidRecipeCapability.CAP.copyWithModifier(provider,
                             ContentModifier.multiplier(countD));
                 }
             } else {
-                FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getFluids();
+                FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content()).getFluids();
                 if (stacks.length == 0) continue;
                 if (stacks[0].isEmpty()) continue;
                 var stack = stacks[0];
@@ -131,15 +129,10 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
                 fluidTag = FluidStack.CODEC.encodeStart(ops, stack)
                         .map(tag -> (CompoundTag) tag)
                         .getOrThrow();
-                if (fluid.chance < fluid.maxChance) {
+                if (fluid.chance() < fluid.maxChance()) {
                     // <<<<<<< HEAD
                     int amount = stack.getAmount();
-                    double amountD = (double) amount * runs *
-                            // =======
-                            // int amount = stacks[0].getAmount();
-                            // double amountD = (double) amount * runs *
-                            // >>>>>>> v.7.2.0-1.20.1
-                            function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
+                    double amountD = ((double) amount * runs * fluid.chance()) / fluid.maxChance();
                     amount = Math.max(1, (int) Math.round(amountD));
                     fluidTag.putInt("Amount", amount);
                 }
@@ -150,6 +143,8 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
         if (!fluidTags.isEmpty()) {
             data.put("OutputFluids", fluidTags);
         }
+
+        return data;
     }
 
     @Override
@@ -254,7 +249,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic> {
     }
 
     private Component getItemName(ItemStack stack) {
-        return stack.getDisplayName().copy().withStyle(ChatFormatting.WHITE);
+        return stack.getHoverName().copy().withStyle(ChatFormatting.WHITE);
     }
 
     private Component getFluidName(FluidStack stack) {

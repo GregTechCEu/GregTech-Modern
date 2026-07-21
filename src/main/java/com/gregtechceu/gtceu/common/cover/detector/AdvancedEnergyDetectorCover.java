@@ -4,47 +4,48 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.theme.ThemeAPI;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigInteger;
-import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.utils.RedstoneUtil.computeLatchedRedstoneBetweenValues;
 
-public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements IUICover {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements IMuiCover {
 
     private static final int DEFAULT_MIN_PERCENT = 33;
     private static final int DEFAULT_MAX_PERCENT = 66;
 
     @SaveField
     @Getter
-    @Setter
     public long minValue, maxValue;
 
     @SaveField
     @Getter
     private boolean usePercent;
-
-    private LongInputWidget minValueInput;
-    private LongInputWidget maxValueInput;
 
     public AdvancedEnergyDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -94,11 +95,30 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         }
     }
 
+    public long getEnergyCapacity() {
+        try {
+            return getEnergyInfoProvider().getEnergyInfo().capacity().longValueExact();
+        } catch (ArithmeticException e) {
+            return Long.MAX_VALUE;
+        }
+    }
+
+    public void setMinValue(long value) {
+        this.minValue = GTMath.clamp(value, 0, maxValue - 1);
+        if (this.minValue < 0) this.minValue = 0;
+    }
+
+    public void setMaxValue(long value) {
+        if (usePercent) maxValue = GTMath.clamp(value, 0, 100);
+        else maxValue = GTMath.clamp(value, 0, getEnergyCapacity());
+        setMinValue(this.getMinValue());
+    }
+
     public void setUsePercent(boolean usePercent) {
         var wasPercent = this.usePercent;
         this.usePercent = usePercent;
 
-        initializeMinMaxInputs(wasPercent);
+        updateEUValues(wasPercent);
     }
 
     //////////////////////////////////////
@@ -106,84 +126,59 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 105);
-        group.addWidget(new LabelWidget(10, 5, "cover.advanced_energy_detector.label"));
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent).allowC2S());
+        var minValueSync = new LongSyncValue(this::getMinValue, this::setMinValue).allowC2S();
+        var maxValueSync = new LongSyncValue(this::getMaxValue, this::setMaxValue).allowC2S();
 
-        group.addWidget(new TextBoxWidget(10, 55, 25,
-                List.of(LocalizationUtils.format("cover.advanced_energy_detector.min"))));
+        syncManager.syncValue("minValue", minValueSync);
+        syncManager.syncValue("maxValue", maxValueSync);
 
-        group.addWidget(new TextBoxWidget(10, 80, 25,
-                List.of(LocalizationUtils.format("cover.advanced_energy_detector.max"))));
-
-        minValueInput = new LongInputWidget(40, 50, 176 - 40 - 10, 20, this::getMinValue, this::setMinValue);
-        maxValueInput = new LongInputWidget(40, 75, 176 - 40 - 10, 20, this::getMaxValue, this::setMaxValue);
-        initializeMinMaxInputs(usePercent);
-        group.addWidget(minValueInput);
-        group.addWidget(maxValueInput);
-
-        // Invert Redstone Output Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
-                .isMultiLang()
-                .setTooltipText("cover.advanced_energy_detector.invert"));
-
-        // Mode (EU / Percent) Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                176 - 29, 20, 20, 20,
-                GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent, this::setUsePercent)
-                .isMultiLang()
-                .setTooltipText("cover.advanced_energy_detector.use_percent"));
-
-        return group;
+        column.child(coverUIRow().child(Text.lang("cover.advanced_energy_detector.min").asWidget().width(20))
+                .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
+                .child(coverUIRow().child(Text.lang("cover.advanced_energy_detector.max").asWidget().width(20))
+                        .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0,
+                                () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
+                .child(coverUIRow()
+                        .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
+                                .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
+                                .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
+                                .tooltip(false, t -> t.add("cover.advanced_energy_detector.invert.disabled"))
+                                .tooltip(true, t -> t.add("cover.advanced_energy_detector.invert.enabled")))
+                        .child(new ToggleButton().value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent))
+                                .background(true, ThemeAPI.INSTANCE.getTheme(settings.getTheme())
+                                        .getToggleButtonTheme().theme().getBackground())
+                                .overlay(false, GTGuiTextures.BUTTON_EU)
+                                .overlay(true, GTGuiTextures.BUTTON_PERCENT)
+                                .tooltip(false,
+                                        t -> t.add("cover.advanced_energy_detector.use_percent.disabled"))
+                                .tooltip(true,
+                                        t -> t.add("cover.advanced_energy_detector.use_percent.enabled"))));
     }
 
-    private void initializeMinMaxInputs(boolean wasPercent) {
-        if (GTCEu.isClientThread() || minValueInput == null || maxValueInput == null)
-            return;
+    private void updateEUValues(boolean wasPercent) {
+        if (GTCEu.isClientThread()) return;
 
-        long energyCapacity;
-        try {
-            energyCapacity = getEnergyInfoProvider().getEnergyInfo().capacity().longValueExact();
-        } catch (ArithmeticException e) {
-            energyCapacity = Long.MAX_VALUE;
-        }
+        long energyCapacity = getEnergyCapacity();
 
-        minValueInput.setMin(0L);
-        maxValueInput.setMin(0L);
-
-        if (usePercent) {
-            // This needs to be before setting the maximum, because otherwise the value would be limited to 100 EU
-            // before converting to percent.
-            if (!wasPercent) {
-                minValueInput.setValue(GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100));
-                maxValueInput.setValue(GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100));
-            }
-
-            minValueInput.setMax(100L);
-            maxValueInput.setMax(100L);
+        if (usePercent && !wasPercent) {
+            minValue = GTMath.clamp((long) (((double) minValue / energyCapacity) * 100), 0, 100);
+            maxValue = GTMath.clamp((long) (((double) maxValue / energyCapacity) * 100), 0, 100);
         } else {
-            minValueInput.setMax(energyCapacity);
-            maxValueInput.setMax(energyCapacity);
-
-            // This needs to be after setting the maximum, because otherwise the converted value would be
-            // limited to 100.
             if (wasPercent) {
-                minValueInput.setValue(
-                        GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity));
-                maxValueInput.setValue(
-                        GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity));
+                minValue = GTMath.clamp((long) Math.ceil((minValue / 100.0) * energyCapacity), 0, energyCapacity);
+                maxValue = GTMath.clamp((long) Math.ceil((maxValue / 100.0) * energyCapacity), 0, energyCapacity);
             }
         }
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putLong("min", minValue);
         tag.putLong("max", maxValue);
         tag.putBoolean("percent", usePercent);
-        return super.copyConfig(tag);
     }
 
     @Override

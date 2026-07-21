@@ -26,10 +26,6 @@
 // import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
 // import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
-// @PrefixGameTestTemplate(false)
-// @GameTestHolder(GTCEu.MOD_ID)
-// public class NBTPredicateTest {
-
 // private static GTRecipeType CR_RECIPE_TYPE;
 
 // @BeforeBatch(batch = "NBTPredicateTest")

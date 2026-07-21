@@ -11,22 +11,19 @@ import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.rhino.util.HideFromJS;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RegisterWoodsEventJS implements KubeEvent {
 
-    public RegisterWoodsEventJS() {
-        this.woods = new ArrayList<>();
-        this.wrapped = new ArrayList<>();
-    }
+    @HideFromJS
+    public List<WoodTypeEntry> woods = new ArrayList<>();
+    @HideFromJS
+    public List<Wrapped> wrapped = new ArrayList<>();
 
-    @HideFromJS
-    public ArrayList<WoodTypeEntry> woods;
-    @HideFromJS
-    public ArrayList<Wrapped> wrapped;
+    public RegisterWoodsEventJS() {}
 
     public class Wrapped {
 
-        RegisterWoodsEventJS evt;
         String modId;
         String woodName;
 
@@ -251,16 +248,16 @@ public class RegisterWoodsEventJS implements KubeEvent {
 
         @HideFromJS
         public void register() {
-            if (!this.wasRegistered) {
-                this.wasRegistered = true;
-                try {
-                    woods.add(this.toEntry());
-                } catch (Exception e) {
-                    GTCEu.LOGGER.error(e);
-
-                }
-            } else
+            if (this.wasRegistered) {
                 GTCEu.LOGGER.warn("Tried registering a wood type twice!");
+                return;
+            }
+            this.wasRegistered = true;
+            try {
+                woods.add(this.toEntry());
+            } catch (Exception e) {
+                GTCEu.LOGGER.error(e);
+            }
         }
     }
 

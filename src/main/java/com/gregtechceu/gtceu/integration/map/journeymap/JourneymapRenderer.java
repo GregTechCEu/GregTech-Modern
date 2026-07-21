@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -58,9 +58,9 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
+    public boolean addMarker(Component name, String id, ResourceKey<Level> dim, ChunkPos pos,
                              ProspectorMode.FluidInfo fluid) {
-        IClientAPI api = JourneyMapPlugin.getJmApi();
+        IClientAPI api = GTJourneyMapPlugin.getJmApi();
         if (!api.playerAccepts(GTCEu.MOD_ID, DisplayType.Image)) {
             return false;
         }
@@ -78,8 +78,8 @@ public class JourneymapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
-        IClientAPI api = JourneyMapPlugin.getJmApi();
+    public boolean addMarker(Component name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
+        IClientAPI api = GTJourneyMapPlugin.getJmApi();
         if (!api.playerAccepts(GTCEu.MOD_ID, DisplayType.Image)) {
             return false;
         }
@@ -102,33 +102,34 @@ public class JourneymapRenderer extends GenericMapRenderer {
         if (marker == null) {
             return false;
         }
-        IClientAPI api = JourneyMapPlugin.getJmApi();
+        IClientAPI api = GTJourneyMapPlugin.getJmApi();
         api.remove(marker);
         return true;
     }
 
     @Override
     public boolean doShowLayer(String name) {
-        return JourneyMapPlugin.getOptions().showLayer(name);
+        return GTJourneyMapPlugin.getOptions().showLayer(name);
     }
 
     @Override
     public void setLayerActive(String name, boolean active) {
-        JourneyMapPlugin.getOptions().toggleLayer(name, active);
+        GTJourneyMapPlugin.getOptions().toggleLayer(name, active);
     }
 
     @Override
     public void clear() {
-        var api = JourneyMapPlugin.getJmApi();
+        var api = GTJourneyMapPlugin.getJmApi();
         markers.forEach((id, marker) -> api.remove(marker));
         markers.clear();
     }
 
-    private MarkerOverlay createMarker(String name, String id, ResourceKey<Level> dim, GeneratedVeinMetadata vein) {
-        BlockPos center = vein.center();
+    private MarkerOverlay createMarker(Component name, String id, ResourceKey<Level> dim,
+                                       GeneratedVeinMetadata oreVein) {
+        final BlockPos center = oreVein.center();
 
         @SuppressWarnings("DataFlowIssue")
-        MapImage image = new MapImage(createOreImage(vein));
+        MapImage image = new MapImage(createOreImage(oreVein));
         image.centerAnchors()
                 .setDisplayWidth(ConfigHolder.INSTANCE.compat.minimap.oreIconSize)
                 .setDisplayHeight(ConfigHolder.INSTANCE.compat.minimap.oreIconSize);
@@ -137,17 +138,33 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
         overlay.setDimension(dim);
         overlay.setLabel("")
-                .setTitle(OreRenderLayer.getTooltip(name, vein).stream().map(Component::getString).reduce("",
-                        (s1, s2) -> {
-                            if (s1.isEmpty()) {
-                                return s2;
-                            }
-                            if (s2.isEmpty()) {
-                                return s1;
-                            }
-                            return String.join("\n", s1, s2);
-                        }))
-                .setOverlayListener(new MarkerListener(vein, name));
+                .setTitle(OreRenderLayer.getTooltip(name, oreVein)
+                        .stream()
+                        .map(Component::getString)
+                        .reduce("",
+                                (s1, s2) -> {
+                                    if (s1.isEmpty()) {
+                                        return s2;
+                                    }
+                                    if (s2.isEmpty()) {
+                                        return s1;
+                                    }
+                                    return String.join("\n", s1, s2);
+                                }))
+                .setOverlayListener(new MarkerListener(() -> {
+                    Material firstMaterial = oreVein.definition().value().veinGenerator().getAllMaterials().get(0);
+                    int color = firstMaterial.getMaterialARGB();
+
+                    WaypointManager.toggleWaypoint(OreRenderLayer.getId(oreVein), name.getString(), color,
+                            null, center);
+                }, () -> {
+                    oreVein.depleted(!oreVein.depleted());
+                }, () -> {
+                    Material firstMaterial = oreVein.definition().value().veinGenerator().getAllMaterials().get(0);
+                    int color = firstMaterial.getMaterialARGB();
+                    WaypointManager.toggleWaypoint(OreRenderLayer.getId(oreVein), id, color,
+                            null, center);
+                }));
 
         return overlay;
     }
@@ -186,8 +203,8 @@ public class JourneymapRenderer extends GenericMapRenderer {
         }
         if (material.getMaterialSecondaryARGB() != -1) {
             int materialSecondaryRGBA = GradientUtil.argbToRgba(material.getMaterialSecondaryARGB());
-            ResourceLocation layer2 = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(),
-                    "secondary", true);
+            ResourceLocation layer2 = MaterialIconType.rawOre
+                    .getItemTexturePath(material.getMaterialIconSet(), "secondary", true);
             if (layer2 == null) {
                 return result;
             }
@@ -214,12 +231,16 @@ public class JourneymapRenderer extends GenericMapRenderer {
         return result;
     }
 
-    private PolygonOverlay createMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
-                                        ProspectorMode.FluidInfo vein) {
+    private PolygonOverlay createMarker(Component name, String id, ResourceKey<Level> dim, ChunkPos pos,
+                                        final ProspectorMode.FluidInfo vein) {
+        final BlockPos center = pos.getMiddleBlockPosition(0);
         ResourceLocation texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
-        int color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
+
+        final int color;
         Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (!material.isNull()) {
+        if (material.isNull()) {
+            color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
+        } else {
             color = material.getMaterialARGB();
         }
 
@@ -235,16 +256,25 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
         overlay.setDimension(dim);
         overlay.setLabel("")
-                .setTitle(FluidRenderLayer.getTooltip(vein).stream().map(Component::getString).reduce("", (s1, s2) -> {
-                    if (s1.isEmpty()) {
-                        return s2;
-                    }
-                    if (s2.isEmpty()) {
-                        return s1;
-                    }
-                    return String.join("\n", s1, s2);
-                }))
-                .setOverlayListener(new MarkerListener(pos, vein, name));
+                .setTitle(FluidRenderLayer.getTooltip(name, vein)
+                        .stream()
+                        .map(Component::getString)
+                        .reduce("", (s1, s2) -> {
+                            if (s1.isEmpty()) {
+                                return s2;
+                            }
+                            if (s2.isEmpty()) {
+                                return s1;
+                            }
+                            return String.join("\n", s1, s2);
+                        }))
+                .setOverlayListener(new MarkerListener(() -> {
+                    WaypointManager.toggleWaypoint(FluidRenderLayer.getId(vein, pos), id, color, null, center);
+                }, () -> {
+                    vein.left(0);
+                }, () -> {
+                    WaypointManager.toggleWaypoint("ore_veins", id, color, null, center);
+                }));
 
         return overlay;
     }
@@ -255,25 +285,14 @@ public class JourneymapRenderer extends GenericMapRenderer {
     @ParametersAreNonnullByDefault
     private static class MarkerListener implements IOverlayListener {
 
-        private final GeneratedVeinMetadata oreVein;
-        private final String label;
+        private final Runnable onClick;
+        private final Runnable markAsDepleted;
+        private final Runnable toggleWaypoint;
 
-        private final ChunkPos fluidCenterPos;
-        private final ProspectorMode.FluidInfo fluidInfo;
-
-        private MarkerListener(GeneratedVeinMetadata oreVein, String label) {
-            this.oreVein = oreVein;
-            this.label = label;
-
-            this.fluidCenterPos = null;
-            this.fluidInfo = null;
-        }
-
-        private MarkerListener(ChunkPos fluidCenterPos, ProspectorMode.FluidInfo fluidInfo, String label) {
-            this.fluidCenterPos = fluidCenterPos;
-            this.fluidInfo = fluidInfo;
-            this.label = label;
-            this.oreVein = null;
+        private MarkerListener(Runnable onClick, Runnable markAsDepleted, Runnable toggleWaypoint) {
+            this.onClick = onClick;
+            this.markAsDepleted = markAsDepleted;
+            this.toggleWaypoint = toggleWaypoint;
         }
 
         @Override
@@ -292,20 +311,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         public boolean onMouseClick(UIState uiState, Point2D.Double mousePosition, BlockPos blockPosition, int button,
                                     boolean doubleClick) {
             if (button == 0 && doubleClick) {
-                if (oreVein != null) {
-                    Material firstMaterial = oreVein.definition().value().veinGenerator().getAllMaterials().getFirst();
-                    int color = firstMaterial.getMaterialARGB();
-
-                    BlockPos center = oreVein.center();
-                    WaypointManager.toggleWaypoint("ore_veins", label, color,
-                            null, center.getX(), center.getY(), center.getZ());
-                } else if (fluidCenterPos != null && fluidInfo != null) {
-                    int color = IClientFluidTypeExtensions.of(fluidInfo.fluid()).getTintColor();
-
-                    BlockPos center = fluidCenterPos.getMiddleBlockPosition(0);
-                    WaypointManager.toggleWaypoint("ore_veins", label, color,
-                            null, center.getX(), center.getY(), center.getZ());
-                }
+                this.onClick.run();
                 return false;
             }
             return true;
@@ -314,28 +320,8 @@ public class JourneymapRenderer extends GenericMapRenderer {
         @Override
         public void onOverlayMenuPopup(UIState mapState, Point2D.Double mousePosition, BlockPos blockPosition,
                                        ModPopupMenu modPopupMenu) {
-            modPopupMenu.addMenuItem("button.gtceu.mark_as_depleted.name", (b) -> {
-                if (oreVein != null) {
-                    oreVein.depleted(!oreVein.depleted());
-                } else if (fluidInfo != null) {
-                    fluidInfo.left(0);
-                }
-            });
-            modPopupMenu.addMenuItem("button.gtceu.toggle_waypoint.name", (b) -> {
-                if (oreVein != null) {
-                    Material firstMaterial = oreVein.definition().value().veinGenerator().getAllMaterials().getFirst();
-                    int color = firstMaterial.getMaterialARGB();
-                    BlockPos center = oreVein.center();
-                    WaypointManager.toggleWaypoint("ore_veins", label, color,
-                            null, center.getX(), center.getY(), center.getZ());
-                } else if (fluidCenterPos != null && fluidInfo != null) {
-                    int color = IClientFluidTypeExtensions.of(fluidInfo.fluid()).getTintColor();
-
-                    BlockPos center = fluidCenterPos.getMiddleBlockPosition(0);
-                    WaypointManager.toggleWaypoint("ore_veins", label, color,
-                            null, center.getX(), center.getY(), center.getZ());
-                }
-            });
+            modPopupMenu.addMenuItem("button.gtceu.mark_as_depleted.name", b -> this.markAsDepleted.run());
+            modPopupMenu.addMenuItem("button.gtceu.toggle_waypoint.name", b -> this.toggleWaypoint.run());
         }
     }
 }

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,11 +28,13 @@ public final class RecyclingRecipeHandler {
 
     public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
         // registers universal maceration recipes for specified ore prefixes
-        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
-            if (prefix.generateRecycling()) {
-                processCrushing(provider, prefix, material);
-            }
-        }
+        GTRegistries.TAG_PREFIXES.holders()
+                .filter(h -> h != null && h.isBound())
+                .map(Holder::value)
+                .filter(TagPrefix::generateRecycling)
+                .forEach(tagPrefix -> {
+                    processCrushing(provider, tagPrefix, material);
+                });
     }
 
     private static void processCrushing(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,

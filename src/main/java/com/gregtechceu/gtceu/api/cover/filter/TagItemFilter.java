@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
@@ -14,25 +15,30 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     private final Object2BooleanMap<Item> cache = new Object2BooleanOpenHashMap<>();
 
     protected TagItemFilter(String filterExpr) {
-        setFilterExpr(filterExpr);
+        setFilterString(filterExpr);
     }
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
         var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPRESSION, "");
         var handler = new TagItemFilter(expr);
         handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPRESSION,
-                ((TagItemFilter) filter).tagFilterExpression);
+                ((TagItemFilter) filter).filterString);
         return handler;
     }
 
-    public void setFilterExpr(String filterExpr) {
+    public void setFilterString(String oreDict) {
         cache.clear();
-        super.setFilterExpr(filterExpr);
+        super.setFilterString(oreDict);
+    }
+
+    @Override
+    public ItemStack getFilterItem() {
+        return GTItems.TAG_FILTER.asStack();
     }
 
     @Override
     public boolean test(ItemStack itemStack) {
-        if (tagFilterExpression.isEmpty()) return false;
+        if (filterString.isEmpty()) return false;
         if (cache.containsKey(itemStack.getItem())) return cache.getOrDefault(itemStack.getItem(), false);
         if (TagExprFilter.tagsMatch(matchExpr, itemStack)) {
             cache.put(itemStack.getItem(), true);

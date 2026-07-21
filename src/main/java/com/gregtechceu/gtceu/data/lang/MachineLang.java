@@ -476,12 +476,9 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
         provider.add("gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
-        provider.add("gtceu.machine.miner.startx", "sX: %d");
-        provider.add("gtceu.machine.miner.starty", "sY: %d");
-        provider.add("gtceu.machine.miner.startz", "sZ: %d");
-        provider.add("gtceu.machine.miner.minex", "mX: %d");
-        provider.add("gtceu.machine.miner.miney", "mY: %d");
-        provider.add("gtceu.machine.miner.minez", "mZ: %d");
+        provider.add("gtceu.machine.miner.x", "sX: %d, mX: %d");
+        provider.add("gtceu.machine.miner.y", "sY: %d, mY: %d");
+        provider.add("gtceu.machine.miner.z", "sZ: %d, mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
         provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");
@@ -971,8 +968,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.warning_no_computation", "- No computation providers");
         provider.add("gtceu.multiblock.hpca.warning_low_cooling", "- Not enough cooling");
         provider.add("gtceu.multiblock.hpca.info_max_computation", "Max CWU/t: %s");
-        provider.add("gtceu.multiblock.hpca.info_max_cooling_demand", "Cooling Demand: %s");
-        provider.add("gtceu.multiblock.hpca.info_max_cooling_available", "Cooling Available: %s");
+        provider.add("gtceu.multiblock.hpca.info_cooling_demand", "Cooling Demand: %s / %d");
         provider.add("gtceu.multiblock.hpca.info_max_coolant_required", "Coolant Needed: %s");
         provider.add("gtceu.multiblock.hpca.info_coolant_name", "PCB Coolant");
         provider.add("gtceu.multiblock.hpca.info_bridging_enabled", "Bridging Enabled");
@@ -988,7 +984,8 @@ public class MachineLang {
         provider.add("gtceu.creative.energy.voltage", "Voltage");
         provider.add("gtceu.creative.energy.sink", "Sink");
         provider.add("gtceu.creative.energy.source", "Source");
-        provider.add("gtceu.creative.computation.average", "Average Requested CWUt");
+        provider.add("gtceu.creative.computation.average", "Average CWU/tick: %d");
+        provider.add("gtceu.creative.computation.max_usage", "Max CWU/tick:");
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
     }

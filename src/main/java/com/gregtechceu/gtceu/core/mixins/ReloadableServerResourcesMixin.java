@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
@@ -50,6 +51,7 @@ public abstract class ReloadableServerResourcesMixin {
         // Register recipes & unification data again
         long startTime = System.currentTimeMillis();
         GTCraftingComponents.init();
+        SteamBoilerLogic.clearBoilerRecipeCaches();
         GTRecipes.recipeAddition(new RecipeOutput() {
 
             @Override
