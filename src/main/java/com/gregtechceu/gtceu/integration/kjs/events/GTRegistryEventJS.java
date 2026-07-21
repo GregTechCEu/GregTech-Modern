@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
@@ -21,7 +22,7 @@ public class GTRegistryEventJS<T> extends StartupEventJS {
         this.created = new LinkedList<>();
     }
 
-    public BuilderBase<? extends T> create(String id, String type) {
+    public BuilderBase<? extends T> create(GTResourceLocation id, String type) {
         var t = registry.types.get(type);
 
         if (t == null) {
@@ -29,7 +30,7 @@ public class GTRegistryEventJS<T> extends StartupEventJS {
         }
 
         var b = t.factory()
-                .createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, GTCEu.id(id)));
+                .createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, id.wrapped()));
 
         if (b == null) {
             throw new IllegalArgumentException("Unknown type '" + type + "' for object '" + id + "'!");
@@ -40,7 +41,7 @@ public class GTRegistryEventJS<T> extends StartupEventJS {
         return b;
     }
 
-    public BuilderBase<? extends T> create(String id) {
+    public BuilderBase<? extends T> create(GTResourceLocation id) {
         var t = registry.getDefaultType();
 
         if (t == null) {
@@ -49,7 +50,7 @@ public class GTRegistryEventJS<T> extends StartupEventJS {
         }
 
         var b = t.factory()
-                .createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, GTCEu.id(id)));
+                .createBuilder(UtilsJS.getMCID(ScriptType.STARTUP.manager.get().context, id.wrapped()));
 
         if (b == null) {
             throw new IllegalArgumentException("Unknown type '" + t.type() + "' for object '" + id + "'!");

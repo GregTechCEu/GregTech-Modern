@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.forge;
 
+import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.GameData;
 
@@ -26,8 +27,8 @@ public class GameDataMixin {
     private static Set<ResourceLocation> gtceuFirst(Set<ResourceLocation> ordered) {
         return ordered.stream()
                 .sorted((a, b) -> {
-                    boolean aGt = a.getNamespace().equals("gtceu");
-                    boolean bGt = b.getNamespace().equals("gtceu");
+                    boolean aGt = a.getNamespace().equals(GTCEu.MOD_ID);
+                    boolean bGt = b.getNamespace().equals(GTCEu.MOD_ID);
                     if (aGt && !bGt) return -1;
                     if (!aGt && bGt) return 1;
                     return 0;

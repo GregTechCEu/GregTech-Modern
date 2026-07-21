@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Set;
@@ -35,20 +36,22 @@ public class MaterialRegistry extends MappedRegistry<Material> {
         super(GTRegistries.Keys.MATERIAL, Lifecycle.stable());
     }
 
-    public Material get(String name) {
+    /**
+     * Use {@link #get(ResourceLocation)} instead
+     */
+    @Deprecated(since = "8.0.0")
+    public @Nullable Material get(String name) {
         ResourceLocation location = ResourceLocation.tryParse(GTCEu.appendIdString(name));
-        if (location != null) return getOrThrow(ResourceKey.create(GTRegistries.Keys.MATERIAL, location));
-        return GTMaterials.NULL;
+        if (location != null) return get(ResourceKey.create(GTRegistries.Keys.MATERIAL, location));
+        return null;
     }
 
     @Override
     public Holder.Reference<Material> registerMapping(int id, ResourceKey<Material> key, Material value,
                                                       Lifecycle lifecycle) {
         if (registrationPhase == Phase.CLOSED || registrationPhase == Phase.FROZEN) {
-            GTCEu.LOGGER.error(
-                    "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material {}...",
-                    key);
-            return null;
+            throw new IllegalStateException(
+                    "Failed to register material %s. Materials cannot be registered in the PostMaterialEvent (or after)!".formatted(key));
         }
         usedNamespaces.add(key.location().getNamespace());
         return super.registerMapping(id, key, value, lifecycle);

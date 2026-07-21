@@ -36,7 +36,7 @@ public record GTResourceLocation(ResourceLocation wrapped) {
             s = GTCEu.appendIdString(s);
 
             try {
-                return new GTResourceLocation(ResourceLocation.tryParse(s));
+                return new GTResourceLocation(new ResourceLocation(s));
             } catch (ResourceLocationException ex) {
                 throw new ResourceLocationException("Could not create ID from '%s'!".formatted(s));
             }

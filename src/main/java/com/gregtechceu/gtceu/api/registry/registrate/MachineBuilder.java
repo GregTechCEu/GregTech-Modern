@@ -75,6 +75,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
+@SuppressWarnings("UnusedReturnValue")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @RemapPrefixForJS("kjs$")
