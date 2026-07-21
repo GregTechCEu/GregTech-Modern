@@ -1851,8 +1851,14 @@ public final class Material implements Comparable<Material> {
          *
          * @return The finalized Material.
          */
-        @HideFromJS
         public Material buildAndRegister() {
+            var mat = buildWithoutRegistering();
+            mat.registerMaterial();
+            return mat;
+        }
+
+        @ApiStatus.Internal
+        public Material buildWithoutRegistering() {
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
@@ -1879,14 +1885,12 @@ public final class Material implements Comparable<Material> {
                 mat.setFormula(formula, formatFormula);
             }
             materialInfo.verifyInfo(properties, averageRGB);
-            mat.registerMaterial();
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }
             return mat;
         }
 
-        @HideFromJS
         public @NotNull Material register() {
             return buildAndRegister();
         }

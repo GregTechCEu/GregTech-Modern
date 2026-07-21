@@ -664,6 +664,6 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     @Override
     public Material createObject() {
-        return internal.buildAndRegister();
+        return internal.buildWithoutRegistering();
     }
 }

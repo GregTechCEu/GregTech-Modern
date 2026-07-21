@@ -59,7 +59,7 @@ public class FluidVeinBuilderJS {
     }
 
     public FluidVeinBuilderJS biomes(int weight, String biomes) {
-        Registry<Biome> registry = GTRegistries.builtinRegistry().registry(Registries.BIOME).get();
+        Registry<Biome> registry = GTRegistries.builtinRegistry().registryOrThrow(Registries.BIOME);
         this.biomes.add(
                 new BiomeWeightModifier(() -> biomes.startsWith("#") ?
                         registry.getOrCreateTag(
@@ -71,7 +71,7 @@ public class FluidVeinBuilderJS {
     }
 
     public FluidVeinBuilderJS biomes(int weight, String... biomes) {
-        Registry<Biome> registry = GTRegistries.builtinRegistry().registry(Registries.BIOME).get();
+        Registry<Biome> registry = GTRegistries.builtinRegistry().registryOrThrow(Registries.BIOME);
         List<HolderSet<Biome>> biomeKeys = new LinkedList<>();
         for (String biome : biomes) {
             biomeKeys.add(biome.startsWith("#") ?
