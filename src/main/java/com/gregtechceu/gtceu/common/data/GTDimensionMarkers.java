@@ -25,7 +25,6 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTDimensionMarkers {
 
     static {
-        GTRegistries.DIMENSION_MARKERS.unfreeze();
         REGISTRATE.creativeModeTab(() -> null);
     }
 
@@ -72,6 +71,5 @@ public class GTDimensionMarkers {
 
     public static void init() {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
-        GTRegistries.DIMENSION_MARKERS.freeze();
     }
 }

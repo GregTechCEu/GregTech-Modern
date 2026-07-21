@@ -53,7 +53,7 @@ import java.util.*;
 @SuppressWarnings("unused")
 public final class GTRegistries {
 
-    private static final LinkedHashSet<ResourceLocation> LOAD_ORDER = new LinkedHashSet<>();
+    private static final LinkedList<ResourceLocation> LOAD_ORDER = new LinkedList<>();
     private static final LinkedHashMap<ResourceKey<Registry<?>>, Registry<?>> REGISTRIES = new LinkedHashMap<>();
 
     private GTRegistries() {}
@@ -153,7 +153,7 @@ public final class GTRegistries {
     }
 
     @UnmodifiableView
-    public static LinkedHashSet<ResourceLocation> getRegistryOrder() {
+    public static LinkedList<ResourceLocation> getRegistryOrder() {
         return LOAD_ORDER;
     }
 

@@ -33,7 +33,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -1852,13 +1851,13 @@ public final class Material implements Comparable<Material> {
          * @return The finalized Material.
          */
         public Material buildAndRegister() {
-            var mat = buildWithoutRegistering();
+            var mat = createEntry();
             mat.registerMaterial();
             return mat;
         }
 
         @ApiStatus.Internal
-        public Material buildWithoutRegistering() {
+        public Material createEntry() {
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :

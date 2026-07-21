@@ -27,7 +27,7 @@ public class BuiltInRegistriesMixin {
     private static <T extends Registry<?>> void gtceu$skipRegistryValidation(Registry<T> instance, Consumer<T> consumer,
                                                                              Operation<Void> original) {
         Consumer<T> callback = (t) -> {
-            if (!t.key().location().getNamespace().equals(GTCEu.MOD_ID))
+            if (!GTRegistries.getRegistries().contains(t))
                 consumer.accept(t);
         };
 
