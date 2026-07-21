@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialIconTypeEventJS;

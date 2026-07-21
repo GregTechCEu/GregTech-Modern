@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
@@ -70,8 +71,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DataPackRegistryEvent;
+import net.minecraftforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -94,38 +96,37 @@ public class CommonProxy {
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
 
-        // MUI stuff
-        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
-        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
-
-        // GTGuiTheme.registerThemes();
+        init(eventBus);
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
-        GTRegistries.init(eventBus);
-
-        GTValueProviderTypes.init(eventBus);
-        GTPlacementModifiers.init(eventBus);
-        GTGlobalLootModifiers.init(eventBus);
-        GTLootConditions.init(eventBus);
-        GTLootFunctions.init(eventBus);
-        GTFeatures.init(eventBus);
-        GTCommandArguments.init(eventBus);
-        GTMobEffects.init(eventBus);
-        GTParticleTypes.init(eventBus);
-
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
+
         GTNetwork.init();
+        GTRegistries.init(modBus);
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
+
+        GTRegistries.init(modBus);
+
+        GTValueProviderTypes.init(modBus);
+        GTPlacementModifiers.init(modBus);
+        GTGlobalLootModifiers.init(modBus);
+        GTLootConditions.init(modBus);
+        GTLootFunctions.init(modBus);
+        GTFeatures.init(modBus);
+        GTCommandArguments.init(modBus);
+        GTMobEffects.init(modBus);
+        GTParticleTypes.init(modBus);
+        GTMenuTypes.init(modBus);
 
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -146,9 +147,6 @@ public class CommonProxy {
 
         GTCovers.init();
         GTCreativeModeTabs.init();
-
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        GTMenuTypes.init(modBus);
 
         GTBlocks.init();
         GTFluids.init();
@@ -177,24 +175,25 @@ public class CommonProxy {
         SyncedKeyMappings.init();
         MachineOwner.init();
 
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+
+        GTGuiTheme.registerThemes();
+
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
-    @SubscribeEvent
-    public void preInit(FMLConstructModEvent event) {}
-
     private static void initMaterials() {
         // First, register CEu Materials
-        GTRegistries.MATERIALS.unfreeze();
         GTCEu.LOGGER.info("Registering GTCEu Materials");
         GTMaterials.init();
 
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
-        MaterialEvent materialEvent = new MaterialEvent();
-        ModLoader.get().postEvent(materialEvent);
+        ModLoader.get().postEvent(new MaterialEvent());
     }
 
     // Fire post material events after all other material registry events.
@@ -272,10 +271,15 @@ public class CommonProxy {
         }
     }
 
+
     @SubscribeEvent
-    public void modConstruct(FMLConstructModEvent event) {
-        // this is done to delay initialization of content to be after KJS has set up.
-        event.enqueueWork(CommonProxy::init);
+    public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        /*event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
+                GTOreDefinition.CODEC, GTOreDefinition.CODEC);
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID,
+                BedrockFluidDefinition.FULL_CODEC, BedrockFluidDefinition.FULL_CODEC);
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
+                BedrockOreDefinition.FULL_CODEC, BedrockOreDefinition.FULL_CODEC);*/
     }
 
     @SubscribeEvent

@@ -105,6 +105,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -127,6 +129,7 @@ import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.*;
 import java.util.Map;
@@ -136,6 +139,7 @@ import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.RESULT;
 
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
@@ -196,6 +200,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerEvents();
         GTCEuStartupEvents.GROUP.register();
         GTCEuServerEvents.GROUP.register();
+    }
+
+    @SubscribeEvent
+    public void registerMachines(RegisterEvent event) {
+        if (event.getRegistryKey().equals(GTRegistries.Keys.MACHINE)) {
+            for (var builder: GTRegistryInfo.MACHINE) {
+                builder.createObject();
+            }
+        }
     }
 
     public static void generateMachineBlockModels() {

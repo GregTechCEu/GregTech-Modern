@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
@@ -27,7 +26,6 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import com.gregtechceu.gtceu.core.mixins.BuiltInRegistriesAccessor;
-import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.MappedRegistry;
