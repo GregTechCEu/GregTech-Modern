@@ -62,6 +62,8 @@ public class GTCEu {
         }
         // only convert it to camel_case if it has any uppercase to begin with
         if (FormattingUtil.hasUpperCase(path)) {
+            GTCEu.LOGGER.warn("Resource location {} has uppercase characters, which are not allowed. Renaming resource location to {}",
+                    path, FormattingUtil.toLowerCaseUnderscore(path));
             path = FormattingUtil.toLowerCaseUnderscore(path);
         }
         return TEMPLATE_LOCATION.withPath(path);
