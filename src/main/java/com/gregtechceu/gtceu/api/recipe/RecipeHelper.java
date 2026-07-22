@@ -408,6 +408,7 @@ public class RecipeHelper {
     /**
      * Rolls the value of all Ranged Ingredients in a recipe and replaces them with appropriate Sized Ingredients.
      * Called once after successful recipe search, immediately before {@link RecipeLogic#handleRecipeIO(GTRecipe, IO)}.
+     * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
      *
      * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
      * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
@@ -416,13 +417,18 @@ public class RecipeHelper {
     public static GTRecipe doPrerolls(GTRecipe recipe,
                                       IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         GTRecipe runningRecipe = recipe.copy();
-
+        int count;
+        boolean zero;
         for (List<Content> input : runningRecipe.inputs.values()) {
             for (ListIterator<Content> iterator = input.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    iterator.set(new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance()));
+                    ranged.reset();
                 }
             }
         }
@@ -430,8 +436,12 @@ public class RecipeHelper {
             for (ListIterator<Content> iterator = output.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    iterator.set(new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance()));
+                    ranged.reset();
                 }
             }
         }
@@ -442,6 +452,8 @@ public class RecipeHelper {
     /**
     * Rolls the value of all per-tick Ranged Ingredients in a recipe and replaces them with appropriate Sized Ingredients.
      * Called every tick while a recipe is running, immediately before {@link RecipeLogic#handleTickRecipeIO(GTRecipe, IO)}.
+     *
+     * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
     *
     * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
     * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
@@ -453,15 +465,19 @@ public class RecipeHelper {
         if (!recipe.hasTick()) return recipe;
 
         GTRecipe runningRecipe = recipe.copyWithoutTicks();
-
+        int count;
+        boolean zero;
         for (var entry : lastDisplayedRecipe.tickInputs.entrySet()) {
             RecipeCapability<?> capability = entry.getKey();
             List<Content> handler = entry.getValue();
             for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    content = new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance());
                     ranged.reset();
                 }
                 runningRecipe.tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
@@ -473,8 +489,11 @@ public class RecipeHelper {
             for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    content = new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance());
                     ranged.reset();
                 }
                 runningRecipe.tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
