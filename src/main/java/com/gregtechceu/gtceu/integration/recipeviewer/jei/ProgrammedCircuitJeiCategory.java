@@ -33,7 +33,7 @@ public class ProgrammedCircuitJeiCategory extends
 
     @Override
     public @NotNull Component getTitle() {
-        return Component.translatable("gtceu.jei.programmed_circuit");
+        return Component.translatable("recipeviewer.gtceu.category.programmed_circuit");
     }
 
     @Override

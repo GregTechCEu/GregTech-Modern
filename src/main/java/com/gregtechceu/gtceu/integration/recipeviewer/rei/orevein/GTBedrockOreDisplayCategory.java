@@ -49,7 +49,7 @@ public class GTBedrockOreDisplayCategory extends
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.bedrock_ore_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.bedrock_ores");
     }
 
     public static void registerDisplays(DisplayRegistry registry) {

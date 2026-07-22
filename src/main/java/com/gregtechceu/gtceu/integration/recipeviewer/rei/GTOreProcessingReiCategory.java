@@ -43,7 +43,7 @@ public class GTOreProcessingReiCategory extends
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("recipeviewer.gtceu.ore_processing_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.ore_processing");
     }
 
     public static void registerDisplays(DisplayRegistry registry) {

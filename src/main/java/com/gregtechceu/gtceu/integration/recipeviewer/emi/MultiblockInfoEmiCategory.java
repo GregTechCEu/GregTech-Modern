@@ -56,7 +56,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable("gtceu.jei.multiblock_info");
+        return Component.translatable("recipeviewer.gtceu.category.multiblock_info");
     }
 
     public static class MultiblockInfoEmiWrapper extends ModularUIEmiRecipe {

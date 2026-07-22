@@ -22,15 +22,13 @@ public class IntegrationLang {
 
     /** JEI, REI, EMI */
     private static void initRecipeViewerLang(GTLangProvider provider) {
-        provider.add("recipeviewer.gtceu.multiblock_info", "Multiblock Info");
+        provider.add("recipeviewer.gtceu.category.multiblock_info", "Multiblock Info");
+        provider.add("recipeviewer.gtceu.category.programmed_circuit", "Programmed Circuit Page");
 
-        provider.add("recipeviewer.gtceu.ore_processing_diagram", "Ore Processing Diagram");
-        provider.add("recipeviewer.gtceu.ore_vein_diagram", "Ore Vein Diagram");
-
-        provider.add("recipeviewer.gtceu.programmed_circuit", "Programmed Circuit Page");
-
-        provider.add("recipeviewer.gtceu.bedrock_fluid_diagram", "Bedrock Fluid Diagram");
-        provider.add("recipeviewer.gtceu.bedrock_ore_diagram", "Bedrock Ore Diagram");
+        provider.add("recipeviewer.gtceu.category.ore_processing", "Ore Processing Diagram");
+        provider.add("recipeviewer.gtceu.category.ore_veins", "Ore Veins");
+        provider.add("recipeviewer.gtceu.category.bedrock_fluids", "Bedrock Fluids");
+        provider.add("recipeviewer.gtceu.category.bedrock_ores", "Bedrock Ores");
 
         // Ore Veins
 
@@ -163,9 +161,9 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.allow_output_input", "Allow Input");
 
         // Cable Provider
-        provider.add("integration.gtceu.jade.cable_voltage", "Voltage: ");
-        provider.add("integration.gtceu.jade.cable_amperage", "Amperage: ");
-
+        provider.add("integration.gtceu.jade.cable.voltage", "Voltage: ");
+        provider.add("integration.gtceu.jade.cable.amperage", "Amperage: ");
+        provider.add("integration.gtceu.jade.cable.overloaded", "§cCable Overloaded!§r");
         // Machine Mode Provider
         provider.add("integration.gtceu.jade.machine_mode", "Machine Mode: ");
 
@@ -236,7 +234,7 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.ldp_endpoint.io_type", "IO Type: %s");
         provider.add("integration.gtceu.jade.ldp_endpoint.output_direction", "Output Direction: %s");
 
-        provider.add("gtceu.jade.generator.too_small", "Energy Output too small!");
+        provider.add("integration.gtceu.jade.generator.output_too_small", "Energy Output too small!");
     }
 
     private static void initMinimapLang(GTLangProvider provider) {

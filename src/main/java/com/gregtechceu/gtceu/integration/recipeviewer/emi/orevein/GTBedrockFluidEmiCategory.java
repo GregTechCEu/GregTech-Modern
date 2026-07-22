@@ -40,7 +40,7 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable("recipeviewer.gtceu.bedrock_fluid_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.bedrock_fluids");
     }
 
     public static class GTBedrockFluid extends ModularUIEmiRecipe {

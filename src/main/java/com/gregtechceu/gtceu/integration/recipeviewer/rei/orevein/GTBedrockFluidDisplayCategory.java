@@ -46,7 +46,7 @@ public class GTBedrockFluidDisplayCategory extends
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("recipeviewer.gtceu.bedrock_fluid_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.bedrock_fluids");
     }
 
     public static void registerDisplays(DisplayRegistry registry) {

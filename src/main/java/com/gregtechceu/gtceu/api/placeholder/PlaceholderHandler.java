@@ -349,9 +349,8 @@ public class PlaceholderHandler {
                                                 .coverChildren()
                                                 .child(new TextWidget<>(s).center())
                                                 .tooltip(new RichTooltip()
-                                                        .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s)
-                                                                .stream()
+                                                        .addDrawableLines(Arrays.stream(LangUtil
+                                                                        .getSingleOrMultiLang("gtceu.placeholder_info." + s))
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
                                                                 .toList())))

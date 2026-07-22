@@ -33,7 +33,7 @@ public class ProgrammedCircuitReiCategory extends
 
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.programmed_circuit");
+        return Component.translatable("recipeviewer.gtceu.category.programmed_circuit");
     }
 
     public static class GTProgrammedCircuitDisplay extends ModularUIREIDisplay {

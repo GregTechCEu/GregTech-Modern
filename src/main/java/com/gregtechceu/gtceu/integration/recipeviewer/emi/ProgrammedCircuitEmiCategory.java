@@ -31,7 +31,7 @@ public class ProgrammedCircuitEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable("recipeviewer.gtceu.programmed_circuit");
+        return Component.translatable("recipeviewer.gtceu.category.programmed_circuit");
     }
 
     public static class GTProgrammedCircuitWrapper extends ModularUIEmiRecipe {

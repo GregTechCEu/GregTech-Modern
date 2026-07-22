@@ -32,22 +32,22 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 long voltage = tag.getLong("currentVoltage");
                 double amperage = tag.getDouble("currentAmperage");
                 int temperature = tag.getInt("temperature");
-                iTooltip.add(Component.translatable("integration.gtceu.jade.cable_voltage"));
+                iTooltip.add(Component.translatable("integration.gtceu.jade.cable.voltage"));
                 if (voltage != 0) {
                     iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage)]));
                     iTooltip.append(Component.literal(" / "));
                 }
                 iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(tag.getLong("maxVoltage"))]));
 
-                iTooltip.add(Component.translatable("integration.gtceu.jade.cable_amperage"));
+                iTooltip.add(Component.translatable("integration.gtceu.jade.cable.amperage"));
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
-                iTooltip.append(Component.translatable("gtceu.jade.amperage_use",
+                iTooltip.append(Component.translatable("integration.gtceu.jade.amperage_use",
                         DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage"))));
 
                 if (temperature != CableBlockEntity.getDefaultTemp()) {
-                    iTooltip.add(Component.translatable("gtceu.top.cable_overloaded", progressToFailure(
+                    iTooltip.add(Component.translatable("integration.gtceu.jade.cable.overloaded", progressToFailure(
                             CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature)));
                 }
             }

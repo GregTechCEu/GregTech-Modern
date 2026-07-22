@@ -42,7 +42,7 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable("recipeviewer.gtceu.bedrock_ore_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.bedrock_ores");
     }
 
     public static class GTBedrockOre extends ModularUIEmiRecipe {

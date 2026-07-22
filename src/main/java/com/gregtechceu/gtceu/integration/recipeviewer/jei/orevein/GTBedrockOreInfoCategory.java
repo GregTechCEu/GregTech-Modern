@@ -53,7 +53,7 @@ public class GTBedrockOreInfoCategory extends
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("recipeviewer.gtceu.bedrock_ore_diagram");
+        return Component.translatable("recipeviewer.gtceu.category.bedrock_ores");
     }
 
     public record GTBedrockOreInfoWrapper(BedrockOreDefinition bedrockOre) {}

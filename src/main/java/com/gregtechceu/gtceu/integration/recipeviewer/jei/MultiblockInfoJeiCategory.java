@@ -115,7 +115,7 @@ public class MultiblockInfoJeiCategory extends
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("recipeviewer.gtceu.multiblock_info");
+        return Component.translatable("recipeviewer.gtceu.category.multiblock_info");
     }
 
     @NotNull
