@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 public class IntegrationLang {
 
     public static void init(GTLangProvider provider) {
-        initRecipeViewerLang(provider); // TODO
-        initWailaLikeLang(provider); // TODO
+        initRecipeViewerLang(provider);
+        initJadeLang(provider);
         initMinimapLang(provider);
         initOwnershipLang(provider);
 
@@ -101,7 +101,7 @@ public class IntegrationLang {
     }
 
     /** Jade */
-    private static void initWailaLikeLang(GTLangProvider provider) {
+    private static void initJadeLang(GTLangProvider provider) {
         provider.add("integration.gtceu.jade.working_disabled", "Working Disabled");
         provider.add("integration.gtceu.jade.energy_consumption", "Using");
         provider.add("integration.gtceu.jade.energy_production", "Producing");
