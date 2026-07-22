@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.placeholder.Placeholder;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
@@ -71,7 +72,7 @@ public final class GTRegistries {
          * @see Registries#RECIPE_TYPE
          */
         @ApiStatus.Internal
-        public static final ResourceKey<Registry<RecipeType<?>>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
+        public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
         public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = makeRegistryKey(GTCEu.id("recipe_category"));
         public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = makeRegistryKey(GTCEu.id("recipe_capability"));
         public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(GTCEu.id("recipe_condition"));
@@ -120,7 +121,7 @@ public final class GTRegistries {
      * @see Registries#RECIPE_TYPE
      */
     @ApiStatus.Internal
-    public static final Registry<RecipeType<?>> RECIPE_TYPES = makeRegistry(Keys.RECIPE_TYPE);
+    public static final Registry<GTRecipeType> RECIPE_TYPES = makeRegistry(Keys.RECIPE_TYPE);
     public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
     public static final Registry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
 
