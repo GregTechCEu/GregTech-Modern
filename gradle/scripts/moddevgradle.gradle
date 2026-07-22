@@ -22,7 +22,11 @@ configurations.configureEach {
 
 legacyForge {
     // Specify Forge version
-    version = libs.versions.minecraftForge.get()
+
+    enable {
+        forgeVersion = libs.versions.minecraftForge.get()
+        disableRecompilation = false
+    }
 
     parchment {
         minecraftVersion = libs.versions.minecraft.get()

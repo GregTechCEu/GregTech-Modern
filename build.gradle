@@ -98,7 +98,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 lombok {
-    version = "1.18.38"
+    version = "1.18.46"
 }
 
 jacoco {
