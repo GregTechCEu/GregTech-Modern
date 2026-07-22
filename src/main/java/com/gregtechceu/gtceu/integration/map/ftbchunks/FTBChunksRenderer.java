@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks;
 
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinIcon;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.ore.OreVeinIcon;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -28,15 +29,15 @@ public class FTBChunksRenderer extends GenericMapRenderer {
     private static final Map<String, Widget> markers = new Object2ObjectOpenHashMap<>();
 
     @Override
-    public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
+    public boolean addMarker(Component name, String id, ResourceKey<Level> dim, ChunkPos pos,
                              ProspectorMode.FluidInfo fluid) {
-        fluidElements.put(dim, pos, new FluidVeinIcon(pos, fluid));
+        fluidElements.put(dim, pos, new FluidVeinIcon(pos, name, fluid));
         return true;
     }
 
     @Override
-    public boolean addMarker(String name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
-        oreElements.put(dim, id, new OreVeinIcon(vein));
+    public boolean addMarker(Component name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
+        oreElements.put(dim, id, new OreVeinIcon(name, vein));
         return true;
     }
 

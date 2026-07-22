@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import lombok.Getter;
@@ -30,10 +33,25 @@ import java.util.function.UnaryOperator;
 
 public class MonitorGroup {
 
+    public static final Codec<MonitorGroup> CODEC = RecordCodecBuilder
+            .create(instance -> instance.group(
+                    BlockPos.CODEC.listOf().fieldOf("monitorPositions")
+                            .forGetter(g -> g.monitorPositions.stream().toList()),
+                    Codec.STRING.fieldOf("name").forGetter(MonitorGroup::getName),
+                    ItemStack.CODEC.listOf().fieldOf("items").forGetter(g -> g.getItemStackHandler().toList()),
+                    ItemStack.CODEC.listOf().fieldOf("placeholderItems")
+                            .forGetter(g -> g.getPlaceholderSlotsHandler().toList()),
+                    BlockPos.CODEC.optionalFieldOf("target").forGetter(g -> Optional.ofNullable(g.getTargetRaw())),
+                    Direction.CODEC.optionalFieldOf("targetSide")
+                            .forGetter(g -> Optional.ofNullable(g.getTargetCoverSide())),
+                    Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot))
+                    .apply(instance, MonitorGroup::new));
+
     @Getter
     private final Set<BlockPos> monitorPositions = new HashSet<>();
+    @Setter
     @Getter
-    private final String name;
+    private String name;
     @Getter
     private final CustomItemStackHandler itemStackHandler;
     @Getter
@@ -71,6 +89,21 @@ public class MonitorGroup {
         this.itemStackHandler = handler;
         this.itemStackHandler.setFilter(MonitorGroup::isModule);
         this.placeholderSlotsHandler = placeholderSlotsHandler;
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public MonitorGroup(List<BlockPos> monitorPositions, String name, List<ItemStack> items,
+                        List<ItemStack> placeholderItems, Optional<BlockPos> rawTarget,
+                        Optional<Direction> targetCoverSide, int dataSlot) {
+        this.monitorPositions.addAll(monitorPositions);
+        this.name = name;
+        this.itemStackHandler = new CustomItemStackHandler(
+                NonNullList.of(ItemStack.EMPTY, items.toArray(ItemStack[]::new)));
+        this.placeholderSlotsHandler = new CustomItemStackHandler(
+                NonNullList.of(ItemStack.EMPTY, placeholderItems.toArray(ItemStack[]::new)));
+        this.target = rawTarget.orElse(null);
+        this.targetCoverSide = targetCoverSide.orElse(null);
+        this.dataSlot = dataSlot;
     }
 
     public void add(BlockPos pos) {

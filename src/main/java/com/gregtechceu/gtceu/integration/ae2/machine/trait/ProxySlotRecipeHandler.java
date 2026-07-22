@@ -2,47 +2,43 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler.SlotRHL;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public final class ProxySlotRecipeHandler {
 
     @Getter
     private final List<RecipeHandlerList> proxySlotHandlers;
+    private final ProxyRHL proxyRHL;
 
-    public ProxySlotRecipeHandler(MEPatternBufferProxyPartMachine machine, int slots) {
-        proxySlotHandlers = new ArrayList<>(slots);
-        for (int i = 0; i < slots; ++i) {
-            proxySlotHandlers.add(new ProxyRHL(machine));
-        }
+    public ProxySlotRecipeHandler(MEPatternBufferProxyPartMachine machine) {
+        this.proxyRHL = new ProxyRHL(machine);
+        this.proxySlotHandlers = List.of(proxyRHL);
     }
 
     public void updateProxy(MEPatternBufferPartMachine patternBuffer) {
-        var slotHandlers = patternBuffer.getInternalRecipeHandler().getSlotHandlers();
-        for (int i = 0; i < proxySlotHandlers.size(); ++i) {
-            ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
-            SlotRHL slotRHL = (SlotRHL) slotHandlers.get(i);
-            proxyRHL.setBuffer(patternBuffer, slotRHL);
-        }
+        proxyRHL.setBuffer(patternBuffer);
     }
 
     public void clearProxy() {
-        for (var slotHandler : proxySlotHandlers) {
-            ((ProxyRHL) slotHandler).clearBuffer();
-        }
+        proxyRHL.clearBuffer();
     }
 
     private static class ProxyRHL extends RecipeHandlerList {
@@ -52,6 +48,8 @@ public final class ProxySlotRecipeHandler {
         private final ProxyItemRecipeHandler slotItem;
         private final ProxyFluidRecipeHandler sharedFluid;
         private final ProxyFluidRecipeHandler slotFluid;
+
+        private @Nullable MEPatternBufferPartMachine buffer;
 
         public ProxyRHL(MEPatternBufferProxyPartMachine machine) {
             super(IO.IN);
@@ -64,20 +62,31 @@ public final class ProxySlotRecipeHandler {
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
 
-        public void setBuffer(MEPatternBufferPartMachine buffer, SlotRHL slotRHL) {
-            circuit.setProxy(buffer.getCircuitInventory());
+        public void setBuffer(MEPatternBufferPartMachine buffer) {
+            this.buffer = buffer;
+            circuit.setProxy(buffer.getCircuitSlot());
             sharedItem.setProxy(buffer.getShareInventory());
             sharedFluid.setProxy(buffer.getShareTank());
-            slotItem.setProxy(slotRHL.getItemRecipeHandler());
-            slotFluid.setProxy(slotRHL.getFluidRecipeHandler());
+            slotItem.setProxy(buffer.getAggregateItemHandler());
+            slotFluid.setProxy(buffer.getAggregateFluidHandler());
         }
 
         public void clearBuffer() {
+            this.buffer = null;
             circuit.setProxy(null);
             sharedItem.setProxy(null);
             sharedFluid.setProxy(null);
             slotItem.setProxy(null);
             slotFluid.setProxy(null);
+        }
+
+        @Override
+        public Map<RecipeCapability<?>, List<Object>> handleRecipe(IO io, GTRecipe recipe,
+                                                                   Map<RecipeCapability<?>, List<Object>> contents,
+                                                                   boolean simulate) {
+            MEPatternBufferPartMachine buf = buffer;
+            if (buf == null) return contents;
+            return buf.getBufferRecipeHandler().handleRecipe(io, recipe, contents, simulate);
         }
 
         @Override
@@ -123,7 +132,8 @@ public final class ProxySlotRecipeHandler {
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+        public @NotNull List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                           boolean simulate) {
             if (proxy == null) return left;
             return proxy.handleRecipeInner(io, recipe, left, simulate);
         }
@@ -186,8 +196,8 @@ public final class ProxySlotRecipeHandler {
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       boolean simulate) {
+        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                boolean simulate) {
             if (proxy == null) return left;
             return proxy.handleRecipeInner(io, recipe, left, simulate);
         }

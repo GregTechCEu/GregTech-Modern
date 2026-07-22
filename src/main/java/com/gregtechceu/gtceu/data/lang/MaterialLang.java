@@ -2,14 +2,17 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class MaterialLang {
 
-    public static void generate(GTLangProvider provider, MaterialRegistry registry) {
-        for (Material material : registry.getAllMaterials()) {
+    public static void generate(GTLangProvider provider, String namespace) {
+        for (Material material : GTRegistries.MATERIALS.values().stream().filter(v -> v.getModid().equals(namespace)).collect(Collectors.toSet())) {
             provider.add(material.getUnlocalizedName(), material.getDefaultTranslation());
         }
     }

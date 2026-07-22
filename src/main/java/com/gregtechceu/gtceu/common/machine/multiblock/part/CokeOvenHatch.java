@@ -5,19 +5,16 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
-import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
+import com.gregtechceu.gtceu.common.machine.trait.FluidTankProxyTrait;
+import com.gregtechceu.gtceu.common.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -62,8 +59,8 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
-        super.addedToController(controller);
+    public void addedToController(MultiblockControllerMachine controller, String name) {
+        super.addedToController(controller, name);
         if (controller instanceof CokeOvenMachine cokeOven) {
             outputInventorySubs = cokeOven.exportItems.addChangedListener(this::updateAutoIOSubscription);
             outputTankSubs = cokeOven.exportFluids.addChangedListener(this::updateAutoIOSubscription);
@@ -91,7 +88,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     @Override
-    public boolean canShared() {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 
@@ -134,13 +131,5 @@ public class CokeOvenHatch extends MultiblockPartMachine {
             tank.exportToNearby(getFrontFacing());
             updateAutoIOSubscription();
         }
-    }
-
-    //////////////////////////////////////
-    // ********* GUI *********//
-    //////////////////////////////////////
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
     }
 }

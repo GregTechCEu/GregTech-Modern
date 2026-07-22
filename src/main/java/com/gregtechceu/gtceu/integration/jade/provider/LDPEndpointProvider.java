@@ -7,43 +7,40 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class LDPEndpointProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public class LDPEndpointProvider extends MachineInfoProvider<LongDistanceEndpointMachine, CompoundTag> {
+
+    public LDPEndpointProvider() {
+        super(GTCEu.id("ldp_endpoint"), LongDistanceEndpointMachine.class);
+    }
 
     @Override
-    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof LongDistanceEndpointMachine machine) {
-            boolean isFormed = blockAccessor.getServerData().getBoolean("isFormed");
-            String ioType = blockAccessor.getServerData().getString("ioType");
-            String outputDirection = blockAccessor.getServerData().getString("outputDirection");
+    protected CompoundTag write(LongDistanceEndpointMachine machine) {
+        var data = new CompoundTag();
+        data.putBoolean("isFormed", machine.getLink() != null);
+        data.putString("ioType", machine.getIoType().getTooltip());
+        data.putString("outputDirection", machine.getOutputFacing().getName());
+        return data;
+    }
 
-            iTooltip.add(Component.translatable(
+    @Override
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
+        boolean isFormed = data.getBoolean("isFormed");
+        String ioType = data.getString("ioType");
+        String outputDirection = data.getString("outputDirection");
+
+            tooltip.add(Component.translatable(
                     isFormed ? "integration.gtceu.jade.ldp_endpoint.is_formed" : "integration.gtceu.jade.ldp_endpoint.not_formed"));
-            iTooltip.add(Component.translatable("integration.gtceu.jade.ldp_endpoint.io_type", Component.translatable(ioType)
+            tooltip.add(Component.translatable("integration.gtceu.jade.ldp_endpoint.io_type", Component.translatable(ioType)
                     .withStyle(ioType.contains("import") ? ChatFormatting.GREEN : ChatFormatting.RED)));
-            iTooltip.add(Component.translatable("integration.gtceu.jade.ldp_endpoint.output_direction",
+            tooltip.add(Component.translatable("integration.gtceu.jade.ldp_endpoint.output_direction",
                     FormattingUtil.toEnglishName((outputDirection))));
         }
     }
-
-    @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof LongDistanceEndpointMachine ldpEndpoint) {
-            compoundTag.putBoolean("isFormed", ldpEndpoint.getLink() == null ? false : true);
-            compoundTag.putString("ioType", ldpEndpoint.getIoType().getTooltip());
-            compoundTag.putString("outputDirection", ldpEndpoint.getOutputFacing().getName());
-        }
-    }
-
-    @Override
-    public ResourceLocation getUid() {
-        return GTCEu.id("ldp_endpoint");
-    }
-}

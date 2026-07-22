@@ -718,9 +718,9 @@ public class MachineLang {
         provider.add("machine.gtceu.large_combustion_engine.tooltip", "Fuel Ignition Chamber");
         provider.add("machine.gtceu.extreme_combustion_engine.tooltip", "Extreme Chemical Energy Releaser");
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_regular",
-                "Supply §f20 mB/s§7 of Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f20 mB/s§7 of §bOxygen§7 to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
         provider.add("gtceu.machine.large_combustion_engine.tooltip.boost_extreme",
-                "Supply §f80 mB/s§7 of Liquid Oxygen to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
+                "Supply §f80 mB/s§7 of §9Liquid Oxygen§7 to produce up to §f%s EU/t§7 at §f2x§7 fuel consumption.");
         provider.add("gtceu.multiblock.large_combustion_engine.description",
                 "The Large Combustion Engine is a multiblock structure that acts as a Combustion Generator for EV power.");
         provider.add("gtceu.multiblock.extreme_combustion_engine.description",
@@ -786,12 +786,9 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.fluid_usage", "Uses §f%d mB/t §7of §f%s§7, doubled per overclock.");
         provider.add("gtceu.machine.miner.multi.description",
                 "A multiblock mining machine that covers a large area and produces huge quantity of ore.");
-        provider.add("gtceu.machine.miner.startx", "sX: %d");
-        provider.add("gtceu.machine.miner.starty", "sY: %d");
-        provider.add("gtceu.machine.miner.startz", "sZ: %d");
-        provider.add("gtceu.machine.miner.minex", "mX: %d");
-        provider.add("gtceu.machine.miner.miney", "mY: %d");
-        provider.add("gtceu.machine.miner.minez", "mZ: %d");
+        provider.add("gtceu.machine.miner.x", "sX: %d, mX: %d");
+        provider.add("gtceu.machine.miner.y", "sY: %d, mY: %d");
+        provider.add("gtceu.machine.miner.z", "sZ: %d, mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
         provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");

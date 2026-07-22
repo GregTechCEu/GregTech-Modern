@@ -3,18 +3,12 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.integration.ae2.gui.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
 import com.gregtechceu.gtceu.utils.GTMath;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -24,22 +18,35 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MEInputBusPartMachine extends MEBusPartMachine
-                                   implements IDataStickInteractable, IHasCircuitSlot {
+                                   implements IDataStickInteractable {
 
     protected final static int CONFIG_SIZE = 16;
 
     protected ExportOnlyAEItemList aeItemHandler;
 
     public MEInputBusPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.IN);
+        super(info, IO.IN, new ExportOnlyAEItemList(CONFIG_SIZE));
+        aeItemHandler = (ExportOnlyAEItemList) getInventory();
+    }
+
+    public MEInputBusPartMachine(BlockEntityCreationInfo info, NotifiableItemStackHandler inventory) {
+        super(info, IO.IN, inventory);
     }
 
     /////////////////////////////////
@@ -49,12 +56,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     @Override
     public void onMachineDestroyed() {
         flushInventory();
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createInventory() {
-        this.aeItemHandler = new ExportOnlyAEItemList(CONFIG_SIZE);
-        return this.aeItemHandler;
     }
 
     /////////////////////////////////
@@ -118,17 +119,83 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     ///////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(new Position(0, 0));
-        // ME Network status
-        group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        BooleanSyncValue isOnlineValue = new BooleanSyncValue(this::isOnline, this::setOnline);
+        syncManager.syncValue("is_online", isOnlineValue);
 
-        // Config slots
-        group.addWidget(new AEItemConfigWidget(3, 10, this.aeItemHandler));
+        registerConfigActions(syncManager);
 
-        return group;
+        var flow = Flow.col().coverChildren();
+
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget().marginTop(2).marginBottom(4));
+        flow.child(new AEConfigWidget(aeItemHandler, CONFIG_SIZE, false)
+                .syncManager(syncManager)
+                .size(8 * 18, 2 * (18 * 2 + 2)));
+
+        mainWidget.child(flow.center());
+    }
+
+    protected void registerConfigActions(PanelSyncManager syncManager) {
+        syncManager.registerServerSyncedAction("ae_config_set", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            var slot = aeItemHandler.getInventory()[index];
+            // Use the carried item from the player opening the UI
+            var player = syncManager.getPlayer();
+            ItemStack held = player.containerMenu.getCarried();
+            if (!held.isEmpty()) {
+                slot.setConfig(GenericStack.fromItemStack(held));
+            }
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_clear", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            aeItemHandler.getInventory()[index].setConfig(null);
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_amount", packet -> {
+            int index = packet.readVarInt();
+            long amount = packet.readVarLong();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            var slot = aeItemHandler.getInventory()[index];
+            if (slot.getConfig() != null && amount > 0) {
+                slot.setConfig(new GenericStack(slot.getConfig().what(), amount));
+            }
+        });
+
+        syncManager.registerServerSyncedAction("ae_stock_pickup", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            var slot = aeItemHandler.getInventory()[index];
+            if (slot.getStock() != null && slot.getStock().what() instanceof AEItemKey key) {
+                var player = syncManager.getPlayer();
+                if (!player.containerMenu.getCarried().isEmpty()) return;
+                ItemStack stack = new ItemStack(key.getItem());
+                stack.setCount(Math.min((int) slot.getStock().amount(), stack.getMaxStackSize()));
+                if (key.hasTag()) stack.setTag(key.getTag().copy());
+                player.containerMenu.setCarried(stack);
+                GenericStack remaining = ExportOnlyAESlot.copy(slot.getStock(),
+                        Math.max(0, slot.getStock().amount() - stack.getCount()));
+                slot.setStock(remaining.amount() == 0 ? null : remaining);
+            }
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_set_ghost", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            boolean isFluid = packet.readBoolean();
+            if (!isFluid) {
+                ItemStack item = packet.readItem();
+                if (!item.isEmpty()) {
+                    aeItemHandler.getInventory()[index].setConfig(GenericStack.fromItemStack(item));
+                }
+            }
+        });
     }
 
     ////////////////////////////////
@@ -180,7 +247,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             configStacks.put(Integer.toString(i), stackTag);
         }
         tag.putByte("GhostCircuit",
-                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+                (byte) circuitSlot.getCurrentCircuit());
         tag.putBoolean("DistinctBuses", isDistinct());
         return tag;
     }
@@ -199,7 +266,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             }
         }
         if (tag.contains("GhostCircuit")) {
-            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
         }
         if (tag.contains("DistinctBuses")) {
             setDistinct(tag.getBoolean("DistinctBuses"));

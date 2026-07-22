@@ -74,7 +74,7 @@ public final class MaterialRecipeHandler {
                 AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
-                        .chancedOutput(gemStack, 7500, 0)
+                        .chancedOutput(gemStack, 7500)
                         .duration(1200).EUt(24)
                         .save(provider);
 
@@ -90,28 +90,28 @@ public final class MaterialRecipeHandler {
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_powderbarrel")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(new ItemStack(GTBlocks.POWDERBARREL, 8))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesAmount(4)
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(GTItems.DYNAMITE.asStack(2))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_itnt")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
                         .save(provider);
             }

@@ -54,7 +54,8 @@ public class OrePlacer {
 
         try (BulkSectionAccess access = new BulkSectionAccess(level)) {
             generatedVeins.forEach(generatedVein -> placeVein(chunk.getPos(), random, access, generatedVein, null));
-            generatedIndicators.forEach(generatedIndicator -> placeIndicators(chunk, access, generatedIndicator));
+            generatedIndicators
+                    .forEach(generatedIndicator -> placeIndicators(level, chunk, access, generatedIndicator));
         }
     }
 
@@ -87,10 +88,11 @@ public class OrePlacer {
                         Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
     }
 
-    private void placeIndicators(ChunkAccess chunk, BulkSectionAccess access, GeneratedIndicators generatedVein) {
+    private void placeIndicators(WorldGenLevel level, ChunkAccess chunk, BulkSectionAccess access,
+                                 GeneratedIndicators generatedVein) {
         if (!ConfigHolder.INSTANCE.worldgen.oreVeins.oreIndicators) return;
         generatedVein.consumeIndicators(chunk.getPos()).forEach(placer -> {
-            placer.placeIndicators(access);
+            placer.placeIndicators(access, level);
         });
     }
 }

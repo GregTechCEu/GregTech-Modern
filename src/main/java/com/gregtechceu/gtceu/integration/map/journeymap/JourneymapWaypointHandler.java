@@ -17,8 +17,8 @@ public class JourneymapWaypointHandler implements IWaypointHandler {
     private static final Map<String, Waypoint> waypoints = new Object2ObjectOpenHashMap<>();
 
     @Override
-    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z) {
-        Waypoint waypoint = new Waypoint(GTCEu.MOD_ID, name, dim, new BlockPos(x, y, z))
+    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, BlockPos pos) {
+        Waypoint waypoint = new Waypoint(GTCEu.MOD_ID, name, dim, pos)
                 .setPersistent(true)
                 .setColor(color);
         waypoints.put(key, waypoint);

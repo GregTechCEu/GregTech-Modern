@@ -82,8 +82,8 @@ public class IntegrationLang {
                 "The maximum yield of the vein when it is fully depleted");
 
         // Vein Names
-        
-        
+
+
         // TODO This should be replaced with something else
         GTRegistries.ORE_VEINS.unfreeze();
         GTOres.init();
@@ -235,11 +235,13 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
         provider.add("integration.gtceu.jade.ldp_endpoint.io_type", "IO Type: %s");
         provider.add("integration.gtceu.jade.ldp_endpoint.output_direction", "Output Direction: %s");
+
+        provider.add("gtceu.jade.generator.too_small", "Energy Output too small!");
     }
 
     private static void initMinimapLang(GTLangProvider provider) {
         // Tooltip/Name
-        provider.add("minimap.gtceu.ore_vein.depleted", "Depleted");
+        provider.add("minimap.gtceu.ore_vein.depleted", "Depleted Vein");
 
         // Chat Messages
         provider.add("map.gtceu.new_veins.amount", "Prospected %d new veins!");
@@ -250,6 +252,13 @@ public class IntegrationLang {
         provider.add("integration.gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
         provider.add("integration.gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
         provider.add("integration.gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
+
+        provider.add("map.gtceu.button.mark_as_depleted.name", "Mark as Depleted");
+        provider.add("map.gtceu.button.toggle_waypoint.name", "Toggle Waypoint");
+        provider.add("map.gtceu.button.ore_veins", "Show GT Ore Veins");
+        provider.add("map.gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("map.gtceu.button.hide_depleted", "Hide Depleted Veins");
+        provider.add("map.gtceu.button.show_depleted", "Show Depleted Veins");
     }
 
     private static void initOwnershipLang(GTLangProvider provider) {

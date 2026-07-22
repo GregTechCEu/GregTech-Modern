@@ -1,5 +1,5 @@
 {
-  "ldlib": {
-    "connection": "gtceu:block/casings/cleanroom/plascrete_ctm"
-  }
+    "gtceu": {
+        "connection_texture": "gtceu:block/casings/cleanroom/plascrete_ctm"
+    }
 }

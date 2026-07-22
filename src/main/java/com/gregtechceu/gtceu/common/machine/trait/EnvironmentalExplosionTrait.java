@@ -15,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
 
+/**
+ * Machine trait that makes a machine explode when exposed to weather.
+ */
 public class EnvironmentalExplosionTrait extends MachineTrait {
 
     public static final MachineTraitType<EnvironmentalExplosionTrait> TYPE = new MachineTraitType<>(

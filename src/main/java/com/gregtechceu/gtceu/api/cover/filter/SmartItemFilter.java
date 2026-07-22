@@ -1,22 +1,38 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.value.IBoolValue;
+import brachy.modularui.drawable.ColorType;
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.menu.ContextMenuButton;
+import brachy.modularui.widgets.menu.Menu;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
 
@@ -25,6 +41,7 @@ public class SmartItemFilter implements ItemFilter {
     protected Consumer<ItemFilter> itemWriter = filter -> {};
     protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
+    @Getter
     private SmartFilteringMode filterMode = SmartFilteringMode.ELECTROLYZER;
 
     protected SmartItemFilter() {}
@@ -38,6 +55,11 @@ public class SmartItemFilter implements ItemFilter {
         handler.itemWriter = itemWriter;
         handler.filterMode = SmartFilteringMode.VALUES[tag.getInt("filterMode")];
         return handler;
+    }
+
+    @Override
+    public ItemStack getFilterItem() {
+        return GTItems.SMART_ITEM_FILTER.asStack();
     }
 
     @Override
@@ -69,11 +91,39 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3);
-        group.addWidget(new EnumSelectorWidget<>(16, 8, 32, 32,
-                SmartFilteringMode.VALUES, filterMode, this::setFilterMode));
-        return group;
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
+                this::getFilterMode, this::setFilterMode).allowC2S();
+
+        syncManager.syncValue("mode", mode);
+
+        return Flow.row().coverChildrenHeight().width(162)
+                .child(new ContextMenuButton<>("smart_filter")
+                        .size(18)
+                        .requiresClick()
+                        .tooltip(r -> r.add(Text.str("Set Machine Recipe Type")))
+                        .openRightDown()
+                        .overlay(new DynamicDrawable(() -> SmartFilteringMode.getTextures()[mode.getIntValue()]))
+                        .menu(new Menu<>()
+                                .width(20)
+                                .coverChildrenHeight()
+                                .padding(2)
+                                .child(new ListWidget<>()
+                                        .maxSize(SmartFilteringMode.VALUES.length * 20)
+                                        .widthRel(1.f)
+                                        .children(SmartFilteringMode.VALUES.length, w -> {
+                                            IBoolValue<?> bsv = new BoolValue.Dynamic(() -> mode.getIntValue() == w,
+                                                    bool -> mode.setIntValue(w));
+
+                                            return new ToggleButton()
+                                                    .overlay(SmartFilteringMode.getTextures()[w])
+                                                    .background(GuiTextures.MC_BUTTON)
+                                                    .background(true, GuiTextures.MC_BUTTON)
+                                                    .value(bsv)
+                                                    .tooltip(r -> r.add(Text.comp(Component
+                                                            .translatable(SmartFilteringMode.VALUES[w].getTooltip()))));
+                                        }))))
+                .child(Text.str("Recipe Type").asWidget().verticalCenter().rightRel(0.f));
     }
 
     @Override
@@ -94,7 +144,7 @@ public class SmartItemFilter implements ItemFilter {
             return 0;
         }
         for (Content content : recipe.getInputContents(ItemRecipeCapability.CAP)) {
-            var stacks = ItemRecipeCapability.CAP.of(content.getContent()).getItems();
+            var stacks = ItemRecipeCapability.CAP.of(content.content()).getItems();
             for (var stack : stacks) {
                 if (ItemStack.isSameItem(stack, itemStack)) return stack.getCount();
             }
@@ -112,7 +162,7 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @MethodsReturnNonnullByDefault
-    private enum SmartFilteringMode implements EnumSelectorWidget.SelectableEnum {
+    private enum SmartFilteringMode {
 
         ELECTROLYZER("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES),
         CENTRIFUGE("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES),
@@ -129,14 +179,15 @@ public class SmartItemFilter implements ItemFilter {
             this.recipeType = type;
         }
 
-        @Override
         public String getTooltip() {
             return "cover.item_smart_filter.filtering_mode." + localeName;
         }
 
-        @Override
-        public IGuiTexture getIcon() {
-            return new ResourceTexture("gtceu:textures/block/machines/" + localeName + "/overlay_front.png");
+        public static UITexture[] getTextures() {
+            return Arrays.stream(VALUES)
+                    .map(v -> UITexture.fullImage(GTCEu.MOD_ID,
+                            "textures/block/machines/" + v.localeName + "/overlay_front.png", ColorType.DEFAULT))
+                    .toArray(UITexture[]::new);
         }
     }
 }

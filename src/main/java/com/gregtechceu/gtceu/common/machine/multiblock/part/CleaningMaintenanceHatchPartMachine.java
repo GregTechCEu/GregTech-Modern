@@ -34,16 +34,16 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
     }
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
-        super.addedToController(controller);
-        controller.self().getTraitOptional(CleanroomReceiverTrait.TYPE)
+    public void addedToController(MultiblockControllerMachine controller, String name) {
+        super.addedToController(controller, name);
+        controller.getTraitOptional(CleanroomReceiverTrait.TYPE)
                 .ifPresent(t -> t.setCleanroomProvider(cleanroomProvider));
     }
 
     @Override
     public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
-        controller.self().getTraitOptional(CleanroomReceiverTrait.TYPE)
+        controller.getTraitOptional(CleanroomReceiverTrait.TYPE)
                 .ifPresent(CleanroomReceiverTrait::removeCleanroom);
     }
 
