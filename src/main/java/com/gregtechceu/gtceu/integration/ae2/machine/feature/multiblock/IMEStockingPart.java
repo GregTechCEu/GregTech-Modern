@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock;
 
-import brachy.modularui.value.BoolValue;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -22,7 +21,7 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widgets.ButtonWidget;
