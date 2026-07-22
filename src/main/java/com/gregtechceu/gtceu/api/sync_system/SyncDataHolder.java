@@ -179,7 +179,8 @@ public class SyncDataHolder {
 
         @Override
         public Tag serializeNBT(ISyncManaged value, TransformerContext<ISyncManaged> context) {
-            return value.getSyncDataHolder().serializeNBT(context.lookup(), context.isClientSync(), context.isClientFullSyncUpdate());
+            return value.getSyncDataHolder().serializeNBT(context.lookup(), context.isClientSync(),
+                    context.isClientFullSyncUpdate());
         }
 
         @Override

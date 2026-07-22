@@ -216,7 +216,8 @@ public final class MachineTraitHolder {
             CompoundTag tag = new CompoundTag();
 
             value.traitsToSave.forEach((k, v) -> tag.put(k,
-                    v.getSyncDataHolder().serializeNBT(context.isClientSync(), context.isClientFullSyncUpdate())));
+                    v.getSyncDataHolder().serializeNBT(context.lookup(), context.isClientSync(),
+                            context.isClientFullSyncUpdate())));
 
             return tag;
         }
@@ -233,7 +234,8 @@ public final class MachineTraitHolder {
                             key);
                     continue;
                 }
-                trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound(key), context.isClientSync());
+                trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key),
+                        context.isClientSync());
             }
 
             return traitHolder;

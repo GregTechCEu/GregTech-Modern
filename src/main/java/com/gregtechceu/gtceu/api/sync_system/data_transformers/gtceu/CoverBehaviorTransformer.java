@@ -41,13 +41,15 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
 
         if (context.holder() instanceof ICoverable coverable) {
-            return deserialize(context.lookup(), compoundTag, coverable, context.currentValue(), context.isClientSync());
+            return deserialize(context.lookup(), compoundTag, coverable, context.currentValue(),
+                    context.isClientSync());
         }
         GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
         return null;
     }
 
-    private CompoundTag serialize(HolderLookup.Provider registries, CoverBehavior cover, boolean isSync, boolean fullSync) {
+    private CompoundTag serialize(HolderLookup.Provider registries, CoverBehavior cover, boolean isSync,
+                                  boolean fullSync) {
         var compound = new CompoundTag();
 
         compound.putInt("side", cover.attachedSide.ordinal());
@@ -58,7 +60,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         return compound;
     }
 
-    public @Nullable CoverBehavior deserialize(HolderLookup.Provider registries, CompoundTag tag, ICoverable holder, @Nullable CoverBehavior cover,
+    public @Nullable CoverBehavior deserialize(HolderLookup.Provider registries, CompoundTag tag, ICoverable holder,
+                                               @Nullable CoverBehavior cover,
                                                boolean isSync) {
         /// Ldlib backwards compat
         if (tag.contains("payload") && tag.contains("uid")) {
@@ -75,7 +78,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
         ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
         if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
-            var coverReg = registries.lookupOrThrow(GTRegistries.Keys.COVER).get(ResourceKey.create(GTRegistries.Keys.COVER, Objects.requireNonNullElse(coverType, GTCEu.id("empty"))));
+            var coverReg = registries.lookupOrThrow(GTRegistries.Keys.COVER).get(ResourceKey
+                    .create(GTRegistries.Keys.COVER, Objects.requireNonNullElse(coverType, GTCEu.id("empty"))));
             if (coverReg.isEmpty()) {
                 GTCEu.LOGGER.error("Error during NBT load: unknown cover type {} ({})", coverType,
                         tag.getString("coverType"));

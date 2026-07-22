@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.sync_system.managed;
 
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
 
@@ -19,8 +22,9 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
 
     public ManagedSavedData() {}
 
-    public ManagedSavedData(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(tag, false);
+    public ManagedSavedData(HolderLookup.Provider registries, CompoundTag tag) {
+        getSyncDataHolder().deserializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), tag,
+                false);
     }
 
     @Override
@@ -43,6 +47,7 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
 
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
-        return getSyncDataHolder().serializeNBT(false);
+        return getSyncDataHolder().serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY),
+                false);
     }
 }
