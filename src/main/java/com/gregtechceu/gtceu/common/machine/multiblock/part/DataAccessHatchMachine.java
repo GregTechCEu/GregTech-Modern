@@ -140,7 +140,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                 return Collections.emptyList();
             List<Component> list = new ArrayList<>();
 
-            list.add(Component.translatable("behavior.data_item.title",
+            list.add(Component.translatable("item.gtceu.behaviour.dataitem.title",
                     Component.translatable(GTRecipeTypes.ASSEMBLY_LINE_RECIPES.registryName.toLanguageKey())));
             list.add(Component.empty());
             Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
@@ -149,7 +149,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                         .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content()).getItems()[0];
                 if (!itemsAdded.contains(stack)) {
                     itemsAdded.add(stack);
-                    list.add(Component.translatable("behavior.data_item.data", stack.getDisplayName()));
+                    list.add(Component.translatable("item.gtceu.behaviour.dataitem.data", stack.getDisplayName()));
                 }
             }
             return list;

@@ -89,7 +89,7 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
             return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
         if (!player.isCreative() && !drainEnergy(heldItem, true)) {
-            player.sendSystemMessage(Component.translatable("behavior.prospector.not_enough_energy"));
+            player.sendSystemMessage(Component.translatable("item.gtceu.behaviour.prospector.not_enough_energy"));
             return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
         return IItemUIHolder.super.use(item, level, player, usedHand);

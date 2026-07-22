@@ -41,9 +41,9 @@ public class ControllableBlockProvider extends CapabilityBlockProvider<IControll
                               BlockEntity blockEntity, IPluginConfig config) {
         if (capData.contains("SuspendAfter") && capData.getBoolean("SuspendAfter")) {
             tooltip.add(
-                    Component.translatable("behaviour.soft_hammer.disabled_cycle").withStyle(ChatFormatting.YELLOW));
+                    Component.translatable("item.gtceu.behaviour.soft_hammer.disabled_cycle").withStyle(ChatFormatting.YELLOW));
         } else if (capData.contains("WorkingEnabled") && !capData.getBoolean("WorkingEnabled")) {
-            tooltip.add(Component.translatable("behaviour.soft_hammer.disabled").withStyle(ChatFormatting.YELLOW));
+            tooltip.add(Component.translatable("item.gtceu.behaviour.soft_hammer.disabled").withStyle(ChatFormatting.YELLOW));
         }
     }
 }

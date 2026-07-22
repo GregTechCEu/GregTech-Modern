@@ -35,8 +35,8 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     private static final String COPY_SOURCE = "copy_source";
     private static final String ITEMS_TO_PASTE = "items_to_paste";
 
-    private static final Component ENABLED = Component.translatable("behaviour.memory_card.enabled");
-    private static final Component DISABLED = Component.translatable("behaviour.memory_card.disabled");
+    private static final Component ENABLED = Component.translatable("item.gtceu.behaviour.memorycard.enabled");
+    private static final Component DISABLED = Component.translatable("item.gtceu.behaviour.memorycard.disabled");
     private static final String[] DIRECTION_STRINGS = { "§eDown§r", "§eUp§r", "§eNorth§r", "§eSouth§r", "§eWest§r",
             "§eEast§r" };
 
@@ -86,11 +86,11 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 configTag.put(ITEMS_TO_PASTE, itemsTag);
             } else {
                 stack.removeTagKey(CONFIG_DATA);
-                player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.cleared"), true);
+                player.displayClientMessage(Component.translatable("item.gtceu.behaviour.memorycard.client_msg.cleared"), true);
                 return InteractionResult.SUCCESS;
             }
 
-            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.copied"), true);
+            player.displayClientMessage(Component.translatable("item.gtceu.behaviour.memorycard.client_msg.copied"), true);
 
         } else {
             var tag = stack.getTagElement(CONFIG_DATA);
@@ -102,7 +102,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             });
 
             if (!player.isCreative() && !GTTransferUtils.extractItemsFromPlayerInv(player, items, true)) {
-                player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.missing_items"),
+                player.displayClientMessage(Component.translatable("item.gtceu.behaviour.memorycard.client_msg.missing_items"),
                         true);
                 return InteractionResult.FAIL;
             }
@@ -112,7 +112,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 copyable.pasteConfig((ServerPlayer) player, tag);
             }
 
-            player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);
+            player.displayClientMessage(Component.translatable("item.gtceu.behaviour.memorycard.client_msg.pasted"), true);
 
         }
 
@@ -140,30 +140,30 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     private static final String CIRCUIT = "circuit_config";
 
     private static void addConfigTooltips(List<Component> tooltip, CompoundTag tag) {
-        tooltip.add(Component.translatable("behaviour.memory_card.copy_target", tag.getString(COPY_SOURCE)));
+        tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.copy_target", tag.getString(COPY_SOURCE)));
         tooltip.add(Component.empty());
 
         if (tag.contains(PIPE_CONNECTIONS) && tag.getInt(PIPE_CONNECTIONS) != 0)
-            tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_connections",
+            tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.pipe_connections",
                     directionListComponent(tag.getInt(PIPE_CONNECTIONS))));
         if (tag.contains(PIPE_BLOCKED_CONNECTIONS) && tag.getInt(PIPE_BLOCKED_CONNECTIONS) != 0)
-            tooltip.add(Component.translatable("behaviour.setting.tooltip.pipe_blocked_connections",
+            tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.pipe_blocked_connections",
                     directionListComponent(tag.getInt(PIPE_BLOCKED_CONNECTIONS))));
 
         if (tag.contains(ITEM_OUTPUT_SIDE) && tag.contains(ITEM_AUTO_OUTPUT) && tag.contains(ALLOW_ITEM_IN_FROM_OUT)) {
             Component outputMode;
             if (tag.getBoolean(ITEM_AUTO_OUTPUT) && tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT))
-                outputMode = Component.translatable("behaviour.setting.tooltip.auto_output_allow_input");
+                outputMode = Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.auto_output_allow_input");
             else if (tag.getBoolean(ITEM_AUTO_OUTPUT))
-                outputMode = Component.translatable("behaviour.setting.tooltip.auto_output");
+                outputMode = Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.auto_output");
             else if (tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT))
-                outputMode = Component.translatable("behaviour.setting.tooltip.allow_input");
+                outputMode = Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.allow_input");
             else outputMode = Component.empty();
 
             Direction dir = stringToDirection(tag.getString(ITEM_OUTPUT_SIDE));
             if (dir == null) return;
 
-            tooltip.add(Component.translatable("behaviour.setting.tooltip.item_io",
+            tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.item_io",
                     Component.literal(DIRECTION_STRINGS[dir.ordinal()]), outputMode));
         }
 
@@ -171,23 +171,23 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
                 tag.contains(ALLOW_FLUID_IN_FROM_OUT)) {
             Component outputMode;
             if (tag.getBoolean(FLUID_AUTO_OUTPUT) && tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT))
-                outputMode = Component.translatable("behaviour.setting.tooltip.auto_output_allow_input");
+                outputMode = Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.auto_output_allow_input");
             else if (tag.getBoolean(FLUID_AUTO_OUTPUT))
-                outputMode = Component.translatable("behaviour.setting.tooltip.auto_output");
+                outputMode = Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.auto_output");
             else if (tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT))
-                outputMode = Component.translatable("behaviour.setting.tooltip.allow_input");
+                outputMode = Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.allow_input");
             else outputMode = Component.empty();
 
             Direction dir = stringToDirection(tag.getString(FLUID_OUTPUT_SIDE));
             if (dir == null) return;
 
-            tooltip.add(Component.translatable("behaviour.setting.tooltip.fluid_io",
+            tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.fluid_io",
                     Component.literal(DIRECTION_STRINGS[dir.ordinal()]), outputMode));
         }
 
-        if (tag.contains(MUFFLED)) tooltip.add(Component.translatable("behaviour.setting.tooltip.muffled",
+        if (tag.contains(MUFFLED)) tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.muffled",
                 tag.getBoolean(MUFFLED) ? ENABLED : DISABLED));
-        if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config")
+        if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.setting.tooltip.circuit_config")
                 .append(Component.literal(Integer.toString(tag.getInt(CIRCUIT))).withStyle(ChatFormatting.YELLOW)));
 
         if (tag.contains(ITEMS_TO_PASTE)) {
@@ -199,7 +199,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             if (items.isEmpty()) return;
 
             tooltip.add(Component.empty());
-            tooltip.add(Component.translatable("behaviour.memory_card.tooltip.items_to_paste"));
+            tooltip.add(Component.translatable("item.gtceu.behaviour.memorycard.tooltip.items_to_paste"));
 
             for (var item : items) {
                 tooltip.add(Component.literal("- " + item.getCount() + "x ").append(item.getDisplayName())
@@ -211,15 +211,15 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.copy"));
-        tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.paste"));
+        tooltipComponents.add(Component.translatable("item.gtceu.behaviour.memorycard.tooltip.copy"));
+        tooltipComponents.add(Component.translatable("item.gtceu.behaviour.memorycard.tooltip.paste"));
         CompoundTag data = stack.getTagElement(CONFIG_DATA);
         if (data == null) return;
         if (Screen.hasShiftDown()) {
             tooltipComponents.add(CommonComponents.EMPTY);
             addConfigTooltips(tooltipComponents, data);
         } else {
-            tooltipComponents.add(Component.translatable("behaviour.memory_card.tooltip.view_stored"));
+            tooltipComponents.add(Component.translatable("item.gtceu.behaviour.memorycard.tooltip.view_stored"));
         }
     }
 }
