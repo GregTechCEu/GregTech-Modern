@@ -1,87 +1,18 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 public class BlockLang {
 
     public static void init(GTLangProvider provider) {
-        generateBlockKeys(provider);
         generateBlockTooltips(provider);
         generatePipeKeys(provider);
+
+        provider.add("block.gtceu.surface_rock", "%s Surface Rock");
     }
 
-    private static void generateBlockKeys(GTLangProvider provider) {
-        // Coils
-        provider.add("block.gtceu.hssg_coil_block", "HSS-G Coil Block");
-        provider.add("block.gtceu.rtm_alloy_coil_block", "RTM Alloy Coil Block");
+    private static void generateBlockTooltips(GTLangProvider provider) {
 
-        // Substation Capacitors
-        provider.add(GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
-        provider.add(GTBlocks.BATTERY_EMPTY_TIER_II.get().getDescriptionId(), "Empty Tier II Capacitor");
-        provider.add(GTBlocks.BATTERY_EMPTY_TIER_III.get().getDescriptionId(), "Empty Tier III Capacitor");
-
-        provider.add(GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
-        provider.add(GTBlocks.BATTERY_LAPOTRONIC_IV.get().getDescriptionId(), "IV Lapotronic Capacitor");
-        provider.add(GTBlocks.BATTERY_LAPOTRONIC_LuV.get().getDescriptionId(), "LuV Lapotronic Capacitor");
-        provider.add(GTBlocks.BATTERY_LAPOTRONIC_ZPM.get().getDescriptionId(), "ZPM Lapotronic Capacitor");
-        provider.add(GTBlocks.BATTERY_LAPOTRONIC_UV.get().getDescriptionId(), "UV Lapotronic Capacitor");
-        provider.add(GTBlocks.BATTERY_ULTIMATE_UHV.get().getDescriptionId(), "UHV Ultimate Capacitor");
-
-        // Casings
-        provider.add("block.gtceu.bronze_brick_casing", "Bricked Bronze Casing");
-        provider.add("block.gtceu.steel_brick_casing", "Bricked Wrought Iron Casing");
-        provider.add("block.gtceu.heatproof_machine_casing", "Heat Proof Invar Machine Casing");
-        provider.add("block.gtceu.frostproof_machine_casing", "Frost Proof Aluminium Machine Casing");
-        provider.add("block.gtceu.steel_machine_casing", "Solid Steel Machine Casing");
-        provider.add("block.gtceu.clean_machine_casing", "Clean Stainless Steel Casing");
-        provider.add("block.gtceu.stable_machine_casing", "Stable Titanium Machine Casing");
-        provider.add("block.gtceu.robust_machine_casing", "Robust Tungstensteel Machine Casing");
-        provider.add("block.gtceu.casing_coke_bricks", "Coke Oven Bricks");
-        provider.add("block.gtceu.inert_machine_casing", "Chemically Inert PTFE Machine Casing");
-        provider.add("block.gtceu.sturdy_machine_casing", "Sturdy HSS-E Machine Casing");
-        provider.add("block.gtceu.casing_grate", "Grate Machine Casing");
-        provider.add("block.gtceu.assembly_line_unit", "Assembly Control Casing");
-        provider.add("block.gtceu.ptfe_pipe_casing", "PTFE Pipe Casing");
-        provider.add("block.gtceu.palladium_substation", "Palladium Substation Casing");
-
-        // Gearboxes
-        provider.add("block.gtceu.bronze_gearbox", "Bronze Gearbox Casing");
-        provider.add("block.gtceu.steel_gearbox", "Steel Gearbox Casing");
-        provider.add("block.gtceu.stainless_steel_gearbox", "Stainless Steel Gearbox Casing");
-        provider.add("block.gtceu.titanium_gearbox", "Titanium Gearbox Casing");
-        provider.add("block.gtceu.tungstensteel_gearbox", "Tungstensteel Gearbox Casing");
-
-        // Turbine Casing
-        provider.add("block.gtceu.steel_turbine_casing", "Magnalium Turbine Casing");
-        provider.add("block.gtceu.titanium_turbine_casing", "Titanium Turbine Casing");
-        provider.add("block.gtceu.stainless_steel_turbine_casing", "Stainless Turbine Casing");
-        provider.add("block.gtceu.tungstensteel_turbine_casing", "Tungstensteel Turbine Casing");
-
-        // Pipe Casing
-        provider.add("block.gtceu.bronze_pipe_casing", "Bronze Pipe Casing");
-        provider.add("block.gtceu.steel_pipe_casing", "Steel Pipe Casing");
-        provider.add("block.gtceu.titanium_pipe_casing", "Titanium Pipe Casing");
-        provider.add("block.gtceu.tungstensteel_pipe_casing", "Tungstensteel Pipe Casing");
-
-        // Bricked Casings
-        provider.add("block.gtceu.steam_casing_bronze", "Bronze Hull");
-        provider.add("block.gtceu.steam_casing_bricked_bronze", "Bricked Bronze Hull");
-        provider.add("block.gtceu.steam_casing_steel", "Steel Hull");
-        provider.add("block.gtceu.steam_casing_bricked_steel", "Bricked Wrought Iron Hull");
-
-        // GCYM Casings
-        provider.add("block.gtceu.laser_safe_engraving_casing", "Laser-Safe Engraving Casing");
-        provider.add("block.gtceu.large_scale_assembler_casing", "Large-Scale Assembler Casing");
-        provider.add("block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
-        provider.add("block.gtceu.vibration_safe_casing", "Vibration-Safe Casing");
-
-        // Fusion Casings
-        provider.add("block.gtceu.superconducting_coil", "Superconducting Coil Block");
-        provider.add("block.gtceu.fusion_coil", "Fusion Coil Block");
-        provider.add("block.gtceu.fusion_casing", "Fusion Machine Casing");
-        provider.add("block.gtceu.fusion_casing_mk2", "Fusion Machine Casing MK II");
-        provider.add("block.gtceu.fusion_casing_mk3", "Fusion Machine Casing MK III");
 
         provider.add("block.gtceu.explosive.breaking_tooltip",
                 "Primes explosion when mined, sneak mine to pick back up");
@@ -90,24 +21,6 @@ public class BlockLang {
                 "Slightly larger than TNT, drops all destroyed Blocks as Items");
         provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
 
-        // Decor Stuff
-        provider.add("block.gtceu.yellow_stripes_block_a", "Yellow Stripes Block (A)");
-        provider.add("block.gtceu.yellow_stripes_block_b", "Yellow Stripes Block (B)");
-        provider.add("block.gtceu.yellow_stripes_block_c", "Yellow Stripes Block (C)");
-        provider.add("block.gtceu.yellow_stripes_block_d", "Yellow Stripes Block (D)");
-
-        // Extra stone blocks
-        provider.add("block.gtceu.seal", "Sealed Block");
-
-        // Surface Rocks
-        provider.add("block.surface_rock", "%s Surface Rock");
-
-        // Fluid blocks
-        provider.add("block.gtceu.oil", "Oil");
-        provider.add("block.gtceu.creosote", "Creosote");
-    }
-
-    private static void generateBlockTooltips(GTLangProvider provider) {
         // Coil Tooltip
         provider.add("block.gtceu.wire_coil.tooltip.extended_info", "§7Hold SHIFT to show Coil Bonus Info");
         provider.add("block.gtceu.wire_coil.tooltip.heat", "§cBase Heat Capacity: §f%d K");
