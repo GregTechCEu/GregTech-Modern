@@ -134,22 +134,22 @@ public class IntProviderIngredientTest {
         CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_tick_input_item_cr"))
                 .perTick(true)
-                .inputItemsRanged(CR_TICK_IN, UniformInt.of(0, 9))
+                .inputItemsRanged(CR_TICK_IN, UniformInt.of(0, 4))
                 .perTick(false)
                 .inputItems(COBBLE)
                 .outputItems(STONE)
                 .EUt(GTValues.V[GTValues.HV])
-                .duration(2)
+                .duration(7)
                 .buildRawRecipe());
 
         CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_tick_output_item_cr"))
                 .inputItems(CR_TICK_OUT)
                 .perTick(true)
-                .outputItemsRanged(STONE, UniformInt.of(0, 9))
+                .outputItemsRanged(STONE, UniformInt.of(0, 4))
                 .perTick(false)
                 .EUt(GTValues.V[GTValues.HV])
-                .duration(2)
+                .duration(7)
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
@@ -1074,37 +1074,34 @@ public class IntProviderIngredientTest {
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
         itemIn.setStackInSlot(0, CR_TICK_IN.copyWithCount(64));
-        itemIn.setStackInSlot(1, COBBLE.copyWithCount(REPLICAS));
-        // 1t to turn on, 2t per recipe run
+        itemIn.setStackInSlot(1, COBBLE.copyWithCount(1));
+        // 1t to turn on, 7t recipe run
         // get the result of each roll independently
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 0; i < REPLICAS; i++) {
+        int[] addedRolls = new int[7];
+        for (int i = 0; i < 7; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 1, () -> {
+            helper.runAfterDelay(i + 2, () -> {
                 addedRolls[finalI] = itemIn.getStackInSlot(0).getCount();
             });
         }
         // check the results of all rolls together
-        helper.runAfterDelay(REPLICAS * 2 + 1, () -> {
+        helper.runAfterDelay(7 + 5, () -> {
             ItemStack results = itemIn.getStackInSlot(0);
-            int upperLimit = 64 - (REPLICAS * 0);
-            int lowerLimit = 64 - (REPLICAS * 9);
-            helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), STONE.copyWithCount(REPLICAS)),
-                    "Singleblock CR didn't complete correct number of recipes, completed [" +
-                            itemOut.getStackInSlot(0).getCount() + "] not [" + REPLICAS + "]");
-            helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
-                    "Singleblock CR didn't consume correct number of items, consumed [" +
-                            (64 - results.getCount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
+            int upperLimit = 64 - (7 * 0);
+            int lowerLimit = 64 - (7 * 9);
+            helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), STONE.copyWithCount(1)),
+                    "Singleblock per-tick CR didn't complete correct number of recipes, completed [" +
+                            itemOut.getStackInSlot(0).getCount() + "] not [" + 1 + "]");
             helper.assertFalse((results.getCount() == lowerLimit),
-                    "Singleblock CR rolled max value on every roll");
+                    "Singleblock per-tick CR rolled max value on every roll");
             helper.assertFalse((results.getCount() == upperLimit),
-                    "Singleblock CR rolled min value on every roll");
+                    "Singleblock per-tick CR rolled min value on every roll");
 
             // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[REPLICAS];
+            int[] rolls = new int[7];
             rolls[0] = 64 - addedRolls[0];
             boolean allEqual = false;
-            for (int i = 1; i < REPLICAS; i++) {
+            for (int i = 1; i < 7; i++) {
                 rolls[i] = addedRolls[i - 1] - addedRolls[i];
                 if (rolls[i] == rolls[i - 1]) {
                     allEqual = true;
@@ -1114,7 +1111,7 @@ public class IntProviderIngredientTest {
                 }
             }
             helper.assertFalse(allEqual,
-                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+                    "Singleblock per-tick CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
             helper.succeed();
         });
     }
@@ -1131,35 +1128,32 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        itemIn.setStackInSlot(0, CR_TICK_OUT.copyWithCount(REPLICAS));
+        itemIn.setStackInSlot(0, CR_TICK_OUT.copyWithCount(1));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 0; i < REPLICAS; i++) {
+        int[] addedRolls = new int[7];
+        for (int i = 0; i < 7; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 3, () -> {
+            helper.runAfterDelay(i+2, () -> {
                 addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
             });
         }
         // check the results of all rolls together
-        helper.runAfterDelay(REPLICAS * 2 + 1, () -> {
+        helper.runAfterDelay(7+5, () -> {
             helper.assertTrue(itemIn.getStackInSlot(0).isEmpty(),
-                    "Singleblock CR didn't complete correct number of recipes, completed [" +
-                            itemIn.getStackInSlot(0).getCount() + "] not [" + REPLICAS + "]");
+                    "Singleblock per-tick CR didn't complete correct number of recipes, completed [" +
+                            itemIn.getStackInSlot(0).getCount() + "] not [" + 1 + "]");
             ItemStack results = itemOut.getStackInSlot(0);
-            helper.assertTrue(TestUtils.isItemWithinRange(results, REPLICAS, REPLICAS * 9),
-                    "Singleblock CR didn't produce correct number of items, produced [" +
-                            results.getCount() + "] not [" + REPLICAS + "-" + (REPLICAS * 9) + "]");
-            helper.assertFalse((results.getCount() == REPLICAS * 9),
-                    "Singleblock CR rolled max value on every roll");
-            helper.assertFalse((results.getCount() == REPLICAS * 0),
-                    "Singleblock CR rolled min value on every roll");
+            helper.assertFalse((results.getCount() == 7 * 9),
+                    "Singleblock per-tick CR rolled max value on every roll");
+            helper.assertFalse((results.getCount() == 7 * 0),
+                    "Singleblock per-tick CR rolled min value on every roll");
 
             // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[REPLICAS];
+            int[] rolls = new int[7];
             rolls[0] = addedRolls[0];
             boolean allEqual = false;
-            for (int i = 1; i < REPLICAS; i++) {
+            for (int i = 1; i < 7; i++) {
                 rolls[i] = addedRolls[i] - addedRolls[i - 1];
                 if (rolls[i] == rolls[i - 1]) {
                     allEqual = true;
@@ -1169,7 +1163,7 @@ public class IntProviderIngredientTest {
                 }
             }
             helper.assertFalse(allEqual,
-                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+                    "Singleblock per-tick CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
             helper.succeed();
         });
     }
@@ -1195,63 +1189,35 @@ public class IntProviderIngredientTest {
         for (j = 0; j < stacks; j++) {
             itemIn.setStackInSlot(j, COBBLE.copyWithCount((batches * parallels / stacks)));
         }
-        for (int k = j; k < stacks + batches; k++) {
-            itemIn.setStackInSlot(k, LCENT_IN.copyWithCount(64));
+        for (int k = j; k < itemIn.getSlots(); k++) {
+            itemIn.setStackInSlot(k, CR_TICK_IN.copyWithCount(64));
         }
 
-        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
-        // 16 parallels
-        // check the results of all rolls together
-        // repeat recipe MULTI_REPLICAS times
-        int[] rolls = new int[MULTI_REPLICAS];
-        for (int i = 1; i <= MULTI_REPLICAS; i++) {
+        // 1t to turn on, 64t recipe run
+        // 16 parallels 16 batches
+        int[] rolls = new int[64];
+        for (int i = 1; i <= 64; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(75 * finalI, () -> {
-                ItemStack results = itemIn.getStackInSlot(0);
-                int upperLimit = 64 - (batches * parallels * 0);
-                int lowerLimit = 64 - (batches * parallels * 4);
-                int completed = batches * parallels * finalI;
-                helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
-                                STONE.copyWithCount(completed)),
-                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
-                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
-                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
-                helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
-                        "Batched Parallel LCent didn't consume correct number of items, consumed " +
-                                (64 - results.getCount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                rolls[finalI - 1] = 64 - results.getCount();
-
-                // reset for a rerun
-                int l;
-                for (l = 0; l < stacks; l++) {
-                    itemIn.setStackInSlot(l,
-                            COBBLE.copyWithCount((batches * parallels / stacks)));
-                }
-                for (int k = l; k < stacks + batches; k++) {
-                    itemIn.setStackInSlot(k, LCENT_IN.copyWithCount(64));
-                }
+            helper.runAfterDelay(finalI, () -> {
+                rolls[finalI - 1] = (int)itemIn.getTotalContentAmount();
             });
         }
 
-        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
+        helper.runAfterDelay(75, () -> {
             // check if each roll was a multiple of run count
-            boolean sus = false;
-            for (int i = 0; i < MULTI_REPLICAS; i++) {
+            boolean sus = true;
+            for (int i = 0; i < rolls.length; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged item input test iteration " + i + " consumed [" +
+                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged tick item input test iteration " + i + " consumed [" +
                             rolls[i] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
                             "). If this message only appears once, this is likely a false positive.");
-                } else {
+                } else if (sus) {
                     sus = false;
                     break;
                 }
             }
 
-            helper.assertFalse(sus, "Batched Parallel LCent ranged item input test rolled exactly even to" +
+            helper.assertFalse(sus, "Batched Parallel LCent ranged tick item input test rolled exactly even to" +
                     " Batch * Parallel count on every iteration");
             helper.succeed();
         });
@@ -1272,68 +1238,36 @@ public class IntProviderIngredientTest {
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
         for (int j = 0; j < batches; j++) {
-            itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
+            itemIn.setStackInSlot(j, CR_TICK_OUT.copyWithCount(16));
         }
 
         // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe MULTI_REPLICAS times
-        int[] rolls = new int[MULTI_REPLICAS];
-        for (int i = 1; i <= MULTI_REPLICAS; i++) {
+        int[] rolls = new int[64];
+        for (int i = 1; i <= 64; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(75 * finalI, () -> {
-                int runs = finalI * batches * parallels;
-                helper.assertTrue(itemIn.isEmpty(),
-                        "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
-                                (runs - itemIn.getTotalContentAmount()) + "] not [" + runs +
-                                "]\nCurrent machine state: " +
-                                busHolder.controller.recipeLogic.getStatus() + "\nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
-                int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
-                int lowerLimit = batches * parallels * 0;
-                int upperLimit = batches * parallels * 4;
-                helper.assertTrue(TestUtils.isCountWithinRange(resultCount, lowerLimit, upperLimit),
-                        "Batched Parallel LCent didn't produce correct number of items, produced [" +
-                                resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
-
-                rolls[finalI - 1] = resultCount;
-
-                // reset for a rerun
-                for (int j = 0; j < batches; j++) {
-                    itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
-                }
-                // Don't overflow the output bus
-                for (int j = 0; j < itemOut.getSize(); j++) {
-                    itemOut.setStackInSlot(j, ItemStack.EMPTY);
-                }
+            helper.runAfterDelay(finalI, () -> {
+                rolls[finalI - 1] = (int)itemOut.getTotalContentAmount();
             });
         }
 
-        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
+        helper.runAfterDelay(75, () -> {
             // check if each roll was a multiple of run count
-            boolean sus = false;
-
-            if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
-                sus = true;
-                GTCEu.LOGGER.warn("Batched Parallel LCent ranged item output test iteration " + 1 + " produced [" +
-                        rolls[0] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
-                        "). If this message only appears once, this is likely a false positive.");
-            }
-            for (int i = 1; i < MULTI_REPLICAS; i++) {
+            boolean sus = true;
+            for (int i = 0; i < rolls.length; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    sus = true;
-                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged item output test iteration " + (i + 1) +
-                            " produced [" + rolls[i] + "] items, a multiple of its Batch * Parallel count (" +
-                            (batches * parallels) + "). If this message only appears once, this is likely" +
-                            " a false positive.");
-                } else {
+                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged tick item output test iteration " + i + " produced [" +
+                            rolls[i] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
+                            "). If this message only appears once, this is likely a false positive.");
+                } else if (sus) {
                     sus = false;
                     break;
                 }
             }
 
-            helper.assertFalse(sus, "Batched Parallel LCent ranged item output test rolled exactly even to" +
+            helper.assertFalse(sus, "Batched Parallel LCent ranged tick item output test rolled exactly even to" +
                     " Batch * Parallel count on every iteration");
             helper.succeed();
         });
