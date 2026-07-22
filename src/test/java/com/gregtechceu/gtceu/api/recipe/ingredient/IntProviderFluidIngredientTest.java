@@ -28,6 +28,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
@@ -171,7 +172,7 @@ public class IntProviderFluidIngredientTest {
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_tick_output_fluid_cent"))
-                .inputItems(CR_TICK_OUT)
+                .inputFluids(CR_TICK_OUT)
                 .perTick(true)
                 .outputFluidsRanged(CR_TICK_OUT, UniformInt.of(0, 9))
                 .perTick(false)
@@ -1086,16 +1087,16 @@ public class IntProviderFluidIngredientTest {
         }
         // check the results of all rolls together
         helper.runAfterDelay(7 + 5, () -> {
-            ItemStack results = itemIn.getStackInSlot(0);
+            FluidStack results = fluidIn.getFluidInTank(0);
             int upperLimit = 64 - (7 * 0);
             int lowerLimit = 64 - (7 * 9);
             helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0), STONE.copyWithCount(1)),
-                    "Singleblock per-tick CR didn't complete correct number of recipes, completed [" +
+                    "Singleblock per-tick fluid CR didn't complete correct number of recipes, completed [" +
                             itemOut.getStackInSlot(0).getCount() + "] not [" + 1 + "]");
-            helper.assertFalse((results.getCount() == lowerLimit),
-                    "Singleblock per-tick CR rolled max value on every roll");
-            helper.assertFalse((results.getCount() == upperLimit),
-                    "Singleblock per-tick CR rolled min value on every roll");
+            helper.assertFalse((results.getAmount() == lowerLimit),
+                    "Singleblock per-tick fluid CR rolled max value on every roll");
+            helper.assertFalse((results.getAmount() == upperLimit),
+                    "Singleblock per-tick fluid CR rolled min value on every roll");
 
             // check if all the rolls were equal, but not min/max
             int[] rolls = new int[7];
@@ -1111,7 +1112,7 @@ public class IntProviderFluidIngredientTest {
                 }
             }
             helper.assertFalse(allEqual,
-                    "Singleblock per-tick CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
+                    "Singleblock per-tick fluid CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
             helper.succeed();
         });
     }
@@ -1127,6 +1128,10 @@ public class IntProviderFluidIngredientTest {
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
+        NotifiableFluidTank fluidIn = (NotifiableFluidTank) machine
+                .getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).get(0);
+        NotifiableFluidTank fluidOut = (NotifiableFluidTank) machine
+                .getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP).get(0);
 
         itemIn.setStackInSlot(0, STONE.copyWithCount(1));
         // 1t to turn on, 2t per recipe run
@@ -1135,18 +1140,16 @@ public class IntProviderFluidIngredientTest {
         for (int i = 0; i < 7; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(i+2, () -> {
-                addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
+                machine.getRecipeTypes();
+                addedRolls[finalI] = fluidOut.getFluidInTank(0).getAmount();
             });
         }
         // check the results of all rolls together
         helper.runAfterDelay(7+5, () -> {
-            helper.assertTrue(itemIn.getStackInSlot(0).isEmpty(),
-                    "Singleblock per-tick CR didn't complete correct number of recipes, completed [" +
-                            itemIn.getStackInSlot(0).getCount() + "] not [" + 1 + "]");
-            ItemStack results = itemOut.getStackInSlot(0);
-            helper.assertFalse((results.getCount() == 7 * 9),
+            FluidStack results = fluidIn.getFluidInTank(0);
+            helper.assertFalse((results.getAmount() == 7 * 9),
                     "Singleblock per-tick CR rolled max value on every roll");
-            helper.assertFalse((results.getCount() == 7 * 0),
+            helper.assertFalse((results.getAmount() == 7 * 0),
                     "Singleblock per-tick CR rolled min value on every roll");
 
             // check if all the rolls were equal, but not min/max
@@ -1187,13 +1190,12 @@ public class IntProviderFluidIngredientTest {
 
         int j;
         int stacks = batches * parallels / 64;
+        final int amount = batches * parallels * 64 * 9;
 
         for (j = 0; j < stacks; j++) {
             itemIn.setStackInSlot(j, COBBLE.copyWithCount((batches * parallels / stacks)));
         }
-        for (int k = j; k < itemIn.getSlots(); k++) {
-            itemIn.setStackInSlot(k, CR_TICK_IN.copyWithCount(64));
-        }
+        fluidIn.setFluidInTank(0, new FluidStack(CR_TICK_IN, amount));
 
         // 1t to turn on, 64t recipe run
         // 16 parallels 16 batches
@@ -1201,7 +1203,7 @@ public class IntProviderFluidIngredientTest {
         for (int i = 1; i <= 64; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(finalI, () -> {
-                rolls[finalI - 1] = (int)itemIn.getTotalContentAmount();
+                rolls[finalI - 1] = (int)fluidIn.getTotalContentAmount();
             });
         }
 
@@ -1210,7 +1212,7 @@ public class IntProviderFluidIngredientTest {
             boolean sus = true;
             for (int i = 0; i < rolls.length; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged tick item input test iteration " + i + " consumed [" +
+                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged tick fluid input test iteration " + i + " consumed [" +
                             rolls[i] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
                             "). If this message only appears once, this is likely a false positive.");
                 } else if (sus) {
@@ -1219,7 +1221,7 @@ public class IntProviderFluidIngredientTest {
                 }
             }
 
-            helper.assertFalse(sus, "Batched Parallel LCent ranged tick item input test rolled exactly even to" +
+            helper.assertFalse(sus, "Batched Parallel LCent ranged tick fluid input test rolled exactly even to" +
                     " Batch * Parallel count on every iteration");
             helper.succeed();
         });
@@ -1240,10 +1242,9 @@ public class IntProviderFluidIngredientTest {
         int parallels = 16;
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
+        int amount = batches * parallels;
 
-        for (int j = 0; j < batches; j++) {
-            itemIn.setStackInSlot(j, CR_TICK_OUT.copyWithCount(16));
-        }
+        fluidIn.setFluidInTank(0, new FluidStack(CR_TICK_OUT, amount));
 
         // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // 16 parallels
@@ -1253,7 +1254,7 @@ public class IntProviderFluidIngredientTest {
         for (int i = 1; i <= 64; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(finalI, () -> {
-                rolls[finalI - 1] = (int)itemOut.getTotalContentAmount();
+                rolls[finalI - 1] = (int)fluidOut.getTotalContentAmount();
             });
         }
 
@@ -1262,7 +1263,7 @@ public class IntProviderFluidIngredientTest {
             boolean sus = true;
             for (int i = 0; i < rolls.length; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
-                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged tick item output test iteration " + i + " produced [" +
+                    GTCEu.LOGGER.warn("Batched Parallel LCent ranged tick fluid output test iteration " + i + " produced [" +
                             rolls[i] + "] items, a multiple of its Batch * Parallel count (" + (batches * parallels) +
                             "). If this message only appears once, this is likely a false positive.");
                 } else if (sus) {
@@ -1271,10 +1272,9 @@ public class IntProviderFluidIngredientTest {
                 }
             }
 
-            helper.assertFalse(sus, "Batched Parallel LCent ranged tick item output test rolled exactly even to" +
+            helper.assertFalse(sus, "Batched Parallel LCent ranged tick fluid output test rolled exactly even to" +
                     " Batch * Parallel count on every iteration");
             helper.succeed();
         });
     }
-}
 }
