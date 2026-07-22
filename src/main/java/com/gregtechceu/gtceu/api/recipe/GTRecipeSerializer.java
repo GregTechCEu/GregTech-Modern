@@ -84,13 +84,13 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(RegistryFriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readResourceLocation());
+        RecipeCapability<?> capability = buf.registryAccess().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(buf.readResourceLocation());
         List<Content> contents = readCollection(buf, capability.serializer::fromNetworkContent);
         return new Tuple<>(capability, contents);
     }
 
     public static Tuple<RecipeCapability<?>, ChanceLogic> changeLogicEntryReader(RegistryFriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readResourceLocation());
+        RecipeCapability<?> capability = buf.registryAccess().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(buf.readResourceLocation());
         ChanceLogic logic = GTRegistries.CHANCE_LOGICS.get(buf.readResourceLocation());
         return new Tuple<>(capability, logic);
     }

@@ -10,10 +10,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior> {
 
@@ -73,13 +76,13 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
         ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
         if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
-            var coverReg = GTRegistries.COVERS.get(coverType);
-            if (coverReg == null) {
+            var coverReg = lookup.lookupOrThrow(GTRegistries.Keys.COVER).get(ResourceKey.create(GTRegistries.Keys.COVER, Objects.requireNonNullElse(coverType, GTCEu.id("empty"))));
+            if (coverReg.isEmpty()) {
                 GTCEu.LOGGER.error("Error during NBT load: unknown cover type {} ({})", coverType,
                         tag.getString("coverType"));
                 return null;
             }
-            holder.setCoverAtSide(coverReg.createCoverBehavior(holder, side), side);
+            holder.setCoverAtSide(coverReg.get().value().createCoverBehavior(holder, side), side);
         }
 
         CoverBehavior newCover = holder.getCoverAtSide(side);
