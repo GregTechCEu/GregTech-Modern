@@ -65,7 +65,7 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.ore_vein_diagram");
+        return Component.translatable("recipeviewer.gtceu.ore_vein_diagram");
     }
 
     @NotNull

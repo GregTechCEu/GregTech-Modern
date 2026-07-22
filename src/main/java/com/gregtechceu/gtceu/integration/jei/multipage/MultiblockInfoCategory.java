@@ -110,7 +110,7 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.multiblock_info");
+        return Component.translatable("recipeviewer.gtceu.multiblock_info");
     }
 
     @NotNull

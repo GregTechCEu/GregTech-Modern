@@ -36,6 +36,6 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable("gtceu.jei.bedrock_ore_diagram");
+        return Component.translatable("recipeviewer.gtceu.bedrock_ore_diagram");
     }
 }

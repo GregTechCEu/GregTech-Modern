@@ -35,13 +35,13 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
                 CompoundTag container = tag.getCompound("energy");
                 long changed = container.getLong("changed"), stored = container.getLong("stored"),
                         capacity = container.getLong("capacity");
-                iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
+                iTooltip.add(Component.translatable("integration.gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
                 if (changed > 0L) {
                     iTooltip.add(Component
-                            .translatable("gtceu.jade.remaining_charge_time",
+                            .translatable("integration.gtceu.jade.remaining_charge_time",
                                     getStringRemainTime((capacity - stored) / changed)));
                 } else if (changed < 0L) {
-                    iTooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
+                    iTooltip.add(Component.translatable("integration.gtceu.jade.remaining_discharge_time",
                             getStringRemainTime((stored) / -changed)));
                 }
                 if (Minecraft.getInstance().player.isShiftKeyDown()) {

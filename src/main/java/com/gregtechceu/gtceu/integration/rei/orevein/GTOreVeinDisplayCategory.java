@@ -55,7 +55,7 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.ore_vein_diagram");
+        return Component.translatable("recipeviewer.gtceu.ore_vein_diagram");
     }
 
     public static void registerDisplays(DisplayRegistry registry) {

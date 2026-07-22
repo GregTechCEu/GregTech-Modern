@@ -59,9 +59,9 @@ public class MaterialLang {
 
     private static void generateMaterialKeys(GTLangProvider provider) {
         // Material Page
-        provider.add("gtceu.jei.materials.average_mass", "Average mass: %d");
-        provider.add("gtceu.jei.materials.average_protons", "Average protons: %d");
-        provider.add("gtceu.jei.materials.average_neutrons", "Average neutrons: %d");
+        provider.add("recipeviewer.gtceu.materials.average_mass", "Average mass: %d");
+        provider.add("recipeviewer.gtceu.materials.average_protons", "Average protons: %d");
+        provider.add("recipeviewer.gtceu.materials.average_neutrons", "Average neutrons: %d");
 
         // Cauldron Washing
         provider.add("tagprefix.ore_dust.tooltip.purify", "Right click a Cauldron to get clean Dust");

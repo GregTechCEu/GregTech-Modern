@@ -32,10 +32,10 @@ public class GTClientCache extends WorldCache implements IClientCache {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) return;
-        if (veins.length > 1) player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.amount", veins.length));
+        if (veins.length > 1) player.sendSystemMessage(Component.translatable("map.gtceu.new_veins.amount", veins.length));
         for (var vein : veins) {
             var veinId = vein.id().toString();
-            var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));
+            var name = Component.translatable(veinId.replace("gtceu:", "recipeviewer.gtceu.ore_vein."));
             var material = OreRenderLayer.getMaterial(vein);
 
             if (!material.isNull()) {
@@ -44,7 +44,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
                         HoverEvent.Action.SHOW_TEXT,
                         Component.literal("(%d, %d, %d)".formatted(center.getX(), center.getY(), center.getZ())))));
             }
-            player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.name", name));
+            player.sendSystemMessage(Component.translatable("map.gtceu.new_veins.name", name));
         }
     }
 

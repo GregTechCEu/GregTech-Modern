@@ -38,7 +38,7 @@ public class OreRenderLayer extends MapRenderLayer {
                 ClientProxy.CLIENT_ORE_VEINS.inverse().get(vein.definition()) == null) {
             return Component.translatable("minimap.gtceu.ore_vein.depleted");
         }
-        return Component.translatable("gtceu.jei.ore_vein." + GTOreVeinWidget.getOreName(vein.definition()));
+        return Component.translatable("recipeviewer.gtceu.ore_vein." + GTOreVeinWidget.getOreName(vein.definition()));
     }
 
     public static @NotNull Material getMaterial(@NotNull GeneratedVeinMetadata vein) {

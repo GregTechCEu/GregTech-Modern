@@ -52,7 +52,7 @@ public class GTBedrockFluidInfoCategory extends ModularUIRecipeCategory<GTBedroc
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.bedrock_fluid_diagram");
+        return Component.translatable("recipeviewer.gtceu.bedrock_fluid_diagram");
     }
 
     @NotNull

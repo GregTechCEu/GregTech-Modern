@@ -55,7 +55,7 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.bedrock_fluid_diagram");
+        return Component.translatable("recipeviewer.gtceu.bedrock_fluid_diagram");
     }
 
     public static void registerDisplays(DisplayRegistry registry) {

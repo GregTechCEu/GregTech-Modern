@@ -14,8 +14,8 @@ public class JourneymapOptions {
     private final Map<String, BooleanOption> layerOptions = new HashMap<>();
 
     public JourneymapOptions() {
-        final String prefix = "gtceu.journeymap.options.layers.";
-        final OptionCategory category = new OptionCategory(GTCEu.MOD_ID, "gtceu.journeymap.options.layers");
+        final String prefix = "integration.gtceu.journeymap.options.layers.";
+        final OptionCategory category = new OptionCategory(GTCEu.MOD_ID, "integration.gtceu.journeymap.options.layers");
 
         final BooleanOption oreLayer = new BooleanOption(category, "ore_veins", prefix + "ore_veins", false);
         layerOptions.put(oreLayer.getFieldName(), oreLayer);

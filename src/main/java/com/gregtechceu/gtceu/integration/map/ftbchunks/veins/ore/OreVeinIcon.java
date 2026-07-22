@@ -88,13 +88,13 @@ public class OreVeinIcon implements MapIcon {
         if (veinMetadata.depleted()) {
             title.append(" (").append(Component.translatable("minimap.gtceu.ore_vein.depleted")).append(")");
         }
-        var markDepleted = new ContextMenuItem(Component.translatable("button.gtceu.mark_as_depleted.name"),
+        var markDepleted = new ContextMenuItem(Component.translatable("gtceu.map.button.mark_as_depleted.name"),
                 Icons.REMOVE,
                 b -> veinMetadata.depleted(!veinMetadata.depleted()));
         var material = getMaterial();
         var color = material.isNull() ? Color4I.rgba(0xFFFFFFFF) : Color4I.rgba(material.getMaterialARGB());
         var waypointIcon = WaypointType.DEFAULT.getIcon().withColor(color);
-        var toggleWaypoint = new ContextMenuItem(Component.translatable("button.gtceu.toggle_waypoint.name"),
+        var toggleWaypoint = new ContextMenuItem(Component.translatable("gtceu.map.button.toggle_waypoint.name"),
                 waypointIcon,
                 b -> toggleWaypoint(screen));
         var contextMenu = List.of(

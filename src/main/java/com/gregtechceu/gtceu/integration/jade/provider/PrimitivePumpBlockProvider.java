@@ -20,7 +20,7 @@ public class PrimitivePumpBlockProvider implements IBlockComponentProvider, ISer
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof PrimitivePumpMachine pump) {
             long water = blockAccessor.getServerData().getLong("waterProduced");
-            iTooltip.add(Component.translatable("gtceu.jade.primitive_pump_production",
+            iTooltip.add(Component.translatable("integration.gtceu.jade.primitive_pump_production",
                     FormattingUtil.formatNumbers(water)));
         }
     }

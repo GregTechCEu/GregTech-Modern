@@ -79,7 +79,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = Component.translatable("gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                        text = Component.translatable("integration.gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
@@ -87,10 +87,10 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                         float minAmperage = (float) EUt / voltage;
 
                         text = Component
-                                .translatable("gtceu.jade.amperage_use",
+                                .translatable("integration.gtceu.jade.amperage_use",
                                         FormattingUtil.formatNumber2Places(minAmperage))
                                 .withStyle(ChatFormatting.RED)
-                                .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN));
+                                .append(Component.translatable("integration.gtceu.jade.at").withStyle(ChatFormatting.GREEN));
                         if (tier < GTValues.TIER_COUNT) {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
@@ -110,9 +110,9 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                     }
 
                     if (isInput) {
-                        tooltip.add(Component.translatable("gtceu.jade.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ").append(text));
                     } else {
-                        tooltip.add(Component.translatable("gtceu.jade.energy_production").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_production").append(" ").append(text));
                     }
                 }
             }

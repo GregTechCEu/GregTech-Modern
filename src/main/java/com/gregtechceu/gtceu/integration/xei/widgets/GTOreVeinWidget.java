@@ -108,7 +108,7 @@ public class GTOreVeinWidget extends WidgetGroup {
             int finalIndex = i;
             oreSlot.setOnAddedTooltips((stack, tooltips) -> tooltips.add(Component
                     .nullToEmpty(
-                            LocalizationUtils.format("gtceu.jei.ore_vein_diagram.chance", chances.get(finalIndex)))));
+                            LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.chance", chances.get(finalIndex)))));
             oreSlot.setIngredientIO(IngredientIO.OUTPUT);
             addWidget(oreSlot);
             x += 18;
@@ -135,7 +135,7 @@ public class GTOreVeinWidget extends WidgetGroup {
             int finalIndex = i;
             oreSlot.setOnAddedTooltips((stack, tooltips) -> tooltips.add(Component
                     .nullToEmpty(
-                            LocalizationUtils.format("gtceu.jei.ore_vein_diagram.chance",
+                            LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.chance",
                                     chances.getInt(finalIndex)))));
             oreSlot.setIngredientIO(IngredientIO.OUTPUT);
             addWidget(oreSlot);
@@ -145,38 +145,38 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     private void setupText(GTOreDefinition ignored) {
         addWidget(new ImageWidget(5, 0, width - 10, 16,
-                new TextTexture("gtceu.jei.ore_vein." + name).setType(TextTexture.TextType.LEFT_ROLL)
+                new TextTexture("recipeviewer.gtceu.ore_vein." + name).setType(TextTexture.TextType.LEFT_ROLL)
                         .setWidth(width - 10)));
         addWidget(new LabelWidget(5, 40,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.spawn_range")));
+                LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.spawn_range")));
         addWidget(new LabelWidget(5, 50, range));
 
         addWidget(new LabelWidget(5, 60,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
+                LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.weight", weight)));
         addWidget(new LabelWidget(5, 70,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
+                LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.dimensions")));
         setupDimensionMarker(80);
     }
 
     private void setupText(BedrockFluidDefinition ignored) {
         addWidget(new ImageWidget(5, 0, width - 10, 16,
-                new TextTexture("gtceu.jei.bedrock_fluid." + name).setType(TextTexture.TextType.LEFT_ROLL)
+                new TextTexture("recipeviewer.gtceu.bedrock_fluid." + name).setType(TextTexture.TextType.LEFT_ROLL)
                         .setWidth(width - 10)));
         addWidget(new LabelWidget(5, 40,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
+                LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.weight", weight)));
         addWidget(new LabelWidget(5, 50,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
+                LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.dimensions")));
         setupDimensionMarker(60);
     }
 
     private void setupText(BedrockOreDefinition ignored) {
         addWidget(new ImageWidget(5, 0, width - 10, 16,
-                new TextTexture("gtceu.jei.bedrock_ore." + name).setType(TextTexture.TextType.LEFT_ROLL)
+                new TextTexture("recipeviewer.gtceu.bedrock_ore." + name).setType(TextTexture.TextType.LEFT_ROLL)
                         .setWidth(width - 10)));
         addWidget(new LabelWidget(5, 40,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.weight", weight)));
+                LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.weight", weight)));
         addWidget(new LabelWidget(5, 50,
-                LocalizationUtils.format("gtceu.jei.ore_vein_diagram.dimensions")));
+                LocalizationUtils.format("recipeviewer.gtceu.ore_vein_diagram.dimensions")));
         setupDimensionMarker(60);
     }
 

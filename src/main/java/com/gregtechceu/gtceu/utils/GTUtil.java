@@ -383,19 +383,19 @@ public class GTUtil {
     }
 
     public static String getStringRemainTime(long time, long threshold) {
-        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
+        String s = Component.translatable("integration.gtceu.jade.seconds", time % 60).getString();
         time /= 60;
         if (time > 0) {
-            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
+            s = Component.translatable("integration.gtceu.jade.minutes", time % 60).getString() + " " + s;
             time /= 60;
             if (time > 0) {
-                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
+                s = Component.translatable("integration.gtceu.jade.hours", time % 60).getString() + " " + s;
                 time /= 60;
                 if (time > 0) {
-                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
+                    s = Component.translatable("integration.gtceu.jade.days", time % 24).getString() + " " + s;
                     time /= 24;
                     if (time > 0) {
-                        s = Component.translatable("gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
+                        s = Component.translatable("integration.gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
                                 " " + s;
                     }
                 }
@@ -617,17 +617,17 @@ public class GTUtil {
     public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
             case 0 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
-                    Component.translatable("gtceu.jade.maintenance.wrench"));
+                    Component.translatable("integration.gtceu.jade.maintenance.wrench"));
             case 1 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
-                    Component.translatable("gtceu.jade.maintenance.screwdriver"));
+                    Component.translatable("integration.gtceu.jade.maintenance.screwdriver"));
             case 2 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
-                    Component.translatable("gtceu.jade.maintenance.soft_mallet"));
+                    Component.translatable("integration.gtceu.jade.maintenance.soft_mallet"));
             case 3 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
-                    Component.translatable("gtceu.jade.maintenance.hard_hammer"));
+                    Component.translatable("integration.gtceu.jade.maintenance.hard_hammer"));
             case 4 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
-                    Component.translatable("gtceu.jade.maintenance.wire_cutter"));
+                    Component.translatable("integration.gtceu.jade.maintenance.wire_cutter"));
             default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
-                    Component.translatable("gtceu.jade.maintenance.crowbar"));
+                    Component.translatable("integration.gtceu.jade.maintenance.crowbar"));
         };
     }
 
