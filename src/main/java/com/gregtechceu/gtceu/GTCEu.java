@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
@@ -74,6 +76,8 @@ public class GTCEu {
         }
         // only convert it to camel_case if it has any uppercase to begin with
         if (FormattingUtil.hasUpperCase(path)) {
+            GTCEu.LOGGER.warn("Resource location {} has uppercase characters, which are not allowed. Renaming resource location to {}",
+                    path, FormattingUtil.toLowerCaseUnderscore(path));
             path = FormattingUtil.toLowerCaseUnderscore(path);
         }
         return TEMPLATE_LOCATION.withPath(path);
