@@ -188,7 +188,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         if (!player.level().isClientSide) {
             if (player.isShiftKeyDown()) {
                 player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
-                        "item.gtceu.behaviour.itemmagnet.enabled" : "item.gtceu.behaviour.itemmagnet.disabled"), true);
+                        "item.gtceu.behavior.item_magnet.enabled" : "item.gtceu.behavior.item_magnet.disabled"), true);
             } else {
                 UIFactories.playerInventory().openFromHand(player, hand);
             }
@@ -350,7 +350,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines,
                                 TooltipFlag isAdvanced) {
         lines.add(Component
-                .translatable(isActive(itemStack) ? "item.gtceu.behaviour.itemmagnet.enabled" : "item.gtceu.behaviour.itemmagnet.disabled"));
+                .translatable(isActive(itemStack) ? "item.gtceu.behavior.item_magnet.enabled" : "item.gtceu.behavior.item_magnet.disabled"));
     }
 
     private static class CuriosUtils {

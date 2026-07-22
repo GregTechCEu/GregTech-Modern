@@ -2714,7 +2714,7 @@ public class GTItems {
             var lines = multiline.split("\n");
 
             for (var i = 0; i < lines.length; i++) {
-                prov.add(ctx.getEntry().getDescriptionId() + ".tooltip" + "." + i, lines[i]);
+                prov.add(ctx.getEntry().getDescriptionId() + ".tooltip." + i, lines[i]);
             }
         };
     }

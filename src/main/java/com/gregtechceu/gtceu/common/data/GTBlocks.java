@@ -224,9 +224,9 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_BRONZE_BRICKS = createCasingBlock("steam_machine_casing",
             GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
     public static final BlockEntry<Block> CASING_INVAR_HEATPROOF = createCasingBlock("heatproof_machine_casing",
-            GTCEu.id("block/casings/solid/machine_casing_heatproof"), "Heat Proof Invar Machine Casing");
+            GTCEu.id("block/casings/solid/machine_casing_heatproof"), "Heat-Proof Invar Machine Casing");
     public static final BlockEntry<Block> CASING_ALUMINIUM_FROSTPROOF = createCasingBlock("frostproof_machine_casing",
-            GTCEu.id("block/casings/solid/machine_casing_frost_proof"), "Frost Proof Aluminium Machine Casing");
+            GTCEu.id("block/casings/solid/machine_casing_frost_proof"), "Frost-Proof Aluminium Machine Casing");
     public static final BlockEntry<Block> CASING_STEEL_SOLID = createCasingBlock("solid_machine_casing",
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"));
     public static final BlockEntry<Block> CASING_STAINLESS_CLEAN = createCasingBlock("clean_machine_casing",

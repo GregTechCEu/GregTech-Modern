@@ -241,7 +241,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                 clickedItem.name.getString(), clickedItem.color,
                 player.level().dimension(), clickedItem.position);
         player.displayClientMessage(
-                Component.translatable("item.gtceu.behaviour.prospector.added_waypoint",
+                Component.translatable("item.gtceu.behavior.prospector.added_waypoint",
                         clickedItem.name.copy().withStyle(style -> style.withColor(clickedItem.color))),
                 false);
         this.getContext().getScreen().getMainPanel().closeIfOpen();
