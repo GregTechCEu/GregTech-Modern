@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
@@ -48,7 +50,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     protected final void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.merge(getSyncDataHolder().serializeNBT(false));
+        tag.merge(getSyncDataHolder().serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), false));
     }
 
     /**
@@ -63,7 +65,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @MustBeInvokedByOverriders
     public void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(tag, false);
+        getSyncDataHolder().deserializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), tag, false);
     }
 
     /**
@@ -71,7 +73,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @MustBeInvokedByOverriders
     public void clientLoad(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(tag, true);
+        getSyncDataHolder().deserializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), tag, true);
     }
 
     @Override
@@ -92,7 +94,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeNBT(true, true));
+        tag.merge(getSyncDataHolder().serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), true, true));
         return tag;
     }
 
@@ -101,7 +103,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder().serializeNBT(true));
+        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder().serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), true));
     }
 
     @Override

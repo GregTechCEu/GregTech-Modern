@@ -7,12 +7,16 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior> {
 
@@ -25,7 +29,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return nullTag;
         }
 
-        return serialize(value, context.isClientSync(), context.isClientFullSyncUpdate());
+        return serialize(context.lookup(), value, context.isClientSync(), context.isClientFullSyncUpdate());
     }
 
     @Override
@@ -37,24 +41,24 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
 
         if (context.holder() instanceof ICoverable coverable) {
-            return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
+            return deserialize(context.lookup(), compoundTag, coverable, context.currentValue(), context.isClientSync());
         }
         GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
         return null;
     }
 
-    private CompoundTag serialize(CoverBehavior cover, boolean isSync, boolean fullSync) {
+    private CompoundTag serialize(HolderLookup.Provider registries, CoverBehavior cover, boolean isSync, boolean fullSync) {
         var compound = new CompoundTag();
 
         compound.putInt("side", cover.attachedSide.ordinal());
         compound.putString("coverType", cover.coverDefinition.getId().toString());
-        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync, fullSync);
+        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(registries, isSync, fullSync);
         compound.put("data", serializedCover);
 
         return compound;
     }
 
-    public @Nullable CoverBehavior deserialize(CompoundTag tag, ICoverable holder, @Nullable CoverBehavior cover,
+    public @Nullable CoverBehavior deserialize(HolderLookup.Provider registries, CompoundTag tag, ICoverable holder, @Nullable CoverBehavior cover,
                                                boolean isSync) {
         /// Ldlib backwards compat
         if (tag.contains("payload") && tag.contains("uid")) {
@@ -71,18 +75,18 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
         ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
         if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
-            var coverReg = GTRegistries.COVERS.get(coverType);
-            if (coverReg == null) {
+            var coverReg = registries.lookupOrThrow(GTRegistries.Keys.COVER).get(ResourceKey.create(GTRegistries.Keys.COVER, Objects.requireNonNullElse(coverType, GTCEu.id("empty"))));
+            if (coverReg.isEmpty()) {
                 GTCEu.LOGGER.error("Error during NBT load: unknown cover type {} ({})", coverType,
                         tag.getString("coverType"));
                 return null;
             }
-            holder.setCoverAtSide(coverReg.createCoverBehavior(holder, side), side);
+            holder.setCoverAtSide(coverReg.get().value().createCoverBehavior(holder, side), side);
         }
 
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
-        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"), isSync);
+        newCover.getSyncDataHolder().deserializeNBT(registries, tag.getCompound("data"), isSync);
 
         if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");
