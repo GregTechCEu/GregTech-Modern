@@ -3094,7 +3094,7 @@
   "item.electric.discharge_mode.tooltip": "Use while sneaking to toggle discharge mode",
   "item.gtceu.electric.stored": "%d/%d EU (%s)",
   "item.gtceu.electric.tooltip": "%d/%d EU - Tier %s",
-  "item.gtceu.fluidcontainer.tooltip": "%d/%dL %s",
+  "item.gtceu.fluid_container.tooltip": "%d/%dL %s",
   "item.gtceu.activity_detector_cover": "Activity Detector",
   "item.gtceu.activity_detector_cover.tooltip": "§7Gives out §fActivity Status§7 as Redstone as §fCover§7.",
   "item.gtceu.advanced_activity_detector_cover": "Advanced Activity Detector",

@@ -5795,7 +5795,7 @@
     "metaitem.electric.discharge_mode.tooltip": "Beim Schleichen verwenden, um den Entlademodus umzuschalten",
     "metaitem.gtceu.electric.stored": "%d/%d EU (%s)",
     "metaitem.gtceu.electric.tooltip": "%d/%d EU – Stufe %s",
-    "metaitem.gtceu.fluidcontainer.tooltip": "%d/%dL %s",
+    "metaitem.gtceu.fluid_container.tooltip": "%d/%dL %s",
     "metaitem.int_circuit.configuration": "Konfiguration: %d",
     "metaitem.liquid_fuel_jetpack.tooltip": "Verwendet Verbrennungsgenerator-Kraftstoffe für den Schub",
     "metaitem.gtceu.behavior.tool_mode.mode": "§aKonfigurationsmodus: §r%s",

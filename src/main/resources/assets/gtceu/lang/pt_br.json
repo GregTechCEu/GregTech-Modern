@@ -5794,7 +5794,7 @@
   "metaitem.electric.discharge_mode.tooltip": "Use enquanto agachado para alternar o modo de descarga",
   "metaitem.gtceu.electric.stored": "%d/%d EU (%s)",
   "metaitem.gtceu.electric.tooltip": "%d/%d EU - Tier %s",
-  "metaitem.gtceu.fluidcontainer.tooltip": "%d/%dL %s",
+  "metaitem.gtceu.fluid_container.tooltip": "%d/%dL %s",
   "metaitem.int_circuit.configuration": "Configuração: %d",
   "metaitem.liquid_fuel_jetpack.tooltip": "Usa Combustíveis de Gerador a Combustão para Impulso",
   "metaitem.gtceu.behavior.tool_mode.mode": "§aModo de Configuração:§r %s",

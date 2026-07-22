@@ -2821,7 +2821,7 @@
     "metaitem.electric.discharge_mode.tooltip": "Используйте зажав кнопку Присесть для переключения режима разрядки",
     "metaitem.gtceu.electric.stored": "%d/%d EU (%s)",
     "metaitem.gtceu.electric.tooltip": "%d/%d EU - Уровень §e%d",
-    "metaitem.gtceu.fluidcontainer.tooltip": "%d/%dЛ %s",
+    "metaitem.gtceu.fluid_container.tooltip": "%d/%dЛ %s",
     "metaitem.int_circuit.configuration": "§aКонфигурация: §f%d§7",
     "metaitem.liquid_fuel_jetpack.tooltip": "Использует топливо, от дизельного генератора, для тяги",
     "metaitem.plugin.proxy.tooltips.1": "(Пожалуйста, настройте режим прокси на экране)",

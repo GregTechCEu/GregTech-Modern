@@ -5760,7 +5760,7 @@
     "metaitem.electric.discharge_mode.tooltip": "潜行右击以开关释能模式",
     "metaitem.gtceu.electric.stored": "%d/%d EU（%s）",
     "metaitem.gtceu.electric.tooltip": "%d/%d EU - %s电压",
-    "metaitem.gtceu.fluidcontainer.tooltip": "%d/%dL %s",
+    "metaitem.gtceu.fluid_container.tooltip": "%d/%dL %s",
     "metaitem.int_circuit.configuration": "配置：%d",
     "metaitem.liquid_fuel_jetpack.tooltip": "利用内燃发电机的燃料来提供推进动力",
     "metaitem.gtceu.behavior.tool_mode.mode": "§a配置模式：§r%s",

@@ -5689,7 +5689,7 @@
   "metaitem.electric.discharge_mode.tooltip": "スニーク中に使うことで放電を切り替えできます。",
   "metaitem.gtceu.electric.stored": "%d/%d EU (%s)",
   "metaitem.gtceu.electric.tooltip": "%d/%d EU - Tier %s",
-  "metaitem.gtceu.fluidcontainer.tooltip": "%3$s %1$,d/%2$,dL",
+  "metaitem.gtceu.fluid_container.tooltip": "%3$s %1$,d/%2$,dL",
   "metaitem.int_circuit.configuration": "設定値: %d",
   "metaitem.liquid_fuel_jetpack.tooltip": "推力に燃焼発電機の燃料を使用",
   "metaitem.gtceu.behavior.tool_mode.mode": "§a設定モード:§r %s",

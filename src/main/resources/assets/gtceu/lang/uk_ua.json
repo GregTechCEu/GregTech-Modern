@@ -5720,7 +5720,7 @@
   "metaitem.electric.discharge_mode.tooltip": "Використовуйте крадькома, щоб змінити режим розряджання",
   "metaitem.gtceu.electric.stored": "%d/%d EU (%s)",
   "metaitem.gtceu.electric.tooltip": "%d/%d EU - рівень %s",
-  "metaitem.gtceu.fluidcontainer.tooltip": "%d/%dЛ %s",
+  "metaitem.gtceu.fluid_container.tooltip": "%d/%dЛ %s",
   "metaitem.int_circuit.configuration": "Конфігурація: %d",
   "metaitem.liquid_fuel_jetpack.tooltip": "Використовує паливо внутрішнього згоряння для створення тяги",
   "metaitem.gtceu.behavior.tool_mode.mode": "§aНалаштований режим:§r %s",
