@@ -1934,65 +1934,65 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> COVER_WIRELESS_TRANSMITTER = REGISTRATE
             .item("wireless_transmitter_cover", ComponentItem::create)
-            .lang("Wireless Transmitter")
+            .lang("Wireless Transmitter Cover")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.WIRELESS_TRANSMITTER)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE
             .item("machine_controller_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Machine Controller", "§7Turns Machines §fON/OFF§7 as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Machine Controller Cover", "§7Turns Machines §fON/OFF§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.MACHINE_CONTROLLER)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR = REGISTRATE
             .item("activity_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Activity Detector", "§7Gives out §fActivity Status§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Activity Detector Cover", "§7Gives out §fActivity Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_activity_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Activity Detector", "§7Gives out §fMachine Progress§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Activity Detector Cover", "§7Gives out §fMachine Progress§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR = REGISTRATE
             .item("fluid_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Fluid Detector", "§7Gives out §fFluid Amount§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Fluid Detector Cover", "§7Gives out §fFluid Amount§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_fluid_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Fluid Detector", "§7Gives §fRS-Latch§7 controlled §fFluid Storage Status§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Fluid Detector Cover", "§7Gives §fRS-Latch§7 controlled §fFluid Storage Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR = REGISTRATE
             .item("item_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Item Detector", "§7Gives out §fItem Amount§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Item Detector Cover", "§7Gives out §fItem Amount§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_item_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Item Detector", "§7Gives §fRS-Latch§7 controlled §fItem Storage Status§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Item Detector Cover", "§7Gives §fRS-Latch§7 controlled §fItem Storage Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR = REGISTRATE
             .item("energy_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Energy Detector", "§7Gives out §fEnergy Amount§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Energy Detector Cover", "§7Gives out §fEnergy Amount§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_energy_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Energy Detector", "§7Gives §fRS-Latch§7 controlled §fEnergy Status§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Energy Detector Cover", "§7Gives §fRS-Latch§7 controlled §fEnergy Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_MAINTENANCE_DETECTOR = REGISTRATE
             .item("maintenance_detector_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Maintenance Detector", "§7Gives out §fMaintenance Status§7 as Redstone as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Maintenance Detector Cover", "§7Gives out §fMaintenance Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.MAINTENANCE_DETECTOR)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_SCREEN = REGISTRATE
             .item("computer_monitor_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Computer Monitor", "§7Displays §fData§7 as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Computer Monitor Cover", "§7Displays §fData§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_STORAGE = REGISTRATE
@@ -2002,7 +2002,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE
             .item("shutter_module_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Shutter Module", "§fBlocks Transfer§7 through attached Side as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Shutter Module Cover", "§fBlocks Transfer§7 through attached Side as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.SHUTTER)))
             .register();
 
@@ -2015,18 +2015,18 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE
             .item("ender_fluid_link_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Fluid Link", "§7Transports §fFluids§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Fluid Link Cover", "§7Transports §fFluids§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_FLUID_LINK)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_ENDER_ITEM_LINK = REGISTRATE
             .item("ender_item_link_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Item Link", "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Item Link Cover", "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_ITEM_LINK)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENDER_REDSTONE_LINK = REGISTRATE
             .item("ender_redstone_link_cover", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Redstone Link", "§7Transports §fRedstone Signal§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Redstone Link Cover", "§7Transports §fRedstone Signal§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_REDSTONE_LINK)))
             .register();
 
@@ -2064,14 +2064,14 @@ public class GTItems {
 
     // Solar Panels: ID 331-346
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL = REGISTRATE.item("solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", 1, GTValues.VNF[GTValues.ULV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL_BASIC)))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE
             .item("ulv_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ultra Low Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ultra Low Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ULV],
                         GTValues.VNF[GTValues.ULV]));
@@ -2079,7 +2079,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE
             .item("lv_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Low Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Low Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LV],
                         GTValues.VNF[GTValues.LV]));
@@ -2088,7 +2088,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_MV = REGISTRATE
             .item("mv_solar_panel", ComponentItem::create)
             .lang("Medium Voltage Solar Panel")
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Medium Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Medium Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.MV],
                         GTValues.VNF[GTValues.MV]));
@@ -2096,7 +2096,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_HV = REGISTRATE
             .item("hv_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("High Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("High Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.HV],
                         GTValues.VNF[GTValues.HV]));
@@ -2104,7 +2104,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_EV = REGISTRATE
             .item("ev_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Extreme Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Extreme Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.EV],
                         GTValues.VNF[GTValues.EV]));
@@ -2112,7 +2112,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_IV = REGISTRATE
             .item("iv_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Insane Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Insane Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.IV],
                         GTValues.VNF[GTValues.IV]));
@@ -2120,7 +2120,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LuV = REGISTRATE
             .item("luv_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ludicrous Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ludicrous Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LuV],
                         GTValues.VNF[GTValues.LuV]));
@@ -2128,7 +2128,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ZPM = REGISTRATE
             .item("zpm_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Zero Point Module Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Zero Point Module Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ZPM],
                         GTValues.VNF[GTValues.ZPM]));
@@ -2136,7 +2136,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_UV = REGISTRATE
             .item("uv_solar_panel", ComponentItem::create)
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ultimate Voltage Solar Panel", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ultimate Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.UV],
                         GTValues.VNF[GTValues.UV]));
