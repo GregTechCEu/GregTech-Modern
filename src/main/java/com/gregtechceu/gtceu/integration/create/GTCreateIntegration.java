@@ -33,8 +33,10 @@ public class GTCreateIntegration {
     public static void init() {
         GTCreateDisplaySources.init();
         GTCreateDisplayTargets.init();
+    }
 
-        PlaceholderHandler.addPlaceholder(new Placeholder("redstone", 1) {
+    public static void initPlaceholders() {
+        PlaceholderHandler.addOrOverridePlaceholder(new Placeholder("redstone") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,

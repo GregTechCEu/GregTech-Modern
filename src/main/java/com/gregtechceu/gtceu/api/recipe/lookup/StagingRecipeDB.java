@@ -88,7 +88,7 @@ public final class StagingRecipeDB {
     private static @NotNull List<Object> compressedContent(@NotNull List<Content> list,
                                                            @NotNull RecipeCapability<?> cap) {
         var contentList = list.stream()
-                .map(Content::getContent)
+                .map(Content::content)
                 .toList();
         return cap.compressIngredients(contentList);
     }
@@ -106,7 +106,7 @@ public final class StagingRecipeDB {
         List<Pair<RecipeCapability<?>, Object>> list = new ArrayList<>();
         map.forEach((k, v) -> {
             for (var content : v) {
-                list.add(Pair.of(k, content.getContent()));
+                list.add(Pair.of(k, content.content()));
             }
         });
         return list;

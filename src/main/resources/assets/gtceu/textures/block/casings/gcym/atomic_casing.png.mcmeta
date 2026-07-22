@@ -1,5 +1,5 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/casings/gcym/atomic_casing_ctm"
+    "gtceu": {
+        "connection_texture": "gtceu:block/casings/gcym/atomic_casing_ctm"
     }
 }

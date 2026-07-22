@@ -1,26 +1,27 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.entity.player.Player;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -30,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeComputationProviderMachine extends MetaMachine
-                                                implements IUIMachine, IOpticalComputationProvider {
+                                                implements IMuiMachine, IOpticalComputationProvider, IControllable {
 
     @SaveField
     private int maxCWUt;
@@ -38,7 +39,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
     private int requestedCWUPerSec;
     @SaveField
     @Getter
-    private boolean active;
+    private boolean workingEnabled;
     @Nullable
     private TickableSubscription computationSubs;
 
@@ -53,7 +54,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     protected void updateComputationSubscription() {
-        if (active) {
+        if (workingEnabled) {
             this.computationSubs = subscribeServerTick(this::updateComputationTick);
         } else if (computationSubs != null) {
             computationSubs.unsubscribe();
@@ -72,9 +73,9 @@ public class CreativeComputationProviderMachine extends MetaMachine
 
     @Override
     public int requestCWUt(
-                           int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+                           int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
-        int requestedCWUt = active ? Math.min(cwut, maxCWUt) : 0;
+        int requestedCWUt = workingEnabled ? Math.min(cwut, maxCWUt) : 0;
         if (!simulate) {
             this.requestedCWUPerSec += requestedCWUt;
         }
@@ -82,36 +83,49 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
-        return active ? maxCWUt : 0;
+        return workingEnabled ? maxCWUt : 0;
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return true;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setWorkingEnabled(boolean workingEnabled) {
+        this.workingEnabled = workingEnabled;
         updateComputationSubscription();
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(140, 95, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(7, 7, "CWUt"))
-                .widget(new TextFieldWidget(9, 20, 122, 16, () -> String.valueOf(maxCWUt),
-                        value -> maxCWUt = Integer.parseInt(value)).setNumbersOnly(0, Integer.MAX_VALUE))
-                .widget(new LabelWidget(7, 42, "gtceu.creative.computation.average"))
-                .widget(new LabelWidget(7, 54, () -> String.valueOf(lastRequestedCWUt)))
-                .widget(new SwitchWidget(9, 66, 122, 20, (clickData, value) -> setActive(value))
-                        .setSupplier(this::isActive)
-                        .setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.off")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                        new TextTexture("gtceu.creative.activity.on"))));
+    public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return MachineUIPanelBuilder.panelBuilder(this).attachInventory(false);
+    }
+
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        mainWidget
+                .child(Flow.column()
+                        .padding(10)
+                        .childPadding(5)
+                        .child(Flow.row()
+                                .leftRel(0)
+                                .childPadding(5)
+                                .coverChildren()
+                                .child(new TextWidget<>(Text.lang("gtceu.creative.computation.max_usage")))
+                                .child(new TextFieldWidget()
+                                        .setNumbers(0, Integer.MAX_VALUE)
+                                        .value(new IntSyncValue(() -> maxCWUt, (v) -> maxCWUt = v))))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
+                        .child(Flow.row()
+                                .leftRel(0)
+                                .childPadding(5)
+                                .coverChildren()
+                                .child(new TextWidget<>(Text.lang("gtceu.creative.computation.average",
+                                        lastRequestedCWUt)))));
     }
 }

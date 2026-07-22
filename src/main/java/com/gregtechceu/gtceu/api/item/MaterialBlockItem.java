@@ -7,10 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
-import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
@@ -23,7 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MaterialBlockItem extends BlockItem implements IItemRendererProvider {
+public class MaterialBlockItem extends BlockItem {
 
     public final TagPrefix tagPrefix;
     public final Material material;
@@ -50,18 +46,8 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
         return (itemStack, index) -> material.getLayerARGB(index);
     }
 
-    @Nullable
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public IRenderer getRenderer(ItemStack stack) {
-        if (getBlock() instanceof IBlockRendererProvider provider) {
-            return provider.getRenderer(getBlock().defaultBlockState());
-        }
-        return null;
-    }
-
-    @Override
-    public String getDescriptionId() {
+    public @NotNull String getDescriptionId() {
         return getBlock().getDescriptionId();
     }
 

@@ -114,7 +114,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     var contents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                     if (contents.isEmpty()) continue;
                     ItemStack outputItems = ItemRecipeCapability.CAP
-                            .of(contents.get(0).content).getItems()[0];
+                            .of(contents.get(0).content()).getItems()[0];
                     for (var item : addedItems) {
                         if (outputItems.is(item.getItem())) continue outerItems;
                     }
@@ -129,7 +129,7 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     var contents = recipe.getOutputContents(FluidRecipeCapability.CAP);
                     if (contents.isEmpty()) continue;
                     FluidStack outputFluids = FluidRecipeCapability.CAP
-                            .of(contents.get(0).content).getStacks()[0];
+                            .of(contents.get(0).content()).getStacks()[0];
                     for (var fluid : addedFluids) {
                         if (outputFluids.isFluidStackIdentical(fluid)) continue outerFluids;
                     }

@@ -2,23 +2,35 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
+import com.gregtechceu.gtceu.integration.ae2.gui.AEStackDisplayWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.DynamicLinkedSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.scroll.VerticalScrollData;
+import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,18 +48,13 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
     public MEOutputBusPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.OUT);
+        super(info, IO.OUT, new InaccessibleInfiniteHandler());
+        internalBuffer = ((InaccessibleInfiniteHandler) getInventory()).getInternalBuffer();
     }
 
     /////////////////////////////////
     // ***** Machine LifeCycle ****//
     /////////////////////////////////
-
-    @Override
-    protected NotifiableItemStackHandler createInventory() {
-        this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteHandler();
-    }
 
     @Override
     public void onMachineDestroyed() {
@@ -86,28 +93,56 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     ///////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
-        // ME Network status
-        group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
-        group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
-        // display list
-        group.addWidget(new AEListGridWidget.Item(5, 20, 3, this.internalBuffer));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        BooleanSyncValue isOnlineValue = new BooleanSyncValue(this::isOnline, this::setOnline);
+        syncManager.syncValue("is_online", isOnlineValue);
 
-        return group;
+        var flow = Flow.col().coverChildren();
+
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget().marginTop(2).marginBottom(4));
+
+        var storageSyncHandler = new AEKeyStorageSyncHandler(internalBuffer);
+        syncManager.syncValue("ae_output_display", storageSyncHandler);
+
+        int[] savedScroll = { 0 };
+        var dynamicHandler = new DynamicLinkedSyncHandler<>(storageSyncHandler)
+                .widgetProvider((sm, value) -> {
+                    var col = Flow.col().leftRel(0.5f).coverChildrenHeight();
+                    var list = value.getValue();
+                    if (list.isEmpty()) return col.child(new TextWidget<>(Text.lang("gtceu.gui.waiting_list_empty")));
+                    col.child(new TextWidget<>(Text.lang("gtceu.gui.waiting_list")).margin(0, 2));
+                    col.child(new ScrollPreservingGrid(savedScroll)
+                            .size(167, 80)
+                            .scrollable(new VerticalScrollData())
+                            .gridOfSizeWidth(9, 1, (x, y, index) -> new AEStackDisplayWidget(list, index)));
+                    return col;
+                });
+
+        flow.child(new DynamicSyncedWidget<>()
+                .syncHandler(dynamicHandler)
+                .size(167, 80));
+
+        mainWidget.child(flow);
     }
 
-    private class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
+    private static class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {
+
+        @Getter
+        private KeyStorage internalBuffer;
 
         public InaccessibleInfiniteHandler() {
             super(1, IO.OUT, IO.NONE, ItemStackHandlerDelegate::new);
+            internalBuffer = new KeyStorage();
+            ((ItemStackHandlerDelegate) storage).setKeyStorage(internalBuffer);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             return Collections.emptyList();
         }
 
@@ -123,7 +158,12 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     }
 
     @NoArgsConstructor
-    private class ItemStackHandlerDelegate extends CustomItemStackHandler {
+    private static class ItemStackHandlerDelegate extends CustomItemStackHandler {
+
+        @Getter
+        @Setter
+        @Nullable
+        KeyStorage keyStorage = null;
 
         // Necessary for InaccessibleInfiniteHandler
         public ItemStackHandlerDelegate(Integer integer) {
@@ -152,14 +192,16 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (keyStorage == null) return stack;
+
             var key = AEItemKey.of(stack);
             int count = stack.getCount();
-            long oldValue = internalBuffer.storage.getOrDefault(key, 0);
+            long oldValue = keyStorage.storage.getOrDefault(key, 0);
             long changeValue = Math.min(Long.MAX_VALUE - oldValue, count);
             if (changeValue > 0) {
                 if (!simulate) {
-                    internalBuffer.storage.put(key, oldValue + changeValue);
-                    internalBuffer.onChanged();
+                    keyStorage.storage.put(key, oldValue + changeValue);
+                    keyStorage.onChanged();
                 }
                 return stack.copyWithCount((int) (count - changeValue));
             } else {

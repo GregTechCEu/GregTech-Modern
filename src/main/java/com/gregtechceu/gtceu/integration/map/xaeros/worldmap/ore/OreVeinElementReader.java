@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
+import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -78,7 +79,7 @@ public class OreVeinElementReader extends
 
     @Override
     public String getMenuName(OreVeinElement element) {
-        return element.getName();
+        return element.getName().getString();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class OreVeinElementReader extends
     public ArrayList<RightClickOption> getRightClickOptions(final OreVeinElement element,
                                                             IRightClickableElement target) {
         ArrayList<RightClickOption> rightClickOptions = new ArrayList<>();
-        rightClickOptions.add(new RightClickOption("button.gtceu.toggle_waypoint.name", 0, target) {
+        rightClickOptions.add(new RightClickOption("gtceu.map.button.toggle_waypoint.name", 0, target) {
 
             @Override
             public void onAction(Screen screen) {
@@ -103,7 +104,7 @@ public class OreVeinElementReader extends
             }
         });
         rightClickOptions
-                .add((new RightClickOption("button.gtceu.mark_as_depleted.name", rightClickOptions.size(), target) {
+                .add((new RightClickOption("gtceu.map.button.mark_as_depleted.name", rightClickOptions.size(), target) {
 
                     @Override
                     public void onAction(Screen screen) {

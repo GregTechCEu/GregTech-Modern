@@ -2,16 +2,40 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class RecipeLang {
 
     public static void init(GTLangProvider provider) {
+
         generateRecipeTypes(provider);
         generateRecipeConditions(provider);
         generateRecipeDataKeys(provider);
         generateMiscKeys(provider);
+        generateCapabilityLang(provider);
+        generateModifierKeys(provider);
+    }
+
+    private static void generateCapabilityLang(RegistrateLangProvider provider) {
+        provider.add("gtceu.recipe_logic.setup_fail", "Fail to setup recipe: ");
+        provider.add("gtceu.recipe_logic.recipe_waiting", "Recipe Waiting: ");
+
+        provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
+        provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
+        provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
+        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
+        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
+        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+    }
+
+    private static void generateModifierKeys(RegistrateLangProvider provider) {
+        provider.add("gtceu.recipe_modifier.default_fail", "Recipe Modifier Fail");
+        provider.add("gtceu.recipe_modifier.insufficient_voltage", "Voltage Tier Too Low");
+        provider.add("gtceu.recipe_modifier.insufficient_eu_to_start_fusion",
+                "Insufficient Energy to Initiate Fusion Reaction");
+        provider.add("gtceu.recipe_modifier.coil_temperature_too_low", "Coil Temperature Too Low");
     }
 
     private static void generateRecipeTypes(GTLangProvider provider) {

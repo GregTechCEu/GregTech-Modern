@@ -6,43 +6,41 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.*;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.Icon;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine,
-                                               IDisplayUIMachine, ITieredMachine, IOverclockMachine {
+public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
+                                               implements IMuiMachine, ITieredMachine, IOverclockMachine, IVoidable {
 
     // runtime
     protected @Nullable EnergyContainerList energyContainer;
@@ -69,15 +67,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     // *** Multiblock Lifecycle ***//
     //////////////////////////////////////
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         this.energyContainer = null;
         this.tier = 0;
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         this.energyContainer = getEnergyContainer();
         this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
     }
@@ -98,91 +96,39 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        int numParallels;
-        int subtickParallels;
-        int batchParallels;
-        int totalRuns;
-        boolean exact = false;
-        if (recipeLogic.isActive() && recipeLogic.getLastRecipe() != null) {
-            numParallels = recipeLogic.getLastRecipe().parallels;
-            subtickParallels = recipeLogic.getLastRecipe().subtickParallels;
-            batchParallels = recipeLogic.getLastRecipe().batchParallels;
-            totalRuns = recipeLogic.getLastRecipe().getTotalRuns();
-            exact = true;
-        } else {
-            numParallels = getParallelHatch()
-                    .map(ParallelHatchPartMachine::getCurrentParallel)
-                    .orElse(0);
-            subtickParallels = 0;
-            batchParallels = 0;
-            totalRuns = 0;
-        }
+    public static final int MULTI_UI_TEXT_PANEL_WIDTH = 172;
+    public static final int MULTI_UI_TEXT_PANEL_HEIGHT = 136;
 
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
-                .addEnergyUsageLine(energyContainer)
-                .addEnergyTierLine(tier)
-                .addMachineModeLine(getRecipeType(), getRecipeTypes().length > 1)
-                .addTotalRunsLine(totalRuns)
-                .addParallelsLine(numParallels, exact)
-                .addSubtickParallelsLine(subtickParallels)
-                .addBatchModeLine(isBatchEnabled(), batchParallels)
-                .addWorkingStatusLine()
-                .addProgressLine(recipeLogic)
-                .addRecipeFailReasonLine(recipeLogic)
-                .addOutputLines(recipeLogic.getLastRecipe());
-        getDefinition().getAdditionalDisplay().accept(this, textList);
-        IDisplayUIMachine.super.addDisplayText(textList);
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager) {
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>()
+                .width(MULTI_UI_TEXT_PANEL_WIDTH - 6)
+                .height(MULTI_UI_TEXT_PANEL_HEIGHT - 6)
+                .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .collapseDisabledChildren()
+                .posRel(Alignment.CenterLeft);
+        parentWidget.size(MULTI_UI_TEXT_PANEL_WIDTH, MULTI_UI_TEXT_PANEL_HEIGHT).background(GuiTextures.DISPLAY);
+
+        listWidget.children(getWidgetsForDisplay(syncManager));
+        parentWidget.child(listWidget.left(3).top(3));
+        return parentWidget;
     }
 
     @Override
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-                .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
-                        .setMaxWidthLimit(200)
-                        .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        mainWidget.child(getMainTextPanel(syncManager).margin(4, 2));
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
-    }
-
-    @Override
-    public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(Objects::nonNull).map(IFancyUIProvider.class::cast).toList();
-    }
-
-    @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IVoidable.attachConfigurators(configuratorPanel, this);
-        if (getDefinition().getRecipeModifier() instanceof RecipeModifierList list && Arrays.stream(list.getModifiers())
-                .anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
-            configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
-                    GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
-                    GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
-                    this::isBatchEnabled,
-                    (cd, p) -> setBatchEnabled(p))
-                    .setTooltipsSupplier(
-                            p -> List.of(
-                                    Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));
-        }
-
-        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
-    }
-
-    @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        for (IMultiPart part : getParts()) {
-            part.attachFancyTooltipsToController(this, tooltipsPanel);
-        }
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
+        widgets.addAll(super.getWidgetsForDisplay(syncManager));
+        return widgets;
     }
 
     //////////////////////////////////////
@@ -282,8 +228,30 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public long getDisplayRecipeVoltage() {
-        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
-                this.getEnergyContainer().getOutputVoltage());
+        long voltage = -1;
+        var handlers = getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
+        if (handlers.isEmpty()) handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
+        for (IRecipeHandler<?> handler : handlers) {
+            if (handler instanceof IEnergyContainer container) {
+                voltage = Math.max(voltage, Math.max(container.getInputVoltage(), container.getOutputVoltage()));
+            }
+        }
+        return voltage;
+    }
+
+    @Override
+    public long getDisplayGeneratorPower() {
+        if (this.isGenerator()) {
+            long power = -1;
+            var handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
+            for (IRecipeHandler<?> handler : handlers) {
+                if (handler instanceof IEnergyContainer container) {
+                    power += container.getOutputVoltage() * container.getOutputAmperage();
+                }
+            }
+            return power;
+        }
+        return -1;
     }
 
     /**

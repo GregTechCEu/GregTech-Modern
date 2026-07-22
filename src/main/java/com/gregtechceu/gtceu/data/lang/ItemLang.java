@@ -571,7 +571,6 @@ public class ItemLang {
 
         // Records
         provider.add("item.gtceu.sus_record.tooltip", "§7sussy!");
-        provider.add("item.gtceu.sus_record.desc", "§7Leonz - Among Us Drip");
 
         // Voltage Coils
         provider.add("item.gtceu.ulv_voltage_coil.tooltip", "Primitive Coil");
@@ -767,5 +766,8 @@ public class ItemLang {
         // Data Stick
         provider.add("behavior.data_item.title", "§n%s Construction Data:");
         provider.add("behavior.data_item.data", "- §a%s");
+
+        provider.add("item.gtceu.sus_record.desc", "sussy!");
+
     }
 }

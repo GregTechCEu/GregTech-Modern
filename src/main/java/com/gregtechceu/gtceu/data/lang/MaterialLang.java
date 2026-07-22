@@ -2,14 +2,17 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class MaterialLang {
 
-    public static void generate(GTLangProvider provider, MaterialRegistry registry) {
-        for (Material material : registry.getAllMaterials()) {
+    public static void generate(GTLangProvider provider, String namespace) {
+        for (Material material : GTRegistries.MATERIALS.values().stream().filter(v -> v.getModid().equals(namespace)).collect(Collectors.toSet())) {
             provider.add(material.getUnlocalizedName(), material.getDefaultTranslation());
         }
     }
@@ -59,9 +62,9 @@ public class MaterialLang {
 
     private static void generateMaterialKeys(GTLangProvider provider) {
         // Material Page
-        provider.add("gtceu.jei.materials.average_mass", "Average mass: %d");
-        provider.add("gtceu.jei.materials.average_protons", "Average protons: %d");
-        provider.add("gtceu.jei.materials.average_neutrons", "Average neutrons: %d");
+        provider.add("recipeviewer.gtceu.materials.average_mass", "Average mass: %d");
+        provider.add("recipeviewer.gtceu.materials.average_protons", "Average protons: %d");
+        provider.add("recipeviewer.gtceu.materials.average_neutrons", "Average neutrons: %d");
 
         // Cauldron Washing
         provider.add("tagprefix.ore_dust.tooltip.purify", "Right click a Cauldron to get clean Dust");

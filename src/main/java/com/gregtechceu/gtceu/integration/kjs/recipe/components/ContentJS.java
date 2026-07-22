@@ -31,10 +31,9 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
     @Override
     public JsonElement write(RecipeJS recipe, Content value) {
         JsonObject object = new JsonObject();
-        object.add("content", baseComponent.write(recipe, baseComponent.read(recipe, value.content)));
-        object.addProperty("chance", value.chance);
-        object.addProperty("maxChance", value.maxChance);
-        object.addProperty("tierChanceBoost", value.tierChanceBoost);
+        object.add("content", baseComponent.write(recipe, baseComponent.read(recipe, value.content())));
+        object.addProperty("chance", value.chance());
+        object.addProperty("maxChance", value.maxChance());
         return object;
     }
 
@@ -46,33 +45,33 @@ public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?>
             int chance = GsonHelper.getAsInt(json, "chance", ChanceLogic.getMaxChancedValue());
             int maxChance = GsonHelper.getAsInt(json, "maxChance", ChanceLogic.getMaxChancedValue());
             int tierChanceBoost = GsonHelper.getAsInt(json, "tierChanceBoost", 0);
-            return new Content(content, chance, maxChance, tierChanceBoost);
+            return new Content(content, chance, maxChance);
         }
         return null;
     }
 
     @Override
     public boolean isInput(RecipeJS recipe, Content value, ReplacementMatch match) {
-        return !isOutput && baseComponent.isInput(recipe, baseComponent.read(recipe, value.content), match);
+        return !isOutput && baseComponent.isInput(recipe, baseComponent.read(recipe, value.content()), match);
     }
 
     @Override
     public boolean isOutput(RecipeJS recipe, Content value, ReplacementMatch match) {
-        return isOutput && baseComponent.isOutput(recipe, baseComponent.read(recipe, value.content), match);
+        return isOutput && baseComponent.isOutput(recipe, baseComponent.read(recipe, value.content()), match);
     }
 
     @Override
     public Content replaceInput(RecipeJS recipe, Content original, ReplacementMatch match, InputReplacement with) {
         return isInput(recipe, original, match) ? new Content(
-                baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content), match, with),
-                original.chance, original.maxChance, original.tierChanceBoost) :
+                baseComponent.replaceInput(recipe, baseComponent.read(recipe, original.content()), match, with),
+                original.chance(), original.maxChance()) :
                 original;
     }
 
     @Override
     public Content replaceOutput(RecipeJS recipe, Content original, ReplacementMatch match, OutputReplacement with) {
         return isOutput(recipe, original, match) ? new Content(with.replaceOutput(recipe, match, with),
-                original.chance, original.maxChance, original.tierChanceBoost) :
+                original.chance(), original.maxChance()) :
                 original;
     }
 }

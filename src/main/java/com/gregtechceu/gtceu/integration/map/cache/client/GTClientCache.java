@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.cache.client;
 
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
@@ -32,10 +32,10 @@ public class GTClientCache extends WorldCache implements IClientCache {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) return;
-        if (veins.length > 1) player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.amount", veins.length));
+        if (veins.length > 1) player.sendSystemMessage(Component.translatable("map.gtceu.new_veins.amount", veins.length));
         for (var vein : veins) {
             var veinId = vein.id().toString();
-            var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));
+            var name = Component.translatable(veinId.replace("gtceu:", "recipeviewer.gtceu.ore_vein."));
             var material = OreRenderLayer.getMaterial(vein);
 
             if (!material.isNull()) {
@@ -44,7 +44,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
                         HoverEvent.Action.SHOW_TEXT,
                         Component.literal("(%d, %d, %d)".formatted(center.getX(), center.getY(), center.getZ())))));
             }
-            player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.name", name));
+            player.sendSystemMessage(Component.translatable("map.gtceu.new_veins.name", name));
         }
     }
 
@@ -56,7 +56,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
     public boolean addVein(ResourceKey<Level> dim, int gridX, int gridZ, GeneratedVeinMetadata vein) {
         GenericMapRenderer renderer = GroupingMapRenderer.getInstance();
         if (renderer != null) {
-            renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
+            renderer.addMarker(OreRenderLayer.getName(vein), dim, vein, OreRenderLayer.getId(vein));
         }
         boolean added = super.addVein(dim, gridX, gridZ, vein);
         if (added) {
@@ -93,7 +93,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
         if (renderer != null) {
             for (GridCache grid : cache.get(dim).getCache().values()) {
                 for (GeneratedVeinMetadata vein : grid.getVeins()) {
-                    renderer.addMarker(OreRenderLayer.getName(vein).getString(), dim, vein, OreRenderLayer.getId(vein));
+                    renderer.addMarker(OreRenderLayer.getName(vein), dim, vein, OreRenderLayer.getId(vein));
                 }
             }
         }

@@ -3,12 +3,13 @@ package com.gregtechceu.gtceu.integration.map;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksRenderer;
 import com.gregtechceu.gtceu.integration.map.journeymap.JourneymapRenderer;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -53,7 +54,7 @@ public class GroupingMapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
+    public boolean addMarker(Component name, String id, ResourceKey<Level> dim, ChunkPos pos,
                              ProspectorMode.FluidInfo fluid) {
         boolean value = false;
         for (GenericMapRenderer renderer : rendererList) {
@@ -63,7 +64,7 @@ public class GroupingMapRenderer extends GenericMapRenderer {
     }
 
     @Override
-    public boolean addMarker(String name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
+    public boolean addMarker(Component name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
         boolean value = false;
         for (GenericMapRenderer renderer : rendererList) {
             value |= renderer.addMarker(name, dim, vein, id);

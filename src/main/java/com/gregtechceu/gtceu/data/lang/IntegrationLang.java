@@ -22,79 +22,78 @@ public class IntegrationLang {
 
     /** JEI, REI, EMI */
     private static void initRecipeViewerLang(GTLangProvider provider) {
-        provider.add("gtceu.jei.multiblock_info", "Multiblock Info");
+        provider.add("recipeviewer.gtceu.category.multiblock_info", "Multiblock Info");
+        provider.add("recipeviewer.gtceu.category.programmed_circuit", "Programmed Circuit Page");
 
-        provider.add("gtceu.jei.ore_processing_diagram", "Ore Processing Diagram");
-        provider.add("gtceu.jei.ore_vein_diagram", "Ore Vein Diagram");
-
-        provider.add("gtceu.jei.programmed_circuit", "Programmed Circuit Page");
-
-        provider.add("gtceu.jei.bedrock_fluid_diagram", "Bedrock Fluid Diagram");
-        provider.add("gtceu.jei.bedrock_ore_diagram", "Bedrock Ore Diagram");
+        provider.add("recipeviewer.gtceu.category.ore_processing", "Ore Processing Diagram");
+        provider.add("recipeviewer.gtceu.category.ore_veins", "Ore Veins");
+        provider.add("recipeviewer.gtceu.category.bedrock_fluids", "Bedrock Fluids");
+        provider.add("recipeviewer.gtceu.category.bedrock_ores", "Bedrock Ores");
 
         // Ore Veins
-        provider.add("ore.spawnlocation.name", "Ore Spawn Information");
 
-        provider.add("gtceu.jei.ore_vein_diagram.chance", "§eChance: %s§r");
-        provider.add("gtceu.jei.ore_vein_diagram.spawn_range", "Spawn Range:");
-        provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");
-        provider.add("gtceu.jei.ore_vein_diagram.dimensions", "Dimensions:");
+        provider.add("recipeviewer.gtceu.ore_vein_diagram.chance", "§eChance: %s§r");
+        provider.add("recipeviewer.gtceu.ore_vein_diagram.spawn_range", "Spawn Range:");
+        provider.add("recipeviewer.gtceu.ore_vein_diagram.weight", "Weight: %s");
+        provider.add("recipeviewer.gtceu.ore_vein_diagram.dimensions", "Dimensions:");
 
-        provider.addMultiLang("gtceu.jei.ore.primary", "Top Ore",
+        provider.addMultiLang("recipeviewer.gtceu.ore.primary", "Top Ore",
                 "Spawns in the top %d layers of the vein");
-        provider.addMultiLang("gtceu.jei.ore.secondary", "Bottom Ore",
+        provider.addMultiLang("recipeviewer.gtceu.ore.secondary", "Bottom Ore",
                 "Spawns in the bottom %d layers of the vein");
-        provider.addMultiLang("gtceu.jei.ore.between", "Between Ore",
+        provider.addMultiLang("recipeviewer.gtceu.ore.between", "Between Ore",
                 "Spawns in the middle %d layers of the vein, with other ores");
-        provider.addMultiLang("gtceu.jei.ore.sporadic", "Sporadic Ore",
+        provider.addMultiLang("recipeviewer.gtceu.ore.sporadic", "Sporadic Ore",
                 "Spawns anywhere in the vein");
 
-        provider.add("gtceu.jei.ore.biome_weighting_title", "§dModified Biome Total Weights:");
-        provider.add("gtceu.jei.ore.biome_weighting", "§d%s Weight: §3%d");
-        provider.add("gtceu.jei.ore.biome_weighting_no_spawn", "§d%s Weight: §cCannot Spawn");
-        provider.add("gtceu.jei.ore.ore_weight", "Weight in vein: %d%%");
+        provider.add("recipeviewer.gtceu.ore.biome_weighting_title", "§dModified Biome Total Weights:");
+        provider.add("recipeviewer.gtceu.ore.biome_weighting", "§d%s Weight: §3%d");
+        provider.add("recipeviewer.gtceu.ore.biome_weighting_no_spawn", "§d%s Weight: §cCannot Spawn");
+        provider.add("recipeviewer.gtceu.ore.ore_weight", "Weight in vein: %d%%");
 
         // Surface Rock
-        provider.addMultiLang("gtceu.jei.ore.surface_rock",
+        provider.addMultiLang("recipeviewer.gtceu.ore.surface_rock",
                 "Surface Rocks with this material denote vein spawn locations.",
                 "They can be broken for 3 Tiny Piles of the dust, with Fortune giving a bonus.");
 
         // Fluid vein
-        provider.add("fluid.spawnlocation.name", "Fluid Vein Information");
 
-        provider.add("gtceu.jei.fluid.vein_weight", "Vein Weight: %d");
-        provider.add("gtceu.jei.fluid.min_yield", "Minimum Yield: %d");
-        provider.add("gtceu.jei.fluid.max_yield", "Maximum Yield: %d");
-        provider.add("gtceu.jei.fluid.depletion_chance", "Depletion Chance: %d%%");
-        provider.add("gtceu.jei.fluid.depletion_amount", "Depletion Amount: %d");
-        provider.add("gtceu.jei.fluid.depleted_rate", "Depleted Yield: %d");
+        provider.add("recipeviewer.gtceu.fluid.vein_weight", "Vein Weight: %d");
+        provider.add("recipeviewer.gtceu.fluid.min_yield", "Minimum Yield: %d");
+        provider.add("recipeviewer.gtceu.fluid.max_yield", "Maximum Yield: %d");
+        provider.add("recipeviewer.gtceu.fluid.depletion_chance", "Depletion Chance: %d%%");
+        provider.add("recipeviewer.gtceu.fluid.depletion_amount", "Depletion Amount: %d");
+        provider.add("recipeviewer.gtceu.fluid.depleted_rate", "Depleted Yield: %d");
 
-        provider.add("gtceu.jei.fluid.dimension", "Dimensions:");
+        provider.add("recipeviewer.gtceu.fluid.dimension", "Dimensions:");
 
-        provider.add("gtceu.jei.fluid.weight_hover",
+        provider.add("recipeviewer.gtceu.fluid.weight_hover",
                 "The Weight of the vein. Hover over the fluid to see any possible biome modifications");
-        provider.add("gtceu.jei.fluid.min_hover",
+        provider.add("recipeviewer.gtceu.fluid.min_hover",
                 "The minimum yield that any fluid vein of this fluid can have");
-        provider.add("gtceu.jei.fluid.max_hover",
+        provider.add("recipeviewer.gtceu.fluid.max_hover",
                 "The maximum yield that any fluid vein of this fluid can have");
-        provider.add("gtceu.jei.fluid.dep_chance_hover",
+        provider.add("recipeviewer.gtceu.fluid.dep_chance_hover",
                 "The percentage chance for the vein to be depleted upon harvest");
-        provider.add("gtceu.jei.fluid.dep_amount_hover", "The amount the vein will be depleted by");
-        provider.add("gtceu.jei.fluid.dep_yield_hover",
+        provider.add("recipeviewer.gtceu.fluid.dep_amount_hover", "The amount the vein will be depleted by");
+        provider.add("recipeviewer.gtceu.fluid.dep_yield_hover",
                 "The maximum yield of the vein when it is fully depleted");
 
         // Vein Names
+
+
+        // TODO This should be replaced with something else
         GTRegistries.ORE_VEINS.unfreeze();
         GTOres.init();
         for (GTOreDefinition oreDefinition : GTRegistries.ORE_VEINS) {
             String name = GTRegistries.ORE_VEINS.getKey(oreDefinition).getPath();
-            provider.add("gtceu.jei.ore_vein." + name, FormattingUtil.toEnglishName(name));
+            provider.add("recipeviewer.gtceu.ore_vein." + name, FormattingUtil.toEnglishName(name));
         }
         GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
         GTBedrockFluids.init();
         for (BedrockFluidDefinition fluid : GTRegistries.BEDROCK_FLUID_DEFINITIONS) {
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
-            provider.add("gtceu.jei.bedrock_fluid." + name, FormattingUtil.toEnglishName(name));
+            provider.add("recipeviewer.gtceu.bedrock_fluid." + name, FormattingUtil.toEnglishName(name));
         }
 
         // Potion
@@ -103,102 +102,102 @@ public class IntegrationLang {
 
     /** Jade */
     private static void initWailaLikeLang(GTLangProvider provider) {
-        provider.add("gtceu.top.working_disabled", "Working Disabled");
-        provider.add("gtceu.top.energy_consumption", "Using");
-        provider.add("gtceu.top.energy_production", "Producing");
+        provider.add("integration.gtceu.jade.working_disabled", "Working Disabled");
+        provider.add("integration.gtceu.jade.energy_consumption", "Using");
+        provider.add("integration.gtceu.jade.energy_production", "Producing");
 
         // Transformers
-        provider.add("gtceu.top.transform_up", "§cStep Up§r %s");
-        provider.add("gtceu.top.transform_down", "§aStep Down§r %s");
-        provider.add("gtceu.top.transform_input", "§6Input:§r %s");
-        provider.add("gtceu.top.transform_output", "§9Output:§r %s");
-        provider.add("gtceu.top.convert_eu", "Converting §eEU§r -> §cFE§r");
-        provider.add("gtceu.top.convert_fe", "Converting §cFE§r -> §eEU§r");
+        provider.add("integration.gtceu.jade.transform_up", "§cStep Up§r %s");
+        provider.add("integration.gtceu.jade.transform_down", "§aStep Down§r %s");
+        provider.add("integration.gtceu.jade.transform_input", "§6Input:§r %s");
+        provider.add("integration.gtceu.jade.transform_output", "§9Output:§r %s");
+        provider.add("integration.gtceu.jade.convert_eu", "Converting §eEU§r -> §cFE§r");
+        provider.add("integration.gtceu.jade.convert_fe", "Converting §cFE§r -> §eEU§r");
 
         // Generators
-        provider.add("gtceu.top.fuel_min_consume", "Needs");
-        provider.add("gtceu.top.fuel_none", "No fuel");
+        provider.add("integration.gtceu.jade.fuel_min_consume", "Needs");
+        provider.add("integration.gtceu.jade.fuel_none", "No fuel");
 
         // Multiblock Structures
-        provider.add("gtceu.top.invalid_structure", "Structure Incomplete");
-        provider.add("gtceu.top.valid_structure", "Structure Formed");
-        provider.add("gtceu.top.obstructed_structure", "Structure Obstructed");
+        provider.add("integration.gtceu.jade.invalid_structure", "Structure Incomplete");
+        provider.add("integration.gtceu.jade.valid_structure", "Structure Formed");
+        provider.add("integration.gtceu.jade.obstructed_structure", "Structure Obstructed");
 
         // Maintenance
-        provider.add("gtceu.top.maintenance_fixed", "Maintenance Fine");
-        provider.add("gtceu.top.maintenance_broken", "Needs Maintenance");
-        provider.add("gtceu.top.maintenance.wrench", "Pipe is loose");
-        provider.add("gtceu.top.maintenance.screwdriver", "Screws are loose");
-        provider.add("gtceu.top.maintenance.soft_mallet", "Something is stuck");
-        provider.add("gtceu.top.maintenance.hard_hammer", "Plating is dented");
-        provider.add("gtceu.top.maintenance.wire_cutter", "Wires burned out");
-        provider.add("gtceu.top.maintenance.crowbar", "That doesn't belong there");
+        provider.add("integration.gtceu.jade.maintenance_fixed", "Maintenance Fine");
+        provider.add("integration.gtceu.jade.maintenance_broken", "Needs Maintenance");
+        provider.add("integration.gtceu.jade.maintenance.wrench", "Pipe is loose");
+        provider.add("integration.gtceu.jade.maintenance.screwdriver", "Screws are loose");
+        provider.add("integration.gtceu.jade.maintenance.soft_mallet", "Something is stuck");
+        provider.add("integration.gtceu.jade.maintenance.hard_hammer", "Plating is dented");
+        provider.add("integration.gtceu.jade.maintenance.wire_cutter", "Wires burned out");
+        provider.add("integration.gtceu.jade.maintenance.crowbar", "That doesn't belong there");
 
         // Steam Venting
-        provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
-        provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
+        provider.add("integration.gtceu.jade.exhaust_vent_direction", "Exhaust Vent: %s");
+        provider.add("integration.gtceu.jade.exhaust_vent_blocked", "Blocked");
 
         // Primitive Pump
-        provider.add("gtceu.top.primitive_pump_production", "Production: %s mB/s");
+        provider.add("integration.gtceu.jade.primitive_pump_production", "Production: %s mB/s");
 
         // Ender Link Cover??
-        provider.add("gtceu.top.filter.label", "Filter:");
-        provider.add("gtceu.top.link_cover.color", "Color:");
-        provider.add("gtceu.top.mode.export", "Exporting");
-        provider.add("gtceu.top.mode.import", "Importing");
+        provider.add("integration.gtceu.jade.filter.label", "Filter:");
+        provider.add("integration.gtceu.jade.link_cover.color", "Color:");
+        provider.add("integration.gtceu.jade.mode.export", "Exporting");
+        provider.add("integration.gtceu.jade.mode.import", "Importing");
 
         // Extra Cover Provider
-        provider.add("gtceu.top.unit.items", "Items");
-        provider.add("gtceu.top.unit.fluid_milibuckets", "L");
-        provider.add("gtceu.top.unit.fluid_buckets", "kL");
+        provider.add("integration.gtceu.jade.unit.items", "Items");
+        provider.add("integration.gtceu.jade.unit.fluid_milibuckets", "L");
+        provider.add("integration.gtceu.jade.unit.fluid_buckets", "kL");
 
         // Recipe Provider
-        provider.add("gtceu.top.recipe_output", "Recipe Outputs:");
-        provider.add("gtceu.top.item_auto_output", "Item Output: %s");
-        provider.add("gtceu.top.fluid_auto_output", "Fluid Output: %s");
+        provider.add("integration.gtceu.jade.recipe_output", "Recipe Outputs:");
+        provider.add("integration.gtceu.jade.item_auto_output", "Item Output: %s");
+        provider.add("integration.gtceu.jade.fluid_auto_output", "Fluid Output: %s");
 
         // IO Provider
-        provider.add("gtceu.top.auto_output", "Auto Output");
-        provider.add("gtceu.top.allow_output_input", "Allow Input");
+        provider.add("integration.gtceu.jade.auto_output", "Auto Output");
+        provider.add("integration.gtceu.jade.allow_output_input", "Allow Input");
 
         // Cable Provider
-        provider.add("gtceu.top.cable_voltage", "Voltage: ");
-        provider.add("gtceu.top.cable_amperage", "Amperage: ");
-
+        provider.add("integration.gtceu.jade.cable.voltage", "Voltage: ");
+        provider.add("integration.gtceu.jade.cable.amperage", "Amperage: ");
+        provider.add("integration.gtceu.jade.cable.overloaded", "§cCable Overloaded!§r");
         // Machine Mode Provider
-        provider.add("gtceu.top.machine_mode", "Machine Mode: ");
+        provider.add("integration.gtceu.jade.machine_mode", "Machine Mode: ");
 
         // Color Provider
-        provider.add("gtceu.top.stained", "Colored: %s");
+        provider.add("integration.gtceu.jade.stained", "Colored: %s");
 
         // Proxy/Buffers
-        provider.add("gtceu.top.buffer_not_bound", "Buffer Not Currently Bound");
-        provider.add("gtceu.top.buffer_bound_pos", "Bound To - X: %s, Y: %s, Z: %s");
-        provider.add("gtceu.top.proxies_bound", "Buffer Proxies Bound: %s");
+        provider.add("integration.gtceu.jade.pattern_buffer.not_bound", "Buffer Not Currently Bound");
+        provider.add("integration.gtceu.jade.pattern_buffer.bound_to_pos", "Bound To - X: %s, Y: %s, Z: %s");
+        provider.add("integration.gtceu.jade.pattern_buffer.proxies_bound", "Buffer Proxies Bound: %s");
 
-        provider.add("gtceu.top.energy_stored", " / %d EU");
-        provider.add("gtceu.top.progress_computation", " / %s CWU");
-        provider.add("gtceu.top.progress_sec", " / %s s");
-        provider.add("gtceu.top.progress_tick", " / %s t");
+        provider.add("integration.gtceu.jade.energy_stored", " / %d EU");
+        provider.add("integration.gtceu.jade.progress_computation", " / %s CWU");
+        provider.add("integration.gtceu.jade.progress_sec", " / %s s");
+        provider.add("integration.gtceu.jade.progress_tick", " / %s t");
 
-        provider.add("gtceu.jade.energy_stored", "%d / %d EU");
-        provider.add("gtceu.jade.progress_computation", "%s / %s CWU");
-        provider.add("gtceu.jade.progress_sec", "%s / %s s");
-        provider.add("gtceu.jade.progress_tick", "%s / %s t");
+        provider.add("integration.gtceu.jade.energy_stored", "%d / %d EU");
+        provider.add("integration.gtceu.jade.progress_computation", "%s / %s CWU");
+        provider.add("integration.gtceu.jade.progress_sec", "%s / %s s");
+        provider.add("integration.gtceu.jade.progress_tick", "%s / %s t");
 
         // Hazard Provider
-        provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
-        provider.add("gtceu.jade.fluid_use", "%s mB/t");
-        provider.add("gtceu.jade.amperage_use", "%s A");
-        provider.add("gtceu.jade.at", " @ ");
-        provider.add("gtceu.jade.remaining_charge_time", "Until charged: %s");
-        provider.add("gtceu.jade.remaining_discharge_time", "Until empty: %s");
-        provider.add("gtceu.jade.changes_eu_sec", "%s EU/s");
-        provider.add("gtceu.jade.seconds", "%s seconds");
-        provider.add("gtceu.jade.minutes", "%s minutes");
-        provider.add("gtceu.jade.hours", "%s hours");
-        provider.add("gtceu.jade.days", "%s days");
-        provider.add("gtceu.jade.years", "%s years");
+        provider.add("integration.gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
+        provider.add("integration.gtceu.jade.fluid_use", "%s mB/t");
+        provider.add("integration.gtceu.jade.amperage_use", "%s A");
+        provider.add("integration.gtceu.jade.at", " @ ");
+        provider.add("integration.gtceu.jade.remaining_charge_time", "Until charged: %s");
+        provider.add("integration.gtceu.jade.remaining_discharge_time", "Until empty: %s");
+        provider.add("integration.gtceu.jade.changes_eu_sec", "%s EU/s");
+        provider.add("integration.gtceu.jade.seconds", "%s seconds");
+        provider.add("integration.gtceu.jade.minutes", "%s minutes");
+        provider.add("integration.gtceu.jade.hours", "%s hours");
+        provider.add("integration.gtceu.jade.days", "%s days");
+        provider.add("integration.gtceu.jade.years", "%s years");
 
         // Plugin Names
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
@@ -225,44 +224,45 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
-        provider.add("gtceu.top.energy_stored", " / %d EU");
-        provider.add("gtceu.top.progress_computation", " / %s CWU");
-        provider.add("gtceu.top.progress_sec", " / %s s");
-        provider.add("gtceu.top.progress_tick", " / %s t");
+        provider.add("integration.gtceu.jade.energy_stored", " / %d EU");
+        provider.add("integration.gtceu.jade.progress_computation", " / %s CWU");
+        provider.add("integration.gtceu.jade.progress_sec", " / %s s");
+        provider.add("integration.gtceu.jade.progress_tick", " / %s t");
 
-        provider.add("gtceu.top.ldp_endpoint.is_formed", "§aPipeline Formed§r");
-        provider.add("gtceu.top.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
-        provider.add("gtceu.top.ldp_endpoint.io_type", "IO Type: %s");
-        provider.add("gtceu.top.ldp_endpoint.output_direction", "Output Direction: %s");
+        provider.add("integration.gtceu.jade.ldp_endpoint.is_formed", "§aPipeline Formed§r");
+        provider.add("integration.gtceu.jade.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
+        provider.add("integration.gtceu.jade.ldp_endpoint.io_type", "IO Type: %s");
+        provider.add("integration.gtceu.jade.ldp_endpoint.output_direction", "Output Direction: %s");
+
+        provider.add("integration.gtceu.jade.generator.output_too_small", "Energy Output too small!");
     }
 
     private static void initMinimapLang(GTLangProvider provider) {
         // Tooltip/Name
-        provider.add("minimap.gtceu.ore_vein.depleted", "Depleted");
+        provider.add("minimap.gtceu.ore_vein.depleted", "Depleted Vein");
 
         // Chat Messages
-        provider.add("message.gtceu.new_veins.amount", "Prospected %d new veins!");
-        provider.add("message.gtceu.new_veins.name", "Prospected %s!");
+        provider.add("map.gtceu.new_veins.amount", "Prospected %d new veins!");
+        provider.add("map.gtceu.new_veins.name", "Prospected %s!");
 
         // JourneyMap button names
-        provider.add("gtceu.journeymap.options.layers", "Prospection layers");
-        provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
-        provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
-        provider.add("gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
+        provider.add("integration.gtceu.journeymap.options.layers", "Prospection layers");
+        provider.add("integration.gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
+        provider.add("integration.gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("integration.gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
 
-        // Buttons
-        provider.add("button.gtceu.mark_as_depleted.name", "Mark as Depleted");
-        provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
-        provider.add("button.gtceu.ore_veins", "Show GT Ore Veins");
-        provider.add("button.gtceu.bedrock_fluids", "Show Bedrock Fluid Veins");
-        provider.add("button.gtceu.hide_depleted", "Hide Depleted Veins");
-        provider.add("button.gtceu.show_depleted", "Show Depleted Veins");
+        provider.add("map.gtceu.button.mark_as_depleted.name", "Mark as Depleted");
+        provider.add("map.gtceu.button.toggle_waypoint.name", "Toggle Waypoint");
+        provider.add("map.gtceu.button.ore_veins", "Show GT Ore Veins");
+        provider.add("map.gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("map.gtceu.button.hide_depleted", "Hide Depleted Veins");
+        provider.add("map.gtceu.button.show_depleted", "Show Depleted Veins");
     }
 
     private static void initOwnershipLang(GTLangProvider provider) {
         // Team Names
-        provider.add("ownership.gtceu.name.player", "Player");
-        provider.add("ownership.gtceu.name.ftb", "FTB Teams");
-        provider.add("ownership.gtceu.name.argonauts", "Argonauts Guild");
+        provider.add("integration.gtceu.ownership.name.player", "Player");
+        provider.add("integration.gtceu.ownership.name.ftb", "FTB Teams");
+        provider.add("integration.gtceu.ownership.name.argonauts", "Argonauts Guild");
     }
 }

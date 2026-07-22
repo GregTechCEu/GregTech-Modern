@@ -28,7 +28,7 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
     @Override
     public SimpleWorldGenLayer register() {
         this.value = new SimpleWorldGenLayer(
-                this.id.getPath(),
+                this.id,
                 () -> new AnyMatchRuleTest(targets.stream().map(IWorldGenLayer.RuleTestSupplier::get).toList()),
                 Set.copyOf(dimensions));
         return value;

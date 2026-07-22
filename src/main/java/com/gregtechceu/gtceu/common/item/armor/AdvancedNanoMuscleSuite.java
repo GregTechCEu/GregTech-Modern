@@ -180,9 +180,9 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                 if (canShare && cont.getCharge() == 0) {
                     player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.error"));
                 } else if (canShare) {
-                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.enabledd"));
+                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.enabled"));
                 } else {
-                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.disabledd"));
+                    player.sendSystemMessage(Component.translatable("armor.gtceu.energy_share.disabled"));
                 }
             }
 

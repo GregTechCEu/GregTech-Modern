@@ -1,8 +1,6 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/lamps/light_gray_ctm_emissive"
-    },
-    "shimmer": {
+    "gtceu": {
+        "connection_texture": "gtceu:block/lamps/light_gray_bloom_ctm",
         "bloom": true
     }
 }

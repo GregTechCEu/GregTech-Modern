@@ -4,16 +4,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -23,15 +19,8 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.utils.Position;
-
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 
-import com.google.common.collect.Tables;
 import lombok.Getter;
 
 import java.util.*;
@@ -39,7 +28,7 @@ import java.util.*;
 /**
  * A singleblock steam machine with recipe logic and item IO.
  */
-public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachine {
+public class SimpleSteamMachine extends SteamWorkableMachine {
 
     @SaveField
     public final NotifiableItemStackHandler importItems;
@@ -49,10 +38,31 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
     @Getter
     private final ExhaustVentMachineTrait exhaustVentTrait;
 
+    /**
+     * Creates a {@link SimpleSteamMachine}.
+     *
+     * @param info        {@link BlockEntityCreationInfo}
+     * @param recipeLogic The recipe logic to use.
+     * @param importSlots The amount of item input slots this machine should have (can be 0).
+     * @param exportSlots The amount of item output slots this machine should have (can be 0).
+     */
+    public SimpleSteamMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic, boolean isHighPressure,
+                              int importSlots, int exportSlots) {
+        super(info, isHighPressure, recipeLogic);
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
+    }
+
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
-        this.importItems = attachTrait(createImportItemHandler());
-        this.exportItems = attachTrait(createExportItemHandler());
+        this.importItems = attachTrait(
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN, IO.BOTH));
+        this.exportItems = attachTrait(
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.OUT));
 
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
@@ -61,18 +71,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
             // outputFacing will always be opposite the front facing on init
             setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK));
         }
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization *****//
-    //////////////////////////////////////
-
-    protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 
     @Override
@@ -106,8 +104,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
         var oldFacing = getOutputFacing();
         super.setOutputFacing(outputFacing);
         if (getOutputFacing() != oldFacing) {
-            updateModelVentDirection();
             exhaustVentTrait.setVentingDirection(outputFacing);
+            updateModelVentDirection();
         }
     }
 
@@ -159,43 +157,5 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IUIMachi
         var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);
         if (!steamMachine.isHighPressure) builder.durationMultiplier(2);
         return builder.build();
-    }
-
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        exhaustVentTrait.setNeedsVenting(true);
-        exhaustVentTrait.checkVenting();
-    }
-
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
-        storages.put(IO.IN, ItemRecipeCapability.CAP, importItems.storage);
-        storages.put(IO.OUT, ItemRecipeCapability.CAP, exportItems.storage);
-
-        var group = getRecipeType().getRecipeUI().createUITemplate(recipeLogic::getProgressPercent,
-                storages,
-                new CompoundTag(),
-                Collections.emptyList(),
-                true,
-                isHighPressure);
-        Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4,
-                32);
-        group.setSelfPosition(pos);
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
-                .widget(group)
-                .widget(new LabelWidget(5, 5, getBlockState().getBlock().getDescriptionId()))
-                .widget(new PredicatedImageWidget(pos.x + group.getSize().width / 2 - 9,
-                        pos.y + group.getSize().height / 2 - 9, 18, 18,
-                        GuiTextures.INDICATOR_NO_STEAM.get(isHighPressure))
-                        .setPredicate(recipeLogic::isWaiting))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
     }
 }

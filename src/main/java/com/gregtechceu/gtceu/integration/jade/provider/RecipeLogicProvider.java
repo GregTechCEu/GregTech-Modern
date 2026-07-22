@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
@@ -26,14 +26,15 @@ import snownee.jade.api.config.IPluginConfig;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
+public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeLogicProvider() {
         super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
     }
 
     @Override
-    protected void write(CompoundTag data, BlockAccessor blockAccessor, RecipeLogic capability) {
+    protected CompoundTag write(RecipeLogic capability) {
+        var data = new CompoundTag();
         data.putBoolean("Working", capability.isWorking());
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
@@ -45,9 +46,16 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
+        // Returns -1 if not a generator
+        long generatorPower = capability.getRLMachine().getDisplayGeneratorPower();
+        if (generatorPower > 0) {
+            recipeInfo.putLong("generatorPower", generatorPower);
+        }
+
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
+        return data;
     }
 
     public static long getVoltage(RecipeLogic capability) {
@@ -79,7 +87,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = Component.translatable("gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                        text = Component.translatable("integration.gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
@@ -87,10 +95,10 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                         float minAmperage = (float) EUt / voltage;
 
                         text = Component
-                                .translatable("gtceu.jade.amperage_use",
+                                .translatable("integration.gtceu.jade.amperage_use",
                                         FormattingUtil.formatNumber2Places(minAmperage))
                                 .withStyle(ChatFormatting.RED)
-                                .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN));
+                                .append(Component.translatable("integration.gtceu.jade.at").withStyle(ChatFormatting.GREEN));
                         if (tier < GTValues.TIER_COUNT) {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
@@ -110,9 +118,14 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
                     }
 
                     if (isInput) {
-                        tooltip.add(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ").append(text));
                     } else {
-                        tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ").append(text));
+                        long generatorPower = recipeInfo.getLong("generatorPower");
+                        if (generatorPower > 0 && generatorPower < EUt) {
+                            tooltip.add(Component.translatable("integration.gtceu.jade.generator.output_too_small")
+                                    .withStyle(ChatFormatting.RED));
+                        }
                     }
                 }
             }
@@ -120,13 +133,13 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
             if (blockEntity instanceof IRecipeLogicMachine rlm) {
                 var logic = rlm.getRecipeLogic();
 
-                if (logic.showFancyTooltip() && logic.isWorkingEnabled()) {
+                if (!logic.getWaitingReasons().isEmpty() && logic.isWorkingEnabled()) {
                     Component status = logic.isWaiting() ?
                             Component.translatable("gtceu.recipe_logic.recipe_waiting")
                                     .withStyle(ChatFormatting.YELLOW) :
                             Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
                     tooltip.add(status);
-                    logic.getFancyTooltip().forEach(tooltip::add);
+                    logic.getWaitingReasons().forEach(tooltip::add);
                 }
             }
         }

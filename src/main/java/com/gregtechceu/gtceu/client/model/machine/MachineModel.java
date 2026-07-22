@@ -4,21 +4,21 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.ctm.CTMMeshBuilder;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -313,14 +313,14 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             quads.addAll(render.getRenderQuads(machine, level, pos, blockState, side, rand, modelData, renderType));
         }
         // the instanceof check also ensures it's not null
-        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
+        if (machine instanceof MultiblockPartMachine part && part.replacePartModelWhenFormed()) {
             quads = replacePartBaseModel(quads, part, machine.getFrontFacing(), side, rand, modelData, renderType);
         }
 
         // we have to recalculate CTM ourselves.
         // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
-        if (level != null && pos != null && blockState != null) {
-            return CustomBakedModel.reBakeCustomQuads(quads, level, pos, blockState, side, 0.0f);
+        if (level != null && pos != null && blockState != null && side != null) {
+            return CTMMeshBuilder.buildCTMQuads(level, pos, blockState, quads, side);
         }
         return quads;
     }
@@ -337,13 +337,15 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
     }
 
-    public List<BakedQuad> replacePartBaseModel(List<BakedQuad> originalQuads, IMultiPart part, Direction frontFacing,
+    public List<BakedQuad> replacePartBaseModel(List<BakedQuad> originalQuads, MultiblockPartMachine part,
+                                                Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
         for (MultiblockControllerMachine controller : controllers) {
+            if (controller == null) continue;
             var state = controller.getBlockState();
-            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            BakedModel model = RenderUtil.getModelForState(state);
             List<BakedQuad> newQuads = null;
 
             // spotless:off
@@ -373,7 +375,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, MultiblockControllerMachine controller,
-                                                List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
+                                                List<BakedQuad> quads, MultiblockPartMachine part,
+                                                Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var overrides = controllerModel.textureOverrides;

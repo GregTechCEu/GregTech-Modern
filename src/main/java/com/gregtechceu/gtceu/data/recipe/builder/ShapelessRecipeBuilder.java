@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
-
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+import com.gregtechceu.gtceu.utils.data.NBTToJsonConverter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;

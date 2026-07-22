@@ -59,7 +59,7 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
         tooltip.add(
                 helper.progress(
                         progress,
-                        Component.translatable("gtceu.jade.energy_stored", energyStr, maxEnergyStr),
+                        Component.translatable("integration.gtceu.jade.energy_stored", energyStr, maxEnergyStr),
                         helper.progressStyle().color(0xFFEEE600, 0xFFEEE600).textColor(-1),
                         Util.make(BoxStyle.DEFAULT, style -> style.borderColor = 0xFF555555),
                         true));
@@ -68,10 +68,6 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
     @Override
     protected boolean allowDisplaying(IEnergyInfoProvider capability) {
         return !capability.isOneProbeHidden();
-    }
-
-    protected float getProgress(long progress, long maxProgress) {
-        return maxProgress == 0 ? 0 : (float) ((double) progress / maxProgress);
     }
 
     protected float getProgress(BigInteger progress, BigInteger maxProgress) {

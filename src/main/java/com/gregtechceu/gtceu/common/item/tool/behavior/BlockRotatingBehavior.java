@@ -7,10 +7,9 @@ import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 
-import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -91,18 +90,46 @@ public class BlockRotatingBehavior implements IToolBehavior {
     }
 
     public static BlockHitResult retraceBlock(BlockGetter level, Player player, BlockPos pos) {
-        Vec3 startVec = RayTraceHelper.getTraceOrigin(player);
-        Vec3 endVec = RayTraceHelper.getTraceTarget(player, ToolHelper.getPlayerBlockReach(player), startVec);
+        double playerX = player.getX();
+        double playerY = player.getY() + (double) player.getEyeHeight();
+        double playerZ = player.getZ();
+
+        Vec3 startVec = new Vec3(playerX, playerY, playerZ);
+
+        double reachDistance = ToolHelper.getPlayerBlockReach(player);
+
+        float playerXRot = player.getXRot();
+        float playerYRot = player.getYRot();
+
+        float yawCos = Mth.cos(-playerYRot * ((float) Math.PI / 180F) - (float) Math.PI);
+        float yawSin = Mth.sin(-playerYRot * ((float) Math.PI / 180F) - (float) Math.PI);
+
+        float pitchCos = -Mth.cos(-playerXRot * ((float) Math.PI / 180F));
+        float pitchSin = Mth.sin(-playerXRot * ((float) Math.PI / 180F));
+
+        float lookX = yawSin * pitchCos;
+        float lookZ = yawCos * pitchCos;
+
+        Vec3 endVec = startVec.add(
+                (double) lookX * reachDistance,
+                (double) pitchSin * reachDistance,
+                (double) lookZ * reachDistance);
+
         BlockState state = level.getBlockState(pos);
+
         VoxelShape baseShape = state.getShape(level, pos);
         BlockHitResult baseTraceResult = baseShape.clip(startVec, endVec, pos);
+
         if (baseTraceResult != null) {
-            BlockHitResult raytraceTraceShape = state.getVisualShape(level, pos, CollisionContext.of(player))
+            BlockHitResult visualShapeTraceResult = state
+                    .getVisualShape(level, pos, CollisionContext.of(player))
                     .clip(startVec, endVec, pos);
-            if (raytraceTraceShape != null) {
-                return raytraceTraceShape;
+
+            if (visualShapeTraceResult != null) {
+                return visualShapeTraceResult;
             }
         }
+
         return baseTraceResult;
     }
 }
