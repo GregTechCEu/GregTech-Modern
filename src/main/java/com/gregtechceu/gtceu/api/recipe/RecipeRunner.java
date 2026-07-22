@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import net.minecraft.network.chat.Component;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -133,7 +134,7 @@ public class RecipeRunner {
         if (!isTick && io.support(IO.OUT)) {
             Map<RecipeHandlerGroup, List<RecipeHandlerList>> sorted = new HashMap<>(handlerGroups.size());
             for (var entry : handlerGroups.entrySet()) {
-                List<RecipeHandlerList> copy = new ArrayList<>(entry.getValue());
+                List<RecipeHandlerList> copy = new ObjectArrayList<>(entry.getValue());
                 copy.sort(RecipeHandlerList.COMPARATOR.reversed());
                 sorted.put(entry.getKey(), copy);
             }
@@ -256,9 +257,13 @@ public class RecipeRunner {
     }
 
     private Map<RecipeHandlerGroup, List<RecipeHandlerList>> getCompiledGroups(List<RecipeHandlerList> handlers) {
-        int cachedVersion = versions.cachedGroupsVersionIn;
-        var cached = versions.cachedGroupsIn;
-        if (io != IO.IN) {
+        int cachedVersion;
+        Map<RecipeHandlerGroup, List<RecipeHandlerList>> cached;
+
+        if (io == IO.IN) {
+            cachedVersion = versions.cachedGroupsVersionIn;
+            cached = versions.cachedGroupsIn;
+        } else {
             cachedVersion = versions.cachedGroupsVersionOut;
             cached = versions.cachedGroupsOut;
         }
