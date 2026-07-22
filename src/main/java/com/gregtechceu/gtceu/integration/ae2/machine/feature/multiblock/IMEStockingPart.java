@@ -94,13 +94,10 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                                         .setNumbers(1, 200))
                                 .margin(5)));
 
-        BooleanSyncValue autoPullValue = new BooleanSyncValue(this::isAutoPull, this::setAutoPull).allowC2S();
-        syncManager.syncValue("stocking_auto_pull", autoPullValue);
-
         return MachineUIPanelBuilder.panelBuilder(this.self())
                 .rightConfigurators(f -> {
                     f.child(new ToggleButton()
-                            .syncHandler("stocking_auto_pull")
+                            .value(new BooleanSyncValue(this::isAutoPull, this::setAutoPull).allowC2S())
                             .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
                             .tooltipAutoUpdate(true)
                             .tooltipBuilder(r -> r
