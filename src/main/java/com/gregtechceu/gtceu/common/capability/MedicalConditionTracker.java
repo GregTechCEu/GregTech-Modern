@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -240,11 +241,12 @@ public class MedicalConditionTracker implements INBTSerializable<CompoundTag> {
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            ResourceLocation id = GTCEu.id(compoundTag.getString("condition"));
-            if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, GTCEu.id(compoundTag.getString("condition")));
+            var holder = provider.holder(id);
+            if (holder.isEmpty()) {
                 continue;
             }
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
+            MedicalCondition condition = holder.get().value();
             float progression = compoundTag.getFloat("progression");
 
             medicalConditions.put(condition, progression);
@@ -252,11 +254,9 @@ public class MedicalConditionTracker implements INBTSerializable<CompoundTag> {
 
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            ResourceLocation id = GTCEu.id(permanentConditionsTag.getString(i));
-            if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
-                continue;
-            }
-            permanentConditions.add(GTRegistries.MEDICAL_CONDITIONS.get(id));
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, GTCEu.id(permanentConditionsTag.getString(i)));
+            var holder = provider.holder(id);
+            holder.ifPresent(h -> permanentConditions.add(h.value()));
         }
     }
 }

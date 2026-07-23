@@ -126,6 +126,8 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
+
+        provider.add("argument.medical_condition.id.invalid", "Unknown medical condition %s");
         provider.add("command.gtceu.medical_condition.clear.everything.failed", "Target has no conditions to remove");
         provider.add("command.gtceu.medical_condition.clear.everything.success.multiple",
                 "Removed all conditions from %s targets");

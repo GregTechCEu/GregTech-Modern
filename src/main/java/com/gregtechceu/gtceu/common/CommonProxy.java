@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -42,6 +41,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngre
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -75,7 +75,6 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.KubeGTRegistryEventHandler;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -90,8 +89,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -108,10 +105,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.fluids.crafting.*;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
-import net.neoforged.neoforge.registries.ModifyRegistriesEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforge.registries.callback.BakeCallback;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -242,19 +237,49 @@ public class CommonProxy {
         GTMaterials.init();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onRegisterLate(RegisterEvent event) {
-        // Material event *should* happen before any of the others here
+    // Fire post material events after all other material registry events.
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
+            GTCEu.LOGGER.info("Firing material register late event");
             GTRegistries.MATERIALS.close();
             ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
-            // --spacer--
-        } else if (event.getRegistryKey() == Registries.BLOCK) {
+
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
+                // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
+                var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
+                AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
+                if (accessor.getDoDatagen().get()) {
+                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
+                            .asMap(accessor.getDatagens())
+                            .get(ProviderType.LANG);
+                    NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
+                            .generate((RegistrateLangProvider) provider, namespace);
+                    if (providers == null) {
+                        accessor.getDatagens().put(ProviderType.LANG, generator);
+                    } else {
+                        providers.addFirst(generator);
+                    }
+                }
+            });
+        } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
+            // Prepare machine render states after all machines have been registered
+            for (MachineDefinition machine : GTRegistries.MACHINES) {
+                for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
+                    MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void registerMaterialContent(RegisterEvent event) {
+        if (event.getRegistryKey() == Registries.BLOCK) {
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
             GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
@@ -281,25 +306,6 @@ public class CommonProxy {
         }
     }
 
-    private static void postInitMaterials(Registry<Material> registry) {
-        // Register all material manager registries, for materials with mod ids.
-        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
-            // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
-            if (accessor.getDoDatagen().get()) {
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
-                providers.addFirst(
-                        (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, namespace));
-            }
-
-            ModList.get().getModContainerById(namespace)
-                    .map(ModContainer::getEventBus)
-                    .ifPresent(registrate::registerEventListeners);
-        });
-    }
-
     @SubscribeEvent
     public static void registerRegistries(NewRegistryEvent event) {
         GTRegistries.getRegistries().forEach(event::register);
@@ -313,12 +319,6 @@ public class CommonProxy {
                 BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.DIRECT_CODEC);
         event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
                 BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.DIRECT_CODEC);
-    }
-
-    @SubscribeEvent
-    public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonProxy::postInitMaterials);
-        GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 
     @SubscribeEvent
