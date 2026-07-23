@@ -239,7 +239,7 @@ public class CommonProxy {
 
     // Fire post material events after all other material registry events.
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRegisterLowest(RegisterEvent event) {
+    public static void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event

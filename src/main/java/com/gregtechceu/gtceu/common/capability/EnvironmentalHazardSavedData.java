@@ -13,10 +13,14 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -309,7 +313,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
                     trigger, medicalConditionReference.value())).orElse(null);
         }
 
-        public void toNetwork(RegistryFriendlyByteBuf buf) {
+        public void toNetwork(FriendlyByteBuf buf) {
             buf.writeBlockPos(source);
             buf.writeFloat(strength);
             buf.writeBoolean(canSpread);
@@ -317,12 +321,12 @@ public class EnvironmentalHazardSavedData extends SavedData {
             buf.writeResourceKey(ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, condition.id));
         }
 
-        public static HazardZone fromNetwork(RegistryFriendlyByteBuf buf) {
+        public static HazardZone fromNetwork(FriendlyByteBuf buf) {
             BlockPos source = buf.readBlockPos();
             float strength = buf.readFloat();
             boolean canSpread = buf.readBoolean();
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS.get(buf.readUtf());
-            Holder<MedicalCondition> condition = buf.registryAccess()
+            Holder<MedicalCondition> condition = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
                     .holderOrThrow(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
             return new HazardZone(source, strength, canSpread, trigger, condition.value());
         }
