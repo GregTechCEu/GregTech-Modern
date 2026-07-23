@@ -128,7 +128,7 @@ public class OreGenerator {
 
     private Stream<Holder<GTOreDefinition>> getEntries(WorldGenLevel level, BlockPos veinCenter,
                                                        XoroshiroRandomSource random) {
-        return GTRegistries.WORLD_GEN_LAYERS.stream()
+        return level.registryAccess().registryOrThrow(GTRegistries.Keys.WORLD_GEN_LAYER).stream()
                 .filter(layer -> layer.isApplicableForLevel(level.getLevel().dimension()))
                 .map(layer -> {
                     int quartX = QuartPos.fromBlock(veinCenter.getX());
