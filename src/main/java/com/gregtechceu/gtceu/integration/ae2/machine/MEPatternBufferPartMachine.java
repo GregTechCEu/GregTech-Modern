@@ -46,7 +46,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -246,7 +245,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         if (itemContents != null && !slot.isItemEmpty()) {
             Set<Item> itemTypes = slot.getItemTypes();
             for (Object obj : itemContents) {
-                if (!(obj instanceof Ingredient ing) || ing.isEmpty()) {
+                if (!(obj instanceof SizedIngredient ing) || ing.isEmpty()) {
                     continue;
                 }
                 for (ItemStack stack : ing.getItems()) {
