@@ -279,42 +279,10 @@ public class IntProviderFluidIngredientTest {
         var stacks = ingredient.collapse().getFluids();
         helper.assertTrue(stacks.length == 1,
                 "Replaced IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid");
-        helper.assertTrue(FluidStack.matches(stacks[0], GTMaterials.Water.getFluid(1)),
+        helper.assertTrue(FluidStack.isSameFluid(stacks[0], GTMaterials.Water.getFluid(1)),
                 "Replaced IntProviderFluidIngredient should have fluid equal to what it was made with");
         helper.succeed();
     }
-
-    // test for IntProviderFluidIngredient.toJson()
-    // @TestHolder(template = "empty", batch = "RangedFluidIngredients")
-    // public static void rangedIngredientJsonTest(GameTestHelper helper) {
-    // var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
-
-    // // serialize/deserialize before rolling count
-    // var jsonPreRoll = ingredient.toJson();
-    // var ingredientDeserializedPreRoll = IntProviderFluidIngredient.fromJson(jsonPreRoll);
-
-    // var stacks = ingredient.getStacks();
-    // var stacksDeserializedPreRoll = ingredientDeserializedPreRoll.getStacks();
-
-    // // serialize/deserialize after rolling count
-    // var jsonPostRoll = ingredient.toJson();
-    // var ingredientDeserializedPostRoll = IntProviderFluidIngredient.fromJson(jsonPostRoll);
-    // var stacksDeserializedPostRoll = ingredientDeserializedPostRoll.getStacks();
-
-    // helper.assertTrue(
-    // stacks.length == stacksDeserializedPreRoll.length && stacks.length == stacksDeserializedPostRoll.length,
-    // "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid, even after serializing");
-    // helper.assertTrue(stacksDeserializedPreRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
-    // "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
-    // helper.assertTrue(stacksDeserializedPostRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
-    // "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
-    // helper.assertFalse(TestUtils.areFluidStacksEqual(stacksDeserializedPreRoll, ingredient.getStacks()),
-    // "IntProviderFluidIngredient.getStacks should be different if it wasn't rolled before serializing");
-    // helper.assertTrue(TestUtils.areFluidStacksEqual(stacksDeserializedPostRoll, ingredient.getStacks()),
-    // "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls if it was rolled before
-    // serializing");
-    // helper.succeed();
-    // }
 
     // Failure Test for singleblock machine with ranged fluid input
     // Provides too little input fluid, should not run recipes.
@@ -359,7 +327,7 @@ public class IntProviderFluidIngredientTest {
         NotifiableFluidTank fluidIn = machine.importFluids;
         NotifiableFluidTank fluidOut = machine.exportFluids;
 
-        fluidIn.setFluidInTank(0, CR_IN.copyWithAmount(REPLICAS));
+        fluidIn.setFluidInTank(0, CR_OUT.copyWithAmount(REPLICAS));
 
         // 1t to turn on, 2t per recipe run
         // get the result of each preroll independently

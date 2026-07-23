@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -28,10 +30,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -456,7 +454,9 @@ public class RecipeHelper {
         for (List<Content> input : runningRecipe.inputs.values()) {
             for (ListIterator<Content> iterator = input.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient)isRanged.right();
                     count = ranged.rollSampledCount();
                     zero = (count == 0);
                     if (zero) ranged.setSampledCount(ranged.getMaxRoll());
@@ -469,7 +469,9 @@ public class RecipeHelper {
         for (List<Content> output : runningRecipe.outputs.values()) {
             for (ListIterator<Content> iterator = output.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient)isRanged.right();
                     count = ranged.rollSampledCount();
                     zero = (count == 0);
                     if (zero) ranged.setSampledCount(ranged.getMaxRoll());
@@ -508,7 +510,9 @@ public class RecipeHelper {
             List<Content> handler = entry.getValue();
             for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient)isRanged.right();
                     count = ranged.rollSampledCount();
                     zero = (count == 0);
                     if (zero) ranged.setSampledCount(ranged.getMaxRoll());
@@ -524,7 +528,9 @@ public class RecipeHelper {
             List<Content> handler = entry.getValue();
             for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
                 Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient)isRanged.right();
                     count = ranged.rollSampledCount();
                     zero = (count == 0);
                     if (zero) ranged.setSampledCount(ranged.getMaxRoll());
@@ -536,5 +542,22 @@ public class RecipeHelper {
             }
         }
         return runningRecipe;
+    }
+
+    /**
+     * Unwraps a {@link Content} to check if its contained ingredient is a Ranged Ingredient.
+     * Doing this is necessary because NeoForge's {@link SizedIngredient} and {@link SizedFluidIngredient} are Final
+     * classes with no superclasses or interfaces which wrap internal ingredients in different ways, so there's no
+     * shared way to check them together.
+     * @return a {@link Pair} of True/False the ingredient was ranged, and the Ranged Ingredient (if True) or Null (if False)
+     */
+    public static Pair<Boolean, @Nullable IRangedIngredient> isRanged(Content content){
+        if (content.content() instanceof SizedIngredient sized && sized.ingredient().getCustomIngredient() instanceof IRangedIngredient ranged){
+            return new ObjectObjectImmutablePair<>(Boolean.TRUE, ranged);
+        }
+        if (content.content() instanceof SizedFluidIngredient sized && sized.ingredient() instanceof IRangedIngredient ranged){
+            return new ObjectObjectImmutablePair<>(Boolean.TRUE, ranged);
+        }
+        return new ObjectObjectImmutablePair<>(Boolean.FALSE, null);
     }
 }
