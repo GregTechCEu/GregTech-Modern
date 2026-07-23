@@ -179,7 +179,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                         .top(19)
                         .child(new TextFieldWidget()
                                 .width(117)
-                                .height(14)
+                                .height(18)
                                 .value(filterString))
                         .child(GTGuiTextures.INFO.asWidget()
                                 .size(16)
