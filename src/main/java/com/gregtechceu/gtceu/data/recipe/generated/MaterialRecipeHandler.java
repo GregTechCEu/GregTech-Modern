@@ -178,6 +178,7 @@ public final class MaterialRecipeHandler {
 
     private static void processEBFRecipe(Material material, BlastProperty property, ItemStack output,
                                          Consumer<FinishedRecipe> provider) {
+        if (material.hasFlag(DISABLE_EBF_BLAST)) return;
         int blastTemp = property.getBlastTemperature();
         BlastProperty.GasTier gasTier = property.getGasTier();
         int duration = property.getDurationOverride();

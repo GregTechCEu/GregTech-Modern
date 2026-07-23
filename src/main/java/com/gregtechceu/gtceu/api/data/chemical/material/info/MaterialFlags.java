@@ -231,6 +231,10 @@ public class MaterialFlags {
             .requireFlags(DISABLE_ALLOY_BLAST)
             .build();
 
+    public static final MaterialFlag DISABLE_EBF_BLAST = new MaterialFlag.Builder("disable_ebf")
+            .requireProps(PropertyKey.BLAST)
+            .build();
+
     /////////////////
     // FLUID //
     /////////////////
