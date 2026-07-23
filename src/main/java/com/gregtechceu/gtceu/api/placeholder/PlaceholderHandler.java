@@ -37,7 +37,6 @@ import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -101,8 +100,7 @@ public class PlaceholderHandler {
     }
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
-                                                        PlaceholderContext context,
-                                                        Object2IntOpenHashMap<String> indices) throws PlaceholderException {
+                                                        PlaceholderContext context) throws PlaceholderException {
         var id = toId(placeholder.getFirst().toString());
         if (id == null) throw new UnknownPlaceholderException(placeholder.getFirst().toString());
         var holder = context.holderLookup().holder(id);
@@ -118,7 +116,6 @@ public class PlaceholderHandler {
         if (ctx.level().isClientSide)
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<Exception> exceptions = new ArrayList<>();
-        Object2IntOpenHashMap<String> indices = new Object2IntOpenHashMap<>();
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
