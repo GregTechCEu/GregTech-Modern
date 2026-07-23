@@ -18,7 +18,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -241,7 +240,8 @@ public class MedicalConditionTracker implements INBTSerializable<CompoundTag> {
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, GTCEu.id(compoundTag.getString("condition")));
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION,
+                    GTCEu.id(compoundTag.getString("condition")));
             var holder = provider.holder(id);
             if (holder.isEmpty()) {
                 continue;
@@ -254,7 +254,8 @@ public class MedicalConditionTracker implements INBTSerializable<CompoundTag> {
 
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, GTCEu.id(permanentConditionsTag.getString(i)));
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION,
+                    GTCEu.id(permanentConditionsTag.getString(i)));
             var holder = provider.holder(id);
             holder.ifPresent(h -> permanentConditions.add(h.value()));
         }

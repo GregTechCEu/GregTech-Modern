@@ -18,7 +18,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -339,9 +338,11 @@ public class LocalizedHazardSavedData extends SavedData {
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
 
-            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, GTCEu.id(zoneTag.getString("condition")));
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION,
+                    GTCEu.id(zoneTag.getString("condition")));
 
-            return lookup.holder(id).map(medicalConditionReference -> new HazardZone(blocks, canSpread, trigger, medicalConditionReference.value())).orElse(null);
+            return lookup.holder(id).map(medicalConditionReference -> new HazardZone(blocks, canSpread, trigger,
+                    medicalConditionReference.value())).orElse(null);
         }
     }
 }

@@ -98,12 +98,10 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.*;
 
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -120,6 +118,7 @@ import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Wrapper;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {

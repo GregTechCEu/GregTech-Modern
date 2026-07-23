@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -20,6 +19,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import static com.gregtechceu.gtceu.common.commands.MedicalConditionCommands.ERROR_UNKNOWN_CONDITION;
 import static net.minecraft.commands.Commands.*;
@@ -61,7 +61,8 @@ public class HazardCommands {
 
         BlockPos source = BlockPosArgument.getBlockPos(context, "source");
         int strength = IntegerArgumentType.getInteger(context, "strength");
-        Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition", GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_CONDITION);
+        Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition",
+                GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_CONDITION);
         boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
 
         EnvironmentalHazardSavedData.getOrCreate(serverLevel)
@@ -76,7 +77,8 @@ public class HazardCommands {
         BlockPos from = BlockPosArgument.getBlockPos(context, "from");
         BlockPos to = BlockPosArgument.getBlockPos(context, "to");
 
-        Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition", GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_CONDITION);
+        Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition",
+                GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_CONDITION);
         boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
 
         LocalizedHazardSavedData.getOrCreate(serverLevel)

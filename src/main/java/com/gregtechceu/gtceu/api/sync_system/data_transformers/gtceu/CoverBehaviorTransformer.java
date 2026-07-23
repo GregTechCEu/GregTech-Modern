@@ -76,7 +76,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
         ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
         if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
-            var coverReg = lookup.holder(ResourceKey.create(GTRegistries.Keys.COVER, Objects.requireNonNullElse(coverType, GTCEu.id("empty"))));
+            var coverReg = lookup.holder(ResourceKey.create(GTRegistries.Keys.COVER,
+                    Objects.requireNonNullElse(coverType, GTCEu.id("empty"))));
             if (coverReg.isEmpty()) {
                 GTCEu.LOGGER.error("Error during NBT load: unknown cover type {} ({})", coverType,
                         tag.getString("coverType"));

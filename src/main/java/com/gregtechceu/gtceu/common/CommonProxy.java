@@ -258,13 +258,8 @@ public class CommonProxy {
                     List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
                             .asMap(accessor.getDatagens())
                             .get(ProviderType.LANG);
-                    NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
-                            .generate((RegistrateLangProvider) provider, namespace);
-                    if (providers == null) {
-                        accessor.getDatagens().put(ProviderType.LANG, generator);
-                    } else {
-                        providers.addFirst(generator);
-                    }
+                    providers.addFirst(
+                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, namespace));
                 }
             });
         } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {

@@ -303,8 +303,10 @@ public class EnvironmentalHazardSavedData extends SavedData {
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, GTCEu.id(zoneTag.getString("condition")));
-            return lookup.holder(id).map(medicalConditionReference -> new HazardZone(source, strength, canSpread, trigger, medicalConditionReference.value())).orElse(null);
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION,
+                    GTCEu.id(zoneTag.getString("condition")));
+            return lookup.holder(id).map(medicalConditionReference -> new HazardZone(source, strength, canSpread,
+                    trigger, medicalConditionReference.value())).orElse(null);
         }
 
         public void toNetwork(RegistryFriendlyByteBuf buf) {
@@ -320,7 +322,8 @@ public class EnvironmentalHazardSavedData extends SavedData {
             float strength = buf.readFloat();
             boolean canSpread = buf.readBoolean();
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS.get(buf.readUtf());
-            Holder<MedicalCondition> condition = buf.registryAccess().holderOrThrow(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
+            Holder<MedicalCondition> condition = buf.registryAccess()
+                    .holderOrThrow(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
             return new HazardZone(source, strength, canSpread, trigger, condition.value());
         }
     }
