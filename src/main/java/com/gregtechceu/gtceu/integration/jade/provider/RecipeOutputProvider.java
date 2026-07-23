@@ -57,12 +57,10 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
             return data;
         }
         data.putBoolean("Working", recipeLogic.isWorking());
-        GTRecipe recipe = recipeLogic.getLastRecipe();
+        GTRecipe recipe = recipeLogic.getLastDisplayedRecipe();
         if (recipe == null) {
             return data;
         }
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
         var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
         int runs = recipe.getTotalRuns();

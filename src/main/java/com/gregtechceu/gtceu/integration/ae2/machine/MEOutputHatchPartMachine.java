@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
@@ -192,7 +193,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                     continue;
                 }
 
-                var fluids = ingredient.getFluids();
+                FluidStack[] fluids;
+                if (ingredient.ingredient() instanceof IntProviderFluidIngredient provider && simulate) {
+                    fluids = new FluidStack[] { provider.getMaxSizeStack() };
+                } else {
+                    fluids = ingredient.getFluids();
+                }
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();
                     continue;

@@ -159,6 +159,21 @@ public class GTRecipe implements Recipe<RecipeInput> {
         return copied;
     }
 
+    public GTRecipe copyWithoutTicks() {
+        var copied = new GTRecipe(recipeType, id,
+                new HashMap<>(inputs), new HashMap<>(outputs),
+                new HashMap<>(), new HashMap<>(),
+                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
+                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
+                new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
+        copied.ocLevel = ocLevel;
+        copied.parallels = parallels;
+        copied.batchParallels = batchParallels;
+        copied.subtickParallels = subtickParallels;
+        return copied;
+    }
+
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         return recipeType.getSerializer();

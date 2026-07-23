@@ -195,8 +195,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             SizedFluidIngredient ing = of(content.content());
 
             int amount;
-            if (ing.ingredient() instanceof IRangedIngredient provider) {
-                amount = provider.getMaxRoll();
+            if (ing.ingredient() instanceof IRangedIngredient ranged) {
+                amount = ranged.getMaxRoll();
             } else {
                 amount = ing.amount();
             }
