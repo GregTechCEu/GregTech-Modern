@@ -245,7 +245,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         if (itemContents != null && !slot.isItemEmpty()) {
             Set<Item> itemTypes = slot.getItemTypes();
             for (Object obj : itemContents) {
-                if (!(obj instanceof SizedIngredient ing) || ing.isEmpty()) {
+                if (!(obj instanceof SizedIngredient ing) || ing.ingredient().isEmpty()) {
                     continue;
                 }
                 for (ItemStack stack : ing.getItems()) {
