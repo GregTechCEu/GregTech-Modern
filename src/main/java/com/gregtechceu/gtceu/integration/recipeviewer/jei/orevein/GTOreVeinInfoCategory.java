@@ -81,5 +81,15 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
         return icon;
     }
 
+    @Override
+    public int getWidth() {
+        return 120;
+    }
+
+    @Override
+    public int getHeight() {
+        return 160;
+    }
+
     public record GTOreVeinInfoWrapper(GTOreDefinition oreDefinition) {}
 }

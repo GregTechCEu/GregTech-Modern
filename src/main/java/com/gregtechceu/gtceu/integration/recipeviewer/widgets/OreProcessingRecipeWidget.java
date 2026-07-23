@@ -10,11 +10,13 @@ import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.integration.recipeviewer.entry.fluid.FluidEntryList;
 import brachy.modularui.integration.recipeviewer.entry.item.ItemEntryList;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
 import it.unimi.dsi.fastutil.ints.IntImmutableList;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
@@ -114,12 +116,20 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
         List<ItemEntryList> itemInputs = recipeWrapper.itemInputs;
         ParentWidget<?> itemStackGroup = new ParentWidget<>().sizeRel(1f);
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
-            itemStackGroup.child(RecipeViewerSlotWidget.create()
-                    .recipeSlotRole(RecipeSlotRole.INPUT)
-                    .pos(ITEM_INPUT_LOCATIONS.getInt(i), ITEM_INPUT_LOCATIONS.getInt(i + 1))
-                    .tooltipBuilder(recipeWrapper.getTooltip(i / 2))
-                    .value(itemInputs.get(i / 2))
-                    .background(i == 0 ? GuiTextures.SLOT_ITEM : IDrawable.NONE));
+            try {
+                itemStackGroup.child(RecipeViewerSlotWidget.create()
+                        .recipeSlotRole(RecipeSlotRole.INPUT)
+                        .pos(ITEM_INPUT_LOCATIONS.getInt(i), ITEM_INPUT_LOCATIONS.getInt(i + 1))
+                        .tooltipBuilder(recipeWrapper.getTooltip(i / 2))
+                        .value(itemInputs.get(i / 2))
+                        .background(i == 0 ? GuiTextures.SLOT_ITEM : IDrawable.NONE));
+            } catch (Exception e) {
+                // Fallback for ModularUI JeiRecipeViewerSlot NotImplementedException
+                itemStackGroup.child(new ButtonWidget<>()
+                        .overlay(new ItemDrawable(ItemStack.EMPTY).asIcon().center())
+                        .pos(ITEM_INPUT_LOCATIONS.getInt(i), ITEM_INPUT_LOCATIONS.getInt(i + 1))
+                        .size(16));
+            }
         }
 
         NonNullList<ItemStack> itemOutputs = recipeWrapper.itemOutputs;
@@ -134,12 +144,22 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
                 continue;
             }
 
-            itemStackGroup.child(RecipeViewerSlotWidget.create()
-                    .pos(ITEM_OUTPUT_LOCATIONS.getInt(i), ITEM_OUTPUT_LOCATIONS.getInt(i + 1))
-                    .recipeSlotRole(RecipeSlotRole.OUTPUT)
-                    .tooltip(recipeWrapper.getTooltip(slotIndex + itemInputs.size()))
-                    .overlay(overlay)
-                    .value(itemOutputs.get(i / 2)));
+            var stack = itemOutputs.get(i / 2);
+            try {
+                itemStackGroup.child(RecipeViewerSlotWidget.create()
+                        .pos(ITEM_OUTPUT_LOCATIONS.getInt(i), ITEM_OUTPUT_LOCATIONS.getInt(i + 1))
+                        .recipeSlotRole(RecipeSlotRole.OUTPUT)
+                        .tooltip(recipeWrapper.getTooltip(slotIndex + itemInputs.size()))
+                        .overlay(overlay)
+                        .value(stack));
+            } catch (Exception e) {
+                var btn = new ButtonWidget<>()
+                        .overlay(new ItemDrawable(stack).asIcon().center())
+                        .pos(ITEM_OUTPUT_LOCATIONS.getInt(i), ITEM_OUTPUT_LOCATIONS.getInt(i + 1))
+                        .size(16);
+                if (overlay != null) btn.overlay(overlay);
+                itemStackGroup.child(btn);
+            }
         }
 
         List<FluidEntryList> fluidInputs = recipeWrapper.fluidInputs;
@@ -147,10 +167,14 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             if (!fluidInputs.get(slotIndex).isEmpty()) {
-                fluidStackGroup.child(RecipeViewerSlotWidget.create()
-                        .recipeSlotRole(RecipeSlotRole.INPUT)
-                        .pos(FLUID_LOCATIONS.getInt(i), FLUID_LOCATIONS.getInt(i + 1))
-                        .value(fluidInputs.get(slotIndex)));
+                try {
+                    fluidStackGroup.child(RecipeViewerSlotWidget.create()
+                            .recipeSlotRole(RecipeSlotRole.INPUT)
+                            .pos(FLUID_LOCATIONS.getInt(i), FLUID_LOCATIONS.getInt(i + 1))
+                            .value(fluidInputs.get(slotIndex)));
+                } catch (Exception e) {
+                    // Fluid fallback not rendered
+                }
             }
         }
 

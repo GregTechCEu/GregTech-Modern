@@ -30,8 +30,7 @@ import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.drawable.schema.BlockHighlight;
-import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
@@ -124,10 +123,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .height(height)
                 .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
                     ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
-                    return RecipeViewerSlotWidget.create()
-                            .recipeSlotRole(RecipeSlotRole.OUTPUT)
-                            .value(stack)
-                            .background(IDrawable.EMPTY)
+                    return new ButtonWidget<>()
+                            .overlay(new ItemDrawable(stack).asIcon().center())
                             .size(16)
                             .margin(1)
                             .tooltip(r -> r.addFromItem(stack));

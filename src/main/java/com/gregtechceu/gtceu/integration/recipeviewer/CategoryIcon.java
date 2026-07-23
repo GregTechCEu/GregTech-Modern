@@ -11,31 +11,43 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
+
 // Generic recipe viewer category icon
 public class CategoryIcon {
 
-    private Object wrappedValue;
+    @Nullable
+    private Supplier<Object> lazyValue;
+    @Nullable
+    private Object resolvedValue;
 
     public CategoryIcon(ResourceLocation texture) {
         if (!GTCEu.isClientSide()) return;
         if (GTCEu.Mods.isEMILoaded()) {
-            wrappedValue = EmiCallWrapper.getRenderable(texture);
+            resolvedValue = EmiCallWrapper.getRenderable(texture);
         } else if (GTCEu.Mods.isJEILoaded()) {
-            wrappedValue = JeiCallWrapper.getRenderable(texture);
+            lazyValue = () -> JeiCallWrapper.getRenderable(texture);
         }
     }
 
     public CategoryIcon(ItemStack stack) {
         if (!GTCEu.isClientSide()) return;
         if (GTCEu.Mods.isEMILoaded()) {
-            wrappedValue = EmiCallWrapper.getRenderable(stack);
+            resolvedValue = EmiCallWrapper.getRenderable(stack);
         } else if (GTCEu.Mods.isJEILoaded()) {
-            wrappedValue = JeiCallWrapper.getRenderable(stack);
+            lazyValue = () -> JeiCallWrapper.getRenderable(stack);
         }
     }
 
+    @Nullable
     public Object get() {
-        return wrappedValue;
+        if (resolvedValue == null && lazyValue != null) {
+            resolvedValue = lazyValue.get();
+            lazyValue = null;
+        }
+        return resolvedValue;
     }
 
     private static class EmiCallWrapper {

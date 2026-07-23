@@ -121,5 +121,15 @@ public class MultiblockInfoJeiCategory extends
         return icon;
     }
 
+    @Override
+    public int getWidth() {
+        return 200;
+    }
+
+    @Override
+    public int getHeight() {
+        return 180;
+    }
+
     public record MultiblockPreviewInfoWrapper(MultiblockMachineDefinition definition) {}
 }

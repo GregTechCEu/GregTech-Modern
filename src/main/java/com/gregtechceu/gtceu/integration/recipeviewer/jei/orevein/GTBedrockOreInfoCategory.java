@@ -62,5 +62,15 @@ public class GTBedrockOreInfoCategory extends
         return Component.translatable("gtceu.jei.bedrock_ore_diagram");
     }
 
+    @Override
+    public int getWidth() {
+        return 120;
+    }
+
+    @Override
+    public int getHeight() {
+        return 140;
+    }
+
     public record GTBedrockOreInfoWrapper(BedrockOreDefinition bedrockOre) {}
 }

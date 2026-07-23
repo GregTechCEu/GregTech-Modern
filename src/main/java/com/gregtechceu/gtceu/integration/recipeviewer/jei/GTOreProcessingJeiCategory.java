@@ -71,5 +71,15 @@ public class GTOreProcessingJeiCategory extends
         return icon;
     }
 
+    @Override
+    public int getWidth() {
+        return 176;
+    }
+
+    @Override
+    public int getHeight() {
+        return 166;
+    }
+
     public record GTOreProcessingInfoWrapper(Material material) {}
 }

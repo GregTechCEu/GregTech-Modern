@@ -65,5 +65,15 @@ public class GTBedrockFluidInfoCategory extends
         return icon;
     }
 
+    @Override
+    public int getWidth() {
+        return 120;
+    }
+
+    @Override
+    public int getHeight() {
+        return 140;
+    }
+
     public record BedrockFluidInfoWrapper(BedrockFluidDefinition fluid) {}
 }

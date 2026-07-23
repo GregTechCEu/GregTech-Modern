@@ -46,14 +46,22 @@ public abstract class GTRecipeJEICategory<T extends Recipe<?>>
                 continue;
             }
             var wrapped = List.copyOf(type.getRecipesInCategory(category));
-            registration.addRecipes(TYPES.apply(category), wrapped);
+            try {
+                registration.addRecipes(TYPES.apply(category), wrapped);
+            } catch (IllegalStateException ignored) {
+                // Category may not be registered if the recipe type has no JEI category
+            }
         }
         // run subcategories
         for (GTRecipeCategory subCategory : subCategories) {
             if (!subCategory.shouldRegisterDisplays()) continue;
             var type = subCategory.getRecipeType();
             var wrapped = List.copyOf(type.getRecipesInCategory(subCategory));
-            registration.addRecipes(TYPES.apply(subCategory), wrapped);
+            try {
+                registration.addRecipes(TYPES.apply(subCategory), wrapped);
+            } catch (IllegalStateException ignored) {
+                // Category may not be registered if the recipe type has no JEI category
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.lookup.StagingRecipeDB;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -53,6 +54,58 @@ public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogi
         for (SteamBoilerLogic logic : ALL_BOILER_LOGICS) {
             logic.recipeCache.clear();
         }
+    }
+
+    /**
+     * Register solid fuel recipes into the boiler RecipeDBs.
+     * Must be called after data maps are loaded (i.e. after {@code DataMapsUpdatedEvent}).
+     *
+     * @param smallBoilerType the small boiler recipe type
+     * @param largeBoilerType the large boiler recipe type
+     */
+    public static void registerFuelRecipes(GTRecipeType smallBoilerType, GTRecipeType largeBoilerType) {
+        var smallStaging = new StagingRecipeDB();
+        var largeStaging = new StagingRecipeDB();
+
+        for (Item item : BuiltInRegistries.ITEM) {
+            try {
+                ItemStack input = item.getDefaultInstance();
+                if (input.isEmpty() || FluidUtil.getFluidContained(input).isPresent()) {
+                    continue;
+                }
+                int burnTime = input.getBurnTime(RecipeType.SMELTING);
+                if (burnTime <= 0) {
+                    continue;
+                }
+
+                ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+
+                GTRecipe smallRecipe = smallBoilerType.recipeBuilder(GTCEu.id(itemId.toDebugFileName()))
+                        .inputItems(input.copyWithCount(1))
+                        .duration(burnTime)
+                        .build();
+                smallRecipe.id = smallRecipe.id.withPrefix("/");
+                smallStaging.add(smallRecipe);
+
+                int largeDuration = burnTime / 4;
+                if (largeDuration > 0) {
+                    GTRecipe largeRecipe = largeBoilerType.recipeBuilder(GTCEu.id(itemId.toDebugFileName()))
+                            .inputItems(input.copyWithCount(1))
+                            .duration(largeDuration)
+                            .build();
+                    largeRecipe.id = largeRecipe.id.withPrefix("/");
+                    largeStaging.add(largeRecipe);
+                }
+            } catch (Exception ignored) {
+                // Some mods (e.g. SophisticatedBackpacks) register capability handlers
+                // that access config values before config is loaded. Skip those items.
+            }
+        }
+
+        smallBoilerType.db().clear();
+        smallStaging.populateDB(smallBoilerType.db());
+        largeBoilerType.db().clear();
+        largeStaging.populateDB(largeBoilerType.db());
     }
 
     protected abstract GTRecipeType getRecipeType();

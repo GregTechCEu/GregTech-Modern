@@ -24,9 +24,12 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.jetbrains.annotations.Nullable;
@@ -59,8 +62,15 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
     public OreVeinRecipeWidget(BedrockFluidDefinition fluid) {
         this(WIDTH, 140, getFluidName(fluid), fluid.getWeight(), null, fluid.dimensionFilter, veinYield(fluid),
                 depletion(fluid));
-        drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create()
-                .value(new FluidStack(fluid.getStoredFluid(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
+        IWidget fluidSlot;
+        try {
+            fluidSlot = RecipeViewerSlotWidget.create()
+                    .value(new FluidStack(fluid.getStoredFluid(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT);
+        } catch (Exception e) {
+            // Fallback for ModularUI JeiRecipeViewerSlot NotImplementedException
+            fluidSlot = new ButtonWidget<>().size(16);
+        }
+        drawUI(Flow.row().coverChildren().child(fluidSlot));
     }
 
     public OreVeinRecipeWidget(GTOreDefinition oreDefinition) {
@@ -73,11 +83,7 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
         var slots = Flow.row().coverChildren();
         for (int i = 0; i < containedOresAsItemStacks.size(); i++) {
-            RecipeViewerSlotWidget<?> oreSlot = RecipeViewerSlotWidget.create().value(containedOresAsItemStacks.get(i))
-                    .recipeSlotRole(RecipeSlotRole.OUTPUT);
-            int finalI = i;
-            oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.get(finalI))));
-            slots.child(oreSlot);
+            slots.child(createItemSlot(containedOresAsItemStacks.get(i)));
         }
         drawUI(slots);
     }
@@ -87,16 +93,11 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
                 veinYield(bedrockOre), depletion(bedrockOre));
 
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
-        IntList chances = bedrockOre.getAllChances();
         containedOresAsItemStacks.addAll(getRawMaterialList(bedrockOre));
 
         var slots = Flow.row().coverChildren();
         for (int i = 0; i < containedOresAsItemStacks.size(); i++) {
-            RecipeViewerSlotWidget<?> oreSlot = RecipeViewerSlotWidget.create().value(containedOresAsItemStacks.get(i))
-                    .recipeSlotRole(RecipeSlotRole.OUTPUT);
-            int finalI = i;
-            oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.getInt(finalI))));
-            slots.child(oreSlot);
+            slots.child(createItemSlot(containedOresAsItemStacks.get(i)));
         }
         drawUI(slots);
     }
@@ -119,19 +120,32 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
             Flow row = Flow.row().coverChildren().padding(2);
 
             for (DimensionMarker dimMarker : getDimensionMarkers(dimensionFilter)) {
-                RecipeViewerSlotWidget<?> dimSlot = RecipeViewerSlotWidget.create().value(dimMarker.getIcon())
-                        .recipeSlotRole(RecipeSlotRole.CATALYST).background(IDrawable.NONE);
+                ItemStack icon = dimMarker.getIcon();
+                IWidget dimWidget = createItemSlot(icon);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
-                    dimSlot.overlay(
+                    ((ParentWidget<?>) dimWidget).overlay(
                             Text.str("T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier)));
                 }
-                row.child(dimSlot);
+                row.child(dimWidget);
             }
             col.child(row);
         } else {
             col.child(Text.str("Any").asWidget());
         }
         child(col);
+    }
+
+    /** Try RecipeViewerSlotWidget, fall back to ButtonWidget if JeiRecipeViewerSlot is broken */
+    private static IWidget createItemSlot(ItemStack stack) {
+        try {
+            return RecipeViewerSlotWidget.create()
+                    .value(stack)
+                    .recipeSlotRole(RecipeSlotRole.OUTPUT);
+        } catch (Exception e) {
+            return new ButtonWidget<>()
+                    .overlay(new ItemDrawable(stack).asIcon().center())
+                    .size(16);
+        }
     }
 
     @SuppressWarnings("all")

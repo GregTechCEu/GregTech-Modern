@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -86,6 +87,7 @@ import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -241,6 +243,17 @@ public class CommonEventListener {
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
         event.addListener(PostRegistryListener.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void onDataMapsUpdated(DataMapsUpdatedEvent event) {
+        if (event.getCause() == DataMapsUpdatedEvent.UpdateCause.SERVER_RELOAD) {
+            event.ifRegistry(net.minecraft.core.registries.Registries.ITEM, registry -> {
+                SteamBoilerLogic.registerFuelRecipes(
+                        com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES,
+                        com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_BOILER_RECIPES);
+            });
+        }
     }
 
     @SubscribeEvent

@@ -41,5 +41,15 @@ public class ProgrammedCircuitJeiCategory extends
         return icon;
     }
 
+    @Override
+    public int getWidth() {
+        return 150;
+    }
+
+    @Override
+    public int getHeight() {
+        return 80;
+    }
+
     public static class GTProgrammedCircuitWrapper {}
 }

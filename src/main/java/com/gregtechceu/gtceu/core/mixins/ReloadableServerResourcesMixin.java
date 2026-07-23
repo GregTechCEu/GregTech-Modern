@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
+import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
+import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
@@ -52,6 +54,8 @@ public abstract class ReloadableServerResourcesMixin {
         long startTime = System.currentTimeMillis();
         GTCraftingComponents.init();
         SteamBoilerLogic.clearBoilerRecipeCaches();
+        SteamSolidBoilerMachine.FUEL_CACHE.clear();
+        SteamLiquidBoilerMachine.FUEL_CACHE.clear();
         GTRecipes.recipeAddition(new RecipeOutput() {
 
             @Override
