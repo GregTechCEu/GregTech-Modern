@@ -92,7 +92,7 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
         if (trait == null || !machine.isFormed() || trait.getFluidOffsets().isEmpty()) return;
 
         if (!fixedFluid) {
-            var lastRecipe = machine.getRecipeLogic().getLastRecipe();
+            var lastRecipe = machine.getRecipeLogic().getLastDisplayedRecipe();
             if (lastRecipe == null) {
                 cachedRecipe = null;
                 cachedFluid = null;

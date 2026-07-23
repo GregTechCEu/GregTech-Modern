@@ -183,7 +183,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             FluidIngredient ing = of(content.content());
 
             int amount;
-            if (ing instanceof IRangedIngredient provider) amount = provider.getMaxRoll();
+            if (ing instanceof IRangedIngredient ranged) amount = ranged.getMaxRoll();
             else amount = ing.getAmount();
 
             if (content.chance() == 0) {

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -54,10 +53,8 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
         CompoundTag data = new CompoundTag();
         if (recipeLogic.isWorking()) {
             data.putBoolean("Working", recipeLogic.isWorking());
-            var recipe = recipeLogic.getLastRecipe();
+            var recipe = recipeLogic.getLastDisplayedRecipe();
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
                 int runs = recipe.getTotalRuns();
@@ -66,7 +63,6 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                 for (var item : itemContents) {
                     CompoundTag itemTag;
                     if (item.content() instanceof IntProviderIngredient provider) {
-                        // don't roll for output but do copy for chance and batch
                         IntProviderIngredient chanced = provider;
                         if (item.chance() < item.maxChance()) {
                             double countD = ((double) runs * item.chance()) / item.maxChance();

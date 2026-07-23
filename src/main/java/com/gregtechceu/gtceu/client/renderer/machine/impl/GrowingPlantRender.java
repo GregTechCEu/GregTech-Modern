@@ -112,7 +112,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
         final RecipeLogic recipeLogic = rlm.getRecipeLogic();
 
         Optional<Block> currentBlock = this.growingBlock
-                .or(() -> Optional.ofNullable(recipeLogic.getLastRecipe()).flatMap(this::findGrowing));
+                .or(() -> Optional.ofNullable(recipeLogic.getLastDisplayedRecipe()).flatMap(this::findGrowing));
         if (currentBlock.isEmpty()) return;
         Block growing = currentBlock.get();
         BlockState state = growing.defaultBlockState();
