@@ -35,7 +35,7 @@ public class MedicalConditionCommands {
             Component.translatable("command.gtceu.medical_condition.give.failed"));
     private static final SimpleCommandExceptionType ERROR_CLEAR_SPECIFIC_FAILED = new SimpleCommandExceptionType(
             Component.translatable("command.gtceu.medical_condition.clear.specific.failed"));
-    private static final DynamicCommandExceptionType ERROR_UNKNOWN_CONDITION = new DynamicCommandExceptionType(
+    public static final DynamicCommandExceptionType ERROR_UNKNOWN_CONDITION = new DynamicCommandExceptionType(
             id -> Component.translatable("argument.medical_condition.id.invalid", id));
 
     // spotless:off

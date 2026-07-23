@@ -13,7 +13,6 @@ import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -21,14 +20,10 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 
 import static net.minecraft.commands.Commands.*;
 
 public class HazardCommands {
-
-    private static final DynamicCommandExceptionType ERROR_UNKNOWN_ITEM = new DynamicCommandExceptionType(
-            id -> Component.translatable("argument.item.id.invalid", id));
 
     // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
@@ -54,7 +49,7 @@ public class HazardCommands {
                                         .then(argument("condition", ResourceKeyArgument.key(GTRegistries.Keys.MEDICAL_CONDITION))
                                                 .executes(context -> {
                                                     BlockPos source = BlockPosArgument.getBlockPos(context, "source");
-                                                    Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition", GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_ITEM);
+                                                    Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition", GTRegistries.Keys.MEDICAL_CONDITION, MedicalConditionCommands.ERROR_UNKNOWN_CONDITION);
                                                     return clearEnvironmentalHazard(context, source, condition.get());
                                                 })))));
     }
@@ -66,7 +61,7 @@ public class HazardCommands {
         BlockPos source = BlockPosArgument.getBlockPos(context, "source");
         int strength = IntegerArgumentType.getInteger(context, "strength");
         Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition",
-                GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_ITEM);
+                GTRegistries.Keys.MEDICAL_CONDITION, MedicalConditionCommands.ERROR_UNKNOWN_CONDITION);
         boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
 
         EnvironmentalHazardSavedData.getOrCreate(serverLevel)
@@ -82,7 +77,7 @@ public class HazardCommands {
         BlockPos to = BlockPosArgument.getBlockPos(context, "to");
 
         Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition",
-                GTRegistries.Keys.MEDICAL_CONDITION, ERROR_UNKNOWN_ITEM);
+                GTRegistries.Keys.MEDICAL_CONDITION, MedicalConditionCommands.ERROR_UNKNOWN_CONDITION);
         boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
 
         LocalizedHazardSavedData.getOrCreate(serverLevel)
