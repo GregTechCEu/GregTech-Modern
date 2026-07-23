@@ -49,7 +49,7 @@ public class GTOreVeinEventJS implements KubeEvent {
 
     public void modify(Context cx, ResourceLocation id, Consumer<GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().registryOrThrow(GTRegistries.Keys.ORE_VEIN);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
 
         var vein = registry.get(id);
@@ -61,7 +61,7 @@ public class GTOreVeinEventJS implements KubeEvent {
 
     public void modifyAll(Context cx, BiConsumer<ResourceLocation, GTOreDefinition> consumer) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().registryOrThrow(GTRegistries.Keys.ORE_VEIN);
         var biomes = registries.access().lookupOrThrow(Registries.BIOME);
 
         Set<ResourceLocation> keys = registry.keySet();
@@ -75,13 +75,13 @@ public class GTOreVeinEventJS implements KubeEvent {
 
     public void remove(Context cx, ResourceLocation id) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().registryOrThrow(GTRegistries.Keys.ORE_VEIN);
         remove(cx, registry, id);
     }
 
     public void removeAll(Context cx) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().registryOrThrow(GTRegistries.Keys.ORE_VEIN);
 
         Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
         keys.forEach(key -> remove(cx, registry, key));
@@ -89,7 +89,7 @@ public class GTOreVeinEventJS implements KubeEvent {
 
     public void removeAll(Context cx, BiPredicate<ResourceLocation, GTOreDefinition> predicate) {
         RegistryAccessContainer registries = RegistryAccessContainer.of(cx);
-        var registry = registries.access().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = registries.access().registryOrThrow(GTRegistries.Keys.ORE_VEIN);
 
         Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
         keys.stream()
@@ -111,6 +111,6 @@ public class GTOreVeinEventJS implements KubeEvent {
     }
 
     public static ResourceKey<GTOreDefinition> createKey(ResourceLocation id) {
-        return ResourceKey.create(GTRegistries.ORE_VEIN_REGISTRY, id);
+        return ResourceKey.create(GTRegistries.Keys.ORE_VEIN, id);
     }
 }

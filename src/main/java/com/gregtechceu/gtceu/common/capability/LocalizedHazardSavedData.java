@@ -17,7 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -71,7 +71,7 @@ public class LocalizedHazardSavedData extends SavedData {
             CompoundTag zoneTag = allHazardZones.getCompound(i);
 
             BlockPos source = BlockPos.of(zoneTag.getLong("pos"));
-            HazardZone zone = HazardZone.deserializeNBT(zoneTag);
+            HazardZone zone = HazardZone.deserializeNBT(zoneTag, serverLevel.registryAccess());
 
             this.hazardZones.put(source, zone);
         }
@@ -298,7 +298,7 @@ public class LocalizedHazardSavedData extends SavedData {
             CompoundTag zoneTag = new CompoundTag();
 
             zoneTag.putLong("pos", entry.getKey().asLong());
-            entry.getValue().serializeNBT(zoneTag);
+            entry.getValue().serializeNBT(zoneTag, provider);
 
             hazardZonesTag.add(zoneTag);
         }
@@ -313,7 +313,7 @@ public class LocalizedHazardSavedData extends SavedData {
             return blocks.size();
         }
 
-        public CompoundTag serializeNBT(CompoundTag zoneTag) {
+        public CompoundTag serializeNBT(CompoundTag zoneTag, HolderLookup.Provider lookup) {
             ListTag blocksTag = new ListTag();
             blocks.stream()
                     .map(NbtUtils::writeBlockPos)
@@ -326,7 +326,7 @@ public class LocalizedHazardSavedData extends SavedData {
             return zoneTag;
         }
 
-        public static HazardZone deserializeNBT(CompoundTag zoneTag) {
+        public static HazardZone deserializeNBT(CompoundTag zoneTag, HolderLookup.Provider lookup) {
             Set<BlockPos> blocks = zoneTag.getList("blocks", Tag.TAG_INT_ARRAY).stream()
                     .map(IntArrayTag.class::cast)
                     .map(tag -> {
@@ -338,13 +338,11 @@ public class LocalizedHazardSavedData extends SavedData {
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
 
-            ResourceLocation id = GTCEu.id(zoneTag.getString("condition"));
-            if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
-                return null;
-            }
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION,
+                    GTCEu.id(zoneTag.getString("condition")));
 
-            return new HazardZone(blocks, canSpread, trigger, condition);
+            return lookup.holder(id).map(medicalConditionReference -> new HazardZone(blocks, canSpread, trigger,
+                    medicalConditionReference.value())).orElse(null);
         }
     }
 }

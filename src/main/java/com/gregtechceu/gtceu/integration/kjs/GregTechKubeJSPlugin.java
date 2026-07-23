@@ -98,9 +98,10 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.*;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -117,26 +118,27 @@ import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Wrapper;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
-        registry.addDefault(GTRegistries.ELEMENT_REGISTRY, ElementBuilder.class, ElementBuilder::new);
-        registry.addDefault(GTRegistries.DIMENSION_MARKER_REGISTRY, DimensionMarkerBuilder.class,
+        registry.addDefault(GTRegistries.Keys.ELEMENT, ElementBuilder.class, ElementBuilder::new);
+        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class,
                 DimensionMarkerBuilder::new);
-        registry.addDefault(GTRegistries.MATERIAL_REGISTRY, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
-        registry.of(GTRegistries.TAG_PREFIX_REGISTRY, reg -> {
+        registry.addDefault(GTRegistries.Keys.MATERIAL, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
+        registry.of(GTRegistries.Keys.TAG_PREFIX, reg -> {
             reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
             reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
 
-        registry.addDefault(GTRegistries.RECIPE_TYPE_REGISTRY, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
-        registry.addDefault(GTRegistries.RECIPE_CATEGORY_REGISTRY, GTRecipeCategoryBuilder.class,
+        registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+        registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
                 GTRecipeCategoryBuilder::new);
 
-        registry.of(GTRegistries.MACHINE_REGISTRY, reg -> {
+        registry.of(GTRegistries.Keys.MACHINE, reg -> {
             reg.addDefault(KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id,
                             new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)));
@@ -161,18 +163,18 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
 
-        registry.addDefault(GTRegistries.ORE_VEIN_REGISTRY, OreVeinDefinitionBuilder.class,
+        registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilder.class,
                 OreVeinDefinitionBuilder::new);
-        registry.addDefault(GTRegistries.BEDROCK_FLUID_REGISTRY, BedrockFluidBuilder.class, BedrockFluidBuilder::new);
-        registry.addDefault(GTRegistries.BEDROCK_ORE_REGISTRY, BedrockOreBuilder.class, BedrockOreBuilder::new);
+        registry.addDefault(GTRegistries.Keys.BEDROCK_FLUID, BedrockFluidBuilder.class, BedrockFluidBuilder::new);
+        registry.addDefault(GTRegistries.Keys.BEDROCK_ORE, BedrockOreBuilder.class, BedrockOreBuilder::new);
     }
 
     @Override
     public void registerServerRegistries(ServerRegistryRegistry registry) {
-        registry.register(GTRegistries.ORE_VEIN_REGISTRY, GTOreDefinition.DIRECT_CODEC, GTOreDefinition.class);
-        registry.register(GTRegistries.BEDROCK_FLUID_REGISTRY,
+        registry.register(GTRegistries.Keys.ORE_VEIN, GTOreDefinition.DIRECT_CODEC, GTOreDefinition.class);
+        registry.register(GTRegistries.Keys.BEDROCK_FLUID,
                 BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.class);
-        registry.register(GTRegistries.BEDROCK_ORE_REGISTRY,
+        registry.register(GTRegistries.Keys.BEDROCK_ORE,
                 BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.class);
     }
 
@@ -183,7 +185,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     }
 
     public static void generateMachineBlockModels() {
-        RegistryObjectStorage.of(GTRegistries.MACHINE_REGISTRY).forEach(builder -> {
+        RegistryObjectStorage.of(GTRegistries.Keys.MACHINE).forEach(builder -> {
             if (builder instanceof IMachineBuilderKJS machineBuilder) {
                 try {
                     machineBuilder.generateMachineModels();
@@ -316,75 +318,44 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("CapeRegistry", CapeRegistry.class);
     }
 
+    private <T> void registryObjectTypeWrapper(TypeWrapperRegistry typeWrappers, Class<T> clazz,
+                                               ResourceKey<Registry<T>> registry) {
+        typeWrappers.register(clazz, (RegistryAccessContainer registries, Object o) -> {
+            o = Wrapper.unwrapped(o);
+            if (clazz.isInstance(o)) return clazz.cast(o);
+            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
+            if (wrapper == null) return null;
+            return registries.access().registryOrThrow(registry)
+                    .get(wrapper.wrapped());
+        });
+    }
+
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
         registry.register(GTResourceLocation.class, GTResourceLocation::wrap);
-        registry.register(GTRecipeType.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof GTRecipeType recipeType) return recipeType;
-            if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
-            return null;
-        });
-        registry.register(GTRecipeCategory.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
-            if (o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
-            return null;
-        });
 
-        registry.register(Element.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof Element element) return element;
-            if (o instanceof CharSequence chars) return GTRegistries.ELEMENTS.get(GTCEu.id(chars.toString()));
-            return null;
-        });
-        registry.register(Material.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof Material material) return material;
-            if (o instanceof CharSequence chars) return GTMaterials.get(chars.toString());
-            return null;
-        });
-        registry.register(MachineDefinition.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof MachineDefinition definition) return definition;
-            if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
-            return null;
-        });
+        registryObjectTypeWrapper(registry, GTRecipeType.class, GTRegistries.Keys.RECIPE_TYPE);
+        registryObjectTypeWrapper(registry, GTRecipeCategory.class, GTRegistries.Keys.RECIPE_CATEGORY);
+        registryObjectTypeWrapper(registry, ChanceLogic.class, GTRegistries.Keys.CHANCE_LOGIC);
 
-        registry.register(TagPrefix.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof TagPrefix tagPrefix) return tagPrefix;
-            if (o instanceof ResourceLocation resLoc) return GTRegistries.TAG_PREFIXES.get(resLoc);
-            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
-            if (wrapper == null) return null;
-            return GTRegistries.TAG_PREFIXES.get(wrapper.wrapped());
-        });
+        registryObjectTypeWrapper(registry, Element.class, GTRegistries.Keys.ELEMENT);
+        registryObjectTypeWrapper(registry, Material.class, GTRegistries.Keys.MATERIAL);
+        registryObjectTypeWrapper(registry, MaterialIconSet.class, GTRegistries.Keys.MATERIAL_ICON_SET);
+        registryObjectTypeWrapper(registry, MachineDefinition.class, GTRegistries.Keys.MACHINE);
+        registryObjectTypeWrapper(registry, TagPrefix.class, GTRegistries.Keys.TAG_PREFIX);
+        registryObjectTypeWrapper(registry, IWorldGenLayer.class, GTRegistries.Keys.WORLD_GEN_LAYER);
+        registryObjectTypeWrapper(registry, MedicalCondition.class, GTRegistries.Keys.MEDICAL_CONDITION);
+
         registry.register(MaterialEntry.class, MaterialEntry::of);
 
-        registry.register(RecipeCapability.class, o -> {
+        registry.register(RecipeCapability.class, (RegistryAccessContainer registries, Object o) -> {
             o = Wrapper.unwrapped(o);
             if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof ResourceLocation id) return GTRegistries.RECIPE_CAPABILITIES.get(id);
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return GTRegistries.RECIPE_CAPABILITIES.get(wrapper.wrapped());
-        });
-        registry.register(ChanceLogic.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof ChanceLogic capability) return capability;
-            if (o instanceof ResourceLocation id) return GTRegistries.CHANCE_LOGICS.get(id);
-            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
-            if (wrapper == null) return null;
-            return GTRegistries.CHANCE_LOGICS.get(wrapper.wrapped());
+            return registries.access().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(wrapper.wrapped());
         });
 
-        registry.register(MaterialIconSet.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return GTRegistries.MATERIAL_ICON_SETS
-                    .get(GTCEu.id(chars.toString()));
-            return null;
-        });
         registry.register(MaterialStack.class, o -> {
             o = Wrapper.unwrapped(o);
             if (o instanceof MaterialStack stack) return stack;
@@ -401,13 +372,6 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             return null;
         });
 
-        registry.register(IWorldGenLayer.class, o -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof IWorldGenLayer layer) return layer;
-            if (o instanceof CharSequence chars) return GTRegistries.WORLD_GEN_LAYERS
-                    .get(GTCEu.id(chars.toString()));
-            return null;
-        });
         registry.registerMapCodec(HeightRangePlacement.class, HeightRangePlacement.CODEC);
         registry.registerCodec(BiomeWeightModifier.class, BiomeWeightModifier.CODEC, BiomeWeightModifier.EMPTY);
         registry.registerCodec(VeinGenerator.class, VeinGenerator.DIRECT_CODEC, NoopVeinGenerator.INSTANCE);

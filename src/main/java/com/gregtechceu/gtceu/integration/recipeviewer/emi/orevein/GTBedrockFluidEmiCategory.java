@@ -30,7 +30,7 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
 
     public static void registerDisplays(EmiRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY);
+                .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID);
         fluids.holders()
                 .filter(fluid -> fluid.value().canGenerate())
                 .forEach(fluid -> registry.addRecipe(new GTBedrockFluid(fluid.value())));
@@ -51,7 +51,7 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
         private final BedrockFluidDefinition fluid;
 
         public GTBedrockFluid(BedrockFluidDefinition fluid) {
-            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)
+            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID)
                     .getKey(fluid).withPrefix("/bedrock_fluid_diagram/"),
                     () -> new OreVeinRecipeWidget(fluid));
             this.fluid = fluid;
