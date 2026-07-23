@@ -80,8 +80,8 @@ public class IntProviderIngredientTest {
         var centHandler = CENTRIFUGE_RECIPE_TYPE.getAdditionHandler();
         centHandler.beginStaging();
 
-        CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
+        CRHandler.addStaging(
+            CR_RECIPE_TYPE.recipeBuilder("test_ranged_input_item_cr")
                 .inputItemsRanged(CR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
                 .outputItems(STONE)
@@ -90,7 +90,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
+                .recipeBuilder("test_ranged_output_item_cr")
                 .inputItems(CR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
@@ -98,7 +98,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         LCRHandler.addStaging(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_input_item_lcr"))
+                .recipeBuilder("test_ranged_input_item_lcr")
                 .inputItemsRanged(LCR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
                 .outputItems(STONE)
@@ -107,7 +107,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         LCRHandler.addStaging(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_output_item_lcr"))
+                .recipeBuilder("test_ranged_output_item_lcr")
                 .inputItems(LCR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
@@ -115,7 +115,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_input_item_cent"))
+                .recipeBuilder("test_ranged_input_item_cent")
                 .inputItemsRanged(LCENT_IN, UniformInt.of(0, 4))
                 .inputItems(COBBLE)
                 .outputItems(STONE)
@@ -124,7 +124,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
+                .recipeBuilder("test_ranged_output_item_cent")
                 .inputItems(LCENT_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 4))
                 .EUt(GTValues.V[GTValues.IV])
@@ -132,7 +132,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_input_item_cr"))
+                .recipeBuilder("test_ranged_tick_input_item_cr")
                 .perTick(true)
                 .inputItemsRanged(CR_TICK_IN, UniformInt.of(0, 4))
                 .perTick(false)
@@ -143,7 +143,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_output_item_cr"))
+                .recipeBuilder("test_ranged_tick_output_item_cr")
                 .inputItems(CR_TICK_OUT)
                 .perTick(true)
                 .outputItemsRanged(STONE, UniformInt.of(0, 4))
@@ -153,7 +153,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_input_item_cent"))
+                .recipeBuilder("test_ranged_tick_input_item_cent")
                 .perTick(true)
                 .inputItemsRanged(CR_TICK_IN, UniformInt.of(0, 4))
                 .perTick(false)
@@ -164,7 +164,7 @@ public class IntProviderIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_output_item_cent"))
+                .recipeBuilder("test_ranged_tick_output_item_cent")
                 .inputItems(CR_TICK_OUT)
                 .perTick(true)
                 .outputItemsRanged(STONE, UniformInt.of(0, 4))
@@ -555,8 +555,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -585,7 +585,7 @@ public class IntProviderIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
@@ -626,8 +626,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -703,8 +703,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -733,7 +733,7 @@ public class IntProviderIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
@@ -774,8 +774,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -850,8 +850,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -886,8 +886,8 @@ public class IntProviderIngredientTest {
                 int lowerLimit = 64 - (batches * parallels * 4);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
-                        STONE.copyWithCount(completed)),
+                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                STONE.copyWithCount(completed)),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
                                 "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
@@ -933,8 +933,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 

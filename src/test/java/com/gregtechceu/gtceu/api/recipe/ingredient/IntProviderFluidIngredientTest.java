@@ -88,7 +88,7 @@ public class IntProviderFluidIngredientTest {
         centHandler.beginStaging();
 
         CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cr"))
+                .recipeBuilder("test_ranged_input_fluid_cr")
                 .inputFluidsRanged(CR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
                 .outputFluids(REDSTONE)
@@ -97,7 +97,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_output_fluid_cr"))
+                .recipeBuilder("test_ranged_output_fluid_cr")
                 .inputFluids(CR_OUT)
                 .outputFluidsRanged(REDSTONE, UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
@@ -105,7 +105,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         LCRHandler.addStaging(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_input_fluid_lcr"))
+                .recipeBuilder("test_ranged_input_fluid_lcr")
                 .inputFluidsRanged(LCR_IN, UniformInt.of(0, 9))
                 .inputFluids(RUBBER)
                 .outputFluids(REDSTONE)
@@ -114,7 +114,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         LCRHandler.addStaging(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_output_fluid_lcr"))
+                .recipeBuilder("test_ranged_output_fluid_lcr")
                 .inputFluids(LCR_OUT)
                 .outputFluidsRanged(REDSTONE, UniformInt.of(0, 9))
                 .EUt(GTValues.V[GTValues.HV])
@@ -122,7 +122,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_input_fluid_cent"))
+                .recipeBuilder("test_ranged_input_fluid_cent")
                 .inputFluidsRanged(LCENT_IN, UniformInt.of(0, 40))
                 .inputItems(COBBLE)
                 .outputFluids(REDSTONE)
@@ -131,7 +131,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_output_fluid_cent"))
+                .recipeBuilder("test_ranged_output_fluid_cent")
                 .inputFluids(LCENT_OUT)
                 .outputFluidsRanged(REDSTONE, UniformInt.of(0, 40))
                 .EUt(GTValues.V[GTValues.IV])
@@ -139,7 +139,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_input_fluid_cr"))
+                .recipeBuilder("test_ranged_tick_input_fluid_cr")
                 .perTick(true)
                 .inputFluidsRanged(CR_TICK_IN, UniformInt.of(0, 9))
                 .perTick(false)
@@ -150,7 +150,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         CRHandler.addStaging(CR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_output_fluid_cr"))
+                .recipeBuilder("test_ranged_tick_output_fluid_cr")
                 .inputItems(STONE)
                 .perTick(true)
                 .outputFluidsRanged(CR_TICK_OUT, UniformInt.of(0, 9))
@@ -160,7 +160,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_input_fluid_cent"))
+                .recipeBuilder("test_ranged_tick_input_fluid_cent")
                 .perTick(true)
                 .inputFluidsRanged(CR_TICK_IN, UniformInt.of(0, 9))
                 .perTick(false)
@@ -171,7 +171,7 @@ public class IntProviderFluidIngredientTest {
                 .buildRawRecipe());
 
         centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_ranged_tick_output_fluid_cent"))
+                .recipeBuilder("test_ranged_tick_output_fluid_cent")
                 .inputFluids(CR_TICK_OUT)
                 .perTick(true)
                 .outputFluidsRanged(CR_TICK_OUT, UniformInt.of(0, 9))
@@ -462,7 +462,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
-              batch = "RangedFluidIngredients")
+            batch = "RangedFluidIngredients")
     public static void multiblockLCRRangedFluidInput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
@@ -518,7 +518,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with ranged fluid input
     @GameTest(template = "lcr_ranged_ingredients",
-              batch = "RangedFluidIngredients")
+            batch = "RangedFluidIngredients")
     public static void multiblockLCRRangedFluidOutput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
 
@@ -570,8 +570,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -602,7 +602,7 @@ public class IntProviderFluidIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" + completed +
@@ -643,8 +643,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -719,8 +719,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -751,7 +751,7 @@ public class IntProviderFluidIngredientTest {
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" + completed +
@@ -792,8 +792,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -868,8 +868,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -947,8 +947,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -1059,7 +1059,7 @@ public class IntProviderFluidIngredientTest {
 
 
     // Test for singleblock machine with per-tick ranged Fluid input
-    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
     public static void singleblockRangedTickFluidInput(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
@@ -1118,7 +1118,7 @@ public class IntProviderFluidIngredientTest {
     }
 
     // Test for singleblock machine with per-tick ranged Fluid output
-    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
+    @GameTest(template = "singleblock_charged_cr", batch = "RangedFluidIngredients")
     public static void singleblockRangedTickFluidOutput(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 1, 0)));
@@ -1146,7 +1146,7 @@ public class IntProviderFluidIngredientTest {
         }
         // check the results of all rolls together
         helper.runAfterDelay(7+5, () -> {
-            FluidStack results = fluidIn.getFluidInTank(0);
+            FluidStack results = fluidOut.getFluidInTank(0);
             helper.assertFalse((results.getAmount() == 7 * 9),
                     "Singleblock per-tick CR rolled max value on every roll");
             helper.assertFalse((results.getAmount() == 7 * 0),
@@ -1174,7 +1174,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with Batching and 16x Parallels with per-tick ranged Fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients")
+            batch = "RangedFluidIngredients")
     public static void multiblockLCentRangedTickFluidInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -1229,7 +1229,7 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with Batching 16x Parallels with per-tick ranged Fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients")
+            batch = "RangedFluidIngredients")
     public static void multiblockLCentRangedTickFluidOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
