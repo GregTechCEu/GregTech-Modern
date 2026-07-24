@@ -83,15 +83,24 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private int color = 0xFFFFFFFF;
     public float delta = 0;
     public int lastColor = -1;
-    @Getter
+
     @Setter
-    protected BloomRenderTicket registeredBloomTicket = BloomRenderTicket.INVALID;
+    @Nullable
+    protected BloomRenderTicket registeredBloomTicket = null;
 
     public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
         super(info);
         this.tier = tier;
         this.energyContainer = attachTrait(new NotifiableEnergyContainer(0, 0, 0, 0, 0));
         energyContainer.setCapabilityValidator(Objects::isNull);
+    }
+
+    // lazy to prevent loading on server
+    public BloomRenderTicket getRegisteredBloomTicket() {
+        if (registeredBloomTicket == null) {
+            registeredBloomTicket = BloomRenderTicket.INVALID;
+        }
+        return registeredBloomTicket;
     }
 
     //////////////////////////////////////
