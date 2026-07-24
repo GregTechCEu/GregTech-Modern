@@ -943,7 +943,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (cover != null) return cover.getRedstoneSignalOutput();
 
         var signal = 0;
-
         for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
             signal = Math.max(signal, trait.getOutputSignal(side));
         }
@@ -958,6 +957,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return Direct output signal
      */
     public int getOutputDirectSignal(@Nullable Direction side) {
+        if (side == null) return 0;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
+
+        if (cover != null) return cover.getRedstoneSignalOutput();
+
         var signal = 0;
         for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
             signal = Math.max(signal, trait.getOutputDirectSignal(side));
