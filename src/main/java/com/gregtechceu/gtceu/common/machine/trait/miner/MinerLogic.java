@@ -437,6 +437,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         if (cachedItemHandler == null) {
             cachedItemHandler = new NotifiableAccountedInvWrapper(getRLMachine()
                     .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).stream()
+                    .filter(cap -> cap instanceof IItemHandlerModifiable)
                     .map(IItemHandlerModifiable.class::cast)
                     .toArray(IItemHandlerModifiable[]::new));
         }

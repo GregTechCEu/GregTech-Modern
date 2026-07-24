@@ -67,6 +67,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
             this.storages[i] = new CustomFluidTank(capacity);
             this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
@@ -80,6 +81,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         if (io == IO.IN) {
             this.allowSameFluids = true;
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(int slots, int capacity, IO io) {
@@ -94,6 +96,26 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         isEmpty = null;
         syncDataHolder.markClientSyncFieldDirty("storages");
         notifyListeners();
+    }
+
+    protected void onLockedFluidChanged() {
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
+        var newFluid = this.lockedFluid.getFluid();
+        if (newFluid.isEmpty()) {
+            this.setFilter(stack -> true);
+            this.onContentsChanged();
+            return;
+        }
+        for (int i = 0; i < this.getTanks(); i++) {
+            if (this.getFluidInTank(i).isEmpty()) continue;
+            if (!this.getFluidInTank(i).isFluidEqual(newFluid)) {
+                // Fluid in a tank that doesn't equal the new locked fluid
+                this.lockedFluid.setFluid(FluidStack.EMPTY);
+                return;
+            }
+        }
+        this.setFilter(stack -> stack.isFluidEqual(newFluid));
+        this.onContentsChanged();
     }
 
     @Override
