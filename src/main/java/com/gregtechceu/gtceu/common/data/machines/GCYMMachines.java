@@ -49,7 +49,7 @@ public class GCYMMachines {
 
     public static void init() {}
 
-    public static final MachineDefinition[] PARALLEL_HATCH = registerTieredMachines("parallel_hatch",
+    public static final MachineDefinition[] PARALLEL_HATCH = registerTieredMachines(REGISTRATE, "parallel_hatch",
             ParallelHatchPartMachine::new,
             (tier, builder) -> builder
                     .langValue(switch (tier) {

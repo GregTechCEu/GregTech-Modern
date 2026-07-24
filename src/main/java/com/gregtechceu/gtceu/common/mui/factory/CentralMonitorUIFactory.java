@@ -31,6 +31,7 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
@@ -165,7 +166,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                     groupSync.setValue(groups, true, false);
                                                 })))
                                 .widthRel(1).height(20))
-                        .child(new DynamicSyncedWidget<>()
+                        .child(new DynamicWidget<>()
                                 .overlay(new BorderDrawable(0xFF555555, 4))
                                 .syncHandler(listHandler)
                                 .padding(4)
@@ -256,6 +257,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
         int matrixHeight = matrix.size() * 20;
         BoolValue moduleChanged = new BoolValue(false);
         return new ModularPanel<>("editor_%d_panel".formatted(groupIndex))
+                .closeOnOutOfBoundsClick(true)
                 .width(Math.max(matrixWidth, 150))
                 .height(matrixHeight + 60)
                 .excludeAreaInRecipeViewer()
@@ -276,7 +278,8 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         .name("module_slot")
                                         .slot(new ModularSlot(group.getItemStackHandler(), 0)
                                                 .changeListener((item, amount, client, init) -> {
-                                                    groupSync.setValue(groups, true, false);
+                                                    if (!init)
+                                                        groupSync.setValue(groups, true, false);
                                                 })))
                                 .child(new ButtonWidget<>()
                                         .overlay(GuiTextures.EDIT)

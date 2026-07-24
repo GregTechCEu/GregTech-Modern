@@ -255,7 +255,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
-        BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked);
+        BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked).allowC2S();
         syncManager.syncValue("locked", locked);
         return Flow.col()
                 .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
@@ -271,12 +271,13 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                         .coverChildren()
                         .childIf(io.support(IO.OUT), () -> new FluidSlot()
                                 .name("lockedFluid")
-                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
+                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()).phantom(true))
                                 .alwaysShowFull(true)
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ToggleButton()
                                 .syncHandler("locked")
-                                .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
+                                .tooltipDynamic(t -> t.addLine(Component.translatable("gtceu.gui.fluid_lock.tooltip." +
+                                        (locked.getBoolValue() ? "enabled" : "disabled"))))
                                 .overlay(false, GTGuiTextures.BUTTON_LOCK)
                                 .overlay(true, GTGuiTextures.BUTTON_LOCK)
                                 .background(GuiTextures.MC_BUTTON)

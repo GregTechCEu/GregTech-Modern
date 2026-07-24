@@ -239,7 +239,11 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
             machine.modifyDrops(drops);
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                    machine.saveToItem(drop.getOrCreateTag(), false);
+                    CompoundTag tag = drop.getOrCreateTag();
+                    machine.saveToItem(tag, false);
+                    if (tag.isEmpty()) {
+                        drop.setTag(null);
+                    }
                     // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
                     break;
                 }
@@ -286,8 +290,9 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
         InteractionResult machineInteractResult = InteractionResult.PASS;
 
-        if (!itemStack.isEmpty())
+        if (!itemStack.isEmpty()) {
             machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        }
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
         machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
