@@ -289,8 +289,9 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
         InteractionResult machineInteractResult = InteractionResult.PASS;
 
-        if (!itemStack.isEmpty())
+        if (!itemStack.isEmpty()) {
             machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        }
         if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);
         machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);

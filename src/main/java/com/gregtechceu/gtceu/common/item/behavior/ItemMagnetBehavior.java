@@ -151,7 +151,6 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
                         .size(16)
                         .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
-                                .changeListener((stack, amount, client, init) -> handler.setStackInSlot(i, stack))
                                 .ignoreMaxStackSize(true).accessibility(true, false))));
 
         BooleanSyncValue blacklist = new BooleanSyncValue(filter::isBlackList, filter::setBlackList).allowC2S();
