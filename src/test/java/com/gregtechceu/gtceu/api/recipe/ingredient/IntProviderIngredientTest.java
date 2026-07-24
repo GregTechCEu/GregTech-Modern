@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
@@ -39,8 +40,7 @@ import net.neoforged.testframework.annotation.TestHolder;
  * Forced rolls of 0 breaking recipes
  */
 @PrefixGameTestTemplate(false)
-// Gametests blocked until gtm#4326 is fixed
-// @GameTestHolder(GTCEu.MOD_ID)
+@GameTestHolder(GTCEu.MOD_ID)
 @ForEachTest(groups = "RangedIngredients")
 public class IntProviderIngredientTest {
 
