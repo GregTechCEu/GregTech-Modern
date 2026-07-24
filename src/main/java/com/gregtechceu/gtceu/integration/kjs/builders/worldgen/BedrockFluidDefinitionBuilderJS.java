@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 import java.util.*;
 
 @Accessors(chain = true, fluent = true)
-public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
+public class BedrockFluidDefinitionBuilderJS extends BuilderBase<BedrockFluidDefinition> {
 
     @Setter
     private int weight; // weight value for determining which vein will appear
@@ -35,12 +35,12 @@ public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
 
     private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
 
-    public BedrockFluidBuilder(ResourceLocation id) {
+    public BedrockFluidDefinitionBuilderJS(ResourceLocation id) {
         super(id);
     }
 
-    public static BedrockFluidBuilder from(BedrockFluidDefinition definition, ResourceLocation id) {
-        var builder = new BedrockFluidBuilder(id);
+    public static BedrockFluidDefinitionBuilderJS from(BedrockFluidDefinition definition, ResourceLocation id) {
+        var builder = new BedrockFluidDefinitionBuilderJS(id);
         builder.weight(definition.getWeight());
         builder.minimumYield(definition.getMinimumYield()).maximumYield(definition.getMaximumYield());
         builder.depletionAmount(definition.getDepletionAmount()).depletionChance(definition.getDepletionChance());
@@ -51,17 +51,17 @@ public class BedrockFluidBuilder extends BuilderBase<BedrockFluidDefinition> {
         return builder;
     }
 
-    public BedrockFluidBuilder yield(int min, int max) {
+    public BedrockFluidDefinitionBuilderJS yield(int min, int max) {
         return minimumYield(min).maximumYield(max);
     }
 
     @SafeVarargs
-    public final BedrockFluidBuilder addSpawnDimension(ResourceKey<Level>... dimensions) {
+    public final BedrockFluidDefinitionBuilderJS addSpawnDimension(ResourceKey<Level>... dimensions) {
         this.dimensions.addAll(Arrays.asList(dimensions));
         return this;
     }
 
-    public BedrockFluidBuilder biomes(int weight, HolderSet<Biome> biomes) {
+    public BedrockFluidDefinitionBuilderJS biomes(int weight, HolderSet<Biome> biomes) {
         this.biomes.add(new BiomeWeightModifier(biomes, weight));
         return this;
     }

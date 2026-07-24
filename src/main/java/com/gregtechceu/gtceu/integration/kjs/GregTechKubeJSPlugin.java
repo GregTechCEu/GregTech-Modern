@@ -86,10 +86,10 @@ import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.prefix.TagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidDefinitionBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreDefinitionBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.OreVeinDefinitionBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.OreVeinDefinitionBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
@@ -164,10 +164,12 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
 
-        registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilder.class,
-                OreVeinDefinitionBuilder::new);
-        registry.addDefault(GTRegistries.Keys.BEDROCK_FLUID, BedrockFluidBuilder.class, BedrockFluidBuilder::new);
-        registry.addDefault(GTRegistries.Keys.BEDROCK_ORE, BedrockOreBuilder.class, BedrockOreBuilder::new);
+        registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilderJS.class,
+                OreVeinDefinitionBuilderJS::new);
+        registry.addDefault(GTRegistries.Keys.BEDROCK_FLUID, BedrockFluidDefinitionBuilderJS.class,
+                BedrockFluidDefinitionBuilderJS::new);
+        registry.addDefault(GTRegistries.Keys.BEDROCK_ORE, BedrockOreDefinitionBuilderJS.class,
+                BedrockOreDefinitionBuilderJS::new);
     }
 
     @Override

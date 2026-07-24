@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 import java.util.*;
 
 @Accessors(chain = true, fluent = true)
-public class BedrockOreBuilder extends BuilderBase<BedrockOreDefinition> {
+public class BedrockOreDefinitionBuilderJS extends BuilderBase<BedrockOreDefinition> {
 
     @Setter
     private int weight; // weight value for determining which vein will appear
@@ -39,12 +39,12 @@ public class BedrockOreBuilder extends BuilderBase<BedrockOreDefinition> {
     private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
     private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
-    public BedrockOreBuilder(ResourceLocation id) {
+    public BedrockOreDefinitionBuilderJS(ResourceLocation id) {
         super(id);
     }
 
-    public static BedrockOreBuilder from(BedrockOreDefinition definition, ResourceLocation id) {
-        var builder = new BedrockOreBuilder(id);
+    public static BedrockOreDefinitionBuilderJS from(BedrockOreDefinition definition, ResourceLocation id) {
+        var builder = new BedrockOreDefinitionBuilderJS(id);
         builder.weight(definition.weight());
         builder.yield(definition.yield());
         builder.depletionAmount(definition.depletionAmount());
@@ -56,22 +56,22 @@ public class BedrockOreBuilder extends BuilderBase<BedrockOreDefinition> {
         return builder;
     }
 
-    public BedrockOreBuilder material(Material material, int amount) {
+    public BedrockOreDefinitionBuilderJS material(Material material, int amount) {
         this.materials.add(new WeightedMaterial(material, amount));
         return this;
     }
 
-    public BedrockOreBuilder yield(int min, int max) {
+    public BedrockOreDefinitionBuilderJS yield(int min, int max) {
         return this.yield(UniformInt.of(min, max));
     }
 
     @SafeVarargs
-    public final BedrockOreBuilder addSpawnDimension(ResourceKey<Level>... dimensions) {
+    public final BedrockOreDefinitionBuilderJS addSpawnDimension(ResourceKey<Level>... dimensions) {
         this.dimensions.addAll(Arrays.asList(dimensions));
         return this;
     }
 
-    public BedrockOreBuilder biomes(int weight, HolderSet<Biome> biomes) {
+    public BedrockOreDefinitionBuilderJS biomes(int weight, HolderSet<Biome> biomes) {
         this.biomes.add(new BiomeWeightModifier(biomes, weight));
         return this;
     }
