@@ -15,7 +15,7 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widgets.ButtonWidget;
@@ -97,7 +97,7 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
         return MachineUIPanelBuilder.panelBuilder(this.self())
                 .rightConfigurators(f -> {
                     f.child(new ToggleButton()
-                            .value(new BoolValue.Dynamic(this::isAutoPull, this::setAutoPull))
+                            .value(new BooleanSyncValue(this::isAutoPull, this::setAutoPull).allowC2S())
                             .stateOverlay(GTGuiTextures.BUTTON_AUTO_PULL)
                             .tooltipAutoUpdate(true)
                             .tooltipBuilder(r -> r
