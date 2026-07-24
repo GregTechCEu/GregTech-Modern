@@ -4,9 +4,12 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.widgets.SteamDialWidget;
@@ -27,6 +30,7 @@ import brachy.modularui.widgets.layout.Flow;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 @Accessors(fluent = true)
@@ -86,6 +90,17 @@ public class MachineUIPanelBuilder {
                 attachRight.childIf(distinctPart.supportsDistinct(),
                         () -> GTMuiWidgets.createDistinctnessButton(distinctPart));
             }
+            if (machine.getDefinition().getRecipeModifier() instanceof RecipeModifierList rml &&
+                    Arrays.stream(rml.getModifiers()).anyMatch(m -> m == GTRecipeModifiers.BATCH_MODE) &&
+                    machine instanceof WorkableElectricMultiblockMachine workableElectric) {
+                attachRight.child(GTMuiWidgets.createBatchModeButton(workableElectric));
+            }
+
+            if (machine.getDefinition().getRecipeTypes().length > 1 &&
+                    machine instanceof WorkableElectricMultiblockMachine workableMachine) {
+                attachRight.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
+            }
+
         }
 
         leftConfigurators.accept(attachLeft);

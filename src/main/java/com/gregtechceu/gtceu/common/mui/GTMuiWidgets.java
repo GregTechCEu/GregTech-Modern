@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
@@ -179,6 +180,12 @@ public class GTMuiWidgets {
                 "gtceu.multiblock.universal.distinct");
     }
 
+    public static ToggleButton createBatchModeButton(WorkableElectricMultiblockMachine workableElectricMultiblockMachine) {
+        return createToggleButton(workableElectricMultiblockMachine::isBatchEnabled,
+                workableElectricMultiblockMachine::setBatchEnabled,
+                GTGuiTextures.BUTTON_BATCH[0], GTGuiTextures.BUTTON_BATCH[1], "gtceu.machine.batching");
+    }
+
     public static ToggleButton createAutoOutputItemButton(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::isAutoOutputItems, autoOutput::setAllowAutoOutputItems,
                 GTGuiTextures.BUTTON_ITEM_OUTPUT, "gtceu.gui.item_auto_output");
@@ -199,6 +206,22 @@ public class GTMuiWidgets {
         return createToggleButton(autoOutput::allowsFluidInputFromOutputSide,
                 autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_OUTPUT,
                 "gtceu.gui.fluid_input_from_output");
+    }
+
+    public static ButtonWidget<?> createRecipeTypeButton(WorkableElectricMultiblockMachine workableMultiblock,
+                                                         PanelSyncManager syncManager) {
+        syncManager.registerSyncedAction("nextRecipeType", false, true, (buf) -> {
+            workableMultiblock.cycleActiveRecipeType();
+        });
+        return new ButtonWidget<>()
+                .onMousePressed((context, button) -> {
+                    syncManager.callSyncedAction("nextRecipeType");
+                    return true;
+                })
+                .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
+                .size(18)
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip")))
+                .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 
     private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
