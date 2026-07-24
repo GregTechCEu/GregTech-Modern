@@ -83,6 +83,6 @@ public class GTBedrockOreVeinEventJS implements KubeEvent {
     }
 
     public static ResourceKey<BedrockOreDefinition> createKey(ResourceLocation id) {
-        return ResourceKey.create(GTRegistries.BEDROCK_ORE_REGISTRY, id);
+        return ResourceKey.create(GTRegistries.Keys.BEDROCK_ORE, id);
     }
 }

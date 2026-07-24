@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngre
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -88,8 +89,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -106,10 +105,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.fluids.crafting.*;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
-import net.neoforged.neoforge.registries.ModifyRegistriesEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import net.neoforged.neoforge.registries.callback.BakeCallback;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -240,12 +237,13 @@ public class CommonProxy {
         GTMaterials.init();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onRegisterLate(RegisterEvent event) {
-        // Material event *should* happen before any of the others here
-        if (event.getRegistryKey() == GTRegistries.MATERIAL_REGISTRY) {
+    // Fire post material events after all other material registry events.
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onRegisterLowest(RegisterEvent event) {
+        if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
+            GTCEu.LOGGER.info("Firing material register late event");
             GTRegistries.MATERIALS.close();
             ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
             if (GTCEu.Mods.isKubeJSLoaded()) {
@@ -254,7 +252,7 @@ public class CommonProxy {
 
             GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
                 // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-                GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
+                var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
                 AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
                 if (accessor.getDoDatagen().get()) {
                     List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
@@ -263,13 +261,20 @@ public class CommonProxy {
                     providers.addFirst(
                             (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, namespace));
                 }
-
-                ModList.get().getModContainerById(namespace)
-                        .map(ModContainer::getEventBus)
-                        .ifPresent(registrate::registerEventListeners);
             });
+        } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
+            // Prepare machine render states after all machines have been registered
+            for (MachineDefinition machine : GTRegistries.MACHINES) {
+                for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
+                    MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
+                }
+            }
+        }
+    }
 
-        } else if (event.getRegistryKey() == Registries.BLOCK) {
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void registerMaterialContent(RegisterEvent event) {
+        if (event.getRegistryKey() == Registries.BLOCK) {
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
             GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
@@ -303,17 +308,12 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(GTRegistries.ORE_VEIN_REGISTRY,
+        event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
                 GTOreDefinition.DIRECT_CODEC, GTOreDefinition.DIRECT_CODEC);
-        event.dataPackRegistry(GTRegistries.BEDROCK_FLUID_REGISTRY,
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID,
                 BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.DIRECT_CODEC);
-        event.dataPackRegistry(GTRegistries.BEDROCK_ORE_REGISTRY,
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
                 BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.DIRECT_CODEC);
-    }
-
-    @SubscribeEvent
-    public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 
     @SubscribeEvent

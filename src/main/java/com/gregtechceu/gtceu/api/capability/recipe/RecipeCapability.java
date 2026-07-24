@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -75,7 +77,7 @@ public abstract class RecipeCapability<T> {
      */
     public T copyInner(T content) {
         RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(),
-                GTRegistries.builtinRegistry(), ConnectionType.NEOFORGE);
+                RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), ConnectionType.NEOFORGE);
         serializer.toNetwork(buf, content);
         return serializer.fromNetwork(buf);
     }
@@ -194,7 +196,7 @@ public abstract class RecipeCapability<T> {
     private static DataResult<Holder.Reference<RecipeCapability<?>>> safeReference(Holder<RecipeCapability<?>> value) {
         return value.getDelegate() instanceof Holder.Reference<RecipeCapability<?>> reference ?
                 DataResult.success(reference) : DataResult.error(
-                        () -> "Unregistered holder in " + GTRegistries.RECIPE_CAPABILITY_REGISTRY + ": " + value);
+                        () -> "Unregistered holder in " + GTRegistries.Keys.RECIPE_CAPABILITY + ": " + value);
     }
 
     /**

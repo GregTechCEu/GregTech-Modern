@@ -128,7 +128,7 @@ public class OreGenerator {
 
     private Stream<Holder<GTOreDefinition>> getEntries(WorldGenLevel level, BlockPos veinCenter,
                                                        XoroshiroRandomSource random) {
-        return GTRegistries.WORLD_GEN_LAYERS.stream()
+        return level.registryAccess().registryOrThrow(GTRegistries.Keys.WORLD_GEN_LAYER).stream()
                 .filter(layer -> layer.isApplicableForLevel(level.getLevel().dimension()))
                 .map(layer -> {
                     int quartX = QuartPos.fromBlock(veinCenter.getX());
@@ -153,7 +153,8 @@ public class OreGenerator {
     private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator, ChunkPos pos,
                                                         RandomSource random, BlockPos veinCenter,
                                                         GTOreDefinition entry) {
-        int layerSeed = GTRegistries.WORLD_GEN_LAYERS.getKey(entry.layer()).hashCode();
+        int layerSeed = level.getLevel().registryAccess().registryOrThrow(GTRegistries.Keys.WORLD_GEN_LAYER)
+                .getKey(entry.layer()).hashCode();
 
         var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
 

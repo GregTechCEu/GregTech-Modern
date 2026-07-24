@@ -42,7 +42,7 @@ public class BedrockFluidDefinition {
             BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(BedrockFluidDefinition::getBiomeWeightModifier),
             ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter))
     ).apply(instance, BedrockFluidDefinition::new));
-    public static final Codec<Holder<BedrockFluidDefinition>> CODEC = RegistryFixedCodec.create(GTRegistries.BEDROCK_FLUID_REGISTRY);
+    public static final Codec<Holder<BedrockFluidDefinition>> CODEC = RegistryFixedCodec.create(GTRegistries.Keys.BEDROCK_FLUID);
     // spotless:on
     @Getter
     @Setter

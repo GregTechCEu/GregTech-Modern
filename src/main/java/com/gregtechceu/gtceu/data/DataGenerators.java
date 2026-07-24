@@ -44,8 +44,8 @@ public class DataGenerators {
                             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap)
                             .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap)
                             .add(Registries.ENCHANTMENT_PROVIDER, GTEnchantmentProviders::bootstrap)
-                            .add(GTRegistries.BEDROCK_FLUID_REGISTRY, GTBedrockFluids::bootstrap)
-                            .add(GTRegistries.ORE_VEIN_REGISTRY, GTOreVeins::bootstrap),
+                            .add(GTRegistries.Keys.BEDROCK_FLUID, GTBedrockFluids::bootstrap)
+                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap),
                     set));
             generator.addProvider(true,
                     new DamageTypeTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
