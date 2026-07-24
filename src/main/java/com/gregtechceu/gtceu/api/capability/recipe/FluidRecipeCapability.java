@@ -51,12 +51,12 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @Override
     public SizedFluidIngredient copyWithModifier(SizedFluidIngredient content, ContentModifier modifier) {
-        if (content.ingredient().hasNoFluids()) return content.copy();
         if (content.ingredient() instanceof IntProviderFluidIngredient provider) {
             IntProviderFluidIngredient copy = IntProviderFluidIngredient.of(provider.getInner(),
                     ModifiedIntProvider.of(provider.getCountProvider(), modifier));
-            return new SizedFluidIngredient(copy, 1);
+            return new SizedFluidIngredient(copy, copy.getMaxRoll());
         }
+        if (content.ingredient().hasNoFluids()) return content.copy();
         return content.copyWithAmount(modifier.apply(content.amount()));
     }
 
