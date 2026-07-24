@@ -27,7 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
@@ -375,7 +374,8 @@ public class IntProviderFluidIngredientTest {
             FluidStack results = fluidIn.getFluidInTank(0);
             int upperLimit = 64 - (REPLICAS * 0);
             int lowerLimit = 64 - (REPLICAS * 9);
-            helper.assertTrue(TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), REDSTONE.copyWithAmount(REPLICAS)),
+            helper.assertTrue(
+                    TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), REDSTONE.copyWithAmount(REPLICAS)),
                     "Singleblock CR didn't complete correct number of recipes, completed [" +
                             fluidOut.getFluidInTank(0).getAmount() + "] not [" + REPLICAS + "]");
             helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
@@ -484,7 +484,8 @@ public class IntProviderFluidIngredientTest {
             FluidStack results = fluidIn.getFluidInTank(0);
             int upperLimit = 64 - (REPLICAS * 0);
             int lowerLimit = 64 - (REPLICAS * 9);
-            helper.assertTrue(TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), REDSTONE.copyWithAmount(REPLICAS)),
+            helper.assertTrue(
+                    TestUtils.isFluidStackEqual(fluidOut.getFluidInTank(0), REDSTONE.copyWithAmount(REPLICAS)),
                     "LCR didn't complete correct number of recipes, completed [" +
                             fluidOut.getFluidInTank(0).getAmount() + "] not [" + REPLICAS + "]");
             helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),

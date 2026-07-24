@@ -111,7 +111,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
         ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
-            if (!(ingredient.ingredient().getCustomIngredient() instanceof  IntProviderIngredient) &&  ingredient.ingredient().hasNoItems()) {
+            if (!(ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient) &&
+                    ingredient.ingredient().hasNoItems()) {
                 it.remove();
                 continue;
             }
@@ -168,10 +169,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
             }
             // Modify ingredient if we didn't finish it off
             if (amount > 0) {
-                if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient ranged){
+                if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient ranged) {
                     it.set(new SizedIngredient(ranged.getInner(), amount));
-                }
-                else {
+                } else {
                     it.set(new SizedIngredient(ingredient.ingredient(), amount));
                 }
             }
