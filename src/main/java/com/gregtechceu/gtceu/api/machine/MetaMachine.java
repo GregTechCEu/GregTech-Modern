@@ -943,6 +943,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (cover != null) return cover.getRedstoneSignalOutput();
 
         var signal = 0;
+
         for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
             signal = Math.max(signal, trait.getOutputSignal(side));
         }
@@ -965,6 +966,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (cover != null) return cover.getRedstoneSignalOutput();
 
         var signal = 0;
+
         for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
             signal = Math.max(signal, trait.getOutputDirectSignal(side));
         }
