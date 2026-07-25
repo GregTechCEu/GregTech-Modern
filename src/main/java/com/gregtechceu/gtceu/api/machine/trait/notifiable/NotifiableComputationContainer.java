@@ -284,9 +284,12 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
         for (Direction direction : GTUtil.DIRECTIONS) {
             BlockEntity blockEntity = getLevel().getBlockEntity(getBlockPos().relative(direction));
             if (blockEntity instanceof OpticalPipeBlockEntity) {
-                var cap = blockEntity
-                        .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).resolve();
-                return cap.orElse(null);
+                // noinspection DataFlowIssue can be null just fine.
+                IOpticalComputationProvider provider = blockEntity
+                        .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite())
+                        .orElse(null);
+                // noinspection ConstantValue can be null because above.
+                if (provider != null) return provider;
             }
         }
         return null;
