@@ -289,8 +289,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                                 .child(new ItemSlot()
                                         .slot(filterInventory, 0)
                                         .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
-                                .child(GTMuiMachineUtil.createSlotGroupFromInventory(output,
-                                        "output_item_inv", output.getSize(), 'i',
+                                .child(GTMuiMachineUtil.createSlotGroupFromInventory(output.storage,
+                                        "output_item_inv", output.getSize(), 'i', slot -> {
+                                            slot.getSlot().accessibility(false, true);
+                                            return slot;
+                                        },
                                         syncManager, outputItemGrid))
                                 .padding(4, 0)));
     }
