@@ -218,7 +218,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
 
-        if (this.hasNotEnoughEnergy && energyContainer.getInputPerSec() > 19L * energyToConsume) {
+        if (this.hasNotEnoughEnergy && energyContainer.getEnergyStored() > 19L * energyToConsume) {
             this.hasNotEnoughEnergy = false;
         }
 
