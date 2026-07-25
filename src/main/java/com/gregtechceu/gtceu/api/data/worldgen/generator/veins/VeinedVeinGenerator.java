@@ -116,7 +116,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
                                                   BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
-        Registry<DensityFunction> densityFunctions = level.registryAccess().registryOrThrow(Registries.DENSITY_FUNCTION);
+        Registry<DensityFunction> densityFunctions = level.registryAccess()
+                .registryOrThrow(Registries.DENSITY_FUNCTION);
 
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
