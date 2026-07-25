@@ -656,7 +656,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                 .child(Text.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(90, 20)
-                                        .value(SyncHandlers.string(() -> this.customName, this::setCustomName)))
+                                        .value(SyncHandlers.string(() -> this.customName, this::setCustomName)
+                                                .allowC2S()))
                                 .margin(5))));
 
         IPanelHandler sharedItemsPanelHandler = syncManager.syncedPanel("shared_items", true,
