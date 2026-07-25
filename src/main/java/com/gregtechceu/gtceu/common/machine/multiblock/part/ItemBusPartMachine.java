@@ -260,7 +260,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 .center()
                 .margin(7, 5)
                 .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
-                        .slot(SyncHandlers.itemSlot(inventory, index)
+                        .slot(SyncHandlers.itemSlot(inventory.storage, index)
                                 .slotGroup(group)
                                 .changeListener((oldStack, newStack, client, init) -> {
                                     // TODO uncomment once mui updated
