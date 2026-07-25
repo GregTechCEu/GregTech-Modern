@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -22,6 +23,7 @@ public class DiodeModeProvider extends MachineInfoProvider<DiodePartMachine, Com
     @Override
     protected CompoundTag write(DiodePartMachine machine) {
         var tag = new CompoundTag();
+        tag.putInt("side", machine.getFrontFacing().get3DDataValue());
         tag.putInt("voltage", machine.getTier());
         tag.putInt("amps", machine.getAmps());
         return tag;
@@ -30,8 +32,15 @@ public class DiodeModeProvider extends MachineInfoProvider<DiodePartMachine, Com
     @Override
     protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        tooltip.add(Component.translatable(
-                "gtceu.top.transform_output",
-                (GTValues.VNF[data.getInt("voltage")] + " §r(" + data.getInt("amps") + "A)")));
+        if (block.getHitResult().getDirection() ==
+                Direction.from3DDataValue(data.getInt("side"))) {
+            tooltip.add(Component.translatable(
+                    "gtceu.top.transform_output",
+                    (GTValues.VNF[data.getInt("voltage")] + " §r(" + data.getInt("amps") + "A)")));
+        } else {
+            tooltip.add(Component.translatable(
+                    "gtceu.top.transform_input",
+                    (GTValues.VNF[data.getInt("voltage")] + " §r(16A)")));
+        }
     }
 }
