@@ -383,7 +383,8 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.gear, GTMaterials.Tritanium), 'S',
                 new MaterialEntry(TagPrefix.gearSmall, GTMaterials.Darmstadtium));
         // TODO: fix this
-        VanillaRecipeHelper.addShapedRecipe(provider, false, "maintenance_hatch", GTMachines.MAINTENANCE_HATCH.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, false, "maintenance_hatch",
+                GTMachines.MAINTENANCE_HATCH.asStack(),
                 "dwx", "hHc", "fsr", 'H', GTMachines.HULL[GTValues.LV].asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_configurable",
                 GTMachines.CONFIGURABLE_MAINTENANCE_HATCH.asStack(), "   ", "CMC", "VHV", 'C',

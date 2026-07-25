@@ -43,8 +43,6 @@ public class MaterialFlags {
     /**
      * Add to material to disable it's unification fully
      */
-    @Deprecated
-    public static final MaterialFlag NO_UNIFICATION = new MaterialFlag.Builder("no_unification").build();
 
     public static final MaterialFlag DISABLE_MATERIAL_RECIPES = new MaterialFlag.Builder("disable_material_recipes")
             .build();
