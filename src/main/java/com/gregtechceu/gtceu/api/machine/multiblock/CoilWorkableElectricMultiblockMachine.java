@@ -73,42 +73,42 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
 
         IDrawable leftTop = new UITexture.Builder()
                 .location(Texlocation)
-                .subAreaUV(0f / 16f, 0f / 16f, 7f / 16f, 4f / 16f)
+                .subAreaUV(0f , 0f , 7f / 16f, 4f / 16f)
                 .colorType(ColorType.DEFAULT)
                 .build();
 
         IDrawable leftMiddle = new UITexture.Builder()
                 .location(Texlocation)
                 .imageSize(16, 16)
-                .subAreaUV(0f / 16f, 4f / 16f, 7f / 16f, 12f / 16f)
+                .subAreaUV(0f, 4f / 16f, 7f / 16f, 12f / 16f)
                 .colorType(ColorType.DEFAULT)
                 .tiled(7, 8)
                 .build();
 
         IDrawable leftBottom = new UITexture.Builder()
                 .location(Texlocation)
-                .subAreaUV(0f / 16f, 12f / 16f, 7f / 16f, 16f / 16f)
+                .subAreaUV(0f, 12f / 16f, 7f / 16f, 16f / 16f)
                 .colorType(ColorType.DEFAULT)
                 .build();
 
 
         IDrawable rightBottom = new UITexture.Builder()
                 .location(Texlocation)
-                .subAreaUV(7f / 16f, 4f / 16f, 0f / 16f, 0f / 16f)
+                .subAreaUV(7f / 16f, 4f / 16f, 0f, 0f / 16f)
                 .colorType(ColorType.DEFAULT)
                 .build();
 
         IDrawable rightMiddle = new UITexture.Builder()
                 .location(Texlocation)
                 .imageSize(16, 16)
-                .subAreaUV(7f / 16f, 12f / 16f, 0f / 16f, 4f / 16f)
+                .subAreaUV(7f / 16f, 12f / 16f, 0f, 4f / 16f)
                 .colorType(ColorType.DEFAULT)
                 .tiled(7, 8)
                 .build();
 
         IDrawable rightTop = new UITexture.Builder()
                 .location(Texlocation)
-                .subAreaUV(7f / 16f, 16f / 16f, 0f / 16f, 12f / 16f)
+                .subAreaUV(7f / 16f, 16f / 16f, 0f, 12f / 16f)
                 .colorType(ColorType.DEFAULT)
                 .build();
 
