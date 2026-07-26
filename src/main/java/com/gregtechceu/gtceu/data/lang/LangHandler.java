@@ -31,6 +31,7 @@ public class LangHandler {
         HazardLang.init(provider);
         IntegrationLang.init(provider);
         ItemLang.init(provider);
+        MultiblockLang.init(provider);
         MachineLang.init(provider); // TODO
         MaterialLang.init(provider); // TODO
         RecipeLang.init(provider); // TODO

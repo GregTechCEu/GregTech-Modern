@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class ToolLang {
 
@@ -118,6 +121,11 @@ public class ToolLang {
     }
 
     public static void generateToolKeys(GTLangProvider provider) {
+
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
+            provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType.name));
+        }
+
         // Tool Names
         provider.add("item.gtceu.tool.sword", "%s Sword");
         provider.add("item.gtceu.tool.pickaxe", "%s Pickaxe");

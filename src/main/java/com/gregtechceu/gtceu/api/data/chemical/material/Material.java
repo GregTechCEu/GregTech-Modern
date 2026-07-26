@@ -17,12 +17,15 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import com.tterrag.registrate.providers.ProviderType;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -582,7 +585,7 @@ public class Material implements Comparable<Material> {
 
         private Set<TagPrefix> ignoredTagPrefixes = null;
         private final List<TagKey<Item>> itemTags = new ArrayList<>();
-
+        private final Map<TagPrefix, String> langOverrides = new Object2ObjectOpenHashMap<>();
         /*
          * Temporary data used to determine the final material formula tooltip.
          */
@@ -1847,6 +1850,15 @@ public class Material implements Comparable<Material> {
         }
 
         /**
+         * A custom English lang value which overrides the default tag prefix lang for this material.
+         * Generated during your addon's datagen with key {@code item.<mod_id>.<item_id>}
+         */
+        public Builder langOverride(TagPrefix prefix, String englishLang) {
+            langOverrides.put(prefix, englishLang);
+            return this;
+        }
+
+        /**
          * Verify the passed information and finalize the Material.
          *
          * @return The finalized Material.
@@ -1871,6 +1883,18 @@ public class Material implements Comparable<Material> {
                 properties.removeProperty(HAZARD);
             }
 
+            if (!langOverrides.isEmpty()) {
+                var registrate = GTRegistrate.createIgnoringListenerErrors(id.getNamespace());
+
+                registrate.addDataGenerator(ProviderType.LANG, (provider -> {
+                    for (var entry: langOverrides.entrySet()) {
+                        var key = String.format("item.%s.%s", id.getNamespace(),
+                                entry.getKey().idPattern().formatted(id.getPath()));
+                        provider.add(key, entry.getValue());
+                    }
+                }));
+            }
+
             var mat = new Material(materialInfo, properties, flags);
             if (!itemTags.isEmpty()) {
                 mat.setItemTags(itemTags);
@@ -1883,6 +1907,7 @@ public class Material implements Comparable<Material> {
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }
+
             return mat;
         }
 

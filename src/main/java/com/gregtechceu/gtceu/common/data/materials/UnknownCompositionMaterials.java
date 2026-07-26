@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -364,6 +365,8 @@ public class UnknownCompositionMaterials {
                 .fluid().color(0x1A1A1A).flags(STICKY, FLAMMABLE).buildAndRegister();
 
         Gunpowder = new Material.Builder(GTCEu.id("gunpowder"))
+                .langOverride(dustSmall, "Small Pile of Gunpowder")
+                .langOverride(dustTiny, "Tiny Pile of Gunpowder")
                 .dust(0)
                 .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
@@ -377,6 +380,9 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         RareEarth = new Material.Builder(GTCEu.id("rare_earth"))
+                .langOverride(dust, "Rare Earth")
+                .langOverride(dustSmall, "Small Pile of Rare Earth")
+                .langOverride(dustTiny, "Tiny Pile of Rare Earth")
                 .dust(0)
                 .color(0xffdc88).secondaryColor(0xe99673).iconSet(FINE)
                 .buildAndRegister();
@@ -458,16 +464,28 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         Wheat = new Material.Builder(GTCEu.id("wheat"))
+                .langOverride(dust, "Flour")
+                .langOverride(dustSmall, "Small Pile of Flour")
+                .langOverride(dustTiny, "Tiny Pile of Flour")
                 .dust(0)
                 .color(0xdcbb65).secondaryColor(0x565138).iconSet(FINE)
                 .buildAndRegister();
 
         Meat = new Material.Builder(GTCEu.id("meat"))
+                .langOverride(dust, "Mince Meat")
+                .langOverride(dustSmall, "Small Pile of Mince Meat")
+                .langOverride(dustTiny, "Tiny Pile of Mince Meat")
                 .dust(1)
                 .color(0xe85048).secondaryColor(0x470a06).iconSet(SAND)
                 .buildAndRegister();
 
         Wood = new Material.Builder(GTCEu.id("wood"))
+                .langOverride(dust, "Wood Pulp")
+                .langOverride(dustSmall, "Small Pile of Wood Pulp")
+                .langOverride(dustTiny, "Tiny Pile of Wood Pulp")
+                .langOverride(plate, "Wood Plank")
+                .langOverride(rodLong, "Long Wood Stick")
+                .langOverride(bolt, "Short Wood Stick")
                 .wood()
                 .color(0xc29f6d).secondaryColor(0x643200).iconSet(WOOD)
                 .fluidPipeProperties(340, 5, false)
@@ -477,6 +495,9 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         Paper = new Material.Builder(GTCEu.id("paper"))
+                .langOverride(dust, "Chad")
+                .langOverride(dustSmall, "Small Pile of Chad")
+                .langOverride(dustTiny, "Tiny Pile of Chad")
                 .dust(0)
                 .color(0xF9F9F9).secondaryColor(0xECECEC).iconSet(DULL)
                 .flags(GENERATE_PLATE, FLAMMABLE, NO_SMELTING, NO_SMASHING,
@@ -581,6 +602,13 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         TreatedWood = new Material.Builder(GTCEu.id("treated_wood"))
+                .langOverride(dust, "Treated Wood Pulp")
+                .langOverride(dustSmall, "Small Pile of Treated Wood Pulp")
+                .langOverride(dustTiny, "Tiny Pile of Treated Wood Pulp")
+                .langOverride(plate, "Treated Wood Plank")
+                .langOverride(rod, "Treated Wood Stick")
+                .langOverride(rodLong, "Long Treated Wood Stick")
+                .langOverride(bolt, "Short Treated Wood Stick")
                 .wood()
                 .color(0x644218).secondaryColor(0x4e0b00).iconSet(WOOD)
                 .fluidPipeProperties(340, 10, false)

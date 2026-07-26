@@ -1,16 +1,13 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
-
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class RecipeLang {
 
     public static void init(GTLangProvider provider) {
-
         generateRecipeTypes(provider);
+        generateChanceLang(provider);
         generateRecipeConditions(provider);
         generateRecipeDataKeys(provider);
         generateMiscKeys(provider);
@@ -19,6 +16,15 @@ public class RecipeLang {
     }
 
     private static void generateCapabilityLang(RegistrateLangProvider provider) {
+
+        provider.add("recipe.capability.eu.name", "GTCEu Energy");
+        provider.add("recipe.capability.fluid.name", "Fluid");
+        provider.add("recipe.capability.item.name", "Item");
+        provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
+        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
+        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
+        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+
         provider.add("gtceu.recipe_logic.setup_fail", "Fail to setup recipe: ");
         provider.add("gtceu.recipe_logic.recipe_waiting", "Recipe Waiting: ");
 
@@ -30,6 +36,29 @@ public class RecipeLang {
         provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
     }
 
+    public static void generateChanceLang(RegistrateLangProvider provider) {
+        provider.add("gtceu.gui.content.chance_nc", "§cNot Consumed§r");
+        provider.add("gtceu.gui.content.chance_nc_short", "§cNC§r");
+        provider.add("gtceu.gui.content.chance_base", "Base Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_base_logic", "Base Chance: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_no_boost", "Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_no_boost_logic", "Chance: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
+        provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
+        provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
+        provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
+        provider.add("gtceu.gui.content.count_range", "%s-%sx");
+        provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
+        provider.add("gtceu.gui.content.range", "%s-%s");
+        provider.add("gtceu.gui.content.times_item", "x %s");
+
+        provider.add("gtceu.chance_logic.or", "OR");
+        provider.add("gtceu.chance_logic.and", "AND");
+        provider.add("gtceu.chance_logic.xor", "XOR");
+        provider.add("gtceu.chance_logic.first", "FIRST");
+        provider.add("gtceu.chance_logic.none", "NONE");
+    }
+
     private static void generateModifierKeys(RegistrateLangProvider provider) {
         provider.add("gtceu.recipe_modifier.default_fail", "Recipe Modifier Fail");
         provider.add("gtceu.recipe_modifier.insufficient_voltage", "Voltage Tier Too Low");
@@ -39,10 +68,6 @@ public class RecipeLang {
     }
 
     private static void generateRecipeTypes(GTLangProvider provider) {
-        // RecipeTypes
-        for (var recipeType : GTRegistries.RECIPE_TYPES) {
-            provider.add(recipeType.getLanguageKey(), toEnglishName(recipeType.registryName.getPath()));
-        }
 
         // Recipe Categories
         provider.add("recipe_type.gtceu.category.arc_furnace_recycling", "Plasma Scrapping");

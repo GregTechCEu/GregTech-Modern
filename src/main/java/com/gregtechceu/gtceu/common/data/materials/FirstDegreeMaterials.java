@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class FirstDegreeMaterials {
@@ -53,6 +55,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Ash = new Material.Builder(GTCEu.id("ash"))
+                .langOverride(dust, "Ashes")
+                .langOverride(dustSmall, "Small Pile of Ashes")
+                .langOverride(dustTiny, "Tiny Pile of Ashes")
                 .dust(1)
                 .color(0xd1d1d1).secondaryColor(0x8b8989)
                 .flags(DISABLE_DECOMPOSITION)
@@ -81,6 +86,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Bone = new Material.Builder(GTCEu.id("bone"))
+                .langOverride(dust, "Bone Meal")
+                .langOverride(dustSmall, "Small Pile of Bone Meal")
+                .langOverride(dustTiny, "Tiny Pile of Bone Meal")
                 .dust(1)
                 .color(0xfcfbed).secondaryColor(0xa0a38b)
                 .flags(MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, DISABLE_DECOMPOSITION)
@@ -132,6 +140,8 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         CassiteriteSand = new Material.Builder(GTCEu.id("cassiterite_sand"))
+                .langValue("Cassiterite Sand")
+                .langOverride(TagPrefix.dust, "Cassiterite Sand")
                 .dust(1).ore(2, 1)
                 .color(0x89847e).secondaryColor(0x3b3b35).iconSet(SAND)
                 .components(Tin, 1, Oxygen, 2)
@@ -202,6 +212,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         DarkAsh = new Material.Builder(GTCEu.id("dark_ash"))
+                .langOverride(dust, "Dark Ashes")
+                .langOverride(dustSmall, "Small Pile of Dark Ashes")
+                .langOverride(dustTiny, "Tiny Pile of Dark Ashes")
                 .dust(1)
                 .color(0x8b8989).secondaryColor(0x555353)
                 .flags(DISABLE_DECOMPOSITION)
@@ -264,6 +277,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Ice = new Material.Builder(GTCEu.id("ice"))
+                .langOverride(dust, "Crushed Ice")
+                .langOverride(dustSmall, "Small Pile of Crushed Ice")
+                .langOverride(dustTiny, "Tiny Pile of Crushed Ice")
                 .dust(0)
                 .liquid(new FluidBuilder()
                         .temperature(273)
@@ -404,6 +420,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         PlatinumRaw = new Material.Builder(GTCEu.id("platinum_raw"))
+                .langOverride(dust, "Raw Platinum Powder")
+                .langOverride(dustSmall, "Small Pile of Raw Platinum Powder")
+                .langOverride(dustTiny, "Tiny Pile of Raw Platinum Powder")
                 .dust()
                 .color(0xa09a7b).secondaryColor(0x4e4e45).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
@@ -495,6 +514,11 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         RockSalt = new Material.Builder(GTCEu.id("rock_salt"))
+                .langOverride(dust, "Rock Salt")
+                .langOverride(dustSmall, "Small Pile of Rock Salt")
+                .langOverride(dustTiny, "Tiny Pile of Rock Salt")
+                .langOverride(dustImpure, "Impure Pile of Rock Salt")
+                .langOverride(dustPure, "Purified Pile of Rock Salt")
                 .gem(1).ore(2, 1)
                 .color(0xffeae1).secondaryColor(0xF0C8C8).iconSet(FINE)
                 .flags(NO_SMASHING)
@@ -532,6 +556,11 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Salt = new Material.Builder(GTCEu.id("salt"))
+                .langOverride(dust, "Salt")
+                .langOverride(dustSmall, "Small Pile of Salt")
+                .langOverride(dustTiny, "Tiny Pile of Salt")
+                .langOverride(dustImpure, "Impure Pile of Salt")
+                .langOverride(dustPure, "Purified Pile of Salt")
                 .gem(1).ore(2, 1)
                 .color(0xFAFAFA).iconSet(FINE)
                 .flags(NO_SMASHING)
@@ -937,6 +966,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         PlatinumGroupSludge = new Material.Builder(GTCEu.id("platinum_group_sludge"))
+                .langOverride(dust, "Platinum Group Sludge")
+                .langOverride(dustSmall, "Small Pile of Platinum Group Sludge")
+                .langOverride(dustTiny, "Tiny Pile of Platinum Group Sludge")
                 .dust(1)
                 .color(0x343228).secondaryColor(0x001E00).iconSet(FINE)
                 .flags(DISABLE_DECOMPOSITION)
@@ -1056,6 +1088,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         GlauconiteSand = new Material.Builder(GTCEu.id("glauconite_sand"))
+                .langOverride(dust, "Glauconite Sand")
+                .langOverride(dustSmall, "Small Pile of Glauconite Sand")
+                .langOverride(dustTiny, "Tiny Pile of Glauconite Sand")
                 .dust().ore(3, 1)
                 .color(0x1da351).secondaryColor(0x1a6e8f).iconSet(SAND)
                 .components(Potassium, 1, Magnesium, 2, Aluminium, 2, Silicon, 3, Oxygen, 12, Hydrogen, 2, Water, 1)
@@ -1086,6 +1121,14 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Talc = new Material.Builder(GTCEu.id("talc"))
+                .langOverride(dust, "Talc")
+                .langOverride(dustSmall, "Small Pile of Talc")
+                .langOverride(dustTiny, "Tiny Pile of Talc")
+                .langOverride(dustImpure, "Impure Pile of Talc")
+                .langOverride(dustPure, "Purified Pile of Talc")
+                .langOverride(crushed, "Ground Talc")
+                .langOverride(crushedPurified, "Purified Talc")
+                .langOverride(crushedRefined, "Refined Talc")
                 .dust().ore(2, 1)
                 .color(0xebffe9).secondaryColor(0x6fe19b).iconSet(FINE)
                 .components(Magnesium, 3, Silicon, 4, Hydrogen, 2, Oxygen, 12)
@@ -1440,6 +1483,9 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         InertMetalMixture = new Material.Builder(GTCEu.id("inert_metal_mixture"))
+                .langOverride(dust, "Inert Metal Mixture")
+                .langOverride(dustSmall, "Small Pile of Inert Metal Mixture")
+                .langOverride(dustTiny, "Tiny Pile of Inert Metal Mixture")
                 .dust()
                 .color(0x2b0645).secondaryColor(0x6a1600).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
