@@ -85,12 +85,14 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
                                 .child(Text.lang("gtceu.gui.me_network.min_stack_size").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
-                                        .value(SyncHandlers.intNumber(this::getMinStackSize, this::setMinStackSize))
+                                        .value(SyncHandlers.intNumber(this::getMinStackSize, this::setMinStackSize)
+                                                .allowC2S())
                                         .setNumbers(1, Integer.MAX_VALUE))
                                 .child(Text.lang("gtceu.gui.me_network.ticks_per_cycle").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(120, 18)
-                                        .value(SyncHandlers.intNumber(this::getTicksPerCycle, this::setTicksPerCycle))
+                                        .value(SyncHandlers.intNumber(this::getTicksPerCycle, this::setTicksPerCycle)
+                                                .allowC2S())
                                         .setNumbers(1, 200))
                                 .margin(5)));
 

@@ -70,7 +70,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
         this(info, tier, io,
-                new NotifiableItemStackHandler(getInventorySize(tier), io, io.support(IO.IN) ? IO.BOTH : io));
+                new NotifiableItemStackHandler(getInventorySize(tier), io));
     }
 
     /**
@@ -260,7 +260,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 .center()
                 .margin(7, 5)
                 .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
-                        .slot(SyncHandlers.itemSlot(inventory, index)
+                        .slot(SyncHandlers.itemSlot(inventory.storage, index)
                                 .slotGroup(group)
                                 .changeListener((oldStack, newStack, client, init) -> {
                                     if (ItemStack.isSameItem(oldStack, newStack)) {

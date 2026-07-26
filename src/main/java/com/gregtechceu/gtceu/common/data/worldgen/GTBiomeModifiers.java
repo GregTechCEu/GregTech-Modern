@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.data;
+package com.gregtechceu.gtceu.common.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -29,21 +29,21 @@ public class GTBiomeModifiers {
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
 
         HolderSet<Biome> biomes = biomeLookup.getOrThrow(CustomTags.HAS_RUBBER_TREE);
-        Holder<PlacedFeature> rubberTree = placedFeatureRegistry.getOrThrow(GTPlacements.RUBBER_CHECKED);
+        Holder<PlacedFeature> rubberTree = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RUBBER_CHECKED);
         ctx.register(RUBBER, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes,
                 HolderSet.direct(rubberTree),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
 
         HolderSet<Biome> overworld = biomeLookup.getOrThrow(BiomeTags.IS_OVERWORLD);
-        Holder<PlacedFeature> redGraniteBlob = placedFeatureRegistry.getOrThrow(GTPlacements.RED_GRANITE_BLOB);
-        Holder<PlacedFeature> marbleBlob = placedFeatureRegistry.getOrThrow(GTPlacements.MARBLE_BLOB);
+        Holder<PlacedFeature> redGraniteBlob = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RED_GRANITE_BLOB);
+        Holder<PlacedFeature> marbleBlob = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.MARBLE_BLOB);
         ctx.register(STONE_BLOB, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 overworld,
                 HolderSet.direct(redGraniteBlob, marbleBlob),
                 GenerationStep.Decoration.UNDERGROUND_ORES));
 
-        Holder<PlacedFeature> rawOilSprout = placedFeatureRegistry.getOrThrow(GTPlacements.RAW_OIL_SPROUT);
+        Holder<PlacedFeature> rawOilSprout = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RAW_OIL_SPROUT);
         ctx.register(RAW_OIL_SPROUT, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 overworld,
                 HolderSet.direct(rawOilSprout),
