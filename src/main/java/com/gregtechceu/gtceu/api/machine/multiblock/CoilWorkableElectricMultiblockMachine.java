@@ -71,7 +71,6 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                             UISettings settings) {
         var Texlocation = (CoilBlock.CoilType.values()[coilTier].getTexture());
 
-        //left side
         IDrawable leftTop = new UITexture.Builder()
                 .location(Texlocation)
                 .subAreaUV(0f / 16f, 0f / 16f, 7f / 16f, 4f / 16f)
