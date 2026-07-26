@@ -280,34 +280,51 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
                                               Player player, InteractionHand hand, BlockHitResult hit) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine == null) return ItemInteractionResult.FAIL;
-        ItemStack itemStack = player.getItemInHand(hand);
-        boolean shouldOpenUi = true;
-
         if (machine.getOwnerUUID() == null && player instanceof ServerPlayer sPlayer) {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
         InteractionResult machineInteractResult = InteractionResult.PASS;
 
-        if (!itemStack.isEmpty()) {
+        if (!stack.isEmpty()) {
             machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
         }
-        if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);
-        machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
-        if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);
 
-        if (itemStack.getItem() instanceof IGTTool gtToolItem) {
-            shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
+        if (machineInteractResult.consumesAction()) return getFromInteractionResult(machineInteractResult);
+
+        if (stack.getItem() instanceof IGTTool gtToolItem &&
+                gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit))) {
+            InteractionResult uiResult = tryOpenUI(machine, player, hit);
+            if (uiResult.consumesAction()) return getFromInteractionResult(uiResult);
         }
 
-        if (shouldOpenUi && MachineOwner.canOpenOwnerMachine(player, machine)) {
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+                                               BlockHitResult hit) {
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return InteractionResult.FAIL;
+
+        InteractionResult result = machine.onUse(new ExtendedUseOnContext(player, player.getUsedItemHand(), hit));
+        if (result.consumesAction()) return result;
+
+        InteractionResult uiResult = tryOpenUI(machine, player, hit);
+        if (uiResult.consumesAction()) return uiResult;
+
+        return super.useWithoutItem(state, level, pos, player, hit);
+    }
+
+    private InteractionResult tryOpenUI(MetaMachine machine, Player player, BlockHitResult hit) {
+        if (MachineOwner.canOpenOwnerMachine(player, machine)) {
             if (machine.getDefinition().getUI() != null) {
-                return getFromInteractionResult(machine.getDefinition().getUI().tryToOpenUI(player, hand, hit));
+                return machine.getDefinition().getUI().tryToOpenUI(player, player.getUsedItemHand(), hit);
             } else if (machine instanceof IMuiMachine muiMachine) {
-                return getFromInteractionResult(muiMachine.tryToOpenUI(player, hand, hit));
+                return muiMachine.tryToOpenUI(player, player.getUsedItemHand(), hit);
             }
         }
-        return shouldOpenUi ? ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION : ItemInteractionResult.CONSUME;
+        return InteractionResult.PASS;
     }
 
     //////////////////////////////////////
