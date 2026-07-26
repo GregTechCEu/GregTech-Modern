@@ -388,12 +388,7 @@ public class MultiblockDisplayText {
             var reason = recipeLogic.getBestFailureReason();
             if (reason != null) {
                 textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
-                var recipe = recipeLogic.getBestFailureRecipe();
-                if (recipe != null) {
-                    textList.add(Component.literal(" - ").append(recipe).append(COLON).append(reason));
-                } else {
-                    textList.add(Component.literal(" - ").append(reason));
-                }
+                textList.add(Component.literal(" - ").append(reason));
             }
             return this;
         }
