@@ -959,6 +959,8 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.error_damaged", "Damaged component in structure!");
         provider.add("gtceu.multiblock.hpca.error_temperature",
                 "Temperature above 100C, components may be damaged!");
+        provider.add("gtceu.multiblock.hpca.error_power",
+                "Power low, CWU generation halted!");
         provider.add("gtceu.multiblock.hpca.warning_temperature",
                 "Temperature above 50C, components may be damaged at 100C!");
         provider.add("gtceu.multiblock.hpca.warning_temperature_active_cool", "Fully utilizing active coolers");
