@@ -732,12 +732,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     public static void putFailureReason(Object machine, GTRecipe recipe, Component reason) {
         if (machine instanceof IRecipeLogicMachine rlm) {
-            putFailureReason(rlm.getRecipeLogic(), recipe, reason);
+            putFailureReason(rlm.getRecipeLogic(), recipe, reason, Double.POSITIVE_INFINITY);
         }
     }
 
-    public static void putFailureReason(RecipeLogic logic, GTRecipe recipe, Component reason) {
-        logic.recordFailureReason(recipe, reason, 0.0);
+    public static void putFailureReason(RecipeLogic logic, GTRecipe recipe, Component reason, double score) {
+        logic.recordFailureReason(recipe, reason, score);
     }
 
     /**

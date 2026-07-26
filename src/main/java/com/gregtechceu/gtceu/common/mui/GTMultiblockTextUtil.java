@@ -401,6 +401,8 @@ public class GTMultiblockTextUtil {
 
         BooleanSyncValue isIdle = syncManager.getOrCreateSyncHandler("isIdle", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isIdle()));
+        BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWaiting()));
         GenericSyncValue<Component> bestFailureReason = (GenericSyncValue<Component>) syncManager
                 .getOrCreateSyncHandler("bestFailureReason", GenericSyncValue.class,
                         () -> GenericSyncValue.builder(Component.class)
@@ -415,7 +417,7 @@ public class GTMultiblockTextUtil {
                     return Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
                 })
                 .asWidget()
-                .setEnabledIf((w) -> isFormed.getBoolValue() && isIdle.getBoolValue() &&
+                .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
                         bestFailureReason.getValue() != null));
         lineList.add(Text
                 .dynamic(() -> {
@@ -424,7 +426,7 @@ public class GTMultiblockTextUtil {
                     return Component.literal(" - ").append(reason);
                 })
                 .asWidget()
-                .setEnabledIf((w) -> isFormed.getBoolValue() && isIdle.getBoolValue() &&
+                .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
                         bestFailureReason.getValue() != null));
         return lineList;
     }
