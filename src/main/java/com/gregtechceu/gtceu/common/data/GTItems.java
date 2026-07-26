@@ -39,6 +39,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
@@ -100,7 +102,7 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
             .register();
     public static ItemEntry<Item> FIRECLAY_BRICK = REGISTRATE.item("firebrick", Item::new)
-            .lang("Firebrick")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Firebrick", "§7Heat resistant"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
             .register();
     public static ItemEntry<Item> COKE_OVEN_BRICK = REGISTRATE.item("coke_oven_brick", Item::new)
@@ -116,7 +118,7 @@ public class GTItems {
             .onRegister(attach((IRecipeRemainder) ItemStack::copy)).register();
 
     public static ItemEntry<Item> SHAPE_EMPTY = REGISTRATE.item("empty_mold", Item::new)
-            .lang("Empty Mold")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Empty Mold", "§7Raw Plate to make Molds and Extrude Shapes"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
             .register();
 
@@ -142,51 +144,51 @@ public class GTItems {
 
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
-                .lang("Casting Mold (Plate)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Plate)", "§7Mold for making Plates"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[1] = SHAPE_MOLD_GEAR = REGISTRATE.item("gear_casting_mold", Item::new)
-                .lang("Casting Mold (Gear)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Gear)", "§7Mold for making Gears"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[2] = SHAPE_MOLD_BOTTLE = REGISTRATE.item("bottle_casting_mold", Item::new)
-                .lang("Casting Mold (Bottle)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Bottle)", "§7Mold for making Bottles"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[3] = SHAPE_MOLD_INGOT = REGISTRATE.item("ingot_casting_mold", Item::new)
-                .lang("Casting Mold (Ingot)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Ingot)", "§7Mold for making Ingots"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[4] = SHAPE_MOLD_BALL = REGISTRATE.item("ball_casting_mold", Item::new)
-                .lang("Casting Mold (Ball)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Ball)", "§7Mold for making Balls"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[5] = SHAPE_MOLD_BLOCK = REGISTRATE.item("block_casting_mold", Item::new)
-                .lang("Casting Mold (Block)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Block)", "§7Mold for making Blocks"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[6] = SHAPE_MOLD_NUGGET = REGISTRATE.item("nugget_casting_mold", Item::new)
-                .lang("Casting Mold (Nugget)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Nugget)", "§7Mold for making Nuggets"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[7] = SHAPE_MOLD_CYLINDER = REGISTRATE.item("cylinder_casting_mold", Item::new)
-                .lang("Casting Mold (Cylinder)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Cylinder)", "§7Mold for shaping Cylinders"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[8] = SHAPE_MOLD_ANVIL = REGISTRATE.item("anvil_casting_mold", Item::new)
-                .lang("Casting Mold (Anvil)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Anvil)", "§7Mold for shaping Anvils"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[9] = SHAPE_MOLD_NAME = REGISTRATE.item("name_casting_mold", Item::new)
-                .lang("Casting Mold (Name)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Name)", "§7Mold for naming Items in the Forming Press (rename Mold with Anvil)"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[10] = SHAPE_MOLD_GEAR_SMALL = REGISTRATE.item("small_gear_casting_mold", Item::new)
-                .lang("Casting Mold (Small Gear)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Small Gear)", "§7Mold for making Small Gears"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[11] = SHAPE_MOLD_ROTOR = REGISTRATE.item("rotor_casting_mold", Item::new)
-                .lang("Casting Mold (Rotor)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Rotor)", "§7Mold for making Rotors"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[12] = SHAPE_MOLD_PILL = REGISTRATE.item("pill_casting_mold", Item::new)
@@ -194,23 +196,23 @@ public class GTItems {
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[13] = SHAPE_MOLD_TINY_PIPE = REGISTRATE.item("tiny_pipe_casting_mold", Item::new)
-                .lang("Casting Mold (Tiny Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Tiny Pipe)", "§7Mold for making Tiny Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[14] = SHAPE_MOLD_SMALL_PIPE = REGISTRATE.item("small_pipe_casting_mold", Item::new)
-                .lang("Casting Mold (Small Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Small Pipe)", "§7Mold for making Small Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[15] = SHAPE_MOLD_NORMAL_PIPE = REGISTRATE.item("normal_pipe_casting_mold", Item::new)
-                .lang("Casting Mold (Normal Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Normal Pipe)", "§7Mold for making Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[16] = SHAPE_MOLD_LARGE_PIPE = REGISTRATE.item("large_pipe_casting_mold", Item::new)
-                .lang("Casting Mold (Large Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Large Pipe)", "§7Mold for making Large Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_MOLDS[17] = SHAPE_MOLD_HUGE_PIPE = REGISTRATE.item("huge_pipe_casting_mold", Item::new)
-                .lang("Casting Mold (Huge Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Casting Mold (Huge Pipe)", "§7Mold for making Huge Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
     }
@@ -237,81 +239,82 @@ public class GTItems {
 
     static {
         SHAPE_EXTRUDERS[0] = SHAPE_EXTRUDER_PLATE = REGISTRATE.item("plate_extruder_mold", Item::new)
-                .lang("Extruder Mold (Plate)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Plate)", "§7Extruder Shape for making Plates"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[1] = SHAPE_EXTRUDER_ROD = REGISTRATE.item("rod_extruder_mold", Item::new)
-                .lang("Extruder Mold (Rod)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Rod)", "§7Extruder Shape for making Rods"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[2] = SHAPE_EXTRUDER_BOLT = REGISTRATE.item("bolt_extruder_mold", Item::new)
-                .lang("Extruder Mold (Bolt)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Bolt)", "§7Extruder Shape for making Bolts"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[3] = SHAPE_EXTRUDER_RING = REGISTRATE.item("ring_extruder_mold", Item::new)
-                .lang("Extruder Mold (Ring)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Ring)", "§7Extruder Shape for making Rings"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[4] = SHAPE_EXTRUDER_CELL = REGISTRATE.item("cell_extruder_mold", Item::new)
-                .lang("Extruder Mold (Cell)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Cell)", "§7Extruder Shape for making Cells"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[5] = SHAPE_EXTRUDER_INGOT = REGISTRATE.item("ingot_extruder_mold", Item::new)
-                .lang("Extruder Mold (Ingot)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Ingot)", "§7Extruder Shape for, wait, can't we just use a Furnace?"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[6] = SHAPE_EXTRUDER_WIRE = REGISTRATE.item("wire_extruder_mold", Item::new)
-                .lang("Extruder Mold (Wire)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Wire)", "§7Extruder Shape for making Wires"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[7] = SHAPE_EXTRUDER_PIPE_TINY = REGISTRATE.item("tiny_pipe_extruder_mold", Item::new)
-                .lang("Extruder Mold (Tiny Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Tiny Pipe)", "§7Extruder Shape for making Tiny Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[8] = SHAPE_EXTRUDER_PIPE_SMALL = REGISTRATE.item("small_pipe_extruder_mold", Item::new)
-                .lang("Extruder Mold (Small Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Small Pipe)", "§7Extruder Shape for making Small Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[9] = SHAPE_EXTRUDER_PIPE_NORMAL = REGISTRATE.item("normal_pipe_extruder_mold", Item::new)
-                .lang("Extruder Mold (Normal Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Normal Pipe)", "§7Extruder Shape for making Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[10] = SHAPE_EXTRUDER_PIPE_LARGE = REGISTRATE.item("large_pipe_extruder_mold", Item::new)
-                .lang("Extruder Mold (Large Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Large Pipe)", "§7Extruder Shape for making Large Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[11] = SHAPE_EXTRUDER_PIPE_HUGE = REGISTRATE.item("huge_pipe_extruder_mold", Item::new)
-                .lang("Extruder Mold (Huge Pipe)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Huge Pipe)", "§7Extruder Shape for making Huge Pipes"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[12] = SHAPE_EXTRUDER_BLOCK = REGISTRATE.item("block_extruder_mold", Item::new)
-                .lang("Extruder Mold (Block)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Block)", "§7Extruder Shape for making Blocks"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         // Extruder Shapes index 13-20 (inclusive), id 44-51 (inclusive) are unused
         SHAPE_EXTRUDERS[21] = SHAPE_EXTRUDER_GEAR = REGISTRATE.item("gear_extruder_mold", Item::new)
-                .lang("Extruder Mold (Gear)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Gear)", "§7Extruder Shape for making Gears"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[22] = SHAPE_EXTRUDER_BOTTLE = REGISTRATE.item("bottle_extruder_mold", Item::new)
-                .lang("Extruder Mold (Bottle)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Bottle)", "§7Extruder Shape for making Bottles"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[23] = SHAPE_EXTRUDER_FOIL = REGISTRATE.item("foil_extruder_mold", Item::new)
-                .lang("Extruder Mold (Foil)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Foil)", "§7Extruder Shape for making Foils from Non-Metals"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[24] = SHAPE_EXTRUDER_GEAR_SMALL = REGISTRATE.item("small_gear_extruder_mold", Item::new)
-                .lang("Extruder Mold (Small Gear)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Small Gear)", "§7Extruder Shape for making Small Gears"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
         SHAPE_EXTRUDERS[26] = SHAPE_EXTRUDER_ROTOR = REGISTRATE.item("rotor_extruder_mold", Item::new)
-                .lang("Extruder Mold (Rotor)")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Extruder Mold (Rotor)", "§7Extruder Shape for making Rotors"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
     }
     public static ItemEntry<Item> SPRAY_EMPTY = REGISTRATE.item("empty_spray_can", Item::new)
-            .lang("Spray Can (Empty)").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Spray Can (Empty)", "§7Can be filled with sprays of various colors"))
+            .register();
     public static ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE.item("solvent_spray_can", ComponentItem::create)
             .lang("Spray Can (Solvent)")
             .properties(p -> p.stacksTo(1))
@@ -418,7 +421,7 @@ public class GTItems {
             .tag(CustomTags.TOOLS_IGNITER)
             .register();
     public static ItemEntry<ComponentItem> TOOL_MATCHBOX = REGISTRATE.item("matchbox", ComponentItem::create)
-            .lang("Matchbox")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Matchbox", "§7This is not a Car"))
             .properties(p -> p.stacksTo(1))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(false, true, false, () -> new ItemStack(Items.PAPER, 1), 16)))
@@ -437,7 +440,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> TOOL_LIGHTER_PLATINUM = REGISTRATE
             .item("platinum_lighter", ComponentItem::create)
-            .lang("Platinum Lighter")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Platinum Lighter", "§7A known Prank Master is engraved on it"))
             .properties(p -> p.stacksTo(1).rarity(Rarity.UNCOMMON))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
@@ -459,74 +462,78 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> DUCT_TAPE = REGISTRATE
             .item("duct_tape", ComponentItem::create)
-            .lang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84")
+            .setData(ProviderType.LANG, nameAndTooltipLang("BrainTech Aerospace Advanced Reinforced Duct Tape FAL-84",
+                    "§7If you can't fix it with this, use more of it!"))
             .onRegister(attach(new TapeBehaviour()))
             .register();
     public static ItemEntry<ComponentItem> BASIC_TAPE = REGISTRATE
             .item("basic_tape", ComponentItem::create)
-            .lang("Tape")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Tape",
+                    "§7Not strong enough for mechanical issues\nCan be used to pick up crates without dropping their items"))
             .onRegister(attach(new TapeBehaviour()))
             .register();
 
     public static ItemEntry<Item> NEUTRON_REFLECTOR = REGISTRATE.item("neutron_reflector", Item::new)
-            .lang("Iridium Neutron Reflector").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Iridium Neutron Reflector", "§7Indestructible"))
+            .register();
 
     public static ItemEntry<Item> BATTERY_HULL_LV = REGISTRATE.item("lv_battery_hull", Item::new)
-            .lang("Small Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Small Battery Hull", "§7An empty LV Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MV = REGISTRATE.item("mv_battery_hull", Item::new)
-            .lang("Medium Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Battery Hull", "§7An empty §bMV §7Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M * 3))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_HV = REGISTRATE.item("hv_battery_hull", Item::new)
-            .lang("Large Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Battery Hull", "§7An empty §6HV §7Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BatteryAlloy, GTValues.M * 9))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_SMALL_VANADIUM = REGISTRATE.item("ev_battery_hull", Item::new)
-            .lang("Small Vanadium Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Small Vanadium Battery Hull", "§7An empty §5EV §7Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RedSteel, GTValues.M * 2))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MEDIUM_VANADIUM = REGISTRATE.item("iv_battery_hull", Item::new)
-            .lang("Medium Vanadium Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Vanadium Battery Hull", "§7An empty §1IV §7Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.RoseGold, GTValues.M * 6))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_LARGE_VANADIUM = REGISTRATE.item("luv_battery_hull", Item::new)
-            .lang("Large Vanadium Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Vanadium Battery Hull", "§7An empty §dLuV §7Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlueSteel, GTValues.M * 18))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_MEDIUM_NAQUADRIA = REGISTRATE.item("zpm_battery_hull", Item::new)
-            .lang("Medium Naquadria Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Naquadria Battery Hull", "§7An empty §fZPM §7Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 6))))
             .register();
     public static ItemEntry<Item> BATTERY_HULL_LARGE_NAQUADRIA = REGISTRATE.item("uv_battery_hull", Item::new)
-            .lang("Large Naquadria Battery Hull")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Naquadria Battery Hull", "§7An empty §3UV §7Battery Hull"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Americium, GTValues.M * 18))))
             .register();
 
     public static ItemEntry<ComponentItem> BATTERY_ULV_TANTALUM = REGISTRATE
             .item("tantalum_capacitor", ComponentItem::create)
-            .lang("Tantalum Capacitor")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Tantalum Capacitor", "§7Reusable Battery"))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1000, GTValues.ULV)))
             .tag(CustomTags.ULV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_SODIUM = REGISTRATE
             .item("lv_sodium_battery", ComponentItem::create)
             .lang("Small Sodium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Small Sodium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(80000, GTValues.LV)))
             .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_SODIUM = REGISTRATE
             .item("mv_sodium_battery", ComponentItem::create)
-            .lang("Medium Sodium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Sodium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(360000, GTValues.MV)))
             .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_SODIUM = REGISTRATE
             .item("hv_sodium_battery", ComponentItem::create)
-            .lang("Large Sodium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Sodium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1200000, GTValues.HV)))
@@ -534,21 +541,21 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_LV_LITHIUM = REGISTRATE
             .item("lv_lithium_battery", ComponentItem::create)
-            .lang("Small Lithium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Small Lithium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(120000, GTValues.LV)))
             .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_LITHIUM = REGISTRATE
             .item("mv_lithium_battery", ComponentItem::create)
-            .lang("Medium Lithium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Lithium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(420000, GTValues.MV)))
             .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_LITHIUM = REGISTRATE
             .item("hv_lithium_battery", ComponentItem::create)
-            .lang("Large Lithium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Lithium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1800000, GTValues.HV)))
@@ -556,33 +563,34 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_LV_CADMIUM = REGISTRATE
             .item("lv_cadmium_battery", ComponentItem::create)
-            .lang("Small Cadmium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Small Cadmium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(100000, GTValues.LV)))
             .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_CADMIUM = REGISTRATE
             .item("mv_cadmium_battery", ComponentItem::create)
-            .lang("Medium Cadmium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Cadmium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(400000, GTValues.MV)))
             .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_CADMIUM = REGISTRATE
             .item("hv_cadmium_battery", ComponentItem::create)
-            .lang("Large Cadmium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Cadmium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1600000, GTValues.HV)))
             .tag(CustomTags.HV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ENERGIUM_CRYSTAL = REGISTRATE.item("energy_crystal", ComponentItem::create)
-            .lang("Energium Crystal")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Energium Crystal", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(6_400_000L, GTValues.HV)))
             .tag(CustomTags.HV_BATTERIES).register();
     public static ItemEntry<ComponentItem> LAPOTRON_CRYSTAL = REGISTRATE.item("lapotron_crystal", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Lapotron Crystal", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(25_000_000L, GTValues.EV)))
@@ -591,20 +599,21 @@ public class GTItems {
     public static ItemEntry<ComponentItem> BATTERY_EV_VANADIUM = REGISTRATE
             .item("ev_vanadium_battery", ComponentItem::create)
             .lang("Small Vanadium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Small Vanadium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(10_240_000L, GTValues.EV)))
             .tag(CustomTags.EV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_IV_VANADIUM = REGISTRATE
             .item("iv_vanadium_battery", ComponentItem::create)
-            .lang("Medium Vanadium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Vanadium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(40_960_000L, GTValues.IV)))
             .tag(CustomTags.IV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_LuV_VANADIUM = REGISTRATE
             .item("luv_vanadium_battery", ComponentItem::create)
-            .lang("Large Vanadium Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Vanadium Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(163_840_000L, GTValues.LuV)))
@@ -612,14 +621,14 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> BATTERY_ZPM_NAQUADRIA = REGISTRATE
             .item("zpm_naquadria_battery", ComponentItem::create)
-            .lang("Medium Naquadria Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Naquadria Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(655_360_000L, GTValues.ZPM)))
             .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_UV_NAQUADRIA = REGISTRATE
             .item("uv_naquadria_battery", ComponentItem::create)
-            .lang("Large Naquadria Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Large Naquadria Battery", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(2_621_440_000L, GTValues.UV)))
@@ -627,14 +636,14 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB = REGISTRATE
             .item("lapotronic_energy_orb", ComponentItem::create)
-            .lang("Lapotronic Energy Orb")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Lapotronic Energy Orb", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(250_000_000L, GTValues.IV)))
             .tag(CustomTags.IV_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB_CLUSTER = REGISTRATE
             .item("lapotronic_energy_orb_cluster", ComponentItem::create)
-            .lang("Lapotronic Energy Orb Cluster")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Lapotronic Energy Orb Cluster", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1_000_000_000L, GTValues.LuV)))
@@ -642,12 +651,14 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> ENERGY_MODULE = REGISTRATE.item("energy_module", ComponentItem::create)
             .lang("Energy Module")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Energy Module", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(4_000_000_000L, GTValues.ZPM)))
             .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_CLUSTER = REGISTRATE.item("energy_cluster", ComponentItem::create)
             .lang("Energy Cluster")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Energy Cluster", "§7Reusable Battery"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
@@ -660,7 +671,7 @@ public class GTItems {
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createBattery(2000000000000L, GTValues.ZPM, true))).register();
     public static ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE.item("max_battery", ComponentItem::create)
-            .lang("Ultimate Battery")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ultimate Battery", "§7Fill this to win Minecraft"))
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
@@ -1448,10 +1459,13 @@ public class GTItems {
             .register() : null;
 
     public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::create)
-            .lang("Data Stick").onRegister(attach(new DataItemBehavior(false, 8)))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Data Stick", "§7A Low Capacity Data Storage"))
+            .onRegister(attach(new DataItemBehavior(false, 8)))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_ORB = REGISTRATE.item("data_orb", ComponentItem::create)
-            .lang("Data Orb").onRegister(attach(new DataItemBehavior(false, 64)))
+            .setData(ProviderType.LANG, nameAndTooltipLang("Data Orb", "§7A High Capacity Data Storage"))
+            .lang("Data Orb")
+            .onRegister(attach(new DataItemBehavior(false, 64)))
             .register();
     public static ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::create)
             .lang("Data Module").onRegister(attach(new DataItemBehavior(true, 256)))
@@ -1472,287 +1486,378 @@ public class GTItems {
     }
 
     public static ItemEntry<Item> SILICON_BOULE = REGISTRATE.item("silicon_boule", Item::new)
-            .lang("Monocrystalline Silicon Boule")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Monocrystalline Silicon Boule", "§7Raw Circuit"))
             .register();
     public static ItemEntry<Item> PHOSPHORUS_BOULE = REGISTRATE.item("phosphorus_boule", Item::new)
-            .lang("Phosphorus-doped Monocrystalline Silicon Boule")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Phosphorus-doped Monocrystalline Silicon Boule", "§7Raw Circuit"))
             .register();
     public static ItemEntry<Item> NAQUADAH_BOULE = REGISTRATE.item("naquadah_boule", Item::new)
             .lang("Naquadah-doped Monocrystalline Silicon Boule")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Naquadah-doped Monocrystalline Silicon Boule", "§7Raw Circuit"))
             .register();
     public static ItemEntry<Item> NEUTRONIUM_BOULE = REGISTRATE.item("neutronium_boule", Item::new)
             .lang("Neutronium-doped Monocrystalline Silicon Boule")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Neutronium-doped Monocrystalline Silicon Boule", "§7Raw Circuit"))
             .register();
-    public static ItemEntry<Item> SILICON_WAFER = REGISTRATE.item("silicon_wafer", Item::new).lang("Silicon Wafer")
+    public static ItemEntry<Item> SILICON_WAFER = REGISTRATE.item("silicon_wafer", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Silicon Wafer", "§7Raw Circuit"))
             .register();
     public static ItemEntry<Item> PHOSPHORUS_WAFER = REGISTRATE.item("phosphorus_wafer", Item::new)
-            .lang("Phosphorus-doped Wafer")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Phosphorus-doped Wafer", "§7Raw Circuit"))
             .register();
     public static ItemEntry<Item> NAQUADAH_WAFER = REGISTRATE.item("naquadah_wafer", Item::new)
-            .lang("Naquadah-doped Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Naquadah-doped Wafer", "§7Raw Circuit"))
+            .register();
     public static ItemEntry<Item> NEUTRONIUM_WAFER = REGISTRATE.item("neutronium_wafer", Item::new)
-            .lang("Neutronium-doped Wafer")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Neutronium-doped Wafer", "§7Raw Circuit"))
             .register();
 
     public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("cpu_wafer", Item::new)
-            .lang("CPU Wafer").register();
-    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY_WAFER = REGISTRATE.item("ram_wafer", Item::new).lang("RAM Wafer")
+            .setData(ProviderType.LANG, nameAndTooltipLang("CPU Wafer", "§7Raw Processing Unit"))
+            .register();
+    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY_WAFER = REGISTRATE.item("ram_wafer", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("RAM Wafer", "§7Raw Memory"))
             .register();
     public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT_WAFER = REGISTRATE.item("ilc_wafer", Item::new)
-            .lang("ILC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("ILC Wafer", "§7Raw Integrated Circuit"))
+            .register();
     public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("nano_cpu_wafer", Item::new)
-            .lang("Nano CPU Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Nano CPU Wafer", "§7Raw Nano Circuit"))
+            .register();
     public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT_WAFER = REGISTRATE.item("qbit_cpu_wafer", Item::new)
-            .lang("Qubit CPU Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Qubit CPU Wafer", "§7Raw Qubit Circuit"))
+            .register();
     public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP_WAFER = REGISTRATE.item("simple_soc_wafer", Item::new)
-            .lang("Simple SoC Wafer").register();
-    public static ItemEntry<Item> SYSTEM_ON_CHIP_WAFER = REGISTRATE.item("soc_wafer", Item::new).lang("SoC Wafer")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Simple SoC Wafer", "§7Raw Simple Circuit"))
+            .register();
+    public static ItemEntry<Item> SYSTEM_ON_CHIP_WAFER = REGISTRATE.item("soc_wafer", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("SoC Wafer", "§7Raw Basic Circuit"))
             .register();
     public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP_WAFER = REGISTRATE.item("advanced_soc_wafer", Item::new)
-            .lang("ASoC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("ASoC Wafer", "§7Raw Advanced Circuit"))
+            .register();
     public static ItemEntry<Item> HIGHLY_ADVANCED_SOC_WAFER = REGISTRATE.item("highly_advanced_soc_wafer", Item::new)
-            .lang("HASoC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("HASoC Wafer", "§7Raw Highly Advanced Circuit"))
+            .register();
     public static ItemEntry<Item> NAND_MEMORY_CHIP_WAFER = REGISTRATE.item("nand_memory_wafer", Item::new)
-            .lang("NAND Memory Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("NAND Memory Wafer", "§7Raw Logic Gate"))
+            .register();
     public static ItemEntry<Item> NOR_MEMORY_CHIP_WAFER = REGISTRATE.item("nor_memory_wafer", Item::new)
-            .lang("NOR Memory Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("NOR Memory Wafer", "§7Raw Logic Gate"))
+            .register();
     public static ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("ulpic_wafer", Item::new)
-            .lang("ULPIC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("ULPIC Wafer", "§7Raw Ultra Low Power Circuit"))
+            .register();
     public static ItemEntry<Item> LOW_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("lpic_wafer", Item::new)
-            .lang("LPIC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("LPIC Wafer", "§7Raw Low Power Circuit"))
+            .register();
     public static ItemEntry<Item> POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("mpic_wafer", Item::new)
-            .lang("MPIC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("MPIC Wafer", "§7Raw Power Circuit"))
+            .register();
     public static ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("hpic_wafer", Item::new)
-            .lang("HPIC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("HPIC Wafer", "§7Raw High Power Circuit"))
+            .register();
     public static ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER = REGISTRATE.item("uhpic_wafer", Item::new)
-            .lang("UHPIC Wafer").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("UHPIC Wafer", "§7Raw Ultra High Power Circuit"))
+            .register();
 
     public static ItemEntry<Item> ENGRAVED_CRYSTAL_CHIP = REGISTRATE.item("engraved_crystal_chip", Item::new)
-            .lang("Engraved Crystal Chip").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Engraved Crystal Chip", "§7Needed for Circuits"))
+            .register();
     public static ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE.item("engraved_lapotron_crystal_chip", Item::new)
-            .lang("Engraved Lapotron Crystal Chip").register();
+            .lang("Engraved Lapotron Crystal Chip")
+            .register();
 
-    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item("cpu_chip", Item::new).lang("CPU Chip")
+    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item("cpu_chip", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("CPU Chip", "§7Central Processing Unit"))
             .register();
-    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item("ram_chip", Item::new).lang("RAM Chip")
+    public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item("ram_chip", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("RAM Chip", "§7Random Access Memory"))
             .register();
-    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item("ilc_chip", Item::new).lang("IC Chip")
+    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item("ilc_chip", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("IC Chip", "§7Integrated Logic Circuit"))
             .register();
     public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("nano_cpu_chip", Item::new)
-            .lang("Nano CPU Chip").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Nano CPU Chip", "§7Nano Central Processing Unit"))
+            .register();
     public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("qbit_cpu_chip", Item::new)
-            .lang("Qubit CPU Chip").register();
-    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP = REGISTRATE.item("simple_soc", Item::new).lang("Simple SoC")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Qubit CPU Chip", "§7Qubit Central Processing Unit"))
             .register();
-    public static ItemEntry<Item> SYSTEM_ON_CHIP = REGISTRATE.item("soc", Item::new).lang("SoC")
+    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP = REGISTRATE.item("simple_soc", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Simple SoC", "§7Simple System on Chip"))
             .register();
-    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP = REGISTRATE.item("advanced_soc", Item::new).lang("ASoC")
+    public static ItemEntry<Item> SYSTEM_ON_CHIP = REGISTRATE.item("soc", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("SoC", "§7System on Chip"))
             .register();
-    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC = REGISTRATE.item("highly_advanced_soc", Item::new).lang("HASoC")
+    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP = REGISTRATE.item("advanced_soc", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("ASoC", "§7Advanced System on Chip"))
+            .register();
+    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC = REGISTRATE.item("highly_advanced_soc", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("HASoC", "§7Highly Advanced System on Chip"))
             .register();
     public static ItemEntry<Item> NAND_MEMORY_CHIP = REGISTRATE.item("nand_memory_chip", Item::new)
-            .lang("NAND Memory Chip").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("NAND Memory Chip", "§7NAND Logic Gate"))
+            .register();
     public static ItemEntry<Item> NOR_MEMORY_CHIP = REGISTRATE.item("nor_memory_chip", Item::new)
-            .lang("NOR Memory Chip").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("NOR Memory Chip", "§7NOR Logic Gate"))
+            .register();
     public static ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("ulpic_chip", Item::new)
-            .lang("ULPIC Chip").register();
+            .lang("ULPIC Chip")
+            .setData(ProviderType.LANG, nameAndTooltipLang("ULPIC Chip", "§7Ultra Low Power IC"))
+            .register();
     public static ItemEntry<Item> LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("lpic_chip", Item::new)
-            .lang("LPIC Chip").register();
-    public static ItemEntry<Item> POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("mpic_chip", Item::new).lang("MPIC Chip")
+            .setData(ProviderType.LANG, nameAndTooltipLang("LPIC Chip", "§7Low Power IC"))
+            .register();
+    public static ItemEntry<Item> POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("mpic_chip", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("MPIC Chip", "§7Power IC"))
             .register();
     public static ItemEntry<Item> HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("hpic_chip", Item::new)
-            .lang("HPIC Chip").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("HPIC Chip", "§7High Power IC"))
+            .register();
     public static ItemEntry<Item> ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item("uhpic_chip", Item::new)
-            .lang("UHPIC Chip").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("UHPIC Chip", "§7Ultra High Power IC"))
+            .register();
 
     public static ItemEntry<Item> RAW_CRYSTAL_CHIP = REGISTRATE.item("raw_crystal_chip", Item::new)
-            .lang("Raw Crystal Chip").register();
-    public static ItemEntry<Item> RAW_CRYSTAL_CHIP_PART = REGISTRATE.item("raw_crystal_chip_parts", Item::new)
-            .lang("Raw Crystal Chip Parts").register();
-    public static ItemEntry<Item> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_cpu", Item::new)
-            .lang("Crystal CPU")
+            .lang("Raw Crystal Chip")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Raw Crystal Chip", "§7Raw Crystal Processor"))
             .register();
-    public static ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", Item::new).lang("Crystal SoC")
+    public static ItemEntry<Item> RAW_CRYSTAL_CHIP_PART = REGISTRATE.item("raw_crystal_chip_parts", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Raw Crystal Chip Parts", "§7Raw Crystal Processor Parts"))
+            .register();
+    public static ItemEntry<Item> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_cpu", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Crystal CPU", "§7Crystal Processing Unit"))
+            .register();
+    public static ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Crystal SoC", "§7Crystal System on Chip"))
             .register();
 
     public static ItemEntry<Item> COATED_BOARD = REGISTRATE.item("resin_circuit_board", Item::new)
-            .lang("Resin Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Resin Circuit Board", "§7A Coated Board"))
             .register();
     public static ItemEntry<Item> PHENOLIC_BOARD = REGISTRATE.item("phenolic_circuit_board", Item::new)
-            .lang("Phenolic Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Phenolic Circuit Board", "§7A Good Board"))
             .register();
     public static ItemEntry<Item> PLASTIC_BOARD = REGISTRATE.item("plastic_circuit_board", Item::new)
-            .lang("Plastic Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Plastic Circuit Board", "§7A Good Board"))
             .register();
     public static ItemEntry<Item> EPOXY_BOARD = REGISTRATE.item("epoxy_circuit_board", Item::new)
-            .lang("Epoxy Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Epoxy Circuit Board", "§7An Advanced Board"))
             .register();
     public static ItemEntry<Item> FIBER_BOARD = REGISTRATE.item("fiber_reinforced_circuit_board", Item::new)
-            .lang("Fiber-Reinforced Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Fiber-Reinforced Circuit Board", "§7An Extreme Board"))
             .register();
     public static ItemEntry<Item> MULTILAYER_FIBER_BOARD = REGISTRATE
             .item("multilayer_fiber_reinforced_circuit_board", Item::new)
-            .lang("Multi-layer Fiber-Reinforced Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Multi-layer Fiber-Reinforced Circuit Board", "§7An Elite Board"))
             .register();
     public static ItemEntry<Item> WETWARE_BOARD = REGISTRATE.item("wetware_circuit_board", Item::new)
-            .lang("Wetware Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Wetware Circuit Board", "§7The Board that keeps life"))
             .register();
 
     public static ItemEntry<Item> BASIC_CIRCUIT_BOARD = REGISTRATE.item("resin_printed_circuit_board", Item::new)
-            .lang("Resin Printed Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Resin Printed Circuit Board", "§7A Basic Circuit Board"))
             .register();
     public static ItemEntry<Item> GOOD_CIRCUIT_BOARD = REGISTRATE.item("phenolic_printed_circuit_board", Item::new)
             .lang("Phenolic Printed Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Phenolic Printed Circuit Board", "§7A Good Circuit Board"))
             .register();
     public static ItemEntry<Item> PLASTIC_CIRCUIT_BOARD = REGISTRATE.item("plastic_printed_circuit_board", Item::new)
-            .lang("Plastic Printed Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Plastic Printed Circuit Board", "§7A Good Circuit Board"))
             .register();
     public static ItemEntry<Item> ADVANCED_CIRCUIT_BOARD = REGISTRATE.item("epoxy_printed_circuit_board", Item::new)
-            .lang("Epoxy Printed Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Epoxy Printed Circuit Board", "§7An Advanced Circuit Board"))
             .register();
     public static ItemEntry<Item> EXTREME_CIRCUIT_BOARD = REGISTRATE
-            .item("fiber_reinforced_printed_circuit_board", Item::new).lang("Fiber-Reinforced Printed Circuit Board")
+            .item("fiber_reinforced_printed_circuit_board", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Fiber-Reinforced Printed Circuit Board", "§7A More Advanced Circuit Board"))
             .register();
     public static ItemEntry<Item> ELITE_CIRCUIT_BOARD = REGISTRATE
             .item("multilayer_fiber_reinforced_printed_circuit_board", Item::new)
-            .lang("Multi-layer Fiber-Reinforced Printed Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Multi-layer Fiber-Reinforced Printed Circuit Board", "§7An Elite Circuit Board"))
             .register();
     public static ItemEntry<Item> WETWARE_CIRCUIT_BOARD = REGISTRATE.item("wetware_printed_circuit_board", Item::new)
-            .lang("Wetware Printed Circuit Board")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Wetware Printed Circuit Board", "§7The Board that keeps life"))
             .register();
 
-    public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("vacuum_tube", Item::new).lang("Vacuum Tube")
+    public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("vacuum_tube", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Vacuum Tube", "§7Technically a Diode\n" + "§cULV-Tier"))
             .tag(CustomTags.ULV_CIRCUITS).register();
-    public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("glass_tube", Item::new).lang("Glass Tube")
+    public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("glass_tube", Item::new)
+            .lang("Glass Tube")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M))))
             .register();
-    public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("transistor", Item::new).lang("Transistor")
+    public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("transistor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Transistor", "§7Basic Electronic Component"))
             .tag(CustomTags.TRANSISTORS)
             .register();
-    public static ItemEntry<Item> RESISTOR = REGISTRATE.item("resistor", Item::new).lang("Resistor")
+    public static ItemEntry<Item> RESISTOR = REGISTRATE.item("resistor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Resistor", "§7Basic Electronic Component"))
             .tag(CustomTags.RESISTORS)
             .register();
-    public static ItemEntry<Item> CAPACITOR = REGISTRATE.item("capacitor", Item::new).lang("Capacitor")
+    public static ItemEntry<Item> CAPACITOR = REGISTRATE.item("capacitor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Capacitor", "§7Basic Electronic Component"))
             .tag(CustomTags.CAPACITORS)
             .register();
-    public static ItemEntry<Item> DIODE = REGISTRATE.item("diode", Item::new).lang("Diode").tag(CustomTags.DIODES)
+    public static ItemEntry<Item> DIODE = REGISTRATE.item("diode", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Diode", "§7Basic Electronic Component"))
+            .tag(CustomTags.DIODES)
             .register();
-    public static ItemEntry<Item> INDUCTOR = REGISTRATE.item("inductor", Item::new).lang("Inductor")
+    public static ItemEntry<Item> INDUCTOR = REGISTRATE.item("inductor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Inductor", "§A Small Coil"))
             .tag(CustomTags.INDUCTORS)
             .register();
-    public static ItemEntry<Item> SMD_TRANSISTOR = REGISTRATE.item("smd_transistor", Item::new).lang("SMD Transistor")
+    public static ItemEntry<Item> SMD_TRANSISTOR = REGISTRATE.item("smd_transistor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("SMD Transistor", "§7Electronic Component"))
             .tag(CustomTags.TRANSISTORS).register();
-    public static ItemEntry<Item> SMD_RESISTOR = REGISTRATE.item("smd_resistor", Item::new).lang("SMD Resistor")
+    public static ItemEntry<Item> SMD_RESISTOR = REGISTRATE.item("smd_resistor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("SMD Resistor", "§7Electronic Component"))
             .tag(CustomTags.RESISTORS).register();
-    public static ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("smd_capacitor", Item::new).lang("SMD Capacitor")
+    public static ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("smd_capacitor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("SMD Capacitor", "§7Electronic Component"))
             .tag(CustomTags.CAPACITORS).register();
-    public static ItemEntry<Item> SMD_DIODE = REGISTRATE.item("smd_diode", Item::new).lang("SMD Diode")
+    public static ItemEntry<Item> SMD_DIODE = REGISTRATE.item("smd_diode", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("SMD Diode", "§7Electronic Component"))
             .tag(CustomTags.DIODES).register();
-    public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new).lang("SMD Inductor")
+    public static ItemEntry<Item> SMD_INDUCTOR = REGISTRATE.item("smd_inductor", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("SMD Inductor", "§7Electronic Component"))
             .tag(CustomTags.INDUCTORS).register();
     public static ItemEntry<Item> ADVANCED_SMD_TRANSISTOR = REGISTRATE.item("advanced_smd_transistor", Item::new)
-            .lang("Advanced SMD Transistor").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced SMD Transistor", "§7Advanced Electronic Component"))
+            .register();
     public static ItemEntry<Item> ADVANCED_SMD_RESISTOR = REGISTRATE.item("advanced_smd_resistor", Item::new)
-            .lang("Advanced SMD Resistor").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced SMD Resistor", "§7Advanced Electronic Component"))
+            .register();
     public static ItemEntry<Item> ADVANCED_SMD_CAPACITOR = REGISTRATE.item("advanced_smd_capacitor", Item::new)
-            .lang("Advanced SMD Capacitor").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced SMD Capacitor", "§7Advanced Electronic Component"))
+            .register();
     public static ItemEntry<Item> ADVANCED_SMD_DIODE = REGISTRATE.item("advanced_smd_diode", Item::new)
-            .lang("Advanced SMD Diode").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced SMD Diode", "§7Advanced Electronic Component"))
+            .register();
     public static ItemEntry<Item> ADVANCED_SMD_INDUCTOR = REGISTRATE.item("advanced_smd_inductor", Item::new)
-            .lang("Advanced SMD Inductor").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced SMD Inductor", "§7Advanced Electronic Component"))
+            .register();
 
     // T1: Electronic
     public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("basic_electronic_circuit", Item::new)
-            .lang("Basic Electronic Circuit").tag(CustomTags.LV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Basic Electronic Circuit", "§7Your First Circuit\n§cLV-Tier Circuit"))
+            .tag(CustomTags.LV_CIRCUITS)
             .register();
     public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("good_electronic_circuit", Item::new)
-            .lang("Good Electronic Circuit").tag(CustomTags.MV_CIRCUITS)
+            .lang("Good Electronic Circuit")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Good Electronic Circuit", "§7Your Second Circuit\n§cMV-Tier Circuit"))
+            .tag(CustomTags.MV_CIRCUITS)
             .register();
 
     // T2: Integrated
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("basic_integrated_circuit", Item::new)
-            .lang("Basic Integrated Circuit").tag(CustomTags.LV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Basic Integrated Circuit", "§7Smaller and more powerful\n§6LV-Tier Circuit"))
+            .tag(CustomTags.LV_CIRCUITS)
             .register();
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("good_integrated_circuit", Item::new)
-            .lang("Good Integrated Circuit").tag(CustomTags.MV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Good Integrated Circuit", "§7Smaller and more powerful\n§6MV-Tier Circuit"))
+            .tag(CustomTags.MV_CIRCUITS)
             .register();
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("advanced_integrated_circuit", Item::new)
-            .lang("Advanced Integrated Circuit").tag(CustomTags.HV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Advanced Integrated Circuit", "§7Smaller and more powerful\n§6HV-Tier Circuit"))
+            .tag(CustomTags.HV_CIRCUITS)
             .register();
 
     // ULV/LV easier circuits
-    public static ItemEntry<Item> NAND_CHIP_ULV = REGISTRATE.item("nand_chip", Item::new).lang("NAND Chip")
+    public static ItemEntry<Item> NAND_CHIP_ULV = REGISTRATE.item("nand_chip", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("NAND Chip", "§7A Superior Simple Circuit\n§6ULV-Tier Circuit"))
             .tag(CustomTags.ULV_CIRCUITS).register();
     public static ItemEntry<Item> MICROPROCESSOR_LV = REGISTRATE.item("microchip_processor", Item::new)
-            .lang("Microchip Processor").tag(CustomTags.LV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Microchip Processor", "§7A Superior Basic Circuit\n§eLV-Tier Circuit"))
+            .tag(CustomTags.LV_CIRCUITS)
             .register();
 
     // T3: Processor
-    public static ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("micro_processor", Item::new).lang("Microprocessor")
+    public static ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("micro_processor", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Microprocessor", "§7Amazing Computation Speed!\n§eMV-Tier Circuit"))
             .tag(CustomTags.MV_CIRCUITS).register();
     public static ItemEntry<Item> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("micro_processor_assembly", Item::new)
-            .lang("Microprocessor Assembly").tag(CustomTags.HV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Microprocessor Assembly", "§7Amazing Computation Speed!\n§eHV-Tier Circuit"))
+            .tag(CustomTags.HV_CIRCUITS)
             .register();
     public static ItemEntry<Item> WORKSTATION_EV = REGISTRATE.item("micro_processor_computer", Item::new)
-            .lang("Microprocessor Supercomputer").tag(CustomTags.EV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Microprocessor Supercomputer", "§7Amazing Computation Speed!\n§eEV-Tier Circuit"))
+            .tag(CustomTags.EV_CIRCUITS)
             .register();
     public static ItemEntry<Item> MAINFRAME_IV = REGISTRATE.item("micro_processor_mainframe", Item::new)
-            .lang("Microprocessor Mainframe").tag(CustomTags.IV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Microprocessor Mainframe", "§7Amazing Computation Speed!\n§eIV-Tier Circuit"))
+            .tag(CustomTags.IV_CIRCUITS)
             .register();
 
     // T4: Nano
-    public static ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("nano_processor", Item::new).lang("Nanoprocessor")
+    public static ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("nano_processor", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Nanoprocessor", "§7Smaller than ever\n§bHV-Tier Circuit"))
             .tag(CustomTags.HV_CIRCUITS).register();
     public static ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("nano_processor_assembly", Item::new)
-            .lang("Nanoprocessor Assembly").tag(CustomTags.EV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Nanoprocessor Assembly", "§7Smaller than ever\n§bEV-Tier Circuit"))
+            .tag(CustomTags.EV_CIRCUITS)
             .register();
     public static ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("nano_processor_computer", Item::new)
-            .lang("Nanoprocessor Supercomputer").tag(CustomTags.IV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Nanoprocessor Supercomputer", "§7Smaller than ever\n§bIV-Tier Circuit"))
+            .tag(CustomTags.IV_CIRCUITS)
             .register();
     public static ItemEntry<Item> NANO_MAINFRAME_LuV = REGISTRATE.item("nano_processor_mainframe", Item::new)
-            .lang("Nanoprocessor Mainframe").tag(CustomTags.LuV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Nanoprocessor Mainframe", "§7Smaller than ever\n§bLuV-Tier Circuit"))
+            .tag(CustomTags.LuV_CIRCUITS)
             .register();
 
     // T5: Quantum
     public static ItemEntry<Item> QUANTUM_PROCESSOR_EV = REGISTRATE.item("quantum_processor", Item::new)
-            .lang("Quantum Processor").tag(CustomTags.EV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Quantum Processor", "§7Quantum Computing comes to life!\n§aEV-Tier Circuit"))
+            .tag(CustomTags.EV_CIRCUITS)
             .register();
     public static ItemEntry<Item> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("quantum_processor_assembly", Item::new)
-            .lang("Quantum Processor Assembly").tag(CustomTags.IV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Quantum Processor Assembly", "§7Quantum Computing comes to life!\n§aIV-Tier Circuit"))
+            .tag(CustomTags.IV_CIRCUITS)
             .register();
     public static ItemEntry<Item> QUANTUM_COMPUTER_LuV = REGISTRATE.item("quantum_processor_computer", Item::new)
-            .lang("Quantum Processor Supercomputer").tag(CustomTags.LuV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Quantum Processor Supercomputer", "§7Quantum Computing comes to life!\n§aLuV-Tier Circuit"))
+            .tag(CustomTags.LuV_CIRCUITS)
             .register();
     public static ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("quantum_processor_mainframe", Item::new)
-            .lang("Quantum Processor Mainframe").tag(CustomTags.ZPM_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Quantum Processor Mainframe", "§7Quantum Computing comes to life!\n§aZPM-Tier Circuit"))
+            .tag(CustomTags.ZPM_CIRCUITS)
             .register();
 
     // T6: Crystal
     public static ItemEntry<Item> CRYSTAL_PROCESSOR_IV = REGISTRATE.item("crystal_processor", Item::new)
-            .lang("Crystal Processor").tag(CustomTags.IV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Crystal Processor", "§7Taking Advantage of Crystal Engraving\n§9IV-Tier Circuit"))
+            .tag(CustomTags.IV_CIRCUITS)
             .register();
     public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LuV = REGISTRATE.item("crystal_processor_assembly", Item::new)
-            .lang("Crystal Processor Assembly").tag(CustomTags.LuV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Crystal Processor Assembly", "§7Taking Advantage of Crystal Engraving\n§9LuV-Tier Circuit"))
+            .tag(CustomTags.LuV_CIRCUITS)
             .register();
     public static ItemEntry<Item> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("crystal_processor_computer", Item::new)
-            .lang("Crystal Processor Supercomputer").tag(CustomTags.ZPM_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Crystal Processor Supercomputer", "§7Taking Advantage of Crystal Engraving\n§9ZPM-Tier Circuit"))
+            .tag(CustomTags.ZPM_CIRCUITS)
             .register();
     public static ItemEntry<Item> CRYSTAL_MAINFRAME_UV = REGISTRATE.item("crystal_processor_mainframe", Item::new)
-            .lang("Crystal Processor Mainframe").tag(CustomTags.UV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Crystal Processor Mainframe", "§7Taking Advantage of Crystal Engraving\n§9UV-Tier Circuit"))
+            .tag(CustomTags.UV_CIRCUITS)
             .register();
 
     // T7: Wetware
     public static ItemEntry<Item> WETWARE_PROCESSOR_LuV = REGISTRATE.item("wetware_processor", Item::new)
-            .lang("Wetware Processor").tag(CustomTags.LuV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Wetware Processor", "§7You have a feeling like it's watching you\n§4LuV-Tier Circuit"))
+            .tag(CustomTags.LuV_CIRCUITS)
             .register();
     public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE
-            .item("wetware_processor_assembly", Item::new).lang("Wetware Processor Assembly")
+            .item("wetware_processor_assembly", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Wetware Processor Assembly", "§7Can run Minecraft\n§4ZPM-Tier Circuit"))
             .tag(CustomTags.ZPM_CIRCUITS).register();
     public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("wetware_processor_computer", Item::new)
-            .lang("Wetware Processor Supercomputer").tag(CustomTags.UV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Wetware Processor Supercomputer", "§7Ultimate fusion of Flesh and Machine\n§4UV-Tier Circuit"))
+            .tag(CustomTags.UV_CIRCUITS)
             .register();
     public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("wetware_processor_mainframe", Item::new)
-            .lang("Wetware Processor Mainframe").tag(CustomTags.UHV_CIRCUITS)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Wetware Processor Mainframe", "§7The best Man has ever seen\n§4UHV-Tier Circuit"))
+            .tag(CustomTags.UHV_CIRCUITS)
             .register();
 
     public static ItemEntry<Item> COMPONENT_GRINDER_DIAMOND = REGISTRATE.item("diamond_grinding_head", Item::new)
@@ -1774,11 +1879,14 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M))))
             .register();
 
-    public static ItemEntry<Item> QUANTUM_EYE = REGISTRATE.item("quantum_eye", Item::new).lang("Quantum Eye")
+    public static ItemEntry<Item> QUANTUM_EYE = REGISTRATE.item("quantum_eye", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Quantum Eye", "§7Improved Ender Eye"))
             .register();
-    public static ItemEntry<Item> QUANTUM_STAR = REGISTRATE.item("quantum_star", Item::new).lang("Quantum Star")
+    public static ItemEntry<Item> QUANTUM_STAR = REGISTRATE.item("quantum_star", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Quantum Star", "§7Improved Nether Star"))
             .register();
-    public static ItemEntry<Item> GRAVI_STAR = REGISTRATE.item("gravi_star", Item::new).lang("Gravi-Star")
+    public static ItemEntry<Item> GRAVI_STAR = REGISTRATE.item("gravi_star", Item::new)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Gravi-Star", "§7Ultimate Nether Star"))
             .register();
 
     /////////////////////////////////////////
@@ -1786,6 +1894,8 @@ public class GTItems {
     /////////////////////////////////////////
 
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Item Filter",
+                    "§7Filters §fItem§7 I/O as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade."))
             .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2),
@@ -1793,90 +1903,96 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> TAG_FILTER = REGISTRATE
             .item("item_tag_filter", ComponentItem::create)
-            .lang("Item Tag Filter")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Item Tag Filter",
+                    "§7Filters §fItem§7 I/O with §fItem Tags§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade."))
             .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
     public static ItemEntry<ComponentItem> SMART_ITEM_FILTER = REGISTRATE
             .item("item_smart_filter", ComponentItem::create)
-            .lang("Smart Item Filter")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Smart Item Filter",
+                    "§7Filters §fItem§7 I/O with §fMachine Recipes§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade."))
             .onRegister(attach(new ItemFilterBehaviour(SmartItemFilter::loadFilter),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Fluid Filter",
+                    "§7Filters §fFluid§7 I/O as §fCover§7.\nCan be used as a §fElectric Pump§7 and §fFluid Regulator§7 upgrade."))
             .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
     public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::create)
-            .lang("Fluid Tag Filter")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Fluid Tag Filter",
+                    "§7Filters §fFluid§7 I/O with §fFluid Tags§7 as §fCover§7.\nCan be used as a §fElectric Pump§7 and §fFluid Regulator§7 upgrade."))
             .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
+
     public static ItemEntry<ComponentItem> COVER_WIRELESS_TRANSMITTER = REGISTRATE
             .item("wireless_transmitter_cover", ComponentItem::create)
-            .lang("Wireless Transmitter")
+            .lang("Wireless Transmitter Cover")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.WIRELESS_TRANSMITTER)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE
             .item("machine_controller_cover", ComponentItem::create)
-            .lang("Machine Controller")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Machine Controller Cover", "§7Turns Machines §fON/OFF§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.MACHINE_CONTROLLER)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR = REGISTRATE
             .item("activity_detector_cover", ComponentItem::create)
-            .lang("Activity Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Activity Detector Cover", "§7Gives out §fActivity Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_activity_detector_cover", ComponentItem::create)
-            .lang("Advanced Activity Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Activity Detector Cover", "§7Gives out §fMachine Progress§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR = REGISTRATE
             .item("fluid_detector_cover", ComponentItem::create)
-            .lang("Fluid Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Fluid Detector Cover", "§7Gives out §fFluid Amount§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_fluid_detector_cover", ComponentItem::create)
-            .lang("Advanced Fluid Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Fluid Detector Cover", "§7Gives §fRS-Latch§7 controlled §fFluid Storage Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR = REGISTRATE
             .item("item_detector_cover", ComponentItem::create)
-            .lang("Item Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Item Detector Cover", "§7Gives out §fItem Amount§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_item_detector_cover", ComponentItem::create)
-            .lang("Advanced Item Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Item Detector Cover", "§7Gives §fRS-Latch§7 controlled §fItem Storage Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR = REGISTRATE
             .item("energy_detector_cover", ComponentItem::create)
-            .lang("Energy Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Energy Detector Cover", "§7Gives out §fEnergy Amount§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE
             .item("advanced_energy_detector_cover", ComponentItem::create)
-            .lang("Advanced Energy Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Advanced Energy Detector Cover", "§7Gives §fRS-Latch§7 controlled §fEnergy Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_MAINTENANCE_DETECTOR = REGISTRATE
             .item("maintenance_detector_cover", ComponentItem::create)
-            .lang("Maintenance Detector")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Maintenance Detector Cover", "§7Gives out §fMaintenance Status§7 as Redstone as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.MAINTENANCE_DETECTOR)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_SCREEN = REGISTRATE
             .item("computer_monitor_cover", ComponentItem::create)
-            .lang("Computer Monitor")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Computer Monitor Cover", "§7Displays §fData§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
             .register();
     public static ItemEntry<ComponentItem> COVER_STORAGE = REGISTRATE
@@ -1886,135 +2002,142 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE
             .item("shutter_module_cover", ComponentItem::create)
-            .lang("Shutter Module")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Shutter Module Cover", "§fBlocks Transfer§7 through attached Side as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.SHUTTER)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE
             .item("infinite_water_cover", ComponentItem::create)
-            .lang("Infinite Water Cover")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Infinite Water Cover", "§7Fills attached containers with §9Water§7 as §fCover§7."))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.produces_fluid", 16_000 / 20));
             }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
 
     public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE
             .item("ender_fluid_link_cover", ComponentItem::create)
-            .lang("Ender Fluid Link")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Fluid Link Cover", "§7Transports §fFluids§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_FLUID_LINK)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_ENDER_ITEM_LINK = REGISTRATE
             .item("ender_item_link_cover", ComponentItem::create)
-            .lang("Ender Item Link")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Item Link Cover", "§7Transports §fItems§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_ITEM_LINK)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ENDER_REDSTONE_LINK = REGISTRATE
             .item("ender_redstone_link_cover", ComponentItem::create)
-            .lang("Ender Redstone Link")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ender Redstone Link Cover", "§7Transports §fRedstone Signal§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENDER_REDSTONE_LINK)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE
             .item("fluid_voiding_cover", ComponentItem::create)
-            .lang("Fluid Voiding Cover")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Fluid Voiding Cover",
+                    "§7Voids §fFluids§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING)))
             .register();
     public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE
             .item("advanced_fluid_voiding_cover", ComponentItem::create)
-            .lang("Advanced Fluid Voiding Cover")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Advanced Fluid Voiding Cover",
+                    "§7Voids §fFluids§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING_ADVANCED)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE
             .item("item_voiding_cover", ComponentItem::create)
-            .lang("Item Voiding Cover")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Item Voiding Cover",
+                    "§7Voids §fItems§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING)))
             .register();
     public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE
             .item("advanced_item_voiding_cover", ComponentItem::create)
-            .lang("Advanced Item Voiding Cover")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Advanced Item Voiding Cover",
+                    "§7Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement."))
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING_ADVANCED)))
             .register();
 
     public static ItemEntry<ComponentItem> COVER_FACADE = REGISTRATE.item("facade_cover", ComponentItem::create)
-            .lang("%s Cover Facade")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("%s Cover Facade",
+                    "7Decorative Outfit §fCover§7.\n§7Crafted using an Iron Plate and any block"))
             .onRegister(attach(new FacadeItemBehaviour(), new CoverPlaceBehavior(GTCovers.FACADE)))
             .model(NonNullBiConsumer.noop())
             .register();
 
     // Solar Panels: ID 331-346
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL = REGISTRATE.item("solar_panel", ComponentItem::create)
-            .lang("Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
+            .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", 1, GTValues.VNF[GTValues.ULV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL_BASIC)))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE
-            .item("ulv_solar_panel", ComponentItem::create).lang("Ultra Low Voltage Solar Panel")
+            .item("ulv_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ultra Low Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ULV],
                         GTValues.VNF[GTValues.ULV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[0])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE
-            .item("lv_solar_panel", ComponentItem::create).lang("Low Voltage Solar Panel")
+            .item("lv_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Low Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LV],
                         GTValues.VNF[GTValues.LV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[1])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_MV = REGISTRATE
-            .item("mv_solar_panel", ComponentItem::create).lang("Medium Voltage Solar Panel")
+            .item("mv_solar_panel", ComponentItem::create)
+            .lang("Medium Voltage Solar Panel")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Medium Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.MV],
                         GTValues.VNF[GTValues.MV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[2])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_HV = REGISTRATE
-            .item("hv_solar_panel", ComponentItem::create).lang("High Voltage Solar Panel")
+            .item("hv_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("High Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.HV],
                         GTValues.VNF[GTValues.HV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[3])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_EV = REGISTRATE
-            .item("ev_solar_panel", ComponentItem::create).lang("Extreme Voltage Solar Panel")
+            .item("ev_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Extreme Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.EV],
                         GTValues.VNF[GTValues.EV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[4])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_IV = REGISTRATE
-            .item("iv_solar_panel", ComponentItem::create).lang("Insane Voltage Solar Panel")
+            .item("iv_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Insane Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.IV],
                         GTValues.VNF[GTValues.IV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[5])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LuV = REGISTRATE
-            .item("luv_solar_panel", ComponentItem::create).lang("Ludicrous Voltage Solar Panel")
+            .item("luv_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ludicrous Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LuV],
                         GTValues.VNF[GTValues.LuV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[6])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ZPM = REGISTRATE
-            .item("zpm_solar_panel", ComponentItem::create).lang("Zero Point Module Solar Panel")
+            .item("zpm_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Zero Point Module Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ZPM],
                         GTValues.VNF[GTValues.ZPM]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[7])))
             .register();
     public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_UV = REGISTRATE
-            .item("uv_solar_panel", ComponentItem::create).lang("Ultimate Voltage Solar Panel")
+            .item("uv_solar_panel", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Ultimate Voltage Solar Panel Cover", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7"))
             .onRegister(attach(new TooltipBehavior(lines -> {
-                lines.addAll(LangUtil.getListMultiLang("item.gtceu.solar_panel.tooltip"));
                 lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.UV],
                         GTValues.VNF[GTValues.UV]));
             }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[8])))
@@ -2029,6 +2152,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> PROGRAMMED_CIRCUIT = REGISTRATE
             .item("programmed_circuit", ComponentItem::create)
             .lang("Programmed Circuit")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Programmed Circuit",
+                    "Use to open configuration GUI\nShift-Right-Click on a machine\nwith a circuit slot to set it to\nthis circuit's value."))
             .model(overrideModel(GTCEu.id("circuit"), 33))
             .onRegister(modelPredicate(GTCEu.id("circuit"),
                     (itemStack) -> IntCircuitBehaviour.getCircuitConfiguration(itemStack) / 100f))
@@ -2036,13 +2161,18 @@ public class GTItems {
             .tag(CustomTags.SKIP_ITEM_DETECTOR)
             .register();
 
-    // public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer",
-    // ComponentItem::create).onRegister(attach(new FoamSprayerBehavior()).setMaxStackSize(1);
+    /*
+    public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer", ComponentItem::create)
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Foam Sprayer",
+                    "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored"))
+            .onRegister(attach(new FoamSprayerBehavior()).setMaxStackSize(1);
+     */
     public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Gelled Toluene", "§7Raw Explosive"))
             .register();
 
     public static ItemEntry<ComponentItem> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", ComponentItem::create)
-            .lang("Purple Drink")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Purple Drink", "§7How about Lemonade. Or some Ice Tea? I got Purple Drink!"))
             .onRegister(attach(new FoodStats(GTFoods.DRINK, true, Items.GLASS_BOTTLE::getDefaultInstance)))
             .register();
     public static ItemEntry<ComponentItem> DOUGH = REGISTRATE.item("dough", ComponentItem::create)
@@ -2117,7 +2247,7 @@ public class GTItems {
             .register();
 
     public static ItemEntry<ComponentItem> NANO_SABER = REGISTRATE.item("nano_saber", ComponentItem::create)
-            .lang("Nano Saber")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Nano Saber", "§7Ryujin no ken wo kurae!"))
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new NanoSaberBehavior(), ElectricStats.createElectricItem(4_000_000L, GTValues.HV)))
             .model((ctx, prov) -> {
@@ -2170,7 +2300,7 @@ public class GTItems {
     public static ItemEntry<Item> WIRELESS;
     public static ItemEntry<Item> CAMERA;
     public static ItemEntry<ComponentItem> TERMINAL = REGISTRATE.item("terminal", ComponentItem::create)
-            .lang("Terminal")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Terminal", "Shift + R-Click on a controller to automatically build a multiblock with items from your inventory"))
             .properties(p -> p.stacksTo(1))
             .onRegister(attach(new TerminalBehavior()))
             .register();
@@ -2213,54 +2343,57 @@ public class GTItems {
             .onRegister(attach(new TurbineRotorBehaviour())).register();
 
     public static ItemEntry<Item> NEURO_PROCESSOR = REGISTRATE.item("neuro_processing_unit", Item::new)
-            .lang("Neuro Processing Unit").register();
+            .setData(ProviderType.LANG, nameAndTooltipLang("Neuro Processing Unit", "§7Neuro CPU"))
+            .register();
     public static ItemEntry<Item> STEM_CELLS = REGISTRATE.item("stem_cells", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Stem Cells", "§7Raw Intelligence"))
             .register();
     public static ItemEntry<Item> PETRI_DISH = REGISTRATE.item("petri_dish", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Petri Dish", "§7For cultivating Cells"))
             .register();
 
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_ULV = REGISTRATE.item("ulv_voltage_coil", ComponentItem::create)
-            .lang("Ultra Low Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ultra Low Voltage Coil", "Primitive Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Lead, GTValues.M * 2),
                     new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_LV = REGISTRATE.item("lv_voltage_coil", ComponentItem::create)
-            .lang("Low Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Low Voltage Coil", "Basic Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 2),
                     new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_MV = REGISTRATE.item("mv_voltage_coil", ComponentItem::create)
-            .lang("Medium Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Medium Voltage Coil", "Good Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_HV = REGISTRATE.item("hv_voltage_coil", ComponentItem::create)
-            .lang("High Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("High Voltage Coil", "Advanced Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlackSteel, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_EV = REGISTRATE.item("ev_voltage_coil", ComponentItem::create)
-            .lang("Extreme Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Extreme Voltage Coil", "Extreme Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Platinum, GTValues.M * 2),
                     new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_IV = REGISTRATE.item("iv_voltage_coil", ComponentItem::create)
-            .lang("Insane Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Insane Voltage Coil", "Elite Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iridium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_LuV = REGISTRATE.item("luv_voltage_coil", ComponentItem::create)
-            .lang("Ludicrous Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ludicrous Voltage Coil", "Master Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Osmiridium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_ZPM = REGISTRATE.item("zpm_voltage_coil", ComponentItem::create)
-            .lang("Zero Point Module Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Zero Point Module Voltage Coil", "Super Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
     public static ItemEntry<ComponentItem> VOLTAGE_COIL_UV = REGISTRATE.item("uv_voltage_coil", ComponentItem::create)
-            .lang("Ultimate Voltage Coil")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Ultimate Voltage Coil", "Ultimate Coil"))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, GTValues.M * 2),
                     new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
             .register();
@@ -2512,16 +2645,20 @@ public class GTItems {
     public static ItemEntry<RecordItem> SUS_RECORD = REGISTRATE
             .item("sus_record", p -> new RecordItem(15, GTSoundEntries.SUS_RECORD::getMainEvent, p, 820))
             .lang("Music Disc")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Music Disc", "§7sussy!"))
             .properties(p -> p.stacksTo(1).rarity(Rarity.RARE))
             .tag(ItemTags.MUSIC_DISCS)
             .register();
     public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new)
-            .lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC))
+            .lang("Certificate of Not Being a Noob Anymore")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Certificate of Not Being a Noob Anymore", "Challenge Accepted!"))
+            .properties(p -> p.rarity(Rarity.EPIC))
             .register();
 
     public static ItemEntry<ComponentItem> FERTILIZER = REGISTRATE.item("fertilizer", ComponentItem::create)
             .onRegister(attach(new FertilizerBehavior())).register();
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
+            .setData(ProviderType.LANG, nameAndTooltipLang("Blacklight", "Long-Wave §dUltraviolet§7 light source"))
             .register();
 
     public static ItemEntry<GTBoatItem> RUBBER_BOAT = REGISTRATE
@@ -2561,6 +2698,25 @@ public class GTItems {
         GTMaterialItems.generateMaterialItems();
         GTMaterialItems.generateTools();
         GTMaterialItems.generateArmors();
+    }
+
+    public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateLangProvider> nameAndTooltipLang(String name, String tooltip) {
+        return (ctx, prov) -> {
+            prov.add(ctx.getEntry().getDescriptionId(), name);
+            prov.add(ctx.getEntry().getDescriptionId() + ".tooltip", tooltip);
+        };
+    }
+
+    public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateLangProvider> nameAndMultilineTooltipLang(String name, String multiline) {
+        return (ctx, prov) -> {
+            prov.add(ctx.getEntry().getDescriptionId(), name);
+
+            var lines = multiline.split("\n");
+
+            for (var i = 0; i < lines.length; i++) {
+                prov.add(ctx.getEntry().getDescriptionId() + ".tooltip." + i, lines[i]);
+            }
+        };
     }
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {

@@ -30,7 +30,7 @@ public class LangHandler {
         GUILang.init(provider); // TODO
         HazardLang.init(provider);
         IntegrationLang.init(provider);
-        ItemLang.init(provider); // TODO
+        ItemLang.init(provider);
         MachineLang.init(provider); // TODO
         MaterialLang.init(provider); // TODO
         RecipeLang.init(provider); // TODO

@@ -17,7 +17,7 @@ public class GCYMBlocks {
     public static final BlockEntry<Block> CASING_NONCONDUCTING = createCasingBlock("nonconducting_casing",
             GTCEu.id("block/casings/gcym/nonconducting_casing"));
     public static final BlockEntry<Block> CASING_VIBRATION_SAFE = createCasingBlock("vibration_safe_casing",
-            GTCEu.id("block/casings/gcym/vibration_safe_casing"));
+            GTCEu.id("block/casings/gcym/vibration_safe_casing"), "Vibration-Safe Casing");
     public static final BlockEntry<Block> CASING_WATERTIGHT = createCasingBlock("watertight_casing",
             GTCEu.id("block/casings/gcym/watertight_casing"));
     public static final BlockEntry<Block> CASING_SECURE_MACERATION = createCasingBlock("secure_maceration_casing",
@@ -25,9 +25,9 @@ public class GCYMBlocks {
     public static final BlockEntry<Block> CASING_HIGH_TEMPERATURE_SMELTING = createCasingBlock(
             "high_temperature_smelting_casing", GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"));
     public static final BlockEntry<Block> CASING_LASER_SAFE_ENGRAVING = createCasingBlock("laser_safe_engraving_casing",
-            GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"));
+            GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"), "Laser-Safe Engraving Casing");
     public static final BlockEntry<Block> CASING_LARGE_SCALE_ASSEMBLING = createCasingBlock(
-            "large_scale_assembler_casing", GTCEu.id("block/casings/gcym/large_scale_assembling_casing"));
+            "large_scale_assembler_casing", GTCEu.id("block/casings/gcym/large_scale_assembling_casing"), "Large-Scale Assembler Casing");
     public static final BlockEntry<Block> CASING_SHOCK_PROOF = createCasingBlock("shock_proof_cutting_casing",
             GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"));
     public static final BlockEntry<Block> CASING_STRESS_PROOF = createCasingBlock("stress_proof_casing",
@@ -35,7 +35,7 @@ public class GCYMBlocks {
     public static final BlockEntry<Block> CASING_CORROSION_PROOF = createCasingBlock("corrosion_proof_casing",
             GTCEu.id("block/casings/gcym/corrosion_proof_casing"));
     public static final BlockEntry<Block> CASING_REACTION_SAFE = createCasingBlock("reaction_safe_mixing_casing",
-            GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"));
+            GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"), "Reaction-Safe Mixing Casing");
     public static final BlockEntry<Block> CASING_ATOMIC = createCasingBlock("atomic_casing",
             GTCEu.id("block/casings/gcym/atomic_casing"));
     public static final BlockEntry<Block> CASING_INDUSTRIAL_STEAM = createCasingBlock("industrial_steam_casing",

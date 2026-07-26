@@ -227,7 +227,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                     FormattingUtil.formatNumbers(currentChargeTime),
                     Component.translatable(unitKey, FormattingUtil.formatNumbers(maxChargeTime))).withStyle(color));
         } else {
-            tooltip.add(Component.translatable("item.generic.electric_item.tooltip",
+            tooltip.add(Component.translatable("item.gtceu.electric.tooltip",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
                     GTValues.VNF[tier]).withStyle(color));
         }

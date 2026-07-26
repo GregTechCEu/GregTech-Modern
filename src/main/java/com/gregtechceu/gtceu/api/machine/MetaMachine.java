@@ -527,7 +527,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (!isRemote()) {
             controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
             context.getPlayer().sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled_cycle"));
+                    "item.gtceu.behavior.soft_hammer.enabled" : "item.gtceu.behavior.soft_hammer.disabled_cycle"));
         }
         return InteractionResult.sidedSuccess(getLevel().isClientSide);
     }
