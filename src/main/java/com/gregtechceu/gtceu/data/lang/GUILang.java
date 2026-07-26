@@ -8,20 +8,6 @@ public class GUILang {
         generateKeybindKeys(provider);
         generateWidgetKeys(provider);
         generateTooltipKeys(provider);
-        generateLDLibKeys(provider);
-    }
-
-    private static void generateLDLibKeys(GTLangProvider provider) {
-        provider.add("gtceu.gui.editor.tips.citation", "Number of citations");
-        provider.add("gtceu.gui.editor.group.recipe_type", "cap");
-        provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
-        provider.add("ldlib.gui.editor.register.editor.gtceu.mui", "Machine UI Project");
-        provider.add("ldlib.gui.editor.register.editor.gtceu.template_tab", "templates");
-        provider.add("ldlib.gui.editor.group.widget.gtm_container", "GTM Container Widgets");
-        provider.add("ldlib.gui.editor.register.widget.container.gtm_item_slot", "GTM Item Slot");
-        provider.add("ldlib.gui.editor.register.widget.container.gtm_fluid_slot", "GTM Fluid Slot");
-        provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_item_slot", "GTM Phantom Item Slot");
-        provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot", "GTM Phantom Fluid Slot");
     }
 
     private static void generateKeybindKeys(GTLangProvider provider) {
@@ -281,40 +267,6 @@ public class GUILang {
         provider.addMultiLang("gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");
-
-        // Recipe Capabilities
-        provider.add("recipe.capability.eu.name", "GTCEu Energy");
-        provider.add("recipe.capability.fluid.name", "Fluid");
-        provider.add("recipe.capability.item.name", "Item");
-        provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
-        provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
-        provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
-        provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
-        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
-        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
-        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
-
-        // Chance Logic
-        provider.add("gtceu.gui.content.chance_nc", "§cNot Consumed§r");
-        provider.add("gtceu.gui.content.chance_nc_short", "§cNC§r");
-        provider.add("gtceu.gui.content.chance_base", "Base Chance: %s%%");
-        provider.add("gtceu.gui.content.chance_base_logic", "Base Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.chance_no_boost", "Chance: %s%%");
-        provider.add("gtceu.gui.content.chance_no_boost_logic", "Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
-        provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
-        provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
-        provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
-        provider.add("gtceu.gui.content.count_range", "%s-%sx");
-        provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
-        provider.add("gtceu.gui.content.range", "%s-%s");
-        provider.add("gtceu.gui.content.times_item", "x %s");
-
-        provider.add("gtceu.chance_logic.or", "OR");
-        provider.add("gtceu.chance_logic.and", "AND");
-        provider.add("gtceu.chance_logic.xor", "XOR");
-        provider.add("gtceu.chance_logic.first", "FIRST");
-        provider.add("gtceu.chance_logic.none", "NONE");
 
         // AE Widgets
         provider.add("gtceu.gui.me_network.online", "Network Status: §2Online§r");
