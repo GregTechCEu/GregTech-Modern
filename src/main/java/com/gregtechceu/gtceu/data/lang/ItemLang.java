@@ -1,8 +1,12 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
@@ -16,26 +20,10 @@ public class ItemLang {
     }
 
     private static void initGeneratedNames(GTLangProvider provider) {
-        // All TagPrefixes
-        for (TagPrefix tagPrefix : TagPrefix.values()) {
-            provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
-        }
-
         // All GTToolTypes
         for (GTToolType toolType : GTToolType.getTypes().values()) {
             provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType.name));
         }
-
-        // Tag Prefix
-        provider.add("tagprefix.polymer.plate", "%s Sheet");
-        provider.add("tagprefix.polymer.foil", "Thin %s Sheet");
-        provider.add("tagprefix.polymer.nugget", "%s Chip");
-        provider.add("tagprefix.polymer.dense_plate", "Dense %s Sheet");
-        provider.add("tagprefix.polymer.double_plate", "Double %s Sheet");
-        provider.add("tagprefix.polymer.tiny_dust", "Tiny Pile of %s Pulp");
-        provider.add("tagprefix.polymer.small_dust", "Small Pile of %s Pulp");
-        provider.add("tagprefix.polymer.dust", "%s Pulp");
-        provider.add("tagprefix.polymer.ingot", "%s Ingot");
 
         // Material Items
         provider.add("item.gtceu.tiny_gunpowder_dust", "Tiny Pile of Gunpowder");

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -29,6 +30,8 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
@@ -278,6 +281,7 @@ public class TagPrefix {
     public static final TagPrefix ingot = new TagPrefix(GTCEu.id("ingot"))
             .defaultTagPath("ingots/%s")
             .unformattedTagPath("ingots")
+            .langValue("%s Ingot")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.ingot)
             .unificationEnabled(true)
@@ -357,6 +361,7 @@ public class TagPrefix {
             .defaultTagPath("small_dusts/%s")
             .unformattedTagPath("small_dusts")
             .langValue("Small Pile of %s Dust")
+            .polymerLangValue("Small Pile of %s Pulp")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.dustSmall)
             .unificationEnabled(true)
@@ -369,6 +374,7 @@ public class TagPrefix {
             .defaultTagPath("tiny_dusts/%s")
             .unformattedTagPath("tiny_dusts")
             .langValue("Tiny Pile of %s Dust")
+            .polymerLangValue("Tiny Pile of %s Pulp")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.dustTiny)
             .unificationEnabled(true)
@@ -404,6 +410,8 @@ public class TagPrefix {
     public static final TagPrefix dust = new TagPrefix(GTCEu.id("dust"))
             .defaultTagPath("dusts/%s")
             .unformattedTagPath("dusts")
+            .langValue("%s Dust")
+            .polymerLangValue("%s Pulp")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dust)
             .unificationEnabled(true)
@@ -415,6 +423,8 @@ public class TagPrefix {
     public static final TagPrefix nugget = new TagPrefix(GTCEu.id("nugget"))
             .defaultTagPath("nuggets/%s")
             .unformattedTagPath("nuggets")
+            .langValue("%s Nugget")
+            .polymerLangValue("%s Chip")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.nugget)
             .unificationEnabled(true)
@@ -428,6 +438,7 @@ public class TagPrefix {
             .defaultTagPath("dense_plates/%s")
             .unformattedTagPath("dense_plates")
             .langValue("Dense %s Plate")
+            .polymerLangValue("Dense %s Sheet")
             .materialAmount(GTValues.M * 9)
             .maxStackSize(7)
             .materialIconType(MaterialIconType.plateDense)
@@ -442,6 +453,7 @@ public class TagPrefix {
             .defaultTagPath("double_plates/%s")
             .unformattedTagPath("double_plates")
             .langValue("Double %s Plate")
+            .polymerLangValue("Double %s Sheet")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(32)
             .materialIconType(MaterialIconType.plateDouble)
@@ -455,6 +467,8 @@ public class TagPrefix {
     public static final TagPrefix plate = new TagPrefix(GTCEu.id("plate"))
             .defaultTagPath("plates/%s")
             .unformattedTagPath("plates")
+            .langValue("%s Plate")
+            .polymerLangValue("%s Sheet")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.plate)
             .unificationEnabled(true)
@@ -477,6 +491,8 @@ public class TagPrefix {
     public static final TagPrefix foil = new TagPrefix(GTCEu.id("foil"))
             .defaultTagPath("foils/%s")
             .unformattedTagPath("foils")
+            .langValue("%s Foil")
+            .polymerLangValue("Thin %s Sheet")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.foil)
             .unificationEnabled(true)
@@ -996,9 +1012,21 @@ public class TagPrefix {
     public final boolean invertedName;
 
     protected final List<TagType> tags = new ArrayList<>();
+
+    /**
+     * The English lang value for material items with this tag prefix. Should have a single '%s' to denote the material name.<br>
+     * Generated during your addon's datagen with key {@code tagprefix.<mod_id>.<tag_prefix_name>}
+     */
     @Setter
     @Getter
     public String langValue;
+    /**
+     * An optional English lang value used instead of {@link #langValue} if the material has {@link PropertyKey#POLYMER}<br>
+     * Generated during your addon's datagen with key {@code tagprefix.<mod_id>.polymer.<tag_prefix_name>}
+     */
+    @Setter
+    @Getter
+    public @Nullable String polymerLangValue = null;
 
     @Getter
     @Setter
@@ -1085,6 +1113,11 @@ public class TagPrefix {
         this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
         GTRegistries.TAG_PREFIXES.register(id, this);
+
+        // TODO actual datagen once we switch to registrate/forge registries
+
+        GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(id.getNamespace());
+        registrate.addDataGenerator(ProviderType.LANG, this::generateTagPrefixLang);
     }
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
@@ -1296,7 +1329,7 @@ public class TagPrefix {
     }
 
     public String getUnlocalizedName() {
-        return "tagprefix." + getLowerCaseName();
+        return ("tagprefix.%s.%s").formatted(id.getNamespace(), id.getPath());
     }
 
     public MutableComponent getLocalizedName(Material material) {
@@ -1310,7 +1343,7 @@ public class TagPrefix {
             return matSpecificKey;
         }
         if (material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = String.format("tagprefix.polymer.%s", getLowerCaseName());
+            String localizationKey = ("tagprefix.%s.polymer.%s").formatted(id.getNamespace(), id.getPath());
             // Not every polymer tag prefix gets a special name
             if (Language.getInstance().has(localizationKey)) {
                 return localizationKey;
@@ -1423,5 +1456,10 @@ public class TagPrefix {
     public interface BlockItemConstructor {
 
         BlockItem create(Block block, Item.Properties properties, TagPrefix prefix, Material material);
+    }
+
+    private void generateTagPrefixLang(RegistrateLangProvider provider) {
+        provider.add(getUnlocalizedName(), langValue);
+        if (polymerLangValue != null) provider.add(("tagprefix.%s.polymer.%s").formatted(id.getNamespace(), id.getPath()), polymerLangValue);
     }
 }
