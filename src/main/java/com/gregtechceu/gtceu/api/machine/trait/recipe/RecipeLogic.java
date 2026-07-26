@@ -88,13 +88,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
      */
     @Nullable
     @Getter
-    @SyncToClient
     protected Component bestFailureReason;
 
     /** The recipe {@link #bestFailureReason} belongs to. */
     @Nullable
     @Getter
-    @SyncToClient
     protected GTRecipe bestFailureRecipe;
 
     @Getter
