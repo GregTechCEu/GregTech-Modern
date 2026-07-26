@@ -293,9 +293,9 @@ public class RecipeLogicTest {
                 "A single, non-blank failure reason should be surfaced");
         var failureRecipe = recipeLogic.getBestFailureRecipe();
         helper.assertTrue(failureRecipe != null &&
-                failureRecipe.getString().endsWith("/test_close_a"),
+                GTCEu.id("test_close_a").equals(failureRecipe.getId()),
                 "The surfaced reason should be attributed to the closest candidate (test_close_a), was " +
-                        (failureRecipe == null ? "null" : failureRecipe.getString()));
+                        (failureRecipe == null ? "null" : failureRecipe.getId()));
 
         helper.succeed();
     }
@@ -325,9 +325,9 @@ public class RecipeLogicTest {
                 "The stalled last recipe's reason should be locked in with top priority, score was " + score);
         var failureRecipe = recipeLogic.getBestFailureRecipe();
         helper.assertTrue(failureRecipe != null &&
-                failureRecipe.getString().endsWith("/test_priority_last"),
+                GTCEu.id("test_priority_last").equals(failureRecipe.getId()),
                 "The surfaced reason should name the stalled last recipe (test_priority_last), not the closer " +
-                        "candidate, was " + (failureRecipe == null ? "null" : failureRecipe.getString()));
+                        "candidate, was " + (failureRecipe == null ? "null" : failureRecipe.getId()));
 
         helper.succeed();
     }

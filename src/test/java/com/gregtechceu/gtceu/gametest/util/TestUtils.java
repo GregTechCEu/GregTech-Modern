@@ -227,12 +227,15 @@ public class TestUtils {
     }
 
     /**
-     * Fetches the most-relevant failure reason from a machine's {@link RecipeLogic}.
-     * Returns a newline-separated string of the surfaced failure reason(s).
+     * Fetches the most-relevant failure reason from a machine's {@link RecipeLogic},
+     * along with the recipe it was attributed to.
      */
     public static String getFailures(RecipeLogic recipeLogic) {
         var reason = recipeLogic.getBestFailureReason();
-        return reason == null ? "" : reason.getString() + "\n";
+        if (reason == null) return "";
+        var recipe = recipeLogic.getBestFailureRecipe();
+        String id = recipe == null ? "<no recipe>" : recipe.getId().toString();
+        return id + " - " + reason.getString() + "\n";
     }
 
     public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
