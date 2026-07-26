@@ -402,13 +402,6 @@ public class GTMultiblockTextUtil {
 
         BooleanSyncValue isIdle = syncManager.getOrCreateSyncHandler("isIdle", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isIdle()));
-        GenericSyncValue<Component> bestFailureRecipe = (GenericSyncValue<Component>) syncManager
-                .getOrCreateSyncHandler("bestFailureRecipe", GenericSyncValue.class,
-                        () -> GenericSyncValue.builder(Component.class)
-                                .nullable()
-                                .adapter(GTByteBufAdapters.COMPONENT)
-                                .getter(() -> rlMachine.getRecipeLogic().getBestFailureRecipe())
-                                .build());
         GenericSyncValue<Component> bestFailureReason = (GenericSyncValue<Component>) syncManager
                 .getOrCreateSyncHandler("bestFailureReason", GenericSyncValue.class,
                         () -> GenericSyncValue.builder(Component.class)
