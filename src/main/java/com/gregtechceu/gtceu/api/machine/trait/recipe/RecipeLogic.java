@@ -487,8 +487,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
             updateTickSubscription();
             if (this.status == Status.WORKING || this.status == Status.IDLE) {
-                // Any recorded reason belongs to the state we just left. This only fires on a real transition, so a
-                // search pass that records reasons while already idle keeps them.
                 clearFailureReason();
             }
         }
@@ -496,8 +494,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     public void setWaiting(@Nullable Component reason) {
         setStatus(Status.WAITING);
-        // A stalled recipe outranks any search candidate, and its reason is re-evaluated every tick, so it replaces
-        // the recorded reason outright instead of competing on score against a previous tick's copy of itself.
         clearFailureReason();
         recordFailureReason(lastRecipe, reason, Double.POSITIVE_INFINITY);
         getRLMachine().onWaiting();
@@ -747,8 +743,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     /**
-     * Record a failure reason as the one to display, along with the recipe it belongs to. It becomes the displayed
-     * reason only if it's usable and beats the current best score.
+     * Record a failure reason as the one to display, along with the recipe it belongs to.
      */
     protected void recordFailureReason(@Nullable GTRecipe recipe, @Nullable Component reason, double score) {
         if (reason != null && !reason.getString().isBlank()) {
