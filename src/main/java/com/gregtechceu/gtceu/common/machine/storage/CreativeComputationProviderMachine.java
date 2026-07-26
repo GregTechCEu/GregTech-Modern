@@ -131,6 +131,6 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .child(
                                         Text.dynamic(() -> Text.lang("gtceu.creative.computation.average",
                                                 lastRequestedSyncCWU.getIntValue()))
-                                                    .asWidget())));
+                                                .asWidget())));
     }
 }
