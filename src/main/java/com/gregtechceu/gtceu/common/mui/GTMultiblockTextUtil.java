@@ -41,7 +41,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -489,7 +488,8 @@ public class GTMultiblockTextUtil {
         return new DynamicWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
-                .syncHandler(dynamicLinkedSyncHandler);
+                .syncHandler(dynamicLinkedSyncHandler)
+                .setEnabledIf(w -> rlmachine.getRecipeLogic().getLastRecipe() != null);
     }
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
