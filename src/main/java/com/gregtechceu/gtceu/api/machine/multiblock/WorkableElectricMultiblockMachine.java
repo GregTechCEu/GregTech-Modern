@@ -242,7 +242,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     @Override
     public long getDisplayGeneratorPower() {
         if (this.isGenerator()) {
-            long power = -1;
+            long power = 0;
             var handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
             for (IRecipeHandler<?> handler : handlers) {
                 if (handler instanceof IEnergyContainer container) {
