@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -80,6 +81,10 @@ public class RecipeLogicTest {
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 .buildRawRecipe());
         CR_RECIPE_TYPE.getAdditionHandler().completeStaging();
+    }
+
+    private static ResourceLocation lcrRecipeId(String name) {
+        return GTCEu.id(LCR_RECIPE_TYPE.registryName.getPath() + "/" + name);
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
@@ -293,7 +298,7 @@ public class RecipeLogicTest {
                 "A single, non-blank failure reason should be surfaced");
         var failureRecipe = recipeLogic.getBestFailureRecipe();
         helper.assertTrue(failureRecipe != null &&
-                GTCEu.id("test_close_a").equals(failureRecipe.getId()),
+                lcrRecipeId("test_close_a").equals(failureRecipe.getId()),
                 "The surfaced reason should be attributed to the closest candidate (test_close_a), was " +
                         (failureRecipe == null ? "null" : failureRecipe.getId()));
 
@@ -325,7 +330,7 @@ public class RecipeLogicTest {
                 "The stalled last recipe's reason should be locked in with top priority, score was " + score);
         var failureRecipe = recipeLogic.getBestFailureRecipe();
         helper.assertTrue(failureRecipe != null &&
-                GTCEu.id("test_priority_last").equals(failureRecipe.getId()),
+                lcrRecipeId("test_priority_last").equals(failureRecipe.getId()),
                 "The surfaced reason should name the stalled last recipe (test_priority_last), not the closer " +
                         "candidate, was " + (failureRecipe == null ? "null" : failureRecipe.getId()));
 
