@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(EmiApi.class)
+@Mixin(value = EmiApi.class, remap = false)
 public interface EmiApiAccessor {
 
     @Invoker("setPages")

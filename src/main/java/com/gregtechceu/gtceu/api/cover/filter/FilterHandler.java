@@ -106,6 +106,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
             };
 
             this.filterSlot.setFilter(this::canInsertFilterItem);
+            this.filterSlot.setOnContentsChanged(this::updateFilter);
         }
 
         return this.filterSlot;
@@ -113,7 +114,6 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
 
     public void setFilterItem(ItemStack item) {
         getFilterSlot().setStackInSlot(0, item);
-        updateFilter();
     }
 
     private void updateFilter() {

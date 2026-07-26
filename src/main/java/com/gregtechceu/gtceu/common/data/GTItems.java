@@ -2516,6 +2516,8 @@ public class GTItems {
     public static ItemEntry<RecordItem> SUS_RECORD = REGISTRATE
             .item("sus_record", p -> new RecordItem(15, GTSoundEntries.SUS_RECORD::getMainEvent, p, 820))
             .lang("Music Disc")
+            .properties(p -> p.stacksTo(1).rarity(Rarity.RARE))
+            .tag(ItemTags.MUSIC_DISCS)
             .register();
     public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new)
             .lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC))

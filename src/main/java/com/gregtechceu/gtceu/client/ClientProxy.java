@@ -57,7 +57,6 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.Timer;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -71,13 +70,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 
 import java.util.*;
@@ -114,15 +111,6 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
         GTGuiTextures.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(GTGuiTheme::onReloadThemes);
-    }
-
-    @Override
-    public void preInit(FMLConstructModEvent event) {
-        super.preInit(event);
-        if (!GTCEu.isDataGen()) {
-            // enable stencil bits, must call on render thread
-            RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
-        }
     }
 
     @SubscribeEvent

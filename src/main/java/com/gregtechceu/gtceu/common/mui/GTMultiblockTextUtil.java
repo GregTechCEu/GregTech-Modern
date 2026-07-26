@@ -41,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -437,6 +438,24 @@ public class GTMultiblockTextUtil {
     }
 
     @SuppressWarnings("unchecked")
+    public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
+        StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
+                () -> new StringSyncValue(
+                        () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().registryName.getPath())));
+
+        // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
+        // on client side.
+        return Text
+                .dynamic(() -> Component.translatable("gtceu.gui.machinemode",
+                        Component.literal(recipeTypeName.getStringValue())
+                                .withStyle(ChatFormatting.GOLD))
+                        .withStyle(ChatFormatting.GRAY))
+                .asWidget()
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.title")))
+                .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
+    }
+
+    @SuppressWarnings("unchecked")
     public static DynamicWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                   PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>) syncManager.getOrCreateSyncHandler(
@@ -482,7 +501,6 @@ public class GTMultiblockTextUtil {
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
-        var function = recipe.getType().getChanceFunction();
 
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int chanceTier = recipeTier + recipe.ocLevel;
@@ -503,8 +521,7 @@ public class GTMultiblockTextUtil {
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (itemOutput.chance() < itemOutput.maxChance()) {
-                countD = countD * runs * function.getBoostedChance(itemOutput, recipeTier, chanceTier) /
-                        itemOutput.maxChance();
+                countD = countD * runs * itemOutput.chance() / itemOutput.maxChance();
             }
             countD = countD * provider.getMidRoll();
         } else {
@@ -515,8 +532,7 @@ public class GTMultiblockTextUtil {
             countD *= count;
             if (itemOutput.chance() < itemOutput.maxChance()) {
                 rounded = true;
-                countD = countD * runs * function.getBoostedChance(itemOutput, recipeTier, chanceTier) /
-                        itemOutput.maxChance();
+                countD = countD * runs * itemOutput.chance() / itemOutput.maxChance();
             }
             count = Math.max(1, (int) Math.round(countD));
             displaycount = Component.literal(String.valueOf(count));
@@ -527,7 +543,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new ItemDrawable(stack).asWidget())
+                            .child(new ItemDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.addFromItem(stack)))
                             .child(
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
@@ -539,7 +557,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new ItemDrawable(stack).asWidget())
+                            .child(new ItemDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.addFromItem(stack)))
                             .child(
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
@@ -550,7 +570,6 @@ public class GTMultiblockTextUtil {
 
     public static Optional<Widget<?>> createFluidLineForOutput(Content fluidOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
-        var function = recipe.getType().getChanceFunction();
 
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int chanceTier = recipeTier + recipe.ocLevel;
@@ -571,8 +590,7 @@ public class GTMultiblockTextUtil {
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
-                amountD = amountD * runs * function.getBoostedChance(fluidOutput, recipeTier, chanceTier) /
-                        fluidOutput.maxChance();
+                amountD = amountD * runs * fluidOutput.chance() / fluidOutput.maxChance();
             }
             amountD = amountD * provider.getMidRoll();
         } else {
@@ -583,8 +601,7 @@ public class GTMultiblockTextUtil {
             amountD *= amount;
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
                 rounded = true;
-                amountD = amountD * runs * function.getBoostedChance(fluidOutput, recipeTier, chanceTier) /
-                        fluidOutput.maxChance();
+                amountD = amountD * runs * fluidOutput.chance() / fluidOutput.maxChance();
             }
             amount = Math.max(1, (int) Math.round(amountD));
             displaycount = Component.literal(String.valueOf(amount));
@@ -595,7 +612,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new FluidDrawable(stack).asWidget())
+                            .child(new FluidDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.add(stack.getDisplayName())))
                             .child(
                                     Text.lang(
                                             key, stack.getDisplayName(), displaycount,
@@ -607,7 +626,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new FluidDrawable(stack).asWidget())
+                            .child(new FluidDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.add(stack.getDisplayName())))
                             .child(
                                     Text.lang(key, stack.getDisplayName(), displaycount,
                                             FormattingUtil.formatNumber2Places(amountD / maxDurationSec))

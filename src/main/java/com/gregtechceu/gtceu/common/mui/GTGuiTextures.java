@@ -197,6 +197,9 @@ public interface GTGuiTextures {
 
     UITexture INFO = fullImage("textures/gui/widget/information.png");
 
+    UITexture STEAM_DIAL_BRONZE = fullImage("textures/gui/widget/steam_dial_bronze.png");
+    UITexture STEAM_DIAL_STEEL = fullImage("textures/gui/widget/steam_dial_steel.png");
+
     UITexture[] MANUAL_IO_OVERLAY_IN = { fullImage("textures/gui/icon/manual_io_mode/disabled.png"),
             fullImage("textures/gui/icon/manual_io_mode/filtered.png"),
             fullImage("textures/gui/icon/manual_io_mode/unfiltered.png") };
@@ -211,6 +214,8 @@ public interface GTGuiTextures {
     UITexture[] BUTTON_DISTINCT = slice(
             "textures/gui/widget/button_distinct_buses.png",
             16, 32, 16, 16, ColorType.DEFAULT);
+
+    UITexture[] BUTTON_BATCH = slice("textures/gui/widget/button_batch.png", 16, 32, 16, 16, ColorType.DEFAULT);
 
     UITexture[] FLUID_TRANSFER_MODE_OVERLAY = slice(
             "textures/gui/overlay/fluid_transfer_mode_overlay.png",

@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.common.machine.trait;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -23,7 +25,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ExhaustVentMachineTrait extends MachineTrait {
+/**
+ * Machine trait that adds an exhaust vent to a specific side of a machine.
+ * 
+ * @see VentCondition
+ */
+public class ExhaustVentMachineTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
     public static final MachineTraitType<ExhaustVentMachineTrait> TYPE = new MachineTraitType<>(
             ExhaustVentMachineTrait.class, false);
@@ -54,6 +61,12 @@ public class ExhaustVentMachineTrait extends MachineTrait {
     @Override
     public void onMachineLoad() {
         this.ventingDirection = getMachine().getFrontFacing().getOpposite();
+    }
+
+    @Override
+    public void afterWorking() {
+        needsVenting = true;
+        checkVenting();
     }
 
     public boolean isVentingBlocked() {

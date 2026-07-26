@@ -133,7 +133,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
     private ModularPanel<?> clientPanel() {
         MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(this.multiblockDefinition,
-                this.multiblockSchemaInfo)
+                this.multiblockSchemaInfo, 200, 200)
                 .setControllerPos(this.controllerPos)
                 .setFrontFacing(this.frontFacing).setUpFacing(this.upFacing).setFlipped(this.isFlipped);
         previewWidget.refreshSchema();

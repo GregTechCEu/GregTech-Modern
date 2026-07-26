@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -137,12 +137,12 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 .childPadding(4)
                 .reverseLayout(true)
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(this.fuelHandler, 0)))
+                        .slot(new ModularSlot(this.fuelHandler.storage, 0).accessibility(true, true)))
                 .child(new ProgressWidget()
                         .size(18)
                         .texture(progressTexture, ProgressDrawable.Direction.UP)
                         .value(progressPercent))
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(this.ashHandler, 0))));
+                        .slot(new ModularSlot(this.ashHandler.storage, 0).accessibility(false, true))));
     }
 }
