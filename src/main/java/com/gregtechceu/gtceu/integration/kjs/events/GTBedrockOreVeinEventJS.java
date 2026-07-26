@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreDefinitionBuilderJS;
 
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.WritableRegistry;
@@ -29,8 +29,8 @@ public class GTBedrockOreVeinEventJS implements KubeEvent {
         this.registry = registry;
     }
 
-    public void add(Context cx, ResourceLocation id, Consumer<BedrockOreBuilder> consumer) {
-        BedrockOreBuilder builder = new BedrockOreBuilder(id);
+    public void add(Context cx, ResourceLocation id, Consumer<BedrockOreDefinitionBuilderJS> consumer) {
+        BedrockOreDefinitionBuilderJS builder = new BedrockOreDefinitionBuilderJS(id);
         consumer.accept(builder);
         register(id, builder.createTransformedObject());
     }
@@ -39,20 +39,20 @@ public class GTBedrockOreVeinEventJS implements KubeEvent {
         registry.register(createKey(id), def, RegistrationInfo.BUILT_IN);
     }
 
-    public void modify(Context cx, ResourceLocation id, Consumer<BedrockOreBuilder> consumer) {
+    public void modify(Context cx, ResourceLocation id, Consumer<BedrockOreDefinitionBuilderJS> consumer) {
         var vein = registry.get(id);
         if (vein == null) throw new IllegalArgumentException("Bedrock ore vein doesn't exist: " + id);
-        var builder = BedrockOreBuilder.from(vein, id);
+        var builder = BedrockOreDefinitionBuilderJS.from(vein, id);
         consumer.accept(builder);
         register(id, builder.createTransformedObject());
     }
 
-    public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockOreBuilder> consumer) {
+    public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockOreDefinitionBuilderJS> consumer) {
         Set<ResourceLocation> keys = registry.keySet();
         keys.forEach(id -> {
             var vein = registry.get(id);
             if (vein == null) throw new IllegalArgumentException("Bedrock ore vein doesn't exist: " + id);
-            var builder = BedrockOreBuilder.from(vein, id);
+            var builder = BedrockOreDefinitionBuilderJS.from(vein, id);
             consumer.accept(id, builder);
             register(id, builder.createTransformedObject());
         });
@@ -83,6 +83,6 @@ public class GTBedrockOreVeinEventJS implements KubeEvent {
     }
 
     public static ResourceKey<BedrockOreDefinition> createKey(ResourceLocation id) {
-        return ResourceKey.create(GTRegistries.BEDROCK_ORE_REGISTRY, id);
+        return ResourceKey.create(GTRegistries.Keys.BEDROCK_ORE, id);
     }
 }

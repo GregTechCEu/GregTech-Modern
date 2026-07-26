@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
-public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
+public class OreVeinDefinitionBuilderJS extends BuilderBase<GTOreDefinition> {
 
     private final InferredProperties inferredProperties = new InferredProperties();
 
@@ -60,17 +60,17 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
     @Setter
     private List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();;
 
-    public OreVeinDefinitionBuilder(ResourceLocation id) {
+    public OreVeinDefinitionBuilderJS(ResourceLocation id) {
         super(id);
     }
 
     @Tolerate
-    public OreVeinDefinitionBuilder clusterSize(int clusterSize) {
+    public OreVeinDefinitionBuilderJS clusterSize(int clusterSize) {
         this.clusterSize = ConstantInt.of(clusterSize);
         return this;
     }
 
-    public OreVeinDefinitionBuilder layer(IWorldGenLayer layer) {
+    public OreVeinDefinitionBuilderJS layer(IWorldGenLayer layer) {
         this.layer = layer;
         if (this.dimensionFilter.isEmpty()) {
             dimensions(layer.getLevels());
@@ -78,7 +78,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder dimensions(Collection<?> dimensions) {
+    public OreVeinDefinitionBuilderJS dimensions(Collection<?> dimensions) {
         Set<ResourceKey<Level>> keys = new HashSet<>();
         for (Object dim : dimensions) {
             keys.add(wrapDimension(dim));
@@ -94,19 +94,19 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim.toString()));
     }
 
-    public OreVeinDefinitionBuilder heightRangeUniform(int min, int max) {
+    public OreVeinDefinitionBuilderJS heightRangeUniform(int min, int max) {
         heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
         inferredProperties.heightRange = Pair.of(min, max);
         return this;
     }
 
-    public OreVeinDefinitionBuilder heightRangeTriangle(int min, int max) {
+    public OreVeinDefinitionBuilderJS heightRangeTriangle(int min, int max) {
         heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
         inferredProperties.heightRange = Pair.of(min, max);
         return this;
     }
 
-    public OreVeinDefinitionBuilder standardVeinGenerator(Consumer<StandardVeinGenerator> config) {
+    public OreVeinDefinitionBuilderJS standardVeinGenerator(Consumer<StandardVeinGenerator> config) {
         var veinGenerator = new StandardVeinGenerator();
 
         config.accept(veinGenerator);
@@ -115,7 +115,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder layeredVeinGenerator(Consumer<LayeredVeinGenerator> config) {
+    public OreVeinDefinitionBuilderJS layeredVeinGenerator(Consumer<LayeredVeinGenerator> config) {
         var veinGenerator = new LayeredVeinGenerator();
 
         config.accept(veinGenerator);
@@ -124,7 +124,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder geodeVeinGenerator(Consumer<GeodeVeinGenerator> config) {
+    public OreVeinDefinitionBuilderJS geodeVeinGenerator(Consumer<GeodeVeinGenerator> config) {
         var veinGenerator = new GeodeVeinGenerator();
 
         config.accept(veinGenerator);
@@ -133,7 +133,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder dikeVeinGenerator(Consumer<DikeVeinGenerator> config) {
+    public OreVeinDefinitionBuilderJS dikeVeinGenerator(Consumer<DikeVeinGenerator> config) {
         var veinGenerator = new DikeVeinGenerator();
         if (inferredProperties.heightRange != null) {
             veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
@@ -146,7 +146,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder veinedVeinGenerator(Consumer<VeinedVeinGenerator> config) {
+    public OreVeinDefinitionBuilderJS veinedVeinGenerator(Consumer<VeinedVeinGenerator> config) {
         var veinGenerator = new VeinedVeinGenerator();
         if (inferredProperties.heightRange != null) {
             veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
@@ -159,7 +159,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder classicVeinGenerator(Consumer<ClassicVeinGenerator> config) {
+    public OreVeinDefinitionBuilderJS classicVeinGenerator(Consumer<ClassicVeinGenerator> config) {
         var veinGenerator = new ClassicVeinGenerator();
 
         config.accept(veinGenerator);
@@ -168,7 +168,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder cuboidVeinGenerator(Consumer<CuboidVeinGenerator> config) {
+    public OreVeinDefinitionBuilderJS cuboidVeinGenerator(Consumer<CuboidVeinGenerator> config) {
         var veinGenerator = new CuboidVeinGenerator();
         if (inferredProperties.heightRange != null) {
             veinGenerator.minY(inferredProperties.heightRange.getFirst());
@@ -192,7 +192,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
         return veinGenerator;
     }
 
-    public OreVeinDefinitionBuilder surfaceIndicatorGenerator(Consumer<SurfaceIndicatorGenerator> config) {
+    public OreVeinDefinitionBuilderJS surfaceIndicatorGenerator(Consumer<SurfaceIndicatorGenerator> config) {
         config.accept(getOrCreateIndicatorGenerator(SurfaceIndicatorGenerator.class, SurfaceIndicatorGenerator::new));
         return this;
     }

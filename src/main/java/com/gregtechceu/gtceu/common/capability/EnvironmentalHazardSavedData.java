@@ -11,13 +11,16 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncHazardZone
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
@@ -74,7 +77,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             CompoundTag zoneTag = allHazardZones.getCompound(i);
 
             ChunkPos source = new ChunkPos(zoneTag.getLong("pos"));
-            HazardZone zone = HazardZone.deserializeNBT(zoneTag);
+            HazardZone zone = HazardZone.deserializeNBT(serverLevel.registryAccess(), zoneTag);
             if (zone == null) {
                 continue;
             }
@@ -296,19 +299,16 @@ public class EnvironmentalHazardSavedData extends SavedData {
             return zoneTag;
         }
 
-        public static @Nullable HazardZone deserializeNBT(CompoundTag zoneTag) {
+        public static @Nullable HazardZone deserializeNBT(HolderLookup.Provider lookup, CompoundTag zoneTag) {
             BlockPos source = NbtUtils.readBlockPos(zoneTag, "source").orElse(null);
             float strength = zoneTag.getFloat("strength");
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            ResourceLocation id = GTCEu.id(zoneTag.getString("condition"));
-            if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
-                return null;
-            }
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
-
-            return new HazardZone(source, strength, canSpread, trigger, condition);
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION,
+                    GTCEu.id(zoneTag.getString("condition")));
+            return lookup.holder(id).map(medicalConditionReference -> new HazardZone(source, strength, canSpread,
+                    trigger, medicalConditionReference.value())).orElse(null);
         }
 
         public void toNetwork(FriendlyByteBuf buf) {
@@ -316,7 +316,7 @@ public class EnvironmentalHazardSavedData extends SavedData {
             buf.writeFloat(strength);
             buf.writeBoolean(canSpread);
             buf.writeUtf(trigger.name());
-            buf.writeResourceLocation(condition.id);
+            buf.writeResourceKey(ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION, condition.id));
         }
 
         public static HazardZone fromNetwork(FriendlyByteBuf buf) {
@@ -324,8 +324,9 @@ public class EnvironmentalHazardSavedData extends SavedData {
             float strength = buf.readFloat();
             boolean canSpread = buf.readBoolean();
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS.get(buf.readUtf());
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(buf.readResourceLocation());
-            return new HazardZone(source, strength, canSpread, trigger, condition);
+            Holder<MedicalCondition> condition = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
+                    .holderOrThrow(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
+            return new HazardZone(source, strength, canSpread, trigger, condition.value());
         }
     }
 

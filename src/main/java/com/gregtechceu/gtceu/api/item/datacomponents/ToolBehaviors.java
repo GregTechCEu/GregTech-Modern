@@ -31,7 +31,7 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_STREAM_CODEC = StreamCodecUtils.dispatchMap(
             HashMap::new,
-            ByteBufCodecs.registry(GTRegistries.TOOL_BEHAVIOR_REGISTRY),
+            ByteBufCodecs.registry(GTRegistries.Keys.TOOL_BEHAVIOR),
             type -> (StreamCodec<? super RegistryFriendlyByteBuf, IToolBehavior<?>>) type.getStreamCodec());
     public static final StreamCodec<RegistryFriendlyByteBuf, ToolBehaviors> STREAM_CODEC = MAP_STREAM_CODEC
             .map(ToolBehaviors::new, ToolBehaviors::behaviors);

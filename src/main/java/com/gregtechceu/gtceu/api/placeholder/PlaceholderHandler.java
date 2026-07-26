@@ -13,9 +13,11 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -35,7 +37,6 @@ import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -90,15 +91,24 @@ public class PlaceholderHandler {
                         packedLight, packedOverlay, tag);
     }
 
+    public static @Nullable ResourceKey<Placeholder> toId(String placeholder) {
+        try {
+            return ResourceKey.create(GTRegistries.Keys.PLACEHOLDER, GTCEu.id(placeholder));
+        } catch (ResourceLocationException e) {
+            return null;
+        }
+    }
+
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
-                                                        @Nullable PlaceholderContext context,
-                                                        Object2IntOpenHashMap<String> indices) throws PlaceholderException {
-        if (!GTRegistries.PLACEHOLDERS.containsKey(GTCEu.id(placeholder.getFirst().toString())))
-            throw new UnknownPlaceholderException(placeholder.getFirst().toString());
-        if (context != null && context.level().isClientSide &&
-                !GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.getFirst().toString())).isView())
+                                                        PlaceholderContext context) throws PlaceholderException {
+        var id = toId(placeholder.getFirst().toString());
+        if (id == null) throw new UnknownPlaceholderException(placeholder.getFirst().toString());
+        var holder = context.holderLookup().holder(id);
+        if (holder.isEmpty()) throw new UnknownPlaceholderException(placeholder.getFirst().toString());
+        if (context.level().isClientSide &&
+                !holder.get().value().isView())
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
-        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.getFirst().toString())).apply(context,
+        return holder.get().value().apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -106,7 +116,6 @@ public class PlaceholderHandler {
         if (ctx.level().isClientSide)
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
         List<Exception> exceptions = new ArrayList<>();
-        Object2IntOpenHashMap<String> indices = new Object2IntOpenHashMap<>();
         boolean escape = false;
         boolean escapeNext = false;
         boolean literalEscape = false;
@@ -168,7 +177,7 @@ public class PlaceholderHandler {
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
-                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indices);
+                            MultiLineComponent result = processPlaceholder(placeholder, ctx);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 stack.peek().getLast().append(result);
                             } else {
@@ -324,8 +333,10 @@ public class PlaceholderHandler {
                                 .paddingBottom(5)
                                 .excludeAreaInRecipeViewer()
                                 .fullHeight()
-                                .children(GTRegistries.PLACEHOLDERS.keySet()
-                                        .stream()
+                                .children(ctx.holderLookup()
+                                        .lookupOrThrow(GTRegistries.Keys.PLACEHOLDER)
+                                        .listElements()
+                                        .map(h -> Objects.requireNonNull(h.getKey()).location())
                                         .sorted()
                                         .map(s -> (IWidget) Flow.row()
                                                 .coverChildren()
@@ -333,8 +344,7 @@ public class PlaceholderHandler {
                                                         .center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang(
-                                                                        "gtceu.placeholder_info." + s)
+                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s)
                                                                 .stream()
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
@@ -379,7 +389,7 @@ public class PlaceholderHandler {
         private int ifDepth = 0;
 
         @Override
-        public Component apply(String s, @Nullable PlaceholderContext ctx) {
+        public Component apply(String s, PlaceholderContext ctx) {
             if (s.equals("\0")) {
                 if (unclosedBrackets > 0) {
                     onEncounteredError();
@@ -487,18 +497,31 @@ public class PlaceholderHandler {
             }
             if (prevOpenBracket) {
                 prevOpenBracket = false;
-                var id = GTCEu.id(s);
-                if (GTRegistries.PLACEHOLDERS.containsKey(id)) {
-                    if (GTRegistries.PLACEHOLDERS.get(id).isPure()) {
+                ResourceKey<Placeholder> id = toId(s);
+
+                if (id == null) {
+                    onEncounteredError();
+                    return Component.literal(s).withStyle(Style.EMPTY
+                            .withColor(0xFF0000)
+                            .withHoverEvent(new HoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    Component.translatable("gtceu.placeholder_editor.no_placeholder",
+                                            s.replaceAll("\\n", "\\\\n")))));
+                }
+
+                var holder = ctx.holderLookup().holder(id);
+                if (holder.isPresent()) {
+                    var placeholder = holder.get().value();
+                    if (placeholder.isPure()) {
                         pureStarts.push(everything.length() - 1);
                     } else pureStarts.clear();
-                    if (GTRegistries.PLACEHOLDERS.get(id).isView()) {
+                    if (placeholder.isView()) {
                         viewStarts.push(everything.length() - 1);
                     } else viewStarts.clear();
                     everything.append(s);
                     openPlaceholders.push(s);
                     if (s.equals("if")) ifDepth++;
-                    else if (ifDepth > 0 && !GTRegistries.PLACEHOLDERS.get(id).isView()) {
+                    else if (ifDepth > 0 && !placeholder.isView()) {
                         return Component.literal(s)
                                 .withStyle(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
                                 .withStyle(style -> style.withHoverEvent(new HoverEvent(

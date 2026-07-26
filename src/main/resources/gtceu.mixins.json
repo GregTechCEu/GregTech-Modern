@@ -64,7 +64,6 @@
         "ReloadableResourceManagerAccessor",
         "ReloadableServerResourcesMixin",
         "RepairItemRecipeMixin",
-        "ResourceKeyArgumentAccessor",
         "ServerGamePacketListenerImplAccessor",
         "ShapedRecipeAccessor",
         "SidedRedstoneConnectivityMixin",

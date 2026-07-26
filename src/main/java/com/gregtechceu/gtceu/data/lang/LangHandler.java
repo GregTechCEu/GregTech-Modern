@@ -126,6 +126,7 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
+        provider.add("argument.medical_condition.id.invalid", "Unknown medical condition %s");
         provider.add("command.gtceu.medical_condition.clear.everything.failed", "Target has no conditions to remove");
         provider.add("command.gtceu.medical_condition.clear.everything.success.multiple",
                 "Removed all conditions from %s targets");
@@ -1177,8 +1178,8 @@ public class LangHandler {
         provider.add("gtceu.multiblock.total_runs", "Performing %d Recipes at once");
         provider.add("gtceu.multiblock.batch_enabled", "- %dx from Batching");
         provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
-        provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
-        provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
+        provider.add("gtceu.machine.batching.enabled", "Batching Enabled");
+        provider.add("gtceu.machine.batching.disabled", "Batching Disabled");
         provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
         provider.add("gtceu.multiblock.progress", "Progress: %ss / %ss (%s%%)");
         provider.add("gtceu.multiblock.output_line.0", "%s x §e%s§r (%ss/ea)");

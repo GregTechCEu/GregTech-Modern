@@ -27,10 +27,14 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -670,7 +674,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     protected IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
         IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> map = new IdentityHashMap<>();
-        for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES) {
+        for (RecipeCapability<?> cap : RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
+                .registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)) {
             map.put(cap, cap.makeChanceCache());
         }
         return map;
@@ -708,22 +713,24 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                                 CompoundTag chanceCache = ValueTransformer.assertTagType(CompoundTag.class, tag,
                                         context);
                                 if (context.currentValue() != null) {
-                                    for (String key : chanceCache.getAllKeys()) {
-                                        RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES
-                                                .get(GTCEu.id(key));
+                                    for (String strKey : chanceCache.getAllKeys()) {
+                                        var key = ResourceLocation.parse(strKey);
+                                        var holder = context.lookup()
+                                                .holder(ResourceKey.create(GTRegistries.Keys.RECIPE_CAPABILITY, key));
                                         // Necessary since a RecipeCapability was removed when removing Create support,
                                         // and for future
                                         // removals
-                                        if (cap == null) continue;
+                                        if (holder.isEmpty()) continue;
+                                        var cap = holder.get().value();
                                         // noinspection rawtypes
                                         Object2IntMap map = context.currentValue().computeIfAbsent(cap,
                                                 RecipeCapability::makeChanceCache);
 
-                                        ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
+                                        ListTag chanceTag = chanceCache.getList(strKey, Tag.TAG_COMPOUND);
                                         for (int i = 0; i < chanceTag.size(); ++i) {
                                             CompoundTag chanceKey = chanceTag.getCompound(i);
                                             var entry = cap.serializer.fromNbt(chanceKey.get("entry"),
-                                                    GTRegistries.builtinRegistry());
+                                                    context.lookup());
                                             int value = chanceKey.getInt("cached_chance");
                                             // noinspection unchecked
                                             map.put(entry, value);

@@ -94,7 +94,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 var registry = serverLevel.registryAccess()
-                        .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID)
                         .asHolderIdMap();
                 for (var holder : registry) {
                     var fluidDefinition = holder.value();
@@ -143,7 +143,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)) {
+            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID)) {
                 if (!definition.canGenerate()) {
                     continue;
                 }

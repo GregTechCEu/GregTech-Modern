@@ -10,6 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import brachy.modularui.utils.EqualityTest;
 import brachy.modularui.utils.serialization.network.*;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
@@ -56,8 +57,8 @@ public class GTByteBufAdapters {
 
             @Override
             public boolean areEqual(T a, T b) {
-                String encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().toString();
-                String encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().toString();
+                JsonObject encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().getAsJsonObject();
+                JsonObject encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().getAsJsonObject();
                 return Objects.equals(encoded1, encoded2);
             }
         };

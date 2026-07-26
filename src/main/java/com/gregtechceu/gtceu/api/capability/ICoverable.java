@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -304,7 +305,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     private CompoundTag createCoverConfigTag(@Nullable CoverBehavior cover) {
         if (cover == null) return new CompoundTag();
         var tag = new CompoundTag();
-        tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
+        tag.putString("id", cover.coverDefinition.getId().toString());
         tag.put("item", cover.getAttachItem().save(getLevel().registryAccess()));
         var dataTag = new CompoundTag();
         cover.copyConfig(dataTag);
@@ -314,11 +315,12 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     private void applyCoverConfigTag(ServerPlayer player, Direction dir, CompoundTag tag) {
         if (tag.isEmpty()) return;
-        var def = GTRegistries.COVERS.get(ResourceLocation.parse(tag.getString("id")));
+        var def = getLevel().registryAccess()
+                .holder(ResourceKey.create(GTRegistries.Keys.COVER, ResourceLocation.parse(tag.getString("id"))));
         ItemStack stack = ItemStack.parseOptional(getLevel().registryAccess(), tag.getCompound("item"));
-        if (def == null) return;
+        if (def.isEmpty()) return;
 
-        placeCoverOnSide(dir, stack, def, player);
+        placeCoverOnSide(dir, stack, def.get().value(), player);
 
         CoverBehavior placedCover = getCoverAtSide(dir);
         if (placedCover != null && tag.contains("data") && !tag.getCompound("data").isEmpty())
