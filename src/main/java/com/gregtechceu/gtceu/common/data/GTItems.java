@@ -383,7 +383,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = createFluidCell(GTMaterials.Titanium, 128, 6,
             64);
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = createFluidCell(GTMaterials.TungstenSteel,
-            512, 8, 32);
+            512, 8, 32, "%s Tungstensteel Cell");
 
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::create)
             .lang("%s Glass Vial")
@@ -397,13 +397,17 @@ public class GTItems {
             .register();
 
     public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
+        return createFluidCell(mat, capacity, matSize, stackSize, "%s " + toEnglishName(mat.getName()) + " Cell");
+    }
+
+    public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize, String langValue) {
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
         Preconditions.checkArgument(prop != null,
                 "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",
                 mat.getName());
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::create)
-                .lang("%s " + toEnglishName(mat.getName()) + " Cell")
+                .lang(langValue)
                 .color(() -> GTItems::cellColor)
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .properties(p -> p.stacksTo(stackSize))
@@ -413,6 +417,7 @@ public class GTItems {
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(mat, GTValues.M * matSize))))
                 .register();
     }
+
 
     public static ItemEntry<ComponentItem> TOOL_MATCHES = REGISTRATE.item("matches", ComponentItem::create)
             .lang("Matches")

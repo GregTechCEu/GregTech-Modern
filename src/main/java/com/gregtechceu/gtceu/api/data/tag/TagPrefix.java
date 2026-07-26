@@ -1329,7 +1329,7 @@ public class TagPrefix {
     }
 
     public String getUnlocalizedName() {
-        return ("tagprefix.%s.%s").formatted(id.getNamespace(), id.getPath());
+        return id.toLanguageKey("tagprefix");
     }
 
     public MutableComponent getLocalizedName(Material material) {
