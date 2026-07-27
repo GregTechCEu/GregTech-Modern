@@ -96,6 +96,10 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
         public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
+
+        private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
+            return ResourceKey.createRegistryKey(registryId);
+        }
     }
 
     // GT Registries
@@ -132,10 +136,6 @@ public final class GTRegistries {
     public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
     // spotless:on
-
-    private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
-        return ResourceKey.createRegistryKey(registryId);
-    }
 
     public static <T> MappedRegistry<T> makeRegistry(ResourceKey<Registry<T>> key) {
         return makeRegistry(key, true);
