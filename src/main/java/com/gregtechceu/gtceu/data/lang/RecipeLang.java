@@ -14,7 +14,7 @@ public class RecipeLang {
         generateModifierKeys(provider);
     }
 
-    private static void generateCapabilityLang(RegistrateLangProvider provider) {
+    private static void generateCapabilityLang(GTLangProvider provider) {
 
         provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
@@ -33,6 +33,10 @@ public class RecipeLang {
         provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
         provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
         provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+
+        provider.addMultiLang("gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
+                "Right click to decrease the OC", "Middle click to reset the OC",
+                "Hold Shift to change by Perfect OC");
     }
 
     public static void generateChanceLang(RegistrateLangProvider provider) {
@@ -50,6 +54,10 @@ public class RecipeLang {
         provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
         provider.add("gtceu.gui.content.range", "%s-%s");
         provider.add("gtceu.gui.content.times_item", "x %s");
+
+        provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
+        provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");
+        provider.add("gtceu.gui.content.tips.per_second_short", "§a/second§r");
 
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");

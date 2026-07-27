@@ -30,7 +30,6 @@ public class LangHandler {
         CommandLang.init(provider);
         ConfigurationLang.init(provider);
         CoverLang.init(provider); // TODO
-        GUILang.init(provider); // TODO
         HazardLang.init(provider);
         IntegrationLang.init(provider);
         ItemLang.init(provider);

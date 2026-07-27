@@ -6,6 +6,10 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class MultiblockLang {
 
     public static void init(GTLangProvider provider) {
+
+        provider.add("gtceu.part_sharing.disabled", "Multiblock Sharing §4Disabled");
+        provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
+
         provider.add("gtceu.pattern_error.mismatch_coils", "Mismatched coils: %s vs %s at (%d, %d, %d)");
         provider.add("gtceu.pattern_error.mismatch_filters", "Mismatched filters: %s vs %s at (%d, %d, %d)");
         provider.add("gtceu.predicate_error.active_transformer.missing_io", "Missing hatches: IN - %s | OUT - %s");
