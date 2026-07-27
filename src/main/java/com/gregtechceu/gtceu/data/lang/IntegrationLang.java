@@ -102,7 +102,6 @@ public class IntegrationLang {
 
     /** Jade */
     private static void initJadeLang(GTLangProvider provider) {
-        provider.add("integration.gtceu.jade.working_disabled", "Working Disabled");
         provider.add("integration.gtceu.jade.energy_consumption", "Using");
         provider.add("integration.gtceu.jade.energy_production", "Producing");
 

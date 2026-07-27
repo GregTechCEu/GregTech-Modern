@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
@@ -66,12 +67,15 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
 
 @SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
+
+    private static final Set<String> namespaces = new ObjectOpenHashSet<>();
 
     static {
         GTRegistries.TAG_PREFIXES.unfreeze();
@@ -1116,8 +1120,11 @@ public class TagPrefix {
 
         // TODO actual datagen once we switch to registrate/forge registries
 
-        GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(id.getNamespace());
-        registrate.addDataGenerator(ProviderType.LANG, this::generateTagPrefixLang);
+        if (!namespaces.contains(this.id.getNamespace())) {
+            GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(id.getNamespace());
+            registrate.addDataGenerator(ProviderType.LANG, (provider -> generateTagPrefixLang(provider, this.id.getNamespace())));
+            namespaces.add(this.id.getNamespace());
+        }
     }
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
@@ -1458,8 +1465,11 @@ public class TagPrefix {
         BlockItem create(Block block, Item.Properties properties, TagPrefix prefix, Material material);
     }
 
-    private void generateTagPrefixLang(RegistrateLangProvider provider) {
-        provider.add(getUnlocalizedName(), langValue);
-        if (polymerLangValue != null) provider.add(("tagprefix.%s.polymer.%s").formatted(id.getNamespace(), id.getPath()), polymerLangValue);
+    private static void generateTagPrefixLang(RegistrateLangProvider provider, String namespace) {
+        var tagPrefixes = GTRegistries.TAG_PREFIXES.values().stream().filter(f -> f.id.getNamespace().equals(namespace)).collect(Collectors.toSet());
+        for (TagPrefix prefix: tagPrefixes) {
+            provider.add(prefix.getUnlocalizedName(), prefix.langValue);
+            if (prefix.polymerLangValue != null) provider.add(("tagprefix.%s.polymer.%s").formatted(prefix.id.getNamespace(), prefix.id.getPath()), prefix.polymerLangValue);
+        }
     }
 }

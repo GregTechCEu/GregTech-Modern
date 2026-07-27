@@ -10,7 +10,6 @@ public class RecipeLang {
         generateChanceLang(provider);
         generateRecipeConditions(provider);
         generateRecipeDataKeys(provider);
-        generateMiscKeys(provider);
         generateCapabilityLang(provider);
         generateModifierKeys(provider);
     }
@@ -141,13 +140,5 @@ public class RecipeLang {
 
         provider.add("gtceu.recipe.temperature", "Temp: %s");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
-    }
-
-    private static void generateMiscKeys(GTLangProvider provider) {
-        // IO
-        provider.add("gtceu.io.import", "Import");
-        provider.add("gtceu.io.export", "Export");
-        provider.add("gtceu.io.both", "Both");
-        provider.add("gtceu.io.none", "None");
     }
 }

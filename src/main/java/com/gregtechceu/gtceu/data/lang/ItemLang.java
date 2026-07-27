@@ -50,9 +50,6 @@ public class ItemLang {
         // Item Behaviors
         provider.add("item.gtceu.behavior.hoe", "Can till dirt");
         provider.add("item.gtceu.behavior.soft_hammer", "Activates and Deactivates Machines");
-        provider.add("item.gtceu.behavior.soft_hammer.enabled", "Working Enabled");
-        provider.add("item.gtceu.behavior.soft_hammer.disabled", "Working Disabled");
-        provider.add("item.gtceu.behavior.soft_hammer.disabled_cycle", "Working disabled after current cycle");
 
         provider.add("item.gtceu.behavior.lighter.tooltip.description", "Can light things on fire");
         provider.add("item.gtceu.behavior.lighter.tooltip.usage", "Shift-right click to open/close");

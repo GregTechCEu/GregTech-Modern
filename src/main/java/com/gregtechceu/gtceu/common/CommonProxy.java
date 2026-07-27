@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTPlaceholders;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
@@ -55,7 +54,6 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
@@ -214,7 +212,7 @@ public class CommonProxy {
                 List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
                         .get(ProviderType.LANG);
                 NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLang
-                        .generate((GTLangProvider) provider, namespace);
+                        .generateMaterialLang((GTLangProvider) provider, namespace);
                 if (providers == null) {
                     accessor.getDatagens().put(ProviderType.LANG, generator);
                 } else {

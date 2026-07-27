@@ -5,21 +5,8 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 public class GUILang {
 
     public static void init(GTLangProvider provider) {
-        generateKeybindKeys(provider);
         generateWidgetKeys(provider);
         generateTooltipKeys(provider);
-    }
-
-    private static void generateKeybindKeys(GTLangProvider provider) {
-        provider.add("keybind.gtceu.armor_mode_switch", "Armor Mode Switch");
-        provider.add("keybind.gtceu.armor_hover", "Armor Hover Toggle");
-        provider.add("keybind.gtceu.enable_jetpack", "Enable Jetpack");
-        provider.add("keybind.gtceu.enable_boots", "Enable Boosted Jump");
-        provider.add("keybind.gtceu.armor_charging", "Armor Charging to Inventory Toggle");
-        provider.add("keybind.gtceu.tool_aoe_change", "Tool AoE Mode Switch");
-        provider.add("keybind.gtceu.enable_step_assist", "Enable StepAssist");
-        provider.add("gtceu.debug.f3_h.enabled",
-                "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
     }
 
     private static void generateTooltipKeys(GTLangProvider provider) {
@@ -28,13 +15,6 @@ public class GUILang {
         provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
 
         // GUI Units
-        provider.add("gtceu.universal.liters", "%s mB");
-        provider.add("gtceu.universal.kiloliters", "%s B");
-
-        provider.add("gtceu.universal.parentheses", "(%s)");
-        provider.add("gtceu.universal.spaced_parentheses", "( %s )");
-        provider.add("gtceu.universal.padded_parentheses", " (%s) ");
-        provider.add("gtceu.universal.padded_spaced_parentheses", " ( %s ) ");
 
         // EU Tooltip
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
@@ -53,9 +33,6 @@ public class GUILang {
         // EU Storage
         provider.add("gtceu.universal.tooltip.energy_storage_capacity", "§cEnergy Capacity: §r%d EU");
         provider.add("gtceu.universal.tooltip.energy_tier_range", "§aAllowed Voltage Tiers: §f%s §f- %s");
-
-        provider.add("gtceu.gui.seconds", "%s second(s)");
-        provider.add("gtceu.gui.years", "%s year(s)");
 
         // Item Storage/Transfer
         provider.add("gtceu.universal.tooltip.item_storage_capacity", "§6Item Slots: §f%d");

@@ -1750,24 +1750,6 @@ public class MachineLang {
         provider.add("machine.gtceu.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
         provider.add("machine.gtceu.available_recipe_map_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
 
-        // Multiblock Preview
-        provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
-        provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
-        provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
-        provider.add("gtceu.multiblock.pattern.error", "Expected components (%s) at (%s).");
-        provider.add("gtceu.multiblock.pattern.error.limited_exact", "§cExactly: %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited_within", "§cBetween %d and %d§r");
-        provider.addMultiLang("gtceu.multiblock.pattern.error.limited", "§cMaximum: %d§r", "§cMinimum: %d§r",
-                "§cMaximum: %d per layer§r", "§cMinimum: %d per layer§r");
-        provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
-        provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
-        provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");
-        provider.add("gtceu.multiblock.pattern.clear_amount_1", "§6Must have a clear 1x1x1 space in front§r");
-        provider.add("gtceu.multiblock.pattern.clear_amount_3", "§6Must have a clear 3x3x1 space in front§r");
-        provider.add("gtceu.multiblock.pattern.single", "§6Only this block can be used§r");
-        provider.add("gtceu.multiblock.pattern.location_end", "§cVery End§r");
-        provider.add("gtceu.multiblock.pattern.replaceable_air", "Replaceable by Air");
-
         // Computation
         provider.add("gtceu.multiblock.computation.max", "Max CWU/t: %s");
         provider.add("gtceu.multiblock.computation.usage", "Using: %s");
