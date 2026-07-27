@@ -76,12 +76,12 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         if (stack.hasTag()) {
             FluidUtil.getFluidContained(stack).ifPresent(tank -> {
                 tooltipComponents
-                        .add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
+                        .add(Component.translatable("common.gtceu.tooltip.fluid_stored", tank.getDisplayName(),
                                 tank.getAmount()));
                 TooltipsHandler.appendFluidTooltips(tank, tooltipComponents::add, null);
             });
         } else {
-            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
+            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_storage_capacity",
                     FormattingUtil.formatNumbers(capacity)));
         }
         if (GTUtil.isShiftDown()) {
@@ -93,7 +93,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
             if (cryoProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof"));
             if (acidProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof"));
         } else if (gasProof || cryoProof || plasmaProof || acidProof) {
-            tooltipComponents.add(Component.translatable("gtceu.tooltip.fluid_pipe_hold_shift"));
+            tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
         }
     }
 }

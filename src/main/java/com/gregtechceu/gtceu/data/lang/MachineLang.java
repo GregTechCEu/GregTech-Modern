@@ -205,12 +205,12 @@ public class MachineLang {
                 "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
         provider.addMultiline("gtceu.gui.chunkmode.disabled",
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
-        provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
-        provider.add("gtceu.universal.tooltip.chunk_mode", "Chunk Mode: ");
-        provider.add("gtceu.universal.tooltip.silk_touch", "Silk Touch: ");
-        provider.add("gtceu.universal.tooltip.working_area_chunks", "§bWorking Area: §f%dx%d Chunks");
-        provider.add("gtceu.universal.tooltip.working_area_max", "§bMax Working Area: §f%dx%d");
-        provider.add("gtceu.universal.tooltip.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
+        provider.add("machine.gtceu.miner.working_area", "§bWorking Area: §f%dx%d");
+        provider.add("machine.gtceu.miner.chunk_mode", "Chunk Mode: ");
+        provider.add("machine.gtceu.miner.silk_touch", "Silk Touch: ");
+        provider.add("machine.gtceu.miner.working_area_chunks", "§bWorking Area: §f%dx%d Chunks");
+        provider.add("machine.gtceu.miner.working_area_max", "§bMax Working Area: §f%dx%d");
+        provider.add("machine.gtceu.miner.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("machine.gtceu.miner.tooltip", "§7Mines ores below the Miner! Starts as §f%sx%s §7area");
         provider.add("machine.gtceu.miner.per_block", "§7takes §f%ds §7per Block");
 
@@ -258,7 +258,7 @@ public class MachineLang {
         provider.add("gtceu.machine.locked_safe.malfunctioning", "§cMalfunctioning!");
         provider.add("gtceu.machine.locked_safe.requirements", "§7Replacements required:");
 
-        provider.add("gtceu.universal.tooltip.terrain_resist",
+        provider.add("machine.gtceu.tooltip.terrain_resist",
                 "This Machine will not explode when exposed to the Elements");
 
         // Fisher

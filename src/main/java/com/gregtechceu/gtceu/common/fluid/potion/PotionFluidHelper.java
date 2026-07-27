@@ -191,7 +191,7 @@ public class PotionFluidHelper {
 
             if (durationMax.getSeconds() <= 60) {
                 time = GTMath.saturatedCast(durationMax.getSeconds());
-                unitKey = "gtceu.gui.seconds";
+                unitKey = "common.gtceu.seconds";
             } else if (durationMax.toMinutes() <= 60) {
                 time = GTMath.saturatedCast(durationMax.toMinutes());
                 unitKey = "gui.minutes";

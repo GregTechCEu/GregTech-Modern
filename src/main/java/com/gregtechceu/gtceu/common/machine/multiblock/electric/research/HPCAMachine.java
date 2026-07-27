@@ -688,7 +688,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
-                data = Component.translatable("gtceu.universal.liters", getMaxCoolantDemand())
+                data = Component.translatable("common.gtceu.millibuckets", getMaxCoolantDemand())
                         .withStyle(ChatFormatting.YELLOW).append(" ");
                 Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name")
                         .withStyle(ChatFormatting.YELLOW);

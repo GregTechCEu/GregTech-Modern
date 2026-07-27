@@ -172,7 +172,7 @@ public class FormattingUtil {
     }
 
     public static MutableComponent years(String years) {
-        return Component.translatable("gtceu.gui.years", years);
+        return Component.translatable("common.gtceu.years", years);
     }
 
     public static MutableComponent days(String days) {
@@ -188,7 +188,7 @@ public class FormattingUtil {
     }
 
     public static MutableComponent seconds(String seconds) {
-        return Component.translatable("gtceu.gui.seconds", seconds);
+        return Component.translatable("common.gtceu.seconds", seconds);
     }
 
     public static String formatPercent(double number) {

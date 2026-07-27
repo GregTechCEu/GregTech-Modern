@@ -111,10 +111,11 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                                             .append(FormattingUtil.formatNumbers(speed))));
 
                         }
-                        text.append(Component.translatable("gtceu.universal.padded_parentheses",
-                                (Component.translatable("gtceu.recipe.eu.total",
-                                        FormattingUtil.formatNumbers(EUt))))
+                        text.append(Component.literal(" ("));
+                        text.append(Component.translatable("gtceu.recipe.eu.total",
+                                        FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.WHITE));
+                        text.append(Component.literal(") "));
                     }
 
                     if (isInput) {

@@ -95,9 +95,9 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
             getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
         } else if (isGasProof() || isCryoProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
             if (showToolsInfo) {
-                tooltip.add(Component.translatable("gtceu.tooltip.tool_fluid_hold_shift"));
+                tooltip.add(Component.translatable("common.gtceu.tooltip.tool_fluid_hold_shift"));
             } else {
-                tooltip.add(Component.translatable("gtceu.tooltip.fluid_pipe_hold_shift"));
+                tooltip.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
             }
         }
     }

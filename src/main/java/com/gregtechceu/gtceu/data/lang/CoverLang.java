@@ -41,7 +41,6 @@ public class CoverLang {
         provider.add("cover.tag_filter.matches_not", "Item does not match");
 
         // Fluid filter
-        provider.add("cover.fluid_filter.title", "Fluid Filter");
         provider.addMultiline("cover.fluid_filter.config_amount",
                 "Scroll wheel up increases amount, down decreases.\nShift[§6x10§r],Ctrl[§ex100§r],Shift+Ctrl[§ax1000§r]\nRight click increases amount, left click decreases.\nHold shift to double/halve.\nMiddle click to clear");
         provider.add("cover.fluid_filter.mode.filter_fill", "Filter Fill");
@@ -49,16 +48,12 @@ public class CoverLang {
         provider.add("cover.fluid_filter.mode.filter_both", "Filter Fill & Drain");
 
         // Item filter
-        provider.add("cover.item_filter.title", "Item Filter");
-        provider.add("cover.item_filter.ignore_damage.disabled", "Respect Damage");
         provider.add("cover.item_filter.ignore_nbt.enabled", "Ignore NBT");
         provider.add("cover.item_filter.ignore_nbt.disabled", "Respect NBT");
-        provider.add("cover.item_filter.ignore_damage.enabled", "Ignore Damage");
         provider.add("gtceu.item_filter.empty_item", "Empty (No Item)");
         provider.add("gtceu.item_filter.footer", "§eClick with item to override");
 
         // Smart filter
-        provider.add("cover.item_smart_filter.title", "Smart Item Filter");
         provider.add("cover.item_smart_filter.filtering_mode.electrolyzer", "Electrolyzer");
         provider.add("cover.item_smart_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.item_smart_filter.filtering_mode.sifter", "Sifter");
@@ -77,19 +72,12 @@ public class CoverLang {
         provider.add("cover.fluid.voiding.advanced.title", "Advanced Fluid Voiding Settings");
         provider.add("cover.item.voiding.title", "Item Voiding Settings");
         provider.add("cover.item.voiding.advanced.title", "Advanced Item Voiding Settings");
-        provider.add("cover.voiding.label.disabled", "Disabled");
-        provider.add("cover.voiding.label.enabled", "Enabled");
         provider.add("cover.voiding.tooltip",
                 "§cWARNING!§7 Setting this to \"Enabled\" means that fluids or items WILL be voided.");
         provider.add("cover.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.voiding.message.enabled", "Voiding Cover Enabled");
 
         // Conveyors
-        provider.add("cover.conveyor.title", "Conveyor Cover Settings (%s)");
-        provider.add("cover.conveyor.transfer_rate", "§7items/sec");
-        provider.add("cover.conveyor.mode", "Mode: %s");
-        provider.add("cover.conveyor.mode.export", "Mode: Export");
-        provider.add("cover.conveyor.mode.import", "Mode: Import");
         provider.addMultiline("cover.conveyor.distribution.round_robin_global",
                 "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         provider.addMultiline("cover.conveyor.distribution.round_robin_prio",
@@ -110,36 +98,21 @@ public class CoverLang {
                 "Manual I/O: §bUnfiltered\n§7Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
         provider.addMultiline("cover.universal.manual_import_export.mode.description",
                 "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. \n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). \n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
-        provider.add("cover.conveyor.item_filter.title", "Item Filter");
-        provider.addMultiLang("cover.conveyor.tag.title", "Tag Name",
-                "(use * for wildcard)");
 
         // Robot arm
-        provider.add("cover.robotic_arm.title", "Robotic Arm Settings (%s)");
         provider.add("cover.robotic_arm.transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.robotic_arm.transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.robotic_arm.transfer_mode.keep_exact", "Keep Exact");
         provider.addMultiline("cover.robotic_arm.transfer_mode.description",
                 "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.\n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
 
-        // Pump
-        provider.add("cover.pump.title", "Pump Cover Settings (%s)");
-        provider.add("cover.pump.transfer_rate", "%s");
-        provider.add("cover.pump.mode.export", "Mode: Export");
-        provider.add("cover.pump.mode.import", "Mode: Import");
-        provider.add("cover.pump.fluid_filter.title", "Fluid Filter");
-        provider.add("cover.bucket.mode.bucket", "B");
-        provider.add("cover.bucket.mode.milli_bucket", "mB");
-
         // Fluid regulator
-        provider.add("cover.fluid_regulator.title", "Fluid Regulator Settings (%s)");
         provider.addMultiline("cover.fluid_regulator.transfer_mode.description",
                 "§eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.\n§7Tip: shift click will multiply increase/decrease amounts by 10 and ctrl click will multiply by 100.");
         provider.add("cover.fluid_regulator.supply_exact", "Supply Exact: %s");
         provider.add("cover.fluid_regulator.keep_exact", "Keep Exact: %s");
 
         // Machine controller
-        provider.add("cover.machine_controller.title", "Machine Controller Settings");
         provider.add("cover.machine_controller.normal", "Normal");
         provider.add("cover.machine_controller.inverted", "Inverted");
         provider.addMultiline("cover.machine_controller.invert.enabled",
@@ -158,9 +131,6 @@ public class CoverLang {
         provider.add("cover.machine_controller.mode.null", "Control Nothing");
 
         // Ender fluid
-        provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
-        provider.add("cover.ender_item_link.title", "Ender Item Link");
-        provider.add("cover.ender_redstone_link.title", "Ender Redstone Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
         provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");
@@ -193,7 +163,6 @@ public class CoverLang {
                 "Monitoring Inverted Electricity Storage");
 
         // Advanced energy detector
-        provider.add("cover.advanced_energy_detector.label", "Advanced Energy Detector");
         provider.add("cover.advanced_energy_detector.min", "Min");
         provider.add("cover.advanced_energy_detector.max", "Max");
 
@@ -215,7 +184,6 @@ public class CoverLang {
                 "Monitoring Inverted Fluid Storage");
 
         // Advanced fluid detector
-        provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
         var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum mB of fluid, and starts emitting when greater than the min mB of fluid up to the set maximum";
         provider.addMultiline("cover.advanced_fluid_detector.invert.enabled",
                 "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);

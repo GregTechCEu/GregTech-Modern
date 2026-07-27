@@ -557,7 +557,7 @@ public class GTMultiMachines {
                             Component.translatable("gtceu.machine.fluid_drilling_rig.description"),
                             Component.translatable("gtceu.machine.fluid_drilling_rig.depletion",
                                     FormattingUtil.formatNumbers(100.0 / FluidDrillMachine.getDepletionChance(tier))),
-                            Component.translatable("gtceu.universal.tooltip.energy_tier_range", GTValues.VNF[tier],
+                            Component.translatable("common.gtceu.tooltip.energy_tier_range", GTValues.VNF[tier],
                                     GTValues.VNF[tier + 1]),
                             Component.translatable("gtceu.machine.fluid_drilling_rig.production",
                                     FluidDrillMachine.getRigMultiplier(tier),
@@ -632,9 +632,9 @@ public class GTMultiMachines {
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
                                 DrillingFluid.getLocalizedName()));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                        tooltip.add(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range",
+                        tooltip.add(Component.translatable("common.gtceu.tooltip.energy_tier_range",
                                 GTValues.VNF[tier], GTValues.VNF[tier + 1]));
                     })
                     .register(),
@@ -806,7 +806,7 @@ public class GTMultiMachines {
                             Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",
                                     FormattingUtil.formatNumbers(
                                             100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
-                            Component.translatable("gtceu.universal.tooltip.energy_tier_range",
+                            Component.translatable("common.gtceu.tooltip.energy_tier_range",
                                     GTValues.VNF[tier], GTValues.VNF[tier + 1]),
                             Component.translatable("gtceu.machine.bedrock_ore_miner.production",
                                     BedrockOreMinerMachine.getRigMultiplier(tier),
