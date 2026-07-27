@@ -49,7 +49,7 @@ public interface MachineCapabilityLayoutBuilder {
 
         if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 1) {
             var slot = new ItemSlot()
-                    .slot(new ModularSlot(itemHandler, 0)
+                    .slot(new ModularSlot(itemHandler.storage, 0)
                             .slotGroup(slotGroup)
                             .accessibility(itemHandler.getCapabilityIO().support(IO.IN), true))
                     .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, 0));
@@ -62,7 +62,7 @@ public interface MachineCapabilityLayoutBuilder {
                 .builder()
                 .matrix(layout.capabilityInfo(ItemRecipeCapability.CAP).getMachineGrid(io, machine))
                 .key('s', i -> new ItemSlot()
-                        .slot(new ModularSlot(itemHandler, i)
+                        .slot(new ModularSlot(itemHandler.storage, i)
                                 .slotGroup(slotGroup)
                                 .accessibility(itemHandler.getCapabilityIO().support(IO.IN), true))
                         .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i)))
