@@ -58,7 +58,13 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        return GTMuiWidgets.createCircuitSlotPanel(data::setUsedItemStack, data::getUsedItemStack, syncManager);
+        return GTMuiWidgets.createCircuitSlotPanel(configured -> {
+            ItemStack current = data.getUsedItemStack();
+            if (!current.isEmpty() && !configured.isEmpty()) {
+                configured.setCount(current.getCount());
+            }
+            data.setUsedItemStack(configured);
+        }, data::getUsedItemStack, syncManager);
     }
 
     @Override
