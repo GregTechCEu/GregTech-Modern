@@ -127,7 +127,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 .childPadding(4)
                 .reverseLayout(true)
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(this.fuelHandler, 0)))
+                        .slot(new ModularSlot(this.fuelHandler.storage, 0)))
                 .child(new ProgressWidget()
                         .size(18)
                         .texture(progressTexture, ProgressDrawable.Direction.UP)
