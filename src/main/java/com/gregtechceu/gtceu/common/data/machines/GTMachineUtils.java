@@ -56,6 +56,7 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -75,10 +76,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -167,6 +165,10 @@ public class GTMachineUtils {
                 .register();
     }
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate,
                                                              String name,
                                                              GTRecipeType recipeType,
@@ -198,8 +200,7 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static <
-            MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate,
+    public static <MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate,
                                                                                                           String name,
                                                                                                           MachineInstanceFactory.Steam<MACHINE> factory,
                                                                                                           BiFunction<Boolean, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder) {
@@ -327,6 +328,22 @@ public class GTMachineUtils {
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
                         .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
                         .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                        .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
+                        .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
+                        .register());
+    }
+
+    public static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(GTRegistrate registrate,
+                                                                                         String name,
+                                                                                         GTRecipeType recipeType, String descTooltip) {
+        return registerSteamMachines(registrate, "steam_" + name, SimpleSteamMachine::new,
+                (pressure, builder) -> builder
+                        .rotationState(RotationState.ALL)
+                        .recipeType(recipeType)
+                        .recipeModifier(SimpleSteamMachine::recipeModifier)
+                        .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
+                        .tooltipLang(descTooltip)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                         .register());
@@ -853,11 +870,35 @@ public class GTMachineUtils {
         @Setter
         private int[] tiers = ELECTRIC_TIERS;
 
+        private @Nullable String defaultTooltipLang;
+        private final Map<Integer, String> tieredTooltipLang = new Int2ObjectArrayMap<>();
+
         // Simple Machines need to have a name, recipe type, and a registrate to register the machine to.
         public SimpleMachineBuilder(GTRegistrate registrate, String name, GTRecipeType recipeType) {
             this.registrate = registrate;
             this.name = name;
             this.recipeType = recipeType;
+        }
+
+        /**
+         * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
+         * @param lang The English language string to add.
+         */
+        public SimpleMachineBuilder tooltipLang(String lang) {
+            defaultTooltipLang = lang;
+            return this;
+        }
+
+        /**
+         * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
+         * @param lang The English language string to add.
+         * @param tiers The machine tiers which this language string should be applied to
+         */
+        public SimpleMachineBuilder tooltipLang(String lang, int... tiers) {
+            for (int tier: tiers) {
+                tieredTooltipLang.put(tier, lang);
+            }
+            return this;
         }
 
         public MachineDefinition[] register() {
@@ -875,6 +916,7 @@ public class GTMachineUtils {
                         } else {
                             builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
                         }
+
                         builder
                                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
                                 .rotationState(RotationState.NON_Y_AXIS)
@@ -884,6 +926,9 @@ public class GTMachineUtils {
                                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                         tankScalingFunction.applyAsInt(tier), true))
                                 .ui(panelFactory);
+
+                        if (tieredTooltipLang.containsKey(tier)) builder.tooltipLang(tieredTooltipLang.get(tier));
+                        else if (defaultTooltipLang != null) builder.tooltipLang(defaultTooltipLang);
 
                         return builder.register();
                     },

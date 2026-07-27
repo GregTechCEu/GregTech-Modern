@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -191,11 +192,12 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
-        definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
-        if (Language.getInstance().has(mainKey)) {
-            tooltip.add(1, Component.translatable(mainKey));
+        if (Language.getInstance().has(mainKey) || Language.getInstance().has(mainKey + ".0")) {
+            var langs = LangUtil.getSingleOrMultiLang(mainKey);
+            tooltip.addAll(List.of(langs));
         }
+        definition.getTooltipBuilder().accept(stack, tooltip);
     }
 
     @Override

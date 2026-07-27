@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -128,6 +129,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?
             GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
+    private final List<String> langTooltips = new ArrayList<>();
     private final List<Component> tooltips = new ArrayList<>();
     @Nullable
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
@@ -493,10 +495,35 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
+    /**
+     * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
+     * @param langs The English language strings to add.
+     */
+    public SELF tooltipLang(String... langs) {
+        return tooltipLang(List.of(langs));
+    }
+
+    /**
+     * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
+     * @param langs The English language strings to add.
+     */
+    public SELF tooltipLang(List<String> langs) {
+        langTooltips.addAll(langs);
+        return getThis();
+    }
+
+    /**
+     * Adds extra tooltips to this machine item
+     * @param components The tooltip components to add.
+     */
     public SELF tooltips(@Nullable Component... components) {
         return tooltips(Arrays.asList(components));
     }
 
+    /**
+     * Adds extra tooltips to this machine item
+     * @param components The tooltip components to add.
+     */
     public SELF tooltips(List<? extends @Nullable Component> components) {
         tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
         return getThis();
@@ -697,6 +724,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         if (this.themeId != null) {
             definition.setThemeId(themeId);
         }
+
+        if (!tooltips.isEmpty()) {
+            registrate.addDataGenerator(ProviderType.LANG, p -> {
+                GTLangProvider provider = (GTLangProvider)p;
+                provider.addMultiLang(id.toLanguageKey("machine", "tooltip"), langTooltips.toArray(String[]::new));
+            });
+        }
+
         definition.setRecipeTypes(recipeTypes);
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
