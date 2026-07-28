@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -19,6 +18,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,8 +46,7 @@ public class PatternState {
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
-    @Getter
-    protected final PredicateContext context = new PredicateContext();
+    protected @Nullable PredicateContext context;
     @Getter
     protected final Long2ObjectMap<BlockInfo> cache = new Long2ObjectOpenHashMap<>();
 
@@ -74,10 +73,15 @@ public class PatternState {
     }
 
     public PredicateContext resetContext(boolean withLayer) {
-        this.context.clearErrors();
-        this.context.globalCache().clear();
-        if (withLayer) this.context.layerCache().clear();
-        this.context.setCheckLayer(withLayer);
+        PredicateContext context = getContext();
+        context.setCheckLayer(withLayer);
+        return context;
+    }
+
+    public PredicateContext getContext() {
+        if (this.context == null) {
+            this.context = new PredicateContext(this);
+        }
         return this.context;
     }
 
@@ -90,8 +94,14 @@ public class PatternState {
         this.errors = Collections.unmodifiableList(errors);
     }
 
+    public void appendErrors(List<PatternError> errors) {
+        ArrayList<PatternError> list = new ArrayList<>(this.errors);
+        list.addAll(errors);
+        setErrors(list);
+    }
+
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
-        if (!(context.level() instanceof ServerLevel serverLevel)) return;
+        if (!(getContext().level() instanceof ServerLevel serverLevel)) return;
         if (pos.equals(controllerPos)) {
             if (controller != null && !newState.is(controller.getBlockState().getBlock())) {
                 controller.invalidateStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
@@ -121,23 +131,13 @@ public class PatternState {
         }
     }
 
-    protected void updateLevel(Level level) {
-        context.getCurrentBlockInfo().setLevel(level);
-    }
-
-    public void setPos(BlockPos.MutableBlockPos charPos) {
-        context.getCurrentBlockInfo().setCurrentPos(charPos);
-    }
-
     protected void updateCache() {
-        BlockPos pos = context.pos();
-        BlockState blockState = context.state();
-        BlockEntity blockEntity = context.blockEntity();
-        getCache().put(pos.asLong(), new BlockInfo(blockState, blockEntity));
+        PredicateContext context = getContext();
+        getCache().put(context.pos().asLong(), context.computeBlockInfo());
     }
 
     public boolean shouldCheckFlip() {
-        return context.getLastFailureReason().shouldCheckFlip();
+        return getContext().getLastFailureReason().shouldCheckFlip();
     }
 
     @Getter

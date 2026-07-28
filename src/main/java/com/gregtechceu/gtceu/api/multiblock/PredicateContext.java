@@ -1,9 +1,13 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -11,20 +15,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class PredicateContext {
 
-    @Getter
-    protected List<PatternError> errors = new ArrayList<>();
+    private final PatternState state;
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
@@ -36,8 +36,11 @@ public class PredicateContext {
     @Getter
     protected FailureReason lastFailureReason = FailureReason.NONE;
 
-    @Setter
     protected PredicateStage stage = PredicateStage.INTERNAL;
+
+    public PredicateContext(PatternState state) {
+        this.state = state;
+    }
 
     /// accepts a pattern error
     ///
@@ -48,8 +51,16 @@ public class PredicateContext {
     }
 
     private void appendError(PatternError error) {
-        this.errors.add(error);
+        if (currentSlice != null) {
+            getCurrentSliceErrors().add(error);
+        } else {
+            this.state.setError(error);
+        }
         this.lastFailureReason = this.stage.getFailureReason();
+    }
+
+    private List<PatternError> getCurrentSliceErrors() {
+        return this.sliceErrors.computeIfAbsent(Objects.requireNonNull(currentSlice), k -> new ArrayList<>());
     }
 
     /// @return the current Level
@@ -107,34 +118,58 @@ public class PredicateContext {
     }
 
     public void clearErrors() {
-        this.errors = new ArrayList<>();
+        this.sliceErrors.remove(currentSlice);
         this.lastFailureReason = FailureReason.NONE;
     }
 
-    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectArrayMap<>();
+    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectAVLTreeMap<>(
+            Comparator.comparingInt(Slice::index).thenComparing(Slice::offset)
+    );
 
     public void commitSliceErrors() {
         for (Slice slice : this.sliceErrors.keySet()) {
-            this.errors.addAll(this.sliceErrors.get(slice));
+            this.state.appendErrors(List.of(PatternStringError.literal("error(s) at %s", slice)));
+            this.state.appendErrors(this.sliceErrors.get(slice));
         }
         this.sliceErrors.clear();
     }
 
-    public void pushSliceErrors(int index, int offset) {
-        if (this.errors.isEmpty()) return;
-        Slice slice = new Slice(index, offset);
-        this.sliceErrors.merge(slice, this.errors, (l1, l2) -> {
-            l1.addAll(l2);
-            return l1;
-        });
-        clearErrors();
+    private @Nullable Slice currentSlice;
+
+    public void pushSlice(int index, int offset) {
+        currentSlice = new Slice(index, offset);
     }
 
     public void updateLevel(Level level) {
         this.currentBlockInfo.setLevel(level);
     }
 
-    private record Slice(int index, int offset) {}
+    public void updatePos(BlockPos pos) {
+        this.currentBlockInfo.setCurrentPos(pos);
+    }
+
+    public BlockInfo computeBlockInfo() {
+        return new BlockInfo(state(), blockEntity());
+    }
+
+    public void setStage(PredicateStage stage) {
+        this.stage = stage;
+//        if (stage == PredicateStage.GLOBAL_MIN || stage == PredicateStage.SLICE_MIN) {
+//            this.currentSlice = null;
+//        }
+    }
+
+    private record Slice(int index, int offset) implements Comparable<Slice> {
+
+        @Override
+        public int compareTo(PredicateContext.Slice o) {
+            int i = Integer.compare(this.index, o.index);
+            if (i == 0) {
+                return Integer.compare(this.offset, o.offset);
+            }
+            return i;
+        }
+    }
 
     public enum PredicateStage {
 

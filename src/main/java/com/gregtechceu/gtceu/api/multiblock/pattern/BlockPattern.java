@@ -165,7 +165,6 @@ public class BlockPattern implements IBlockPattern {
         context.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testGlobalMin(context)) {
-                patternState.setErrors(context.getErrors());
                 return false;
             }
         }
@@ -207,7 +206,7 @@ public class BlockPattern implements IBlockPattern {
         Set<MultiPredicate> visitedPredicates = new HashSet<>();
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
-                patternState.setPos(charPos);
+                context.updatePos(charPos);
                 MultiPredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
 
                 if (!pred.isAny()) patternState.updateCache();

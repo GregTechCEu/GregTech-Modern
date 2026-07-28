@@ -62,7 +62,6 @@ public class BasicSliceStrategy extends SliceStrategy {
                 int res = checkRepeatSlice(state, j, offset + temp, flip);
                 if (res == -1) {
                     context.commitSliceErrors();
-                    state.setErrors(context.getErrors());
                     if (i <= multiblockSlice.minRepeats) return -1;
                     multiblockSlice.actualRepeats = i - 1;
                     return sliceOffset;
@@ -80,16 +79,14 @@ public class BasicSliceStrategy extends SliceStrategy {
         PatternSlice slice = slices.get(index);
         PredicateContext context = state.getContext();
         for (int i = 1; i <= slice.maxRepeats; i++) {
+            context.pushSlice(index, offset + i - 1);
             boolean res = checkSlice(state, index, offset + i - 1, flip);
-            if (res) {
-                context.clearErrors();
-                // continue...
-            } else {
-                context.pushSliceErrors(index, offset);
+            if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
                 return slices.get(index).actualRepeats = i - 1;
             }
+            context.clearErrors();
         }
         return slices.get(index).actualRepeats = slice.maxRepeats;
     }

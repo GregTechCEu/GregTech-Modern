@@ -146,7 +146,7 @@ public class ExpandablePattern implements IBlockPattern {
             }
         }
 
-        patternState.updateLevel(level);
+        context.updateLevel(level);
 
         BlockPos.MutableBlockPos translation = centerPos.mutable();
 
@@ -162,7 +162,7 @@ public class ExpandablePattern implements IBlockPattern {
                     pos.getZ());
             // translate from the origin to the center
             mPos = mPos.offset(translation).mutable();
-            patternState.setPos(mPos);
+            context.updatePos(mPos);
 
             if (!pred.isAny()) patternState.updateCache();
 
@@ -172,9 +172,9 @@ public class ExpandablePattern implements IBlockPattern {
             visited.add(pred);
         }
 
+        context.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         for (MultiPredicate multiPredicate : visited) {
             if (!multiPredicate.testGlobalMin(context)) {
-                patternState.setErrors(context.getErrors());
                 return false;
             }
         }
