@@ -21,6 +21,7 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import com.mojang.datafixers.util.Pair;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
+import dev.latvian.mods.rhino.util.RemapForJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
@@ -183,6 +184,7 @@ public class OreVeinDefinitionBuilderJS extends BuilderBase<GTOreDefinition> {
 
     @Tolerate
     @Nullable
+    @RemapForJS("customVeinGenerator")
     public VeinGenerator veinGenerator(ResourceLocation id) {
         if (veinGenerator == null) {
             // noinspection DataFlowIssue
