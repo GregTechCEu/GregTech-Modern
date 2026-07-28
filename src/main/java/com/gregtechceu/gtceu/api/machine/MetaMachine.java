@@ -998,7 +998,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param side The side to check
      * @return If redstone can be connected
      */
-    public boolean canConnectRedstone(Direction side) {
+    public boolean canConnectRedstone(@Nullable Direction side) {
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         if (cover != null) return cover.canConnectRedstone();
 

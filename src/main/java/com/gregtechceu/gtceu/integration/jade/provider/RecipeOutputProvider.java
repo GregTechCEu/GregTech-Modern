@@ -204,20 +204,13 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
             if (itemOutput == null || itemOutput.ingredient().hasNoItems()) {
                 continue;
             }
-            ItemStack item = itemOutput.getItems()[0];
-            int count = item.getCount();
-            item.setCount(1);
-
-            iTooltip.add(helper.smallItem(item));
-            MutableComponent text = CommonComponents.space();
-            item = itemOutput.getItems()[0];
-            text.append(String.valueOf(item.getCount()));
-            item.setCount(1);
+            ItemStack icon = itemOutput.getItems()[0].copyWithCount(1);
+            MutableComponent text = CommonComponents.space().append(String.valueOf(itemOutput.count()));
             text.append(Component.translatable("gtceu.gui.content.times_item",
-                    getItemName(item))
+                    getItemName(icon))
                     .withStyle(ChatFormatting.WHITE));
 
-            iTooltip.add(helper.smallItem(item));
+            iTooltip.add(helper.smallItem(icon));
             iTooltip.append(text);
         }
     }

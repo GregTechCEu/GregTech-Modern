@@ -143,8 +143,9 @@ public class MachineCoverContainer extends MachineTrait
     }
 
     @Override
-    public @Nullable CoverBehavior getCoverAtSide(Direction side) {
+    public @Nullable CoverBehavior getCoverAtSide(@Nullable Direction side) {
         return switch (side) {
+            case null -> null;
             case UP -> up;
             case SOUTH -> south;
             case WEST -> west;
