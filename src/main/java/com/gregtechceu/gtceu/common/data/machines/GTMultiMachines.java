@@ -195,6 +195,7 @@ public class GTMultiMachines {
                                 .or(casing))
                         .build();
             })
+            .tooltipLang("Black Box Reactor")
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
                     GTCEu.id("block/multiblock/large_chemical_reactor"))
             .register();
@@ -217,6 +218,7 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/implosion_compressor"))
+            .tooltipLang("The only Machine you want to go Boom")
             .register();
 
     public static final MultiblockMachineDefinition PYROLYSE_OVEN = REGISTRATE
@@ -302,7 +304,7 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/cracking_unit"))
-            .tooltips(Component.translatable("machine.gtceu.cracker.coil_tooltip"))
+            .tooltipLang("Makes Oil useful", "Every coil after §6Cupronickel§7 reduces energy usage by §f10%%§7.")
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.cracking_unit.energy",
@@ -348,6 +350,7 @@ public class GTMultiMachines {
             .partSorter(Comparator.comparingInt(p -> p.getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
+            .tooltipLang("Fluid Refinery")
             .register();
 
     public static final MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE
@@ -368,6 +371,7 @@ public class GTMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/vacuum_freezer"))
+            .tooltipLang("Aluminium Ice Box")
             .register();
 
     public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE
@@ -404,6 +408,7 @@ public class GTMultiMachines {
             .partSorter(AssemblyLineMachine::partSorter)
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/assembly_line"))
+            .tooltipLang("Not a multiblock Assembling Machine!")
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE
@@ -785,10 +790,10 @@ public class GTMultiMachines {
             .rotationState(RotationState.NONE)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(BRONZE_HULL)
-            .tooltips(Component.translatable("gtceu.machine.charcoal_pile.tooltip.0"),
-                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
-                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
-                    Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
+            .tooltipLang("Turns Logs into §aCharcoal§7 when §cignited§7.",
+                    "Right Click with fire-starting items to start.",
+                    "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
+                    "Logs must be not be exposed to §eAir§7!")
             .pattern(CharcoalPileIgniterMachine.getPattern())
             .allowFlip(false)
             .allowExtendedFacing(false)

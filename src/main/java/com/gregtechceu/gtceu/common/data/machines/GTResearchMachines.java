@@ -92,6 +92,7 @@ public class GTResearchMachines {
             .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
             .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
                     .andThen((ctx, prov, model) -> model.addReplaceableTextures("bottom", "top", "side")))
+            .tooltipLang("Advanced Holding Mechanism for Research Station")
             .register();
 
     public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)

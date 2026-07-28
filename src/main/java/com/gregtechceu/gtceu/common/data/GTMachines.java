@@ -1121,6 +1121,7 @@ public class GTMachines {
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
             .simpleModel(GTCEu.id("block/machine/part/coke_oven_hatch"))
             .themeId(GTGuiTheme.PRIMITIVE.getId())
+            .tooltipLang("§7Allows automation access for the Coke Oven.")
             .register();
 
     public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
@@ -1140,6 +1141,7 @@ public class GTMachines {
                         });
                     }))
             .themeId(GTGuiTheme.PRIMITIVE.getId())
+            .tooltipLang("Primitive Fluid Output for Water Pump")
             .register();
 
     public static final MachineDefinition MAINTENANCE_HATCH = REGISTRATE

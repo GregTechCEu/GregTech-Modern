@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 
 public class MachineLang {
 
@@ -15,6 +16,7 @@ public class MachineLang {
         generateCustomMultiblockPartTooltips(provider);
 
         generateMultiblockKeys(provider);
+        generateCentralMonitorGuiLang(provider);
     }
 
     private static void generateGeneralMachineTooltips(GTLangProvider provider) {
@@ -254,10 +256,6 @@ public class MachineLang {
         provider.addMultiline("gtceu.recipe_memory_widget.tooltip",
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
 
-        // Safe
-        provider.add("gtceu.machine.locked_safe.malfunctioning", "§cMalfunctioning!");
-        provider.add("gtceu.machine.locked_safe.requirements", "§7Replacements required:");
-
         provider.add("machine.gtceu.tooltip.terrain_resist",
                 "This Machine will not explode when exposed to the Elements");
 
@@ -340,12 +338,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.require_steam_parts", "Requires Steam Hatches and Buses!");
 
         // Large Boiler
-        provider.add("machine.gtceu.bronze_large_boiler.tooltip", "We need more Steam!");
-        provider.add("machine.gtceu.steel_large_boiler.tooltip", "Charcoal Incinerator");
-        provider.add("machine.gtceu.titanium_large_boiler.tooltip", "Where's the Magic Super Fuel?");
-        provider.add("machine.gtceu.tungstensteel_large_boiler.tooltip", "How do you even fuel this thing?");
-        provider.add("gtceu.multiblock.large_boiler.description",
-                "Large Boilers are multiblocks that generate steam from an energy source and water. Said energy source is either any Solid Fuel with a Burn Time, or a Diesel/Semi-Fluid Fuel. Can be throttled back in increments of 5%% to reduce Steam output and Fuel consumption.");
         provider.add("gtceu.multiblock.large_boiler.max_temperature",
                 "Max Temperature: %dK, Steam Production: %dmB/t");
         provider.add("gtceu.multiblock.large_boiler.efficiency", "Efficiency: %s");
@@ -369,12 +361,10 @@ public class MachineLang {
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_discount", "Heating Coil EU Boost: %sx");
 
         // Large Chemical Reactor
-        provider.add("machine.gtceu.large_chemical_reactor.tooltip", "Black Box Reactor");
         provider.add("gtceu.multiblock.large_chemical_reactor.description",
                 "The Large Chemical Reactor performs chemical reactions at 100%% energy efficiency. Overclocks multiply both speed and energy by 4. The multiblock requires exactly 1 Cupronickel Coil Block, which must be placed adjacent to the PTFE Pipe casing located in the center.");
 
         // Vacuum Freezer
-        provider.add("machine.gtceu.vacuum_freezer.tooltip", "Aluminium Ice Box");
         provider.add("gtceu.multiblock.vacuum_freezer.description",
                 "The Vacuum Freezer is a multiblock structure mainly used for freezing Hot Ingots into regular Ingots. However, it can also freeze other substances, such as Water.");
 
@@ -387,28 +377,13 @@ public class MachineLang {
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
 
         // Implosion Compressor
-        provider.add("machine.gtceu.implosion_compressor.tooltip", "The only Machine you want to go Boom");
         provider.add("gtceu.multiblock.implosion_compressor.description",
                 "The Implosion Compressor is a multiblock structure that uses explosives to turn gem dusts into their corresponding gems.");
 
         // Cracker
-        provider.add("machine.gtceu.cracker.tooltip", "Makes Oil useful");
-        provider.add("machine.gtceu.cracker.coil_tooltip",
-                "Every coil after §6Cupronickel§7 reduces energy usage by §f10%%§7.");
-        provider.add("gtceu.multiblock.cracker.description",
-                "The Oil Cracking Unit is a multiblock structure used for turning Light and Heavy Fuel into their Cracked variants.");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
 
-        // Distillation Tower
-        provider.add("machine.gtceu.distillation_tower.tooltip", "Fluid Refinery");
-        provider.add("gtceu.multiblock.distillation_tower.description",
-                "The Distillation Tower is a multiblock structure used for distilling the various types of Oil and some of their byproducts. Each layer must have exactly one output hatch, starting from the second one. The bottom layer can output items and insert fluids in any position.");
         provider.add("gtceu.multiblock.distillation_tower.distilling_fluid", "Distilling %s");
-
-        // Assembly Line
-        provider.add("machine.gtceu.assembly_line.tooltip", "Not a multiblock Assembling Machine!");
-        provider.add("gtceu.multiblock.assembly_line.description",
-                "The Assembly Line is a large multiblock structure consisting of 5 to 16 \"slices\". In theory, it's large Assembling Machine, used for creating advanced crafting components.");
 
         // Combustion Engine
         provider.add("machine.gtceu.large_combustion_engine.tooltip", "Fuel Ignition Chamber");
@@ -457,9 +432,6 @@ public class MachineLang {
                 "Large Turbines are multiblocks that generate power from steam, gases, and plasma by having them spin the turbine's rotor. Energy output is based on rotor efficiency and current speed of turbine. Gearbox casings are used in the center of the structure.");
 
         // Fusion Reactor
-        provider.add("machine.gtceu.luv_fusion_reactor.tooltip", "Atomic Alloy Smelter");
-        provider.add("machine.gtceu.zpm_fusion_reactor.tooltip", "A SUN DOWN ON EARTH");
-        provider.add("machine.gtceu.uv_fusion_reactor.tooltip", "A WHITE DWARF DOWN ON YOUR BASE");
         provider.add("gtceu.machine.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
         provider.add("gtceu.machine.fusion_reactor.overclocking",
                 "Overclocks double energy and halve duration.");
@@ -581,41 +553,12 @@ public class MachineLang {
         provider.add("gtceu.multiblock.active_transformer.max_output", "§cMax Output: §f%s EU/t");
         provider.add("gtceu.multiblock.active_transformer.danger_enabled", "§c§bDANGER: Explosive");
 
-        // Charcoal Pile Ignitor
-        provider.add("machine.gtceu.charcoal_pile_igniter.tooltip", "Underground fuel bakery");
-        provider.addMultiLang("gtceu.machine.charcoal_pile.tooltip",
-                "Turns Logs into §aCharcoal§7 when §cignited§7.",
-                "Right Click with fire-starting items to start.",
-                "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
-                "Logs must be not be exposed to §eAir§7!");
-        provider.addMultiline("gtceu.multiblock.charcoal_pile.description",
-                """
-                        Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.
-
-                        The floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof.
-                        No air can be inside the pit.
-
-                        Larger pits take more time to process logs, but are more efficient.""");
-
         // Central Monitor
         provider.add("gtceu.multiblock.central_monitor.low_power", "Low Power");
         provider.add("gtceu.multiblock.central_monitor.height", "Screen Height:");
         provider.add("gtceu.multiblock.central_monitor.width", "Screen Width: %d");
         provider.add("gtceu.multiblock.central_monitor.height_modify", "Modify Height: %d");
-        provider.addMultiLang("gtceu.multiblock.central_monitor.tooltip",
-                "This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.",
-                "You can build the central monitor screen from 3X2 to %dX%d (width X height).",
-                "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.",
-                "Energy consumption: %d EU/s for each screen.");
-        provider.addMultiLang("gtceu.multiblock.monitor_screen.tooltip",
-                "The GUI can be opened with a right-click of a screwdriver.",
-                "The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)",
-                "The screen also supports plugins.");
         provider.add("gtceu.machine.central_monitor.tooltip", "But can it run Doom?");
-
-        // Processing Array
-        provider.add("gtceu.machine.processing_array.tooltip", "When a few Machines just doesn't cut it");
-        provider.add("gtceu.machine.advanced_processing_array.tooltip", "Parallelize the World");
 
         // Research Station
         provider.addMultiLang("gtceu.machine.research_station.tooltip",
@@ -688,11 +631,6 @@ public class MachineLang {
     }
 
     private static void generateCustomMultiblockPartTooltips(GTLangProvider provider) {
-        // Primitive Pump Hatch
-        provider.add("gtceu.machine.pump_hatch.tooltip", "Primitive Fluid Output for Water Pump");
-
-        // Coke Oven Hatch
-        provider.add("gtceu.machine.coke_oven_hatch.tooltip", "§7Allows automation access for the Coke Oven.");
 
         // Maintenance Hatch
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
@@ -742,7 +680,6 @@ public class MachineLang {
         provider.add("gtceu.gui.me_network.online", "Network Status: §2Online§r");
         provider.add("gtceu.gui.me_network.offline", "Network Status: §4Offline§r");
         provider.add("gtceu.gui.waiting_list", "Sending Queue:");
-        provider.add("gtceu.gui.waiting_list", "Sending Queue:");
         provider.add("gtceu.gui.config_slot", "§fConfig Slot§r");
         provider.add("gtceu.gui.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
         provider.add("gtceu.gui.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
@@ -752,18 +689,6 @@ public class MachineLang {
         provider.add("gtceu.gui.me_bus.auto_pull_button", "Click to toggle automatic item pulling from ME");
 
         // Pattern Buffer/Proxy
-        provider.add("block.gtceu.pattern_buffer.desc.0",
-                "§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.");
-        provider.add("block.gtceu.pattern_buffer.desc.1",
-                "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.");
-        provider.add("block.gtceu.pattern_buffer.desc.2",
-                "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!");
-        provider.add("block.gtceu.pattern_buffer_proxy.desc.0",
-                "§fAllows linking many machines to a singular §6ME Pattern Buffer§f.");
-        provider.add("block.gtceu.pattern_buffer_proxy.desc.1",
-                "§fAll connected proxies will share the patterns held within the §6original buffer§f.");
-        provider.add("block.gtceu.pattern_buffer_proxy.desc.2",
-                "§fLet the factory grow!");
         provider.add("gtceu.tooltip.proxy_bind",
                 "§fBinding to a Pattern Buffer at %s %s %s");
 
@@ -888,9 +813,6 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.advanced_computation_component.damaged.tooltip",
                 "It only cost an arm and a leg");
 
-        // Object Holder
-        provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
-
         // Passthrough Hatch
         provider.add("gtceu.machine.passthrough_hatch_item.tooltip", "Sends Items from one Side to the other");
         provider.add("gtceu.machine.passthrough_hatch_fluid.tooltip",
@@ -907,13 +829,6 @@ public class MachineLang {
         provider.addMultiLang("gtceu.machine.laser_target_hatch.tooltip",
                 "Receiving power from distance",
                 "§cLaser cables must be in a straight line!§7");
-
-        // Processing Array Machine Hatch
-        provider.add("gtceu.machine.machine_hatch.locked", "Machine Interface Locked");
-        provider.add("gtceu.machine.machine_hatch.tooltip",
-                "Specialized Access Bus that only holds valid items");
-        provider.add("gtceu.machine.machine_hatch.processing_array",
-                "When in the §eProcessing Array§7, only holds machines that work in the §eProcessing Array");
     }
 
     private static void generateCentralMonitorGuiLang(GTLangProvider provider) {

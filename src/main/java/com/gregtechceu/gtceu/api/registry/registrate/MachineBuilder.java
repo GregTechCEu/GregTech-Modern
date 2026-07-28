@@ -725,10 +725,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             definition.setThemeId(themeId);
         }
 
-        if (!tooltips.isEmpty()) {
+        if (!langTooltips.isEmpty()) {
             registrate.addDataGenerator(ProviderType.LANG, p -> {
                 GTLangProvider provider = (GTLangProvider)p;
-                provider.addMultiLang(id.toLanguageKey("machine", "tooltip"), langTooltips.toArray(String[]::new));
+                if (langTooltips.size() == 1) provider.add(id.toLanguageKey("machine", "tooltip"), langTooltips.get(0));
+                else provider.addMultiLang(id.toLanguageKey("machine", "tooltip"), langTooltips.toArray(String[]::new));
             });
         }
 
