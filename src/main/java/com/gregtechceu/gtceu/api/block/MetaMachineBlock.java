@@ -193,7 +193,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
-        if (Language.getInstance().has(mainKey) || Language.getInstance().has(mainKey + ".0")) {
+        if (LangUtil.hasSingleOrMultiLang(mainKey)) {
             var langs = LangUtil.getSingleOrMultiLang(mainKey);
             tooltip.addAll(List.of(langs));
         }
