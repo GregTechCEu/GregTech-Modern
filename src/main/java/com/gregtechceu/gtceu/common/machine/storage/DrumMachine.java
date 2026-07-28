@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -112,18 +113,25 @@ public class DrumMachine extends MetaMachine {
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (!isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
-                return InteractionResult.CONSUME;
-            }
-            return InteractionResult.PASS;
+        if (FluidUtil.getFluidHandler(context.getItemInHand()).isEmpty()) {
+            return super.onUseWithItem(context);
         }
-        return getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        if (isRemote()) return InteractionResult.SUCCESS;
+        FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache);
+        return InteractionResult.CONSUME;
     }
 
     @Override
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
-        autoOutput.setAllowAutoOutputFluids(!autoOutput.isAutoOutputFluids());
-        return InteractionResult.SUCCESS;
+        if (autoOutput.getFluidOutputDirection() != context.getGridSide()) {
+            return InteractionResult.PASS;
+        }
+        boolean enabled = !autoOutput.isAutoOutputFluids();
+        autoOutput.setAllowAutoOutputFluids(enabled);
+        if (!isRemote()) {
+            context.getPlayer().displayClientMessage(Component.translatable(
+                    enabled ? "gtceu.gui.fluid_auto_output.enabled" : "gtceu.gui.fluid_auto_output.disabled"), true);
+        }
+        return InteractionResult.sidedSuccess(isRemote());
     }
 }
