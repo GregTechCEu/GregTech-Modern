@@ -91,11 +91,11 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
         this.recipeLogic.setKeepSubscribing(false);
-        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
         this.importFluids = attachTrait(
                 new NotifiableFluidTank(fluidImportSlots, tankScalingFunction.applyAsInt(getTier()),
-                        IO.IN, IO.BOTH));
+                        IO.IN));
         this.exportFluids = attachTrait(
                 new NotifiableFluidTank(fluidExportSlots, tankScalingFunction.applyAsInt(getTier()),
                         IO.OUT));
@@ -126,7 +126,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.recipeLogic.setKeepSubscribing(false);
         this.importItems = attachTrait(
                 new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
-                        IO.IN, IO.BOTH));
+                        IO.IN));
         this.exportItems = attachTrait(
                 new NotifiableItemStackHandler(
                         getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
