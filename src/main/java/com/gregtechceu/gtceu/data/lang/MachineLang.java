@@ -366,6 +366,12 @@ public class MachineLang {
                 "Overclocks double energy and halve duration.");
         provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
         provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
+        provider.add("gtceu.machine.luv_fusion_reactor.description",
+                "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
+        provider.add("gtceu.machine.zpm_fusion_reactor.description",
+                "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
+        provider.add("gtceu.multiblock.uv_fusion_reactor.description",
+                "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
 
         // Large Miner
         provider.add("machine.gtceu.ev_large_miner.tooltip", "Digging Ore instead of You");
