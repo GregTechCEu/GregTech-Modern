@@ -470,6 +470,8 @@ public interface GTGuiTextures {
     UITexture BUTTON_MAINTENANCE = fullImage("textures/gui/widget/button_maintenance.png");
 
     UITexture BUTTON_AUTO_PULL = fullImage("textures/gui/widget/button_me_auto_pull.png");
+    UITexture[] BUTTON_CHUNK_ALIGN = slice("textures/gui/widget/button_chunk_align.png", 16, 32, 16, 16,
+            ColorType.DEFAULT);
 
     // PROGRESS BARS
 
