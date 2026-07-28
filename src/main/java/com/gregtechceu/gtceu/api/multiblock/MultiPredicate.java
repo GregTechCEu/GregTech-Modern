@@ -39,6 +39,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     public MultiPredicate(BasePredicate predicate) {
         this.predicateList = List.of(predicate);
+        predicate.setParent(this);
         this.logic = Logic.OR.createLogic(this);
         this.hasAir = predicate == BasePredicate.AIR;
     }
@@ -53,6 +54,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         ArrayList<BasePredicate> builder = new ArrayList<>();
         appendPredicates(type, a, builder);
         appendPredicates(type, b, builder);
+        builder.forEach(p -> p.setParent(this));
         builder.sort(PREDICATE_COMPARATOR);
         this.predicateList = Collections.unmodifiableList(builder);
         this.logic = type.createLogic(this);
