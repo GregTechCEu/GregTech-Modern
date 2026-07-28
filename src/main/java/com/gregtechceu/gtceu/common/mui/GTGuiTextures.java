@@ -453,6 +453,10 @@ public interface GTGuiTextures {
     UITexture BUTTON_ITEM_OUTPUT = fullImage("textures/gui/widget/button_item_output_overlay.png");
     UITexture BUTTON_FLUID_OUTPUT = fullImage(
             "textures/gui/widget/button_fluid_output_overlay.png");
+    UITexture BUTTON_ITEM_ALLOW_INPUT_OUTPUT = fullImage(
+            "textures/gui/widget/button_item_allow_input_output_overlay.png");
+    UITexture BUTTON_FLUID_ALLOW_INPUT_OUTPUT = fullImage(
+            "textures/gui/widget/button_fluid_allow_input_output_overlay.png");
     UITexture BUTTON_AUTO_COLLAPSE = fullImage(
             "textures/gui/widget/button_auto_collapse_overlay.png");
     UITexture BUTTON_X = fullImage("textures/gui/widget/button_x_overlay.png", ColorType.DEFAULT);
