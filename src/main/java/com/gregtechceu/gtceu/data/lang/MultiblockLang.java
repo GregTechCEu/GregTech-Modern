@@ -6,6 +6,7 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class MultiblockLang {
 
     public static void init(GTLangProvider provider) {
+        provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
 
         provider.add("gtceu.part_sharing.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");

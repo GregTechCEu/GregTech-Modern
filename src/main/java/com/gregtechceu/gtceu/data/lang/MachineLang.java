@@ -8,7 +8,6 @@ public class MachineLang {
     public static void init(GTLangProvider provider) {
 
         generateGeneralMachineTooltips(provider);
-        generateGeneralMultiblockTooltips(provider);
 
         generateCustomMachineTooltips(provider);
 
@@ -109,16 +108,12 @@ public class MachineLang {
      * For Tooltips that are NOT in the form {@code mod.machine.tier_name.tooltip}
      */
     private static void generateCustomMachineTooltips(GTLangProvider provider) {
+
         // Steam Boilers
         provider.add("machine.gtceu.boiler.info.heating.up", "§cHeating up§r%s");
         provider.add("machine.gtceu.boiler.info.cooling.down", "§9Cooling down§r%s");
         provider.add("machine.gtceu.boiler.info.production.data", "§aProducing %s§a mB/t");
         provider.add("machine.gtceu.boiler.heat_info", "Heat Capacity: %s %%");
-
-        // Generators
-        provider.add("recipe_type.gtceu.combustion_generator.tooltip", "§7Requires flammable Liquids");
-        provider.add("recipe_type.gtceu.steam_turbine.tooltip", "§7Converts Steam into EU");
-        provider.add("recipe_type.gtceu.gas_turbine.tooltip", "§7Requires flammable Gases");
 
         // Machine Hull
         provider.add("machine.gtceu.hull.tooltip",
@@ -243,22 +238,6 @@ public class MachineLang {
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
 
-        // Workbench
-        provider.addMultiline("gtceu.machine.workbench.tooltip",
-                "Better than Forestry\nHas Item Storage, Tool Storage, pulls from adjacent Inventories, and saves Recipes.");
-        provider.add("gtceu.machine.workbench.tab.workbench", "Crafting");
-        provider.add("gtceu.machine.workbench.tab.item_list", "Storage");
-        provider.addMultiline("gtceu.machine.workbench.storage_note",
-                "(Available items from connected\ninventories usable for crafting)");
-        provider.add("gtceu.item_list.item_stored", "§7Stored: %d");
-        provider.add("gtceu.machine.workbench.tab.crafting", "Crafting");
-        provider.add("gtceu.machine.workbench.tab.container", "Container");
-        provider.addMultiline("gtceu.recipe_memory_widget.tooltip",
-                "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
-
-        provider.add("machine.gtceu.tooltip.terrain_resist",
-                "This Machine will not explode when exposed to the Elements");
-
         // Fisher
         provider.addMultiline("gtceu.gui.fisher_mode.tooltip",
                 "Toggle junk items\nOff costs 2 string per operation");
@@ -282,12 +261,6 @@ public class MachineLang {
         provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
     }
 
-    private static void generateGeneralMultiblockTooltips(GTLangProvider provider) {
-        provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
-
-        provider.add("gtceu.machine.parallel_limit", "Can run up to §b%d§r§7 Recipes at once.");
-    }
-
     private static void generateCustomMultiblockTooltips(GTLangProvider provider) {
         // Primitive Water Pump
         provider.add("machine.gtceu.primitive_pump.tooltip", "Endervoir at Home");
@@ -298,35 +271,8 @@ public class MachineLang {
         provider.addMultiline("gtceu.multiblock.primitive_water_pump.extra2",
                 "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
 
-        // Primitive Blast Furnace
-        provider.add("machine.gtceu.primitive_blast_furnace.tooltip", "Making your first Steel");
-        provider.add("gtceu.multiblock.primitive_blast_furnace.bronze.description",
-                "The Primitive Blast Furnace (PBF) is a multiblock structure used for cooking steel in the early game. Although not very fast, it will provide you with steel for your first setups.");
-
         // Electric Blast Furnace
-        provider.add("machine.gtceu.electric_blast_furnace.tooltip", "Where's the electric smoker?");
         provider.add("gtceu.multiblock.blast_furnace.max_temperature", "Heat Capacity: %s");
-        provider.addMultiLang("machine.gtceu.electric_blast_furnace.tooltip",
-                "For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
-                "For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
-                "For every voltage tier above §bMV§7, temperature is increased by §f100K§7.");
-        provider.add("gtceu.multiblock.electric_blast_furnace.description",
-                "The Electric Blast Furnace (EBF) is a multiblock structure used for smelting alloys, cooking metals and refining ores. It is required for obtaining high-tier alloys and metals, such as aluminium, stainless steel, titanium, and naquadah alloy.");
-
-        // Coke Oven
-        provider.add("machine.gtceu.coke_oven.tooltip", "Making better fuels for Steel and Power");
-        provider.add("gtceu.multiblock.coke_oven.description",
-                "The Coke Oven is a multiblock structure used for getting coke and creosote in the early game. It doesn't require fuel and has an internal tank of 32 buckets for creosote. Its inventory can be accessed via its Coke Oven Hatch.");
-
-        // Steam Grinder
-        provider.add("machine.gtceu.steam_grinder.tooltip", "A multiblock Macerator without the Byproducts");
-        provider.add("gtceu.multiblock.steam_grinder.description",
-                "A Multiblock Macerator at the Steam Age. Requires at least 14 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch.");
-
-        // Steam Oven
-        provider.add("machine.gtceu.steam_oven.tooltip", "Not to be confused with Multi-Smelter");
-        provider.add("gtceu.multiblock.steam_oven.description",
-                "A Multi Smelter at the Steam Age. Requires at least 6 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch. Steam Hatch must be on the bottom layer, no more than one.");
 
         // General Steam Multiblocks
         provider.add("gtceu.multiblock.steam.low_steam", "Not enough Steam to run!");
@@ -369,21 +315,10 @@ public class MachineLang {
                 "The Vacuum Freezer is a multiblock structure mainly used for freezing Hot Ingots into regular Ingots. However, it can also freeze other substances, such as Water.");
 
         // Pyrolyse Oven
-        provider.add("gtceu.multiblock.pyrolyse_oven.description",
-                "The Pyrolyse Oven is a multiblock structure used for turning Logs into Charcoal and Creosote Oil, or Ash and Heavy Oil.");
-        provider.add("machine.gtceu.pyrolyse_oven.tooltip", "Electric Coke Oven");
-        provider.add("machine.gtceu.pyrolyse_oven.coil_tooltip",
-                "§6Cupronickel §7coils are §f25%%§7 slower. Every coil after §bKanthal§7 increases speed by §f50%%§7.");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
-
-        // Implosion Compressor
-        provider.add("gtceu.multiblock.implosion_compressor.description",
-                "The Implosion Compressor is a multiblock structure that uses explosives to turn gem dusts into their corresponding gems.");
 
         // Cracker
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
-
-        provider.add("gtceu.multiblock.distillation_tower.distilling_fluid", "Distilling %s");
 
         // Combustion Engine
         provider.add("machine.gtceu.large_combustion_engine.tooltip", "Fuel Ignition Chamber");
@@ -403,12 +338,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted",
                 "§bLiquid Oxygen boosted.");
-        provider.add("gtceu.multiblock.large_combustion_engine.boost_disallowed",
-                "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
-        provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost",
-                "Supply Oxygen to boost.");
-        provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
-                "Supply Liquid Oxygen to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
 
         // Turbines
@@ -435,12 +364,6 @@ public class MachineLang {
         provider.add("gtceu.machine.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
         provider.add("gtceu.machine.fusion_reactor.overclocking",
                 "Overclocks double energy and halve duration.");
-        provider.add("gtceu.multiblock.luv_fusion_reactor.description",
-                "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
-        provider.add("gtceu.multiblock.zpm_fusion_reactor.description",
-                "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
-        provider.add("gtceu.multiblock.uv_fusion_reactor.description",
-                "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
         provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
         provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
 
@@ -538,8 +461,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.power_substation.time_to_fill", "§7Time to fill: %s");
         provider.add("gtceu.multiblock.power_substation.time_to_drain", "§7Time to drain: %s");
         provider.add("gtceu.multiblock.power_substation.time_forever", "Forever");
-        provider.add("gtceu.multiblock.power_substation.under_one_hour_left",
-                "Less than 1 hour until fully drained!");
 
         // Active Transformer
         provider.addMultiLang("gtceu.machine.active_transformer.tooltip",
@@ -1265,8 +1186,8 @@ public class MachineLang {
         provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
 
         // Batching
-        provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
-        provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
+        provider.add("gtceu.machine.batching.enabled", "Batching Enabled");
+        provider.add("gtceu.machine.batching.disabled", "Batching Disabled");
 
         // Active RecipeMap
         provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode:");
@@ -1291,18 +1212,9 @@ public class MachineLang {
                 "A Reception Hatch is linked to a machine which cannot bridge");
         provider.add("gtceu.multiblock.computation.not_enough_computation", "Machine needs more computation!");
 
-        // Hatch Collapsing
-        provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
-        provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
-        provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
-
         // XEI Categories
         provider.add("gtceu.auto_decomp.rotor", "Turbine Rotor");
         provider.add("gtceu.auto_decomp.tool", "Non-electric tool");
-
-        provider.add("gtceu.machine.canner.jei_description",
-                "You can fill and empty any fluid containers with the Fluid Canner (e.g. Buckets or Fluid Cells)");
-
 
     }
 }

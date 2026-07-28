@@ -232,26 +232,5 @@ public class CoverLang {
         provider.add("item.cover.digital.mode.item.enabled", "Item Mode enabled");
         provider.add("item.cover.digital.mode.fluid.disabled", "Click to enable Fluid Mode");
         provider.add("item.cover.digital.mode.fluid.enabled", "Fluid Mode enabled");
-
-        // Digital wireless cover
-        provider.addMultiLang("item.cover.digital.wireless.tooltip",
-                "§fWirelessly§7 connects machines to the §fCentral Monitor§7 as §fCover§7.",
-                "§fRight Click§7 on the §fCentral Monitor§7 to remotely bind to it.",
-                "§fSneak Right Click§7 to remove the current binding.",
-                "§aBinding: §f%s");
-
-        // Central Monitor
-        provider.add("monitor.gui.title.back", "Back");
-        provider.add("monitor.gui.title.scale", "Scale:");
-        provider.add("monitor.gui.title.argb", "ARGB:");
-        provider.add("monitor.gui.title.slot", "Slot:");
-        provider.add("monitor.gui.title.plugin", "Plugin:");
-        provider.add("monitor.gui.title.config", "Config");
-
-        provider.add("item.plugin.tooltips.1",
-                "Plugins can be added to the screen for more functionality.");
-        provider.add("item.plugin.proxy.tooltips.1", "(Please adjust to proxy mode in the screen)");
-        provider.add("item.cover.digital.tooltip",
-                "Connects machines over §fPower Cables§7 to the §fCentral Monitor§7 as §fCover§7.");
     }
 }
