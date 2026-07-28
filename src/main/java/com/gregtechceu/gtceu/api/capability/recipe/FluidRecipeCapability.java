@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.RangedFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
@@ -279,7 +278,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             if (isXEI) tank.setShowAmount(false);
             if (content != null) {
                 if (content.isChanced()) {
-                    tank.setXEIChance((float) content.getChance() / IChancedIngredient.MAX_CHANCE);
+                    tank.setXEIChance(content.getRealChance());
                 }
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     if (!isXEI && content.getFluids().length > 0) {
@@ -339,7 +338,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         for (var content : contents) {
             var list = mapFluid(content).getStacks().stream()
                     .map(fluidStack -> EmiStack.of(fluidStack.getFluid(), fluidStack.getTag(), fluidStack.getAmount())
-                            .setChance(content.getChance()))
+                            .setChance(content.getRealChance()))
                     .toList();
             emiIngredients.add(EmiIngredient.of(list));
         }

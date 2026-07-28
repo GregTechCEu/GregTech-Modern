@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
@@ -77,6 +78,10 @@ public abstract class ItemIngredient {
 
     public int getChance() {
         return ChancedItemIngredient.MAX_CHANCE;
+    }
+
+    public float getRealChance() {
+        return (float) getChance() / IChancedIngredient.MAX_CHANCE;
     }
 
     public boolean isRanged() {

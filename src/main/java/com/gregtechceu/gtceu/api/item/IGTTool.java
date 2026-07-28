@@ -667,6 +667,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
                                             @NotNull List<Component> tooltip, TooltipFlag flag) {
         if (!(stack.getItem() instanceof IGTTool tool)) return;
 
+        tooltip.add(CommonComponents.EMPTY);
         CompoundTag tagCompound = stack.getTag();
         if (tagCompound == null) return;
 
@@ -741,17 +742,9 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         }
         toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, world, tooltip, flag));
 
-        // unique tooltip
-        String uniqueTooltip = this.getToolType().getUnlocalizedName() + ".tooltip";
-        if (Language.getInstance().has(uniqueTooltip)) {
-            tooltip.add(CommonComponents.EMPTY);
-            tooltip.add(Component.translatable(uniqueTooltip));
-        }
-
-        tooltip.add(CommonComponents.EMPTY);
-
         var defaultEnchants = getDefaultEnchantments(stack);
         if (!defaultEnchants.isEmpty()) {
+            tooltip.add(CommonComponents.EMPTY);
             tooltip.add(Component.translatable("item.gtceu.tool.tooltip.default_enchantments"));
             for (var entry : defaultEnchants.entrySet()) {
                 Enchantment enchant = entry.getKey();
@@ -761,9 +754,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
             }
         }
 
-        tooltip.add(CommonComponents.EMPTY);
-
         // valid tools
+        tooltip.add(CommonComponents.EMPTY);
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClassNames(stack).stream()
                         .filter(s -> Language.getInstance().has("gtceu.tool.class." + s))

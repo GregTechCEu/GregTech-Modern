@@ -87,6 +87,10 @@ public class FluidIngredient {
         return IChancedIngredient.MAX_CHANCE;
     }
 
+    public float getRealChance() {
+        return (float) getChance() / IChancedIngredient.MAX_CHANCE;
+    }
+
     public boolean isRanged() {
         return false;
     }

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.RangedItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.SimpleTagIngredient;
@@ -347,7 +346,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
             }
             if (content != null) {
                 if (content.isChanced()) {
-                    slot.setXEIChance((float) content.getChance() / IChancedIngredient.MAX_CHANCE);
+                    slot.setXEIChance(content.getRealChance());
                 }
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     if (content instanceof RangedItemIngredient ranged) {
@@ -396,7 +395,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
         List<EmiIngredient> emiIngredients = new ArrayList<>();
         for (var content : contents) {
             var list = mapItem(content).getStacks().stream()
-                    .map(stack -> EmiStack.of(stack).setChance(content.getChance()))
+                    .map(stack -> EmiStack.of(stack).setChance(content.getRealChance()))
                     .toList();
             emiIngredients.add(EmiIngredient.of(list));
         }
