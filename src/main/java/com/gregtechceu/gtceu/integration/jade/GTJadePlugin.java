@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -116,7 +117,9 @@ public class GTJadePlugin implements IWailaPlugin {
 
     static {
         GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-            if (type.toolDefinition.getTool().rules().isEmpty() || map.isEmpty()) return;
+            boolean hasCustomHarvestTag = type.harvestTags.stream()
+                    .anyMatch(tag -> !tag.location().getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE));
+            if ((type.toolDefinition.getTool().rules().isEmpty() && !hasCustomHarvestTag) || map.isEmpty()) return;
 
             List<Item> tools = map
                     .values()
