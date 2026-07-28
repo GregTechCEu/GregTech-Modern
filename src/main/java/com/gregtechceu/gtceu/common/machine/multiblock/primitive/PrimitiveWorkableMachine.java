@@ -52,9 +52,9 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
                                     int fluidImportSlots, int fluidExportSlots,
                                     int tankCapacity) {
         super(info, recipeLogic);
-        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
-        this.importFluids = attachTrait(new NotifiableFluidTank(fluidImportSlots, tankCapacity, IO.IN, IO.BOTH));
+        this.importFluids = attachTrait(new NotifiableFluidTank(fluidImportSlots, tankCapacity, IO.IN));
         this.exportFluids = attachTrait(new NotifiableFluidTank(fluidExportSlots, tankCapacity, IO.OUT));
         this.hazardEmitter = attachTrait(
                 new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
