@@ -69,7 +69,7 @@ public abstract class RecipeCapability<T> {
     }
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
-        return Content.codec(capability).listOf();
+        return Content.codec(capability).listOf().xmap(ArrayList::new, list -> list);
     }
 
     /**

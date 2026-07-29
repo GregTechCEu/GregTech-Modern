@@ -13,8 +13,8 @@ import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap> {
@@ -64,19 +64,37 @@ public record CapabilityMapComponent() implements RecipeComponent<CapabilityMap>
     @Override
     public CapabilityMap replace(RecipeScriptContext cx, CapabilityMap original,
                                  ReplacementMatchInfo match, Object with) {
-        AtomicBoolean changed = new AtomicBoolean(false);
-        original.forEach((key, values) -> {
-            var content = GTRecipeComponents.VALID_CAPS.get(key);
-            for (int i = 0; i < values.size(); ++i) {
+        CapabilityMap replacement = original;
+
+        for (var entry : original.entrySet()) {
+            var content = GTRecipeComponents.VALID_CAPS.get(entry.getKey());
+            if (content == null) {
+                continue;
+            }
+
+            List<Content> values = entry.getValue();
+            List<Content> replacedValues = values;
+
+            for (int i = 0; i < values.size(); i++) {
                 Content value = values.get(i);
                 Content result = content.replace(cx, value, match, with);
                 if (!result.equals(value)) {
-                    changed.set(true);
-                    values.set(i, result);
+                    if (replacedValues == values) {
+                        replacedValues = new ArrayList<>(values);
+                    }
+                    replacedValues.set(i, result);
                 }
             }
-        });
-        return changed.get() ? new CapabilityMap(original) : original;
+
+            if (replacedValues != values) {
+                if (replacement == original) {
+                    replacement = new CapabilityMap(original);
+                }
+                replacement.put(entry.getKey(), replacedValues);
+            }
+        }
+
+        return replacement;
     }
 
     public @Override RecipeComponentType<CapabilityMap> type() {
