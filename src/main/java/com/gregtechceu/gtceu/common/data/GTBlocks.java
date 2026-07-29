@@ -32,6 +32,8 @@ import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -407,8 +409,8 @@ public class GTBlocks {
 
     // Cleanroom
     public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
-    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
-    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING, "Filter Casing", "Creates a §aParticle-Free§7 environment");
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE, "Sterilizing Filter Casing", "Creates a §aSterilized§7 environment");
     public static final BlockEntry<GlassBlock> CLEANROOM_GLASS = createGlassCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> RenderType::cutoutMipped);
 
     // Fireboxes
@@ -686,7 +688,7 @@ public class GTBlocks {
         return casingBlock;
     }
 
-    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
+    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType, String name, String tooltip) {
         var filterBlock = REGISTRATE.block(filterType.getSerializedName(), Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL)
@@ -1268,6 +1270,7 @@ public class GTBlocks {
             .loot((table, block) -> table.add(block,
                     table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
             .lang("Brittle Charcoal")
+            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Brittle Charcoal", "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal."))
             .exBlockstate(GTModels.cubeAllModel(GTCEu.id("block/misc/brittle_charcoal")))
             .tag(BlockTags.MINEABLE_WITH_SHOVEL)
             .item()
@@ -1510,6 +1513,25 @@ public class GTBlocks {
         if (GTCEu.isDev()) {
             GTDevBlocks.init();
         }
+    }
+
+    public static <T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndTooltipLang(String name, String tooltip) {
+        return (ctx, prov) -> {
+            prov.add(ctx.getEntry().getDescriptionId(), name);
+            prov.add(ctx.getEntry().getDescriptionId() + ".tooltip", tooltip);
+        };
+    }
+
+    public static <T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndMultilineTooltipLang(String name, String multiline) {
+        return (ctx, prov) -> {
+            prov.add(ctx.getEntry().getDescriptionId(), name);
+
+            var lines = multiline.split("\n");
+
+            for (var i = 0; i < lines.length; i++) {
+                prov.add(ctx.getEntry().getDescriptionId() + ".tooltip." + i, lines[i]);
+            }
+        };
     }
 
     private static void initializeCobbleReplacements() {

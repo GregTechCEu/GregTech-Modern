@@ -29,7 +29,7 @@ public class LangHandler {
         BlockLang.init(provider);
         CommandLang.init(provider);
         ConfigurationLang.init(provider);
-        CoverLang.init(provider); // TODO
+        CoverLang.init(provider);
         HazardLang.init(provider);
         IntegrationLang.init(provider);
         ItemLang.init(provider);

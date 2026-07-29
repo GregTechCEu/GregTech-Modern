@@ -41,18 +41,10 @@ public class BlockLang {
         provider.add("block.gtceu.steam_casing_steel.tooltip", "§7For improved Steam Machines");
         provider.add("block.gtceu.steam_casing_bricked_steel.tooltip", "§7For improved Steam Machines");
 
-        // Filter Casings
-        provider.add("block.gtceu.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
-        provider.add("block.gtceu.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
-
         // Lamps
         provider.add("block.gtceu.lamp.tooltip.inverted", "Inverted");
         provider.add("block.gtceu.lamp.tooltip.no_bloom", "No Bloom");
         provider.add("block.gtceu.lamp.tooltip.no_light", "No Light");
-
-        // Charcoal
-        provider.addMultiline("block.gtceu.brittle_charcoal.tooltip",
-                "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal.");
     }
 
     private static void generatePipeKeys(GTLangProvider provider) {

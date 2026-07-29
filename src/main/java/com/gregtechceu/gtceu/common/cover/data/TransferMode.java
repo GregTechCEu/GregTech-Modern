@@ -20,10 +20,10 @@ public enum TransferMode {
     }
 
     public static String getTitle() {
-        return "cover.robotic_arm.transfer_mode.title";
+        return "cover.gtceu.robot_arm_transfer_mode.title";
     }
 
     public String getTooltip() {
-        return "cover.robotic_arm.transfer_mode." + localeName;
+        return "cover.gtceu.robot_arm_transfer_mode." + localeName;
     }
 }
