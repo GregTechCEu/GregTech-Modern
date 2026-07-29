@@ -143,30 +143,33 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     }
 
     public void tick() {
-        int energyToConsume = this.getEnergyUsage();
-        boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance && this.maintenance != null;
-        if (hasMaintenance) {
-            // 10% more energy per maintenance problem
-            energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
-        }
-
-        if (getRecipeLogic().isWaiting() && energyContainer.getInputPerSec() > 19L * energyToConsume) {
-            getRecipeLogic().setStatus(RecipeLogic.Status.IDLE);
-        }
-
-        if (this.energyContainer.getEnergyStored() >= energyToConsume) {
-            if (!getRecipeLogic().isWaiting()) {
-                long consumed = this.energyContainer.removeEnergy(energyToConsume);
-                if (consumed == energyToConsume) {
-                    getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
-                } else {
-                    getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
-                            .append(": ").append(EURecipeCapability.CAP.getName()));
-                }
+        if (isWorkingEnabled()) {
+            int energyToConsume = this.getEnergyUsage();
+            boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance && this.maintenance != null;
+            if (hasMaintenance) {
+                // 10% more energy per maintenance problem
+                energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
             }
-        } else {
-            getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
-                    .append(EURecipeCapability.CAP.getName()));
+
+            if (getRecipeLogic().isWaiting() && energyContainer.getEnergyStored() > 19L * energyToConsume) {
+                getRecipeLogic().setStatus(RecipeLogic.Status.IDLE);
+            }
+
+            if (this.energyContainer.getEnergyStored() >= energyToConsume) {
+                if (!getRecipeLogic().isWaiting()) {
+                    long consumed = this.energyContainer.removeEnergy(energyToConsume);
+                    if (consumed == energyToConsume) {
+                        getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
+                    } else {
+                        getRecipeLogic()
+                                .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                                        .append(": ").append(EURecipeCapability.CAP.getName()));
+                    }
+                }
+            } else {
+                getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                        .append(EURecipeCapability.CAP.getName()));
+            }
         }
         updateTickSubscription();
     }
