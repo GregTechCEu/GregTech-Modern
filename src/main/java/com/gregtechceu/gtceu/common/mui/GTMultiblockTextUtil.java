@@ -354,7 +354,8 @@ public class GTMultiblockTextUtil {
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
+                () -> Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.RED));
     }
 
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
@@ -363,15 +364,30 @@ public class GTMultiblockTextUtil {
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 runningPerfectly,
-                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
+                () -> Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.RED));
+    }
+
+    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
+                                                     PanelSyncManager syncManager,
+                                                     Supplier<Component> runningPerfectly,
+                                                     Supplier<Component> waiting) {
+        return addWorkingStatusLine(rlMachine, syncManager,
+                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                runningPerfectly,
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
+                waiting);
     }
 
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager,
                                                      Supplier<Component> workPaused,
-                                                     Supplier<Component> runningPerfectly,
-                                                     Supplier<Component> idling) {
+                                                     Supplier<Component> runningPerfectly, Supplier<Component> idling,
+                                                     Supplier<Component> waiting) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
+        BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWaiting()));
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isActive()));
         BooleanSyncValue isWorkingEnabled = syncManager.getOrCreateSyncHandler("isWorkingEnabled",
@@ -381,6 +397,9 @@ public class GTMultiblockTextUtil {
         return Text
                 .dynamic(() -> {
                     if (!isFormed.getBoolValue()) return Component.empty();
+                    if (isWaiting.getBoolValue()) {
+                        return waiting.get();
+                    }
                     if (!isWorkingEnabled.getBoolValue()) {
                         return workPaused.get();
                     }
@@ -401,6 +420,9 @@ public class GTMultiblockTextUtil {
 
         BooleanSyncValue isIdle = syncManager.getOrCreateSyncHandler("isIdle", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isIdle()));
+        BooleanSyncValue hasRunningRecipe = syncManager.getOrCreateSyncHandler("hasRunningRecipe",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().getLastRecipe() != null));
         BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWaiting()));
         GenericSyncValue<Component> bestFailureReason = (GenericSyncValue<Component>) syncManager
@@ -413,12 +435,10 @@ public class GTMultiblockTextUtil {
         var lineList = new ArrayList<TextWidget<?>>();
 
         lineList.add(Text
-                .dynamic(() -> {
-                    return Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
-                })
+                .dynamic(() -> Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED))
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
-                        bestFailureReason.getValue() != null));
+                        !hasRunningRecipe.getBoolValue() && bestFailureReason.getValue() != null));
         lineList.add(Text
                 .dynamic(() -> {
                     var reason = bestFailureReason.getValue();
