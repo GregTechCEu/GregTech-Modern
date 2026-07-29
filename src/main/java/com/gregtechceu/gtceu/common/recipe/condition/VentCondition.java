@@ -30,7 +30,7 @@ public class VentCondition extends RecipeCondition<VentCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.steam_vent.tooltip");
+        return Component.translatable("recipe.gtceu.condition.steam_vent.tooltip");
     }
 
     @Override

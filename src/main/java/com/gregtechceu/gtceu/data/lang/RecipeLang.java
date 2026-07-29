@@ -16,10 +16,12 @@ public class RecipeLang {
 
     private static void generateCapabilityLang(GTLangProvider provider) {
 
-        provider.add("recipe.capability.eu.name", "GTCEu Energy");
-        provider.add("recipe.capability.fluid.name", "Fluid");
-        provider.add("recipe.capability.item.name", "Item");
+        provider.add("recipe_capability.gtceu.eu", "GTCEu Energy");
+        provider.add("recipe_capability.gtceu.fluid", "Fluid");
+        provider.add("recipe_capability.gtceu.item", "Item");
+
         provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
+
         provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
         provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
         provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
@@ -40,38 +42,38 @@ public class RecipeLang {
     }
 
     public static void generateChanceLang(RegistrateLangProvider provider) {
-        provider.add("gtceu.gui.content.chance_nc", "§cNot Consumed§r");
-        provider.add("gtceu.gui.content.chance_nc_short", "§cNC§r");
-        provider.add("gtceu.gui.content.chance_base", "Base Chance: %s%%");
-        provider.add("gtceu.gui.content.chance_base_logic", "Base Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.chance_no_boost", "Chance: %s%%");
-        provider.add("gtceu.gui.content.chance_no_boost_logic", "Chance: %s%% (%s)");
-        provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
-        provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
-        provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
-        provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
-        provider.add("gtceu.gui.content.count_range", "%s-%sx");
-        provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
-        provider.add("gtceu.gui.content.range", "%s-%s");
-        provider.add("gtceu.gui.content.times_item", "x %s");
+        provider.add("recipe.gtceu.content.chance_nc", "Not Consumed");
+        provider.add("recipe.gtceu.content.chance_nc_short", "NC");
+        provider.add("recipe.gtceu.content.chance_base", "Base Chance: %s%%");
+        provider.add("recipe.gtceu.content.chance_base_logic", "Base Chance: %s%% (%s)");
+        provider.add("recipe.gtceu.content.chance_no_boost", "Chance: %s%%");
+        provider.add("recipe.gtceu.content.chance_no_boost_logic", "Chance: %s%% (%s)");
+        provider.add("recipe.gtceu.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
+        provider.add("recipe.gtceu.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
+        provider.add("recipe.gtceu.content.chance_boosted", "Chance at Tier: %s%%");
+        provider.add("recipe.gtceu.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
+        provider.add("recipe.gtceu.content.count_range", "%s-%sx");
+        provider.add("recipe.gtceu.content.fluid_range", "%s-%smB");
+        provider.add("recipe.gtceu.content.range", "%s-%s");
+        provider.add("recipe.gtceu.content.times_item", "x %s");
 
-        provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
-        provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");
-        provider.add("gtceu.gui.content.tips.per_second_short", "§a/second§r");
+        provider.add("recipe.gtceu.content.per_tick", "Consumed/Produced Per Tick");
+        provider.add("recipe.gtceu.content.tips.per_tick_short", "/tick");
+        provider.add("recipe.gtceu.content.tips.per_second_short", "/second");
 
-        provider.add("gtceu.chance_logic.or", "OR");
-        provider.add("gtceu.chance_logic.and", "AND");
-        provider.add("gtceu.chance_logic.xor", "XOR");
-        provider.add("gtceu.chance_logic.first", "FIRST");
-        provider.add("gtceu.chance_logic.none", "NONE");
+        provider.add("chance_logic.gtceu.or", "OR");
+        provider.add("chance_logic.gtceu.and", "AND");
+        provider.add("chance_logic.gtceu.xor", "XOR");
+        provider.add("chance_logic.gtceu.first", "FIRST");
+        provider.add("chance_logic.gtceu.none", "NONE");
     }
 
     private static void generateModifierKeys(RegistrateLangProvider provider) {
-        provider.add("gtceu.recipe_modifier.default_fail", "Recipe Modifier Fail");
-        provider.add("gtceu.recipe_modifier.insufficient_voltage", "Voltage Tier Too Low");
-        provider.add("gtceu.recipe_modifier.insufficient_eu_to_start_fusion",
+        provider.add("recipe.gtceu.modifier.default_fail", "Recipe Modifier Fail");
+        provider.add("recipe.gtceu.modifier.insufficient_voltage", "Voltage Tier Too Low");
+        provider.add("recipe.gtceu.modifier.insufficient_eu_to_start_fusion",
                 "Insufficient Energy to Initiate Fusion Reaction");
-        provider.add("gtceu.recipe_modifier.coil_temperature_too_low", "Coil Temperature Too Low");
+        provider.add("recipe.gtceu.modifier.coil_temperature_too_low", "Coil Temperature Too Low");
     }
 
     private static void generateRecipeTypes(GTLangProvider provider) {
@@ -89,26 +91,26 @@ public class RecipeLang {
 
     private static void generateRecipeConditions(GTLangProvider provider) {
         // Recipe Conditions
-        provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
-        provider.add("recipe.condition.rain.tooltip", "Rain Level: %d");
-        provider.add("recipe.condition.dimension.tooltip", "Dimension: %s");
-        provider.add("recipe.condition.dimension_marker.tooltip", "Dimension:");
-        provider.add("recipe.condition.biome.tooltip", "Biome: %s");
-        provider.add("recipe.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
+        provider.add("recipe.gtceu.condition.thunder.tooltip", "Thunder Level: %d");
+        provider.add("recipe.gtceu.condition.rain.tooltip", "Rain Level: %d");
+        provider.add("recipe.gtceu.condition.dimension.tooltip", "Dimension: %s");
+        provider.add("recipe.gtceu.condition.dimension_marker.tooltip", "Dimension:");
+        provider.add("recipe.gtceu.condition.biome.tooltip", "Biome: %s");
+        provider.add("recipe.gtceu.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
 
-        provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
-        provider.add("recipe.condition.adjacent_fluid.tooltip", "Fluid blocks around");
-        provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
-        provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
+        provider.add("recipe.gtceu.condition.steam_vent.tooltip", "Clean steam vent");
+        provider.add("recipe.gtceu.condition.adjacent_fluid.tooltip", "Fluid blocks around");
+        provider.add("recipe.gtceu.condition.adjacent_block.tooltip", "Blocks around");
+        provider.add("recipe.gtceu.condition.eu_to_start.tooltip", "EU to Start: %d%s");
 
-        provider.add("recipe.condition.daytime.day.tooltip", "Requires day time to work");
-        provider.add("recipe.condition.daytime.night.tooltip", "Requires night time to work");
+        provider.add("recipe.gtceu.condition.daytime.day.tooltip", "Requires day time to work");
+        provider.add("recipe.gtceu.condition.daytime.night.tooltip", "Requires night time to work");
 
-        provider.add("recipe.condition.gamestage.unlocked_stage", "Unlocked at stage: %s");
-        provider.add("recipe.condition.gamestage.locked_stage", "Locked at stage: %s");
+        provider.add("recipe.gtceu.condition.gamestage.unlocked_stage", "Unlocked at stage: %s");
+        provider.add("recipe.gtceu.condition.gamestage.locked_stage", "Locked at stage: %s");
 
-        provider.add("recipe.condition.quest.completed.tooltip", "Requires %s completed");
-        provider.add("recipe.condition.quest.not_completed.tooltip", "Requires %s not completed");
+        provider.add("recipe.gtceu.condition.quest.completed.tooltip", "Requires %s completed");
+        provider.add("recipe.gtceu.condition.quest.not_completed.tooltip", "Requires %s not completed");
     }
 
     private static void generateRecipeDataKeys(GTLangProvider provider) {

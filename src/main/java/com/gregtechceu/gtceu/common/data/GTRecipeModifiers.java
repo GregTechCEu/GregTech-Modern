@@ -40,7 +40,7 @@ public class GTRecipeModifiers {
                 if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
                 if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
                     return ModifierFunction
-                            .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
+                            .cancel(Component.translatable("recipe.gtceu.modifier.insufficient_voltage"));
                 }
                 return logic.getModifier(machine, recipe, overclockMachine.getOverclockVoltage());
             });
@@ -177,11 +177,11 @@ public class GTRecipeModifiers {
                 (100 * Math.max(0, coilMachine.getTier() - GTValues.MV));
         int recipeTemp = recipe.data.getInt("ebf_temp");
         if (!recipe.data.contains("ebf_temp") || recipeTemp > blastFurnaceTemperature) {
-            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low"));
+            return ModifierFunction.cancel(Component.translatable("recipe.gtceu.modifier.coil_temperature_too_low"));
         }
 
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
-            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
+            return ModifierFunction.cancel(Component.translatable("recipe.gtceu.modifier.insufficient_voltage"));
         }
 
         var discount = ModifierFunction.builder()

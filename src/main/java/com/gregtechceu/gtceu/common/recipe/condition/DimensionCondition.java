@@ -61,7 +61,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.dimension.tooltip", dimension);
+        return Component.translatable("recipe.gtceu.condition.dimension.tooltip", dimension);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
             Flow dimConditionRow = Flow.row().coverChildrenHeight().widthRel(1f);
 
-            dimConditionRow.child(Text.lang("recipe.condition.dimension.tooltip", "").asWidget());
+            dimConditionRow.child(Text.lang("recipe.gtceu.condition.dimension.tooltip", "").asWidget());
 
             RecipeViewerSlotWidget<?> displayWidget = RecipeViewerSlotWidget.create()
                     .value(icon)

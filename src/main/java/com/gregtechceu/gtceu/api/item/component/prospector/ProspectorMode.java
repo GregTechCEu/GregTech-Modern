@@ -382,7 +382,7 @@ public abstract class ProspectorMode<T> {
                     float chance = (float) item.weight / totalWeight * 100;
                     tooltips.add(Component.empty().append(getDescription(item))
                             .append(" (")
-                            .append(Component.translatable("gtceu.gui.content.chance_base",
+                            .append(Component.translatable("recipe.gtceu.content.chance_base",
                                     FormattingUtil.formatNumber2Places(chance)))
                             .append(") --- %s (%s%%)".formatted(item.yield, item.left)));
                 }

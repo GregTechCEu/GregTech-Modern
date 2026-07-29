@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
 
@@ -69,11 +68,6 @@ public abstract class ChanceLogic {
         }
 
         @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.or");
-        }
-
-        @Override
         public String toString() {
             return "ChanceLogic{OR}";
         }
@@ -103,11 +97,6 @@ public abstract class ChanceLogic {
                 if (!failed) builder.addAll(chancedEntries);
             }
             return builder.build();
-        }
-
-        @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.and");
         }
 
         @Override
@@ -144,11 +133,6 @@ public abstract class ChanceLogic {
                 if (selected != null) builder.add(selected);
             }
             return builder.build();
-        }
-
-        @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.first");
         }
 
         @Override
@@ -243,11 +227,6 @@ public abstract class ChanceLogic {
         }
 
         @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.xor");
-        }
-
-        @Override
         public String toString() {
             return "ChanceLogic{XOR}";
         }
@@ -266,17 +245,15 @@ public abstract class ChanceLogic {
         }
 
         @Override
-        public @NotNull Component getTranslation() {
-            return Component.translatable("gtceu.chance_logic.none");
-        }
-
-        @Override
         public String toString() {
             return "ChanceLogic{NONE}";
         }
     };
 
+    public final ResourceLocation id;
+
     public ChanceLogic(ResourceLocation id) {
+        this.id = id;
         GTRegistries.CHANCE_LOGICS.register(id, this);
     }
 
@@ -356,9 +333,6 @@ public abstract class ChanceLogic {
                                        int times) {
         return roll(cap, chancedEntries, null, times);
     }
-
-    @NotNull
-    public abstract Component getTranslation();
 
     @ApiStatus.Internal
     public static void init() {

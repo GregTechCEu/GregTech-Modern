@@ -75,19 +75,19 @@ public interface CapabilityContentBuilder {
 
             if (innerContent instanceof IntProviderIngredient ingredient) {
                 IntProvider countProvider = ingredient.getCountProvider();
-                tooltip.add(Component.translatable("gtceu.gui.content.count_range",
+                tooltip.add(Component.translatable("recipe.gtceu.content.count_range",
                         countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             } else if (innerContent instanceof SizedIngredient sizedIngredient &&
                     sizedIngredient.getInner() instanceof IntProviderIngredient ingredient) {
 
                         IntProvider countProvider = ingredient.getCountProvider();
-                        tooltip.add(Component.translatable("gtceu.gui.content.count_range",
+                        tooltip.add(Component.translatable("recipe.gtceu.content.count_range",
                                 countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
                     }
             if (perTick) {
-                tooltip.add(Component.translatable("gtceu.gui.content.per_tick"));
+                tooltip.add(Component.translatable("recipe.gtceu.content.per_tick").withStyle(ChatFormatting.GREEN));
             }
         });
     };
@@ -107,12 +107,12 @@ public interface CapabilityContentBuilder {
         recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
             if (ingredient instanceof IRangedIngredient provider) {
                 IntProvider countProvider = provider.getCountProvider();
-                tooltip.addLine(Component.translatable("gtceu.gui.content.fluid_range",
+                tooltip.addLine(Component.translatable("recipe.gtceu.content.fluid_range",
                         countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             }
             if (perTick) {
-                tooltip.addLine(Component.translatable("gtceu.gui.content.per_tick"));
+                tooltip.addLine(Component.translatable("recipe.gtceu.content.per_tick").withStyle(ChatFormatting.GREEN));
             }
         });
 

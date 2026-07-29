@@ -43,7 +43,7 @@ public class ThunderCondition extends RecipeCondition<ThunderCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.thunder.tooltip", level);
+        return Component.translatable("recipe.gtceu.condition.thunder.tooltip", level);
     }
 
     @Override

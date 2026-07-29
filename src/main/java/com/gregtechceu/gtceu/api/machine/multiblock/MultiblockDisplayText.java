@@ -449,7 +449,7 @@ public class MultiblockDisplayText {
                     if (item.content() instanceof IntProviderIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
-                        displaycount = Component.translatable("gtceu.gui.content.range",
+                        displaycount = Component.translatable("recipe.gtceu.content.range",
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
                         if (item.chance() < item.maxChance()) {
@@ -491,7 +491,7 @@ public class MultiblockDisplayText {
                     if (fluid.content() instanceof IntProviderFluidIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
-                        displaycount = Component.translatable("gtceu.gui.content.range",
+                        displaycount = Component.translatable("recipe.gtceu.content.range",
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
                         if (fluid.chance() < fluid.maxChance()) {
