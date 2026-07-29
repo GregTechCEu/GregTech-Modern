@@ -75,19 +75,19 @@ public interface CapabilityContentBuilder {
 
             if (innerContent instanceof IntProviderIngredient ingredient) {
                 IntProvider countProvider = ingredient.getCountProvider();
-                tooltip.add(Component.translatable("recipe.gtceu.content.count_range",
+                tooltip.add(Component.translatable("recipe_content.gtceu.count_range",
                         countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             } else if (innerContent instanceof SizedIngredient sizedIngredient &&
                     sizedIngredient.getInner() instanceof IntProviderIngredient ingredient) {
 
                         IntProvider countProvider = ingredient.getCountProvider();
-                        tooltip.add(Component.translatable("recipe.gtceu.content.count_range",
+                        tooltip.add(Component.translatable("recipe_content.gtceu.count_range",
                                 countProvider.getMinValue(), countProvider.getMaxValue())
                                 .withStyle(ChatFormatting.GOLD));
                     }
             if (perTick) {
-                tooltip.add(Component.translatable("recipe.gtceu.content.per_tick").withStyle(ChatFormatting.GREEN));
+                tooltip.add(Component.translatable("recipe_content.gtceu.per_tick").withStyle(ChatFormatting.GREEN));
             }
         });
     };
@@ -107,12 +107,12 @@ public interface CapabilityContentBuilder {
         recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
             if (ingredient instanceof IRangedIngredient provider) {
                 IntProvider countProvider = provider.getCountProvider();
-                tooltip.addLine(Component.translatable("recipe.gtceu.content.fluid_range",
+                tooltip.addLine(Component.translatable("recipe_content.gtceu.fluid_range",
                         countProvider.getMinValue(), countProvider.getMaxValue())
                         .withStyle(ChatFormatting.GOLD));
             }
             if (perTick) {
-                tooltip.addLine(Component.translatable("recipe.gtceu.content.per_tick").withStyle(ChatFormatting.GREEN));
+                tooltip.addLine(Component.translatable("recipe_content.gtceu.per_tick").withStyle(ChatFormatting.GREEN));
             }
         });
 
@@ -136,13 +136,13 @@ public interface CapabilityContentBuilder {
             if (CWURecipeCapability.CAP.isTickSlot(0, IO.IN, recipe)) {
                 int cwu = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::content)
                         .mapToInt(CWURecipeCapability.CAP::of).sum();
-                var text = Text.lang("gtceu.recipe.computation_per_tick", FormattingUtil.formatNumbers(cwu));
+                var text = Text.lang("recipe.gtceu.computation_per_tick", FormattingUtil.formatNumbers(cwu));
 
                 if (existingCompTickWidget != null) ((TextWidget<?>) existingCompTickWidget).value(text);
                 else flow.child(text.asWidget().name("comp_tick"));
             }
             if (recipe.data.getBoolean("duration_is_total_cwu")) {
-                var text = Text.lang("gtceu.recipe.total_computation", FormattingUtil.formatNumbers(recipe.duration));
+                var text = Text.lang("recipe.gtceu.total_computation", FormattingUtil.formatNumbers(recipe.duration));
 
                 if (existingCompTotal != null) ((TextWidget<?>) existingCompTotal).value(text);
                 else flow.child(text.asWidget().name("comp_total"));
@@ -170,10 +170,10 @@ public interface CapabilityContentBuilder {
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                 int minimumCWUt = Math.max(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
                         .map(Content::content).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
-                maxEu = Text.lang("gtceu.recipe.max_eu",
+                maxEu = Text.lang("recipe.gtceu.max_eu",
                         FormattingUtil.formatNumbers(eu.getTotalEU() / minimumCWUt));
             } else {
-                maxEu = Text.lang("gtceu.recipe.total",
+                maxEu = Text.lang("recipe.gtceu.total",
                         FormattingUtil.formatNumbers(eu.getTotalEU() * recipe.duration));
             }
 
@@ -181,12 +181,12 @@ public interface CapabilityContentBuilder {
             else flow.child(maxEu.asWidget().name("max_eu"));
 
             var euText = Text
-                    .lang(io == IO.IN ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
+                    .lang(io == IO.IN ? "recipe.gtceu.eu" : "recipe.gtceu.eu_inverted",
                             FormattingUtil.formatNumber2Places(minAmperage), GTValues.VN[minVoltageTier])
                     .withStyle(ChatFormatting.UNDERLINE);
 
             RichTooltip tooltip = new RichTooltip();
-            tooltip.addLine(Text.lang("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(eu.getTotalEU()))
+            tooltip.addLine(Text.lang("recipe.gtceu.eu.total", FormattingUtil.formatNumbers(eu.getTotalEU()))
                     .withStyle(ChatFormatting.UNDERLINE));
 
             if (euWidget != null) ((TextWidget<?>) euWidget).value(euText).tooltip(tooltip);

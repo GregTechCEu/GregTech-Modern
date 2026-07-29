@@ -189,7 +189,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                 MutableComponent text = CommonComponents.space();
                 if (itemOutput instanceof IntProviderIngredient provider) {
                     item = provider.getInner().getItems()[0];
-                    text = text.append(Component.translatable("recipe.gtceu.content.range",
+                    text = text.append(Component.translatable("recipe_content.gtceu.range",
                             String.valueOf(provider.getCountProvider().getMinValue()),
                             String.valueOf(provider.getCountProvider().getMaxValue())));
                 } else {
@@ -197,7 +197,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                     text.append(String.valueOf(item.getCount()));
                     item.setCount(1);
                 }
-                text.append(Component.translatable("recipe.gtceu.content.times_item",
+                text.append(Component.translatable("recipe_content.gtceu.times_item",
                         getItemName(item))
                         .withStyle(ChatFormatting.WHITE));
 
@@ -214,7 +214,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                 MutableComponent text = CommonComponents.space();
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
                     stack = provider.getMaxSizeStack();
-                    text.append(Component.translatable("recipe.gtceu.content.range",
+                    text.append(Component.translatable("recipe_content.gtceu.range",
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true)));
                 } else {

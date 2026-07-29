@@ -70,7 +70,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 .size(20, 20)
                 .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
                 .margin(4, 0)
-                .tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+                .tooltip(r -> r.add(Text.comp(Component.translatable("recipe.gtceu_type.show_recipes"))));
 
         progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
             if (!guiContext.isMouseAbove(progressWidget)) return false;

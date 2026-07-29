@@ -80,7 +80,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
         // Attach duration here so it is always the first text row
         textComponents.child(Text
-                .dynamic(() -> Component.translatable("gtceu.recipe.duration",
+                .dynamic(() -> Component.translatable("recipe.gtceu.duration",
                         FormattingUtil.formatNumbers((double) modifiedRecipe.duration / 20)))
                 .asWidget()
                 .setEnabledIf(v -> !modifiedRecipe.data.getBoolean("hide_duration")));

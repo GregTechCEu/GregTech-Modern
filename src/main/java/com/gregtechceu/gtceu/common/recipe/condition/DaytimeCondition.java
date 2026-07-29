@@ -34,9 +34,9 @@ public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
     @Override
     public Component getTooltips() {
         if (isReverse) {
-            return Component.translatable("recipe.gtceu.condition.daytime.night.tooltip");
+            return Component.translatable("recipe_condition.gtceu.daytime.night.tooltip");
         } else {
-            return Component.translatable("recipe.gtceu.condition.daytime.day.tooltip");
+            return Component.translatable("recipe_condition.gtceu.daytime.day.tooltip");
         }
     }
 

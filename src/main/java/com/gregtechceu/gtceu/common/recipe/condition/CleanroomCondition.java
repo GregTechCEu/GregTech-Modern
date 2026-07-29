@@ -46,7 +46,7 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
     @Override
     public Component getTooltips() {
         return cleanroom == null ? null :
-                Component.translatable("gtceu.recipe.cleanroom", Component.translatable(cleanroom.getTranslationKey()));
+                Component.translatable("recipe_condition.gtceu.cleanroom", Component.translatable(cleanroom.getTranslationKey()));
     }
 
     @Override

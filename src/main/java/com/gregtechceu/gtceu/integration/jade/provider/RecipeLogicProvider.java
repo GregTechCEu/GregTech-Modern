@@ -112,7 +112,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
 
                         }
                         text.append(Component.literal(" ("));
-                        text.append(Component.translatable("gtceu.recipe.eu.total",
+                        text.append(Component.translatable("recipe.gtceu.eu.total",
                                         FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.WHITE));
                         text.append(Component.literal(") "));
@@ -136,9 +136,9 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
 
                 if (!logic.getWaitingReasons().isEmpty() && logic.isWorkingEnabled()) {
                     Component status = logic.isWaiting() ?
-                            Component.translatable("gtceu.recipe_logic.recipe_waiting")
+                            Component.translatable("recipe_logic.gtceu.recipe_waiting")
                                     .withStyle(ChatFormatting.YELLOW) :
-                            Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
+                            Component.translatable("recipe_logic.gtceu.setup_fail").withStyle(ChatFormatting.RED);
                     tooltip.add(status);
                     logic.getWaitingReasons().forEach(tooltip::add);
                 }

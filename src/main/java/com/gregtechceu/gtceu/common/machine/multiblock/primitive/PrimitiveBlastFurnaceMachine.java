@@ -149,7 +149,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 .size(20, 15)
                 .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, ProgressDrawable.Direction.RIGHT)
                 .margin(5, 5, 0, 0)
-                .tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+                .tooltip(r -> r.add(Text.comp(Component.translatable("recipe.gtceu_type.show_recipes"))));
 
         progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
             if (!guiContext.isMouseAbove(progressWidget)) return false;

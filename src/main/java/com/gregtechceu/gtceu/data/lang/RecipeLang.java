@@ -20,21 +20,21 @@ public class RecipeLang {
         provider.add("recipe_capability.gtceu.fluid", "Fluid");
         provider.add("recipe_capability.gtceu.item", "Item");
 
-        provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
+        provider.add("recipe.gtceu_type.show_recipes", "Show Recipes");
 
-        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
-        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
-        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+        provider.add("recipe_logic.gtceu.condition_fails", "Condition Fails");
+        provider.add("recipe_logic.gtceu.no_contents", "Recipe has no Contents");
+        provider.add("recipe_logic.gtceu.no_capabilities", "Machine has no Capabilities");
 
-        provider.add("gtceu.recipe_logic.setup_fail", "Fail to setup recipe: ");
-        provider.add("gtceu.recipe_logic.recipe_waiting", "Recipe Waiting: ");
+        provider.add("recipe_logic.gtceu.setup_fail", "Fail to setup recipe: ");
+        provider.add("recipe_logic.gtceu.recipe_waiting", "Recipe Waiting: ");
 
-        provider.add("gtceu.recipe_logic.insufficient_fuel", "Insufficient Fuel");
-        provider.add("gtceu.recipe_logic.insufficient_in", "Insufficient Inputs");
-        provider.add("gtceu.recipe_logic.insufficient_out", "Insufficient Outputs");
-        provider.add("gtceu.recipe_logic.condition_fails", "Condition Fails");
-        provider.add("gtceu.recipe_logic.no_contents", "Recipe has no Contents");
-        provider.add("gtceu.recipe_logic.no_capabilities", "Machine has no Capabilities");
+        provider.add("recipe_logic.gtceu.insufficient_fuel", "Insufficient Fuel");
+        provider.add("recipe_logic.gtceu.insufficient_in", "Insufficient Inputs");
+        provider.add("recipe_logic.gtceu.insufficient_out", "Insufficient Outputs");
+        provider.add("recipe_logic.gtceu.condition_fails", "Condition Fails");
+        provider.add("recipe_logic.gtceu.no_contents", "Recipe has no Contents");
+        provider.add("recipe_logic.gtceu.no_capabilities", "Machine has no Capabilities");
 
         provider.addMultiLang("gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
@@ -42,24 +42,24 @@ public class RecipeLang {
     }
 
     public static void generateChanceLang(RegistrateLangProvider provider) {
-        provider.add("recipe.gtceu.content.chance_nc", "Not Consumed");
-        provider.add("recipe.gtceu.content.chance_nc_short", "NC");
-        provider.add("recipe.gtceu.content.chance_base", "Base Chance: %s%%");
-        provider.add("recipe.gtceu.content.chance_base_logic", "Base Chance: %s%% (%s)");
-        provider.add("recipe.gtceu.content.chance_no_boost", "Chance: %s%%");
-        provider.add("recipe.gtceu.content.chance_no_boost_logic", "Chance: %s%% (%s)");
-        provider.add("recipe.gtceu.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
-        provider.add("recipe.gtceu.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
-        provider.add("recipe.gtceu.content.chance_boosted", "Chance at Tier: %s%%");
-        provider.add("recipe.gtceu.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
-        provider.add("recipe.gtceu.content.count_range", "%s-%sx");
-        provider.add("recipe.gtceu.content.fluid_range", "%s-%smB");
-        provider.add("recipe.gtceu.content.range", "%s-%s");
-        provider.add("recipe.gtceu.content.times_item", "x %s");
+        provider.add("recipe_content.gtceu.chance_nc", "Not Consumed");
+        provider.add("recipe_content.gtceu.chance_nc_short", "NC");
+        provider.add("recipe_content.gtceu.chance_base", "Base Chance: %s%%");
+        provider.add("recipe_content.gtceu.chance_base_logic", "Base Chance: %s%% (%s)");
+        provider.add("recipe_content.gtceu.chance_no_boost", "Chance: %s%%");
+        provider.add("recipe_content.gtceu.chance_no_boost_logic", "Chance: %s%% (%s)");
+        provider.add("recipe_content.gtceu.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
+        provider.add("recipe_content.gtceu.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
+        provider.add("recipe_content.gtceu.chance_boosted", "Chance at Tier: %s%%");
+        provider.add("recipe_content.gtceu.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
+        provider.add("recipe_content.gtceu.count_range", "%s-%sx");
+        provider.add("recipe_content.gtceu.fluid_range", "%s-%smB");
+        provider.add("recipe_content.gtceu.range", "%s-%s");
+        provider.add("recipe_content.gtceu.times_item", "x %s");
 
-        provider.add("recipe.gtceu.content.per_tick", "Consumed/Produced Per Tick");
-        provider.add("recipe.gtceu.content.tips.per_tick_short", "/tick");
-        provider.add("recipe.gtceu.content.tips.per_second_short", "/second");
+        provider.add("recipe_content.gtceu.per_tick", "Consumed/Produced Per Tick");
+        provider.add("recipe_content.gtceu.tips.per_tick_short", "/tick");
+        provider.add("recipe_content.gtceu.tips.per_second_short", "/second");
 
         provider.add("chance_logic.gtceu.or", "OR");
         provider.add("chance_logic.gtceu.and", "AND");
@@ -69,11 +69,11 @@ public class RecipeLang {
     }
 
     private static void generateModifierKeys(RegistrateLangProvider provider) {
-        provider.add("recipe.gtceu.modifier.default_fail", "Recipe Modifier Fail");
-        provider.add("recipe.gtceu.modifier.insufficient_voltage", "Voltage Tier Too Low");
-        provider.add("recipe.gtceu.modifier.insufficient_eu_to_start_fusion",
+        provider.add("recipe_modifier.gtceu.default_fail", "Recipe Modifier Fail");
+        provider.add("recipe_modifier.gtceu.insufficient_voltage", "Voltage Tier Too Low");
+        provider.add("recipe_modifier.gtceu.insufficient_eu_to_start_fusion",
                 "Insufficient Energy to Initiate Fusion Reaction");
-        provider.add("recipe.gtceu.modifier.coil_temperature_too_low", "Coil Temperature Too Low");
+        provider.add("recipe_modifier.gtceu.coil_temperature_too_low", "Coil Temperature Too Low");
     }
 
     private static void generateRecipeTypes(GTLangProvider provider) {
@@ -91,64 +91,58 @@ public class RecipeLang {
 
     private static void generateRecipeConditions(GTLangProvider provider) {
         // Recipe Conditions
-        provider.add("recipe.gtceu.condition.thunder.tooltip", "Thunder Level: %d");
-        provider.add("recipe.gtceu.condition.rain.tooltip", "Rain Level: %d");
-        provider.add("recipe.gtceu.condition.dimension.tooltip", "Dimension: %s");
-        provider.add("recipe.gtceu.condition.dimension_marker.tooltip", "Dimension:");
-        provider.add("recipe.gtceu.condition.biome.tooltip", "Biome: %s");
-        provider.add("recipe.gtceu.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
+        provider.add("recipe_condition.gtceu.thunder.tooltip", "Thunder Level: %d");
+        provider.add("recipe_condition.gtceu.rain.tooltip", "Rain Level: %d");
+        provider.add("recipe_condition.gtceu.dimension.tooltip", "Dimension: %s");
+        provider.add("recipe_condition.gtceu.dimension_marker.tooltip", "Dimension:");
+        provider.add("recipe_condition.gtceu.biome.tooltip", "Biome: %s");
+        provider.add("recipe_condition.gtceu.pos_y.tooltip", "Y Level: %d <= Y <= %d");
 
-        provider.add("recipe.gtceu.condition.steam_vent.tooltip", "Clean steam vent");
-        provider.add("recipe.gtceu.condition.adjacent_fluid.tooltip", "Fluid blocks around");
-        provider.add("recipe.gtceu.condition.adjacent_block.tooltip", "Blocks around");
-        provider.add("recipe.gtceu.condition.eu_to_start.tooltip", "EU to Start: %d%s");
+        provider.add("recipe_condition.gtceu.steam_vent.tooltip", "Clean steam vent");
+        provider.add("recipe_condition.gtceu.adjacent_fluid.tooltip", "Fluid blocks around");
+        provider.add("recipe_condition.gtceu.adjacent_block.tooltip", "Blocks around");
+        provider.add("recipe_condition.gtceu.eu_to_start.tooltip", "EU to Start: %d%s");
 
-        provider.add("recipe.gtceu.condition.daytime.day.tooltip", "Requires day time to work");
-        provider.add("recipe.gtceu.condition.daytime.night.tooltip", "Requires night time to work");
+        provider.add("recipe_condition.gtceu.daytime.day.tooltip", "Requires day time to work");
+        provider.add("recipe_condition.gtceu.daytime.night.tooltip", "Requires night time to work");
 
-        provider.add("recipe.gtceu.condition.gamestage.unlocked_stage", "Unlocked at stage: %s");
-        provider.add("recipe.gtceu.condition.gamestage.locked_stage", "Locked at stage: %s");
+        provider.add("recipe_condition.gtceu.gamestage.unlocked_stage", "Unlocked at stage: %s");
+        provider.add("recipe_condition.gtceu.gamestage.locked_stage", "Locked at stage: %s");
 
-        provider.add("recipe.gtceu.condition.quest.completed.tooltip", "Requires %s completed");
-        provider.add("recipe.gtceu.condition.quest.not_completed.tooltip", "Requires %s not completed");
+        provider.add("recipe_condition.gtceu.quest.completed.tooltip", "Requires %s completed");
+        provider.add("recipe_condition.gtceu.quest.not_completed.tooltip", "Requires %s not completed");
+
+        provider.add("recipe_condition.gtceu.environmental_hazard.reverse", "§cArea must be free of %s");
+        provider.add("recipe_condition.gtceu.environmental_hazard", "§cArea must have %s");
+        
+        provider.add("recipe_condition.gtceu.cleanroom", "Requires %s");
+        provider.add("recipe_condition.gtceu.cleanroom.normal", "Cleanroom");
+        provider.add("recipe_condition.gtceu.cleanroom.sterile", "Sterile Cleanroom");
+
+        provider.add("recipe_condition.gtceu.research", "Requires Research");
     }
 
     private static void generateRecipeDataKeys(GTLangProvider provider) {
         // Recipe Data
-        provider.add("gtceu.recipe.total", "Total: %s EU");
-        provider.add("gtceu.recipe.max_eu", "Max. EU: %s EU");
-        provider.add("gtceu.recipe.eu", "Usage: %s A @ %s");
-        provider.add("gtceu.recipe.eu_inverted", "Generation: %s A @ %s");
-        provider.add("gtceu.recipe.eu.total", "%s EU/t");
+        provider.add("recipe.gtceu.total", "Total: %s EU");
+        provider.add("recipe.gtceu.max_eu", "Max. EU: %s EU");
+        provider.add("recipe.gtceu.eu", "Usage: %s A @ %s");
+        provider.add("recipe.gtceu.eu_inverted", "Generation: %s A @ %s");
+        provider.add("recipe.gtceu.eu.total", "%s EU/t");
 
-        provider.add("gtceu.recipe.scan_for_research", "Scan for Assembly Line");
-        provider.add("gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
-        provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
+        provider.add("recipe.gtceu.scan_for_research", "Scan for Assembly Line");
+        provider.add("recipe.gtceu.computation_per_tick", "Min. Computation: %s CWU/t");
+        provider.add("recipe.gtceu.total_computation", "Computation: %s CWU");
+        
+        provider.add("recipe.gtceu.duration", "Duration: %s secs");
+        provider.add("recipe.gtceu.voltage", "Usage: %s A @ %s");
+        provider.add("recipe.gtceu.total_eu", "Total Usage: %s EU/t");
 
-        provider.add("gtceu.recipe.byproduct_tier", "Byproducts from %s§r+");
+        provider.add("recipe.gtceu.byproduct_tier", "Byproducts from %s§r+");
 
-        provider.add("gtceu.recipe.duration", "Duration: %s secs");
-        provider.add("gtceu.recipe.voltage", "Usage: %s A @ %s");
-        provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
+        provider.add("recipe_condition.gtceu.eu_to_start", "EU To Start: %sEU%s");
+        provider.add("recipe.gtceu.temperature", "Temp: %s");
+        provider.add("recipe.gtceu.coil.tier", "Coil: %s");
 
-        provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
-        provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
-
-        provider.add("gtceu.recipe.explosive", "Explosive: %s");
-        // TODO make the ones below this comment recipe condition keys
-        provider.add("gtceu.recipe.eu_to_start", "EU To Start: %sEU%s");
-        provider.add("gtceu.recipe.dimensions", "Dimensions: %s");
-
-        provider.add("gtceu.recipe.environmental_hazard.reverse", "§cArea must be free of %s");
-        provider.add("gtceu.recipe.environmental_hazard", "§cArea must have %s");
-
-        provider.add("gtceu.recipe.cleanroom", "Requires %s");
-        provider.add("gtceu.recipe.cleanroom.display_name", "Cleanroom");
-        provider.add("gtceu.recipe.cleanroom_sterile.display_name", "Sterile Cleanroom");
-
-        provider.add("gtceu.recipe.research", "Requires Research");
-
-        provider.add("gtceu.recipe.temperature", "Temp: %s");
-        provider.add("gtceu.recipe.coil.tier", "Coil: %s");
     }
 }

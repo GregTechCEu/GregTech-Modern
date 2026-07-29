@@ -48,9 +48,9 @@ public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestConditi
         String questTitle = QuestHandler.get(questId).display().title().toString();
 
         if (isReverse) {
-            return Component.translatable("recipe.gtceu.condition.quest.not_completed.tooltip", questTitle);
+            return Component.translatable("recipe_condition.gtceu.quest.not_completed.tooltip", questTitle);
         } else {
-            return Component.translatable("recipe.gtceu.condition.quest.completed.tooltip", questTitle);
+            return Component.translatable("recipe_condition.gtceu.quest.completed.tooltip", questTitle);
         }
     }
 

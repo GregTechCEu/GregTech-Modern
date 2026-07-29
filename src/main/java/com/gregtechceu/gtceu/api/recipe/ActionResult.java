@@ -17,9 +17,9 @@ public record ActionResult(boolean isSuccess, @Nullable Component reason, @Nulla
     public final static ActionResult SUCCESS = new ActionResult(true, null, null, null);
     public final static ActionResult FAIL_NO_REASON = new ActionResult(false, null, null, null);
     public final static ActionResult PASS_NO_CONTENTS = new ActionResult(true,
-            Component.translatable("gtceu.recipe_logic.no_contents"), null, null);
+            Component.translatable("recipe_logic.gtceu.no_contents"), null, null);
     public final static ActionResult FAIL_NO_CAPABILITIES = new ActionResult(false,
-            Component.translatable("gtceu.recipe_logic.no_capabilities"), null, null);
+            Component.translatable("recipe_logic.gtceu.no_capabilities"), null, null);
 
     public static ActionResult fail(@Nullable Component component, @Nullable RecipeCapability<?> capability, IO io) {
         return new ActionResult(false, component, capability, io);

@@ -166,7 +166,7 @@ public class GTRecipeTypes {
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotsOverlay(IO.OUT, 0, 3, GTGuiTextures.DUST_OVERLAY)
                     .addRecipeUIModifier(RecipeUIModifier
-                            .textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]))))
+                            .textLine(Text.lang("recipe.gtceu.byproduct_tier", GTValues.VNF[GTValues.HV]))))
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR);

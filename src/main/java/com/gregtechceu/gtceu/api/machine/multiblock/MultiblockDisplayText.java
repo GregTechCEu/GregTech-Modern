@@ -385,7 +385,7 @@ public class MultiblockDisplayText {
                 return this;
             var reasons = recipeLogic.getFailureReasons();
             if (!reasons.isEmpty()) {
-                textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
+                textList.add(Component.translatable("recipe_logic.gtceu.setup_fail").withStyle(ChatFormatting.RED));
                 for (var reason : reasons) {
                     textList.add(Component.literal(" - ").append(reason));
                 }
@@ -449,7 +449,7 @@ public class MultiblockDisplayText {
                     if (item.content() instanceof IntProviderIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
-                        displaycount = Component.translatable("recipe.gtceu.content.range",
+                        displaycount = Component.translatable("recipe_content.gtceu.range",
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
                         if (item.chance() < item.maxChance()) {
@@ -491,7 +491,7 @@ public class MultiblockDisplayText {
                     if (fluid.content() instanceof IntProviderFluidIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
-                        displaycount = Component.translatable("recipe.gtceu.content.range",
+                        displaycount = Component.translatable("recipe_content.gtceu.range",
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
                         if (fluid.chance() < fluid.maxChance()) {
