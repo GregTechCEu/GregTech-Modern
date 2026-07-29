@@ -52,7 +52,7 @@ public class BlockLang {
         provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("tooltip.gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("tooltip.gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
-        provider.add("tooltip.gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");
+        provider.add("tooltip.gtceu.fluid_pipe.acid_proof", "Can handle Acids");
         provider.add("tooltip.gtceu.fluid_pipe.cryo_proof", "§6Can handle Cryogenics");
         provider.add("tooltip.gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
 

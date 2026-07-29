@@ -104,7 +104,7 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
 
     public static void displayPlayerInfo(List<Component> compList, UUID playerUUID) {
         final var playerName = UsernameCache.getLastKnownUsername(playerUUID);
-        var online = "gtceu.tooltip.status.trinary.";
+        var online = "common.gtceu.";
         if (GTCEu.isClientThread()) {
             var connection = Minecraft.getInstance().getConnection();
             if (connection != null) {

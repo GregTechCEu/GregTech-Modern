@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -91,7 +92,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
             else tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof"));
             if (plasmaProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof"));
             if (cryoProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof"));
-            if (acidProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof"));
+            if (acidProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
         } else if (gasProof || cryoProof || plasmaProof || acidProof) {
             tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
         }

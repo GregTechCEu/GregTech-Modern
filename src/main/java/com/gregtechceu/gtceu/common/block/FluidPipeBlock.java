@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -111,7 +112,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         else
             tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof"));
 
-        if (properties.isAcidProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof"));
+        if (properties.isAcidProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
         if (properties.isCryoProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof"));
         if (properties.isPlasmaProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof"));
     }

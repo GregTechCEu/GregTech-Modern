@@ -25,8 +25,8 @@ public class MaterialLang {
         generateFluidKeys(provider);
 
         // Cauldron Washing
-        provider.add("tagprefix.ore_dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
-        provider.add("tagprefix.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
+        provider.add("tagprefix.gtceu.impure_dust.purify_tooltip", "Right click a Cauldron to get clean Dust");
+        provider.add("tagprefix.gtceu.crushed_ore.purify_tooltip", "Right click a Cauldron to get Purified Ore");
     }
 
     private static void generateCustomMaterialNames(GTLangProvider provider) {
@@ -35,34 +35,21 @@ public class MaterialLang {
 
     private static void generateFluidKeys(GTLangProvider provider) {
         // Fluid Types
-        provider.add("fluid.gtceu.liquid_generic", "Liquid %s");
-        provider.add("fluid.gtceu.generic", "%s");
-        provider.add("fluid.gtceu.gas_generic", "%s Gas");
-        provider.add("fluid.gtceu.gas_vapor", "%s Vapor");
-        provider.add("fluid.gtceu.plasma", "%s Plasma");
-        provider.add("fluid.gtceu.molten", "Molten %s");
+        provider.add("material.gtceu.fluid_type.liquid_generic", "Liquid %s");
 
-        // Fluid Widgets
-        provider.add("fluid.gtceu.empty", "Empty");
-        provider.add("fluid.gtceu.amount", "§9Amount: %d/%d mB");
-        provider.add("fluid.gtceu.click_to_fill",
-                "§7Click with a Fluid Container to §bfill §7the tank (Shift-click for a full stack).");
-        provider.add("fluid.gtceu.click_combined",
-                "§7Click with a Fluid Container to §cempty §7or §bfill §7the tank (Shift-click for a full stack).");
-        provider.add("fluid.gtceu.click_to_empty",
-                "§7Click with a Fluid Container to §cempty §7the tank (Shift-click for a full stack).");
+        provider.add("material.gtceu.fluid_type.generic", "%s");
 
+        provider.add("material.gtceu.fluid_type.gas_generic", "%s Gas");
+        provider.add("material.gtceu.fluid_type.gas_vapor", "%s Vapor");
+        provider.add("material.gtceu.fluid_type.plasma", "%s Plasma");
+        provider.add("material.gtceu.fluid_type.molten", "Molten %s");
+        
         // Fluid Tooltips
-        provider.add("tooltip.gtceu.fluid_state.gas", "§aState: Gaseous");
-        provider.add("tooltip.gtceu.fluid_state.liquid", "§aState: Liquid");
-        provider.add("tooltip.gtceu.fluid_state.plasma", "§aState: Plasma");
-        provider.add("tooltip.gtceu.fluid_property.temperature", "§cTemperature: %s");
-        provider.add("tooltip.gtceu.fluid_property.cryogenic", "§bCryogenic! Handle with care!");
-        provider.add("tooltip.gtceu.fluid_property.acid", "§6Acidic! Handle with care!");
-
-        // Fluid Tiles?
-        provider.add("fluid.empty", "Empty");
-        provider.add("fluid.tile.lava", "Lava");
-        provider.add("fluid.tile.water", "Water");
+        provider.add("material.gtceu.fluid_state.gas", "State: Gaseous");
+        provider.add("material.gtceu.fluid_state.liquid", "State: Liquid");
+        provider.add("material.gtceu.fluid_state.plasma", "State: Plasma");
+        provider.add("material.gtceu.fluid_property.temperature", "Temperature: %s");
+        provider.add("material.gtceu.fluid_property.cryogenic", "Cryogenic! Handle with care!");
+        provider.add("material.gtceu.fluid_property.acid", "Acidic! Handle with care!");
     }
 }

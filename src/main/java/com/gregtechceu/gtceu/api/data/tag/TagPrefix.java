@@ -266,7 +266,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.crushed.tooltip.purify")));
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.gtceu.crushed_ore.purify_tooltip")));
 
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
     public static final TagPrefix ingotHot = new TagPrefix(GTCEu.id("hotIngot"))
@@ -396,7 +396,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.ore_dust.tooltip.purify")));
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.gtceu.impure_dust.purify_tooltip")));
 
     // Pure Dust worth of one Ingot or Gem.
     public static final TagPrefix dustPure = new TagPrefix(GTCEu.id("pureDust"))
@@ -409,7 +409,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.ore_dust.tooltip.purify")));
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.gtceu.impure_dust.purify_tooltip")));
 
     public static final TagPrefix dust = new TagPrefix(GTCEu.id("dust"))
             .defaultTagPath("dusts/%s")

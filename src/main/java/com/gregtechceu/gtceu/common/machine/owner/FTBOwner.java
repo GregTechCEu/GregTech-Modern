@@ -87,7 +87,7 @@ public non-sealed class FTBOwner extends MachineOwner {
     public String getName() {
         var team = getTeam();
         return team != null ? team.getName().getString() :
-                Component.translatable("gtceu.tooltip.status.trinary.unknown").getString();
+                Component.translatable("common.gtceu.unknown").getString();
     }
 
     @Override

@@ -352,7 +352,7 @@ public class GTItems {
             @Override
             public Component getItemName(ItemStack stack) {
                 Component prefix = FluidUtil.getFluidContained(stack).map(FluidStack::getDisplayName)
-                        .orElse(Component.translatable("fluid.gtceu.empty"));
+                        .orElse(Component.translatable("common.gtceu.empty"));
                 return Component.translatable(stack.getDescriptionId(), prefix);
             }
         };

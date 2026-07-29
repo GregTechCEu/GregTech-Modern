@@ -115,17 +115,17 @@ public class TooltipsHandler {
 
         if (fluid instanceof GTFluid attributedFluid) {
             FluidState state = attributedFluid.getState();
-            tooltips.accept(Component.translatable(state.getTranslationKey()));
+            tooltips.accept(Component.translatable(state.getTranslationKey()).withStyle(ChatFormatting.GREEN));
             attributedFluid.getAttributes().forEach(a -> a.appendFluidTooltips(tooltips));
         } else {
-            String key = "tooltip.gtceu.fluid_state." + (fluidType.isLighterThanAir() ? "gas" : "liquid");
+            String key = "material.gtceu.fluid_state." + (fluidType.isLighterThanAir() ? "gas" : "liquid");
             tooltips.accept(Component.translatable(key));
         }
 
-        tooltips.accept(Component.translatable("tooltip.gtceu.fluid_property.temperature",
-                FormattingUtil.formatTemperature(fluidType.getTemperature())));
+        tooltips.accept(Component.translatable("material.gtceu.fluid_property.temperature",
+                FormattingUtil.formatTemperature(fluidType.getTemperature())).withStyle(ChatFormatting.RED));
         if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
-            tooltips.accept(Component.translatable("tooltip.gtceu.fluid_property.cryogenic"));
+            tooltips.accept(Component.translatable("material.gtceu.fluid_property.cryogenic").withStyle(ChatFormatting.AQUA));
         }
     }
 }

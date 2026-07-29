@@ -73,7 +73,7 @@ public non-sealed class ArgonautsOwner extends MachineOwner {
     public String getName() {
         var guild = getGuild();
         return guild != null ? guild.displayName().getString() :
-                Component.translatable("gtceu.tooltip.status.trinary.unknown").getString();
+                Component.translatable("common.gtceu.unknown").getString();
     }
 
     @Override

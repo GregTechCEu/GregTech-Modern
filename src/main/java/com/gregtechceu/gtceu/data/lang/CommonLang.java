@@ -46,9 +46,11 @@ public class CommonLang {
         provider.add("common.gtceu.seconds", "%s second(s)");
         provider.add("common.gtceu.years", "%s year(s)");
 
-        provider.add("gtceu.tooltip.status.trinary.false", "False");
-        provider.add("gtceu.tooltip.status.trinary.true", "True");
-        provider.add("gtceu.tooltip.status.trinary.unknown", "Unknown");
+        provider.add("common.gtceu.false", "False");
+        provider.add("common.gtceu.true", "True");
+        provider.add("common.gtceu.unknown", "Unknown");
+
+        provider.add("common.gtceu.empty", "Empty");
     }
 
     private static void generateCommonTooltips(GTLangProvider provider) {
