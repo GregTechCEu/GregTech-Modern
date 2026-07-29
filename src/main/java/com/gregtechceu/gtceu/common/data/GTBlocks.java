@@ -117,6 +117,7 @@ public class GTBlocks {
         var type = LaserPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
+                .setData(ProviderType.LANG, nameAndTooltipLang("Normal Laser Pipe", "§7Transmitting power with §fno loss§7 in straight lines"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -146,7 +147,7 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
-                .lang("Optical Fiber Cable")
+                .setData(ProviderType.LANG, nameAndTooltipLang("Optical Fiber Cable", "§7Transmitting §fComputation§7 or §fResearch Data§7"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -748,7 +749,7 @@ public class GTBlocks {
 
     public static final BlockEntry<PowderbarrelBlock> POWDERBARREL = REGISTRATE
             .block("powderbarrel", PowderbarrelBlock::new)
-            .lang("Powderbarrel")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Powderbarrel", "Slightly larger than TNT, drops all destroyed Blocks as Items"))
             .properties(p -> p.destroyTime(0.5F).sound(SoundType.WOOD).mapColor(MapColor.STONE)
                     .pushReaction(PushReaction.BLOCK))
             .tag(BlockTags.MINEABLE_WITH_AXE)
@@ -757,7 +758,7 @@ public class GTBlocks {
 
     public static final BlockEntry<IndustrialTNTBlock> INDUSTRIAL_TNT = REGISTRATE
             .block("industrial_tnt", IndustrialTNTBlock::new)
-            .lang("Industrial TNT")
+            .setData(ProviderType.LANG, nameAndTooltipLang("Industrial TNT", "Much larger than TNT, drops all destroyed Blocks as Items"))
             .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),

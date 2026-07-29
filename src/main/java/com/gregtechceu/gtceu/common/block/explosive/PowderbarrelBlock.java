@@ -28,11 +28,4 @@ public class PowderbarrelBlock extends GTExplosiveBlock {
         float x = pos.getX() + 0.5F, y = pos.getY(), z = pos.getZ() + 0.5F;
         return new PowderbarrelEntity(world, x, y, z, exploder);
     }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
-                                TooltipFlag flag) {
-        tooltip.add(Component.translatable("block.gtceu.powderbarrel.drops_tooltip"));
-        super.appendHoverText(stack, level, tooltip, flag);
-    }
 }

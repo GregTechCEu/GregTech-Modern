@@ -16,9 +16,6 @@ public class BlockLang {
         provider.add("block.gtceu.explosive.breaking_tooltip",
                 "Primes explosion when mined, sneak mine to pick back up");
         provider.add("block.gtceu.explosive.lighting_tooltip", "Cannot be lit with Redstone");
-        provider.add("block.gtceu.powderbarrel.drops_tooltip",
-                "Slightly larger than TNT, drops all destroyed Blocks as Items");
-        provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
 
         // Coil Tooltip
         provider.add("block.gtceu.wire_coil.tooltip.extended_info", "§7Hold SHIFT to show Coil Bonus Info");
@@ -34,12 +31,6 @@ public class BlockLang {
         // Substation Capacitors
         provider.add("block.gtceu.substation_capacitor.tooltip.empty", "§7For filling space in your Power Substation");
         provider.add("block.gtceu.substation_capacitor.tooltip.filled", "§cEnergy Capacity: §f%d EU");
-
-        // Bricked Casings
-        provider.add("block.gtceu.steam_casing_bronze.tooltip", "§7For your first Steam Machines");
-        provider.add("block.gtceu.steam_casing_bricked_bronze.tooltip", "§7For your first Steam Machines");
-        provider.add("block.gtceu.steam_casing_steel.tooltip", "§7For improved Steam Machines");
-        provider.add("block.gtceu.steam_casing_bricked_steel.tooltip", "§7For improved Steam Machines");
 
         // Lamps
         provider.add("block.gtceu.lamp.tooltip.inverted", "Inverted");
@@ -70,10 +61,5 @@ public class BlockLang {
 
         // Duct Pipes
         provider.add("tooltip.gtceu.duct_pipe.transfer_rate", "§bAir transfer rate: %s");
-
-        // Optical/Laser
-        provider.add("block.gtceu.normal_laser_pipe.tooltip",
-                "§7Transmitting power with §fno loss§7 in straight lines");
-        provider.add("block.gtceu.normal_optical_pipe.tooltip", "§7Transmitting §fComputation§7 or §fResearch Data§7");
     }
 }

@@ -24,13 +24,6 @@ public class IndustrialTNTBlock extends GTExplosiveBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
-                                TooltipFlag flag) {
-        tooltip.add(Component.translatable("block.gtceu.itnt.drops_tooltip"));
-        super.appendHoverText(stack, level, tooltip, flag);
-    }
-
-    @Override
     protected GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos,
                                              @Nullable LivingEntity exploder) {
         float x = pos.getX() + 0.5F, y = pos.getY(), z = pos.getZ() + 0.5F;

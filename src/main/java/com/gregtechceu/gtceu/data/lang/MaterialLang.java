@@ -21,9 +21,12 @@ public class MaterialLang {
     }
 
     public static void init(GTLangProvider provider) {
-        generateMaterialKeys(provider);
         generateCustomMaterialNames(provider);
         generateFluidKeys(provider);
+
+        // Cauldron Washing
+        provider.add("tagprefix.ore_dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
+        provider.add("tagprefix.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
     }
 
     private static void generateCustomMaterialNames(GTLangProvider provider) {
@@ -61,16 +64,5 @@ public class MaterialLang {
         provider.add("fluid.empty", "Empty");
         provider.add("fluid.tile.lava", "Lava");
         provider.add("fluid.tile.water", "Water");
-    }
-
-    private static void generateMaterialKeys(GTLangProvider provider) {
-        // Material Page
-        provider.add("recipeviewer.gtceu.materials.average_mass", "Average mass: %d");
-        provider.add("recipeviewer.gtceu.materials.average_protons", "Average protons: %d");
-        provider.add("recipeviewer.gtceu.materials.average_neutrons", "Average neutrons: %d");
-
-        // Cauldron Washing
-        provider.add("tagprefix.ore_dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
-        provider.add("tagprefix.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
     }
 }
