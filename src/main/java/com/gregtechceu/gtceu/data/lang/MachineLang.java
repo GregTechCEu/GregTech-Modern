@@ -443,8 +443,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
-        provider.addMultiline("gtceu.multiblock.dimensions", "Dimensions: \n" +
-                "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s ");
 
         // Power Substation
         provider.addMultiLang("gtceu.machine.power_substation.tooltip",

@@ -67,21 +67,21 @@ public class SinglePredicateError extends PatternError {
             parent.child(Text.of(Component.translatable(debugName)).asWidget());
             switch (type) {
                 case MAX_COUNT -> {
-                    parent.child(Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count",
+                    parent.child(Text.of(Component.translatable("multiblock.gtceu.predicate.count.limit.max_count",
                             predMaxCount, actualCount)).asWidget());
                 }
                 case MIN_COUNT -> {
-                    parent.child(Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count",
+                    parent.child(Text.of(Component.translatable("multiblock.gtceu.predicate.count.limit.min_count",
                             predMinCount, actualCount)).asWidget());
                 }
                 case MAX_LAYER_COUNT -> {
                     parent.child(
-                            Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.max_layer_count",
+                            Text.of(Component.translatable("multiblock.gtceu.predicate.count.limit.max_layer_count",
                                     predMaxLayerCount, actualCount)).asWidget());
                 }
                 case MIN_LAYER_COUNT -> {
                     parent.child(
-                            Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.min_layer_count",
+                            Text.of(Component.translatable("multiblock.gtceu.predicate.count.limit.min_layer_count",
                                     predMinLayerCount, actualCount)).asWidget());
                 }
             }

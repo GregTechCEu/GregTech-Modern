@@ -134,14 +134,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         int b = bounds.get(5);
         if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
             pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
+                    new PatternStringError(Component.translatable("multiblock.gtceu.pattern_error.cleanroom.too_small")));
             invalidateStructure();
             return;
         }
 
         if (Math.abs(l - r) > 1 || Math.abs(b - f) > 1) {
             pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
+                    new PatternStringError(Component.translatable("multiblock.gtceu.pattern_error.cleanroom.not_centered")));
             invalidateStructure();
             return;
         }
@@ -549,7 +549,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         GenericSyncValue<Component> distComponent = GenericSyncValue.builder(Component.class)
                 .adapter(COMPONENT)
-                .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", bounds.get(3) + bounds.get(4) + 1,
+                .getter(() -> Component.translatable("multiblock.gtceu.dimensions.1", bounds.get(3) + bounds.get(4) + 1,
                         bounds.get(1) + 1,
                         bounds.get(4) + bounds.get(5) + 1))
                 .build();
@@ -604,7 +604,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 
-        widgets.add(Text.of(Component.translatable("gtceu.multiblock.dimensions.0"))
+        widgets.add(Text.of(Component.translatable("multiblock.gtceu.dimensions.0"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
         widgets.add(Text.dynamic(distComponent::getValue)

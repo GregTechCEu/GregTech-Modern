@@ -37,7 +37,7 @@ public class FilterMatchingError extends PatternError {
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             Objects.requireNonNull(pos);
-            Component comp = Component.translatable("gtceu.pattern_error.mismatch_filters",
+            Component comp = Component.translatable("multiblock.gtceu.pattern_error.mismatch_filters",
                     filterType1.getName(), filterType2.getName(),
                     pos.getX(), pos.getY(), pos.getZ());
             parent.child(Text.of(comp).asWidget());

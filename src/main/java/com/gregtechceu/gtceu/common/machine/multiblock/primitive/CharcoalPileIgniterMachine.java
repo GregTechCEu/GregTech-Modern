@@ -155,7 +155,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                 multiblockState -> {
                     BlockPos p = multiblockState.getBlockPos();
                     return multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
-                            null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
+                            null : new PatternStringError(Component.translatable("multiblock.gtceu.pattern_error.charcoal.walls",
                                     p.getX(), p.getY(), p.getZ()));
                 }, null);
     }
@@ -163,7 +163,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static PatternPredicate logPredicate() {
         return new PatternPredicate(multiblockState -> {
             boolean match = multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN);
-            return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));
+            return match ? null : new PatternStringError(Component.translatable("multiblock.gtceu.pattern_error.charcoal.logs"));
         }, null);
     }
 

@@ -115,7 +115,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         // Invalidate the structure if there is not at least one output and one input
         if (powerInput.isEmpty() || powerOutput.isEmpty()) {
             pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.active_transformer.missing_io",
+                    new PatternStringError(Component.translatable("multiblock.gtceu.pattern_error.active_transformer.missing_io",
                             powerInput.isEmpty(), powerOutput.isEmpty())));
             this.invalidateStructure(substructureName);
         }

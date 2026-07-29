@@ -444,7 +444,7 @@ public class GTMachineUtils {
                                         FormattingUtil
                                                 .formatNumbers(
                                                         EnergyHatchPartMachine.getHatchEnergyCapacity(tier, amperage))),
-                                Component.translatable("gtceu.part_sharing.disabled"))
+                                Component.translatable("multiblock.gtceu.part_sharing.disabled"))
                         .abilities(ability)
                         .modelProperty(IS_FORMED, false)
                         .overlayTieredHullModel("laser_" + name + "_hatch")
@@ -588,7 +588,7 @@ public class GTMachineUtils {
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
                 .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"),
-                        Component.translatable("gtceu.part_sharing.disabled"))
+                        Component.translatable("multiblock.gtceu.part_sharing.disabled"))
                 .rotationState(RotationState.ALL);
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/tank_valve"));
         return builder.register();
@@ -700,11 +700,11 @@ public class GTMachineUtils {
                                         IntStream.of(ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV)
                                                 .filter(t -> t >= tier)
                                                 .toArray())
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
+                                        .addTooltips(Component.translatable("multiblock.gtceu.predicate.count.limit.1",
                                                 GTValues.VN[tier])))
                         .where('A',
                                 blocks(intake.get())
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
+                                        .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount_1")))
                         .where('Y', controller(blocks(definition.getBlock())))
                         .build())
                 .recoveryItems(
@@ -783,8 +783,8 @@ public class GTMachineUtils {
         }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
                 .map(BlockInfo::fromBlock)
                 .toList()))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
+                .addTooltips(Component.translatable("multiblock.gtceu.pattern.clear_amount_3"))
+                .addTooltips(Component.translatable("multiblock.gtceu.predicate.count.limit.1",
                         VN[tier]));
     }
 

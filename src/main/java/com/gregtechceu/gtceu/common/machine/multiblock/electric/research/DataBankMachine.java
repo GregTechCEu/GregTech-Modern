@@ -82,7 +82,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
 
         if (this.maintenance == null) {
             pState.setError(new PatternStringError(
-                    Component.translatable("gtceu.predicate_error.databank.missing_maintenance")));
+                    Component.translatable("multiblock.gtceu.pattern_error.databank.missing_maintenance")));
             invalidateStructure(substructureName);
             return;
         }
