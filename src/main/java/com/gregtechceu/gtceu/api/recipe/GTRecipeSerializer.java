@@ -196,6 +196,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeResourceLocation(recipe.recipeCategory.registryKey);
     }
 
+    /**
+     * Codecs can only have up to 16 inputs. This is at 15 now, so the three recipe Parallel/Batch values are
+     * condensed to a List.
+     */
     private static Codec<GTRecipe> makeCodec(boolean isKubeLoaded) {
         // spotless:off
         if (!isKubeLoaded) {

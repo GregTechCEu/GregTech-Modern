@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
@@ -83,6 +84,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 recipeCategory, groupColor);
     }
 
+    /**
+     * Accepts Parallels, Batches, and BatchParallels as a single List
+     * Necessary for {@link GTRecipeSerializer}
+     */
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
                     Map<RecipeCapability<?>, List<Content>> outputs,
@@ -105,6 +110,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 allParallels.get(2), recipeCategory, groupColor);
     }
 
+    /**
+     * Main constructor, used by {@link GTRecipeBuilder#buildRawRecipe()}
+     */
     public GTRecipe(GTRecipeType recipeType,
                     @Nullable ResourceLocation id,
                     Map<RecipeCapability<?>, List<Content>> inputs,
