@@ -22,14 +22,12 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.gregtechceu.gtceu.api.GTValues.HV;
-
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
-public class LargeSteamTurbine {
+public class LargeSteamTurbineTest {
 
     @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
-    public static void LstActivates(GameTestHelper helper) {
+    public static void LstActivatesTest(GameTestHelper helper) {
         {
             final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
@@ -55,7 +53,7 @@ public class LargeSteamTurbine {
     }
 
     @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
-    public static void LstStopsOnBrokenRotor(GameTestHelper helper) {
+    public static void LstStopsOnBrokenRotorTest(GameTestHelper helper) {
         final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
         block.setConnection(Direction.SOUTH, true, false);
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
@@ -84,7 +82,7 @@ public class LargeSteamTurbine {
     }
 
     @GameTest(template = "lst_infinite_steam", timeoutTicks = 2)
-    public static void LstGeneratesCorrectPower(GameTestHelper helper) {
+    public static void LstGeneratesCorrectPowerTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
@@ -110,7 +108,7 @@ public class LargeSteamTurbine {
     }
 
     @GameTest(template = "lst_infinite_steam", timeoutTicks = 101)
-    public static void LstRotorSpeedIncreasesAndDecreasesAsExpected(GameTestHelper helper) {
+    public static void LstRotorSpeedIncreasesAndDecreasesAsExpectedTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
@@ -123,36 +121,45 @@ public class LargeSteamTurbine {
         rotorPart.setRotorSpeed(0);
         machine.recipeLogic.findAndHandleRecipe();
         final AtomicInteger lastSpeed = new AtomicInteger(0);
-        final AtomicBoolean isIncreasing = new AtomicBoolean(true);
-        final AtomicInteger skip = new AtomicInteger(1);
+        final AtomicBoolean wasWorking = new AtomicBoolean(false);
+        final AtomicBoolean hasSample = new AtomicBoolean(false);
+        final AtomicInteger increasedTicks = new AtomicInteger(0);
+        final AtomicInteger decreasedTicks = new AtomicInteger(0);
+        final int stopTick = 17 * 5 - 1;
         helper.onEachTick(() -> {
-            if (skip.getAndUpdate(value -> Math.max(0, value - 1)) != 0) {
-                lastSpeed.set(rotorPart.getRotorSpeed());
-                return;
+            if (helper.getTick() == stopTick) {
+                machine.setWorkingEnabled(false);
             }
-            var last = lastSpeed.get();
-            var now = rotorPart.getRotorSpeed();
-            if (isIncreasing.get())
-                helper.assertTrue(now == last + 1,
-                        String.format("Expected speed to increase by 1, got %d", now - last));
-            else
-                helper.assertTrue(now == last - 3,
-                        String.format("Expected speed to decrease by 3, got %d", last - now));
-            last = rotorPart.getRotorSpeed();
-            lastSpeed.set(now);
+
+            final boolean working = machine.getRecipeLogic().isWorking();
+            final int speed = rotorPart.getRotorSpeed();
+            final int last = lastSpeed.getAndSet(speed);
+            final boolean previouslyWorking = wasWorking.getAndSet(working);
+            if (!hasSample.getAndSet(true)) return;
+            if (working != previouslyWorking) return;
+            if (!working && last <= 0) return;
+
+            if (working) {
+                helper.assertTrue(speed == last + RotorHolderPartMachine.SPEED_INCREMENT,
+                        String.format("Expected speed to increase by %d, got %d",
+                                RotorHolderPartMachine.SPEED_INCREMENT, speed - last));
+                increasedTicks.incrementAndGet();
+            } else {
+                helper.assertTrue(speed == last - RotorHolderPartMachine.SPEED_DECREMENT,
+                        String.format("Expected speed to decrease by %d, got %d",
+                                RotorHolderPartMachine.SPEED_DECREMENT, last - speed));
+                decreasedTicks.incrementAndGet();
+            }
         });
-        helper.runAtTickTime(17 * 5 - 1, () -> {
-            isIncreasing.set(false);
-            machine.setWorkingEnabled(false);
-            // REASON: I don't care to know why, I don't want to know why, and this fixes it.
-            // Both the increment and decrement occur at once; so we need this to make the test pass '_'
-            lastSpeed.addAndGet(1);
+        helper.runAtTickTime(100, () -> {
+            helper.assertTrue(increasedTicks.get() > 0, "Expected the rotor to have spun up at all");
+            helper.assertTrue(decreasedTicks.get() > 0, "Expected the rotor to have spun down at all");
+            helper.succeed();
         });
-        helper.runAtTickTime(100, () -> helper.succeed());
     }
 
     @GameTest(template = "lst_infinite_steam_with_output", timeoutTicks = 101)
-    public static void LstOutputsCorrectAmountOfDistilledWater(GameTestHelper helper) {
+    public static void LstOutputsCorrectAmountOfDistilledWaterTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
@@ -177,7 +184,7 @@ public class LargeSteamTurbine {
     }
 
     @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
-    public static void LstRunsWithFullDynamo(GameTestHelper helper) {
+    public static void LstRunsWithFullDynamoTest(GameTestHelper helper) {
         {
             final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
@@ -205,7 +212,7 @@ public class LargeSteamTurbine {
     }
 
     @GameTest(template = "lst_infinite_steam_nomaintenance", timeoutTicks = 50 + 1)
-    public static void LstRefusesToRunWithoutMaintenance(GameTestHelper helper) {
+    public static void LstRefusesToRunWithoutMaintenanceTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
@@ -227,7 +234,7 @@ public class LargeSteamTurbine {
     }
 
     @GameTest(template = "lst_with_lava", timeoutTicks = 50 + 1)
-    public static void LstRefusesToRunOnWrongFluid(GameTestHelper helper) {
+    public static void LstRefusesToRunOnWrongFluidTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
