@@ -37,25 +37,6 @@ public class IntegrationLang {
         provider.add("recipeviewer.gtceu.ore_vein_diagram.weight", "Weight: %s");
         provider.add("recipeviewer.gtceu.ore_vein_diagram.dimensions", "Dimensions:");
 
-        provider.addMultiLang("recipeviewer.gtceu.ore.primary", "Top Ore",
-                "Spawns in the top %d layers of the vein");
-        provider.addMultiLang("recipeviewer.gtceu.ore.secondary", "Bottom Ore",
-                "Spawns in the bottom %d layers of the vein");
-        provider.addMultiLang("recipeviewer.gtceu.ore.between", "Between Ore",
-                "Spawns in the middle %d layers of the vein, with other ores");
-        provider.addMultiLang("recipeviewer.gtceu.ore.sporadic", "Sporadic Ore",
-                "Spawns anywhere in the vein");
-
-        provider.add("recipeviewer.gtceu.ore.biome_weighting_title", "§dModified Biome Total Weights:");
-        provider.add("recipeviewer.gtceu.ore.biome_weighting", "§d%s Weight: §3%d");
-        provider.add("recipeviewer.gtceu.ore.biome_weighting_no_spawn", "§d%s Weight: §cCannot Spawn");
-        provider.add("recipeviewer.gtceu.ore.ore_weight", "Weight in vein: %d%%");
-
-        // Surface Rock
-        provider.addMultiLang("recipeviewer.gtceu.ore.surface_rock",
-                "Surface Rocks with this material denote vein spawn locations.",
-                "They can be broken for 3 Tiny Piles of the dust, with Fortune giving a bonus.");
-
         // Fluid vein
 
         provider.add("recipeviewer.gtceu.fluid.vein_weight", "Vein Weight: %d");
@@ -67,8 +48,6 @@ public class IntegrationLang {
 
         provider.add("recipeviewer.gtceu.fluid.dimension", "Dimensions:");
 
-        provider.add("recipeviewer.gtceu.fluid.weight_hover",
-                "The Weight of the vein. Hover over the fluid to see any possible biome modifications");
         provider.add("recipeviewer.gtceu.fluid.min_hover",
                 "The minimum yield that any fluid vein of this fluid can have");
         provider.add("recipeviewer.gtceu.fluid.max_hover",
@@ -95,9 +74,6 @@ public class IntegrationLang {
             String name = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid).getPath();
             provider.add("recipeviewer.gtceu.bedrock_fluid." + name, FormattingUtil.toEnglishName(name));
         }
-
-        // Potion
-        provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
 
     /** Jade */
@@ -139,17 +115,6 @@ public class IntegrationLang {
         // Primitive Pump
         provider.add("integration.gtceu.jade.primitive_pump_production", "Production: %s mB/s");
 
-        // Ender Link Cover??
-        provider.add("integration.gtceu.jade.filter.label", "Filter:");
-        provider.add("integration.gtceu.jade.link_cover.color", "Color:");
-        provider.add("integration.gtceu.jade.mode.export", "Exporting");
-        provider.add("integration.gtceu.jade.mode.import", "Importing");
-
-        // Extra Cover Provider
-        provider.add("integration.gtceu.jade.unit.items", "Items");
-        provider.add("integration.gtceu.jade.unit.fluid_milibuckets", "L");
-        provider.add("integration.gtceu.jade.unit.fluid_buckets", "kL");
-
         // Recipe Provider
         provider.add("integration.gtceu.jade.recipe_output", "Recipe Outputs:");
         provider.add("integration.gtceu.jade.item_auto_output", "Item Output: %s");
@@ -162,7 +127,7 @@ public class IntegrationLang {
         // Cable Provider
         provider.add("integration.gtceu.jade.cable.voltage", "Voltage: ");
         provider.add("integration.gtceu.jade.cable.amperage", "Amperage: ");
-        provider.add("integration.gtceu.jade.cable.overloaded", "§cCable Overloaded!§r");
+        provider.add("integration.gtceu.jade.cable.overloaded", "Cable Overloaded!");
         // Machine Mode Provider
         provider.add("integration.gtceu.jade.machine_mode", "Machine Mode: ");
 
@@ -174,21 +139,14 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.pattern_buffer.bound_to_pos", "Bound To - X: %s, Y: %s, Z: %s");
         provider.add("integration.gtceu.jade.pattern_buffer.proxies_bound", "Buffer Proxies Bound: %s");
 
-        provider.add("integration.gtceu.jade.energy_stored", " / %d EU");
-        provider.add("integration.gtceu.jade.progress_computation", " / %s CWU");
-        provider.add("integration.gtceu.jade.progress_sec", " / %s s");
-        provider.add("integration.gtceu.jade.progress_tick", " / %s t");
-
         provider.add("integration.gtceu.jade.energy_stored", "%d / %d EU");
         provider.add("integration.gtceu.jade.progress_computation", "%s / %s CWU");
         provider.add("integration.gtceu.jade.progress_sec", "%s / %s s");
         provider.add("integration.gtceu.jade.progress_tick", "%s / %s t");
 
-        // Hazard Provider
         provider.add("integration.gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
         provider.add("integration.gtceu.jade.fluid_use", "%s mB/t");
         provider.add("integration.gtceu.jade.amperage_use", "%s A");
-        provider.add("integration.gtceu.jade.at", " @ ");
         provider.add("integration.gtceu.jade.remaining_charge_time", "Until charged: %s");
         provider.add("integration.gtceu.jade.remaining_discharge_time", "Until empty: %s");
         provider.add("integration.gtceu.jade.changes_eu_sec", "%s EU/s");
@@ -197,6 +155,13 @@ public class IntegrationLang {
         provider.add("integration.gtceu.jade.hours", "%s hours");
         provider.add("integration.gtceu.jade.days", "%s days");
         provider.add("integration.gtceu.jade.years", "%s years");
+
+        provider.add("integration.gtceu.jade.ldp_endpoint.is_formed", "Pipeline Formed");
+        provider.add("integration.gtceu.jade.ldp_endpoint.not_formed", "Pipeline Incomplete");
+        provider.add("integration.gtceu.jade.ldp_endpoint.io_type", "IO Type: %s");
+        provider.add("integration.gtceu.jade.ldp_endpoint.output_direction", "Output Direction: %s");
+
+        provider.add("integration.gtceu.jade.generator.output_too_small", "Energy Output too small!");
 
         // Plugin Names
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
@@ -223,18 +188,6 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
-
-        provider.add("integration.gtceu.jade.energy_stored", " / %d EU");
-        provider.add("integration.gtceu.jade.progress_computation", " / %s CWU");
-        provider.add("integration.gtceu.jade.progress_sec", " / %s s");
-        provider.add("integration.gtceu.jade.progress_tick", " / %s t");
-
-        provider.add("integration.gtceu.jade.ldp_endpoint.is_formed", "§aPipeline Formed§r");
-        provider.add("integration.gtceu.jade.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
-        provider.add("integration.gtceu.jade.ldp_endpoint.io_type", "IO Type: %s");
-        provider.add("integration.gtceu.jade.ldp_endpoint.output_direction", "Output Direction: %s");
-
-        provider.add("integration.gtceu.jade.generator.output_too_small", "Energy Output too small!");
     }
 
     private static void initMinimapLang(GTLangProvider provider) {

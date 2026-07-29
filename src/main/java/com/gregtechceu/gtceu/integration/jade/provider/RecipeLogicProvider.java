@@ -98,7 +98,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                                 .translatable("integration.gtceu.jade.amperage_use",
                                         FormattingUtil.formatNumber2Places(minAmperage))
                                 .withStyle(ChatFormatting.RED)
-                                .append(Component.translatable("integration.gtceu.jade.at").withStyle(ChatFormatting.GREEN));
+                                .append(Component.literal(" @ ").withStyle(ChatFormatting.GREEN));
                         if (tier < GTValues.TIER_COUNT) {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));

@@ -32,8 +32,8 @@ public class ItemLang {
         // General Electric Tools
         provider.add("item.gtceu.electric.tooltip", "%d/%d EU - Tier %s");
         provider.add("item.gtceu.electric.stored", "%d/%d EU (%s)");
-        provider.add("item.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
-        provider.add("item.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
+        provider.add("item.electric.discharge_mode.enabled", "Discharge Mode Enabled");
+        provider.add("item.electric.discharge_mode.disabled", "Discharge Mode Disabled");
         provider.add("item.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
 
     }
@@ -52,14 +52,14 @@ public class ItemLang {
         provider.add("item.gtceu.behavior.hammer", "Turns on and off Muffling for Machines (by hitting them)");
         
         // Magnet
-        provider.add("item.gtceu.behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
-        provider.add("item.gtceu.behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
+        provider.add("item.gtceu.behavior.item_magnet.enabled", "Magnetic Field Enabled");
+        provider.add("item.gtceu.behavior.item_magnet.disabled", "Magnetic Field Disabled");
 
         // Wrench Configuration
-        provider.add("item.gtceu.behavior.tool_mode.mode", "§aConfiguration Mode:§r %s");
-        provider.add("item.gtceu.behavior.tool_mode.fluid", "§9Fluid§r");
-        provider.add("item.gtceu.behavior.tool_mode.item", "§6Item§r");
-        provider.add("item.gtceu.behavior.tool_mode.both", "§dBoth (Fluid And Item)§r");
+        provider.add("item.gtceu.behavior.tool_mode.mode", "Configuration Mode:");
+        provider.add("item.gtceu.behavior.tool_mode.fluid", "Fluid");
+        provider.add("item.gtceu.behavior.tool_mode.item", "Item");
+        provider.add("item.gtceu.behavior.tool_mode.both", "Both (Fluid And Item)");
 
         // Spray can
         provider.add("item.gtceu.behavior.spray_paint.solvent.tooltip", "Can remove color from things");

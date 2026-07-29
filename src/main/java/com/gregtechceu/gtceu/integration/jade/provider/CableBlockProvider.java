@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -48,7 +49,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
 
                 if (temperature != CableBlockEntity.getDefaultTemp()) {
                     iTooltip.add(Component.translatable("integration.gtceu.jade.cable.overloaded", progressToFailure(
-                            CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature)));
+                            CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature)).withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
                 }
             }
         }

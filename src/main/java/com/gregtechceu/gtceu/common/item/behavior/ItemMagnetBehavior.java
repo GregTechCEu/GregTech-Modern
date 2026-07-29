@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -350,7 +351,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines,
                                 TooltipFlag isAdvanced) {
         lines.add(Component
-                .translatable(isActive(itemStack) ? "item.gtceu.behavior.item_magnet.enabled" : "item.gtceu.behavior.item_magnet.disabled"));
+                .translatable(isActive(itemStack) ? "item.gtceu.behavior.item_magnet.enabled" : "item.gtceu.behavior.item_magnet.disabled")
+                .withStyle(isActive(itemStack) ? ChatFormatting.GREEN : ChatFormatting.RED));
     }
 
     private static class CuriosUtils {

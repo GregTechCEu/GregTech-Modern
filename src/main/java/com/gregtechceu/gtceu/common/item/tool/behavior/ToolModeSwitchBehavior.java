@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -99,8 +100,9 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
             if (toolTypes.contains(GTToolType.WRENCH)) {
                 tagCompound.putByte("Mode",
                         (byte) ((tagCompound.getByte("Mode") + 1) % WrenchModeType.values().length));
-                player.displayClientMessage(Component.translatable("item.gtceu.behavior.tool_mode.mode",
-                        WrenchModeType.values()[tagCompound.getByte("Mode")].getName()), true);
+                player.displayClientMessage(Component.translatable("item.gtceu.behavior.tool_mode.mode").withStyle(ChatFormatting.GREEN).append(" ")
+                                .append(WrenchModeType.values()[tagCompound.getByte("Mode")].getName())
+                        , true);
             }
             return InteractionResultHolder.success(itemStack);
         }
@@ -115,17 +117,17 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
 
         var toolTypes = ToolHelper.getToolTypes(stack);
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            tooltip.add(Component.translatable("item.gtceu.behavior.tool_mode.mode",
-                    WrenchModeType.values()[tagCompound.getByte("Mode")].getName()));
+            tooltip.add(Component.translatable("item.gtceu.behavior.tool_mode.mode").withStyle(ChatFormatting.GREEN).append(" ")
+                    .append(WrenchModeType.values()[tagCompound.getByte("Mode")].getName()));
         }
     }
 
     @Getter
     public enum WrenchModeType {
 
-        ITEM(Component.translatable("item.gtceu.behavior.tool_mode.item")),
-        FLUID(Component.translatable("item.gtceu.behavior.tool_mode.fluid")),
-        BOTH(Component.translatable("item.gtceu.behavior.tool_mode.both"));
+        ITEM(Component.translatable("item.gtceu.behavior.tool_mode.item").withStyle(ChatFormatting.GOLD)),
+        FLUID(Component.translatable("item.gtceu.behavior.tool_mode.fluid").withStyle(ChatFormatting.BLUE)),
+        BOTH(Component.translatable("item.gtceu.behavior.tool_mode.both").withStyle(ChatFormatting.LIGHT_PURPLE));
 
         public static final WrenchModeType[] VALUES = values();
 
