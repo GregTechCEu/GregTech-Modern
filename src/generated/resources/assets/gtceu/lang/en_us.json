@@ -3384,6 +3384,7 @@
   "gtceu.multiblock.hpca.description": "The High Performance Computing Array (HPCA) is a multiblock structure used for creating Compute Work Units (CWU/t) for more complex Assembly Line Research Data. The structure has a flexible 3x3 area which can be filled in any way with HPCA components. Different components can provide different amounts of Computation, Cooling, as well as Energy Cost, Coolant Cost, and Heat Production. When used with a Bridge Component, the HPCA can connect to Network Switches for combining and routing Computation from multiple sources to one or more destinations.",
   "gtceu.multiblock.hpca.energy": "Using: %s / %s EU/t (%s)",
   "gtceu.multiblock.hpca.error_damaged": "Damaged component in structure!",
+  "gtceu.multiblock.hpca.error_power": "Power low, CWU generation halted!",
   "gtceu.multiblock.hpca.error_temperature": "Temperature above 100C, components may be damaged!",
   "gtceu.multiblock.hpca.hover_for_info": "Hover for details",
   "gtceu.multiblock.hpca.info_bridging_disabled": "Bridging Disabled",
