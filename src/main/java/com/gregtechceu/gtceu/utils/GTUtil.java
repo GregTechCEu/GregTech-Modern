@@ -572,13 +572,13 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description_shift"));
+            tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description_shift"));
             tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
-            tooltipComponents.add(Component.translatable("tooltip.gtceu.hazard_trigger"));
+            tooltipComponents.add(Component.translatable("hazard_trigger.gtceu"));
             tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
-        tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description"));
+        tooltipComponents.add(Component.translatable("medical_condition.gtceu.tooltip.description"));
     }
 
     public static CompoundTag saveItemStack(ItemStack itemStack, CompoundTag compoundTag) {
@@ -633,12 +633,12 @@ public class GTUtil {
 
     public static void addPotionTooltip(List<Pair<MobEffectInstance, Float>> effects, List<Component> list) {
         if (!effects.isEmpty()) {
-            list.add(Component.translatable("tooltip.gtceu.potion.header"));
+            list.add(Component.translatable("potion.gtceu.tooltip.header"));
         }
         effects.forEach(pair -> {
             var effect = pair.getFirst();
             float probability = pair.getSecond();
-            list.add(Component.translatable("tooltip.gtceu.potion.each",
+            list.add(Component.translatable("potion.gtceu.tooltip.each",
                     Component.translatable(effect.getDescriptionId())
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
                     Component.translatable("enchantment.level." + (effect.getAmplifier() + 1))

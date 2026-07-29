@@ -18,18 +18,18 @@ public class BlockLang {
         provider.add("block.gtceu.explosive.lighting_tooltip", "Cannot be lit with Redstone");
 
         // Coil Tooltip
-        provider.add("block.gtceu.wire_coil.tooltip.extended_info", "§7Hold SHIFT to show Coil Bonus Info");
+        provider.add("block.gtceu.wire_coil.tooltip.extended_info", "Hold SHIFT to show Coil Bonus Info");
         provider.add("block.gtceu.wire_coil.tooltip.heat", "§cBase Heat Capacity: §f%d K");
-        provider.add("block.gtceu.wire_coil.tooltip.smelter", "§8Multi Smelter:");
+        provider.add("block.gtceu.wire_coil.tooltip.smelter", "Multi Smelter:");
         provider.add("block.gtceu.wire_coil.tooltip.parallel_smelter", "  §5Max Parallel: §f%s");
         provider.add("block.gtceu.wire_coil.tooltip.energy_smelter", "  §aEnergy Usage: §f%s EU/t §8per recipe");
-        provider.add("block.gtceu.wire_coil.tooltip.pyro", "§8Pyrolyse Oven:");
+        provider.add("block.gtceu.wire_coil.tooltip.pyro", "Pyrolyse Oven:");
         provider.add("block.gtceu.wire_coil.tooltip.speed_pyro", "  §bProcessing Speed: §f%s%%");
-        provider.add("block.gtceu.wire_coil.tooltip.cracking", "§8Cracking Unit:");
+        provider.add("block.gtceu.wire_coil.tooltip.cracking", "Cracking Unit:");
         provider.add("block.gtceu.wire_coil.tooltip.energy_cracking", "  §aEnergy Usage: §f%s%%");
 
         // Substation Capacitors
-        provider.add("block.gtceu.substation_capacitor.tooltip.empty", "§7For filling space in your Power Substation");
+        provider.add("block.gtceu.substation_capacitor.tooltip.empty", "For filling space in your Power Substation");
         provider.add("block.gtceu.substation_capacitor.tooltip.filled", "§cEnergy Capacity: §f%d EU");
 
         // Lamps
