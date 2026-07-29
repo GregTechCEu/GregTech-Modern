@@ -594,6 +594,7 @@ public class GTMultiblockTextUtil {
                 amountD = amountD * runs * fluidOutput.chance() / fluidOutput.maxChance();
             }
             amount = Math.max(1, (int) Math.round(amountD));
+            stack.setAmount(amount);
             displaycount = Component.literal(String.valueOf(amount));
         }
         if (amountD < maxDurationSec) {
