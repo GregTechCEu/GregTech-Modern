@@ -428,8 +428,6 @@ public class MultiblockDisplayText {
             if (!isStructureFormed || !isActive)
                 return this;
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);

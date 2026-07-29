@@ -496,9 +496,6 @@ public class GTMultiblockTextUtil {
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
-
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         double maxDurationSec = (double) recipe.duration / 20.0;
 
         boolean rounded = false;
@@ -566,8 +563,6 @@ public class GTMultiblockTextUtil {
     public static Optional<Widget<?>> createFluidLineForOutput(Content fluidOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
 
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         double maxDurationSec = (double) recipe.duration / 20.0;
 
         boolean rounded = false;
