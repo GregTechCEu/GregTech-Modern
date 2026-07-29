@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
-import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -75,12 +74,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
-                    int duration, int parallels,  int subtickParallels, int batchParallels,
+                    int duration, int parallels, int subtickParallels, int batchParallels,
                     @NotNull GTRecipeCategory recipeCategory,
                     int groupColor) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels, recipeCategory, groupColor);
+                conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels,
+                recipeCategory, groupColor);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -123,7 +123,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     int groupColor) {
         this(recipeType, id, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, 1,1,1, recipeCategory, groupColor);
+                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -180,7 +180,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, parallels, subtickParallels, batchParallels, recipeCategory, groupColor);
+                new ArrayList<>(ingredientActions), data, duration, parallels, subtickParallels, batchParallels,
+                recipeCategory, groupColor);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
