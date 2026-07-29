@@ -228,11 +228,15 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 return true;
             } else {
                 this.hasNotEnoughEnergy = true;
-                getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
+                getRecipeLogic()
+                        .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                                .append(": ").append(EURecipeCapability.CAP.getName()));
             }
         } else {
             this.hasNotEnoughEnergy = true;
-            getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
+            getRecipeLogic()
+                    .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ").append(EURecipeCapability.CAP.getName()));
         }
         return false;
     }
