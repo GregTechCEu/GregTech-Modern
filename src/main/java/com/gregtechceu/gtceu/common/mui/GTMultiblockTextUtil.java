@@ -527,6 +527,7 @@ public class GTMultiblockTextUtil {
                 countD = countD * runs * itemOutput.chance() / itemOutput.maxChance();
             }
             count = Math.max(1, (int) Math.round(countD));
+            stack.setCount(count);
             displaycount = Component.literal(String.valueOf(count));
         }
         if (countD < maxDurationSec) {
