@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import it.unimi.dsi.fastutil.objects.*;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,9 +14,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
+import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -34,8 +33,15 @@ public class PredicateContext {
     private boolean checkLayer = true;
 
     @Getter
-    protected FailureReason lastFailureReason = FailureReason.NONE;
+    private boolean checkFlipped = false;
 
+    @Getter
+    private FailureReason lastFailureReason = FailureReason.NONE;
+
+    // if (stage == PredicateStage.GLOBAL_MIN || stage == PredicateStage.SLICE_MIN) {
+    // this.currentSlice = null;
+    // }
+    @Setter
     protected PredicateStage stage = PredicateStage.INTERNAL;
 
     public PredicateContext(PatternState state) {
@@ -57,6 +63,7 @@ public class PredicateContext {
             this.state.setError(error);
         }
         this.lastFailureReason = this.stage.getFailureReason();
+        this.checkFlipped = this.lastFailureReason.shouldCheckFlip();
     }
 
     private List<PatternError> getCurrentSliceErrors() {
@@ -122,13 +129,11 @@ public class PredicateContext {
         this.lastFailureReason = FailureReason.NONE;
     }
 
-    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectAVLTreeMap<>(
-            Comparator.comparingInt(Slice::index).thenComparing(Slice::offset)
-    );
+    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectAVLTreeMap<>(Slice::compareTo);
 
     public void commitSliceErrors() {
         for (Slice slice : this.sliceErrors.keySet()) {
-            this.state.appendErrors(List.of(PatternStringError.literal("error(s) at %s", slice)));
+            this.state.appendError(PatternStringError.literal("error(s) at %s", slice));
             this.state.appendErrors(this.sliceErrors.get(slice));
         }
         this.sliceErrors.clear();
@@ -137,7 +142,7 @@ public class PredicateContext {
     private @Nullable Slice currentSlice;
 
     public void pushSlice(int index, int offset) {
-        currentSlice = new Slice(index, offset);
+        this.currentSlice = new Slice(index, offset);
     }
 
     public void updateLevel(Level level) {
@@ -152,11 +157,17 @@ public class PredicateContext {
         return new BlockInfo(state(), blockEntity());
     }
 
-    public void setStage(PredicateStage stage) {
-        this.stage = stage;
-//        if (stage == PredicateStage.GLOBAL_MIN || stage == PredicateStage.SLICE_MIN) {
-//            this.currentSlice = null;
-//        }
+    public void skipFlipCheck() {
+        this.checkFlipped = false;
+    }
+
+    public void reset() {
+        setStage(PredicateStage.INTERNAL);
+        this.currentBlockInfo = new CurrentBlockInfo();
+        this.currentSlice = null;
+        this.sliceErrors.clear();
+        this.globalCount.clear();
+        this.layerCount.clear();
     }
 
     private record Slice(int index, int offset) implements Comparable<Slice> {

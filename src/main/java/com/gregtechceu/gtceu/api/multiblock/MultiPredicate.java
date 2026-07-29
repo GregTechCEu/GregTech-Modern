@@ -266,6 +266,25 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         }
     }
 
+    /// @return innermost base predicate that passes state check at given pos
+    public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
+        for (BasePredicate predicate : this) {
+            if (predicate instanceof CompactedPredicate compacted) {
+                var p = compacted.expand().getPredicateAtPos(context);
+                if (p != null) return p;
+                // else continue...
+            } else if (predicate.test(context)) {
+                // logic needs to capture this
+                getLogic().predicatePassed(predicate);
+                return predicate;
+            } else {
+                // handle errors better than this
+                context.clearErrors();
+            }
+        }
+        return null;
+    }
+
     public enum Logic {
 
         OR,

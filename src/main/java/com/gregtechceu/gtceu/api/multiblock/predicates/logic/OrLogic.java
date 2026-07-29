@@ -41,6 +41,11 @@ public class OrLogic extends BaseLogic {
     }
 
     @Override
+    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext ctx) {
+        return passedPredicate.testGlobalMax(ctx) && passedPredicate.testSliceMax(ctx);
+    }
+
+    @Override
     public MultiPredicate.Logic getType() {
         return MultiPredicate.Logic.OR;
     }

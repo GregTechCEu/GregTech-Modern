@@ -46,7 +46,7 @@ public class XorLogic extends BaseLogic {
     public boolean test(PredicateContext ctx) {
         int passed = 0;
         for (BasePredicate predicate : this.rootPredicate) {
-            if (predicate.testLimited(ctx)) {
+            if (predicate.test(ctx)) {
                 passed++;
                 if (this.passedPredicate == null) {
                     this.passedPredicate = predicate;
@@ -108,6 +108,24 @@ public class XorLogic extends BaseLogic {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
+        if (passedPredicate != this.passedPredicate) {
+            // skip flipped check
+            context.skipFlipCheck();
+            context.error(PatternStringError.literal(passedPredicate + " present in multi"));
+            return false;
+        }
+        return this.passedPredicate.testGlobalMax(context) && this.passedPredicate.testSliceMax(context);
+    }
+
+    @Override
+    public void predicatePassed(BasePredicate predicate) {
+        if (this.passedPredicate == null) {
+            this.passedPredicate = predicate;
+        }
     }
 
     @Override

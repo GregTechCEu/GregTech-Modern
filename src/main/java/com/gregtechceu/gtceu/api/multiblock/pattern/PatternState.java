@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -46,7 +45,8 @@ public class PatternState {
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
-    protected @Nullable PredicateContext context;
+    @Getter
+    protected final PredicateContext context = new PredicateContext(this);
     @Getter
     protected final Long2ObjectMap<BlockInfo> cache = new Long2ObjectOpenHashMap<>();
 
@@ -73,15 +73,8 @@ public class PatternState {
     }
 
     public PredicateContext resetContext(boolean withLayer) {
-        PredicateContext context = getContext();
-        context.setCheckLayer(withLayer);
-        return context;
-    }
-
-    public PredicateContext getContext() {
-        if (this.context == null) {
-            this.context = new PredicateContext(this);
-        }
+        this.context.reset();
+        this.context.setCheckLayer(withLayer);
         return this.context;
     }
 
@@ -92,6 +85,12 @@ public class PatternState {
 
     public void setErrors(List<PatternError> errors) {
         this.errors = Collections.unmodifiableList(errors);
+    }
+
+    public void appendError(PatternError error) {
+        ArrayList<PatternError> errors = new ArrayList<>(this.errors);
+        errors.add(error);
+        setErrors(errors);
     }
 
     public void appendErrors(List<PatternError> errors) {
@@ -137,7 +136,7 @@ public class PatternState {
     }
 
     public boolean shouldCheckFlip() {
-        return getContext().getLastFailureReason().shouldCheckFlip();
+        return getContext().isCheckFlipped();
     }
 
     @Getter

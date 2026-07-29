@@ -63,24 +63,24 @@ public abstract class BasePredicate {
     public boolean testLimited(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.INTERNAL);
         if (!test(ctx)) return false;
-        ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
-        if (!testGlobalMax(ctx)) return false;
-        ctx.setStage(PredicateContext.PredicateStage.SLICE_MAX);
-        return testSliceMax(ctx);
+        return testGlobalMax(ctx) && testSliceMax(ctx);
     }
 
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
         if (getMaxCount() == -1) return true;
+        ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
         int count = ctx.incrementGlobalCount(this);
         return testGlobalMax(count) || ctx.error(SinglePredicateError.maxCount(this, count));
     }
 
     /// test against slice max count
     public boolean testSliceMax(PredicateContext ctx) {
-        if (getMaxSliceCount() == -1 || ctx.layerCache() == null) return true;
+        if (!ctx.isCheckLayer()) return true;
+        ctx.setStage(PredicateContext.PredicateStage.SLICE_MAX);
         int count = ctx.incrementSliceCount(this);
-        return testSliceMax(count) || ctx.error(SinglePredicateError.maxLayerCount(this, count));
+        return getMaxSliceCount() == -1 || testSliceMax(count) ||
+                ctx.error(SinglePredicateError.maxLayerCount(this, count));
     }
 
     /// test against global min count
@@ -92,7 +92,7 @@ public abstract class BasePredicate {
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
-        if (getMinSliceCount() == -1 || ctx.layerCache() == null) return true;
+        if (getMinSliceCount() == -1 || !ctx.isCheckLayer()) return true;
         int count = ctx.getSliceCount(this);
         return testSliceMin(count) || ctx.error(SinglePredicateError.minLayerCount(this, count));
     }
@@ -146,6 +146,10 @@ public abstract class BasePredicate {
         if (minSliceCount != -1 && maxSliceCount != -1) {
             builder.append("s[%d,%d] ".formatted(minSliceCount, maxSliceCount));
         }
+    }
+
+    public boolean checkMaxCount(PredicateContext context) {
+        return getParent().getLogic().testMaxCount(this, context);
     }
 
     @Override

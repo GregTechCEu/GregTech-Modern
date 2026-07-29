@@ -20,8 +20,8 @@ public abstract class BaseLogic {
     public BaseLogic(MultiPredicate rootPredicate) {
         this.rootPredicate = rootPredicate;
         for (BasePredicate predicate : rootPredicate) {
-            if (predicate instanceof CompactedPredicate cp) {
-                this.compactedPredicates.add(cp);
+            if (predicate instanceof CompactedPredicate compacted) {
+                this.compactedPredicates.add(compacted);
             }
         }
     }
@@ -42,4 +42,9 @@ public abstract class BaseLogic {
     public String toString() {
         return getType().name();
     }
+
+    /// check max counts plus any additional logic
+    public abstract boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context);
+
+    public void predicatePassed(BasePredicate predicate) {}
 }

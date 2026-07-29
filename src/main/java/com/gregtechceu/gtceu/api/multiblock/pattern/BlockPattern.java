@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -211,11 +212,28 @@ public class BlockPattern implements IBlockPattern {
 
                 if (!pred.isAny()) patternState.updateCache();
 
-                // internal predicate check, global/slice max checks
-                // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
-                if (!pred.test(context)) {
+                context.setStage(PredicateContext.PredicateStage.INTERNAL);
+                // state check
+                BasePredicate predicateAtPos = pred.getPredicateAtPos(context);
+                /*
+                 * a{ f,
+                 * b,
+                 * c{ d, e } }
+                 * if d
+                 * get reference to c
+                 * which is get parent
+                 */
+
+                // max count checks
+                if (predicateAtPos == null || !predicateAtPos.checkMaxCount(context)) {
                     return false;
                 }
+
+                // internal predicate check, global/slice max checks
+                // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
+                // if (!pred.test(context)) {
+                // return false;
+                // }
 
                 visitedPredicates.add(pred);
                 charPos.move(absoluteChar);

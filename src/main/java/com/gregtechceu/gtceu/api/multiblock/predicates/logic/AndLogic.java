@@ -56,6 +56,16 @@ public class AndLogic extends BaseLogic {
     }
 
     @Override
+    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
+        for (BasePredicate predicate : this.rootPredicate) {
+            if (!predicate.testGlobalMax(context) || !predicate.testSliceMax(context)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public MultiPredicate.Logic getType() {
         return MultiPredicate.Logic.AND;
     }
