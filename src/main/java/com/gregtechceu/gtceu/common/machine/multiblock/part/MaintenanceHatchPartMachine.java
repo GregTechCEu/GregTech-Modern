@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
+import com.gregtechceu.gtceu.api.item.CustomToolIngredientHelper;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -15,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.item.ToolBoxBehavior;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -48,7 +48,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.DoubleSupplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -235,49 +234,9 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         for (int i = 0; i < toolsToMatch.size(); i++) {
             GTToolType toolToMatch = toolsToMatch.get(i);
             if (toolToMatch != null) {
-                // Try to use the item in the player's "hand" (under the cursor)
-                ItemStack heldItem = entityPlayer.containerMenu.getCarried();
-                if (ToolHelper.is(heldItem, toolToMatch)) {
-                    fixProblemWithTool(i, heldItem, entityPlayer);
-
-                    if (toolsToMatch.stream().allMatch(Objects::isNull)) {
-                        return;
-                    }
-                }
-
-                // Then try all the remaining inventory slots
-                for (ItemStack itemStack : entityPlayer.getInventory().items) {
-                    if (ToolHelper.is(itemStack, toolToMatch)) {
-                        fixProblemWithTool(i, itemStack, entityPlayer);
-
-                        if (toolsToMatch.stream().allMatch(Objects::isNull)) {
-                            return;
-                        }
-                    }
-
-                    if (itemStack.is(GTItems.TOOL_BOX.asItem())) {
-                        CustomItemStackHandler inventory = ToolBoxBehavior.getInventory(itemStack);
-                        for (int slot = 0; slot < inventory.getSlots(); slot++) {
-                            ItemStack toolStack = inventory.getStackInSlot(slot);
-                            if (!toolStack.isEmpty() && ToolHelper.is(toolStack, toolToMatch)) {
-                                fixProblemWithTool(i, toolStack, entityPlayer);
-                                inventory.setStackInSlot(slot, toolStack);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (entityPlayer instanceof ServerPlayer player) {
-                    for (ItemStack stack : entityPlayer.getInventory().items) {
-                        if (ToolHelper.is(stack, toolToMatch)) {
-                            setMaintenanceFixed(i);
-                            ToolHelper.damageItem(stack, player, 1);
-                            if (toolsToMatch.stream().allMatch(Objects::isNull)) {
-                                return;
-                            }
-                        }
-                    }
+                if (CustomToolIngredientHelper.tryUseTool(entityPlayer, toolToMatch)) {
+                    setMaintenanceFixed(i);
+                    setTaped(false);
                 }
 
             }

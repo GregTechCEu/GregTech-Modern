@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.CustomToolIngredientHelper;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.common.data.GTItems;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.gregtechceu.gtceu.common.item.ToolBoxBehavior.LAST_USED_TOOL_TAG;
-import static com.gregtechceu.gtceu.common.item.ToolBoxBehavior.TOOL_TYPES;
-
 public class ToolIngredient extends AbstractIngredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("tool");
@@ -45,7 +42,10 @@ public class ToolIngredient extends AbstractIngredient {
             for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(toolType.craftingTags.get(0))) {
                 stacks.add(new ItemStack(holder));
             }
-            stacks.add(GTItems.TOOL_BOX.asStack());
+            for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(
+                    com.gregtechceu.gtceu.data.recipe.CustomTags.TOOLBOXES)) {
+                stacks.add(new ItemStack(holder));
+            }
             cachedStacks = stacks.toArray(ItemStack[]::new);
         }
         return cachedStacks;
@@ -59,9 +59,8 @@ public class ToolIngredient extends AbstractIngredient {
         if (input.is(toolType.craftingTags.get(0))) {
             return true;
         }
-        if (input.is(GTItems.TOOL_BOX.asItem()) &&
-                input.getOrCreateTag().getString(TOOL_TYPES).contains(toolType.name)) {
-            input.getOrCreateTag().putString(LAST_USED_TOOL_TAG, toolType.name);
+        if (CustomToolIngredientHelper.containsTool(input, toolType)) {
+            CustomToolIngredientHelper.markLastUsedTool(input, toolType);
             return true;
         }
         return false;

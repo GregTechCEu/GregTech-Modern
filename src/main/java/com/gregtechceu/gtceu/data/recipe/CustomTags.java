@@ -153,6 +153,7 @@ public class CustomTags {
 
     // Tool tags
     public static final TagKey<Item> TOOLS_IGNITER = TagUtil.createItemTag("tools/igniter");
+    public static final TagKey<Item> TOOLBOXES = TagUtil.createModItemTag("toolboxes");
 
     public static final TagKey<Item> BUTCHERY_KNIVES = TagUtil.createItemTag("tools/butchery_knives");
     public static final TagKey<Item> BUZZSAWS = TagUtil.createItemTag("tools/buzzsaws");

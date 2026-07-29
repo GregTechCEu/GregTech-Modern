@@ -2,13 +2,13 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 
     // LDLib
-    jarJar(modApi(forge.ldlib.get()))
+    modApi(forge.ldlib.get())
 
     // Registrate
-    jarJar(modApi(forge.registrate.get()))
+    modApi(forge.registrate.get())
 
     // Configuration
-    jarJar(modApi(forge.configuration.get()))
+    modApi(forge.configuration.get())
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
@@ -73,6 +73,7 @@ dependencies {
     modLocalRuntime(forge.modernfix)
 
     modLocalRuntime(forge.emi)
+    modLocalRuntime(forge.curios)
 
     // Client-only runtime mods //
     modClientLocalRuntime(forge.embeddium)
@@ -84,7 +85,6 @@ dependencies {
     //////////////////////////////////////////////////////
     modExtraLocalRuntime(forge.javd)
     modExtraLocalRuntime(forge.trenzalore)
-    modExtraLocalRuntime(forge.curios)
 //    modExtraLocalRuntime(forge.worldstripper)
 //    modExtraLocalRuntime(forge.cc.tweaked.forge.impl) for some reason this breaks create
 
