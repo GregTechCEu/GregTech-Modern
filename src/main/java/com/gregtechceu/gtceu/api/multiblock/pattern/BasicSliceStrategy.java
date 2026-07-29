@@ -84,8 +84,11 @@ public class BasicSliceStrategy extends SliceStrategy {
             if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
+                // invalid, but within max repeats so may be valid overall
+                context.clearErrors();
                 return slices.get(index).actualRepeats = i - 1;
             }
+            // valid slice, clear errors just in case
             context.clearErrors();
         }
         return slices.get(index).actualRepeats = slice.maxRepeats;

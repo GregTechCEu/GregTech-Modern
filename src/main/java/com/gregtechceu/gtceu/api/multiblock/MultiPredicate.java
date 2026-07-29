@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.logic.AndLogic;
@@ -50,6 +51,13 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         this.hasAir = false;
     }
 
+    public MultiPredicate(Logic type, List<BasePredicate> predicates) {
+        this.predicateList = Collections.unmodifiableList(predicates);
+        forEach(p -> p.setParent(this));
+        this.logic = type.createLogic(this);
+        this.hasAir = predicates.stream().anyMatch(p -> p == BasePredicate.AIR);
+    }
+
     private MultiPredicate(Logic type, MultiPredicate a, MultiPredicate b) {
         ArrayList<BasePredicate> builder = new ArrayList<>();
         appendPredicates(type, a, builder);
@@ -59,6 +67,10 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         this.predicateList = Collections.unmodifiableList(builder);
         this.logic = type.createLogic(this);
         this.hasAir = a.hasAir || b.hasAir;
+    }
+
+    public static MultiPredicate or(List<BasePredicate> predicates) {
+        return new MultiPredicate(Logic.OR, predicates);
     }
 
     public void reset() {
@@ -273,16 +285,20 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 var p = compacted.expand().getPredicateAtPos(context);
                 if (p != null) return p;
                 // else continue...
-            } else if (predicate.test(context)) {
+            } else if (predicate.getPredicate().test(context)) {
                 // logic needs to capture this
                 getLogic().predicatePassed(predicate);
                 return predicate;
-            } else {
-                // handle errors better than this
-                context.clearErrors();
             }
         }
         return null;
+    }
+
+    /// called when all predicates failed
+    public void onError(PredicateContext ctx) {
+        // todo make this prettier
+        ctx.appendError(PatternStringError.literal("error at " + ctx.pos()));
+        ctx.appendError(PatternStringError.literal("missing one of\n" + this));
     }
 
     public enum Logic {

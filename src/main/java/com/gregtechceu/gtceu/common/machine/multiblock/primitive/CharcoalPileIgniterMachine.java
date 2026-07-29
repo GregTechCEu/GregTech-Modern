@@ -151,19 +151,24 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     }
 
     private static MultiPredicate wallPredicate() {
-        return Predicates.customFunction(multiblockState -> {
-            BlockPos p = multiblockState.getBlockPos();
-            return multiblockState.retrieveCurrentBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
-                    null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
-                            p.getX(), p.getY(), p.getZ()));
-        }, null);
+        return Predicates.builder("WallPredicate")
+                .predicate(ctx -> ctx.state().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS))
+                .onError(ctx -> {
+                    BlockPos p = ctx.pos();
+                    ctx.appendError(
+                            PatternStringError.component(Component.translatable("gtceu.predicate_error.charcoal.walls",
+                                    p.getX(), p.getY(), p.getZ())));
+                })
+                .blockTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
+                .toMultiPredicate();
     }
 
     private static MultiPredicate logPredicate() {
-        return Predicates.customFunction(multiblockState -> {
-            boolean match = multiblockState.retrieveCurrentBlockState().is(BlockTags.LOGS_THAT_BURN);
-            return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));
-        }, null);
+        return Predicates.builder("LogPredicate")
+                .predicate(ctx -> ctx.state().is(BlockTags.LOGS_THAT_BURN))
+                .onError(ctx -> new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs")))
+                .blockTag(BlockTags.LOGS_THAT_BURN)
+                .toMultiPredicate();
     }
 
     private static int findWallPos(Level level, Direction direction, BlockPos.MutableBlockPos pos) {

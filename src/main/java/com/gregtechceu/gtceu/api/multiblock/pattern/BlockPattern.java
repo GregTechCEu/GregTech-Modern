@@ -215,25 +215,21 @@ public class BlockPattern implements IBlockPattern {
                 context.setStage(PredicateContext.PredicateStage.INTERNAL);
                 // state check
                 BasePredicate predicateAtPos = pred.getPredicateAtPos(context);
-                /*
-                 * a{ f,
-                 * b,
-                 * c{ d, e } }
-                 * if d
-                 * get reference to c
-                 * which is get parent
-                 */
 
-                // max count checks
-                if (predicateAtPos == null || !predicateAtPos.checkMaxCount(context)) {
+                // all predicates failed
+                // errors are PUSHED in slice strategy
+                // need to add them here, since they aren't added with getPredicateAtPos
+                if (predicateAtPos == null) {
+                    pred.onError(context);
+                    // todo this causes a flipped check, add error?
                     return false;
                 }
 
-                // internal predicate check, global/slice max checks
-                // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
-                // if (!pred.test(context)) {
-                // return false;
-                // }
+                // max count checks
+                if (!predicateAtPos.checkMaxCount(context)) {
+                    // error handled
+                    return false;
+                }
 
                 visitedPredicates.add(pred);
                 charPos.move(absoluteChar);

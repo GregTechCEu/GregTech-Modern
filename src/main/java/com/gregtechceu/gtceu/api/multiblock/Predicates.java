@@ -14,9 +14,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
-import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -31,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITagManager;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.apache.commons.lang3.ArrayUtils;
@@ -38,9 +37,6 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -73,21 +69,25 @@ public class Predicates {
                 states.add(block.changeActive(state, !block.isActive(state)));
             }
         }
-        return customPredicate(debugName,
-                ctx -> states.contains(ctx.state()) || ctx.error(PLACEHOLDER),
-                states.stream().map(BlockInfo::fromBlockState),
-                builder -> {
+        return builder(debugName)
+                .predicate(ctx -> states.contains(ctx.state()))
+                // .onError(ctx -> PLACEHOLDER)
+                .candidates(states.stream().map(BlockInfo::fromBlockState))
+                .contents(builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
                     states.forEach(state -> joiner.add(blockToString(state)));
                     builder.append(joiner);
-                });
+                })
+                .toMultiPredicate();
     }
 
     public static MultiPredicate blocks(Block block) {
-        return customPredicate("Block",
-                ctx -> ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block))),
-                Stream.of(BlockInfo.fromBlock(block)),
-                builder -> builder.append(blockToString(block)));
+        return builder("Block")
+                .predicate(ctx -> ctx.state().is(block))
+                .onError(ctx -> new BlockMatchingError(ctx.pos(), List.of(block)))
+                .candidates(Stream.of(BlockInfo.fromBlock(block)))
+                .contents(builder -> builder.append(blockToString(block)))
+                .toMultiPredicate();
     }
 
     public static MultiPredicate blocks(Block... blocks) {
@@ -107,18 +107,24 @@ public class Predicates {
     public static MultiPredicate blocks(@Nullable String debugName,
                                         List<Block> blocks,
                                         Stream<Block> candidates) {
-        return customPredicate(debugName, ctx -> {
-            for (var block : blocks) {
-                if (ctx.state().is(block)) return true;
-            }
-            return ctx.error(new BlockMatchingError(ctx.pos(), blocks));
-        }, candidates.map(BlockInfo::fromBlock), builder -> {
-            StringJoiner joiner = new StringJoiner(", ");
-            blocks.forEach(block -> joiner.add(blockToString(block)));
-            builder.append(joiner);
-        });
+        return builder(debugName)
+                .predicate(ctx -> {
+                    for (var block : blocks) {
+                        if (ctx.state().is(block)) return true;
+                    }
+                    return false;
+                })
+                .onError(ctx -> new BlockMatchingError(ctx.pos(), blocks))
+                .candidates(candidates.map(BlockInfo::fromBlock))
+                .contents(builder -> {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    blocks.forEach(block -> joiner.add(blockToString(block)));
+                    builder.append(joiner);
+                })
+                .toMultiPredicate();
     }
 
+    // todo these two methods below should be moved into a util class
     private static String blockToString(BlockState blockState) {
         return blockToString(blockState.getBlock());
     }
@@ -135,19 +141,23 @@ public class Predicates {
     }
 
     public static MultiPredicate blockTag(TagKey<Block> tag) {
-        return customPredicate("BlockTag",
-                ctx -> ctx.state().is(tag),
-                Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
-                        .getTag(tag).stream()
-                        .map(BlockInfo::fromBlock),
-                builder -> builder.append(tag.location()));
+        ITagManager<Block> manager = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags());
+        return builder("BlockTag")
+                .predicate(ctx -> ctx.state().is(tag))
+                .onError(ctx -> new BlockMatchingError(ctx.pos(), manager.getTag(tag)
+                        .stream().toList()))
+                .candidates(manager.getTag(tag)
+                        .stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(tag.location()))
+                .toMultiPredicate();
     }
 
     public static MultiPredicate fluids(Fluid... fluids) {
-        return customPredicate("Fluids",
-                ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.error(PLACEHOLDER),
-                Arrays.stream(fluids).map(BlockInfo::fromFluid),
-                builder -> {
+        return builder("Fluids")
+                .predicate(ctx -> ArrayUtils.contains(fluids, ctx.fluid()))
+                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                .candidates(Arrays.stream(fluids).map(BlockInfo::fromFluid))
+                .contents(builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
                     for (Fluid fluid : fluids) {
                         joiner.add(ForgeRegistries.FLUIDS.getDelegate(fluid)
@@ -155,43 +165,16 @@ public class Predicates {
                                 .orElse("unknown"));
                     }
                     builder.append(joiner);
-                });
+                })
+                .toMultiPredicate();
     }
 
     public static MultiPredicate fluidTag(TagKey<Fluid> tag) {
-        return customPredicate("FluidTag",
-                ctx -> ctx.fluidState().is(tag),
-                Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
-                        .getTag(tag).stream()
-                        .map(BlockInfo::fromFluid),
-                builder -> builder.append(tag.location()));
-    }
-
-    @Deprecated
-    public static MultiPredicate customFunction(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
-                                                @Nullable List<BlockInfo> candidates) {
-        return customPredicate(ctx -> {
-            PatternError error = predicate.apply(ctx.getCurrentBlockInfo());
-            return error == null || ctx.error(error);
-        }, Objects.<List<BlockInfo>>requireNonNullElse(candidates, Collections.emptyList()).stream());
-    }
-
-    public static MultiPredicate customPredicate(Predicate<PredicateContext> predicate,
-                                                 Stream<BlockInfo> candidates) {
-        return customPredicate(null, predicate, candidates);
-    }
-
-    public static MultiPredicate customPredicate(@Nullable String debugName,
-                                                 Predicate<PredicateContext> predicate,
-                                                 Stream<BlockInfo> candidates) {
-        return customPredicate(debugName, predicate, candidates, null);
-    }
-
-    public static MultiPredicate customPredicate(@Nullable String debugName,
-                                                 Predicate<PredicateContext> predicate,
-                                                 Stream<BlockInfo> candidates,
-                                                 @Nullable Consumer<StringBuilder> contents) {
-        return BasePredicate.create(debugName, predicate, candidates, contents);
+        return builder("FluidTag")
+                .predicate(ctx -> ctx.fluidState().is(tag))
+                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                .fluidTag(tag)
+                .toMultiPredicate();
     }
 
     public static MultiPredicate any() {
@@ -203,34 +186,25 @@ public class Predicates {
     }
 
     public static MultiPredicate abilities(PartAbility ability) {
-        return customPredicate("Ability",
-                ctx -> ability.isApplicable(ctx.state().getBlock()) ||
-                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
-                ability.getAllBlocks().stream().map(BlockInfo::fromBlock),
-                builder -> builder.append(ability.getName()));
+        return builder("Ability")
+                .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
+                .onError(ctx -> new PartAbilityError(ctx.pos(), ability))
+                .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(ability.getName()))
+                .toMultiPredicate();
     }
 
     public static MultiPredicate abilities(PartAbility... abilities) {
-        return customPredicate("Abilities",
-                ctx -> {
-                    for (PartAbility ability : abilities) {
-                        if (ability.isApplicable(ctx.state().getBlock())) {
-                            return true;
-                        }
-                        ctx.error(new PartAbilityError(ctx.pos(), ability));
-                    }
-                    return false;
-                },
-                Arrays.stream(abilities)
-                        .flatMap(a -> a.getAllBlocks().stream())
-                        .map(BlockInfo::fromBlock),
-                builder -> {
-                    StringJoiner sb = new StringJoiner(", ");
-                    for (PartAbility ability : abilities) {
-                        sb.add(ability.getName());
-                    }
-                    builder.append(sb);
-                });
+        List<BasePredicate> predicates = new ArrayList<>();
+        for (PartAbility ability : abilities) {
+            predicates.add(builder("Ability")
+                    .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
+                    .onError(ctx -> new PartAbilityError(ctx.pos(), ability))
+                    .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
+                    .contents(builder -> builder.append(ability.getName()))
+                    .build());
+        }
+        return MultiPredicate.or(predicates);
     }
 
     public static MultiPredicate ability(PartAbility ability, int... tiers) {
@@ -238,10 +212,12 @@ public class Predicates {
         for (int tier : tiers) {
             sb.add(GTValues.VN[tier]);
         }
-        return customPredicate("Ability[" + sb + "]",
-                ctx -> ability.isApplicable(ctx.state().getBlock()) ||
-                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
-                ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
+        return builder("TieredAbility")
+                .predicate(ctx -> ability.getBlocks(tiers).contains(ctx.state().getBlock()))
+                .onError(ctx -> new PartAbilityError(ctx.pos(), ability))
+                .candidates(ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(ability.getName()).append(" ").append(sb))
+                .toMultiPredicate();
     }
 
     public static MultiPredicate autoAbilities(GTRecipeType... recipeType) {
@@ -391,13 +367,25 @@ public class Predicates {
     }
 
     public static MultiPredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
-        return customPredicate("FramedPipes", ctx -> {
-            BlockEntity tileEntity = ctx.blockEntity();
-            if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
-                return ctx.error(PLACEHOLDER);
-            }
-            return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
-                    ctx.error(PLACEHOLDER);
-        }, Arrays.stream(frameBlocks).map(BlockInfo::fromBlock));
+        return builder("FramedPipes")
+                .predicate(ctx -> {
+                    BlockEntity tileEntity = ctx.blockEntity();
+                    if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                        return false;
+                    }
+                    return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());
+                })
+                // .onError(ctx -> PLACEHOLDER)
+                .candidates(Arrays.stream(frameBlocks).map(BlockInfo::fromBlock))
+                .contents(builder -> {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    Arrays.stream(frameBlocks).forEach(block -> joiner.add(blockToString(block)));
+                    builder.append(joiner);
+                })
+                .toMultiPredicate();
+    }
+
+    public static BasePredicate.Builder builder(@Nullable String debugName) {
+        return new BasePredicate.Builder(debugName);
     }
 }

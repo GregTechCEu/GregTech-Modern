@@ -2,13 +2,19 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -18,9 +24,14 @@ import java.util.stream.Stream;
 
 public abstract class BasePredicate {
 
-    public static final BasePredicate AIR = of("Air", ctx -> ctx.state().isAir());
+    public static final BasePredicate AIR = new Builder("Air")
+            .predicate(ctx -> ctx.state().isAir())
+            // todo error?
+            .build();
 
-    public static final BasePredicate ANY = of("Any", ctx -> true);
+    public static final BasePredicate ANY = new Builder("Any")
+            .predicate(ctx -> true)
+            .build();
 
     @Getter(lazy = true)
     private final List<BlockInfo> candidates = computeCandidates();
@@ -57,13 +68,22 @@ public abstract class BasePredicate {
     }
 
     /// the main testing method
-    public abstract boolean test(PredicateContext ctx);
+    public boolean test(PredicateContext ctx) {
+        ctx.setStage(PredicateContext.PredicateStage.INTERNAL);
+        if (!getPredicate().test(ctx)) {
+            onError(ctx);
+            return false;
+        }
+        return true;
+    }
+
+    public abstract void onError(PredicateContext ctx);
+
+    public abstract Predicate<PredicateContext> getPredicate();
 
     /// test with internal function and global/slice max
     public boolean testLimited(PredicateContext ctx) {
-        ctx.setStage(PredicateContext.PredicateStage.INTERNAL);
-        if (!test(ctx)) return false;
-        return testGlobalMax(ctx) && testSliceMax(ctx);
+        return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
     }
 
     /// test against global max count
@@ -139,15 +159,6 @@ public abstract class BasePredicate {
     /// the contents of this predicate
     protected void appendContents(StringBuilder builder) {}
 
-    protected void appendStats(StringBuilder builder) {
-        if (minCount != -1 && maxCount != -1) {
-            builder.append("g[%d,%d] ".formatted(minCount, maxCount));
-        }
-        if (minSliceCount != -1 && maxSliceCount != -1) {
-            builder.append("s[%d,%d] ".formatted(minSliceCount, maxSliceCount));
-        }
-    }
-
     public boolean checkMaxCount(PredicateContext context) {
         return getParent().getLogic().testMaxCount(this, context);
     }
@@ -155,30 +166,86 @@ public abstract class BasePredicate {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(getTypeName());
-        builder.append(" ");
-        appendStats(builder);
         builder.append('{');
         appendContents(builder);
         builder.append('}');
         return builder.toString();
     }
 
-    public static MultiPredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate) {
-        return create(debugName, predicate, Stream.empty(), null);
-    }
+    @Accessors(chain = true, fluent = true)
+    public static class Builder {
 
-    // this uses stream for lazy initialization
-    public static MultiPredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
-                                        Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        return new MultiPredicate(of(debugName, predicate, candidateStream, contents));
-    }
+        private final String name;
+        @Setter
+        private Predicate<PredicateContext> predicate;
+        @Setter
+        private Stream<BlockInfo> candidates = Stream.empty();
+        @Setter
+        private @Nullable Consumer<StringBuilder> contents;
+        @Setter
+        private @Nullable Consumer<PredicateContext> onError;
 
-    public static BasePredicate of(@Nullable String debugName, Predicate<PredicateContext> predicate,
-                                   Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        return new SinglePredicate(predicate, candidateStream, debugName, contents);
-    }
+        public Builder(@Nullable String debugName) {
+            this.name = debugName != null ? debugName : "Predicate";
+        }
 
-    private static BasePredicate of(@Nullable String debugName, Predicate<PredicateContext> predicate) {
-        return of(debugName, predicate, Stream.empty(), null);
+        /// fills candidates and sets string contents with this block tag
+        public Builder blockTag(TagKey<Block> tag) {
+            this.candidates = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
+                    .getTag(tag).stream().map(BlockInfo::fromBlock);
+            this.contents = builder -> builder.append(tag.location());
+            return this;
+        }
+
+        /// fills candidates and sets string contents with this fluid tag
+        public Builder fluidTag(TagKey<Fluid> tag) {
+            this.candidates = Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
+                    .getTag(tag).stream().map(BlockInfo::fromFluid);
+            this.contents = builder -> builder.append(tag.location());
+            return this;
+        }
+
+        public MultiPredicate toMultiPredicate() {
+            return new MultiPredicate(build());
+        }
+
+        public BasePredicate build() {
+            return new BasePredicate() {
+
+                @Override
+                public void onError(PredicateContext ctx) {
+                    if (onError != null) {
+                        onError.accept(ctx);
+                    }
+                    placeholderError(ctx);
+                }
+
+                private void placeholderError(PredicateContext ctx) {
+                    ctx.appendError(new PlaceholderError(ctx.pos(), List.of(getCandidates())));
+                }
+
+                @Override
+                public Predicate<PredicateContext> getPredicate() {
+                    return Objects.requireNonNull(predicate, name + " predicate == null");
+                }
+
+                @Override
+                public List<BlockInfo> computeCandidates() {
+                    return Objects.requireNonNull(candidates).toList();
+                }
+
+                @Override
+                public String getTypeName() {
+                    return name;
+                }
+
+                @Override
+                protected void appendContents(StringBuilder builder) {
+                    if (contents != null) {
+                        contents.accept(builder);
+                    }
+                }
+            };
+        }
     }
 }

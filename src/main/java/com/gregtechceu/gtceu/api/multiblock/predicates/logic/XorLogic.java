@@ -60,13 +60,14 @@ public class XorLogic extends BaseLogic {
     public boolean testGlobalMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testGlobalMin(ctx)) {
-            return ctx.error(onError());
+            ctx.appendError(onError());
+            return false;
         }
         if (!global) return true;
         for (BasePredicate predicate : this.rootPredicate) {
             if (predicate != passedPredicate && ctx.getGlobalCount(predicate) > 0) {
-                ctx.error(onError());
-                ctx.error(PatternStringError.literal("%s present in multi", predicate));
+                ctx.appendError(onError());
+                ctx.appendError(PatternStringError.literal("%s present in multi", predicate));
                 return false;
             }
         }
@@ -97,13 +98,14 @@ public class XorLogic extends BaseLogic {
     public boolean testSliceMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testSliceMin(ctx)) {
-            return ctx.error(PatternStringError.literal("need one of: " + rootPredicate));
+            ctx.appendError(PatternStringError.literal("need one of: " + rootPredicate));
+            return false;
         }
         if (global) return true;
         for (BasePredicate predicate : this.rootPredicate) {
             if (predicate != passedPredicate && ctx.getSliceCount(predicate) > 0) {
-                ctx.error(PatternStringError.literal("need one of:\n" + rootPredicate.getPredicateList()));
-                ctx.error(PatternStringError.literal(predicate + " present in multi"));
+                ctx.appendError(PatternStringError.literal("need one of:\n" + rootPredicate.getPredicateList()));
+                ctx.appendError(PatternStringError.literal(predicate + " present in multi"));
                 return false;
             }
         }
@@ -115,7 +117,7 @@ public class XorLogic extends BaseLogic {
         if (passedPredicate != this.passedPredicate) {
             // skip flipped check
             context.skipFlipCheck();
-            context.error(PatternStringError.literal(passedPredicate + " present in multi"));
+            context.appendError(PatternStringError.literal(passedPredicate + " present in multi"));
             return false;
         }
         return this.passedPredicate.testGlobalMax(context) && this.passedPredicate.testSliceMax(context);

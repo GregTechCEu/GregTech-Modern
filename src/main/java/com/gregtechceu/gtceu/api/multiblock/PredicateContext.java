@@ -56,7 +56,7 @@ public class PredicateContext {
         return false;
     }
 
-    private void appendError(PatternError error) {
+    public void appendError(PatternError error) {
         if (currentSlice != null) {
             getCurrentSliceErrors().add(error);
         } else {
@@ -133,7 +133,7 @@ public class PredicateContext {
 
     public void commitSliceErrors() {
         for (Slice slice : this.sliceErrors.keySet()) {
-            this.state.appendError(PatternStringError.literal("error(s) at %s", slice));
+            this.state.appendError(PatternStringError.literal("error(s) at slice %s", slice.index + slice.offset));
             this.state.appendErrors(this.sliceErrors.get(slice));
         }
         this.sliceErrors.clear();

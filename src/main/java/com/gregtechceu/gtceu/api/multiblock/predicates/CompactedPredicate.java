@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class CompactedPredicate extends BasePredicate {
 
@@ -20,10 +21,19 @@ public class CompactedPredicate extends BasePredicate {
     }
 
     @Override
-    public boolean test(PredicateContext ctx) {
-        // test parent predicates
-        return expand().test(ctx);
+    public Predicate<PredicateContext> getPredicate() {
+        return ctx -> {
+            for (BasePredicate predicate : this.root) {
+                if (predicate.getPredicate().test(ctx)) {
+                    return true;
+                }
+            }
+            return false;
+        };
     }
+
+    @Override
+    public void onError(PredicateContext ctx) {}
 
     @Override
     public boolean testLimited(PredicateContext ctx) {
@@ -57,9 +67,6 @@ public class CompactedPredicate extends BasePredicate {
     protected void appendContents(StringBuilder builder) {
         expand().appendContents(builder);
     }
-
-    @Override
-    protected void appendStats(StringBuilder builder) {}
 
     public void reset() {
         this.root.reset();

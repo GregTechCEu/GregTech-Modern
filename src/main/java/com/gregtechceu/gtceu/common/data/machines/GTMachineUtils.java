@@ -743,18 +743,18 @@ public class GTMachineUtils {
     }
 
     private static MultiPredicate rotorHolder(int tier) {
-        return Predicates.customPredicate("RotorHolder", ctx -> {
-            if (MetaMachine.getMachine(ctx.level(),
-                    ctx.pos()) instanceof RotorHolderPartMachine rotorHolder &&
-                    ctx.level().getBlockState(ctx.pos()
-                            .relative(rotorHolder.getFrontFacing()))
-                            .isAir()) {
-                return true;
-            }
-            return ctx.error(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER));
-        }, PartAbility.ROTOR_HOLDER.getAllBlocks()
-                .stream()
-                .map(BlockInfo::fromBlock))
+        return builder("RotorHolder")
+                .predicate(ctx -> {
+                    if (MetaMachine.getMachine(ctx.level(), ctx.pos()) instanceof RotorHolderPartMachine rotorHolder) {
+                        return ctx.level().getBlockState(ctx.pos().relative(rotorHolder.getFrontFacing())).isAir();
+                    }
+                    return false;
+                })
+                .onError(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
+                .candidates(PartAbility.ROTOR_HOLDER.getAllBlocks()
+                        .stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
+                .toMultiPredicate()
         // .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
         // .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]))
         ;

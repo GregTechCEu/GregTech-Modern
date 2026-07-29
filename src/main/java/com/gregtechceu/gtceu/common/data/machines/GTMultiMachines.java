@@ -128,9 +128,10 @@ public class GTMultiMachines {
                     .where('X', blocks(CASING_PRIMITIVE_BRICKS.get()))
                     .where('#', Predicates.air())
                     .where('&', Predicates.air()
-                            .or(Predicates.customFunction(bws -> GTUtil.isBlockSnow(bws.retrieveCurrentBlockState()) ?
-                                    null : Predicates.PLACEHOLDER,
-                                    null)))
+                            .or(builder("SnowPredicate")
+                                    .predicate(ctx -> GTUtil.isBlockSnow(ctx.state()))
+                                    // .onError(ctx -> PLACEHOLDER)
+                                    .toMultiPredicate()))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())
             .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())

@@ -23,8 +23,10 @@ public class AndLogic extends BaseLogic {
             }
 
             // count manually
-            if (failedMaxCount(ctx, predicate, true) || failedMaxCount(ctx, predicate, false))
-                return ctx.error(PatternStringError.literal("AND error"));
+            if (failedMaxCount(ctx, predicate, true) || failedMaxCount(ctx, predicate, false)) {
+                ctx.appendError(PatternStringError.literal("AND error"));
+                return false;
+            }
             // continue...
         }
         return passed > 0;

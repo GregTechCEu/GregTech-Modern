@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -471,11 +470,17 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     protected static MultiPredicate doorPredicate() {
-        return Predicates.customPredicate(
-                ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.error(Predicates.PLACEHOLDER),
-                Stream.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()),
+        return builder("DoorPredicate")
+                .predicate(ctx -> ctx.state().getBlock() instanceof DoorBlock)
+                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                // spotless:off
+                .candidates(Stream.of(
+                        new BlockInfo(Blocks.IRON_DOOR),
                         new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
-                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
+                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))
+                ))
+                //spotless:on
+                .toMultiPredicate();
     }
 
     private static MultiPredicate getValidFloorBlocks() {
@@ -483,18 +488,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     protected static MultiPredicate innerPredicate() {
-        return BasePredicate.create("InnerPredicate", ctx -> {
-            // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = ctx.blockEntity();
-            if (blockEntity instanceof MetaMachine machine) {
-                if (isMachineBanned(machine)) {
-                    return ctx.error(Predicates.PLACEHOLDER);
-                }
-                // todo do this in structure form not in the predicate
-                // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
-            }
-            return true;
-        });
+        return builder("InnerPredicate")
+                .predicate(ctx -> {
+                    if (ctx.blockEntity() instanceof MetaMachine machine) {
+                        return isMachineBanned(machine);
+                    }
+                    return true;
+                })
+                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                .toMultiPredicate();
     }
 
     protected static boolean isMachineBanned(MetaMachine machine) {
