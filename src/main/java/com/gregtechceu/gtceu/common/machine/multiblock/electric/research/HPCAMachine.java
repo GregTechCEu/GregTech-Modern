@@ -738,6 +738,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 textList.add(
                         Component.translatable("gtceu.multiblock.hpca.error_damaged").withStyle(ChatFormatting.RED));
             }
+            if (this.controller != null && this.controller.hasNotEnoughEnergy) {
+                textList.add(
+                        Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED));
+            }
         }
 
         public IDrawable getComponentTexture(int index) {
