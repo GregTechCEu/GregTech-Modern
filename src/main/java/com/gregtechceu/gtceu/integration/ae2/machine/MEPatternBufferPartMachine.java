@@ -674,7 +674,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                     .minColWidth(18).minRowHeight(18)
                                     .leftRel(0.5f)
                                     .gridOfSizeWidth(9, 3, (x, y, index) -> new ItemSlot()
-                                            .slot(SyncHandlers.itemSlot(shareInventory, index)
+                                            .slot(SyncHandlers.itemSlot(shareInventory.storage, index)
                                                     .slotGroup(sharedItemSlotGroup)
                                                     .accessibility(true, true))));
                 });
