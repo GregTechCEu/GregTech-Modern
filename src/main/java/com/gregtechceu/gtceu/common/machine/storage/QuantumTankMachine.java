@@ -143,10 +143,15 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
+        if (context.getClickedFace() == getFrontFacing() &&
+                FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
                 return InteractionResult.SUCCESS;
             }
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
+                return InteractionResult.CONSUME;
+            }
+            return InteractionResult.PASS;
         }
         return super.onUseWithItem(context);
     }
