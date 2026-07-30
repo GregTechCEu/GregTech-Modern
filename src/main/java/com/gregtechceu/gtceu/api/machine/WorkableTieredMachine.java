@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.RecipeAmperageEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
@@ -81,7 +82,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                                  int exportSlots,
                                  int fluidImportSlots, int fluidExportSlots, boolean energyEmitter,
                                  Int2IntFunction tankScalingFunction) {
-        super(info, tier, energyEmitter);
+        super(info, tier, (energyEmitter ?
+                RecipeAmperageEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1) :
+                RecipeAmperageEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1)));
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -114,7 +117,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
      */
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter,
                                  Int2IntFunction tankScalingFunction) {
-        super(info, tier, energyEmitter);
+        super(info, tier, (energyEmitter ?
+                RecipeAmperageEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1) :
+                RecipeAmperageEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1)));
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
