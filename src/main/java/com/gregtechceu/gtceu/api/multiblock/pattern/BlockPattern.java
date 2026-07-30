@@ -203,7 +203,7 @@ public class BlockPattern implements IBlockPattern {
         PatternSlice slice = slices[sliceIndex];
 
         PredicateContext context = patternState.getContext();
-        context.layerCache().clear();
+        context.clearLayerCounts();
 
         Set<MultiPredicate> visitedPredicates = new HashSet<>();
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {

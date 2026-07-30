@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,6 +30,10 @@ public class PredicateContext {
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
+
+    private final Int2ObjectMap<List<PatternError>> sliceErrors = new Int2ObjectAVLTreeMap<>(IntComparators.NATURAL_COMPARATOR);
+
+    private int currentSlice = 0;
     @Getter
     @Setter
     private boolean checkLayer = true;
@@ -37,9 +44,6 @@ public class PredicateContext {
     @Getter
     private FailureReason lastFailureReason = FailureReason.NONE;
 
-    // if (stage == PredicateStage.GLOBAL_MIN || stage == PredicateStage.SLICE_MIN) {
-    // this.currentSlice = null;
-    // }
     @Setter
     protected PredicateStage stage = PredicateStage.INTERNAL;
 
@@ -56,7 +60,7 @@ public class PredicateContext {
     }
 
     public void appendError(PatternError error) {
-        if (currentSlice != null) {
+        if (currentSlice != -1) {
             getCurrentSliceErrors().add(error);
         } else {
             this.state.setError(error);
@@ -65,8 +69,30 @@ public class PredicateContext {
         this.checkFlipped = this.lastFailureReason.shouldCheckFlip();
     }
 
+    public void clearErrors() {
+        this.sliceErrors.remove(currentSlice);
+        this.lastFailureReason = FailureReason.NONE;
+    }
+
     private List<PatternError> getCurrentSliceErrors() {
-        return this.sliceErrors.computeIfAbsent(Objects.requireNonNull(currentSlice), k -> new ArrayList<>());
+        return this.sliceErrors.computeIfAbsent(currentSlice, k -> new ArrayList<>());
+    }
+
+    public void pushSlice() {
+        this.currentSlice++;
+    }
+
+    public void popSlice() {
+        clearErrors();
+        this.currentSlice--;
+    }
+
+    public void commitSliceErrors() {
+        for (var entry : this.sliceErrors.int2ObjectEntrySet()) {
+            this.state.appendErrors(entry.getValue());
+        }
+        this.sliceErrors.clear();
+        this.currentSlice = -1;
     }
 
     /// @return the current Level
@@ -98,49 +124,30 @@ public class PredicateContext {
         return this.currentBlockInfo.retrieveCurrentBlockEntity();
     }
 
-    public Object2IntMap<BasePredicate> globalCache() {
-        return this.globalCount;
+    public void clearGlobalCounts() {
+        this.globalCount.clear();
     }
 
-    /// @return {@code null} if {@link #checkLayer} is false, else returns the layer cache map
-    public @Nullable Object2IntMap<BasePredicate> layerCache() {
-        return isCheckLayer() ? this.layerCount : null;
+    public void clearLayerCounts() {
+        this.layerCount.clear();
     }
 
     public int incrementGlobalCount(BasePredicate predicate) {
-        return globalCache().mergeInt(predicate, 1, Integer::sum);
+        return this.globalCount.mergeInt(predicate, 1, Integer::sum);
     }
 
     public int incrementSliceCount(BasePredicate predicate) {
-        return Objects.requireNonNull(layerCache()).mergeInt(predicate, 1, Integer::sum);
+        if (!checkLayer) return 0;
+        return this.layerCount.mergeInt(predicate, 1, Integer::sum);
     }
 
     public int getGlobalCount(BasePredicate predicate) {
-        return globalCache().getInt(predicate);
+        return this.globalCount.getInt(predicate);
     }
 
     public int getSliceCount(BasePredicate predicate) {
-        return Objects.requireNonNull(layerCache()).getInt(predicate);
-    }
-
-    public void clearErrors() {
-        this.sliceErrors.remove(currentSlice);
-        this.lastFailureReason = FailureReason.NONE;
-    }
-
-    private Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectAVLTreeMap<>(Slice::compareTo);
-
-    private @Nullable Slice currentSlice;
-
-    public void pushSlice(int index, int offset) {
-        this.currentSlice = new Slice(index, offset);
-    }
-
-    public void commitSliceErrors() {
-        for (Slice slice : this.sliceErrors.keySet()) {
-            this.state.appendErrors(this.sliceErrors.get(slice));
-        }
-        this.sliceErrors.clear();
+        if (!checkLayer) return 0;
+        return this.layerCount.getInt(predicate);
     }
 
     public void updateLevel(Level level) {
@@ -155,29 +162,13 @@ public class PredicateContext {
         return new BlockInfo(state(), blockEntity());
     }
 
-    public void skipFlipCheck() {
-        this.checkFlipped = false;
-    }
-
     public void reset() {
         setStage(PredicateStage.INTERNAL);
         this.currentBlockInfo = new CurrentBlockInfo();
-        this.currentSlice = null;
-        this.sliceErrors.clear();
-        this.globalCount.clear();
+        this.currentSlice = 0;
+        this.clearGlobalCounts();
+        this.clearLayerCounts();
         this.layerCount.clear();
-    }
-
-    private record Slice(int index, int offset) implements Comparable<Slice> {
-
-        @Override
-        public int compareTo(PredicateContext.Slice o) {
-            int i = Integer.compare(this.index, o.index);
-            if (i == 0) {
-                return Integer.compare(this.offset, o.offset);
-            }
-            return i;
-        }
     }
 
     public enum PredicateStage {

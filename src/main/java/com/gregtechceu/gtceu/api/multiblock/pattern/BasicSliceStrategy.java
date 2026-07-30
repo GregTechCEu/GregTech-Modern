@@ -79,13 +79,13 @@ public class BasicSliceStrategy extends SliceStrategy {
         PatternSlice slice = slices.get(index);
         PredicateContext context = state.getContext();
         for (int i = 1; i <= slice.maxRepeats; i++) {
-            context.pushSlice(index, offset + i - 1);
+            context.pushSlice();
             boolean res = checkSlice(state, index, offset + i - 1, flip);
             if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
                 // invalid, but within max repeats so may be valid overall
-                context.clearErrors();
+                context.popSlice();
                 return slices.get(index).actualRepeats = i - 1;
             }
             // valid slice, clear errors just in case
