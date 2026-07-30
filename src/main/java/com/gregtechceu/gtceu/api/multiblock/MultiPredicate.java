@@ -303,6 +303,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 return predicate;
             }
         }
+        onError(context);
         return null;
     }
 

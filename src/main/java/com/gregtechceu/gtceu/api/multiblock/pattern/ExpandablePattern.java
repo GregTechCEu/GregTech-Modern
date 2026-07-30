@@ -172,13 +172,8 @@ public class ExpandablePattern implements IBlockPattern {
             BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
 
             // all predicates failed
-            if (innerPredicate == null) {
-                multiPredicate.onError(context);
-                return false;
-            }
-
             // max count checks
-            if (!innerPredicate.checkMaxCount(context)) {
+            if (innerPredicate == null || !innerPredicate.checkMaxCount(context)) {
                 return false;
             }
 
