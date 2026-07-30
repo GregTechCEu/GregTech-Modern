@@ -258,7 +258,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
      * Codecs can only have up to 16 inputs. This is at 16 now, so the three recipe Parallel/Batch values are
      * condensed to a List.
      */
-    private static Codec<GTRecipe> makeCodec(boolean isKubeLoaded) {
+    private static MapCodec<GTRecipe> makeCodec(boolean isKubeLoaded) {
         // spotless:off
         if (!isKubeLoaded) {
             // I'll admit, it's not great.
@@ -275,8 +275,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                             quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", isKubeLoaded).forGetter(val -> val.duration),
-                            GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.listOf().fieldOf("all_parallels").forGetter(val -> Arrays.asList(val.parallels, val.subtickParallels, val.batchParallels)),
+                            GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
                     .apply(instance, GTRecipe::new));
         } else {

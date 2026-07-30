@@ -107,7 +107,31 @@ public class GTRecipe implements Recipe<RecipeInput> {
     }
 
     /**
-     * Main constructor, used by {@link GTRecipeBuilder#buildRawRecipe()}
+     * non-KJS version for {@link GTRecipeSerializer}
+     */
+    public GTRecipe(GTRecipeType recipeType,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    List<Integer> allParallels,
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
+        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, List.of(), data, duration, allParallels.get(0), allParallels.get(1),
+                allParallels.get(2), recipeCategory, groupColor);
+    }
+
+    /**
+     * Main constructor, used by {@link GTRecipeBuilder#build()}
      */
     public GTRecipe(GTRecipeType recipeType,
                     @Nullable ResourceLocation id,
@@ -266,7 +290,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
      * Get the chance logic for a recipe capability + io + tick io combination
      *
      * @param cap the recipe capability to get the chance logic for
-     * @param io  the {@link IO} of the chanche per-tick logic or the normal one
+     * @param io  the {@link IO} of the chance per-tick logic or the normal one
      * @return the chance logic for the aforementioned combination. Defaults to {@link ChanceLogic#OR}.
      */
     public ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap, IO io, boolean isTick) {
