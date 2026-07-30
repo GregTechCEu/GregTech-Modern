@@ -11,13 +11,9 @@ public class OrLogic extends BaseLogic {
     }
 
     @Override
-    public boolean test(PredicateContext ctx) {
-        for (BasePredicate predicate : this.rootPredicate) {
-            if (predicate.testLimited(ctx)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext ctx) {
+        // error?
+        return passedPredicate.testGlobalMax(ctx) && passedPredicate.testSliceMax(ctx);
     }
 
     @Override
@@ -38,10 +34,5 @@ public class OrLogic extends BaseLogic {
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext ctx) {
-        return passedPredicate.testGlobalMax(ctx) && passedPredicate.testSliceMax(ctx);
     }
 }

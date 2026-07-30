@@ -22,7 +22,8 @@ public abstract class BaseLogic {
 
     public void reset() {}
 
-    public abstract boolean test(PredicateContext ctx);
+    /// check max counts plus any additional logic
+    public abstract boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context);
 
     public abstract boolean testGlobalMin(PredicateContext ctx);
 
@@ -32,9 +33,6 @@ public abstract class BaseLogic {
     public String toString() {
         return getType().name();
     }
-
-    /// check max counts plus any additional logic
-    public abstract boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context);
 
     public void predicatePassed(BasePredicate predicate) {}
 }

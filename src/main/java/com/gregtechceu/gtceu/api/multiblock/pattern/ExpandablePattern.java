@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -166,9 +167,24 @@ public class ExpandablePattern implements IBlockPattern {
 
             if (!pred.isAny()) patternState.updateCache();
 
-            if (!pred.test(context)) {
+            context.setStage(PredicateContext.PredicateStage.INTERNAL);
+            // state check
+            BasePredicate predicateAtPos = pred.getPredicateAtPos(context);
+
+            // all predicates failed
+            // errors are PUSHED in slice strategy
+            // need to add them here, since they aren't added with getPredicateAtPos
+            if (predicateAtPos == null) {
+                pred.onError(context);
                 return false;
             }
+
+            // max count checks
+            if (!predicateAtPos.checkMaxCount(context)) {
+                predicateAtPos.onError(context);
+                return false;
+            }
+
             visited.add(pred);
         }
 

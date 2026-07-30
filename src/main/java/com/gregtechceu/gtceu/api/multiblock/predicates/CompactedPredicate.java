@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class CompactedPredicate extends BasePredicate {
 
@@ -20,24 +19,15 @@ public class CompactedPredicate extends BasePredicate {
         return this.root;
     }
 
+    // this should never be called
     @Override
-    public Predicate<PredicateContext> getPredicate() {
-        return ctx -> {
-            for (BasePredicate predicate : this.root) {
-                if (predicate.getPredicate().test(ctx)) {
-                    return true;
-                }
-            }
-            return false;
-        };
+    public boolean test(PredicateContext ctx) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void onError(PredicateContext ctx) {}
-
-    @Override
-    public boolean testLimited(PredicateContext ctx) {
-        return this.test(ctx);
+    public void onError(PredicateContext ctx) {
+        expand().onError(ctx);
     }
 
     @Override

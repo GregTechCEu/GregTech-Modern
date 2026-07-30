@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
-import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.logic.AndLogic;
@@ -63,12 +62,6 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         this.predicateList = Collections.unmodifiableList(predicates);
         this.logic = type.createLogic(this);
         this.hasAir = hasAir;
-    }
-
-    // this is called for each block
-    /// delegates to {@link #logic} to run {@link BasePredicate#testLimited(PredicateContext)}
-    public boolean test(PredicateContext ctx) {
-        return this.logic.test(ctx);
     }
 
     /// delegates to {@link #logic} to test against global min count
@@ -297,7 +290,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 var p = compacted.expand().getPredicateAtPos(context);
                 if (p != null) return p;
                 // else continue...
-            } else if (predicate.getPredicate().test(context)) {
+            } else if (predicate.test(context)) {
                 // logic needs to capture this
                 getLogic().predicatePassed(predicate);
                 return predicate;
@@ -308,7 +301,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     /// called when all predicates failed
     public void onError(PredicateContext ctx) {
-        ctx.appendError(new SimplePatternError(ctx.pos(), getCandidates()));
+        // ctx.appendError(new SimplePatternError(ctx.pos(), getCandidates()));
+        forEach(p -> p.onError(ctx));
     }
 
     public enum Logic {

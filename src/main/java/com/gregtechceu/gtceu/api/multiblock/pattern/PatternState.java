@@ -127,7 +127,7 @@ public class PatternState {
                     if (name.equals(MultiblockControllerMachine.DEFAULT_STRUCTURE)) {
                         MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(this);
                         controller.checkAndFormStructure();
-                     }
+                    }
                 }
             }
         }

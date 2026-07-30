@@ -68,22 +68,12 @@ public abstract class BasePredicate {
     }
 
     /// the main testing method
-    public boolean test(PredicateContext ctx) {
-        ctx.setStage(PredicateContext.PredicateStage.INTERNAL);
-        if (!getPredicate().test(ctx)) {
-            onError(ctx);
-            return false;
-        }
-        return true;
-    }
+    public abstract boolean test(PredicateContext ctx);
 
     public abstract void onError(PredicateContext ctx);
 
-    public abstract Predicate<PredicateContext> getPredicate();
-
-    /// test with internal function and global/slice max
-    public boolean testLimited(PredicateContext ctx) {
-        return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
+    public boolean checkMaxCount(PredicateContext context) {
+        return getParent().getLogic().testMaxCount(this, context);
     }
 
     /// test against global max count
@@ -159,10 +149,6 @@ public abstract class BasePredicate {
     /// the contents of this predicate
     protected void appendContents(StringBuilder builder) {}
 
-    public boolean checkMaxCount(PredicateContext context) {
-        return getParent().getLogic().testMaxCount(this, context);
-    }
-
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(getTypeName());
@@ -212,12 +198,16 @@ public abstract class BasePredicate {
         public BasePredicate build() {
             return new BasePredicate() {
 
+                private final Predicate<PredicateContext> finalPredicate = Objects.requireNonNull(predicate,
+                        name + " predicate == null");
+
                 @Override
                 public void onError(PredicateContext ctx) {
                     if (onError != null) {
                         onError.accept(ctx);
+                    } else {
+                        placeholderError(ctx);
                     }
-                    placeholderError(ctx);
                 }
 
                 private void placeholderError(PredicateContext ctx) {
@@ -225,8 +215,8 @@ public abstract class BasePredicate {
                 }
 
                 @Override
-                public Predicate<PredicateContext> getPredicate() {
-                    return Objects.requireNonNull(predicate, name + " predicate == null");
+                public boolean test(PredicateContext ctx) {
+                    return this.finalPredicate.test(ctx);
                 }
 
                 @Override
