@@ -46,8 +46,7 @@ public class GTMuiMachineUtil {
                     ModularSlot slot = new ModularSlot(itemHandler, i);
                     ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
                     syncManager.syncValue(slotGroupName, i, syncHandler);
-                    return slotModifier.apply(new ItemSlot()
-                            .syncHandler(slotGroupName, i));
+                    return slotModifier.apply(new ItemSlot().syncHandler(syncHandler));
                 })
                 .build();
     }
