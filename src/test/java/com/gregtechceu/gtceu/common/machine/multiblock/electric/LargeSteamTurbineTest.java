@@ -12,12 +12,14 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 
+import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,11 +28,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 @GameTestHolder(GTCEu.MOD_ID)
 public class LargeSteamTurbineTest {
 
-    @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
+    @TestHolder()
+    @GameTest(template = "lst_with_steam", setupTicks = 2, timeoutTicks = 20 + 40 + 1)
     public static void LstActivatesTest(GameTestHelper helper) {
         {
             final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
+            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4,3,4));
+            tank.setWorkingEnabled(true);
         }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
@@ -52,10 +57,15 @@ public class LargeSteamTurbineTest {
         });
     }
 
-    @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
+    @TestHolder()
+    @GameTest(template = "lst_with_steam", setupTicks = 2, timeoutTicks = 20 + 40 + 1)
     public static void LstStopsOnBrokenRotorTest(GameTestHelper helper) {
-        final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
-        block.setConnection(Direction.SOUTH, true, false);
+        {
+            final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
+            block.setConnection(Direction.SOUTH, true, false);
+            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4,3,4));
+            tank.setWorkingEnabled(true);
+        }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
@@ -69,7 +79,7 @@ public class LargeSteamTurbineTest {
             {
                 final var rotor = rotorPart.inventory.storage.getStackInSlot(0);
                 final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-                behavior.setPartDamage(rotor, behavior.getMaxDurability(rotor) - 1);
+                behavior.setPartDamage(rotor, behavior.getPartMaxDurability(rotor) - 1);
             }
             helper.assertTrue(machine.getRecipeLogic().isWorking(), "Expected turbine to be running");
             rotorPart.setRotorSpeed(0);
@@ -81,7 +91,8 @@ public class LargeSteamTurbineTest {
         });
     }
 
-    @GameTest(template = "lst_infinite_steam", timeoutTicks = 2)
+    @TestHolder()
+    @GameTest(template = "lst_infinite_steam", setupTicks = 2, timeoutTicks = 2)
     public static void LstGeneratesCorrectPowerTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
@@ -95,7 +106,8 @@ public class LargeSteamTurbineTest {
             rotorPart.setRotorSpeed(rotorPart.getMaxRotorHolderSpeed());
             final var recipe = (GTRecipe) GTCEu.getMinecraftServer().getRecipeManager()
                     .byKey(GTCEu.id("steam_turbine/steam"))
-                    .get();
+                    .get()
+                    .value();
             final var mod = LargeTurbineMachine.recipeModifier(machine, recipe);
             final var res = mod.apply(recipe);
             final var totalEu = res.getOutputEUt().getTotalEU();
@@ -107,7 +119,8 @@ public class LargeSteamTurbineTest {
         });
     }
 
-    @GameTest(template = "lst_infinite_steam", timeoutTicks = 101)
+    @TestHolder()
+    @GameTest(template = "lst_infinite_steam", setupTicks = 2, timeoutTicks = 101)
     public static void LstRotorSpeedIncreasesAndDecreasesAsExpectedTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
@@ -158,7 +171,8 @@ public class LargeSteamTurbineTest {
         });
     }
 
-    @GameTest(template = "lst_infinite_steam_with_output", timeoutTicks = 101)
+    @TestHolder()
+    @GameTest(template = "lst_infinite_steam_with_output", setupTicks = 2, timeoutTicks = 101)
     public static void LstOutputsCorrectAmountOfDistilledWaterTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
@@ -183,11 +197,14 @@ public class LargeSteamTurbineTest {
         });
     }
 
-    @GameTest(template = "lst_with_steam", timeoutTicks = 20 + 40 + 1)
+    @TestHolder()
+    @GameTest(template = "lst_with_steam", setupTicks = 2, timeoutTicks = 20 + 40 + 1)
     public static void LstRunsWithFullDynamoTest(GameTestHelper helper) {
         {
             final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
+            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4,3,4));
+            tank.setWorkingEnabled(true);
         }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
@@ -211,7 +228,8 @@ public class LargeSteamTurbineTest {
         });
     }
 
-    @GameTest(template = "lst_infinite_steam_nomaintenance", timeoutTicks = 50 + 1)
+    @TestHolder()
+    @GameTest(template = "lst_infinite_steam_nomaintenance", setupTicks = 2, timeoutTicks = 50 + 1)
     public static void LstRefusesToRunWithoutMaintenanceTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
@@ -233,7 +251,8 @@ public class LargeSteamTurbineTest {
         });
     }
 
-    @GameTest(template = "lst_with_lava", timeoutTicks = 50 + 1)
+    @TestHolder()
+    @GameTest(template = "lst_with_lava", setupTicks = 2, timeoutTicks = 50 + 1)
     public static void LstRefusesToRunOnWrongFluidTest(GameTestHelper helper) {
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
         {
