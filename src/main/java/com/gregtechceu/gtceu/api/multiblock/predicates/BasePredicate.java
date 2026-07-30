@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
-import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
+import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
@@ -212,26 +212,24 @@ public abstract class BasePredicate {
         }
 
         public BasePredicate build() {
-            final Predicate<PredicateContext> finalPredicate = Objects.requireNonNull(predicate);
             return new BasePredicate() {
+                final Predicate<PredicateContext> internalPredicate = Objects.requireNonNull(predicate);
+                final Consumer<PredicateContext> onError = Objects.requireNonNullElse(Builder.this.onError,
+                        this::placeholderError);
 
                 @Override
                 public void onError(PredicateContext ctx) {
-                    if (onError != null) {
-                        onError.accept(ctx);
-                    } else {
-                        placeholderError(ctx);
-                    }
+                    this.onError.accept(ctx);
                     this.getAdditionalTooltips().forEach(c -> ctx.appendError(PatternStringError.component(c)));
                 }
 
                 private void placeholderError(PredicateContext ctx) {
-                    ctx.appendError(new PlaceholderError(ctx.pos(), List.of(getCandidates())));
+                    ctx.appendError(new SimplePatternError(ctx.pos(), List.of(getCandidates())));
                 }
 
                 @Override
                 public boolean test(PredicateContext ctx) {
-                    return finalPredicate.test(ctx);
+                    return this.internalPredicate.test(ctx);
                 }
 
                 @Override

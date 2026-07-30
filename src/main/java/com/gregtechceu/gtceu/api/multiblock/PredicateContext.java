@@ -162,9 +162,9 @@ public class PredicateContext {
         setStage(PredicateStage.INTERNAL);
         this.currentBlockInfo = new CurrentBlockInfo();
         this.currentSlice = 0;
+        this.sliceErrors.clear();
         this.clearGlobalCounts();
         this.clearLayerCounts();
-        this.layerCount.clear();
     }
 
     public enum PredicateStage {
