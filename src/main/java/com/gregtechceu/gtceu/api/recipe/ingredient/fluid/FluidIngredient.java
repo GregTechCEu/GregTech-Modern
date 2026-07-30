@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.Hash;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -357,7 +358,9 @@ public class FluidIngredient {
         @Override
         public int hash() {
             int result = fluid.hashCode();
-            result = 31 * result + (nbt == null ? 0 : nbt.hashCode());
+            if (nbt != null) {
+                result = 31 * result + nbt.hashCode();
+            }
             return result;
         }
 
@@ -445,4 +448,17 @@ public class FluidIngredient {
             buf.writeResourceLocation(tag.location());
         }
     }
+
+    public static Hash.Strategy<FluidIngredient> IGNORE_AMOUNT = new Hash.Strategy<>() {
+
+        @Override
+        public int hashCode(FluidIngredient o) {
+            return o.hashCode();
+        }
+
+        @Override
+        public boolean equals(FluidIngredient a, FluidIngredient b) {
+            return a == b || (a != null && b != null && a.hashCode() == b.hashCode());
+        }
+    };
 }

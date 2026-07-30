@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
-import com.gregtechceu.gtceu.api.machine.trait.CatalystFluidHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -57,9 +56,11 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     public DualHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
         super(holder, tier, io, true);
         this.tank = createTank(INITIAL_TANK_CAPACITY, FluidHatchPartMachine.TANKS[tier]);
-        this.shareTank = new CatalystFluidHandler(this,
+        this.shareTank = new NotifiableFluidTank(this,
                 io == IO.IN ? getShareTankSlots(getTier()) : 0,
-                INITIAL_TANK_CAPACITY, IO.IN, IO.NONE)
+                INITIAL_TANK_CAPACITY,
+                io == IO.IN ? IO.IN : IO.NONE,
+                IO.NONE)
                 .shouldSearchContent(false);
         shareTank.setCapabilityValidator(dir -> false);
     }

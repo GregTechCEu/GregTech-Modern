@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.CatalystFluidHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -99,9 +98,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots);
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
-        this.shareTank = new CatalystFluidHandler(this,
+        this.shareTank = new NotifiableFluidTank(this,
                 enableShareTank && io == IO.IN ? getShareTankSlots(getTier()) : 0,
-                initialCapacity, IO.IN, IO.NONE)
+                initialCapacity,
+                enableShareTank && io == IO.IN ? IO.IN : IO.NONE,
+                IO.NONE)
                 .shouldSearchContent(false);
         shareTank.setCapabilityValidator(dir -> false);
     }

@@ -30,6 +30,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.Hash;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -353,4 +354,17 @@ public abstract class ItemIngredient {
 
         return json;
     }
+
+    public static Hash.Strategy<ItemIngredient> IGNORE_COUNT = new Hash.Strategy<>() {
+
+        @Override
+        public int hashCode(ItemIngredient o) {
+            return o.hashCode();
+        }
+
+        @Override
+        public boolean equals(ItemIngredient a, ItemIngredient b) {
+            return a == b || (a != null && b != null && a.hashCode() == b.hashCode());
+        }
+    };
 }

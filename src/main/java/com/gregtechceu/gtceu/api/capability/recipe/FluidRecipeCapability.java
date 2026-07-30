@@ -154,45 +154,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         Object2LongMap<FluidStack> inventory = getInputContents(holder);
         if (inventory.isEmpty()) return 0;
 
-        // map the recipe ingredients to account for duplicated and notConsumable ingredients.
-        // notConsumable ingredients are not counted towards the max ratio
-        var nonConsumables = new Object2LongOpenHashMap<FluidIngredient>();
-        var consumables = new Object2LongOpenHashMap<FluidIngredient>();
+        var amountMap = new Object2LongOpenCustomHashMap<>(FluidIngredient.IGNORE_AMOUNT);
         for (FluidIngredient ing : inputs) {
             int amount = ing.getAmount();
-
-            if (ing.getChance() == 0) {
-                nonConsumables.addTo(ing, amount);
-            } else {
-                consumables.addTo(ing, amount);
-            }
+            amountMap.addTo(ing, amount);
         }
-
-        // is this even possible
-        if (consumables.isEmpty() && nonConsumables.isEmpty()) return limit;
-
-        // Check for enough NC in inventory
-        for (var ncEntry : Object2LongMaps.fastIterable(nonConsumables)) {
-            FluidIngredient ingredient = ncEntry.getKey();
-            long needed = ncEntry.getLongValue();
-            for (var stackEntry : Object2LongMaps.fastIterable(inventory)) {
-                if (ingredient.test(stackEntry.getKey())) {
-                    long count = stackEntry.getLongValue();
-                    long lesser = Math.min(needed, count);
-                    count -= lesser;
-                    needed -= lesser;
-                    stackEntry.setValue(count);
-                    if (needed == 0) break;
-                }
-            }
-            if (needed > 0) return 0;
-        }
-        // Satisfied NC + no consumables -> early return
-        if (consumables.isEmpty()) return limit;
 
         int maxMultiplier = Integer.MAX_VALUE;
-        // Loop over all consumables
-        for (var cEntry : Object2LongMaps.fastIterable(consumables)) {
+        for (var cEntry : Object2LongMaps.fastIterable(amountMap)) {
             FluidIngredient ingredient = cEntry.getKey();
             final long needed = cEntry.getLongValue();
             final long maxNeeded = needed * limit;

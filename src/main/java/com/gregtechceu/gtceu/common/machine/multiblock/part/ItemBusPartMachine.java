@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.CatalystItemHandler;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.LargeStackItemHandler;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -92,9 +91,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         super(holder, tier, io);
         this.inventory = createInventory();
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
-        this.shareInventory = new CatalystItemHandler(this,
+        this.shareInventory = new NotifiableItemStackHandler(this,
                 enableShareInventory && io == IO.IN ? getShareInventorySlots(getTier()) : 0,
-                IO.IN, IO.NONE)
+                enableShareInventory && io == IO.IN ? IO.IN : IO.NONE,
+                IO.NONE)
                 .shouldSearchContent(false);
         shareInventory.setCapabilityValidator(dir -> false);
     }

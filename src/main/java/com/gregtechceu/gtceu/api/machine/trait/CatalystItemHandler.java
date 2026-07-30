@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // only handles non-consumable ingredient
+// TODO: fix this
 public class CatalystItemHandler extends NotifiableItemStackHandler {
 
     public CatalystItemHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO) {

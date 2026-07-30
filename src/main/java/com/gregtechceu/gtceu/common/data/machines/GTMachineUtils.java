@@ -291,6 +291,7 @@ public class GTMachineUtils {
                 (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
+                        .abilities(PartAbility.PASSTHROUGH_HATCH)
                         .itemColor((itemStack, index) -> switch (index) {
                             case 1 -> ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
                             case 2 -> VC[tier + 1];

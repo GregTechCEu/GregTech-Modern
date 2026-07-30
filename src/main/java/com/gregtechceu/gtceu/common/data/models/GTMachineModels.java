@@ -432,12 +432,12 @@ public class GTMachineModels {
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(TRANSFORMER_LIKE))
-                        .texture("overlay_in_io_emissive", energyIn.getIoPartEmissive())
-                        .texture("overlay_in_io", energyIn.getIoPart())
-                        .texture("overlay_in_tinted", energyIn.getTintedPart())
-                        .texture("overlay_out_io_emissive", energyOut.getIoPartEmissive())
-                        .texture("overlay_out_io", energyOut.getIoPart())
-                        .texture("overlay_out_tinted", energyOut.getTintedPart());
+                        .texture("overlay_in_io_emissive", energyOut.getIoPartEmissive())
+                        .texture("overlay_in_io", energyOut.getIoPart())
+                        .texture("overlay_in_tinted", energyOut.getTintedPart())
+                        .texture("overlay_out_io_emissive", energyIn.getIoPartEmissive())
+                        .texture("overlay_out_io", energyIn.getIoPart())
+                        .texture("overlay_out_tinted", energyIn.getTintedPart());
                 tieredHullTextures(model, builder.getOwner().getTier());
                 return model;
             });

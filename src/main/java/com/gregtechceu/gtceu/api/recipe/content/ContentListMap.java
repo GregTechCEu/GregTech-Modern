@@ -157,9 +157,7 @@ public class ContentListMap {
     }
 
     public ContentListMap copy() {
-        Map<RecipeCapability<?>, List<?>> newMap = new Reference2ObjectArrayMap<>();
-        contentsMap.forEach((k, v) -> newMap.put(k, new ArrayList<>(v)));
-        return new ContentListMap(newMap);
+        return copyWithMultiplier(1);
     }
 
     public ContentListMap copyAndAppend(ContentListMap other) {
