@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -88,10 +89,10 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
             if (showTemperatureInfo)
                 tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
                         FormattingUtil.formatTemperature(getMaxFluidTemperature())));
-            if (isGasProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof"));
-            else tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof"));
-            if (isPlasmaProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof"));
-            if (isCryoProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof"));
+            if (isGasProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof").withStyle(ChatFormatting.GOLD));
+            else tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof").withStyle(ChatFormatting.DARK_RED));
+            if (isPlasmaProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof").withStyle(ChatFormatting.GOLD));
+            if (isCryoProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof").withStyle(ChatFormatting.GOLD));
             getContainedAttributes().forEach(a -> a.appendContainerTooltips(tooltip::add));
         } else if (isGasProof() || isCryoProof() || isPlasmaProof() || !getContainedAttributes().isEmpty()) {
             if (showToolsInfo) {

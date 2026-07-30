@@ -50,11 +50,11 @@ public class BlockLang {
         provider.add("tooltip.gtceu.fluid_pipe.throughput", "§bTransfer Rate: §f%d mB/t");
         provider.add("tooltip.gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
-        provider.add("tooltip.gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
-        provider.add("tooltip.gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
+        provider.add("tooltip.gtceu.fluid_pipe.gas_proof", "Can handle Gases");
+        provider.add("tooltip.gtceu.fluid_pipe.not_gas_proof", "Gases may leak!");
         provider.add("tooltip.gtceu.fluid_pipe.acid_proof", "Can handle Acids");
-        provider.add("tooltip.gtceu.fluid_pipe.cryo_proof", "§6Can handle Cryogenics");
-        provider.add("tooltip.gtceu.fluid_pipe.plasma_proof", "§6Can handle all Plasmas");
+        provider.add("tooltip.gtceu.fluid_pipe.cryo_proof", "Can handle Cryogenics");
+        provider.add("tooltip.gtceu.fluid_pipe.plasma_proof", "Can handle all Plasmas");
 
         // Item Pipes
         provider.add("tooltip.gtceu.item_pipe.priority", "§9Priority: §f%d");

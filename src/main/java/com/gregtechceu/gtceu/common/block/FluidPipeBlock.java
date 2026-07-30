@@ -108,13 +108,13 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         }
 
         if (properties.isGasProof())
-            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof"));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof").withStyle(ChatFormatting.GOLD));
         else
-            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof"));
+            tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof").withStyle(ChatFormatting.DARK_RED));
 
         if (properties.isAcidProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
-        if (properties.isCryoProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof"));
-        if (properties.isPlasmaProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof"));
+        if (properties.isCryoProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof").withStyle(ChatFormatting.GOLD));
+        if (properties.isPlasmaProof()) tooltip.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof").withStyle(ChatFormatting.GOLD));
     }
 
     @Override
