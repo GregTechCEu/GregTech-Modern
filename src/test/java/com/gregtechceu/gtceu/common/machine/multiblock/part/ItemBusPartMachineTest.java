@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
@@ -108,7 +109,7 @@ public class ItemBusPartMachineTest {
     @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
     public static void ItemBusPartMachineAutoPassthroughTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
-        helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
+        helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.HV].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());
         CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();
@@ -130,7 +131,7 @@ public class ItemBusPartMachineTest {
     @GameTest(template = "empty_5x5", batch = "ItemBusPartMachine")
     public static void ItemBusPartMachineAutoPassthroughFalseWhenOffTest(GameTestHelper helper) {
         helper.setBlock(new BlockPos(0, 1, 0), GTMachines.BRONZE_CRATE.getBlock());
-        helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[1].getBlock());
+        helper.setBlock(new BlockPos(0, 2, 0), GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.HV].getBlock());
         helper.setBlock(new BlockPos(0, 3, 0), GTMachines.BRONZE_CRATE.getBlock());
         CrateMachine crate = (CrateMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
                 .getMetaMachine();

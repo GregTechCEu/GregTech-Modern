@@ -129,11 +129,13 @@ public class RecipeLogicTest {
 
         // Complete the second iteration, but the machine stops because its output is now full
         // Fill up the recipe with enough stone to complete 1 more recipe and then nothing more.
+        // Use the actual slot limit (which accounts for LargeStackItemHandler multipliers) rather than assuming 64.
+        int slotLimit = outputSlots.getSlotLimit(0);
         outputSlots.setStackInSlot(0,
-                new ItemStack(Blocks.STONE, 63));
+                new ItemStack(Blocks.STONE, slotLimit - 1));
         for (int i = 1; i < outputSlots.getSlots(); i++) {
             outputSlots.setStackInSlot(i,
-                    new ItemStack(Blocks.STONE, 64));
+                    new ItemStack(Blocks.STONE, slotLimit));
         }
         recipeLogic.serverTick();
         helper.assertFalse(recipeLogic.isActive(), "RecipeLogic is active, when it shouldn't be.");
