@@ -426,8 +426,7 @@ public class GTMultiMachines {
                                     Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X).setMaxGlobalLimited(4)))
                     .where('O',
                             Predicates.abilities(PartAbility.EXPORT_ITEMS)
-                    // .addTooltips(Component.translatable("gtceu.multiblock.pattern.location_end"))
-                    )
+                                    .addTooltips(Component.translatable("gtceu.multiblock.pattern.location_end")))
                     .where('Y',
                             blocks(CASING_STEEL_SOLID.get()).or(Predicates.abilities(PartAbility.INPUT_ENERGY)
                                     .setMinGlobalLimited(1).setMaxGlobalLimited(2)))

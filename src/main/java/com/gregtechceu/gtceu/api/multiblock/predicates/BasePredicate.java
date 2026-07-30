@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -63,6 +65,9 @@ public abstract class BasePredicate {
     @Setter
     private @Nullable MultiPredicate parent;
 
+    @Getter
+    private final List<Component> additionalTooltips = new ArrayList<>();
+
     public MultiPredicate getParent() {
         return Objects.requireNonNull(this.parent);
     }
@@ -71,6 +76,10 @@ public abstract class BasePredicate {
     public abstract boolean test(PredicateContext ctx);
 
     public abstract void onError(PredicateContext ctx);
+
+    public void addTooltips(Component tooltip) {
+        this.additionalTooltips.add(tooltip);
+    }
 
     public boolean checkMaxCount(PredicateContext context) {
         return getParent().getLogic().testMaxCount(this, context);
@@ -196,10 +205,8 @@ public abstract class BasePredicate {
         }
 
         public BasePredicate build() {
+            final Predicate<PredicateContext> finalPredicate = Objects.requireNonNull(predicate);
             return new BasePredicate() {
-
-                private final Predicate<PredicateContext> finalPredicate = Objects.requireNonNull(predicate,
-                        name + " predicate == null");
 
                 @Override
                 public void onError(PredicateContext ctx) {
@@ -208,6 +215,7 @@ public abstract class BasePredicate {
                     } else {
                         placeholderError(ctx);
                     }
+                    this.getAdditionalTooltips().forEach(c -> ctx.appendError(PatternStringError.component(c)));
                 }
 
                 private void placeholderError(PredicateContext ctx) {
@@ -216,7 +224,7 @@ public abstract class BasePredicate {
 
                 @Override
                 public boolean test(PredicateContext ctx) {
-                    return this.finalPredicate.test(ctx);
+                    return finalPredicate.test(ctx);
                 }
 
                 @Override

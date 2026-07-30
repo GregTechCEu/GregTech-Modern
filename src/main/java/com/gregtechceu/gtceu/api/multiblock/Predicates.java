@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -155,7 +156,7 @@ public class Predicates {
     public static MultiPredicate fluids(Fluid... fluids) {
         return builder("Fluids")
                 .predicate(ctx -> ArrayUtils.contains(fluids, ctx.fluid()))
-//                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                // .onError(ctx -> ctx.appendError(PLACEHOLDER))
                 .candidates(Arrays.stream(fluids).map(BlockInfo::fromFluid))
                 .contents(builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
@@ -172,7 +173,7 @@ public class Predicates {
     public static MultiPredicate fluidTag(TagKey<Fluid> tag) {
         return builder("FluidTag")
                 .predicate(ctx -> ctx.fluidState().is(tag))
-//                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                // .onError(ctx -> ctx.appendError(PLACEHOLDER))
                 .fluidTag(tag)
                 .toMultiPredicate();
     }
@@ -312,22 +313,18 @@ public class Predicates {
     }
 
     public static MultiPredicate heatingCoils() {
-        return blocks("HeatingCoils",
-                GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
-                // .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
+        return blocks("HeatingCoils", GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
                 .setPriority(0);
     }
 
     public static MultiPredicate cleanroomFilters() {
         return blocks("CleanroomFilters",
-                GTCEuAPI.CLEANROOM_FILTERS.values()
-                        .stream().map(Supplier::get).toList(),
-                GTCEuAPI.CLEANROOM_FILTERS.entrySet()
-                        .stream()
+                GTCEuAPI.CLEANROOM_FILTERS.values().stream().map(Supplier::get).toList(),
+                GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
                         .map(entry -> entry.getValue().get()))
-        // .addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"))
-        ;
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
     }
 
     public static MultiPredicate powerSubstationBatteries() {
@@ -338,8 +335,7 @@ public class Predicates {
                         .stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                         .map(e -> e.getValue().get()))
-        // .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"))
-        ;
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
     }
 
     public static @Nullable MultiPredicate dataHatchPredicate() {

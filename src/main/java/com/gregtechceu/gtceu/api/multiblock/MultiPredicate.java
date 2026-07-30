@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.logic.OrLogic;
 import com.gregtechceu.gtceu.api.multiblock.predicates.logic.XorLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import net.minecraft.network.chat.Component;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -120,6 +122,11 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     protected BasePredicate compact() {
         return new CompactedPredicate(this);
+    }
+
+    public MultiPredicate addTooltips(Component tooltip) {
+        forEach(p -> p.addTooltips(tooltip));
+        return this;
     }
 
     public MultiPredicate setPriority(int priority) {
