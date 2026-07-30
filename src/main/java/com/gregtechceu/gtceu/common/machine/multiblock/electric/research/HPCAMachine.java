@@ -181,8 +181,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     public void tick() {
-        if (isWorkingEnabled()) consumeEnergy();
-        if (isActive()) {
+        if (isWorkingEnabled() && consumeEnergy() && isActive()) {
             // forcibly use active coolers at full rate if temperature is half-way to damaging temperature
             double midpoint = (DAMAGE_TEMPERATURE - IDLE_TEMPERATURE) / 2;
             double temperatureChange = hpcaHandler.calculateTemperatureChange(coolantHandler, temperature >= midpoint) /
@@ -210,7 +209,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         }
     }
 
-    private void consumeEnergy() {
+    private boolean consumeEnergy() {
         long energyToConsume = hpcaHandler.getCurrentEUt();
         boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance && this.maintenance != null;
         if (hasMaintenance) {
@@ -218,24 +217,28 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
 
-        if (this.hasNotEnoughEnergy && energyContainer.getInputPerSec() > 19L * energyToConsume) {
+        if (this.hasNotEnoughEnergy && energyContainer.getEnergyStored() > 19L * hpcaHandler.getMaxEUt()) {
             this.hasNotEnoughEnergy = false;
         }
 
-        if (this.energyContainer.getEnergyStored() >= energyToConsume) {
-            if (!hasNotEnoughEnergy) {
-                long consumed = this.energyContainer.removeEnergy(energyToConsume);
-                if (consumed == energyToConsume) {
-                    getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
-                } else {
-                    this.hasNotEnoughEnergy = true;
-                    getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
-                }
+        if (this.energyContainer.getEnergyStored() >= energyToConsume && !hasNotEnoughEnergy) {
+            long consumed = this.energyContainer.removeEnergy(energyToConsume);
+            if (consumed == energyToConsume) {
+                getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
+                return true;
+            } else {
+                this.hasNotEnoughEnergy = true;
+                getRecipeLogic()
+                        .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                                .append(": ").append(EURecipeCapability.CAP.getName()));
             }
         } else {
             this.hasNotEnoughEnergy = true;
-            getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
+            getRecipeLogic()
+                    .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ").append(EURecipeCapability.CAP.getName()));
         }
+        return false;
     }
 
     @Override
@@ -260,8 +263,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         syncManager.syncValue("text", text);
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED)));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
         widgets.add(new Grid()
                 .gridOfSizeWidth(9, 3, (x, y, i) -> hpcaHandler.getComponentTexture(i).asWidget()

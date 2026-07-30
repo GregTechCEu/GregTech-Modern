@@ -952,6 +952,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.active_transformer.max_output", "§cMax Output: §f%s EU/t");
         provider.add("gtceu.multiblock.active_transformer.danger_enabled", "§c§bDANGER: Explosive");
         provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
+        provider.add("gtceu.multiblock.data_bank.error_power", "Power low, no data provided!");
         provider.add("gtceu.multiblock.hpca.computation", "Providing: %s");
         provider.add("gtceu.multiblock.hpca.energy", "Using: %s / %s EU/t (%s)");
         provider.add("gtceu.multiblock.hpca.temperature", "Temperature: %s");
@@ -959,6 +960,8 @@ public class MachineLang {
         provider.add("gtceu.multiblock.hpca.error_damaged", "Damaged component in structure!");
         provider.add("gtceu.multiblock.hpca.error_temperature",
                 "Temperature above 100C, components may be damaged!");
+        provider.add("gtceu.multiblock.hpca.error_power",
+                "Power low, CWU generation halted!");
         provider.add("gtceu.multiblock.hpca.warning_temperature",
                 "Temperature above 50C, components may be damaged at 100C!");
         provider.add("gtceu.multiblock.hpca.warning_temperature_active_cool", "Fully utilizing active coolers");

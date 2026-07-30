@@ -26,10 +26,11 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.common.data.GTPlaceholders;
+import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -38,8 +39,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
-import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
-import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -53,7 +52,6 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +69,6 @@ import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -103,7 +100,10 @@ public class CommonProxy {
         }
 
         GTValueProviderTypes.init(eventBus);
-        GTRegistries.init(eventBus);
+        GTPlacementModifiers.init(eventBus);
+        GTGlobalLootModifiers.init(eventBus);
+        GTLootConditions.init(eventBus);
+        GTLootFunctions.init(eventBus);
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
@@ -165,8 +165,6 @@ public class CommonProxy {
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
 
-        GTFeatures.init();
-        GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
         SyncedKeyMappings.init();
@@ -224,12 +222,6 @@ public class CommonProxy {
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         GTRegistries.MATERIALS.freeze();
         /* End Material Registration */
-    }
-
-    @SubscribeEvent
-    public void register(RegisterEvent event) {
-        if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
-            ChestGenHooks.RandomWeightLootFunction.init();
     }
 
     @SubscribeEvent
@@ -306,8 +298,6 @@ public class CommonProxy {
             GTCraftingComponents.init();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-            // Initialize dungeon loot additions
-            DungeonLootLoader.init();
             GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",

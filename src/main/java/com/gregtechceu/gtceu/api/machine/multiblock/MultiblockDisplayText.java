@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -383,12 +382,10 @@ public class MultiblockDisplayText {
         public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
             if (!isStructureFormed || !recipeLogic.isIdle())
                 return this;
-            var reasons = recipeLogic.getFailureReasons();
-            if (!reasons.isEmpty()) {
+            var reason = recipeLogic.getBestFailureReason();
+            if (reason != null) {
                 textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
-                for (var reason : reasons) {
-                    textList.add(Component.literal(" - ").append(reason));
-                }
+                textList.add(Component.literal(" - ").append(reason));
             }
             return this;
         }
@@ -430,8 +427,6 @@ public class MultiblockDisplayText {
             if (!isStructureFormed || !isActive)
                 return this;
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
