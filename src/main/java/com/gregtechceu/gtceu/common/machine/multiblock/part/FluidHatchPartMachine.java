@@ -259,7 +259,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
         syncManager.syncValue("locked", locked);
         return Flow.col()
                 .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
-                .height(60)
+                .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .childPadding(4)
                 .child(new TextWidget<>(Text.dynamic(this::getFluidNameText))
@@ -290,10 +290,16 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                                         .canFillSlot(io.support(IO.IN)))));
     }
 
-    protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {
-        return GTMuiMachineUtil.createSlotGroupFromInventory(
+    protected Flow createMultiSlotUI(PanelSyncManager syncManager) {
+        var slotsWidget = GTMuiMachineUtil.createSlotGroupFromInventory(
                 syncManager,
                 tank, "fluid_inv",
                 slots, 'F', GTMuiMachineUtil.createSquareMatrix(slots, 'F'));
+
+        return Flow.col()
+                .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
+                .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
+                .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                .child(slotsWidget);
     }
 }
