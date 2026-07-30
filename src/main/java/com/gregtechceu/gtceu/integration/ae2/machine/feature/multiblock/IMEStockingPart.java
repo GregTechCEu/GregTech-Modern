@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.gridservice.IStockingService;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlot;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
@@ -111,7 +112,7 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
     default boolean isCycleDue() {
         int interval = getTicksPerCycle();
         if (interval <= 0) {
-            interval = 40;
+            interval = ConfigHolder.INSTANCE.compat.ae2.updateIntervals;
         }
         return self().getOffsetTimer() % interval == 0;
     }
