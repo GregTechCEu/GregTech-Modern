@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * and an {@link IntProvider}.
  * Functions similarly to {@link IntProviderFluidIngredient}.
  */
-public class IntProviderIngredient extends Ingredient implements IRangedIngredient {
+public class IntProviderIngredient extends Ingredient implements IRangedIngredient<SizedIngredient> {
 
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
     public static final ItemStack[] EMPTY_STACK_ARRAY = new ItemStack[0];
@@ -43,6 +43,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
     /**
      * The last result of {@link IntProviderIngredient#rollSampledCount(RandomSource)}. -1 if not rolled.
      */
+    @Setter
     @Getter
     protected int sampledCount = -1;
     /**
@@ -50,29 +51,22 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     @Getter
     protected final Ingredient inner;
-    @Setter
-    protected ItemStack[] itemStacks = null;
-    @Getter
-    private int amount;
-    private boolean changed = true;
 
     protected IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
         super(Stream.empty());
         this.inner = inner;
         this.countProvider = countProvider;
-        this.amount = getMaxRoll();
     }
 
-    protected IntProviderIngredient(Ingredient inner, IntProvider countProvider, int sampledCount, int amount) {
+    protected IntProviderIngredient(Ingredient inner, IntProvider countProvider, int sampledCount) {
         super(Stream.empty());
         this.inner = inner;
         this.countProvider = countProvider;
         this.sampledCount = sampledCount;
-        this.amount = amount;
     }
 
     public IntProviderIngredient copy() {
-        return new IntProviderIngredient(this.inner, this.countProvider, this.sampledCount, this.amount);
+        return new IntProviderIngredient(this.inner, this.countProvider, this.sampledCount);
     }
 
     /**
@@ -107,27 +101,8 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     @Override
     public ItemStack @NotNull [] getItems() {
-        if (changed || itemStacks == null) {
-            changed = false;
-            if (!isRolled()) {
-                setAmount(rollSampledCount());
-                if (getAmount() == 0) {
-                    itemStacks = EMPTY_STACK_ARRAY;
-                    return EMPTY_STACK_ARRAY;
-                }
-            }
-            var innerStacks = inner.getItems();
-            this.itemStacks = new ItemStack[innerStacks.length];
-            for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = innerStacks[i].copyWithCount(getAmount());
-            }
-        }
-        return itemStacks;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-        this.changed = true;
+        GTCEu.LOGGER.warn("Cannot get items of a Ranged Ingredient!");
+        return EMPTY_STACK_ARRAY;
     }
 
     /**
@@ -153,17 +128,14 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
     public int rollSampledCount(@NotNull RandomSource random) {
         if (!isRolled()) {
             sampledCount = countProvider.sample(random);
-            this.setAmount(sampledCount);
         }
         return sampledCount;
     }
 
-    /**
-     * Also sets the Amount of this ingredient
-     */
-    public void setSampledCount(int count) {
-        this.sampledCount = count;
-        this.setAmount(count);
+    @Override
+    public SizedIngredient collapse() {
+        IRangedIngredient.super.collapse();
+        return SizedIngredient.create(inner, rollSampledCount());
     }
 
     /**
@@ -171,8 +143,6 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     public void reset() {
         sampledCount = -1;
-        setAmount(getMaxRoll());
-        itemStacks = null;
     }
 
     @Override
@@ -182,7 +152,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
 
     @Override
     public boolean isEmpty() {
-        return this.getAmount() == 0 || inner.isEmpty();
+        return inner.isEmpty();
     }
 
     @Override
@@ -219,7 +189,6 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("ingredient", inner.toJson());
         json.addProperty("sampledCount", sampledCount);
-        json.addProperty("amount", amount);
         return json;
     }
 
@@ -231,8 +200,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
             IntProvider provider = IntProvider.CODEC.parse(NbtOps.INSTANCE, nbt.get("provider"))
                     .getOrThrow(false, GTCEu.LOGGER::error);
             int sampledCount = nbt.getInt("sampledCount");
-            int amount = nbt.getInt("amount");
-            return new IntProviderIngredient(Ingredient.fromNetwork(buffer), provider, sampledCount, amount);
+            return new IntProviderIngredient(Ingredient.fromNetwork(buffer), provider, sampledCount);
         }
 
         @Override
@@ -241,8 +209,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
                     .getOrThrow(false, GTCEu.LOGGER::error);
             Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
             int sampledCount = json.getAsJsonPrimitive("sampledCount").getAsInt();
-            int amount = json.getAsJsonPrimitive("amount").getAsInt();
-            return new IntProviderIngredient(inner, provider, sampledCount, amount);
+            return new IntProviderIngredient(inner, provider, sampledCount);
         }
 
         @Override
@@ -251,7 +218,6 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
             wrapper.put("provider", IntProvider.CODEC.encodeStart(NbtOps.INSTANCE, ingredient.countProvider)
                     .getOrThrow(false, GTCEu.LOGGER::error));
             wrapper.putInt("sampledCount", ingredient.sampledCount);
-            wrapper.putInt("amount", ingredient.amount);
             buffer.writeNbt(wrapper);
             ingredient.inner.toNetwork(buffer);
         }

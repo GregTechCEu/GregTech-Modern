@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
  * Functions similarly to {@link IntProviderIngredient}.
  */
-public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient {
+public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient<FluidIngredient> {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
             .xmap(IntProviderFluidIngredient::fromJson, IntProviderFluidIngredient::toJson);
@@ -38,6 +38,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     /**
      * The last result of {@link IntProviderFluidIngredient#getSampledCount()}. -1 if not rolled.
      */
+    @Setter
     @Getter
     protected int sampledCount = -1;
     /**
@@ -45,14 +46,11 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      */
     @Getter
     private final FluidIngredient inner;
-    @Setter
-    protected FluidStack[] fluidStacks = null;
 
     protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider) {
         super(inner.values, provider.getMaxValue(), inner.nbt);
         this.inner = inner;
         this.countProvider = provider;
-        setAmount(provider.getMaxValue());
     }
 
     protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider, int sampledCount) {
@@ -60,20 +58,18 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
         this.inner = inner;
         this.countProvider = provider;
         this.sampledCount = sampledCount;
-        setAmount(isRolled() ? sampledCount : provider.getMaxValue());
     }
 
     @Override
     public IntProviderFluidIngredient copy() {
         IntProviderFluidIngredient ipfi = new IntProviderFluidIngredient(this.inner, this.countProvider);
         ipfi.setSampledCount(this.sampledCount);
-        ipfi.setAmount(this.getAmount());
         return ipfi;
     }
 
     @Override
     public boolean isEmpty() {
-        return this.getAmount() == 0 || super.isEmpty();
+        return inner.isEmpty();
     }
 
     /**
@@ -84,23 +80,8 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      */
     @Override
     public FluidStack[] getStacks() {
-        if (changed || fluidStacks == null) {
-            changed = false;
-            if (!isRolled()) {
-                setAmount(rollSampledCount());
-                if (getAmount() == 0) {
-                    fluidStacks = EMPTY_STACK_ARRAY;
-                    return EMPTY_STACK_ARRAY;
-                }
-            }
-            var innerStacks = inner.getStacks();
-            this.fluidStacks = new FluidStack[innerStacks.length];
-            for (int i = 0; i < fluidStacks.length; i++) {
-                fluidStacks[i] = innerStacks[i].copy();
-                fluidStacks[i].setAmount(getAmount());
-            }
-        }
-        return fluidStacks;
+        GTCEu.LOGGER.warn("Cannot get stacks of a Ranged Fluid Ingredient!");
+        return EMPTY_STACK_ARRAY;
     }
 
     /**
@@ -127,9 +108,8 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     public int rollSampledCount(@NotNull RandomSource random) {
         if (!isRolled()) {
             sampledCount = countProvider.sample(random);
-            this.setAmount(sampledCount);
         }
-        return getAmount();
+        return sampledCount;
     }
 
     /**
@@ -144,16 +124,12 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      */
     public void reset() {
         sampledCount = -1;
-        super.setAmount(getMaxRoll());
-        fluidStacks = null;
     }
 
-    /**
-     * Also sets the Amount of this ingredient
-     */
-    public void setSampledCount(int count) {
-        this.sampledCount = count;
-        super.setAmount(count);
+    @Override
+    public FluidIngredient collapse() {
+        IRangedIngredient.super.collapse();
+        return new FluidIngredient(inner.values, rollSampledCount(), inner.nbt);
     }
 
     /**

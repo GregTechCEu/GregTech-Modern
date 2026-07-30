@@ -436,12 +436,18 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe);
         if (!result.isSuccess()) return result;
 
-        recipe.doTickPrerolls(this.chanceCaches);
+        if (lastDisplayedRecipe == null) {
+            GTCEu.LOGGER.warn("Last Displayed Recipe is null! Ingredients may roll incorrectly.");
+            this.lastDisplayedRecipe = lastRecipe.copy();
+            syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+            markLastRecipeDirty();
+        }
+        GTRecipe runningRecipe = RecipeHelper.doTickPrerolls(recipe, chanceCaches, lastDisplayedRecipe);
 
-        result = handleTickRecipeIO(recipe, IO.IN);
+        result = handleTickRecipeIO(runningRecipe, IO.IN);
         if (!result.isSuccess()) return result;
 
-        result = handleTickRecipeIO(recipe, IO.OUT);
+        result = handleTickRecipeIO(runningRecipe, IO.OUT);
         return result;
     }
 
@@ -460,22 +466,24 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         }
         lastDisplayedRecipe = recipe.copy();
         syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
-        recipe.doPrerolls(this.chanceCaches);
-        var handledIO = handleRecipeIO(recipe, IO.IN);
+        GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
+        var handledIO = handleRecipeIO(runningRecipe, IO.IN);
         if (handledIO.isSuccess()) {
-            if (lastRecipe != null && !recipe.equals(lastRecipe)) {
+            if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
                 chanceCaches.clear();
             }
             failureReasonMap.clear();
             recipeDirty = false;
-            lastRecipe = recipe;
+            lastRecipe = runningRecipe;
             setStatus(Status.WORKING);
             progress = 0;
-            duration = recipe.duration;
+            duration = runningRecipe.duration;
             isActive = true;
             syncDataHolder.resyncAllFields();
         } else {
+            lastRecipe = null;
             lastDisplayedRecipe = null;
+            syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
         }
     }
 

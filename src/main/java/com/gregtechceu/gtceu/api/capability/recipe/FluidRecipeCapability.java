@@ -182,7 +182,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         for (Content content : inputs) {
             FluidIngredient ing = of(content.content());
 
-            int amount = ing.getAmount();
+            int amount;
+            if (ing instanceof IRangedIngredient ranged) amount = ranged.getMaxRoll();
+            else amount = ing.getAmount();
 
             if (content.chance() == 0) {
                 nonConsumables.addTo(ing, amount);

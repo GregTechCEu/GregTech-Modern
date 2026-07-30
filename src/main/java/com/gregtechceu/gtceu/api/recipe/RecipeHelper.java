@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -400,6 +401,107 @@ public class RecipeHelper {
     }
 
     public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
-        return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
+        int amount = (fluidStack instanceof IRangedIngredient ranged ? ranged.getMaxRoll() : fluidStack.getAmount());
+        return amount % divisor == 0 && amount / divisor >= 25;
+    }
+
+    /**
+     * Rolls the value of all Ranged Ingredients in a recipe and replaces them with appropriate Sized Ingredients.
+     * Called once after successful recipe search, immediately before {@link RecipeLogic#handleRecipeIO(GTRecipe, IO)}.
+     * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
+     *
+     * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
+     * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
+     * 
+     * @return a copy of the input recipe with all ranged ingredients replaced
+     */
+    public static GTRecipe doPrerolls(GTRecipe recipe,
+                                      IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        GTRecipe runningRecipe = recipe.copy();
+        int count;
+        boolean zero;
+        for (List<Content> input : runningRecipe.inputs.values()) {
+            for (ListIterator<Content> iterator = input.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    iterator.set(new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance()));
+                    ranged.reset();
+                }
+            }
+        }
+        for (List<Content> output : runningRecipe.outputs.values()) {
+            for (ListIterator<Content> iterator = output.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    iterator.set(new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance()));
+                    ranged.reset();
+                }
+            }
+        }
+        return runningRecipe;
+    }
+
+    /**
+     * Rolls the value of all per-tick Ranged Ingredients in a recipe and replaces them with appropriate Sized
+     * Ingredients.
+     * Called every tick while a recipe is running, immediately before
+     * {@link RecipeLogic#handleTickRecipeIO(GTRecipe, IO)}.
+     *
+     * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
+     *
+     * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
+     * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
+     * 
+     * @return a copy of the input recipe with all per-tick ranged ingredients replaced
+     */
+    public static GTRecipe doTickPrerolls(GTRecipe recipe,
+                                          IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                                          GTRecipe lastDisplayedRecipe) {
+        if (!recipe.hasTick()) return recipe;
+
+        GTRecipe runningRecipe = recipe.copyWithoutTicks();
+        int count;
+        boolean zero;
+        for (var entry : lastDisplayedRecipe.tickInputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    content = new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance());
+                    ranged.reset();
+                }
+                runningRecipe.tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
+        }
+        for (var entry : lastDisplayedRecipe.tickOutputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    content = new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance());
+                    ranged.reset();
+                }
+                runningRecipe.tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
+        }
+        return runningRecipe;
     }
 }
