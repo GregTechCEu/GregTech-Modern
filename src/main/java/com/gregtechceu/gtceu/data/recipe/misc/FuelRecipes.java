@@ -27,6 +27,22 @@ public class FuelRecipes {
                 .duration(350) // 150s -> 17.5s
                 .save(provider);
 
+        // solid fuels; duration scaled off each material's vanilla burn value (Coal/Charcoal 1600, Coke 3200)
+        STEAM_BOILER_RECIPES.recipeBuilder("charcoal")
+                .inputItems(gem, Charcoal)
+                .duration(1600 * 3)
+                .save(provider);
+
+        STEAM_BOILER_RECIPES.recipeBuilder("coal")
+                .inputItems(gem, Coal)
+                .duration(1600 * 3)
+                .save(provider);
+
+        STEAM_BOILER_RECIPES.recipeBuilder("coke")
+                .inputItems(gem, Coke)
+                .duration(3200 * 3)
+                .save(provider);
+
         // semi-fluid fuels, like creosote - these are awful and need to be scrutinized heavily...
         LARGE_BOILER_RECIPES.recipeBuilder("gtceu_creosote")
                 .inputFluids(Creosote.getFluid(250))

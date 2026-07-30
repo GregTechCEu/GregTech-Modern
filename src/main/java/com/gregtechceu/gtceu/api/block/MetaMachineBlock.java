@@ -43,6 +43,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -64,6 +65,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -74,6 +77,12 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
     @Getter
     public final MachineDefinition definition;
+
+    // Machines whose block entity class failed to load once this JVM run; the failure is not transient (the same
+    // class fails identically on every retry), so we stop trying rather than re-triggering the expensive ASM
+    // transform (and its RuntimeDistCleaner false-positive, see
+    // https://github.com/GregTechCEu/GregTech-Modern/issues/3584) on every single access.
+    private static final Set<ResourceLocation> BROKEN_MACHINE_BLOCK_ENTITIES = ConcurrentHashMap.newKeySet();
 
     public MetaMachineBlock(Properties properties, MachineDefinition definition) {
         super(properties);
@@ -582,6 +591,19 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Nullable
     @Override
     public final BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return getDefinition().getBlockEntityType().create(pos, state);
+        var id = getDefinition().getId();
+        if (BROKEN_MACHINE_BLOCK_ENTITIES.contains(id)) return null;
+        try {
+            return getDefinition().getBlockEntityType().create(pos, state);
+        } catch (Throwable e) {
+            // Once the underlying machine class fails to load once (RuntimeException from RuntimeDistCleaner),
+            // the JVM marks it permanently erroneous; every subsequent attempt throws NoClassDefFoundError
+            // (an Error, not a RuntimeException) instead, so we must catch Throwable here, not just
+            // RuntimeException, or that second failure propagates uncaught and crashes the calling command/tick.
+            BROKEN_MACHINE_BLOCK_ENTITIES.add(id);
+            GTCEu.LOGGER.error(
+                    "Machine {} failed to create its block entity and will not be retried this session", id, e);
+            return null;
+        }
     }
 }
