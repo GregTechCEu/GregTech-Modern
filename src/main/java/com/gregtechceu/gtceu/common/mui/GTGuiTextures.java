@@ -690,7 +690,7 @@ public interface GTGuiTextures {
             "textures/gui/widget/hpca/active_cooler_component.png");
     UITexture HPCA_HEAT_SINK_COMPONENT = fullImage(
             "textures/gui/widget/hpca/heat_sink_component.png");
-    UITexture HPCA_EMPTY_COMPONENT = fullImage("textures/gui/widget/hpca/empty.png");
+    UITexture HPCA_EMPTY_COMPONENT = fullImage("textures/gui/widget/hpca/empty_component.png");
     UITexture HPCA_BRIDGE_COMPONENT = fullImage("textures/gui/widget/hpca/bridge_component.png");
     UITexture HPCA_COMPONENT_OUTLINE = fullImage("textures/gui/widget/hpca/component_outline.png");
 
