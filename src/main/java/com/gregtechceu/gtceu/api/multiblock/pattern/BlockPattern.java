@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -142,7 +143,12 @@ public class BlockPattern implements IBlockPattern {
                                   boolean isFlipped) {
         Objects.requireNonNull(patternState, "PatternState not set");
 
+        List<PatternError> errors = List.of();
+        // keep old errors if flipped
+        if (isFlipped) errors = patternState.getErrors();
         PredicateContext context = patternState.resetContext(true);
+        patternState.setErrors(errors);
+
         // only try to clear the cache for structure checking mapping when checking the structure for unflipped
         // maybe switch to a multiblock state value instead?
         if (!isFlipped) {

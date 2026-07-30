@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
-import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.logic.AndLogic;
@@ -52,6 +52,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     public MultiPredicate(Logic type, List<BasePredicate> predicates) {
+        predicates.sort(PREDICATE_COMPARATOR);
         this.predicateList = Collections.unmodifiableList(predicates);
         forEach(p -> p.setParent(this));
         this.logic = type.createLogic(this);
@@ -296,9 +297,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     /// called when all predicates failed
     public void onError(PredicateContext ctx) {
-        // todo make this prettier
-        ctx.appendError(PatternStringError.literal("error at " + ctx.pos()));
-        ctx.appendError(PatternStringError.literal("missing one of\n" + this));
+        ctx.appendError(new SimplePatternError(ctx.pos(), getCandidates()));
     }
 
     public enum Logic {

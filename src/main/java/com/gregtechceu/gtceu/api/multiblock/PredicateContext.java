@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
@@ -129,20 +128,19 @@ public class PredicateContext {
         this.lastFailureReason = FailureReason.NONE;
     }
 
-    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectAVLTreeMap<>(Slice::compareTo);
-
-    public void commitSliceErrors() {
-        for (Slice slice : this.sliceErrors.keySet()) {
-            this.state.appendError(PatternStringError.literal("error(s) at slice %s", slice.index + slice.offset));
-            this.state.appendErrors(this.sliceErrors.get(slice));
-        }
-        this.sliceErrors.clear();
-    }
+    private Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectAVLTreeMap<>(Slice::compareTo);
 
     private @Nullable Slice currentSlice;
 
     public void pushSlice(int index, int offset) {
         this.currentSlice = new Slice(index, offset);
+    }
+
+    public void commitSliceErrors() {
+        for (Slice slice : this.sliceErrors.keySet()) {
+            this.state.appendErrors(this.sliceErrors.get(slice));
+        }
+        this.sliceErrors.clear();
     }
 
     public void updateLevel(Level level) {
