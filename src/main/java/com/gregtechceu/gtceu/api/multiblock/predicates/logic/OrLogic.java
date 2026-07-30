@@ -12,7 +12,6 @@ public class OrLogic extends BaseLogic {
 
     @Override
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext ctx) {
-        // error?
         return passedPredicate.testGlobalMax(ctx) && passedPredicate.testSliceMax(ctx);
     }
 

@@ -34,7 +34,6 @@ public class AndLogic extends BaseLogic {
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
         for (BasePredicate predicate : this.rootPredicate) {
             if (!predicate.testGlobalMax(context) || !predicate.testSliceMax(context)) {
-                // error?
                 return false;
             }
         }

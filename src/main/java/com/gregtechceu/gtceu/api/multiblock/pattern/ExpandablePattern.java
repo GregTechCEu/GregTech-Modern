@@ -156,7 +156,7 @@ public class ExpandablePattern implements IBlockPattern {
         Set<MultiPredicate> visited = new HashSet<>();
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
-            MultiPredicate pred = predicateProvider.apply(mPos, bounds);
+            MultiPredicate multiPredicate = predicateProvider.apply(mPos, bounds);
 
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
@@ -165,27 +165,24 @@ public class ExpandablePattern implements IBlockPattern {
             mPos = mPos.offset(translation).mutable();
             context.updatePos(mPos);
 
-            if (!pred.isAny()) patternState.updateCache();
+            if (!multiPredicate.isAny()) patternState.updateCache();
 
             context.setStage(PredicateContext.PredicateStage.INTERNAL);
             // state check
-            BasePredicate predicateAtPos = pred.getPredicateAtPos(context);
+            BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
 
             // all predicates failed
-            // errors are PUSHED in slice strategy
-            // need to add them here, since they aren't added with getPredicateAtPos
-            if (predicateAtPos == null) {
-                pred.onError(context);
+            if (innerPredicate == null) {
+                multiPredicate.onError(context);
                 return false;
             }
 
             // max count checks
-            if (!predicateAtPos.checkMaxCount(context)) {
-                predicateAtPos.onError(context);
+            if (!innerPredicate.checkMaxCount(context)) {
                 return false;
             }
 
-            visited.add(pred);
+            visited.add(multiPredicate);
         }
 
         context.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);

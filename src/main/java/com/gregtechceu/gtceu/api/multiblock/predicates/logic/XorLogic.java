@@ -62,6 +62,7 @@ public class XorLogic extends BaseLogic {
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
         context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX); // set stage early to avoid flip check
         if (passedPredicate != this.passedPredicate) {
+            // todo prettier error
             context.appendError(PatternStringError.literal(passedPredicate + " present in multi"));
             return false;
         }

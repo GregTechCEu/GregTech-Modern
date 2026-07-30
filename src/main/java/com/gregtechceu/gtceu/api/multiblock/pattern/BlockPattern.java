@@ -209,30 +209,26 @@ public class BlockPattern implements IBlockPattern {
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
                 context.updatePos(charPos);
-                MultiPredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
+                MultiPredicate multiPredicate = predicates.get(slice.charAt(stringIdx, charIdx));
 
-                if (!pred.isAny()) patternState.updateCache();
+                if (!multiPredicate.isAny()) patternState.updateCache();
 
                 context.setStage(PredicateContext.PredicateStage.INTERNAL);
                 // state check
-                BasePredicate predicateAtPos = pred.getPredicateAtPos(context);
+                BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
 
                 // all predicates failed
-                // errors are PUSHED in slice strategy
-                // need to add them here, since they aren't added with getPredicateAtPos
-                if (predicateAtPos == null) {
-                    pred.onError(context);
-                    // todo this causes a flipped check, add error?
+                if (innerPredicate == null) {
+                    multiPredicate.onError(context);
                     return false;
                 }
 
                 // max count checks
-                if (!predicateAtPos.checkMaxCount(context)) {
-                    // error handled
+                if (!innerPredicate.checkMaxCount(context)) {
                     return false;
                 }
 
-                visitedPredicates.add(pred);
+                visitedPredicates.add(multiPredicate);
                 charPos.move(absoluteChar);
                 // continue...
             }
