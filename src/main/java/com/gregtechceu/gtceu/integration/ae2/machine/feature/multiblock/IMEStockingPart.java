@@ -94,9 +94,11 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
             GenericStack newStock;
             if (amount >= min) {
                 newStock = new GenericStack(key, amount);
-                if (slot.setStockSilent(newStock)) {
-                    anyChanged = true;
-                }
+            } else {
+                newStock = null;
+            }
+            if (slot.setStockSilent(newStock)) {
+                anyChanged = true;
             }
         }
         return anyChanged;
