@@ -90,7 +90,9 @@ public abstract class BasePredicate {
         if (getMaxCount() == -1) return true;
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
         int count = ctx.incrementGlobalCount(this);
-        return testGlobalMax(count) || ctx.error(SinglePredicateError.maxCount(this, count));
+        if (testGlobalMax(count)) return true;
+        ctx.appendError(SinglePredicateError.maxCount(this, count));
+        return false;
     }
 
     /// test against slice max count
@@ -98,22 +100,27 @@ public abstract class BasePredicate {
         if (!ctx.isCheckLayer()) return true;
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MAX);
         int count = ctx.incrementSliceCount(this);
-        return getMaxSliceCount() == -1 || testSliceMax(count) ||
-                ctx.error(SinglePredicateError.maxLayerCount(this, count));
+        if (getMaxSliceCount() == -1 || testSliceMax(count)) return true;
+        ctx.appendError(SinglePredicateError.maxLayerCount(this, count));
+        return false;
     }
 
     /// test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         if (getMinCount() == -1) return true;
         int count = ctx.getGlobalCount(this);
-        return testGlobalMin(count) || ctx.error(SinglePredicateError.minCount(this, count));
+        if (testGlobalMin(count)) return true;
+        ctx.appendError(SinglePredicateError.minCount(this, count));
+        return false;
     }
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
         if (getMinSliceCount() == -1 || !ctx.isCheckLayer()) return true;
         int count = ctx.getSliceCount(this);
-        return testSliceMin(count) || ctx.error(SinglePredicateError.minLayerCount(this, count));
+        if (testSliceMin(count)) return true;
+        ctx.appendError(SinglePredicateError.minLayerCount(this, count));
+        return false;
     }
 
     /// simple test against global min count

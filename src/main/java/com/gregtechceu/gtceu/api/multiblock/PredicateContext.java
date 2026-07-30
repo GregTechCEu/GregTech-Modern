@@ -51,14 +51,10 @@ public class PredicateContext {
         this.state = state;
     }
 
-    /// accepts a pattern error
+    /// If a multiblock is currently being iterated, errors are queued to be added to the
+    /// PatternState later
     ///
-    /// @return false
-    public boolean error(PatternError error) {
-        appendError(error);
-        return false;
-    }
-
+    /// @param error The error to add to PatternState
     public void appendError(PatternError error) {
         if (currentSlice != -1) {
             getCurrentSliceErrors().add(error);
