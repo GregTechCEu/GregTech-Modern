@@ -427,9 +427,9 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().getLastRecipe() != null));
         BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWaiting()));
-        GenericSyncValue<Component> bestFailureReason = (GenericSyncValue<Component>) syncManager
+        GenericSyncValue<FriendlyByteBuf, Component> bestFailureReason = syncManager
                 .getOrCreateSyncHandler("bestFailureReason", GenericSyncValue.class,
-                        () -> GenericSyncValue.builder(Component.class)
+                        () -> GenericSyncValue.<FriendlyByteBuf, Component>builder(Component.class)
                                 .nullable()
                                 .adapter(GTByteBufAdapters.COMPONENT)
                                 .getter(() -> rlMachine.getRecipeLogic().getBestFailureReason())
@@ -443,7 +443,7 @@ public class GTMultiblockTextUtil {
                         !hasRunningRecipe.getBoolValue() && bestFailureReason.getValue() != null));
         lineList.add(Text
                 .dynamic(() -> {
-                    var reason = bestFailureReason.getValue();
+                    Component reason = (Component)bestFailureReason.getValue();
                     if (reason == null) return Component.empty();
                     return Component.literal(" - ").append(reason);
                 })

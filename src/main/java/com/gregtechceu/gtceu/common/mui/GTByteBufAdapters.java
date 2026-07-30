@@ -13,6 +13,8 @@ import brachy.modularui.utils.serialization.network.*;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 
 import java.util.Objects;
 
@@ -20,6 +22,7 @@ public class GTByteBufAdapters {
 
     // spotless:off
     public static final IByteBufAdapter<FriendlyByteBuf, MonitorGroup> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC);
+    public static final IByteBufAdapter<FriendlyByteBuf, Component> COMPONENT = makeAdapter(ComponentSerialization.CODEC);
     public static final IByteBufAdapter<FriendlyByteBuf, PatternError> PATTERN_ERRORS = makeAdapter(PatternError.CODEC);
 
     // spotless:on

@@ -14,6 +14,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +40,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
         if (!capability.isWorking() && capability.isWorkingEnabled()) {
             var failureReason = capability.getBestFailureReason();
             if (failureReason != null) {
-                data.putString("FailureReason", Component.Serializer.toJson(failureReason));
+                data.putString("FailureReason", failureReason.getString());
                 data.putBoolean("Waiting", capability.isWaiting());
             }
         }
@@ -137,7 +138,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                 }
             }
         } else if (capData.contains("FailureReason", Tag.TAG_STRING)) {
-            Component reason = Component.Serializer.fromJson(capData.getString("FailureReason"));
+            Component reason = Component.translatable(capData.getString("FailureReason"));
             if (reason != null) {
                 tooltip.add(capData.getBoolean("Waiting") ?
                         Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.YELLOW) :
