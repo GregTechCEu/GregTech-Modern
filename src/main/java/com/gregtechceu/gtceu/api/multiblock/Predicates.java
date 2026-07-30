@@ -84,7 +84,7 @@ public class Predicates {
     public static MultiPredicate blocks(Block block) {
         return builder("Block")
                 .predicate(ctx -> ctx.state().is(block))
-                .onError(ctx -> new BlockMatchingError(ctx.pos(), List.of(block)))
+                .onError(ctx -> ctx.appendError(new BlockMatchingError(ctx.pos(), List.of(block))))
                 .candidates(Stream.of(BlockInfo.fromBlock(block)))
                 .contents(builder -> builder.append(blockToString(block)))
                 .toMultiPredicate();
@@ -114,7 +114,7 @@ public class Predicates {
                     }
                     return false;
                 })
-                .onError(ctx -> new BlockMatchingError(ctx.pos(), blocks))
+                .onError(ctx -> ctx.appendError(new BlockMatchingError(ctx.pos(), blocks)))
                 .candidates(candidates.map(BlockInfo::fromBlock))
                 .contents(builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
@@ -144,8 +144,8 @@ public class Predicates {
         ITagManager<Block> manager = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags());
         return builder("BlockTag")
                 .predicate(ctx -> ctx.state().is(tag))
-                .onError(ctx -> new BlockMatchingError(ctx.pos(), manager.getTag(tag)
-                        .stream().toList()))
+                .onError(ctx -> ctx.appendError(new BlockMatchingError(ctx.pos(), manager.getTag(tag)
+                        .stream().toList())))
                 .candidates(manager.getTag(tag)
                         .stream().map(BlockInfo::fromBlock))
                 .contents(builder -> builder.append(tag.location()))
@@ -155,7 +155,7 @@ public class Predicates {
     public static MultiPredicate fluids(Fluid... fluids) {
         return builder("Fluids")
                 .predicate(ctx -> ArrayUtils.contains(fluids, ctx.fluid()))
-                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+//                .onError(ctx -> ctx.appendError(PLACEHOLDER))
                 .candidates(Arrays.stream(fluids).map(BlockInfo::fromFluid))
                 .contents(builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
@@ -172,7 +172,7 @@ public class Predicates {
     public static MultiPredicate fluidTag(TagKey<Fluid> tag) {
         return builder("FluidTag")
                 .predicate(ctx -> ctx.fluidState().is(tag))
-                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+//                .onError(ctx -> ctx.appendError(PLACEHOLDER))
                 .fluidTag(tag)
                 .toMultiPredicate();
     }
@@ -188,7 +188,7 @@ public class Predicates {
     public static MultiPredicate abilities(PartAbility ability) {
         return builder("Ability")
                 .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
-                .onError(ctx -> new PartAbilityError(ctx.pos(), ability))
+                .onError(ctx -> ctx.appendError(new PartAbilityError(ctx.pos(), ability)))
                 .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
                 .contents(builder -> builder.append(ability.getName()))
                 .toMultiPredicate();
@@ -199,7 +199,7 @@ public class Predicates {
         for (PartAbility ability : abilities) {
             predicates.add(builder("Ability")
                     .predicate(ctx -> ability.isApplicable(ctx.state().getBlock()))
-                    .onError(ctx -> new PartAbilityError(ctx.pos(), ability))
+                    .onError(ctx -> ctx.appendError(new PartAbilityError(ctx.pos(), ability)))
                     .candidates(ability.getAllBlocks().stream().map(BlockInfo::fromBlock))
                     .contents(builder -> builder.append(ability.getName()))
                     .build());
@@ -214,7 +214,7 @@ public class Predicates {
         }
         return builder("TieredAbility")
                 .predicate(ctx -> ability.getBlocks(tiers).contains(ctx.state().getBlock()))
-                .onError(ctx -> new PartAbilityError(ctx.pos(), ability))
+                .onError(ctx -> ctx.appendError(new PartAbilityError(ctx.pos(), ability)))
                 .candidates(ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock))
                 .contents(builder -> builder.append(ability.getName()).append(" ").append(sb))
                 .toMultiPredicate();
