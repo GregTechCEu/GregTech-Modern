@@ -7,14 +7,14 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 
 import brachy.modularui.utils.EqualityTest;
 import brachy.modularui.utils.serialization.network.*;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
 
 import java.util.Objects;
 

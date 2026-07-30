@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import net.minecraft.core.BlockPos;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import brachy.modularui.api.drawable.IDrawable;
 import org.jetbrains.annotations.Nullable;

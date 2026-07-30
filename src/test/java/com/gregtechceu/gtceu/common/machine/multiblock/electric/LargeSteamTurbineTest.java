@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMac
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
-
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -34,7 +34,7 @@ public class LargeSteamTurbineTest {
         {
             final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
-            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4,3,4));
+            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4, 3, 4));
             tank.setWorkingEnabled(true);
         }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
@@ -63,7 +63,7 @@ public class LargeSteamTurbineTest {
         {
             final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
-            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4,3,4));
+            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4, 3, 4));
             tank.setWorkingEnabled(true);
         }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));
@@ -203,7 +203,7 @@ public class LargeSteamTurbineTest {
         {
             final var block = (PipeBlockEntity) helper.getBlockEntity(new BlockPos(4, 3, 3));
             block.setConnection(Direction.SOUTH, true, false);
-            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4,3,4));
+            final var tank = (CreativeTankMachine) helper.getBlockEntity(new BlockPos(4, 3, 4));
             tank.setWorkingEnabled(true);
         }
         final var rotorPart = (RotorHolderPartMachine) helper.getBlockEntity(new BlockPos(2, 3, 4));

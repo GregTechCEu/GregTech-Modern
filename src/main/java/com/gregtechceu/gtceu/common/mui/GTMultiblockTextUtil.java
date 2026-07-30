@@ -443,7 +443,7 @@ public class GTMultiblockTextUtil {
                         !hasRunningRecipe.getBoolValue() && bestFailureReason.getValue() != null));
         lineList.add(Text
                 .dynamic(() -> {
-                    Component reason = (Component)bestFailureReason.getValue();
+                    Component reason = (Component) bestFailureReason.getValue();
                     if (reason == null) return Component.empty();
                     return Component.literal(" - ").append(reason);
                 })
