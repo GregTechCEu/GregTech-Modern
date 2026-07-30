@@ -67,8 +67,4 @@ public class CompactedPredicate extends BasePredicate {
     protected void appendContents(StringBuilder builder) {
         expand().appendContents(builder);
     }
-
-    public void reset() {
-        this.root.reset();
-    }
 }

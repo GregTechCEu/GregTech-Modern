@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 public class OrLogic extends BaseLogic {
 
     public OrLogic(MultiPredicate rootPredicate) {
-        super(rootPredicate);
+        super(rootPredicate, MultiPredicate.Logic.OR);
     }
 
     @Override
@@ -43,10 +43,5 @@ public class OrLogic extends BaseLogic {
     @Override
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext ctx) {
         return passedPredicate.testGlobalMax(ctx) && passedPredicate.testSliceMax(ctx);
-    }
-
-    @Override
-    public MultiPredicate.Logic getType() {
-        return MultiPredicate.Logic.OR;
     }
 }

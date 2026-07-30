@@ -20,21 +20,20 @@ public class XorLogic extends BaseLogic {
     protected boolean noneValid;
 
     public XorLogic(MultiPredicate rootPredicate) {
-        super(rootPredicate);
+        super(rootPredicate, MultiPredicate.Logic.XOR);
         this.noneValid = isNoneValid(this.rootPredicate);
     }
 
     @Override
     public void reset() {
-        super.reset();
         this.passedPredicate = null;
     }
 
     private static boolean isNoneValid(MultiPredicate rootPredicate) {
         boolean noneValid = false;
         for (BasePredicate predicate : rootPredicate) {
-            if (predicate instanceof CompactedPredicate cp) {
-                noneValid |= isNoneValid(cp.expand());
+            if (predicate instanceof CompactedPredicate compacted) {
+                noneValid |= isNoneValid(compacted.expand());
             } else {
                 noneValid |= predicate.getMinCount() <= 0 && predicate.getMinSliceCount() <= 0;
             }
@@ -128,10 +127,5 @@ public class XorLogic extends BaseLogic {
         if (this.passedPredicate == null) {
             this.passedPredicate = predicate;
         }
-    }
-
-    @Override
-    public MultiPredicate.Logic getType() {
-        return MultiPredicate.Logic.XOR;
     }
 }

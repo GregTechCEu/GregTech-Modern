@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 public class AndLogic extends BaseLogic {
 
     public AndLogic(MultiPredicate rootPredicate) {
-        super(rootPredicate);
+        super(rootPredicate, MultiPredicate.Logic.AND);
     }
 
     @Override
@@ -65,10 +65,5 @@ public class AndLogic extends BaseLogic {
             }
         }
         return true;
-    }
-
-    @Override
-    public MultiPredicate.Logic getType() {
-        return MultiPredicate.Logic.AND;
     }
 }

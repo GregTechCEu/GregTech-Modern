@@ -51,31 +51,18 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         this.hasAir = false;
     }
 
+    /// @param predicates list must be modifiable
     public MultiPredicate(Logic type, List<BasePredicate> predicates) {
+        this(type, predicates, predicates.stream().anyMatch(p -> p == BasePredicate.AIR));
+    }
+
+    /// @param predicates list must be modifiable
+    private MultiPredicate(Logic type, List<BasePredicate> predicates, boolean hasAir) {
+        predicates.forEach(p -> p.setParent(this));
         predicates.sort(PREDICATE_COMPARATOR);
         this.predicateList = Collections.unmodifiableList(predicates);
-        forEach(p -> p.setParent(this));
         this.logic = type.createLogic(this);
-        this.hasAir = predicates.stream().anyMatch(p -> p == BasePredicate.AIR);
-    }
-
-    private MultiPredicate(Logic type, MultiPredicate a, MultiPredicate b) {
-        ArrayList<BasePredicate> builder = new ArrayList<>();
-        appendPredicates(type, a, builder);
-        appendPredicates(type, b, builder);
-        builder.forEach(p -> p.setParent(this));
-        builder.sort(PREDICATE_COMPARATOR);
-        this.predicateList = Collections.unmodifiableList(builder);
-        this.logic = type.createLogic(this);
-        this.hasAir = a.hasAir || b.hasAir;
-    }
-
-    public static MultiPredicate or(List<BasePredicate> predicates) {
-        return new MultiPredicate(Logic.OR, predicates);
-    }
-
-    public void reset() {
-        this.logic.reset();
+        this.hasAir = hasAir;
     }
 
     // this is called for each block
@@ -98,6 +85,15 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this.predicateList.stream()
                 .map(BasePredicate::getCandidates)
                 .toList();
+    }
+
+    public void resetLogic() {
+        this.logic.reset();
+        for (BasePredicate p : this.predicateList) {
+            if (p instanceof CompactedPredicate compacted) {
+                compacted.expand().resetLogic();
+            }
+        }
     }
 
     public boolean isOr() {
@@ -233,6 +229,18 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return combine(this, Logic.XOR, other);
     }
 
+    public static MultiPredicate or(List<BasePredicate> predicates) {
+        return new MultiPredicate(Logic.OR, predicates);
+    }
+
+    public static MultiPredicate and(List<BasePredicate> predicates) {
+        return new MultiPredicate(Logic.AND, predicates);
+    }
+
+    public static MultiPredicate xor(List<BasePredicate> predicates) {
+        return new MultiPredicate(Logic.XOR, predicates);
+    }
+
     public boolean isSingle() {
         return predicateList.size() == 1;
     }
@@ -245,7 +253,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("MulitPredicate");
+        StringBuilder builder = new StringBuilder("MultiPredicate");
         if (isController()) builder.append("[Controller]");
         builder.append('{');
         appendContents(builder);
@@ -268,7 +276,10 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     private static MultiPredicate combine(MultiPredicate a, Logic type, @Nullable MultiPredicate b) {
         if (b == null) return a; // no op
         if (a.isEmpty()) return b;
-        return new MultiPredicate(type, a, b);
+        ArrayList<BasePredicate> builder = new ArrayList<>();
+        appendPredicates(type, a, builder);
+        appendPredicates(type, b, builder);
+        return new MultiPredicate(type, builder, a.hasAir || b.hasAir);
     }
 
     private static void appendPredicates(Logic type, MultiPredicate multiPredicate, ArrayList<BasePredicate> builder) {

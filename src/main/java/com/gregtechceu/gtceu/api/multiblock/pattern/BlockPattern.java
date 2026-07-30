@@ -115,7 +115,6 @@ public class BlockPattern implements IBlockPattern {
             }
         }
 
-        // need to clear some errors, as there's a lot of useless info now
         boolean valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, false);
         if (valid) {
             // reaching here means the cache failed or was empty
@@ -143,25 +142,22 @@ public class BlockPattern implements IBlockPattern {
                                   boolean isFlipped) {
         Objects.requireNonNull(patternState, "PatternState not set");
 
-        List<PatternError> errors = List.of();
-        // keep old errors if flipped
-        if (isFlipped) errors = patternState.getErrors();
         PredicateContext context = patternState.resetContext(true);
-        patternState.setErrors(errors);
 
         // only try to clear the cache for structure checking mapping when checking the structure for unflipped
         // maybe switch to a multiblock state value instead?
         if (!isFlipped) {
             patternState.getCache().clear();
+            // keep old errors if flipped
+            patternState.clearErrors();
         }
 
         context.updateLevel(level);
-        // context.reset(); // clear any existing committed errors
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
         // reset predicates for testing
-        predicates.values().forEach(MultiPredicate::reset);
+        predicates.values().forEach(MultiPredicate::resetLogic);
 
         // handle slices
         sliceStrategy.setPattern(this);
