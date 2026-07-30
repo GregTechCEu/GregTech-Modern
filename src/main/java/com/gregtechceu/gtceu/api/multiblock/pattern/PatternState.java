@@ -119,12 +119,15 @@ public class PatternState {
                 PatternState patternState = controller.checkStructurePattern(name);
                 if (!patternState.hasErrors()) {
                     controller.formStructure(name);
+                    // previous formation may not have added the full multiblock the saved data
+                    // todo there's probably a better way to do this
+                    MultiblockWorldSavedData.getOrCreate(serverLevel).addMapping(this);
                 } else {
                     controller.invalidateStructure(name);
                     if (name.equals(MultiblockControllerMachine.DEFAULT_STRUCTURE)) {
                         MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(this);
                         controller.checkAndFormStructure();
-                    }
+                     }
                 }
             }
         }
