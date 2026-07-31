@@ -263,7 +263,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         syncManager.syncValue("text", text);
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED)));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
@@ -738,10 +740,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             if (components.stream().anyMatch(HPCAComponentTrait::isDamaged)) {
                 textList.add(
                         Component.translatable("gtceu.multiblock.hpca.error_damaged").withStyle(ChatFormatting.RED));
-            }
-            if (this.controller != null && this.controller.hasNotEnoughEnergy) {
-                textList.add(
-                        Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED));
             }
         }
 
