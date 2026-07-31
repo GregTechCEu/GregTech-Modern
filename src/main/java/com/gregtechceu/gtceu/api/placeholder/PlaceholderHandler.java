@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -93,7 +95,9 @@ public class PlaceholderHandler {
 
     public static @Nullable ResourceKey<Placeholder> toId(String placeholder) {
         try {
-            return ResourceKey.create(GTRegistries.Keys.PLACEHOLDER, GTCEu.id(placeholder));
+            // TODO make placeholder ids actually snake_case so we can remove the snakecaseification
+            ResourceLocation id = GTCEu.id(FormattingUtil.toLowerCaseUnderscore(placeholder));
+            return ResourceKey.create(GTRegistries.Keys.PLACEHOLDER, id);
         } catch (ResourceLocationException e) {
             return null;
         }

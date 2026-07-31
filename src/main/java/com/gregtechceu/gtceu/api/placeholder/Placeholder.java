@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.placeholder;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.common.capability.PlaceholderSavedData;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,8 @@ public abstract class Placeholder {
                                              List<MultiLineComponent> args) throws PlaceholderException;
 
     public Placeholder(String str) {
-        this.id = GTCEu.id(str);
+        // TODO make placeholder ids actually snake_case so we can remove the snakecaseification
+        this.id = GTCEu.id(FormattingUtil.toLowerCaseUnderscore(str));
         this.name = str;
     }
 
