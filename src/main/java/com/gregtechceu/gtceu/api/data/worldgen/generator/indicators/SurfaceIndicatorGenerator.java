@@ -184,9 +184,18 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     public enum IndicatorPlacement implements StringRepresentable {
 
         SURFACE(
-                (level, access, pos) -> pos.atY(Math.max(
-                        level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ()),
-                        pos.getY())),
+                (level, access, pos) -> {
+                    try {
+                        return pos.atY(Math.max(
+                                level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ()),
+                                pos.getY()));
+                    } catch (IllegalStateException e) {
+                        // WorldGenRegion throws this when the queried chunk hasn't reached the required
+                        // generation status yet (e.g. just outside the current feature placement radius).
+                        // Skip height resolution for this position rather than crashing chunk generation.
+                        return pos;
+                    }
+                },
                 block -> getBlockState(block, Direction.DOWN)),
 
         ABOVE(

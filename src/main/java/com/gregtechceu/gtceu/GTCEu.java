@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLModContainer;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
@@ -44,6 +45,80 @@ public class GTCEu {
     @ApiStatus.Internal
     public static IEventBus gtModBus;
 
+    // Classes observed to deterministically trip RuntimeDistCleaner's ClientLevel/Particle/GameRenderer
+    // false-positive on first load in some modpacks (ASM's stack-frame merge computation loads these
+    // client-only classes just to inspect their hierarchy, never actually using them - see
+    // https://github.com/GregTechCEu/GregTech-Modern/issues/3584). Warmed up here with the dist check
+    // reflectively and temporarily disabled for just this call, so the false positive can't poison the
+    // class for the rest of the session. This MUST run from FMLCommonSetupEvent#enqueueWork, not from the
+    // mod constructor or the raw event handler - both of those run on FML's parallel dispatch executor
+    // alongside every other mod's construction/setup, and briefly disabling the dist check while other
+    // mods are concurrently loading their own client-only classes on other threads lets THEIR classes
+    // skip the check too, corrupting them instead (confirmed by testing: crashed mod loading for
+    // createbigcannons/aeronautics/railways). enqueueWork callbacks run one at a time, strictly after
+    // every mod's parallel setup work has finished, so no other mod is loading classes concurrently here.
+    private static final String[] DIST_CLEANER_WARMUP_CLASSES = {
+            "com.gregtechceu.gtceu.common.machine.multiblock.part.CokeOvenHatch",
+    };
+
+    private static java.lang.reflect.Field runtimeDistCleanerDistField;
+    private static Object runtimeDistCleanerInstance;
+
+    private static void initRuntimeDistCleanerHook() {
+        try {
+            var launcherClass = Class.forName("cpw.mods.modlauncher.Launcher");
+            var instanceField = launcherClass.getDeclaredField("INSTANCE");
+            instanceField.setAccessible(true);
+            Object launcherInstance = instanceField.get(null);
+
+            var launchPluginsField = launcherClass.getDeclaredField("launchPlugins");
+            launchPluginsField.setAccessible(true);
+            Object launchPluginHandler = launchPluginsField.get(launcherInstance);
+
+            var getMethod = launchPluginHandler.getClass().getMethod("get", String.class);
+            var pluginOpt = (java.util.Optional<?>) getMethod.invoke(launchPluginHandler, "runtimedistcleaner");
+            if (pluginOpt.isPresent()) {
+                runtimeDistCleanerInstance = pluginOpt.get();
+                runtimeDistCleanerDistField = runtimeDistCleanerInstance.getClass().getDeclaredField("dist");
+                runtimeDistCleanerDistField.setAccessible(true);
+            }
+        } catch (Throwable t) {
+            LOGGER.warn("Could not hook RuntimeDistCleaner for targeted class warmup", t);
+        }
+    }
+
+    private static void warmupClassBypassingDistCleaner(String className) {
+        if (runtimeDistCleanerDistField == null) {
+            try {
+                Class.forName(className, true, GTCEu.class.getClassLoader());
+            } catch (Throwable e) {
+                LOGGER.warn("Warmup failed for {} (no RuntimeDistCleaner hook available)", className, e);
+            }
+            return;
+        }
+        Object originalDist;
+        try {
+            originalDist = runtimeDistCleanerDistField.get(runtimeDistCleanerInstance);
+        } catch (Throwable e) {
+            LOGGER.warn("Could not read RuntimeDistCleaner.dist, skipping targeted warmup for {}", className, e);
+            return;
+        }
+        try {
+            runtimeDistCleanerDistField.set(runtimeDistCleanerInstance, null);
+            Class.forName(className, true, GTCEu.class.getClassLoader());
+        } catch (Throwable e) {
+            LOGGER.warn("Targeted warmup still failed for {}", className, e);
+        } finally {
+            try {
+                runtimeDistCleanerDistField.set(runtimeDistCleanerInstance, originalDist);
+            } catch (Throwable e) {
+                LOGGER.error(
+                        "Failed to restore RuntimeDistCleaner.dist after warmup - the dist check may stay disabled for the rest of this session!",
+                        e);
+            }
+        }
+    }
+
     public GTCEu(IEventBus modBus, FMLModContainer container) {
         GTCEuAPI.instance = this;
         GTCEu.gtModBus = modBus;
@@ -59,6 +134,15 @@ public class GTCEu {
         CommonProxy.init(modBus);
 
         modBus.addListener(GTNetwork::registerPayloads);
+
+        if (FMLEnvironment.dist.isDedicatedServer()) {
+            modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(() -> {
+                initRuntimeDistCleanerHook();
+                for (String className : DIST_CLEANER_WARMUP_CLASSES) {
+                    warmupClassBypassingDistCleaner(className);
+                }
+            }));
+        }
     }
 
     public static ResourceLocation id(String path) {

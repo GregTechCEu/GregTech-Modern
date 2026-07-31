@@ -116,7 +116,14 @@ public class SurfaceRockBlock extends Block {
         var facing = state.getValue(FACING);
         var attachedBlock = pos.relative(facing);
 
-        return level.getBlockState(attachedBlock).isFaceSturdy(level, attachedBlock, facing.getOpposite());
+        try {
+            return level.getBlockState(attachedBlock).isFaceSturdy(level, attachedBlock, facing.getOpposite());
+        } catch (IllegalStateException e) {
+            // During world generation, WorldGenRegion throws this when the attached block's chunk hasn't
+            // reached the required generation status yet (e.g. querying just outside the current feature
+            // placement radius). Assume the attachment is valid rather than crashing chunk generation.
+            return true;
+        }
     }
 
     @Override
