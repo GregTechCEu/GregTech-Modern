@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class GTElements {
+
     // spotless:off
     public static final Element H = createAndRegister(GTCEu.id("hydrogen"), 1, 0, -1, null, "Hydrogen", "H", false);
     public static final Element D = createAndRegister(GTCEu.id("deuterium"), 1, 1, -1, "H", "Deuterium", "D", true);

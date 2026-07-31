@@ -16,8 +16,8 @@ import java.util.stream.Stream;
 
 public class BiomeDependentPlacement extends PlacementModifier {
 
-    public static final MapCodec<BiomeDependentPlacement> CODEC = BiomeWeightModifier.CODEC.listOf().fieldOf("modifiers")
-            .xmap(BiomeDependentPlacement::new, placement -> placement.modifiers);
+    public static final MapCodec<BiomeDependentPlacement> CODEC = BiomeWeightModifier.CODEC.listOf()
+            .fieldOf("modifiers").xmap(BiomeDependentPlacement::new, placement -> placement.modifiers);
 
     public final List<BiomeWeightModifier> modifiers;
 
