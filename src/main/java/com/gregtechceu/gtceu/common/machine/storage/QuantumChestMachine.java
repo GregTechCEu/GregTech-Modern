@@ -306,10 +306,10 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
 
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
 
-        public static final MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class);
+        public static final MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class, null);
 
         @Override
-        public MachineTraitType<ItemCache> getTraitType() {
+        public MachineTraitType<? extends ItemCache> getTraitType() {
             return TYPE;
         }
 

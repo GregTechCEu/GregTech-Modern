@@ -39,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
 
     public static final MachineTraitType<NotifiableEnergyContainer> TYPE = new MachineTraitType<>(
-            NotifiableEnergyContainer.class);
+            NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.TYPE);
 
     @Override
     public MachineTraitType<? extends NotifiableEnergyContainer> getTraitType() {

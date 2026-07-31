@@ -19,10 +19,10 @@ import org.jetbrains.annotations.Nullable;
 @Accessors(chain = true)
 public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerModifiable, ICapabilityTrait {
 
-    public static final MachineTraitType<FluidTankProxyTrait> TYPE = new MachineTraitType<>(FluidTankProxyTrait.class);
+    public static final MachineTraitType<FluidTankProxyTrait> TYPE = new MachineTraitType<>(FluidTankProxyTrait.class, null);
 
     @Override
-    public MachineTraitType<FluidTankProxyTrait> getTraitType() {
+    public MachineTraitType<? extends FluidTankProxyTrait> getTraitType() {
         return TYPE;
     }
 

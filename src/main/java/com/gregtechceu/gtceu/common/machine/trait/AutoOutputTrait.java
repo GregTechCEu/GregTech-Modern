@@ -54,7 +54,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, IInteractionTrait, IFrontFacingTrait,
                              IAttachConfiguratorsTrait {
 
-    public static final MachineTraitType<AutoOutputTrait> TYPE = new MachineTraitType<>(AutoOutputTrait.class);
+    public static final MachineTraitType<AutoOutputTrait> TYPE = new MachineTraitType<>(AutoOutputTrait.class, null);
 
     @Getter
     protected final List<IItemHandler> itemHandlers;
@@ -116,7 +116,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     }
 
     @Override
-    public MachineTraitType<AutoOutputTrait> getTraitType() {
+    public MachineTraitType<? extends AutoOutputTrait> getTraitType() {
         return TYPE;
     }
 

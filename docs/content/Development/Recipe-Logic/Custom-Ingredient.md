@@ -199,7 +199,7 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
     }
 
     @Override
-    public MachineTraitType<NotifiableBonkHandler> getTraitType() {
+    public MachineTraitType<? extends NotifiableBonkHandler> getTraitType() {
         return TYPE;
     }
 

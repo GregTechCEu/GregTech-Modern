@@ -242,10 +242,10 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
 
     protected class FluidCache extends MachineTrait implements IFluidHandler {
 
-        public static final MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class);
+        public static final MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class, null);
 
         @Override
-        public MachineTraitType<FluidCache> getTraitType() {
+        public MachineTraitType<? extends FluidCache> getTraitType() {
             return TYPE;
         }
 

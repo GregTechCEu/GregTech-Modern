@@ -14,10 +14,10 @@ import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlockEntity {
 
-    public static final MachineTraitType<GridNodeHostTrait> TYPE = new MachineTraitType<>(GridNodeHostTrait.class);
+    public static final MachineTraitType<GridNodeHostTrait> TYPE = new MachineTraitType<>(GridNodeHostTrait.class, null);
 
     @Override
-    public MachineTraitType<GridNodeHostTrait> getTraitType() {
+    public MachineTraitType<? extends GridNodeHostTrait> getTraitType() {
         return TYPE;
     }
 

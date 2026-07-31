@@ -16,7 +16,7 @@ import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerM
 public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
 
     public static final MachineTraitType<MultiblockFluidRendererTrait> TYPE = new MachineTraitType<>(
-            MultiblockFluidRendererTrait.class, false);
+            MultiblockFluidRendererTrait.class, null, false);
 
     @SyncToClient
     @RerenderOnChanged
@@ -45,7 +45,7 @@ public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
     }
 
     @Override
-    public MachineTraitType<MultiblockFluidRendererTrait> getTraitType() {
+    public MachineTraitType<? extends MultiblockFluidRendererTrait> getTraitType() {
         return TYPE;
     }
 }

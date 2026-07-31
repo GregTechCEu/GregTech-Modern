@@ -364,14 +364,14 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Getter
     class AggregateItemHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
 
-        static final MachineTraitType<AggregateItemHandler> TYPE = new MachineTraitType<>(AggregateItemHandler.class);
+        static final MachineTraitType<AggregateItemHandler> TYPE = new MachineTraitType<>(AggregateItemHandler.class, NotifiableRecipeHandlerTrait.TYPE);
 
         private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
 
         @Override
-        public MachineTraitType<AggregateItemHandler> getTraitType() {
+        public MachineTraitType<? extends AggregateItemHandler> getTraitType() {
             return TYPE;
         }
 
@@ -407,14 +407,14 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Getter
     class AggregateFluidHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
 
-        static final MachineTraitType<AggregateFluidHandler> TYPE = new MachineTraitType<>(AggregateFluidHandler.class);
+        static final MachineTraitType<AggregateFluidHandler> TYPE = new MachineTraitType<>(AggregateFluidHandler.class, NotifiableRecipeHandlerTrait.TYPE);
 
         private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
 
         @Override
-        public MachineTraitType<AggregateFluidHandler> getTraitType() {
+        public MachineTraitType<? extends AggregateFluidHandler> getTraitType() {
             return TYPE;
         }
 

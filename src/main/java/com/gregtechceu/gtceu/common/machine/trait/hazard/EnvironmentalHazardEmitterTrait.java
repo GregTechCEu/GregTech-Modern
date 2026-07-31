@@ -21,7 +21,7 @@ import lombok.Setter;
 public class EnvironmentalHazardEmitterTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
     public static final MachineTraitType<EnvironmentalHazardEmitterTrait> TYPE = new MachineTraitType<>(
-            EnvironmentalHazardEmitterTrait.class);
+            EnvironmentalHazardEmitterTrait.class, null);
 
     @Getter
     @Setter
@@ -41,7 +41,7 @@ public class EnvironmentalHazardEmitterTrait extends MachineTrait implements IRe
     }
 
     @Override
-    public MachineTraitType<EnvironmentalHazardEmitterTrait> getTraitType() {
+    public MachineTraitType<? extends EnvironmentalHazardEmitterTrait> getTraitType() {
         return TYPE;
     }
 

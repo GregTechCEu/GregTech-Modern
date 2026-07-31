@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @Getter
 public class HPCAComponentTrait extends MachineTrait {
 
-    public static final MachineTraitType<HPCAComponentTrait> TYPE = new MachineTraitType<>(HPCAComponentTrait.class);
+    public static final MachineTraitType<HPCAComponentTrait> TYPE = new MachineTraitType<>(HPCAComponentTrait.class, null);
 
     @Getter
     private final int upkeepEUt, maxEUt;
@@ -38,7 +38,7 @@ public class HPCAComponentTrait extends MachineTrait {
     }
 
     @Override
-    public MachineTraitType<HPCAComponentTrait> getTraitType() {
+    public MachineTraitType<? extends HPCAComponentTrait> getTraitType() {
         return TYPE;
     }
 

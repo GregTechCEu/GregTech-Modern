@@ -1,24 +1,27 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-public final class MachineTraitType<T extends MachineTrait> {
+import org.jetbrains.annotations.Nullable;
 
-    private final Class<T> clazz;
-    private final boolean allowMultipleInstances;
+/**
+ * Represents the type of a machine trait, can be used to query a machine for traits of this type.
+ * @param traitClass The class of this machine trait
+ * @param parentTraitType The parent trait type (or null if this trait is a direct subclass of {@link MachineTrait}
+ * @param allowsMultipleInstances If this trait allows multiple instances to be attached to one machine (default true)
+ */
+public record MachineTraitType<T extends MachineTrait>(Class<T> traitClass,
+                                                       @Nullable MachineTraitType<? super T> parentTraitType,
+                                                       boolean allowsMultipleInstances) {
 
-    public MachineTraitType(Class<T> clazz) {
-        this(clazz, true);
+    /**
+     * @param traitClass The class of this machine trait
+     * @param parentTraitType The parent trait type (or null if this trait is a direct subclass of {@link MachineTrait}
+     */
+    public MachineTraitType(Class<T> traitClass, @Nullable MachineTraitType<? super T> parentTraitType) {
+        this(traitClass, parentTraitType, true);
     }
 
-    public MachineTraitType(Class<T> clazz, boolean allowMultipleInstances) {
-        this.clazz = clazz;
-        this.allowMultipleInstances = allowMultipleInstances;
-    }
-
-    public boolean allowsMultipleInstances() {
-        return allowMultipleInstances;
-    }
 
     public T castTrait(MachineTrait trait) {
-        return clazz.cast(trait);
+        return traitClass.cast(trait);
     }
 }

@@ -21,7 +21,7 @@ import java.util.function.BooleanSupplier;
 public class EnvironmentalExplosionTrait extends MachineTrait {
 
     public static final MachineTraitType<EnvironmentalExplosionTrait> TYPE = new MachineTraitType<>(
-            EnvironmentalExplosionTrait.class);
+            EnvironmentalExplosionTrait.class, null);
 
     private @Nullable TickableSubscription explosionSub = null;
 
@@ -46,7 +46,7 @@ public class EnvironmentalExplosionTrait extends MachineTrait {
     }
 
     @Override
-    public MachineTraitType<EnvironmentalExplosionTrait> getTraitType() {
+    public MachineTraitType<? extends EnvironmentalExplosionTrait> getTraitType() {
         return TYPE;
     }
 

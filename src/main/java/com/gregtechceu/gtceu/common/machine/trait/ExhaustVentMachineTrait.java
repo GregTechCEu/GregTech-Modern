@@ -33,7 +33,7 @@ import lombok.Setter;
 public class ExhaustVentMachineTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
     public static final MachineTraitType<ExhaustVentMachineTrait> TYPE = new MachineTraitType<>(
-            ExhaustVentMachineTrait.class, false);
+            ExhaustVentMachineTrait.class, null, false);
 
     @Getter
     @Setter
@@ -54,7 +54,7 @@ public class ExhaustVentMachineTrait extends MachineTrait implements IRecipeLogi
     }
 
     @Override
-    public MachineTraitType<ExhaustVentMachineTrait> getTraitType() {
+    public MachineTraitType<? extends ExhaustVentMachineTrait> getTraitType() {
         return TYPE;
     }
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -12,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait implements IRecipeHandlerTrait<T> {
+
+    @SuppressWarnings("rawtypes")
+    public static final MachineTraitType<NotifiableRecipeHandlerTrait> TYPE = new MachineTraitType<>(NotifiableRecipeHandlerTrait.class, null);
 
     protected List<Runnable> listeners = new ArrayList<>();
 

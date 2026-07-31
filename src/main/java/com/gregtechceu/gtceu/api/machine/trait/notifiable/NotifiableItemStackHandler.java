@@ -36,10 +36,10 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                                         implements ICapabilityTrait, IItemHandlerModifiable {
 
     public static final MachineTraitType<NotifiableItemStackHandler> TYPE = new MachineTraitType<>(
-            NotifiableItemStackHandler.class);
+            NotifiableItemStackHandler.class, NotifiableRecipeHandlerTrait.TYPE);
 
     @Override
-    public MachineTraitType<NotifiableItemStackHandler> getTraitType() {
+    public MachineTraitType<? extends NotifiableItemStackHandler> getTraitType() {
         return TYPE;
     }
 

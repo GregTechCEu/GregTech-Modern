@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BatterySlotTrait extends MachineTrait implements IAttachConfiguratorsTrait {
 
-    public static final MachineTraitType<BatterySlotTrait> TYPE = new MachineTraitType<>(BatterySlotTrait.class);
+    public static final MachineTraitType<BatterySlotTrait> TYPE = new MachineTraitType<>(BatterySlotTrait.class, null);
     @SaveField
     @Getter
     private final CustomItemStackHandler storage;
@@ -49,7 +49,7 @@ public class BatterySlotTrait extends MachineTrait implements IAttachConfigurato
     }
 
     @Override
-    public MachineTraitType<BatterySlotTrait> getTraitType() {
+    public MachineTraitType<? extends BatterySlotTrait> getTraitType() {
         return TYPE;
     }
 

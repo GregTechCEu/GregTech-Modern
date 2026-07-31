@@ -28,7 +28,7 @@ import java.util.function.BiPredicate;
 public class EnvironmentalHazardCleanerTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
     public static final MachineTraitType<EnvironmentalHazardCleanerTrait> TYPE = new MachineTraitType<>(
-            EnvironmentalHazardCleanerTrait.class);
+            EnvironmentalHazardCleanerTrait.class, null);
 
     @Getter
     protected float removedLastSecond;
@@ -52,7 +52,7 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait implements IRe
     }
 
     @Override
-    public MachineTraitType<EnvironmentalHazardCleanerTrait> getTraitType() {
+    public MachineTraitType<? extends EnvironmentalHazardCleanerTrait> getTraitType() {
         return TYPE;
     }
 

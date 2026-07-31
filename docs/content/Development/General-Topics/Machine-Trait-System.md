@@ -75,7 +75,7 @@ public class CustomMachineTrait extends MachineTrait implements IInteractionTrai
     
     // Machine traits must also define a getter for the trait type
     @Override
-    public MachineTraitType<CustomMachineTrait> getType() {
+    public MachineTraitType<? extends CustomMachineTrait> getType() {
         return TYPE;
     }
 

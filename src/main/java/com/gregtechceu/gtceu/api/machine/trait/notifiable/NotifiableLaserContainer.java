@@ -16,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class NotifiableLaserContainer extends NotifiableEnergyContainer implements ILaserContainer {
 
     public static final MachineTraitType<NotifiableLaserContainer> TYPE = new MachineTraitType<>(
-            NotifiableLaserContainer.class);
+            NotifiableLaserContainer.class, NotifiableEnergyContainer.TYPE);
 
     public NotifiableLaserContainer(long maxCapacity, long maxInputVoltage, long maxInputAmperage,
                                     long maxOutputVoltage, long maxOutputAmperage) {
@@ -34,7 +34,7 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     }
 
     @Override
-    public MachineTraitType<NotifiableLaserContainer> getTraitType() {
+    public MachineTraitType<? extends NotifiableLaserContainer> getTraitType() {
         return TYPE;
     }
 

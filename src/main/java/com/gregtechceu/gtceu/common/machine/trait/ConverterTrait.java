@@ -98,10 +98,10 @@ public class ConverterTrait extends NotifiableEnergyContainer {
 
     public class FEContainer extends MachineTrait implements IEnergyStorage {
 
-        public static final MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class);
+        public static final MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class, null);
 
         @Override
-        public MachineTraitType<FEContainer> getTraitType() {
+        public MachineTraitType<? extends FEContainer> getTraitType() {
             return TYPE;
         }
 

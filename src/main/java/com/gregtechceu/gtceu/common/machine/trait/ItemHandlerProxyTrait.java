@@ -22,10 +22,10 @@ import org.jetbrains.annotations.Nullable;
 public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerModifiable, ICapabilityTrait {
 
     public static final MachineTraitType<ItemHandlerProxyTrait> TYPE = new MachineTraitType<>(
-            ItemHandlerProxyTrait.class);
+            ItemHandlerProxyTrait.class, null);
 
     @Override
-    public MachineTraitType<ItemHandlerProxyTrait> getTraitType() {
+    public MachineTraitType<? extends ItemHandlerProxyTrait> getTraitType() {
         return TYPE;
     }
 

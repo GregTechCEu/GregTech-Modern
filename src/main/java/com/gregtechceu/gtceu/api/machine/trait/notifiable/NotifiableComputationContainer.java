@@ -29,10 +29,10 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                                             implements IOpticalComputationHatch, IOpticalComputationReceiver {
 
     public static final MachineTraitType<NotifiableComputationContainer> TYPE = new MachineTraitType<>(
-            NotifiableComputationContainer.class);
+            NotifiableComputationContainer.class, NotifiableRecipeHandlerTrait.TYPE);
 
     @Override
-    public MachineTraitType<NotifiableComputationContainer> getTraitType() {
+    public MachineTraitType<? extends NotifiableComputationContainer> getTraitType() {
         return TYPE;
     }
 

@@ -34,7 +34,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
                                           implements IAttachConfiguratorsTrait, ICapabilityTrait {
 
     public static final MachineTraitType<ProgrammableCircuitSlotTrait> TYPE = new MachineTraitType<>(
-            ProgrammableCircuitSlotTrait.class);
+            ProgrammableCircuitSlotTrait.class, NotifiableRecipeHandlerTrait.TYPE);
 
     @SaveField
     public final CustomItemStackHandler storage;
@@ -53,7 +53,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     }
 
     @Override
-    public MachineTraitType<ProgrammableCircuitSlotTrait> getTraitType() {
+    public MachineTraitType<? extends ProgrammableCircuitSlotTrait> getTraitType() {
         return TYPE;
     }
 

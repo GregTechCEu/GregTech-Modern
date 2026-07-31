@@ -20,7 +20,7 @@ import lombok.Setter;
 public class LocalizedHazardEmitterTrait extends MachineTrait {
 
     public static final MachineTraitType<LocalizedHazardEmitterTrait> TYPE = new MachineTraitType<>(
-            LocalizedHazardEmitterTrait.class);
+            LocalizedHazardEmitterTrait.class, null);
 
     @Getter
     @Setter
@@ -37,7 +37,7 @@ public class LocalizedHazardEmitterTrait extends MachineTrait {
     }
 
     @Override
-    public MachineTraitType<LocalizedHazardEmitterTrait> getTraitType() {
+    public MachineTraitType<? extends LocalizedHazardEmitterTrait> getTraitType() {
         return TYPE;
     }
 

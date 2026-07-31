@@ -36,8 +36,7 @@ import java.util.Set;
 public class MachineCoverContainer extends MachineTrait
                                    implements IFrontFacingTrait, IRenderingTrait, ICoverable, ISyncManaged {
 
-    public static final MachineTraitType<MachineCoverContainer> TYPE = new MachineTraitType<>(
-            MachineCoverContainer.class);
+    public static final MachineTraitType<MachineCoverContainer> TYPE = new MachineTraitType<>(MachineCoverContainer.class, null);
 
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -53,7 +52,7 @@ public class MachineCoverContainer extends MachineTrait
     }
 
     @Override
-    public MachineTraitType<MachineCoverContainer> getTraitType() {
+    public MachineTraitType<? extends MachineCoverContainer> getTraitType() {
         return TYPE;
     }
 

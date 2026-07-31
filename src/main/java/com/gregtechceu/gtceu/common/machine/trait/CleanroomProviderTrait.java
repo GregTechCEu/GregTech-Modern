@@ -13,7 +13,7 @@ import java.util.Set;
 public class CleanroomProviderTrait extends MachineTrait {
 
     public static final MachineTraitType<CleanroomProviderTrait> TYPE = new MachineTraitType<>(
-            CleanroomProviderTrait.class, false);
+            CleanroomProviderTrait.class, null, false);
 
     @Getter
     @Setter
@@ -33,7 +33,7 @@ public class CleanroomProviderTrait extends MachineTrait {
     }
 
     @Override
-    public MachineTraitType<CleanroomProviderTrait> getTraitType() {
+    public MachineTraitType<? extends CleanroomProviderTrait> getTraitType() {
         return TYPE;
     }
 }
