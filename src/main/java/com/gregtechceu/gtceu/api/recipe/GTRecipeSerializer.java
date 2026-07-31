@@ -134,7 +134,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         if (!buf.readBoolean()) return null;
         ResourceLocation recipeType = buf.readResourceLocation();
         ResourceLocation id = buf.readResourceLocation();
-        int duration = buf.readVarInt();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 readCollection(buf, GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(
@@ -163,6 +162,11 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         if (data == null) {
             data = new CompoundTag();
         }
+        int duration = buf.readVarInt();
+        int parallels = buf.readVarInt();
+        int subtickParallels = buf.readVarInt();
+        int batchParallels = buf.readVarInt();
+
         int groupColor = buf.readInt();
         ResourceLocation categoryLoc = buf.readResourceLocation();
 
@@ -172,7 +176,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, category, groupColor);
+                conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels, category,
+                groupColor);
 
         recipe.recipeCategory.addRecipe(recipe);
 
@@ -193,7 +198,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         if (recipe == null) return;
         buf.writeResourceLocation(recipe.recipeType.registryName);
         buf.writeResourceLocation(recipe.id);
-        buf.writeVarInt(recipe.duration);
         writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.outputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
@@ -213,6 +217,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
         }
         buf.writeNbt(recipe.data);
+        buf.writeVarInt(recipe.duration);
+        buf.writeVarInt(recipe.parallels);
+        buf.writeVarInt(recipe.subtickParallels);
+        buf.writeVarInt(recipe.batchParallels);
         buf.writeInt(recipe.groupColor);
         buf.writeResourceLocation(recipe.recipeCategory.registryKey);
     }
@@ -246,6 +254,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
     }
 
+    /**
+     * Codecs can only have up to 16 inputs. This is at 16 now, so the three recipe Parallel/Batch values are
+     * condensed to a List.
+     */
     private static MapCodec<GTRecipe> makeCodec(boolean isKubeLoaded) {
         // spotless:off
         if (!isKubeLoaded) {
@@ -263,6 +275,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                             quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", isKubeLoaded).forGetter(val -> val.duration),
+                            Codec.INT.listOf().fieldOf("all_parallels").forGetter(val -> Arrays.asList(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
                     .apply(instance, GTRecipe::new));
@@ -281,6 +294,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     IngredientActionHolder.CODEC.listOf().optionalFieldOf("kubejs:actions", List.of()).forGetter(val -> (List<IngredientActionHolder>) val.ingredientActions),
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                     quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", isKubeLoaded).forGetter(val -> val.duration),
+                    Codec.INT.listOf().fieldOf("all_parallels").forGetter(val -> Arrays.asList(val.parallels, val.subtickParallels, val.batchParallels)),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                     Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
             .apply(instance, GTRecipe::new));
