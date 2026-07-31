@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
@@ -16,13 +17,18 @@ import java.util.*;
  */
 public class SimpleTieredMachine extends WorkableTieredMachine {
 
-    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
-        super(info, tier, false, tankScalingFunction);
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, RecipeLogic recipeLogic, Int2IntFunction tankScalingFunction) {
+        super(info, tier, false, recipeLogic, tankScalingFunction);
 
         attachPersistentTrait("autoOutput", new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
         attachPersistentTrait("circuit", new ProgrammableCircuitSlotTrait());
         attachPersistentTrait("batterySlot", new BatterySlotTrait(energyContainer));
     }
+
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
+        this(info, tier, new RecipeLogic(), tankScalingFunction);
+    }
+
 
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier) {
         this(info, tier, GTMachineUtils.defaultTankSizeFunction);

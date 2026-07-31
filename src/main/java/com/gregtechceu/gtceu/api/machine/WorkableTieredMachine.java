@@ -110,9 +110,10 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
      * @param info                {@link BlockEntityCreationInfo}
      * @param tier                Machine tier.
      * @param energyEmitter       If this machine should input or output energy.
+     * @param recipeLogic         The recipe logic to use.
      * @param tankScalingFunction The tank scaling function which determines the capaacity of fluid slots.
      */
-    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter,
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter, RecipeLogic recipeLogic,
                                  Int2IntFunction tankScalingFunction) {
         super(info, tier, energyEmitter);
         this.overclockTier = getMaxOverclockTier();
@@ -122,7 +123,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
-        this.recipeLogic = attachTrait(new RecipeLogic());
+        this.recipeLogic = attachTrait(recipeLogic);
         this.recipeLogic.setKeepSubscribing(false);
         this.importItems = attachTrait(
                 new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
@@ -139,6 +140,20 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                         tankScalingFunction.applyAsInt(getTier()), IO.OUT));
         this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
+    }
+
+    /**
+     * Creates a {@link WorkableTieredMachine} with default settings.<br>
+     * The amount of item and fluid input and output slots is determined by the machine's recipe type.
+     *
+     * @param info                {@link BlockEntityCreationInfo}
+     * @param tier                Machine tier.
+     * @param energyEmitter       If this machine should input or output energy.
+     * @param tankScalingFunction The tank scaling function which determines the capaacity of fluid slots.
+     */
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter,
+                                 Int2IntFunction tankScalingFunction) {
+        this(info, tier, energyEmitter, new RecipeLogic(), tankScalingFunction);
     }
 
     //////////////////////////////////////
