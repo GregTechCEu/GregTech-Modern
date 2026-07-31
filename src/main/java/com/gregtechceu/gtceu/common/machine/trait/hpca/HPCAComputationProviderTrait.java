@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.common.machine.trait.hpca;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+
 import lombok.Setter;
 
 public class HPCAComputationProviderTrait extends HPCAComponentTrait {
 
-    public static final MachineTraitType<HPCAComputationProviderTrait> TYPE = new MachineTraitType<>(HPCAComputationProviderTrait.class, HPCAComponentTrait.TYPE);
+    public static final MachineTraitType<HPCAComputationProviderTrait> TYPE = new MachineTraitType<>(
+            HPCAComputationProviderTrait.class, HPCAComponentTrait.TYPE);
 
     @Setter
     private int CWUPerTick, coolingPerTick;

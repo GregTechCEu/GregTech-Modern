@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.trait.hpca;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+
 import lombok.Getter;
 
 @Getter
 public class HPCACoolantProviderTrait extends HPCAComponentTrait {
 
-    public static final MachineTraitType<HPCACoolantProviderTrait> TYPE = new MachineTraitType<>(HPCACoolantProviderTrait.class, HPCAComponentTrait.TYPE);
+    public static final MachineTraitType<HPCACoolantProviderTrait> TYPE = new MachineTraitType<>(
+            HPCACoolantProviderTrait.class, HPCAComponentTrait.TYPE);
 
     private final int coolingAmount, maxCoolantPerTick;
     private final boolean isActiveCooler;
@@ -24,5 +26,4 @@ public class HPCACoolantProviderTrait extends HPCAComponentTrait {
     public MachineTraitType<HPCACoolantProviderTrait> getTraitType() {
         return TYPE;
     }
-
 }

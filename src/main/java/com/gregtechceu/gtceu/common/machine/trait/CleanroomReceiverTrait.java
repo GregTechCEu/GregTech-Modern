@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class CleanroomReceiverTrait extends MachineTrait {
 
     public static final MachineTraitType<CleanroomReceiverTrait> TYPE = new MachineTraitType<>(
-            CleanroomReceiverTrait.class, null,false);
+            CleanroomReceiverTrait.class, null, false);
 
     @Setter
     protected @Nullable CleanroomProviderTrait cleanroomProvider;

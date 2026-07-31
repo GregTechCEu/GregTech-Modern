@@ -15,7 +15,8 @@ import java.util.List;
 public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait implements IRecipeHandlerTrait<T> {
 
     @SuppressWarnings("rawtypes")
-    public static final MachineTraitType<NotifiableRecipeHandlerTrait> TYPE = new MachineTraitType<>(NotifiableRecipeHandlerTrait.class, null);
+    public static final MachineTraitType<NotifiableRecipeHandlerTrait> TYPE = new MachineTraitType<>(
+            NotifiableRecipeHandlerTrait.class, null);
 
     protected List<Runnable> listeners = new ArrayList<>();
 

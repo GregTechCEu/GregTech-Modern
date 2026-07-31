@@ -17,7 +17,8 @@ import java.util.*;
  */
 public class SimpleTieredMachine extends WorkableTieredMachine {
 
-    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, RecipeLogic recipeLogic, Int2IntFunction tankScalingFunction) {
+    public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, RecipeLogic recipeLogic,
+                               Int2IntFunction tankScalingFunction) {
         super(info, tier, false, recipeLogic, tankScalingFunction);
 
         attachPersistentTrait("autoOutput", new AutoOutputTrait(List.of(exportItems), List.of(exportFluids)));
@@ -28,7 +29,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine {
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
         this(info, tier, new RecipeLogic(), tankScalingFunction);
     }
-
 
     public SimpleTieredMachine(BlockEntityCreationInfo info, int tier) {
         this(info, tier, GTMachineUtils.defaultTankSizeFunction);

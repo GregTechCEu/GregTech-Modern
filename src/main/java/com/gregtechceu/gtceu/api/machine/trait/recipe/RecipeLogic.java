@@ -46,7 +46,7 @@ import java.util.*;
 
 public class RecipeLogic extends MachineTrait implements IWorkable {
 
-    public static final MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class,null, false);
+    public static final MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, null, false);
 
     @Override
     public MachineTraitType<? extends RecipeLogic> getTraitType() {
