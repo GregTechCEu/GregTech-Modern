@@ -18,12 +18,10 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class GTBiomeModifiers {
 
-    // spotless:off
-    public static final ResourceKey<BiomeModifier> RUBBER_TREE = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
-    public static final ResourceKey<BiomeModifier> RUBBER_TREE_SWAMP = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree_swamp"));
-    public static final ResourceKey<BiomeModifier> STONE_BLOB = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("stone_blob"));
-    public static final ResourceKey<BiomeModifier> RAW_OIL_SPROUT = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("raw_oil_sprout"));
-    // spotless:on
+    public static final ResourceKey<BiomeModifier> RUBBER_TREE = create("rubber_tree");
+    public static final ResourceKey<BiomeModifier> RUBBER_TREE_SWAMP = create("rubber_tree_swamp");
+    public static final ResourceKey<BiomeModifier> STONE_BLOB = create("stone_blob");
+    public static final ResourceKey<BiomeModifier> RAW_OIL_SPROUT = create("raw_oil_sprout");
 
     public static void bootstrap(BootstrapContext<BiomeModifier> ctx) {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
@@ -51,5 +49,9 @@ public class GTBiomeModifiers {
                 overworld,
                 HolderSet.direct(rawOilSprout),
                 GenerationStep.Decoration.FLUID_SPRINGS));
+    }
+
+    private static ResourceKey<BiomeModifier> create(String path) {
+        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id(path));
     }
 }

@@ -26,10 +26,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 public class GTConfiguredFeatures {
 
     // spotless:off
-    public static final ResourceKey<ConfiguredFeature<?, ?>> RUBBER_TREE = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("rubber_tree"));
-    public static final ResourceKey<ConfiguredFeature<?, ?>> RED_GRANITE_BLOB = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("red_granite_blob"));
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MARBLE_BLOB = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("marble_blob"));
-    public static final ResourceKey<ConfiguredFeature<?, ?>> RAW_OIL_SPROUT = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("raw_oil_sprout"));
+    public static final ResourceKey<ConfiguredFeature<?, ?>> RUBBER_TREE = create("rubber_tree");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> RED_GRANITE_BLOB = create("red_granite_blob");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MARBLE_BLOB = create("marble_blob");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> RAW_OIL_SPROUT = create("raw_oil_sprout");
 
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
         FeatureUtils.register(ctx, RUBBER_TREE, Feature.TREE,
@@ -64,4 +64,8 @@ public class GTConfiguredFeatures {
         );
     }
     // spotless:on
+
+    private static ResourceKey<ConfiguredFeature<?, ?>> create(String path) {
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id(path));
+    }
 }

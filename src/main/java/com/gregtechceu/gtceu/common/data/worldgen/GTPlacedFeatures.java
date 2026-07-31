@@ -17,11 +17,11 @@ import net.minecraft.world.level.levelgen.placement.*;
 
 public class GTPlacedFeatures {
 
-    public static final ResourceKey<PlacedFeature> RUBBER_TREE = register("rubber_tree");
-    public static final ResourceKey<PlacedFeature> RUBBER_TREE_SWAMP = register("rubber_tree_swamp");
-    public static final ResourceKey<PlacedFeature> RED_GRANITE_BLOB = register("red_granite_blob");
-    public static final ResourceKey<PlacedFeature> MARBLE_BLOB = register("marble_blob");
-    public static final ResourceKey<PlacedFeature> RAW_OIL_SPROUT = register("raw_oil_sprout");
+    public static final ResourceKey<PlacedFeature> RUBBER_TREE = create("rubber_tree");
+    public static final ResourceKey<PlacedFeature> RUBBER_TREE_SWAMP = create("rubber_tree_swamp");
+    public static final ResourceKey<PlacedFeature> RED_GRANITE_BLOB = create("red_granite_blob");
+    public static final ResourceKey<PlacedFeature> MARBLE_BLOB = create("marble_blob");
+    public static final ResourceKey<PlacedFeature> RAW_OIL_SPROUT = create("raw_oil_sprout");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> ctx) {
         HolderGetter<ConfiguredFeature<?, ?>> featureLookup = ctx.lookup(Registries.CONFIGURED_FEATURE);
@@ -60,7 +60,7 @@ public class GTPlacedFeatures {
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(40)));
     }
 
-    private static ResourceKey<PlacedFeature> register(String path) {
+    private static ResourceKey<PlacedFeature> create(String path) {
         return ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id(path));
     }
 }

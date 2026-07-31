@@ -37,15 +37,15 @@ import static net.minecraft.world.level.storage.loot.providers.number.UniformGen
 // spotless:off
 public class GTLootTables extends LootTableProvider {
 
-    public static final ResourceKey<LootTable> SPAWN_BONUS_CHEST_EXTRA = register("chests/extra/spawn_bonus_chest");
-    public static final ResourceKey<LootTable> SIMPLE_DUNGEON_EXTRA = register("chests/extra/simple_dungeon");
-    public static final ResourceKey<LootTable> DESERT_PYRAMID_EXTRA = register("chests/extra/desert_pyramid");
-    public static final ResourceKey<LootTable> JUNGLE_TEMPLE_EXTRA = register("chests/extra/jungle_temple");
-    public static final ResourceKey<LootTable> JUNGLE_TEMPLE_DISPENSER_EXTRA = register("chests/extra/jungle_temple_dispenser");
-    public static final ResourceKey<LootTable> ABANDONED_MINESHAFT_EXTRA = register("chests/extra/abandoned_mineshaft");
-    public static final ResourceKey<LootTable> VILLAGE_WEAPONSMITH_EXTRA = register("chests/extra/village_weaponsmith");
-    public static final ResourceKey<LootTable> STRONGHOLD_CROSSING_EXTRA = register("chests/extra/stronghold_crossing");
-    public static final ResourceKey<LootTable> STRONGHOLD_CORRIDOR_EXTRA = register("chests/extra/stronghold_corridor");
+    public static final ResourceKey<LootTable> SPAWN_BONUS_CHEST_EXTRA = create("chests/extra/spawn_bonus_chest");
+    public static final ResourceKey<LootTable> SIMPLE_DUNGEON_EXTRA = create("chests/extra/simple_dungeon");
+    public static final ResourceKey<LootTable> DESERT_PYRAMID_EXTRA = create("chests/extra/desert_pyramid");
+    public static final ResourceKey<LootTable> JUNGLE_TEMPLE_EXTRA = create("chests/extra/jungle_temple");
+    public static final ResourceKey<LootTable> JUNGLE_TEMPLE_DISPENSER_EXTRA = create("chests/extra/jungle_temple_dispenser");
+    public static final ResourceKey<LootTable> ABANDONED_MINESHAFT_EXTRA = create("chests/extra/abandoned_mineshaft");
+    public static final ResourceKey<LootTable> VILLAGE_WEAPONSMITH_EXTRA = create("chests/extra/village_weaponsmith");
+    public static final ResourceKey<LootTable> STRONGHOLD_CROSSING_EXTRA = create("chests/extra/stronghold_crossing");
+    public static final ResourceKey<LootTable> STRONGHOLD_CORRIDOR_EXTRA = create("chests/extra/stronghold_corridor");
 
     public GTLootTables(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, Set.of(), List.of(
@@ -53,7 +53,7 @@ public class GTLootTables extends LootTableProvider {
         ), registries);
     }
 
-    private static ResourceKey<LootTable> register(String name) {
+    private static ResourceKey<LootTable> create(String name) {
         return ResourceKey.create(Registries.LOOT_TABLE, GTCEu.id(name));
     }
 

@@ -15,8 +15,8 @@ import net.minecraft.world.level.levelgen.synth.NormalNoise;
 public class GTDensityFunctions {
 
     // spotless:off
-    public static final ResourceKey<DensityFunction> NEW_ORE_VEIN_TOGGLE = register("vein_toggle");
-    public static final ResourceKey<DensityFunction> NEW_ORE_VEIN_RIDGED = register("vein_ridged");
+    public static final ResourceKey<DensityFunction> NEW_ORE_VEIN_TOGGLE = create("vein_toggle");
+    public static final ResourceKey<DensityFunction> NEW_ORE_VEIN_RIDGED = create("vein_ridged");
 
     public static void bootstrap(BootstrapContext<DensityFunction> ctx) {
         HolderGetter<NormalNoise.NoiseParameters> noises = ctx.lookup(Registries.NOISE);
@@ -44,7 +44,7 @@ public class GTDensityFunctions {
     }
     // spotless:on
 
-    private static ResourceKey<DensityFunction> register(String path) {
+    private static ResourceKey<DensityFunction> create(String path) {
         return ResourceKey.create(Registries.DENSITY_FUNCTION, GTCEu.id(path));
     }
 }
