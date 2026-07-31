@@ -86,11 +86,9 @@ public final class MachineTraitHolder {
 
         trait.setTraitPriority(callbackPriority);
 
-        MachineTraitType<?> type = trait.getTraitType();
-        while (type != null) {
-            addTraitToTraitType(type, trait);
-            type = type.parentTraitType();
-        }
+        addTraitToTraitType(trait.getTraitType(), trait);
+        traits.add(trait);
+        traits.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
 
         trait.setMachine(machine);
         trait.onTraitAttached();
@@ -105,8 +103,8 @@ public final class MachineTraitHolder {
 
         list.add(trait);
         list.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
-        traits.add(trait);
-        traits.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
+
+        if (type.parentTraitType() != null) addTraitToTraitType(type.parentTraitType(), trait);
     }
 
     /**
