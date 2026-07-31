@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.common.data;
+package com.gregtechceu.gtceu.common.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 
 import net.minecraft.core.Holder;
@@ -14,18 +15,13 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 
-public class GTPlacements {
+public class GTPlacedFeatures {
 
-    public static final ResourceKey<PlacedFeature> RUBBER_TREE = ResourceKey.create(Registries.PLACED_FEATURE,
-            GTCEu.id("rubber_tree"));
-    public static final ResourceKey<PlacedFeature> RUBBER_TREE_SWAMP = ResourceKey.create(Registries.PLACED_FEATURE,
-            GTCEu.id("rubber_tree_swamp"));
-    public static final ResourceKey<PlacedFeature> RED_GRANITE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE,
-            GTCEu.id("red_granite_blob"));
-    public static final ResourceKey<PlacedFeature> MARBLE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE,
-            GTCEu.id("marble_blob"));
-    public static final ResourceKey<PlacedFeature> RAW_OIL_SPROUT = ResourceKey.create(Registries.PLACED_FEATURE,
-            GTCEu.id("raw_oil_sprout"));
+    public static final ResourceKey<PlacedFeature> RUBBER_TREE = register("rubber_tree");
+    public static final ResourceKey<PlacedFeature> RUBBER_TREE_SWAMP = register("rubber_tree_swamp");
+    public static final ResourceKey<PlacedFeature> RED_GRANITE_BLOB = register("red_granite_blob");
+    public static final ResourceKey<PlacedFeature> MARBLE_BLOB = register("marble_blob");
+    public static final ResourceKey<PlacedFeature> RAW_OIL_SPROUT = register("raw_oil_sprout");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> ctx) {
         HolderGetter<ConfiguredFeature<?, ?>> featureLookup = ctx.lookup(Registries.CONFIGURED_FEATURE);
@@ -62,5 +58,9 @@ public class GTPlacements {
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(40)));
+    }
+
+    private static ResourceKey<PlacedFeature> register(String path) {
+        return ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id(path));
     }
 }
