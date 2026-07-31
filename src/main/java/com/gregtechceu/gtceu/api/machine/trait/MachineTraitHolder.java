@@ -86,10 +86,20 @@ public final class MachineTraitHolder {
 
         trait.setTraitPriority(callbackPriority);
 
-        var traitType = trait.getTraitType();
+        MachineTraitType<?> type = trait.getTraitType();
+        while (type != null) {
+            addTraitToTraitType(type, trait);
+            type = type.parentTraitType();
+        }
 
-        var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
-        if (!traitType.allowsMultipleInstances() && !list.isEmpty()) {
+        trait.setMachine(machine);
+        trait.onTraitAttached();
+        return trait;
+    }
+
+    private void addTraitToTraitType(MachineTraitType<?> type, MachineTrait trait) {
+        var list = traitsByType.computeIfAbsent(type, $ -> new ObjectArrayList<>(1));
+        if (!type.allowsMultipleInstances() && !list.isEmpty()) {
             throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
         }
 
@@ -97,10 +107,6 @@ public final class MachineTraitHolder {
         list.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
         traits.add(trait);
         traits.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
-
-        trait.setMachine(machine);
-        trait.onTraitAttached();
-        return trait;
     }
 
     /**
@@ -163,7 +169,8 @@ public final class MachineTraitHolder {
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
+     * Gets the first trait (trait with highest priority) of a specified type.<br>
+     * Also includes traits that are a subtype of the specified type.
      * 
      * @param type The trait type to get
      * @return The trait, or null if no traits of the given type are present.
