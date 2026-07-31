@@ -178,7 +178,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngredient>
         implements ICapabilityTrait {
 
-    public static final MachineTraitType<NotifiableBonkHandler> TYPE = new MachineTraitType<>(NotifiableBonkHandler.class);
+    public static final MachineTraitType<NotifiableBonkHandler> TYPE = new MachineTraitType<>(NotifiableBonkHandler.class, NotifiableRecipeHandlerTrait.TYPE);
     
     @Getter
     public final IO handlerIO;

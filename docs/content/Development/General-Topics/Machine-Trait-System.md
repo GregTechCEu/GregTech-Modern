@@ -66,14 +66,17 @@ Machine traits have access to a number of machine events and callbacks, but some
 ```java 
 public class CustomMachineTrait extends MachineTrait implements IInteractionTrait {
     
-    // Machine traits should have a type object defined, unless a parent class of this machine trait already defines a type
-    public static final MachineTraitType<CustomMachineTrait> TYPE = new MachineTraitType<>(CustomMachineTrait.class);
+    // Machine traits should have a type object defined, which specifies the class of this machine trait, 
+    // and the trait's parent class (or null if this trait is a direct subclass of MachineTrait.
+    public static final MachineTraitType<CustomMachineTrait> TYPE = new MachineTraitType<>(CustomMachineTrait.class, null);
     
     public CustomMachineTrait() {
         
     }
     
-    // Machine traits must also define a getter for the trait type
+    // Machine traits must also define a getter for the trait type.
+    // The getter should return a wildcard type with the upper bound as this trait class, 
+    // to allow for subclass' trait types to work.
     @Override
     public MachineTraitType<? extends CustomMachineTrait> getType() {
         return TYPE;
