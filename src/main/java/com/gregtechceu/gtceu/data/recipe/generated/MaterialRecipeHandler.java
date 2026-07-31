@@ -526,7 +526,7 @@ public final class MaterialRecipeHandler {
                             .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
                             .inputFluids(stack)
                             .outputItems(nugget, material, 9)
-                            .duration((int) material.getMass())
+                            .duration(20)
                             .EUt(VA[ULV])
                             .save(provider);
                 }
@@ -585,7 +585,7 @@ public final class MaterialRecipeHandler {
                         .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
                         .inputFluids(stack)
                         .outputItems(blockStack)
-                        .duration((int) material.getMass()).EUt(VA[ULV])
+                        .duration(180).EUt(VA[ULV])
                         .save(provider);
             }
         }

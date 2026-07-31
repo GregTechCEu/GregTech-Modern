@@ -27,6 +27,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -64,7 +65,9 @@ public class MachineUIPanelBuilder {
     private boolean addDefaultConfigurators = true;
     private final MetaMachine machine;
 
+    @Getter
     private Consumer<Flow> leftConfigurators = (f) -> {};
+    @Getter
     private Consumer<Flow> rightConfigurators = (f) -> {};
     private Consumer<ParentWidget<?>> mainContents = (p) -> {};
 
@@ -95,6 +98,12 @@ public class MachineUIPanelBuilder {
                     machine instanceof WorkableElectricMultiblockMachine workableElectric) {
                 attachRight.child(GTMuiWidgets.createBatchModeButton(workableElectric));
             }
+
+            if (machine.getDefinition().getRecipeTypes().length > 1 &&
+                    machine instanceof WorkableElectricMultiblockMachine workableMachine) {
+                attachRight.child(GTMuiWidgets.createRecipeTypeButton(workableMachine, syncManager));
+            }
+
         }
 
         leftConfigurators.accept(attachLeft);
