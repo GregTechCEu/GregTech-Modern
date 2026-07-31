@@ -180,8 +180,9 @@ public final class MachineTraitHolder {
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
-     * 
+     * Gets the first trait (trait with highest priority) of a specified type.
+     * Also includes traits that are a subtype of the specified type.
+     *
      * @param type The trait type to get
      * @return An optional result containing the trait if present.
      */
@@ -191,7 +192,7 @@ public final class MachineTraitHolder {
 
     /**
      * Get all traits with the specified type.
-     * 
+     * Also includes traits that are a subtype of the specified type.
      * @return An unmodifiable list containing all traits of the specified type.
      */
     @SuppressWarnings("unchecked")
