@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.RangedItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.SimpleTagIngredient;
@@ -24,7 +25,6 @@ import com.gregtechceu.gtceu.utils.*;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
@@ -159,6 +159,8 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
 
         var countMap = new Object2LongOpenCustomHashMap<>(ItemIngredient.IGNORE_COUNT);
         for (var content : inputs) {
+            // ignore circuit
+            if (content instanceof IntCircuitIngredient) continue;
             int count = content.getCount();
             countMap.addTo(content, count);
         }
@@ -283,9 +285,6 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
                     slot.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
                     slot.setCanTakeItems(!isXEI);
                     slot.setCanPutItems(!isXEI && io.support(IO.IN));
-                    if (items instanceof IContentChangeAware item1) {
-                        slot.setChangeListener(item1.getOnContentsChanged());
-                    }
                 }
                 // 1 over container size.
                 // If in a recipe viewer and a research slot can be added, add it.

@@ -26,6 +26,8 @@ public interface IRecipeCapabilityHolder {
 
     default List<RecipeHandlerGroup> getRecipeHandlerGroups() {
         Int2ObjectArrayMap<RecipeHandlerGroup> coloredGroups = new Int2ObjectArrayMap<>();
+        // init undyed group
+        coloredGroups.put(RecipeHandlerList.UNDYED, new RecipeHandlerGroup());
 
         List<RecipeHandlerGroup> distinctGroups = new ArrayList<>();
         var list = new ArrayList<>(getRecipeHandlerLists());
@@ -46,17 +48,15 @@ public interface IRecipeCapabilityHolder {
                     }
                 }
             }
+        }
 
+        if (coloredGroups.get(RecipeHandlerList.UNDYED).isEmpty()) {
+            coloredGroups.remove(RecipeHandlerList.UNDYED);
         }
 
         distinctGroups.addAll(coloredGroups.values());
-        if (distinctGroups.isEmpty()) {
-            var simpleGroup = new RecipeHandlerGroup();
-            list.forEach(simpleGroup::addHandlerList);
-            distinctGroups = List.of(simpleGroup);
-        } else {
-            distinctGroups.sort(RecipeHandlerGroup.PRIORITY_COMPARATOR);
-        }
+        distinctGroups.sort(RecipeHandlerGroup.PRIORITY_COMPARATOR);
+
         if (this instanceof IVoidable voidable) {
             distinctGroups.forEach(g -> g.setOutputVoid(voidable::canVoidRecipeOutputs));
         }

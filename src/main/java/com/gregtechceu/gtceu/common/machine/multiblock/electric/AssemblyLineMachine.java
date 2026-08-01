@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
@@ -248,9 +249,9 @@ public class AssemblyLineMachine extends RecipeElectricMultiblockMachine {
         }
 
         @Override
-        protected ActionResult matchRecipe(GTRecipe recipe) {
+        protected ActionResult matchRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
             // Match by normal inputs first
-            ActionResult normalMatch = RecipeHelper.matchContents(getLastGroup(), recipe);
+            ActionResult normalMatch = RecipeHelper.matchContents(group, recipe);
             if (!normalMatch.isSuccess()) return normalMatch;
 
             var config = ConfigHolder.INSTANCE.machines;

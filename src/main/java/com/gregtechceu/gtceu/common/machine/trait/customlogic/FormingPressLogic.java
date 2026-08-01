@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.network.chat.Component;
@@ -71,7 +72,8 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
         List<ItemStack> list = new ArrayList<>();
         for (var handler : handlers) {
             for (var content : handler.getContents()) {
-                if (content instanceof ItemStack stack && !stack.isEmpty()) {
+                if (content instanceof ItemStack stack && !stack.isEmpty() &&
+                        !IntCircuitBehaviour.isIntegratedCircuit(stack)) {
                     list.add(stack);
                 }
             }

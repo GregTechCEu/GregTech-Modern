@@ -289,22 +289,22 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
         }
 
         @Override
-        protected ActionResult matchRecipe(GTRecipe recipe) {
-            var match = matchDTRecipe(recipe);
+        protected ActionResult matchRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+            var match = matchDTRecipe(recipe, group);
             if (!match.isSuccess()) return match;
 
-            return RecipeHelper.matchTickRecipe(getLastGroup(), recipe);
+            return RecipeHelper.matchTickRecipe(group, recipe);
         }
 
-        private ActionResult matchDTRecipe(GTRecipe recipe) {
-            var result = RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.inputs, true);
+        private ActionResult matchDTRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+            var result = RecipeHelper.handleRecipe(group, recipe, IO.IN, recipe.inputs, true);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 ContentListMap out = new ContentListMap();
                 out.put(ItemRecipeCapability.CAP, items);
-                result = RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.OUT, out, true);
+                result = RecipeHelper.handleRecipe(group, recipe, IO.OUT, out, true);
                 if (!result.isSuccess()) return result;
             }
 

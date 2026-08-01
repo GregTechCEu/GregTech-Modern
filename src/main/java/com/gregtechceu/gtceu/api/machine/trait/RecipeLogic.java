@@ -124,23 +124,25 @@ public class RecipeLogic extends WorkLogic {
         }
     }
 
-    protected ActionResult matchRecipe(GTRecipe recipe) {
-        return RecipeHelper.matchContents(getLastGroup(), recipe);
+    protected ActionResult matchRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+        return RecipeHelper.matchContents(group, recipe);
     }
 
-    protected ActionResult checkRecipe(GTRecipe recipe) {
+    protected ActionResult checkRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
         var conditionResult = RecipeHelper.checkConditions(recipe, this);
         if (!conditionResult.isSuccess()) return conditionResult;
 
-        return matchRecipe(recipe);
+        return matchRecipe(recipe, group);
     }
 
-    public boolean checkMatchedRecipeAvailable(GTRecipeDefinition match) {
+    public boolean checkMatchedRecipeAvailable(GTRecipeDefinition match, RecipeHandlerGroup group) {
         var modified = match.toRuntime();
-        var failReason = machine.modifyRecipe(modified, getLastGroup());
+        var failReason = machine.modifyRecipe(modified, group);
         if (failReason == null) {
-            var recipeMatch = checkRecipe(modified);
+            var recipeMatch = checkRecipe(modified, group);
             if (recipeMatch.isSuccess()) {
+                lastGroup = group;
+                if (group.getColor() != UNDYED) lastGroupColor = group.getColor();
                 setupRecipe(modified);
             } else {
                 failureReasonsMap.put(match.id, recipeMatch.reason());
@@ -190,9 +192,8 @@ public class RecipeLogic extends WorkLogic {
         lastRecipe = null;
         lastOriginRecipe = null;
         for (var group : machine.getRecipeHandlerGroups()) {
-            if (machine.getRecipeType().findRecipe(group, this::checkMatchedRecipeAvailable) != null) {
-                lastGroup = group;
-                if (group.getColor() != UNDYED) lastGroupColor = group.getColor();
+            if (machine.getRecipeType().findRecipe(group,
+                    r -> checkMatchedRecipeAvailable(r, group)) != null) {
                 break;
             }
         }
@@ -301,7 +302,7 @@ public class RecipeLogic extends WorkLogic {
                             lastRecipe = null;
                         }
                     }
-                    if (lastRecipe != null && checkRecipe(lastRecipe).isSuccess()) {
+                    if (lastRecipe != null && checkRecipe(lastRecipe, getLastGroup()).isSuccess()) {
                         setupRecipe(lastRecipe);
                         return;
                     }

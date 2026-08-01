@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.gui.editor.runtime.ConfiguratorParser;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -242,6 +243,9 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
             super(emptyInventory, index, xPosition, yPosition);
             this.itemHandler = itemHandler;
             this.index = index;
+            if (itemHandler instanceof IContentChangeAware slot) {
+                changeListener = slot.getOnContentsChanged();
+            }
         }
 
         @Override
@@ -278,18 +282,6 @@ public class SlotWidget extends com.lowdragmc.lowdraglib.gui.widget.SlotWidget {
         @Override
         public int getMaxStackSize() {
             return this.itemHandler.getSlotLimit(this.index);
-        }
-
-        @Override
-        public int getMaxStackSize(@NotNull ItemStack stack) {
-            ItemStack maxAdd = stack.copy();
-            int maxInput = stack.getMaxStackSize();
-            maxAdd.setCount(maxInput);
-            ItemStack currentStack = this.itemHandler.getStackInSlot(index);
-            this.itemHandler.setStackInSlot(index, ItemStack.EMPTY);
-            ItemStack remainder = this.itemHandler.insertItem(index, maxAdd, true);
-            this.itemHandler.setStackInSlot(index, currentStack);
-            return maxInput - remainder.getCount();
         }
 
         @NotNull
