@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
@@ -51,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 public class QuantumTankMachine extends TieredMachine implements IControllable,
-                                IDropSaveMachine, IMuiMachine {
+                                IMuiMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
@@ -108,16 +106,6 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
         }
     }
 
-    @Override
-    public boolean savePickClone() {
-        return false;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
-    }
-
     //////////////////////////////////////
     // ****** Capability ********//
     //////////////////////////////////////
@@ -154,10 +142,15 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
+        if (context.getClickedFace() == getFrontFacing() &&
+                FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
                 return InteractionResult.SUCCESS;
             }
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
+                return InteractionResult.CONSUME;
+            }
+            return InteractionResult.PASS;
         }
         return super.onUseWithItem(context);
     }
@@ -188,7 +181,8 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
+        if (clone || stored.isEmpty()) return;
         tag.put("stored", stored.writeToNBT(new CompoundTag()));
         tag.putLong("storedAmount", storedAmount);
     }
@@ -251,13 +245,6 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
     }
 
     protected class FluidCache extends MachineTrait implements IFluidHandler {
-
-        public static final MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class);
-
-        @Override
-        public MachineTraitType<FluidCache> getTraitType() {
-            return TYPE;
-        }
 
         private final Predicate<FluidStack> filter = f -> !isLocked() || getLockedFluid().isFluidEqual(f);
 

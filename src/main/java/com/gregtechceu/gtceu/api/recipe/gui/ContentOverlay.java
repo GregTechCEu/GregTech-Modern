@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -22,16 +21,14 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.theme.WidgetTheme;
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.jetbrains.annotations.Nullable;
 
 @OnlyIn(Dist.CLIENT)
-public record ContentOverlay(Content content, boolean perTick, int recipeTier, int chanceTier,
-                             @Nullable ChanceBoostFunction function)
+public record ContentOverlay(Content content, boolean perTick)
         implements IDrawable {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
-        drawChance(context.getGraphics(), x, y, width, height, recipeTier, chanceTier, function);
+        drawChance(context.getGraphics(), x, y, width, height);
         drawRangeAmount(context.getGraphics(), x, y, width, height);
         drawFluidAmount(context.getGraphics(), x, y, width, height);
         if (perTick) {
@@ -87,21 +84,18 @@ public record ContentOverlay(Content content, boolean perTick, int recipeTier, i
         }
     }
 
-    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int recipeTier,
-                           int chanceTier, @Nullable ChanceBoostFunction function) {
+    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height) {
         if (content.chance() == ChanceLogic.getMaxChancedValue()) return;
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        var func = function == null ? ChanceBoostFunction.NONE : function;
-        int chance = func.getBoostedChance(content, recipeTier, chanceTier);
-        float chanceFloat = 1f * chance / content.maxChance();
+        float chanceFloat = 1f * content.chance() / content.maxChance();
         String percent = FormattingUtil.formatNumber2Places(100 * chanceFloat);
 
-        Component s = chance == 0 ? Component.translatable("gtceu.gui.content.chance_nc_short") :
+        Component s = content.chance() == 0 ? Component.translatable("gtceu.gui.content.chance_nc_short") :
                 Component.literal(percent + "%");
 
-        int color = chance == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
+        int color = content.chance() == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
         Font fontRenderer = Minecraft.getInstance().font;
         graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
                 (int) ((y + (height / 3f) + 6) * 2 - height), color, true);

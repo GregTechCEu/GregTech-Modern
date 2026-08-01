@@ -7,16 +7,19 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -63,11 +66,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MaintenanceHatchPartMachine extends TieredPartMachine
-                                         implements IMuiMachine, IMaintenanceMachine {
+                                         implements IMuiMachine {
 
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
     private static final float DURATION_ACTION_AMOUNT = 0.01f;
+
+    public static final byte ALL_PROBLEMS = 0;
+    public static final byte NO_PROBLEMS = 0b111111;
 
     @Getter
     private final boolean isConfigurable;
@@ -85,16 +91,29 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @SaveField
     @SyncToClient
     protected byte maintenanceProblems = startProblems();
+    /**
+     * Duration modifier for recipe.
+     * It's configurable in the Configurable Maintenance Part.
+     */
+    @Getter
     @SaveField
     private float durationMultiplier = 1f;
     @Nullable
     protected TickableSubscription maintenanceSubs;
 
-    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
-        super(info, isConfigurable ? GTValues.HV : GTValues.LV);
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, int tier, boolean isConfigurable) {
+        super(info, tier);
         this.isConfigurable = isConfigurable;
         this.itemStackHandler = attachTrait(createInventory());
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
+    }
+
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
+        this(info, isConfigurable ? GTValues.HV : GTValues.LV, isConfigurable);
+    }
+
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
+        return false;
     }
 
     //////////////////////////////////////
@@ -104,7 +123,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         return new NotifiableItemStackHandler(1, IO.BOTH, IO.BOTH);
     }
 
-    @Override
     public byte startProblems() {
         return ALL_PROBLEMS;
     }
@@ -117,7 +135,76 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ********* Logic **********//
     //////////////////////////////////////
+
+    /**
+     * Used to calculate whether a maintenance problem should happen based on machine time active
+     *
+     * @param duration in ticks to add to the counter of active time
+     */
+    public void calculateMaintenance(int duration) {
+        if (!ConfigHolder.INSTANCE.machines.enableMaintenance || isFullAuto()) {
+            return;
+        }
+
+        setTimeActive(getTimeActive() + duration);
+        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate / getTimeMultiplier();
+        if (getTimeActive() >= rate) {
+            setTimeActive(0);
+            if (GTValues.RNG.nextInt(6000) == 0) {
+                causeRandomMaintenanceProblems();
+                setTaped(false);
+            }
+        }
+    }
+
+    /**
+     * Used to calculate whether a maintenance problem should happen based on machine time active
+     */
+    public void calculateMaintenance() {
+        calculateMaintenance(1);
+    }
+
+    public int getNumMaintenanceProblems() {
+        return ConfigHolder.INSTANCE.machines.enableMaintenance ? 6 - Integer.bitCount(getMaintenanceProblems()) : 0;
+    }
+
+    public boolean hasMaintenanceProblems() {
+        return ConfigHolder.INSTANCE.machines.enableMaintenance && this.getMaintenanceProblems() < 63;
+    }
+
+    public void setMaintenanceFixed(int index) {
+        setMaintenanceProblems((byte) (getMaintenanceProblems() | (byte) (1 << index)));
+    }
+
+    public void causeRandomMaintenanceProblems() {
+        setMaintenanceProblems(
+                (byte) (getMaintenanceProblems() & (byte) ~(1 << GTValues.RNG.nextInt(6))));
+    }
+
     @Override
+    public boolean onWorking(WorkableMultiblockMachine controller) {
+        calculateMaintenance();
+        if (hasMaintenanceProblems()) {
+            controller.getRecipeLogic().markLastRecipeDirty();
+        }
+        return true;
+    }
+
+    @Override
+    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+        if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
+            if (hasMaintenanceProblems()) {
+                return null;
+            }
+            var durationMultiplier = getDurationMultiplier();
+            if (durationMultiplier != 1) {
+                recipe = recipe.copy();
+                recipe.duration = Math.max(1, Math.round(recipe.duration * durationMultiplier));
+            }
+        }
+        return recipe;
+    }
+
     public void setMaintenanceProblems(byte problems) {
         this.maintenanceProblems = problems;
         updateMaintenanceSubscription();
@@ -298,12 +385,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         for (int i = 0; i < 6; i++) setMaintenanceFixed(i);
     }
 
-    @Override
     public boolean isFullAuto() {
         return false;
     }
 
-    @Override
     public void setTaped(boolean isTaped) {
         if (this.isTaped != isTaped) {
             this.isTaped = isTaped;
@@ -311,7 +396,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         }
     }
 
-    @Override
+    /**
+     * Higher {@link #getDurationMultiplier()} refers to a lower time multiplier.
+     * The lower time multiplier means more likely causing problems.
+     */
     public float getTimeMultiplier() {
         var result = 1f;
         if (durationMultiplier < 1.0)
@@ -347,7 +435,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         InteractionSyncHandler syncHandler = new InteractionSyncHandler();
-        // syncManager.syncValue("button_idk", syncHandler);
         Flow maintenanceStatusWidget = Flow.column()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .coverChildren()
@@ -363,7 +450,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
                                     .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
                                     .map(GTUtil::getMaintenanceText)
-                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getA())))
+                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())))
                                     .map(IWidget.class::cast)
                                     .toList()));
         };

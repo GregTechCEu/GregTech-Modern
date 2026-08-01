@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item.modules;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
+import com.gregtechceu.gtceu.api.placeholder.GraphicsComponent;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
@@ -137,6 +138,11 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
             tooltipComponents.addAll(MultiLineComponent.literal(getPlaceholderText(stack)));
             tooltipComponents.add(Component.literal("Processed text:").withStyle(ChatFormatting.GOLD));
             tooltipComponents.addAll(getText(stack));
+            tooltipComponents.add(Component.literal("Graphics components:").withStyle(ChatFormatting.GOLD));
+            tooltipComponents.addAll(getText(stack).getGraphics().stream()
+                    .map(GraphicsComponent::rendererId)
+                    .map(Component::literal)
+                    .toList());
         }
     }
 }

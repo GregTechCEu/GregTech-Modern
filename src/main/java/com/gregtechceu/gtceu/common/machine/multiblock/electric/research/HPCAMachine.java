@@ -7,10 +7,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
@@ -18,6 +17,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
@@ -71,7 +71,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private static final double IDLE_TEMPERATURE = 200;
     private static final double DAMAGE_TEMPERATURE = 1000;
 
-    private IMaintenanceMachine maintenance;
+    private MaintenanceHatchPartMachine maintenance;
     private IEnergyContainer energyContainer;
     private IFluidHandler coolantHandler;
     @SaveField
@@ -101,10 +101,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         List<HPCAComponentTrait> componentTraits = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            componentTraits.addAll(part.self().getTraits(HPCAComponentTrait.TYPE));
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+            componentTraits.addAll(part.getTraits(HPCAComponentTrait.class));
+            if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
             // if (io == IO.NONE || io == IO.OUT) continue;
@@ -181,8 +181,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     public void tick() {
-        if (isWorkingEnabled()) consumeEnergy();
-        if (isActive()) {
+        if (isWorkingEnabled() && consumeEnergy() && isActive()) {
             // forcibly use active coolers at full rate if temperature is half-way to damaging temperature
             double midpoint = (DAMAGE_TEMPERATURE - IDLE_TEMPERATURE) / 2;
             double temperatureChange = hpcaHandler.calculateTemperatureChange(coolantHandler, temperature >= midpoint) /
@@ -206,11 +205,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            part.self().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
+            part.getTraitOptional(HPCAComponentTrait.class).ifPresent(t -> t.setActive(active));
         }
     }
 
-    private void consumeEnergy() {
+    private boolean consumeEnergy() {
         long energyToConsume = hpcaHandler.getCurrentEUt();
         boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance && this.maintenance != null;
         if (hasMaintenance) {
@@ -218,24 +217,28 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
 
-        if (this.hasNotEnoughEnergy && energyContainer.getInputPerSec() > 19L * energyToConsume) {
+        if (this.hasNotEnoughEnergy && energyContainer.getEnergyStored() > 19L * hpcaHandler.getMaxEUt()) {
             this.hasNotEnoughEnergy = false;
         }
 
-        if (this.energyContainer.getEnergyStored() >= energyToConsume) {
-            if (!hasNotEnoughEnergy) {
-                long consumed = this.energyContainer.removeEnergy(energyToConsume);
-                if (consumed == energyToConsume) {
-                    getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
-                } else {
-                    this.hasNotEnoughEnergy = true;
-                    getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
-                }
+        if (this.energyContainer.getEnergyStored() >= energyToConsume && !hasNotEnoughEnergy) {
+            long consumed = this.energyContainer.removeEnergy(energyToConsume);
+            if (consumed == energyToConsume) {
+                getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
+                return true;
+            } else {
+                this.hasNotEnoughEnergy = true;
+                getRecipeLogic()
+                        .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                                .append(": ").append(EURecipeCapability.CAP.getName()));
             }
         } else {
             this.hasNotEnoughEnergy = true;
-            getRecipeLogic().setStatus(RecipeLogic.Status.WAITING);
+            getRecipeLogic()
+                    .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ").append(EURecipeCapability.CAP.getName()));
         }
+        return false;
     }
 
     @Override
@@ -260,8 +263,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         syncManager.syncValue("text", text);
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED)));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
         widgets.add(new Grid()
                 .gridOfSizeWidth(9, 3, (x, y, i) -> hpcaHandler.getComponentTexture(i).asWidget()
@@ -420,8 +426,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // cached gui info
         // holding these values past the computation clear because GUI is too "late" to read the state in time
         @SyncToClient
-        private long cachedEUt;
-        @SyncToClient
         private int cachedCWUt;
 
         public HPCAGridHandler(@Nullable HPCAMachine controller) {
@@ -470,8 +474,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 cachedCWUt = allocatedCWUt;
                 syncDataHolder.markClientSyncFieldDirty("cachedCWUt");
             }
-            cachedEUt = getCurrentEUt();
-            syncDataHolder.markClientSyncFieldDirty("cachedEUt");
             if (allocatedCWUt != 0) {
                 allocatedCWUt = 0;
             }
@@ -777,7 +779,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         BlockPos tempPos = testPos.relative(frontFacing, j).relative(relativeUp.getOpposite(), i);
                         MetaMachine be = MetaMachine.getMachine(world, tempPos);
                         if (be == null) continue;
-                        var trait = be.getTrait(HPCAComponentTrait.TYPE);
+                        var trait = be.getTrait(HPCAComponentTrait.class);
                         if (trait != null) {
                             components.add(trait);
                         }

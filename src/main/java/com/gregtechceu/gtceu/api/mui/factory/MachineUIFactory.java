@@ -35,13 +35,13 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
     public void open(ServerPlayer player, IMuiMachine machine) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(machine);
-        if (machine.self().isRemoved()) {
+        if (machine.isRemoved()) {
             throw new IllegalArgumentException("Can't open invalid MetaMachine GUI!");
         }
-        if (player.level() != machine.self().getLevel()) {
+        if (player.level() != machine.getLevel()) {
             throw new IllegalArgumentException("MetaMachine must be in same dimension as the player!");
         }
-        BlockPos pos = machine.self().getBlockPos();
+        BlockPos pos = machine.getBlockPos();
         PosGuiData data = new PosGuiData(player, pos);
         GuiManager.open(this, data, player);
     }
