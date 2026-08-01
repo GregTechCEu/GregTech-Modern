@@ -196,11 +196,6 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
         this.capabilityIO = capabilityIO;
     }
 
-    @Override
-    public MachineTraitType<? extends NotifiableBonkHandler> getTraitType() {
-        return TYPE;
-    }
-
     public boolean addBonk(int bonkToAdd, boolean simulate){
         if(bonkToAdd < 0) return false;
         if((long) bonkToAdd + (long) this.bonk > Integer.MAX_VALUE) return false;
