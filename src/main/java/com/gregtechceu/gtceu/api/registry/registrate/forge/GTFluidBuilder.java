@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.forge;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.GTLiquidBlock;
 import com.gregtechceu.gtceu.api.fluids.forge.GTFluidImpl;
 import com.gregtechceu.gtceu.api.item.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
@@ -185,7 +186,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
     }
 
     public BlockBuilder<LiquidBlock, GTFluidBuilder<P>> block() {
-        return block(LiquidBlock::new);
+        return block((s, p) -> new GTLiquidBlock(s, p, material, langKey));
     }
 
     public <B extends LiquidBlock> BlockBuilder<B, GTFluidBuilder<P>> block(NonNullBiFunction<NonNullSupplier<GTFluidImpl.Flowing>, BlockBehaviour.Properties, ? extends B> factory) {
