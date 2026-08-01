@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -45,13 +44,6 @@ import org.jetbrains.annotations.VisibleForTesting;
 import java.util.*;
 
 public class RecipeLogic extends MachineTrait implements IWorkable {
-
-    public static final MachineTraitType<RecipeLogic> TYPE = new MachineTraitType<>(RecipeLogic.class, null, false);
-
-    @Override
-    public MachineTraitType<? extends RecipeLogic> getTraitType() {
-        return TYPE;
-    }
 
     public enum Status implements StringRepresentable {
 

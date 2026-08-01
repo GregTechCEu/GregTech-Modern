@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.trait;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -20,14 +19,6 @@ import org.jetbrains.annotations.Nullable;
 @Accessors(chain = true)
 @MethodsReturnNonnullByDefault
 public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerModifiable, ICapabilityTrait {
-
-    public static final MachineTraitType<ItemHandlerProxyTrait> TYPE = new MachineTraitType<>(
-            ItemHandlerProxyTrait.class, null);
-
-    @Override
-    public MachineTraitType<? extends ItemHandlerProxyTrait> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     public final IO capabilityIO;

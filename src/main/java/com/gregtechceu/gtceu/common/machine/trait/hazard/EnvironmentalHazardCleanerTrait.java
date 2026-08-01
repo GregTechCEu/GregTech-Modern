@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.trait.hazard;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -27,9 +26,6 @@ import java.util.function.BiPredicate;
 
 public class EnvironmentalHazardCleanerTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
-    public static final MachineTraitType<EnvironmentalHazardCleanerTrait> TYPE = new MachineTraitType<>(
-            EnvironmentalHazardCleanerTrait.class, null);
-
     @Getter
     protected float removedLastSecond;
 
@@ -49,11 +45,6 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait implements IRe
         super();
         this.cleaningRadius = cleaningRadius;
         this.cleaningHandler = validateCleaningOperation;
-    }
-
-    @Override
-    public MachineTraitType<? extends EnvironmentalHazardCleanerTrait> getTraitType() {
-        return TYPE;
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.trait;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class BatterySlotTrait extends MachineTrait implements IAttachConfiguratorsTrait {
 
-    public static final MachineTraitType<BatterySlotTrait> TYPE = new MachineTraitType<>(BatterySlotTrait.class, null);
     @SaveField
     @Getter
     private final CustomItemStackHandler storage;
@@ -46,11 +44,6 @@ public class BatterySlotTrait extends MachineTrait implements IAttachConfigurato
         storage.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
                 (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
                         GTCapabilityHelper.getForgeEnergyItem(item) != null));
-    }
-
-    @Override
-    public MachineTraitType<? extends BatterySlotTrait> getTraitType() {
-        return TYPE;
     }
 
     @Override

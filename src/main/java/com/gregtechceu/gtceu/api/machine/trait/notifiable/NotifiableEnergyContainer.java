@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
@@ -37,14 +36,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<EnergyStack> implements IEnergyContainer {
-
-    public static final MachineTraitType<NotifiableEnergyContainer> TYPE = new MachineTraitType<>(
-            NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.TYPE);
-
-    @Override
-    public MachineTraitType<? extends NotifiableEnergyContainer> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     protected IO handlerIO;
@@ -271,7 +262,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
         long canAccept = getEnergyCapacity() - getEnergyStored();
         if (voltage > 0L && inputsEnergy(side)) {
             if (voltage > getInputVoltage()) {
-                var explodable = getMachine().getTrait(EnvironmentalExplosionTrait.TYPE);
+                var explodable = getMachine().getTrait(EnvironmentalExplosionTrait.class);
                 if (explodable != null)
                     GTUtil.doExplosion(getLevel(), getBlockPos(), GTUtil.getExplosionPower(voltage));
                 return Math.min(amperage, getInputAmperage() - amps);

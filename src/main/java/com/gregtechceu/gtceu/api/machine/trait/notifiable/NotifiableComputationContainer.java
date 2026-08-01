@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -27,14 +26,6 @@ import java.util.List;
 
 public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait<Integer>
                                             implements IOpticalComputationHatch, IOpticalComputationReceiver {
-
-    public static final MachineTraitType<NotifiableComputationContainer> TYPE = new MachineTraitType<>(
-            NotifiableComputationContainer.class, NotifiableRecipeHandlerTrait.TYPE);
-
-    @Override
-    public MachineTraitType<? extends NotifiableComputationContainer> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     protected IO handlerIO;

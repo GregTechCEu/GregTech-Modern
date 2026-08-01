@@ -163,7 +163,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 
     @Override
     public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableBonkHandler.TYPE);
+        return machine.getTraits(NotifiableBonkHandler.class);
     }
 
     @SuppressWarnings("unchecked")

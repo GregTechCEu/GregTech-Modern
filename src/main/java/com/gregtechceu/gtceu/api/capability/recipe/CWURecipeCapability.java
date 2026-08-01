@@ -32,7 +32,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableComputationContainer.TYPE);
+        return machine.getTraits(NotifiableComputationContainer.class);
     }
 
     @Override

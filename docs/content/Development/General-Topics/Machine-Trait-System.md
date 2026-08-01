@@ -45,12 +45,12 @@ public class CustomMachine extends MetaMachine {
   public void usingTraits() {
       MetaMachine machine = getMachine();
 
-      // Most trait objects have a `TYPE` static field, it can be used to get traits with a specific type.
-      AutoOutputTrait autoOutputTrait = machine.getTrait(AutoOutputTrait.TYPE);
-      Optional<RecipeLogic> recipeLogicOptional = machine.getTrait(RecipeLogic.TYPE);
+      // Traits can be queried by class.
+      AutoOutputTrait autoOutputTrait = machine.getTrait(AutoOutputTrait.class);
+      Optional<RecipeLogic> recipeLogicOptional = machine.getTrait(RecipeLogic.class);
 
       // Gets all traits with the specified type.
-      List<NotifiableItemStackHandler> allItemStackHandlers = machine.getTraits(NotifiableItemStackHandler.TYPE);
+      List<NotifiableItemStackHandler> allItemStackHandlers = machine.getTraits(NotifiableItemStackHandler.class);
       
       List<MachineTrait> allTraits = machine.getAllTraits();
   }
@@ -66,22 +66,8 @@ Machine traits have access to a number of machine events and callbacks, but some
 ```java 
 public class CustomMachineTrait extends MachineTrait implements IInteractionTrait {
     
-    // Machine traits should have a type object defined, which specifies the class of this machine trait, 
-    // and the trait's parent class (or null if this trait is a direct subclass of MachineTrait.
-    public static final MachineTraitType<CustomMachineTrait> TYPE = new MachineTraitType<>(CustomMachineTrait.class, null);
+    public CustomMachineTrait() {}
     
-    public CustomMachineTrait() {
-        
-    }
-    
-    // Machine traits must also define a getter for the trait type.
-    // The getter should return a wildcard type with the upper bound as this trait class, 
-    // to allow for subclass' trait types to work.
-    @Override
-    public MachineTraitType<? extends CustomMachineTrait> getType() {
-        return TYPE;
-    }
-
     // A list of classes or interfaces which a machine must be in order for this trait to be attached.
     // A machine trait must be at least one of these interfaces/classes.
     // By default, traits can be attached to any machine.
