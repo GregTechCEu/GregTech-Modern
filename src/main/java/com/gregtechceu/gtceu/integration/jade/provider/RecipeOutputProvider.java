@@ -45,7 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeOutputProvider() {
-        super(GTCEu.id("recipe_output_info"), RecipeLogic.TYPE);
+        super(GTCEu.id("recipe_output_info"), RecipeLogic.class);
     }
 
     @Override
