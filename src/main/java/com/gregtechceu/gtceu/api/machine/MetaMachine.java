@@ -387,7 +387,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type.
+     * Gets the first trait (trait with highest priority) of a specified type.<br>
      * Also includes traits that are a subtype of the specified type.
      *
      * @param type The trait type to get.
@@ -398,7 +398,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
+     * Gets the first trait (trait with highest priority) of a specified type.<br>
      * Also includes traits that are a subtype of the specified type.
      *
      * @param type The trait type to get
@@ -410,7 +410,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the first trait (trait with the highest priority) of a specified type.<br>
-     * Also includes traits that are a subtype of the specified type.
+     * Also includes traits that are a subtype of the specified type.<br>
      * Throws if no trait is present.
      * 
      * @param type The trait type to get
