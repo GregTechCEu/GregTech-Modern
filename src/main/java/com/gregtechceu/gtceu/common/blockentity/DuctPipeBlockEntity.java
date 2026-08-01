@@ -52,6 +52,11 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
                 initHandlers();
             }
             checkNetwork();
+
+            if (defaultHandler == null) {
+                // if the default handler is null, return LazyOptional.empty because that means the pipenet is invalid
+                return LazyOptional.empty();
+            }
             return GTCapability.CAPABILITY_HAZARD_CONTAINER.orEmpty(cap,
                     LazyOptional.of(() -> handlers.getOrDefault(side, defaultHandler)));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {

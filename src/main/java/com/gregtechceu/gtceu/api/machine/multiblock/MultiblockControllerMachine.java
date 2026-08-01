@@ -378,7 +378,6 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void invalidateStructure(String name) {
         var pState = patternStates.get(name);
-        // if (!pState.isFormed()) return;
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
@@ -427,7 +426,6 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     protected void forEachFormed(String name, BiConsumer<BlockInfo, BlockPos.MutableBlockPos> action) {
-        // var cache = getSubstructure(name).getCache();
         var cache = patternStates.get(name).getCache();
         var pos = new BlockPos.MutableBlockPos();
         for (var entry : cache.long2ObjectEntrySet()) {
