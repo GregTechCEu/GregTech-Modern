@@ -130,7 +130,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
 
     @Override
     public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableEnergyContainer.TYPE);
+        return machine.getTraits(NotifiableEnergyContainer.class);
     }
 
     @Override

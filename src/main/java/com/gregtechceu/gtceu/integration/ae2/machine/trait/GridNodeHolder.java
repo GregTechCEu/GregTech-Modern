@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
@@ -23,13 +22,6 @@ import java.util.EnumSet;
  * @see IGridConnectedMachine
  */
 public class GridNodeHolder extends MachineTrait {
-
-    public static final MachineTraitType<GridNodeHolder> TYPE = new MachineTraitType<>(GridNodeHolder.class);
-
-    @Override
-    public MachineTraitType<GridNodeHolder> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     @SaveField

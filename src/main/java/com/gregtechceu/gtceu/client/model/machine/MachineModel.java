@@ -271,7 +271,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         // render output overlays
-        var outputTrait = machine.getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = machine.getTrait(AutoOutputTrait.class);
         if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
             var itemFace = outputTrait.getItemOutputDirection();
             if (itemFace != null && side == itemFace) {
