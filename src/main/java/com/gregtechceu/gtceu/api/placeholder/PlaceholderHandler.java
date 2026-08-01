@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.ResourceLocationException;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.MutableComponent;
@@ -337,14 +338,14 @@ public class PlaceholderHandler {
                                 .children(ctx.holderLookup()
                                         .lookupOrThrow(GTRegistries.Keys.PLACEHOLDER)
                                         .listElements()
-                                        .map(h -> Objects.requireNonNull(h.key()).location())
+                                        .map(Holder.Reference::value)
                                         .sorted()
-                                        .map(s -> (IWidget) Flow.row()
+                                        .map(p -> (IWidget) Flow.row()
                                                 .coverChildren()
-                                                .child(new TextWidget<>(s.toString().replaceAll("gtceu:", "")).center())
+                                                .child(new TextWidget<>(p.getName()).center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s)
+                                                                .getSingleOrMultiLang(p.getId().toLanguageKey("placeholder_info"))
                                                                 .stream()
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
