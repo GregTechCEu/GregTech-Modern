@@ -734,7 +734,7 @@ public class RecipeAddition {
                     'B', new MaterialEntry(TagPrefix.bolt, GTMaterials.Iron),
                     'R', new MaterialEntry(TagPrefix.rod, GTMaterials.Iron),
                     'L', new MaterialEntry(TagPrefix.rodLong, GTMaterials.Iron),
-                    'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Wood));
+                    'P', ItemTags.PLANKS);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "bow", new ItemStack(Items.BOW), "hLS", "LRS", "fLS",
                     'L', new MaterialEntry(TagPrefix.rodLong, GTMaterials.Wood),
@@ -847,7 +847,7 @@ public class RecipeAddition {
                     .inputItems(TagPrefix.bolt, GTMaterials.Diamond)
                     .inputItems(TagPrefix.gear, GTMaterials.Iron)
                     .inputItems(TagPrefix.ring, GTMaterials.Iron)
-                    .inputItems(TagPrefix.plate, GTMaterials.Wood, 4)
+                    .inputItems(ItemTags.PLANKS, 4)
                     .inputItems(new ItemStack(Blocks.NOTE_BLOCK, 2))
                     .outputItems(new ItemStack(Blocks.JUKEBOX))
                     .duration(100).EUt(16)
@@ -855,13 +855,13 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "note_block", new ItemStack(Blocks.NOTE_BLOCK), "PPP", "BGB",
                     "PRP",
-                    'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Wood),
+                    'P', ItemTags.PLANKS,
                     'B', new ItemStack(Blocks.IRON_BARS),
                     'G', new MaterialEntry(TagPrefix.gear, GTMaterials.Wood),
                     'R', new MaterialEntry(TagPrefix.rod, GTMaterials.RedAlloy));
 
             ASSEMBLER_RECIPES.recipeBuilder("note_block")
-                    .inputItems(TagPrefix.plate, GTMaterials.Wood, 4)
+                    .inputItems(ItemTags.PLANKS, 4)
                     .inputItems(TagPrefix.gear, GTMaterials.Wood)
                     .inputItems(TagPrefix.rod, GTMaterials.RedAlloy)
                     .inputItems(new ItemStack(Blocks.IRON_BARS, 2))
@@ -1004,7 +1004,7 @@ public class RecipeAddition {
                     "WWW", "SLS",
                     'P', new ItemStack(Items.FEATHER),
                     'S', new MaterialEntry(screw, Iron),
-                    'W', new MaterialEntry(plate, Wood),
+                    'W', ItemTags.PLANKS,
                     'L', ItemTags.LOGS);
 
             ASSEMBLER_RECIPES.recipeBuilder("fletching_table")
@@ -1041,16 +1041,14 @@ public class RecipeAddition {
                     .duration(80).EUt(6).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "loom", new ItemStack(Blocks.LOOM), "SSS",
-                    "PdP", "XYX",
+                    "PdP", "XPX",
                     'S', new ItemStack(Items.STRING),
-                    'P', new MaterialEntry(plate, Wood),
-                    'X', new MaterialEntry(screw, Wood),
-                    'Y', ItemTags.PLANKS);
+                    'P', ItemTags.PLANKS,
+                    'X', new MaterialEntry(screw, Wood));
 
             ASSEMBLER_RECIPES.recipeBuilder("loom")
                     .inputItems(new ItemStack(Items.STRING, 3))
-                    .inputItems(plate, Wood, 2)
-                    .inputItems(ItemTags.PLANKS)
+                    .inputItems(ItemTags.PLANKS, 3)
                     .outputItems(new ItemStack(Blocks.LOOM))
                     .duration(80).EUt(6).save(provider);
 
@@ -1135,7 +1133,7 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "beehive", new ItemStack(Blocks.BEEHIVE, 1), "PsP",
                     "WXW", "PdP",
                     'P', ItemTags.PLANKS,
-                    'W', new MaterialEntry(plate, Wood),
+                    'W', ItemTags.PLANKS,
                     'X', new MaterialEntry(bolt, Wood));
 
             ASSEMBLER_RECIPES.recipeBuilder("beehive")

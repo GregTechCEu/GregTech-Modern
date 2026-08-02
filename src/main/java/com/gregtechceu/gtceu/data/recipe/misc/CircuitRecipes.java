@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -770,10 +771,10 @@ public class CircuitRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "coated_board", COATED_BOARD.asStack(3),
                 "RRR", "PPP", "RRR",
                 'R', STICKY_RESIN.asStack(),
-                'P', new MaterialEntry(plate, Wood));
+                'P', ItemTags.PLANKS);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "coated_board_1x", COATED_BOARD.asStack(),
-                new MaterialEntry(plate, Wood),
+                ItemTags.PLANKS,
                 STICKY_RESIN.asStack(),
                 STICKY_RESIN.asStack());
 
@@ -785,7 +786,7 @@ public class CircuitRecipes {
         // Basic Circuit Board
         ASSEMBLER_RECIPES.recipeBuilder("basic_circuit_board")
                 .inputItems(foil, Copper, 4)
-                .inputItems(plate, Wood)
+                .inputItems(ItemTags.PLANKS)
                 .inputFluids(Glue.getFluid(100))
                 .outputItems(BASIC_CIRCUIT_BOARD)
                 .duration(200).EUt(VA[ULV]).save(provider);

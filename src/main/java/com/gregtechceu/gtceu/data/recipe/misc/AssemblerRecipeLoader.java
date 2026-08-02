@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.function.Consumer;
@@ -124,21 +125,21 @@ public class AssemblerRecipeLoader {
                 .duration(64).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("small_wood_pipe").duration(200).EUt(VA[LV])
-                .inputItems(plate, Wood)
+                .inputItems(ItemTags.PLANKS)
                 .circuitMeta(12)
                 .inputFluids(Glue.getFluid(50))
                 .outputItems(pipeSmallFluid, Wood)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("normal_wood_pipe").duration(200).EUt(VA[LV])
-                .inputItems(plate, Wood, 3)
+                .inputItems(ItemTags.PLANKS, 3)
                 .circuitMeta(6)
                 .inputFluids(Glue.getFluid(20))
                 .outputItems(pipeNormalFluid, Wood)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("large_wood_pipe").duration(100).EUt(VA[LV])
-                .inputItems(plate, Wood, 6)
+                .inputItems(ItemTags.PLANKS, 6)
                 .circuitMeta(2)
                 .inputFluids(Glue.getFluid(10))
                 .outputItems(pipeLargeFluid, Wood)

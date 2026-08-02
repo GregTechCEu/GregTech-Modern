@@ -290,7 +290,7 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP",
                 "GGG", "PGP",
-                'P', new MaterialEntry(plate, Wood),
+                'P', ItemTags.PLANKS,
                 'S', new ItemStack(Items.STRING),
                 'G', new MaterialEntry(dust, Gunpowder));
 

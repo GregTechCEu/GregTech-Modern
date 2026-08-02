@@ -132,6 +132,8 @@ public class GTMaterials {
         nugget.setIgnored(Iron, Items.IRON_NUGGET);
 
         plate.setIgnored(Paper, Items.PAPER);
+        plate.setIgnored(Wood, Blocks.OAK_PLANKS);
+        plate.setIgnored(TreatedWood, () -> GTBlocks.TREATED_WOOD_PLANK);
 
         block.setIgnoredBlock(Iron, Blocks.IRON_BLOCK);
         block.setIgnoredBlock(Gold, Blocks.GOLD_BLOCK);
