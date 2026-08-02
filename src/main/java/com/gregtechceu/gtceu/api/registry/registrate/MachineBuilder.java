@@ -168,6 +168,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return (SELF) this;
     }
 
+    public SELF instanceFactory(MachineInstanceFactory<MACHINE> instanceFactory) {
+        this.instanceFactory = instanceFactory;
+        return getThis();
+    }
+
+    public SELF machine(MachineInstanceFactory<MACHINE> instanceFactory) {
+        return instanceFactory(instanceFactory);
+    }
+
     public SELF blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
         this.blockModel = blockModel;
         return getThis();
