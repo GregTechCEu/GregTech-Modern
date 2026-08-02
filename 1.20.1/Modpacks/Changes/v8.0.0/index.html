@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#updating-from-740-to-800" class="md-skip">
+        <a href="#updating-from-753-to-800" class="md-skip">
           Skip to content
         </a>
       
@@ -3919,50 +3919,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#connected-texture-reimplementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Connected texture reimplementation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#irecipehandler-nullability" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IRecipeHandler nullability
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#empty-content-check-for-recipe-capabilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Empty content check for recipe capabilities
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#other-changes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Other Changes
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -5240,50 +5196,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#connected-texture-reimplementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Connected texture reimplementation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#irecipehandler-nullability" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IRecipeHandler nullability
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#empty-content-check-for-recipe-capabilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Empty content check for recipe capabilities
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#other-changes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Other Changes
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -5312,7 +5224,7 @@
   
 
 
-<h1 id="updating-from-740-to-800">Updating from <code>7.4.0</code> to <code>8.0.0</code></h1>
+<h1 id="updating-from-753-to-800">Updating from <code>7.5.3</code> to <code>8.0.0</code></h1>
 <h2 id="new-data-savesync-system">New Data Save/Sync System</h2>
 <p>A new system for saving and syncing object fields has been added. See <a href="../../../Development/Data-Sync-System/Migrating-From-LDLib-SyncData/">this page</a> for migration instructions.</p>
 <h2 id="machine-refactor-part-1-metamachine-and-metamachineblockentity-merge">Machine Refactor Part 1: <code>MetaMachine</code> and <code>MetaMachineBlockEntity</code> merge</h2>
@@ -5406,6 +5318,16 @@ When migrating, remove the <code>this</code> argument from the machine trait con
 <li><code>IFluidRendererMulti</code> - Use <code>MultiblockFluidRendererTrait</code></li>
 <li><code>IMaintenanceMachine</code> Use <code>MaintenanceHatchPartMachine</code></li>
 </ul>
+<h1 id="modularui-changes">ModularUI changes</h1>
+<p>All your machines need to be migrated from LDLib's UI system to ModularUI's system. See <a href="../../../Development/MUI2/">this category</a>.</p>
+<p>As part of this migration, your machine builder's<br />
+<code>.additionalDisplay((controller, components) -&gt; { components.add(...)})</code><br />
+is now<br />
+<code>.additionalDisplay((controller, syncManager) -&gt; { return List.of(... your widgets here) })</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not forget that just like in your machine UI builders, you need to sync your data to the client. See <a href="../../../Development/MUI2/Syncing/Sync-Basics/">this page on syncing</a>.</p>
+</div>
 <h2 id="connected-texture-reimplementation">Connected texture reimplementation</h2>
 <p>The mod's connected texture logic has been reimplemented in GTM proper.
 Texture packs, addons, and modpacks will have to change their texture metadata files for connected texures slightly.<br />
