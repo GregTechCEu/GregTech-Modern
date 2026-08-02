@@ -91,7 +91,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    protected final MachineInstanceFactory<MACHINE> instanceFactory;
+    protected MachineInstanceFactory<MACHINE> instanceFactory;
 
     protected final Function<ResourceLocation, DEFINITION> definition;
     @Nullable
@@ -175,6 +175,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @SuppressWarnings("unchecked")
     public SELF getThis() {
         return (SELF) this;
+    }
+
+    public SELF instanceFactory(MachineInstanceFactory<MACHINE> instanceFactory) {
+        this.instanceFactory = instanceFactory;
+        return getThis();
+    }
+
+    public SELF machine(MachineInstanceFactory<MACHINE> instanceFactory) {
+        return instanceFactory(instanceFactory);
     }
 
     public SELF blockModel(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
