@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.class);
     }
 
     @Override

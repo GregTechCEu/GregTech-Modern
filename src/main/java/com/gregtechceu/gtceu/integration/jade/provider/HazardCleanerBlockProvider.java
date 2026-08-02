@@ -15,7 +15,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class HazardCleanerBlockProvider extends MachineTraitProvider<EnvironmentalHazardCleanerTrait, FloatTag> {
 
     public HazardCleanerBlockProvider() {
-        super(GTCEu.id("hazard_cleaner_provider"), EnvironmentalHazardCleanerTrait.TYPE);
+        super(GTCEu.id("hazard_cleaner_provider"), EnvironmentalHazardCleanerTrait.class);
     }
 
     @Override
