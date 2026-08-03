@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -131,13 +130,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate) {
-            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
-                if (!tryMinCount(resultStructure, compactedPredicate.expand(), pos, dir, offset)) {
-                    continue;
-                }
-                return true;
-            }
+        for (BasePredicate basePredicate : predicate.predicates()) {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
@@ -165,13 +158,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate) {
-            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
-                if (!tryMaxCount(resultStructure, compactedPredicate.expand(), pos, dir, offset)) {
-                    continue;
-                }
-                return true;
-            }
+        for (BasePredicate basePredicate : predicate.expand()) {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
@@ -203,7 +190,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
         // (this slice) wouldn't be exceeded by placing it here.
-        for (BasePredicate basePredicate : predicate) {
+        for (BasePredicate basePredicate : predicate.expand()) {
             if (!basePredicate.getCandidates().contains(newInfo)) continue;
 
             int maxCount = getMaxCount(predicate, basePredicate);

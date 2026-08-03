@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -111,13 +110,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate) {
-            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
-                if (!tryMinCount(resultStructure, compactedPredicate.expand(), pos)) {
-                    continue;
-                }
-                return true;
-            }
+        for (BasePredicate basePredicate : predicate.expand()) {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
@@ -138,13 +131,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate) {
-            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
-                if (!tryMaxCount(resultStructure, compactedPredicate.expand(), pos)) {
-                    continue;
-                }
-                return true;
-            }
+        for (BasePredicate basePredicate : predicate.expand()) {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 

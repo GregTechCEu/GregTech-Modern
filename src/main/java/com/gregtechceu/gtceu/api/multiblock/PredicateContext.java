@@ -6,9 +6,6 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntComparators;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,6 +13,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntComparators;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,8 @@ public class PredicateContext {
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
 
-    private final Int2ObjectMap<List<PatternError>> sliceErrors = new Int2ObjectAVLTreeMap<>(IntComparators.NATURAL_COMPARATOR);
+    private final Int2ObjectMap<List<PatternError>> sliceErrors = new Int2ObjectAVLTreeMap<>(
+            IntComparators.NATURAL_COMPARATOR);
 
     private int currentSlice = 0;
     @Getter

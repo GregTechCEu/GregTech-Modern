@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public abstract class BasePredicate {
+public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     public static final BasePredicate AIR = new Builder("Air")
             .predicate(ctx -> ctx.state().isAir())
@@ -82,7 +82,7 @@ public abstract class BasePredicate {
     }
 
     public boolean checkMaxCount(PredicateContext context) {
-        return getParent().getLogic().testMaxCount(this, context);
+        return getParent().testMaxCount(this, context);
     }
 
     /// test against global max count
@@ -174,7 +174,12 @@ public abstract class BasePredicate {
         return builder.toString();
     }
 
-    @Accessors(chain = true, fluent = true)
+    @Override
+    public int compareTo(BasePredicate o) {
+        return Integer.compare(this.priority, o.priority);
+    }
+
+    @Accessors(fluent = true)
     public static class Builder {
 
         private final String name;
@@ -187,8 +192,8 @@ public abstract class BasePredicate {
         @Setter
         private @Nullable Consumer<PredicateContext> onError;
 
-        public Builder(@Nullable String debugName) {
-            this.name = debugName != null ? debugName : "Predicate";
+        public Builder(String debugName) {
+            this.name = debugName;
         }
 
         /// fills candidates and sets string contents with this block tag
@@ -208,11 +213,12 @@ public abstract class BasePredicate {
         }
 
         public MultiPredicate toMultiPredicate() {
-            return new MultiPredicate(build());
+            return MultiPredicate.of(build());
         }
 
         public BasePredicate build() {
             return new BasePredicate() {
+
                 final Predicate<PredicateContext> internalPredicate = Objects.requireNonNull(predicate);
                 final Consumer<PredicateContext> onError = Objects.requireNonNullElse(Builder.this.onError,
                         this::placeholderError);

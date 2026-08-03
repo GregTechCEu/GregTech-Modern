@@ -253,7 +253,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .coverChildrenWidth()
                         .collapseDisabledChildren()
                         .childSeparator(Icon.EMPTY_2PX)
-                        .children(predicate, basePredicate -> {
+                        // todo handle children
+                        .children(predicate.expand(), basePredicate -> {
                             List<BlockInfo> candidates = basePredicate.getCandidates();
                             if (candidates.isEmpty())
                                 return new EmptyWidget();
@@ -328,7 +329,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             .coverChildrenWidth()
                             .collapseDisabledChildren()
                             .childSeparator(Icon.EMPTY_2PX)
-                            .children(predicate, basePredicate -> {
+                            // todo handle children
+                            .children(predicate.expand(), basePredicate -> {
                                 List<BlockInfo> candidates = basePredicate.getCandidates();
                                 if (candidates.isEmpty()) {
                                     return new EmptyWidget();

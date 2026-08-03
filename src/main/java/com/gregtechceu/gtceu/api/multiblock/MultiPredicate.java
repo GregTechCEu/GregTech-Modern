@@ -1,11 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.logic.AndLogic;
-import com.gregtechceu.gtceu.api.multiblock.predicates.logic.BaseLogic;
-import com.gregtechceu.gtceu.api.multiblock.predicates.logic.OrLogic;
-import com.gregtechceu.gtceu.api.multiblock.predicates.logic.XorLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
@@ -17,90 +12,86 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 
-public class MultiPredicate implements Iterable<BasePredicate> {
+public abstract class MultiPredicate {
 
-    private static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
-            .comparingInt(BasePredicate::getPriority);
+    private static final MultiPredicate EMPTY = of(Logic.OR, List.of());
 
-    private static final MultiPredicate EMPTY = new MultiPredicate();
+    public static final MultiPredicate AIR = of(BasePredicate.AIR);
 
-    public static final MultiPredicate AIR = new MultiPredicate(BasePredicate.AIR);
+    public static final MultiPredicate ANY = of(BasePredicate.ANY);
 
-    public static final MultiPredicate ANY = new MultiPredicate(BasePredicate.ANY);
-
-    @Getter
-    private final List<BasePredicate> predicateList;
-    @Getter
-    private final BaseLogic logic;
+    private final List<BasePredicate> predicates;
+    private final List<MultiPredicate> children;
     private final boolean hasAir;
+    @Getter
+    private final Logic type;
     @Getter
     @Setter
     @Accessors(chain = true)
     private boolean controller;
 
-    public MultiPredicate(BasePredicate predicate) {
-        this.predicateList = List.of(predicate);
-        predicate.setParent(this);
-        this.logic = Logic.OR.createLogic(this);
-        this.hasAir = predicate == BasePredicate.AIR;
-    }
+    @Nullable
+    @Getter
+    @Setter
+    private MultiPredicate parent;
 
-    private MultiPredicate() {
-        this.predicateList = List.of();
-        this.logic = Logic.OR.createLogic(this);
-        this.hasAir = false;
+    public static MultiPredicate of(BasePredicate predicate) {
+        return Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
     }
 
     /// @param predicates list must be modifiable
-    public MultiPredicate(Logic type, List<BasePredicate> predicates) {
-        this(type, predicates, predicates.stream().anyMatch(p -> p == BasePredicate.AIR));
+    private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
+        return type.makePredicate(List.of(), predicates, predicates.stream().anyMatch(p -> p == BasePredicate.AIR));
     }
 
-    /// @param predicates list must be modifiable
-    private MultiPredicate(Logic type, List<BasePredicate> predicates, boolean hasAir) {
+    /// @param children list of multi predicate children
+    /// @param predicates list of testable predicates, must be modifiable
+    protected MultiPredicate(Logic type, List<MultiPredicate> children, List<BasePredicate> predicates,
+                             boolean hasAir) {
+        predicates.sort(BasePredicate::compareTo);
         predicates.forEach(p -> p.setParent(this));
-        predicates.sort(PREDICATE_COMPARATOR);
-        this.predicateList = Collections.unmodifiableList(predicates);
-        this.logic = type.createLogic(this);
+        children.forEach(mp -> mp.setParent(this));
+        this.predicates = Collections.unmodifiableList(predicates);
+        this.children = Collections.unmodifiableList(children);
+        this.type = type;
         this.hasAir = hasAir;
     }
 
-    /// delegates to {@link #logic} to test against global min count
-    public boolean testGlobalMin(PredicateContext ctx) {
-        return this.logic.testGlobalMin(ctx);
-    }
+    /// test against global min count
+    public abstract boolean testGlobalMin(PredicateContext ctx);
 
-    /// delegates to {@link #logic} to test against slice min count
-    public boolean testSliceMin(PredicateContext ctx) {
-        return this.logic.testSliceMin(ctx);
-    }
+    /// test against slice min count
+    public abstract boolean testSliceMin(PredicateContext ctx);
+
+    /// test against global/slice max counts
+    public abstract boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context);
 
     public List<List<BlockInfo>> getCandidates() {
-        return this.predicateList.stream()
+        return this.predicates.stream()
                 .map(BasePredicate::getCandidates)
                 .toList();
     }
 
     public void resetLogic() {
-        this.logic.reset();
-        for (BasePredicate p : this.predicateList) {
-            if (p instanceof CompactedPredicate compacted) {
-                compacted.expand().resetLogic();
-            }
-        }
+        children.forEach(MultiPredicate::resetLogic);
     }
 
     public boolean isOr() {
-        return this.logic.getType() == Logic.OR;
+        return this.getType() == Logic.OR;
     }
 
     public boolean isAnd() {
-        return this.logic.getType() == Logic.AND;
+        return this.getType() == Logic.AND;
     }
 
     public boolean isXor() {
-        return this.logic.getType() == Logic.XOR;
+        return this.getType() == Logic.XOR;
+    }
+
+    private boolean isType(Logic type) {
+        return this.type == type;
     }
 
     @ApiStatus.Internal
@@ -120,12 +111,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this.hasAir;
     }
 
-    protected BasePredicate compact() {
-        return new CompactedPredicate(this);
-    }
-
     public MultiPredicate addTooltips(Component tooltip) {
-        forEach(p -> p.addTooltips(tooltip));
+        this.forEach(p -> p.addTooltips(tooltip));
         return this;
     }
 
@@ -230,19 +217,23 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     public static MultiPredicate or(List<BasePredicate> predicates) {
-        return new MultiPredicate(Logic.OR, predicates);
+        return of(Logic.OR, predicates);
     }
 
     public static MultiPredicate and(List<BasePredicate> predicates) {
-        return new MultiPredicate(Logic.AND, predicates);
+        return of(Logic.AND, predicates);
     }
 
     public static MultiPredicate xor(List<BasePredicate> predicates) {
-        return new MultiPredicate(Logic.XOR, predicates);
+        return of(Logic.XOR, predicates);
     }
 
     public boolean isSingle() {
-        return predicateList.size() == 1;
+        return predicates.size() == 1 && !hasChildren();
+    }
+
+    private boolean hasChildren() {
+        return !this.children.isEmpty();
     }
 
     public void appendContents(StringBuilder builder) {
@@ -261,9 +252,28 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return builder.toString();
     }
 
-    @Override
-    public Iterator<BasePredicate> iterator() {
-        return this.predicateList.iterator();
+    protected void forEach(Consumer<BasePredicate> action) {
+        this.predicates.forEach(action);
+    }
+
+    public List<BasePredicate> predicates() {
+        return this.predicates;
+    }
+
+    public void forEachChild(Consumer<MultiPredicate> action) {
+        this.children.forEach(action);
+    }
+
+    public List<MultiPredicate> children() {
+        return this.children;
+    }
+
+    public List<BasePredicate> expand() {
+        List<BasePredicate> expanded = new ArrayList<>(this.predicates);
+        if (hasChildren()) {
+            forEachChild(mp -> expanded.addAll(mp.expand()));
+        }
+        return expanded;
     }
 
     public static MultiPredicate empty() {
@@ -276,55 +286,62 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     private static MultiPredicate combine(MultiPredicate a, Logic type, @Nullable MultiPredicate b) {
         if (b == null) return a; // no op
         if (a.isEmpty()) return b;
-        ArrayList<BasePredicate> builder = new ArrayList<>();
-        appendPredicates(type, a, builder);
-        appendPredicates(type, b, builder);
-        return new MultiPredicate(type, builder, a.hasAir || b.hasAir);
+        List<BasePredicate> predicates = new ArrayList<>();
+        List<MultiPredicate> children = new ArrayList<>();
+        appendPredicates(type, a, predicates, children);
+        appendPredicates(type, b, predicates, children);
+        return type.makePredicate(children, predicates, a.hasAir || b.hasAir);
     }
 
-    private static void appendPredicates(Logic type, MultiPredicate multiPredicate, ArrayList<BasePredicate> builder) {
-        if (multiPredicate.isSingle() || multiPredicate.logic.getType() == type) {
-            builder.addAll(multiPredicate.predicateList);
+    private static void appendPredicates(Logic type, MultiPredicate multiPredicate,
+                                         List<BasePredicate> predicates, List<MultiPredicate> children) {
+        if (multiPredicate.isSingle() || multiPredicate.isType(type)) {
+            predicates.addAll(multiPredicate.predicates());
         } else {
-            builder.add(multiPredicate.compact());
+            children.add(multiPredicate);
         }
     }
 
     /// @return innermost base predicate that passes state check at given pos
     public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
-        for (BasePredicate predicate : this) {
-            if (predicate instanceof CompactedPredicate compacted) {
-                var p = compacted.expand().getPredicateAtPos(context);
-                if (p != null) return p;
-                // else continue...
-            } else if (predicate.test(context)) {
-                // logic needs to capture this
-                getLogic().predicatePassed(predicate);
+        for (BasePredicate predicate : predicates()) {
+            if (predicate.test(context)) {
                 return predicate;
             }
         }
-        onError(context);
+        for (MultiPredicate predicates : children()) {
+            BasePredicate p = predicates.getPredicateAtPos(context);
+            if (p != null) return p;
+        }
+        if (!hasChildren()) {
+            onError(context);
+        }
         return null;
     }
 
     /// called when all predicates failed
-    public void onError(PredicateContext ctx) {
-        // ctx.appendError(new SimplePatternError(ctx.pos(), getCandidates()));
-        forEach(p -> p.onError(ctx));
+    protected void onError(PredicateContext ctx) {
+        this.forEach(p -> p.onError(ctx));
+        this.forEachChild(mp -> mp.onError(ctx));
     }
 
-    public enum Logic {
+    protected enum Logic {
 
         OR,
         AND,
         XOR;
 
-        public BaseLogic createLogic(MultiPredicate source) {
+        public MultiPredicate makePredicate(List<MultiPredicate> children, List<BasePredicate> predicates,
+                                            boolean hasAir) {
             return switch (this) {
-                case AND -> new AndLogic(source);
-                case XOR -> new XorLogic(source);
-                default -> new OrLogic(source);
+                case OR -> new OrPredicate(children, predicates, hasAir);
+                case AND -> new AndPredicate(children, predicates, hasAir);
+                case XOR -> new XorPredicate(children, predicates, hasAir);
             };
+        }
+
+        public MultiPredicate makePredicate(BasePredicate predicate, boolean hasAir) {
+            return makePredicate(List.of(), List.of(predicate), hasAir);
         }
     }
 }

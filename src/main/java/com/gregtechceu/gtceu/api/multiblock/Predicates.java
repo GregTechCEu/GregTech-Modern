@@ -382,6 +382,10 @@ public class Predicates {
     }
 
     public static BasePredicate.Builder builder(@Nullable String debugName) {
-        return new BasePredicate.Builder(debugName);
+        return new BasePredicate.Builder(debugName == null ? "Predicate" : debugName);
+    }
+
+    public static BasePredicate.Builder builder() {
+        return builder(null);
     }
 }
