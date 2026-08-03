@@ -311,6 +311,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Multiblock related
         event.add("RotationState", RotationState.class);
         event.add("FactoryBlockPattern", MultiblockPatternBuilder.class);
+        event.add("MultiblockPatternBuilder", MultiblockPatternBuilder.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
         event.add("RelativeDirection", RelativeDirection.class);

@@ -220,7 +220,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
-                            Codec.INT.listOf().fieldOf("all_parallels").forGetter(val -> Arrays.asList(val.parallels, val.subtickParallels, val.batchParallels)),
+                            Codec.INT.listOf().optionalFieldOf("all_parallels", List.of(1, 1, 1)).forGetter(val -> Arrays.asList(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
                     .apply(instance, (type,
@@ -249,7 +249,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             KJSCallWrapper.INGREDIENT_ACTION_CODEC.optionalFieldOf("kubejs:actions", List.of()).forGetter(val -> (List<IngredientAction>) val.ingredientActions),
                             CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
-                            Codec.INT.listOf().fieldOf("all_parallels").forGetter(val -> Arrays.asList(val.parallels, val.subtickParallels, val.batchParallels)),
+                            Codec.INT.listOf().optionalFieldOf("all_parallels", List.of(1, 1, 1)).forGetter(val -> Arrays.asList(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
                     .apply(instance, GTRecipe::new));

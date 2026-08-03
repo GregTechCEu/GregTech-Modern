@@ -428,7 +428,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public List<NotifiableItemStackHandler> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableItemStackHandler.TYPE);
+        return machine.getTraits(NotifiableItemStackHandler.class);
     }
 
     public List<NotifiableItemStackHandler> getCapabilityHandlers(MetaMachine machine, IO io) {

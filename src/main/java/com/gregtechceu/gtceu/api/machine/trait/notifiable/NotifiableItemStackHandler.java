@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -34,14 +33,6 @@ import java.util.function.Predicate;
 
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
-
-    public static final MachineTraitType<NotifiableItemStackHandler> TYPE = new MachineTraitType<>(
-            NotifiableItemStackHandler.class);
-
-    @Override
-    public MachineTraitType<NotifiableItemStackHandler> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     public final IO handlerIO;

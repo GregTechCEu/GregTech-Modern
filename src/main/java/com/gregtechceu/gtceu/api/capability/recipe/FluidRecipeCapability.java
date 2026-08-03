@@ -367,7 +367,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableFluidTank.TYPE);
+        return machine.getTraits(NotifiableFluidTank.class);
     }
 
     @SuppressWarnings("unchecked")
