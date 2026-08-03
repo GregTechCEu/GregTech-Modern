@@ -35,7 +35,11 @@ public class EntityTypeTagLoader {
                 .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "end_mobs"))
                 .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "ender_mobs"))
                 .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "ender"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "enders"))
                 .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "shulkers"))
                 .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "endermites"));
+
+        provider.addTag(CustomTags.SENSITIVE_TO_DISJUNCTION)
+                .addTag(CustomTags.END_INHABITORS);
     }
 }

@@ -28,14 +28,16 @@ public class EnchantmentTagsLoader extends EnchantmentTagsProvider {
     protected void addTags(HolderLookup.@NotNull Provider provider) {
         // noinspection unchecked
         this.tooltipOrder(provider,
-                GTEnchantments.HARD_HAMMER
+                GTEnchantments.HARD_HAMMER,
+                GTEnchantments.DISJUNCTION
         );
 
         this.tag(CustomTags.PREVENTS_HAMMER_CRUSHING).add(Enchantments.SILK_TOUCH);
         this.tag(EnchantmentTags.MINING_EXCLUSIVE).add(GTEnchantments.HARD_HAMMER);
 
         this.tag(EnchantmentTags.NON_TREASURE)
-                .add(GTEnchantments.HARD_HAMMER);
+                .add(GTEnchantments.HARD_HAMMER)
+                .add(GTEnchantments.DISJUNCTION);
     }
     // spotless:on
 }

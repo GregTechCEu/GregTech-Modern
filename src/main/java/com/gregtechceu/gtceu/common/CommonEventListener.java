@@ -65,6 +65,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -86,6 +87,7 @@ import net.neoforged.neoforge.client.event.AddAttributeTooltipsEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -175,6 +177,16 @@ public class CommonEventListener {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Disallow inebriated endermen (and shulkers) from teleporting
+     */
+    @SubscribeEvent
+    public static void onEnderEntityTeleportEvent(EntityTeleportEvent.EnderEntity event) {
+        if (event.getEntityLiving().hasEffect(MobEffects.WEAKNESS)) {
+            event.setCanceled(true);
         }
     }
 
