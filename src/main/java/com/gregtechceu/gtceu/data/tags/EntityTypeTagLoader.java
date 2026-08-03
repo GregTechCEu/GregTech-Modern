@@ -15,7 +15,5 @@ public class EntityTypeTagLoader {
         provider.addTag(CustomTags.CHEMICAL_IMMUNE)
                 .add(EntityType.SKELETON, EntityType.STRAY, EntityType.BOGGED);
         provider.addTag(CustomTags.IRON_GOLEMS).add(EntityType.IRON_GOLEM);
-        provider.addTag(CustomTags.SPIDERS)
-                .add(EntityType.SPIDER, EntityType.CAVE_SPIDER);
     }
 }

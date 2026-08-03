@@ -228,7 +228,6 @@ public class CustomTags {
             "chemical_immune");
     public static final TagKey<EntityType<?>> IRON_GOLEMS = TagUtil.createTag(Registries.ENTITY_TYPE, "iron_golems",
             false);
-    public static final TagKey<EntityType<?>> SPIDERS = TagUtil.createTag(Registries.ENTITY_TYPE, "spiders", false);
 
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");

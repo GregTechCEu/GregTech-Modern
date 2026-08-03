@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -209,7 +210,7 @@ public class GTToolType {
             .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_SCREWDRIVER)
             .definition(b -> b.crafting().damagePerCraftingAction(4).sneakBypassUse()
                     .attackDamage(-1.0F).attackSpeed(3.0F).efficiencyMultiplier(3.0F)
-                    .behaviors(new EntityDamageBehavior(3.0F, CustomTags.SPIDERS)))
+                    .behaviors(new EntityDamageBehavior(3.0F, EntityTypeTags.ARTHROPOD)))
             .sound(GTSoundEntries.SCREWDRIVER_TOOL)
             .symbol('d')
             .defaultAbilities(GTItemAbilities.DEFAULT_SCREWDRIVER_ACTIONS)
@@ -526,7 +527,7 @@ public class GTToolType {
             .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_SCREWDRIVER)
             .definition(b -> b.crafting().sneakBypassUse()
                     .attackDamage(-1.0F).efficiencyMultiplier(3.0F)
-                    .behaviors(new EntityDamageBehavior(3.0F, CustomTags.SPIDERS))
+                    .behaviors(new EntityDamageBehavior(3.0F, EntityTypeTags.ARTHROPOD))
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.SCREWDRIVER_TOOL)
             .electric(GTValues.LV)
