@@ -200,7 +200,8 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
         int maxInput = ParallelLogic.getMaxByInput(group, recipe, parallelLimit, false, List.of());
         if (maxInput == 0) return new ParallelResult(0, null);
 
-        int maxOutput = ParallelLogic.limitByOutputMerging(group, recipe, maxInput, List.of(FluidRecipeCapability.CAP));
+        int maxOutput = ParallelLogic.limitByOutputMerging(group, recipe, maxInput, false,
+                List.of(FluidRecipeCapability.CAP));
         if (maxOutput == 0) return new ParallelResult(0, null);
 
         return limitByFluidOutputs(group, recipe, maxOutput);

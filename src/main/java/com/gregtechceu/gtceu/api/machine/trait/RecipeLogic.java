@@ -116,10 +116,11 @@ public class RecipeLogic extends WorkLogic {
                 }
             } else {
                 findAndHandleRecipe();
+                if (isIdle() && !machine.keepSubscribing()) {
+                    unsubscribeTick();
+                }
             }
-        }
-
-        if ((isSuspend() || (isIdle() && !machine.keepSubscribing()))) {
+        } else {
             unsubscribeTick();
         }
     }

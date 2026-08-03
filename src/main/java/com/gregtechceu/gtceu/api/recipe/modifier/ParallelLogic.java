@@ -31,15 +31,25 @@ public class ParallelLogic {
     }
 
     public static int getParallelAmount(RecipeHandlerGroup group, GTRecipe recipe, int parallelLimit,
+                                        List<RecipeCapability<?>> capsToSkip) {
+        return getParallelAmount(group, recipe, parallelLimit, true, capsToSkip);
+    }
+
+    public static int getParallelAmount(RecipeHandlerGroup group, GTRecipe recipe, int parallelLimit,
                                         boolean includeTick) {
+        return getParallelAmount(group, recipe, parallelLimit, includeTick, List.of());
+    }
+
+    public static int getParallelAmount(RecipeHandlerGroup group, GTRecipe recipe, int parallelLimit,
+                                        boolean includeTick, List<RecipeCapability<?>> capsToSkip) {
         if (parallelLimit <= 1) return parallelLimit;
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int maxInputMultiplier = getMaxByInput(group, recipe, parallelLimit, includeTick, List.of());
+        int maxInputMultiplier = getMaxByInput(group, recipe, parallelLimit, includeTick, capsToSkip);
         if (maxInputMultiplier == 0) return 0;
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
         // and limit by the amount we can successfully merge
-        return limitByOutputMerging(group, recipe, maxInputMultiplier, List.of());
+        return limitByOutputMerging(group, recipe, maxInputMultiplier, includeTick, capsToSkip);
     }
 
     /**
@@ -87,11 +97,12 @@ public class ParallelLogic {
      * @param holder        the inventories
      * @param recipe        The recipe
      * @param parallelLimit the maximum allowed amount
+     * @param includeTick
      * @param capsToSkip    the capabilities to skip parallel testing
      * @return returns the amount of recipes that can be merged successfully into a given output inventory
      */
     public static int limitByOutputMerging(RecipeHandlerGroup holder, GTRecipe recipe, int parallelLimit,
-                                           List<RecipeCapability<?>> capsToSkip) {
+                                           boolean includeTick, List<RecipeCapability<?>> capsToSkip) {
         int max = parallelLimit;
         Predicate<RecipeCapability<?>> outputVoid = holder.getOutputVoid();
         for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
@@ -108,20 +119,23 @@ public class ParallelLogic {
                 max = Math.min(max, limit);
             }
         }
-        for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
-            if (outputVoid.test(cap) || !cap.doMatchInRecipe() || capsToSkip.contains(cap)) {
-                continue;
-            }
-            // Check both normal item outputs and chanced item outputs
-            if (!recipe.getTickOutputContents(cap).isEmpty()) {
-                int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, true);
-                // If we are not voiding, and cannot fit any items, return 0
-                if (limit == 0) {
-                    return 0;
+        if (includeTick) {
+            for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
+                if (outputVoid.test(cap) || !cap.doMatchInRecipe() || capsToSkip.contains(cap)) {
+                    continue;
                 }
-                max = Math.min(max, limit);
+                // Check both normal item outputs and chanced item outputs
+                if (!recipe.getTickOutputContents(cap).isEmpty()) {
+                    int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, true);
+                    // If we are not voiding, and cannot fit any items, return 0
+                    if (limit == 0) {
+                        return 0;
+                    }
+                    max = Math.min(max, limit);
+                }
             }
         }
+
         return max;
     }
 
