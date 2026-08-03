@@ -198,7 +198,11 @@ public class ItemTagLoader {
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Lazurite).get())
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(gem, Sodalite).get());
-    }
+
+        provider.addTag(CustomTags.MINING_LOOT_ENCHANTABLE_EXCEPT_HAMMERS)
+                .addTag(ItemTags.MINING_LOOT_ENCHANTABLE)
+                .remove(CustomTags.TOOLS_HAMMER);
+        }
 
     private static IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> addTag(RegistrateItemTagsProvider provider,
                                                                                  TagPrefix prefix, Material material) {

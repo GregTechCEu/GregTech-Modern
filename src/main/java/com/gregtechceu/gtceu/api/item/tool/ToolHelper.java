@@ -360,18 +360,11 @@ public class ToolHelper {
     /**
      * Applies Forge Hammer recipes to block broken, used for hammers or tools with hard hammer enchant applied.
      */
-    public static void applyHammerDropConversion(ServerLevel level, BlockPos pos, ItemStack tool, BlockState state,
-                                                 List<ItemStack> drops, LootParams.Builder lootParams) {
-        // TODO (low priority): implement the hard hammer enchantment
-        // || EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE, tool) > 0
-        if (!is(tool, GTToolType.HARD_HAMMER)) {
-            return;
-        }
+    public static void applyHammerDropConversion(List<ItemStack> drops, LootContext lootContext) {
         LootItemFunction fortuneDropMultiplier = null;
-        LootContext lootContext = null;
         boolean cleared = false;
 
-        List<ItemStack> silkTouchDrops = getSilkTouchDrop(level, pos, state);
+        List<ItemStack> silkTouchDrops = getSilkTouchDrop(lootContext);
         for (ItemStack silkTouchDrop : silkTouchDrops) {
             if (silkTouchDrop.isEmpty()) continue;
             // Stack lists can be immutable going into Recipe#matches barring no rewrites
@@ -421,10 +414,7 @@ public class ToolHelper {
                     continue;
                 }
                 if (fortuneDropMultiplier == null) {
-                    fortuneDropMultiplier = getOrInitUniformDropMultiplier(level.registryAccess());
-                }
-                if (lootContext == null) {
-                    lootContext = createBlockLootContext(level, state, lootParams);
+                    fortuneDropMultiplier = getOrInitUniformDropMultiplier(lootContext.getLevel().registryAccess());
                 }
                 drops.add(fortuneDropMultiplier.apply(output.copy(), lootContext));
             }
@@ -681,26 +671,30 @@ public class ToolHelper {
     public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_IV = () -> GTItems.POWER_UNIT_IV.get()
             .getDefaultInstance();
 
-    private static final DifficultyInstance CONSTANT_DIFFICULTY = new DifficultyInstance(Difficulty.HARD, 0L, 0L, 0.0f);
-
     /**
-     * @param state the BlockState of the block
-     * @return the silk touch drop
+     * {@return the silk touch drop(s)}
      */
-    public static List<ItemStack> getSilkTouchDrop(ServerLevel level, BlockPos pos, BlockState state) {
+    public static List<ItemStack> getSilkTouchDrop(LootContext lootContext) {
+        ServerLevel level = lootContext.getLevel();
+        Vec3 origin = lootContext.getParam(LootContextParams.ORIGIN);
+
         ItemStack tool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         // oh wow, this exists now. cool!
         EnchantmentHelper.enchantItemFromProvider(
                 tool,
                 level.registryAccess(),
                 GTEnchantmentProviders.SILK_TOUCH,
-                CONSTANT_DIFFICULTY,
+                level.getCurrentDifficultyAt(BlockPos.containing(origin)),
                 level.getRandom());
 
-        return state.getDrops(new LootParams.Builder(level).withParameter(LootContextParams.BLOCK_STATE, state)
-                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+        LootParams.Builder params = new LootParams.Builder(level)
+                .withParameter(LootContextParams.ORIGIN, origin)
                 .withParameter(LootContextParams.TOOL, tool)
-                .withOptionalParameter(LootContextParams.BLOCK_ENTITY, level.getBlockEntity(pos)));
+                .withOptionalParameter(LootContextParams.THIS_ENTITY, lootContext.getParamOrNull(LootContextParams.THIS_ENTITY))
+                .withOptionalParameter(LootContextParams.BLOCK_ENTITY, lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY))
+                .withOptionalParameter(LootContextParams.EXPLOSION_RADIUS, lootContext.getParamOrNull(LootContextParams.EXPLOSION_RADIUS));
+
+        return lootContext.getParam(LootContextParams.BLOCK_STATE).getDrops(params);
     }
 
     /**

@@ -44,7 +44,8 @@ public class DataGenerators {
                             .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap)
                             .add(Registries.ENCHANTMENT_PROVIDER, GTEnchantmentProviders::bootstrap)
                             .add(GTRegistries.Keys.BEDROCK_FLUID, GTBedrockFluids::bootstrap)
-                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap),
+                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap)
+                            .add(Registries.ENCHANTMENT, GTEnchantments::bootstrap),
                     Set.of(GTCEu.MOD_ID)));
             registries = provider.getRegistryProvider();
 
