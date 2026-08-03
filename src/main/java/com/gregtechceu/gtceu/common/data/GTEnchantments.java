@@ -75,28 +75,28 @@ public class GTEnchantments {
                                 EquipmentSlotGroup.MAINHAND
                         )
                 )
-                        .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE))
-                        .withEffect(EnchantmentEffectComponents.DAMAGE,
-                                new AddValue(LevelBasedValue.perLevel(2.5F)),
-                                hasProperties(LootContext.EntityTarget.THIS, entity().entityType(EntityTypePredicate.of(CustomTags.SENSITIVE_TO_DISJUNCTION)))
-                        )
-                        .withEffect(EnchantmentEffectComponents.POST_ATTACK,
-                                EnchantmentTarget.ATTACKER,
-                                EnchantmentTarget.VICTIM,
-                                // Weakness causes Endermen to not be able to teleport with GT being installed.
-                                makeDisjunctionEffect(MobEffects.WEAKNESS),
-                                hasProperties(LootContext.EntityTarget.THIS, entity().entityType(EntityTypePredicate.of(CustomTags.SENSITIVE_TO_DISJUNCTION)))
-                                        .and(hasDamageSource(damageType().isDirect(true)))
-                        )
-                        .withEffect(EnchantmentEffectComponents.POST_ATTACK,
-                                EnchantmentTarget.ATTACKER,
-                                EnchantmentTarget.VICTIM,
-                                // They also get Poisoned. If you have this Enchant on an Arrow, you can kill the Ender Dragon easier.
-                                //   ^ the above is a lie, they get slowness instead circa 2021.
-                                makeDisjunctionEffect(MobEffects.MOVEMENT_SLOWDOWN),
-                                hasProperties(LootContext.EntityTarget.THIS, entity().entityType(EntityTypePredicate.of(CustomTags.SENSITIVE_TO_DISJUNCTION)))
-                                        .and(hasDamageSource(damageType().isDirect(true)))
-                        )
+                .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.DAMAGE_EXCLUSIVE))
+                .withEffect(EnchantmentEffectComponents.DAMAGE,
+                        new AddValue(LevelBasedValue.perLevel(2.5F)),
+                        hasProperties(LootContext.EntityTarget.THIS, entity().entityType(EntityTypePredicate.of(CustomTags.SENSITIVE_TO_DISJUNCTION)))
+                )
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK,
+                        EnchantmentTarget.ATTACKER,
+                        EnchantmentTarget.VICTIM,
+                        // Weakness causes Endermen to not be able to teleport with GT being installed.
+                        makeDisjunctionEffect(MobEffects.WEAKNESS),
+                        hasProperties(LootContext.EntityTarget.THIS, entity().entityType(EntityTypePredicate.of(CustomTags.SENSITIVE_TO_DISJUNCTION)))
+                                .and(hasDamageSource(damageType().isDirect(true)))
+                )
+                .withEffect(EnchantmentEffectComponents.POST_ATTACK,
+                        EnchantmentTarget.ATTACKER,
+                        EnchantmentTarget.VICTIM,
+                        // They also get Poisoned. If you have this Enchant on an Arrow, you can kill the Ender Dragon easier.
+                        //   ^ the above is a lie, they get slowness instead circa 2021.
+                        makeDisjunctionEffect(MobEffects.MOVEMENT_SLOWDOWN),
+                        hasProperties(LootContext.EntityTarget.THIS, entity().entityType(EntityTypePredicate.of(CustomTags.SENSITIVE_TO_DISJUNCTION)))
+                                .and(hasDamageSource(damageType().isDirect(true)))
+                )
         );
     }
 
