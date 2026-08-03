@@ -24,7 +24,7 @@ public final class RecipeManagerHandler {
     /**
      * Adds proxy recipes to an {@link GTRecipeType}'s {@link RecipeAdditionHandler} and adds them to a list.
      *
-     * @param recipes  the recipes stored by their ID
+     * @param recipes      the recipes stored by their ID
      * @param gtRecipeType the recipe type to add the recipes to, which owns the proxy recipes
      * @param proxyRecipes the list of proxy recipes to populate
      */
@@ -47,7 +47,7 @@ public final class RecipeManagerHandler {
     /**
      * Adds recipes to an {@link GTRecipeType}'s {@link RecipeAdditionHandler}
      *
-     * @param recipes  the recipes stored by their ID
+     * @param recipes      the recipes stored by their ID
      * @param gtRecipeType the recipe type to add recipes to
      */
     public static void addRecipesToLookup(@NotNull Collection<RecipeHolder<?>> recipes,

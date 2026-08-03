@@ -11,7 +11,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.providers.EnchantmentProvider;
 import net.minecraft.world.item.enchantment.providers.SingleEnchantment;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public class GTEnchantmentProviders {
 
