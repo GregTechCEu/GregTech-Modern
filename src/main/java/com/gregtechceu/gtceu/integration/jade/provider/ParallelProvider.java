@@ -30,10 +30,10 @@ public class ParallelProvider extends MachineInfoProvider<MetaMachine, CompoundT
             compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
         } else if (machine instanceof MultiblockControllerMachine controller) {
             var recipeLogic = controller.getTrait(RecipeLogic.TYPE);
-            if (recipeLogic != null && recipeLogic.isActive() && recipeLogic.getLastDisplayedRecipe() != null) {
-                compoundTag.putInt("parallel", recipeLogic.getLastDisplayedRecipe().parallels);
-                compoundTag.putInt("batch", recipeLogic.getLastDisplayedRecipe().batchParallels);
-                compoundTag.putInt("subtickParallel", recipeLogic.getLastDisplayedRecipe().subtickParallels);
+            if (recipeLogic != null && recipeLogic.isActive() && recipeLogic.getLastUnrolledRecipe() != null) {
+                compoundTag.putInt("parallel", recipeLogic.getLastUnrolledRecipe().parallels);
+                compoundTag.putInt("batch", recipeLogic.getLastUnrolledRecipe().batchParallels);
+                compoundTag.putInt("subtickParallel", recipeLogic.getLastUnrolledRecipe().subtickParallels);
                 compoundTag.putBoolean("exact", true);
             } else {
                 controller.getParallelHatch()
