@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -95,7 +96,8 @@ public class PlaceholderHandler {
 
     public static @Nullable ResourceKey<Placeholder> toId(String placeholder) {
         try {
-            return ResourceKey.create(GTRegistries.Keys.PLACEHOLDER, GTCEu.id(placeholder));
+            return ResourceKey.create(GTRegistries.Keys.PLACEHOLDER,
+                    GTCEu.id(FormattingUtil.toLowerCaseUnderscore(placeholder)));
         } catch (ResourceLocationException e) {
             return null;
         }
