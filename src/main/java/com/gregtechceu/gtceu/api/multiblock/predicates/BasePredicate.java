@@ -2,36 +2,26 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
-import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public abstract class BasePredicate implements Comparable<BasePredicate> {
 
-    public static final BasePredicate AIR = new Builder("Air")
+    public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
             // todo error?
             .build();
 
-    public static final BasePredicate ANY = new Builder("Any")
+    public static final BasePredicate ANY = new PredicateBuilder("Any")
             .predicate(ctx -> true)
             .build();
 
@@ -177,84 +167,5 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     @Override
     public int compareTo(BasePredicate o) {
         return Integer.compare(this.priority, o.priority);
-    }
-
-    @Accessors(fluent = true)
-    public static class Builder {
-
-        private final String name;
-        @Setter
-        private Predicate<PredicateContext> predicate;
-        @Setter
-        private Stream<BlockInfo> candidates = Stream.empty();
-        @Setter
-        private @Nullable Consumer<StringBuilder> contents;
-        @Setter
-        private @Nullable Consumer<PredicateContext> onError;
-
-        public Builder(String debugName) {
-            this.name = debugName;
-        }
-
-        /// fills candidates and sets string contents with this block tag
-        public Builder blockTag(TagKey<Block> tag) {
-            this.candidates = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
-                    .getTag(tag).stream().map(BlockInfo::fromBlock);
-            this.contents = builder -> builder.append(tag.location());
-            return this;
-        }
-
-        /// fills candidates and sets string contents with this fluid tag
-        public Builder fluidTag(TagKey<Fluid> tag) {
-            this.candidates = Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
-                    .getTag(tag).stream().map(BlockInfo::fromFluid);
-            this.contents = builder -> builder.append(tag.location());
-            return this;
-        }
-
-        public MultiPredicate toMultiPredicate() {
-            return MultiPredicate.of(build());
-        }
-
-        public BasePredicate build() {
-            return new BasePredicate() {
-
-                final Predicate<PredicateContext> internalPredicate = Objects.requireNonNull(predicate);
-                final Consumer<PredicateContext> onError = Objects.requireNonNullElse(Builder.this.onError,
-                        this::placeholderError);
-
-                @Override
-                public void onError(PredicateContext ctx) {
-                    this.onError.accept(ctx);
-                    this.getAdditionalTooltips().forEach(c -> ctx.appendError(PatternStringError.component(c)));
-                }
-
-                private void placeholderError(PredicateContext ctx) {
-                    ctx.appendError(new SimplePatternError(ctx.pos(), List.of(getCandidates())));
-                }
-
-                @Override
-                public boolean test(PredicateContext ctx) {
-                    return this.internalPredicate.test(ctx);
-                }
-
-                @Override
-                public List<BlockInfo> computeCandidates() {
-                    return Objects.requireNonNull(candidates).toList();
-                }
-
-                @Override
-                public String getTypeName() {
-                    return name;
-                }
-
-                @Override
-                protected void appendContents(StringBuilder builder) {
-                    if (contents != null) {
-                        contents.accept(builder);
-                    }
-                }
-            };
-        }
     }
 }

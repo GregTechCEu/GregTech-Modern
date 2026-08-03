@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateBuilder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -381,11 +382,11 @@ public class Predicates {
                 .toMultiPredicate();
     }
 
-    public static BasePredicate.Builder builder(@Nullable String debugName) {
-        return new BasePredicate.Builder(debugName == null ? "Predicate" : debugName);
+    public static PredicateBuilder builder(String debugName) {
+        return new PredicateBuilder(debugName);
     }
 
-    public static BasePredicate.Builder builder() {
-        return builder(null);
+    public static PredicateBuilder builder() {
+        return builder("Predicate");
     }
 }
