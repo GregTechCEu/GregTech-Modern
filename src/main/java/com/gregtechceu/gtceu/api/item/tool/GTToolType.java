@@ -144,6 +144,7 @@ public class GTToolType {
     public static final GTToolType HARD_HAMMER = GTToolType.builder("hammer")
             .toolTag(ToolItemTagType.CRAFTING, CustomTags.CRAFTING_HAMMERS)
             .toolTag(ToolItemTagType.MATCH, CustomTags.TOOLS_HAMMER)
+            .toolTag(ItemTags.MINING_ENCHANTABLE, ItemTags.MINING_LOOT_ENCHANTABLE)
             .harvestTag(CustomTags.MINEABLE_WITH_HAMMER)
             .harvestTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .definition(b -> b.blockBreaking().crafting().damagePerCraftingAction(2)
