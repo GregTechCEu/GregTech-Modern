@@ -112,13 +112,16 @@ public class DrumMachine extends MetaMachine {
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (!isRemote()) {
+        if (FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
+                return InteractionResult.SUCCESS;
+            }
             if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
                 return InteractionResult.CONSUME;
             }
             return InteractionResult.PASS;
         }
-        return getLevel().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return super.onUseWithItem(context);
     }
 
     @Override

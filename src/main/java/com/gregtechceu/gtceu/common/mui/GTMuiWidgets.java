@@ -198,14 +198,30 @@ public class GTMuiWidgets {
 
     public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsItemInputFromOutputSide,
-                autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_OUTPUT,
+                autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_ALLOW_INPUT_OUTPUT,
                 "gtceu.gui.item_input_from_output");
     }
 
     public static ToggleButton createInputFromOutputFluid(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsFluidInputFromOutputSide,
-                autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_OUTPUT,
+                autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_ALLOW_INPUT_OUTPUT,
                 "gtceu.gui.fluid_input_from_output");
+    }
+
+    public static ButtonWidget<?> createRecipeTypeButton(WorkableElectricMultiblockMachine workableMultiblock,
+                                                         PanelSyncManager syncManager) {
+        syncManager.registerSyncedAction("nextRecipeType", false, true, (buf) -> {
+            workableMultiblock.cycleActiveRecipeType();
+        });
+        return new ButtonWidget<>()
+                .onMousePressed((context, button) -> {
+                    syncManager.callSyncedAction("nextRecipeType");
+                    return true;
+                })
+                .backgroundOverlay(GTGuiTextures.PROGRESS_MIXER[0])
+                .size(18)
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.tab_tooltip")))
+                .setEnabledIf((W) -> workableMultiblock.getRecipeTypes().length > 0);
     }
 
     private static IntSyncValue createCircuitSlotSyncValue(Consumer<ItemStack> circuitSetter,
@@ -215,7 +231,7 @@ public class GTMuiWidgets {
             return IntCircuitBehaviour.getCircuitConfiguration(circuitGetter.get());
         },
                 (v) -> circuitSetter.accept(v < 0 ? ItemStack.EMPTY :
-                        IntCircuitBehaviour.stack(v)))
+                        IntCircuitBehaviour.stack(v, circuitGetter.get().getCount())))
                 .allowC2S();
     }
 

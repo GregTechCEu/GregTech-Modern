@@ -239,8 +239,8 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
 
     @Override
     public Result onMousePressed(int button) {
-        double localX = getContext().getMouseX() - getArea().x;
-        double localY = getContext().getMouseY() - getArea().y;
+        double localX = getContext().getMouseX();
+        double localY = getContext().getMouseY();
 
         int slotIndex = getSlotAtLocal(localX, localY);
         if (slotIndex < 0) return Result.IGNORE;
