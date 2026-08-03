@@ -12,8 +12,10 @@ public class EntityTypeTagLoader {
         provider.addTag(CustomTags.HEAT_IMMUNE)
                 .add(EntityType.BLAZE, EntityType.MAGMA_CUBE)
                 .add(EntityType.WITHER_SKELETON, EntityType.WITHER);
+
         provider.addTag(CustomTags.CHEMICAL_IMMUNE)
-                .add(EntityType.SKELETON, EntityType.STRAY, EntityType.BOGGED);
+                .addTag(EntityTypeTags.SKELETONS);
+
         provider.addTag(CustomTags.IRON_GOLEMS).add(EntityType.IRON_GOLEM);
     }
 }
