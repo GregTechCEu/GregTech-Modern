@@ -43,8 +43,6 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -683,7 +681,7 @@ public class ToolHelper {
         EnchantmentHelper.enchantItemFromProvider(
                 tool,
                 level.registryAccess(),
-                GTEnchantmentProviders.SILK_TOUCH,
+                GTEnchantmentProviders.HARD_HAMMER_LOOT_CHECK,
                 level.getCurrentDifficultyAt(BlockPos.containing(origin)),
                 level.getRandom());
 
