@@ -57,7 +57,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
             return data;
         }
         data.putBoolean("Working", recipeLogic.isWorking());
-        GTRecipe recipe = recipeLogic.getLastDisplayedRecipe();
+        GTRecipe recipe = recipeLogic.getLastUnrolledRecipe();
         if (recipe == null) {
             return data;
         }

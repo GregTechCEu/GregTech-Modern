@@ -259,8 +259,8 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastDisplayedRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastDisplayedRecipe().parallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().parallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -278,8 +278,8 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(rlMachine::isBatchEnabled));
         IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastDisplayedRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastDisplayedRecipe().batchParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().batchParallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -296,8 +296,8 @@ public class GTMultiblockTextUtil {
                                                         PanelSyncManager syncManager) {
         IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastDisplayedRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastDisplayedRecipe().subtickParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().subtickParallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -313,8 +313,8 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addTotalRunsLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastDisplayedRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastDisplayedRecipe().getTotalRuns();
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().getTotalRuns();
                 }));
 
         return Text.dynamic(() -> {
@@ -403,7 +403,7 @@ public class GTMultiblockTextUtil {
                         "GTRecipe",
                         GenericSyncValue.class,
                         () -> GenericSyncValue.<RegistryFriendlyByteBuf, GTRecipe>builder(GTRecipe.class)
-                                .getter(() -> rlmachine.getRecipeLogic().getLastDisplayedRecipe())
+                                .getter(() -> rlmachine.getRecipeLogic().getLastUnrolledRecipe())
                                 .setter((newRecipe) -> {})
                                 .adapter(GTByteBufAdapters.GTRECIPE)
                                 .nullable()
