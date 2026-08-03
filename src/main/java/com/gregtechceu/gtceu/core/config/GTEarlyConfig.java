@@ -165,6 +165,10 @@ public class GTEarlyConfig {
         for (Map.Entry<Object, Object> entry : props.entrySet()) {
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
+            if (value.indexOf('#') != -1) {
+                value = value.substring(0, value.indexOf('#'));
+            }
+            value = value.strip();
 
             Option option = this.options.get(key);
             if (option == null) {
@@ -262,14 +266,13 @@ public class GTEarlyConfig {
             throw new IOException("The parent file is not a directory");
         }
 
-        try (Writer writer = new FileWriter(configFile)) {
+        try (Writer writer = new BufferedWriter(new FileWriter(configFile))) {
             writer.write("# This is the early configuration file for GregTech CEu Modern.\n");
             writer.write("# The following options can be enabled or disabled if there is a compatibility issue.\n");
-            writer.write(
-                    "# Add a line with your option name and =true or =false at the bottom of the file to enable\n");
-            writer.write("# or disable a rule. For example:\n");
-            writer.write("#   client.bloom.safe_mode=true\n");
-            writer.write("# Do not include the #. You may reset to defaults by deleting this file.\n");
+            writer.write("# Change the line with your option name and =true or =false to enable or disable a rule.\n");
+            writer.write("# For example:\n");
+            writer.write("#   client.bloom.safe_mode=true -> client.bloom.safe_mode=false\n");
+            writer.write("# Do not include the # or ->. You may reset to defaults by deleting this file.\n");
             writer.write("#\n");
             writer.write("# Available options:\n");
             var entries = this.options.entrySet().stream()
@@ -278,35 +281,23 @@ public class GTEarlyConfig {
                     .toList();
 
             for (var entry : entries) {
-                String line = entry.getKey();
+                String key = entry.getKey();
                 Option option = entry.getValue();
 
-                String extraContext;
-                if (!option.isUserDefined()) {
-                    extraContext = "=" + option.isEnabled() + " # " +
-                            (option.isModDefined() ? "(overridden for mod compat)" : "(default)");
-                } else {
-                    extraContext = "=" + option.isDefaultEnabled() + " # (default)";
-                }
-
-                writer.write("#\n");
+                writer.write('\n');
                 if (option.getComment() != null) {
                     for (String commentLine : option.getComment()) {
-                        writer.write("#  # " + commentLine + "\n");
+                        writer.write("# " + commentLine + "\n");
                     }
                 }
-                writer.write("#  " + line + extraContext + "\n");
-            }
 
-            writer.write("#\n");
-            writer.write("#\n");
-            writer.write("# User overrides go here.\n");
-
-            for (var entry : entries) {
-                Option option = entry.getValue();
-                if (option.isUserDefined()) {
-                    writer.write(entry.getKey() + "=" + option.isEnabled() + "\n");
+                writer.write("#  default: " + option.isDefaultEnabled());
+                if (!option.isUserDefined() && option.isModDefined()) {
+                    writer.write(" (overridden for mod compat)");
                 }
+                writer.write('\n');
+
+                writer.write(key + "=" + option.isEnabled() + "\n");
             }
         }
     }
