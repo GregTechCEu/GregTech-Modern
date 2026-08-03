@@ -16,6 +16,6 @@ public class EntityTypeTagLoader {
         provider.addTag(CustomTags.CHEMICAL_IMMUNE)
                 .addTag(EntityTypeTags.SKELETONS);
 
-        provider.addTag(CustomTags.IRON_GOLEMS).add(EntityType.IRON_GOLEM);
+        provider.addTag(CustomTags.CONSTRUCTS).add(EntityType.IRON_GOLEM);
     }
 }
