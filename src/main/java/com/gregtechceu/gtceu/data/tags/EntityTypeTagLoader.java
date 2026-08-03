@@ -10,7 +10,7 @@ public class EntityTypeTagLoader {
 
     public static void init(RegistrateTagsProvider.IntrinsicImpl<EntityType<?>> provider) {
         provider.addTag(CustomTags.HEAT_IMMUNE)
-                .add(EntityType.BLAZE, EntityType.MAGMA_CUBE)
+                .add(EntityType.STRIDER, EntityType.BLAZE, EntityType.MAGMA_CUBE)
                 .add(EntityType.WITHER_SKELETON, EntityType.WITHER);
 
         provider.addTag(CustomTags.CHEMICAL_IMMUNE)
