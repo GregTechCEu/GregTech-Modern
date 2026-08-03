@@ -16,6 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 
+import static net.minecraft.world.item.enchantment.Enchantment.*;
+
 public class GTEnchantments {
 
     /**
@@ -31,19 +33,18 @@ public class GTEnchantments {
         HolderGetter<Item> items = ctx.lookup(Registries.ITEM);
         HolderGetter<Block> blocks = ctx.lookup(Registries.BLOCK);
 
-        register(ctx, HARD_HAMMER,
-                Enchantment.enchantment(
-                                Enchantment.definition(
-                                        items.getOrThrow(CustomTags.MINING_LOOT_ENCHANTABLE_EXCEPT_HAMMERS),
-                                        5,
-                                        1,
-                                        Enchantment.constantCost(20),
-                                        Enchantment.constantCost(60),
-                                        8,
-                                        EquipmentSlotGroup.MAINHAND
-                                )
+        register(ctx, HARD_HAMMER, enchantment(
+                        definition(
+                                items.getOrThrow(CustomTags.MINING_LOOT_ENCHANTABLE_EXCEPT_HAMMERS),
+                                5,
+                                1,
+                                Enchantment.constantCost(20),
+                                Enchantment.constantCost(60),
+                                8,
+                                EquipmentSlotGroup.MAINHAND
                         )
-                        .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.MINING_EXCLUSIVE))
+                )
+                .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.MINING_EXCLUSIVE))
         );
     }
     // spotless:on

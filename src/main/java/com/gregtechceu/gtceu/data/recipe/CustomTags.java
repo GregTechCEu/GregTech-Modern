@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
+// spotless:off
 public class CustomTags {
 
     // Added Vanilla tags
@@ -237,7 +238,7 @@ public class CustomTags {
 
     public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
 
-    public static final TagKey<Enchantment> PREVENTS_HAMMER_CRUSHING = TagUtil.createModTag(Registries.ENCHANTMENT,
-            "prevents_hammer_crushing");
+    public static final TagKey<Enchantment> PREVENTS_HAMMER_CRUSHING = TagUtil.createModTag(Registries.ENCHANTMENT, "prevents_hammer_crushing");
     public static final TagKey<Item> MINING_LOOT_ENCHANTABLE_EXCEPT_HAMMERS = TagUtil.createModItemTag("mining_loot_enchantable_excluding_hammers");
 }
+// spotless:on

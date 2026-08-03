@@ -23,9 +23,19 @@ public class EnchantmentTagsLoader extends EnchantmentTagsProvider {
         super(output, lookupProvider, GTCEu.MOD_ID, existingFileHelper);
     }
 
+    // spotless:off
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
+        // noinspection unchecked
+        this.tooltipOrder(provider,
+                GTEnchantments.HARD_HAMMER
+        );
+
         this.tag(CustomTags.PREVENTS_HAMMER_CRUSHING).add(Enchantments.SILK_TOUCH);
         this.tag(EnchantmentTags.MINING_EXCLUSIVE).add(GTEnchantments.HARD_HAMMER);
+
+        this.tag(EnchantmentTags.NON_TREASURE)
+                .add(GTEnchantments.HARD_HAMMER);
     }
+    // spotless:on
 }
