@@ -360,7 +360,6 @@ public class ToolHelper {
     /**
      * Applies Forge Hammer recipes to block broken, used for hammers or tools with hard hammer enchant applied.
      */
-    // TODO (low priority): this could be a Global Loot Modifier
     public static void applyHammerDropConversion(ServerLevel level, BlockPos pos, ItemStack tool, BlockState state,
                                                  List<ItemStack> drops, LootParams.Builder lootParams) {
         // TODO (low priority): implement the hard hammer enchantment
