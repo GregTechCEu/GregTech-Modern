@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
 
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -70,6 +72,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
@@ -768,10 +771,11 @@ public class GTUtil {
     private static class EmiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            var categories = category.getRecipeType().getCategories().stream().map(GTRecipeEMICategory::machineCategory)
+            List<EmiRecipeCategory> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeEMICategory::machineCategory)
                     .toList();
             Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
-            for (var cat : categories) {
+            for (EmiRecipeCategory cat : categories) {
                 recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
             }
             EmiApiAccessor.gtceu$setPages(recipes, EmiStack.EMPTY);
@@ -781,14 +785,20 @@ public class GTUtil {
     private static class JeiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
+            List<RecipeType<?>> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeJEICategory::machineType)
+                    .collect(Collectors.toList());
+            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(categories);
         }
     }
 
     private static class ReiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
+            List<CategoryIdentifier<?>> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeREICategory::machineCategory)
+                    .collect(Collectors.toList());
+            ViewSearchBuilder.builder().addCategories(categories).open();
         }
     }
 }
