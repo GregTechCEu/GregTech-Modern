@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -29,7 +30,11 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
+        return stack(configuration, 1);
+    }
+
+    public static ItemStack stack(int configuration, int count) {
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack(count);
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
@@ -66,12 +71,23 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
         int circuitSetting = getCircuitConfiguration(stack);
         BlockEntity entity = context.getLevel().getBlockEntity(context.getClickedPos());
         if (entity instanceof MetaMachine machine && context.isSecondaryUseActive()) {
-            if (machine instanceof IHasCircuitSlot circuitMachine &&
-                    circuitMachine.getCircuitInventory().getSlots() > 0) {
-                setCircuitConfiguration(circuitMachine.getCircuitInventory().getStackInSlot(0), circuitSetting);
+
+            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                boolean inserted = false;
+                for (var handler : machine.getTraits(NotifiableItemStackHandler.TYPE)) {
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        if (handler.insertItem(i, stack.copyWithCount(1), false).isEmpty()) {
+                            inserted = true;
+                            break;
+                        }
+                    }
+                    if (inserted) break;
+                }
+                if (inserted) stack.shrink(1);
             }
-            if (!ConfigHolder.INSTANCE.machines.ghostCircuit)
-                stack.shrink(1);
+
+            machine.getTraitOptional(ProgrammableCircuitSlotTrait.TYPE)
+                    .ifPresent(t -> t.setCurrentCircuit(circuitSetting));
             return InteractionResult.SUCCESS;
         }
         return IItemUIHolder.super.useOn(context);

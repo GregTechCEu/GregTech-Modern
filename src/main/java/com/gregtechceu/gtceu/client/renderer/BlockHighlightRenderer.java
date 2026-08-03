@@ -40,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
-import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -87,8 +86,7 @@ public class BlockHighlightRenderer {
                                                                             @NotNull BlockPos pos,
                                                                             @NotNull BlockState state,
                                                                             @NotNull Set<GTToolType> toolTypes,
-                                                                            @NonNull ItemStack held,
-                                                                            @NotNull Direction side) {
+                                                                            ItemStack held, @NotNull Direction side) {
                                             return behavior.showSideTip(state, side) ?
                                                     GTGuiTextures.TOOL_FRONT_FACING_ROTATION :
                                                     null;

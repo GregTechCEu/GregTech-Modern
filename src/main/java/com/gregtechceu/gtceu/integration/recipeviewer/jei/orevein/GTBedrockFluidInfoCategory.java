@@ -30,14 +30,14 @@ public class GTBedrockFluidInfoCategory extends
     public GTBedrockFluidInfoCategory(IJeiHelpers helpers) {
         super(v -> new OreVeinRecipeWidget(v.fluid),
                 v -> Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                        .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY).getKey(v.fluid));
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).getKey(v.fluid));
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(GTMaterials.Oil.getBucket().getDefaultInstance());
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
         registry.addRecipes(RECIPE_TYPE, Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY).stream()
+                .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).stream()
                 .map(BedrockFluidInfoWrapper::new)
                 .toList());
     }

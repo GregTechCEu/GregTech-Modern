@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
@@ -76,13 +77,13 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
     public abstract T createTemplate();
 
     @NotNull
-    public final JsonObject serialize() {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+    public final JsonObject serialize(HolderLookup.Provider registryAccess) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
         return CODEC.encodeStart(ops, this).getOrThrow().getAsJsonObject();
     }
 
-    public static RecipeCondition<?> deserialize(@NotNull JsonObject config) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+    public static RecipeCondition<?> deserialize(HolderLookup.Provider registryAccess, @NotNull JsonObject config) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
         return CODEC.decode(ops, config).getOrThrow().getFirst();
     }
 

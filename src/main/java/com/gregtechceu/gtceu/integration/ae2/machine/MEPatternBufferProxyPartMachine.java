@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -51,7 +51,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
 
     public MEPatternBufferProxyPartMachine(BlockEntityCreationInfo info) {
         super(info, GTValues.LuV, IO.IN);
-        proxySlotRecipeHandler = new ProxySlotRecipeHandler(this, MEPatternBufferPartMachine.MAX_PATTERN_COUNT);
+        proxySlotRecipeHandler = new ProxySlotRecipeHandler(this);
     }
 
     @Override
@@ -62,6 +62,12 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
 
     @Override
     public List<RecipeHandlerList> getRecipeHandlers() {
+        var buf = getBuffer();
+        if (buf != null) {
+            proxySlotRecipeHandler.updateProxy(buf);
+        } else {
+            proxySlotRecipeHandler.clearProxy();
+        }
         return proxySlotRecipeHandler.getProxySlotHandlers();
     }
 

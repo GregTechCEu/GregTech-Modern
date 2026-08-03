@@ -42,7 +42,7 @@ public interface IRedstoneSignalTrait {
      * @param side The side to check
      * @return If redstone can be connected
      */
-    default boolean canConnectRedstone(Direction side) {
+    default boolean canConnectRedstone(@Nullable Direction side) {
         return false;
     }
 }

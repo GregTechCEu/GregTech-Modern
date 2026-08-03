@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;

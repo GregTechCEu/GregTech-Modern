@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -88,7 +88,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
+        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems.storage, "data_inventory",
+                getInventorySize(), 'I',
                 i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
                 GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
 

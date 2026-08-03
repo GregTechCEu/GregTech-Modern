@@ -250,7 +250,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 (sm, sh) -> createChannelManagerPanel(data, sm, settings));
 
         var colorSyncer = new IntSyncValue(this::getColor);
-        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo).allowC2S();
 
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("color", colorSyncer);
@@ -258,6 +258,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         var currentEntry = GenericSyncValue.<RegistryFriendlyByteBuf, VirtualEntry>builder(VirtualEntry.class)
                 .adapter(new VirtualEntryAdapter())
                 .getter(this::getEntry)
+                .adapter(new VirtualEntryAdapter())
+                .allowC2S()
                 .build();
         syncManager.syncValue("currentEntry", currentEntry);
 
@@ -277,9 +279,9 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .tooltip(1, t -> t.addLine(Text.lang(Permissions.PROTECTED.tooltip)))
                         .tooltip(2, t -> t.addLine(Text.lang(Permissions.PRIVATE.tooltip)))
                         .value(new EnumSyncValue<>(Permissions.class, this::getPermission,
-                                this::setPermission)))
+                                this::setPermission).allowC2S()))
                 .child(new TextFieldWidget()
-                        .value(new StringSyncValue(this::getColorStr, this::setColorStr))
+                        .value(new StringSyncValue(this::getColorStr, this::setColorStr).allowC2S())
                         .setMaxLength(8)
                         .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
                         .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_name")))
@@ -294,7 +296,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .setMaxLength(32)
                 .widthRel(1f)
                 .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_description"))
-                .value(new StringSyncValue(this::getDescription, this::setDescription))));
+                .value(new StringSyncValue(this::getDescription, this::setDescription).allowC2S())));
 
         Flow bottomRow = coverUIRow();
         bottomRow.child(GTMuiWidgets.createPowerButton(this));

@@ -23,7 +23,7 @@ repositories {
 
     maven {
         name = 'GTCEu Maven'
-        url  = 'https://maven.gtceu.com'
+        url = 'https://maven.gtceu.com'
     }
 
     maven { // JEI

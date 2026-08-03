@@ -26,7 +26,7 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
         tag.putInt("side", transformer.getFrontFacing().get3DDataValue());
         tag.putBoolean("transformUp", transformer.isTransformUp());
         tag.putInt("baseAmp", transformer.getBaseAmp());
-        tag.putInt("baseVoltage", transformer.getTier());
+        tag.putInt("baseVoltage", transformer.getDefinition().getTier());
         return tag;
     }
 

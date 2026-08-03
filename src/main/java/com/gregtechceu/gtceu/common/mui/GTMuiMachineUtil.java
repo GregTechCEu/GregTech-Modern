@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -13,9 +15,12 @@ import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.UnaryOperator;
 
 public class GTMuiMachineUtil {
+
+    private static AtomicBoolean currentLogSpam = new AtomicBoolean(false);
 
     public static SlotGroupWidget createSlotGroupFromInventory(IItemHandler itemHandler, String slotGroupName,
                                                                int maxSlots, char key, PanelSyncManager syncManager,
@@ -28,6 +33,11 @@ public class GTMuiMachineUtil {
                                                                UnaryOperator<ItemSlot> slotModifier,
                                                                PanelSyncManager syncManager,
                                                                String... matrix) {
+        // Error ONCE upon NotifiableItemStackHandler occurrence
+        if (itemHandler instanceof NotifiableItemStackHandler && !currentLogSpam.getAndSet(true))
+            GTCEu.LOGGER.error("createSlotGroupFromInventory called with a NotifiableItemStackHandler directly",
+                    new Throwable());
+
         SlotGroup slotGroup = new SlotGroup(slotGroupName, maxSlots);
 
         return SlotGroupWidget.builder()
@@ -36,8 +46,7 @@ public class GTMuiMachineUtil {
                     ModularSlot slot = new ModularSlot(itemHandler, i);
                     ItemSlotSyncHandler syncHandler = new ItemSlotSyncHandler(slot.slotGroup(slotGroup));
                     syncManager.syncValue(slotGroupName, i, syncHandler);
-                    return slotModifier.apply(new ItemSlot()
-                            .syncHandler(slotGroupName, i));
+                    return slotModifier.apply(new ItemSlot().syncHandler(syncHandler));
                 })
                 .build();
     }

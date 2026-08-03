@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupColor;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
@@ -244,7 +244,7 @@ public class RecipeHelper {
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
-                .append(": ").append(result.capability().getName()), result.capability(), io);
+                .append(": ").append(result.capability().getName()), result.capability(), io, result.score());
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {

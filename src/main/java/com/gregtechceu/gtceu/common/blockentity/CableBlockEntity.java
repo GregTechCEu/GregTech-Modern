@@ -298,7 +298,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
-        level.getLightEngine().checkBlock(worldPosition);
+        getLevel().getLightEngine().checkBlock(worldPosition);
     }
 
     @ClientFieldChangeListener(fieldName = "temperature")

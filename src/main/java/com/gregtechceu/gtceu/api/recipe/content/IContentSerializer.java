@@ -37,15 +37,13 @@ public interface IContentSerializer<T> {
         toNetwork(buf, inner);
         buf.writeVarInt(content.chance());
         buf.writeVarInt(content.maxChance());
-        buf.writeVarInt(content.tierChanceBoost());
     }
 
     default Content fromNetworkContent(RegistryFriendlyByteBuf buf) {
         T inner = fromNetwork(buf);
         int chance = buf.readVarInt();
         int maxChance = buf.readVarInt();
-        int tierChanceBoost = buf.readVarInt();
-        return new Content(inner, chance, maxChance, tierChanceBoost);
+        return new Content(inner, chance, maxChance);
     }
 
     Class<T> contentClass();

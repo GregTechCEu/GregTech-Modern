@@ -184,7 +184,7 @@ public class CommonEventListener {
             return;
         }
 
-        ItemStack toolStack = event.getPlayer().getItemInHand(event.getPlayer().getUsedItemHand());
+        ItemStack toolStack = event.getPlayer().getMainHandItem();
         if (toolStack.getItem() instanceof IGTTool tool) {
             tool.definition$onBlockStartBreak(toolStack, event.getPos(), event.getPlayer());
         }
@@ -239,7 +239,6 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
         event.addListener(PostRegistryListener.INSTANCE);
     }
 

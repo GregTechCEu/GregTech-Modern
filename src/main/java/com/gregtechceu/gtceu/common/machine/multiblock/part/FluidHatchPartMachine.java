@@ -5,20 +5,16 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -29,7 +25,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -44,7 +39,6 @@ import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
@@ -56,7 +50,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMachine, IHasCircuitSlot, IPaintable {
+public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMachine, IPaintable {
 
     public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidType.BUCKET_VOLUME;
     public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidType.BUCKET_VOLUME;
@@ -73,24 +67,26 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     @SaveField
     @SyncToClient
     protected boolean circuitSlotEnabled;
-    @Getter
+
     @SaveField
-    protected final NotifiableItemStackHandler circuitInventory;
+    protected final ProgrammableCircuitSlotTrait circuitSlot;
 
     public FluidHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int initialCapacity, int slots) {
         super(info, tier, io);
         this.slots = slots;
         this.tank = attachTrait(createTank(initialCapacity, slots));
 
-        if (io == IO.IN) {
-            this.circuitSlotEnabled = true;
-            this.circuitInventory = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.NONE))
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit).shouldSearchContent(false)
-                    .shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit);
-        } else {
-            this.circuitSlotEnabled = false;
-            this.circuitInventory = attachTrait(new NotifiableItemStackHandler(0, IO.NONE)).shouldSearchContent(false);
-        }
+        this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
+        circuitSlot.setEnabled(io == IO.IN);
+    }
+
+    public FluidHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, NotifiableFluidTank fluidTank) {
+        super(info, tier, io);
+        this.slots = fluidTank.getTanks();
+        this.tank = attachTrait(fluidTank);
+
+        this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
+        circuitSlot.setEnabled(io == IO.IN);
     }
 
     //////////////////////////////////////
@@ -125,30 +121,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     @Override
     public void onPaintingColorChanged(int color) {
         getHandlerList().setColor(color, true);
-    }
-
-    @Override
-    public void addedToController(MultiblockControllerMachine controller, String substructureName) {
-        if (!controller.allowCircuitSlots()) {
-            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                circuitInventory.dropInventoryInWorld();
-            } else {
-                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-            }
-            setCircuitSlotEnabled(false);
-        }
-        super.addedToController(controller, substructureName);
-    }
-
-    @Override
-    public void removedFromController(MultiblockControllerMachine controller) {
-        super.removedFromController(controller);
-        for (var c : controllers) {
-            if (!c.allowCircuitSlots()) {
-                return;
-            }
-        }
-        setCircuitSlotEnabled(true);
     }
 
     @Override
@@ -282,11 +254,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
-        BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked);
+        BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked).allowC2S();
         syncManager.syncValue("locked", locked);
         return Flow.col()
                 .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
-                .height(60)
+                .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .childPadding(4)
                 .child(new TextWidget<>(Text.dynamic(this::getFluidNameText))
@@ -298,12 +270,13 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                         .coverChildren()
                         .childIf(io.support(IO.OUT), () -> new FluidSlot()
                                 .name("lockedFluid")
-                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()))
+                                .syncHandler(new FluidSlotSyncHandler(tank.getLockedFluid()).phantom(true))
                                 .alwaysShowFull(true)
                                 .tooltip(t -> t.addLine("Locked Fluid")))
                         .childIf(io.support(IO.OUT), () -> new ToggleButton()
                                 .syncHandler("locked")
-                                .tooltip(t -> t.addLine("gtceu.gui.fluid_lock.tooltip"))
+                                .tooltipDynamic(t -> t.addLine(Component.translatable("gtceu.gui.fluid_lock.tooltip." +
+                                        (locked.getBoolValue() ? "enabled" : "disabled"))))
                                 .overlay(false, GTGuiTextures.BUTTON_LOCK)
                                 .overlay(true, GTGuiTextures.BUTTON_LOCK)
                                 .background(GuiTextures.MC_BUTTON)
@@ -316,10 +289,16 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                                         .canFillSlot(io.support(IO.IN)))));
     }
 
-    protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {
-        return GTMuiMachineUtil.createSlotGroupFromInventory(
+    protected Flow createMultiSlotUI(PanelSyncManager syncManager) {
+        var slotsWidget = GTMuiMachineUtil.createSlotGroupFromInventory(
                 syncManager,
                 tank, "fluid_inv",
                 slots, 'F', GTMuiMachineUtil.createSquareMatrix(slots, 'F'));
+
+        return Flow.col()
+                .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
+                .height(MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
+                .mainAxisAlignment(Alignment.MainAxis.CENTER)
+                .child(slotsWidget);
     }
 }

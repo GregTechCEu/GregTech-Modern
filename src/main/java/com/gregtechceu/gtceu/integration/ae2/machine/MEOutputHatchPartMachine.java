@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
@@ -55,7 +54,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
     @Override
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteTank(this);
+        return new InaccessibleInfiniteTank();
     }
 
     @Override
@@ -136,7 +135,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
 
         FluidStorageDelegate storage;
 
-        public InaccessibleInfiniteTank(MetaMachine holder) {
+        public InaccessibleInfiniteTank() {
             super(List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
             storage = (FluidStorageDelegate) getStorages()[0];

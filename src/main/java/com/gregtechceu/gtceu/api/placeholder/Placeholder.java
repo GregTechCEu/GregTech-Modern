@@ -17,19 +17,20 @@ public abstract class Placeholder {
     @Getter
     private final ResourceLocation id;
 
+    @Getter
+    private final String name;
+
     public abstract MultiLineComponent apply(PlaceholderContext ctx,
                                              List<MultiLineComponent> args) throws PlaceholderException;
 
     public Placeholder(String str) {
-        this(GTCEu.id(str));
+        this.id = GTCEu.id(str);
+        this.name = str;
     }
 
     public Placeholder(ResourceLocation id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return id.getPath();
+        this.name = id.getPath();
     }
 
     protected CompoundTag getData(PlaceholderContext ctx) {

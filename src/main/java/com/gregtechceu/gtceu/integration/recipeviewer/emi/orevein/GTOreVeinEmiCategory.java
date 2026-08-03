@@ -30,7 +30,7 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
 
     public static void registerDisplays(EmiRegistry registry) {
         for (GTOreDefinition oreDefinition : Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY)) {
+                .registryOrThrow(GTRegistries.Keys.ORE_VEIN)) {
             registry.addRecipe(new GTEmiOreVein(oreDefinition));
         }
     }
@@ -51,7 +51,7 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
         private final GTOreDefinition oreDefinition;
 
         public GTEmiOreVein(GTOreDefinition oreDefinition) {
-            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY)
+            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN)
                     .getKey(oreDefinition).withPrefix("/ore_vein_diagram/"),
                     () -> new OreVeinRecipeWidget(oreDefinition));
             this.oreDefinition = oreDefinition;

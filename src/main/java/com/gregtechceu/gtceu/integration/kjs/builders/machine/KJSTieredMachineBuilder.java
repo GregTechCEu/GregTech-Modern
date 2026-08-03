@@ -31,7 +31,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefinition @NotNull []>
                                      implements IMachineBuilderKJS {
 
-    private final MachineBuilder<?, ?>[] builders = new MachineBuilder[TIER_COUNT];
+    private final MachineBuilder<?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -107,7 +107,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
-            MachineBuilder<?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+            MachineBuilder<?, ?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
                     .machine(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier, tankFunction));
 
@@ -148,6 +148,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?> builder);
+        void apply(int tier, MachineBuilder<?, ?, ?> builder);
     }
 }

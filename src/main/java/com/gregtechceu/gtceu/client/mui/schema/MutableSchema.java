@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.mui.schema;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 
 import net.minecraft.core.BlockPos;
@@ -30,6 +30,7 @@ public class MutableSchema implements ISchema {
     protected final Level level = new SchemaLevel();
     @Getter
     protected @NotNull BlockPos origin = BlockPos.ZERO;
+    @Getter
     protected @NotNull Vector3f center = new Vector3f();
     @Getter
     private BlockPos controllerPos = BlockPos.ZERO;
@@ -56,7 +57,7 @@ public class MutableSchema implements ISchema {
         BlockPos.MutableBlockPos min = BlockPosUtil.MAX.mutable();
         BlockPos.MutableBlockPos max = BlockPosUtil.MIN.mutable();
         MultiblockControllerMachine controller = null;
-        List<IMultiPart> parts = new ArrayList<>();
+        List<MultiblockPartMachine> parts = new ArrayList<>();
 
         for (long packed : blocks.keySet()) {
             BlockState block = blocks.get(packed);
@@ -72,7 +73,7 @@ public class MutableSchema implements ISchema {
             if (blockEntity instanceof MultiblockControllerMachine mcm && controller == null) {
                 controller = mcm;
                 controllerPos = pos;
-            } else if (blockEntity instanceof IMultiPart part) {
+            } else if (blockEntity instanceof MultiblockPartMachine part) {
                 parts.add(part);
             }
         }

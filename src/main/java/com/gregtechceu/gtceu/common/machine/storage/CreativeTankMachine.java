@@ -36,7 +36,6 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class CreativeTankMachine extends QuantumTankMachine {
 
@@ -87,7 +86,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         var heldItem = context.getItemInHand();
         var player = context.getPlayer();
-        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
+        if (context.getClickedFace() == getFrontFacing() && FluidUtil.getFluidHandler(heldItem).isPresent()) {
+            if (isRemote()) {
+                return InteractionResult.SUCCESS;
+            }
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
                 return FluidUtil.getFluidContained(heldItem)
@@ -266,13 +268,13 @@ public class CreativeTankMachine extends QuantumTankMachine {
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (!stored.isEmpty()) return stored.copyWithAmount(mBPerCycle);
             return FluidStack.EMPTY;
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (!stored.isEmpty() && FluidStack.isSameFluidSameComponents(stored, resource))
                 return resource.copyWithAmount(mBPerCycle);
             return FluidStack.EMPTY;
