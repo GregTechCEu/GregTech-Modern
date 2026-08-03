@@ -27,5 +27,15 @@ public class EntityTypeTagLoader {
                 .addOptional(ResourceLocation.fromNamespaceAndPath("alexscaves", "boundroid"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("alexscaves", "boundroid_winch"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("alexscaves", "nucleeper"));
+
+        provider.addTag(CustomTags.END_INHABITORS)
+                .add(EntityType.ENDERMAN, EntityType.ENDERMITE, EntityType.SHULKER, EntityType.ENDER_DRAGON)
+                // also add some guesses at other tags people might use instead of the one I picked
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "endermen"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "end_mobs"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "ender_mobs"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "ender"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "shulkers"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("c", "endermites"));
     }
 }

@@ -226,6 +226,7 @@ public class CustomTags {
     public static final TagKey<EntityType<?>> HEAT_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "heat_immune");
     public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "chemical_immune");
     public static final TagKey<EntityType<?>> CONSTRUCTS = TagUtil.createTag(Registries.ENTITY_TYPE, "constructs", false);
+    public static final TagKey<EntityType<?>> END_INHABITORS = TagUtil.createTag(Registries.ENTITY_TYPE, "end_inhabitors", false);
 
     public static final TagKey<Fluid> LIGHTER_FLUIDS = TagUtil.createModFluidTag("lighter_fluids");
     public static final TagKey<Fluid> POTION_FLUIDS = TagUtil.createFluidTag("potion");
