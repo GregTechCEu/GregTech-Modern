@@ -7,14 +7,18 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
+import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
 
+import dev.emi.emi.screen.RecipeScreen;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -779,6 +783,11 @@ public class GTUtil {
                 recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
             }
             EmiApiAccessor.gtceu$setPages(recipes, EmiStack.EMPTY);
+
+            // switch to the requested category if possible
+            if (Minecraft.getInstance().screen instanceof RecipeScreen emiRecipeScreen) {
+                emiRecipeScreen.focusCategory(GTRecipeEMICategory.machineCategory(category));
+            }
         }
     }
 
@@ -788,7 +797,15 @@ public class GTUtil {
             List<RecipeType<?>> categories = category.getRecipeType().getCategories().stream()
                     .map(GTRecipeJEICategory::machineType)
                     .collect(Collectors.toList());
-            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(categories);
+            IRecipesGui recipesGui = GTJEIPlugin.getRuntime().getRecipesGui();
+            recipesGui.showTypes(categories);
+
+            // switch to the requested category if possible
+            if (recipesGui instanceof RecipesGuiAccessor accessor) {
+                IRecipeCategory<?> specificCategory = GTJEIPlugin.getRuntime().getRecipeManager()
+                        .getRecipeCategory(GTRecipeJEICategory.machineType(category));
+                accessor.gtceu$getLogic().setRecipeCategory(specificCategory);
+            }
         }
     }
 
@@ -798,7 +815,11 @@ public class GTUtil {
             List<CategoryIdentifier<?>> categories = category.getRecipeType().getCategories().stream()
                     .map(GTRecipeREICategory::machineCategory)
                     .collect(Collectors.toList());
-            ViewSearchBuilder.builder().addCategories(categories).open();
+            ViewSearchBuilder.builder()
+                    .addCategories(categories)
+                    // switch to the requested category if possible
+                    .setPreferredOpenedCategory(GTRecipeREICategory.machineCategory(category))
+                    .open();
         }
     }
 }
