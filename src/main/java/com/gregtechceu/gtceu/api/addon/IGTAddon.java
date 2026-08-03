@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTOres;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.util.function.Consumer;
 
@@ -33,52 +34,37 @@ public interface IGTAddon {
     String addonModId();
 
     /**
-     * Call init on your custom TagPrefix class(es) here
-     * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, TagPrefix>} register event instead
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerTagPrefixes() {}
 
     /**
-     * Call init on your custom Element class(es) here
-     * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, Element>} register event instead
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerElements() {}
 
     /**
-     * Call init on your custom Sound class(es) here
-     * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, SoundEntry>} register event instead
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerSounds() {}
 
     /**
-     * Call init on your custom Cover class(es) here
-     * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, CoverDefinition>} register event
-     *             instead
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerCovers() {}
 
     /**
-     * Call init on your custom Recipe Capabilities here
-     * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, RecipeCapability>} register event
-     *             instead
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerRecipeCapabilities() {}
 
     /**
-     * Call init on your custom IWorldGenLayer class(es) here
-     *
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, IWorldGenLayer>} register event
-     *             instead
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerWorldgenLayers() {}

@@ -17,6 +17,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.IModBusEvent;
 
 import lombok.Getter;
@@ -55,7 +56,11 @@ public class GTCEuAPI {
         else GTCEu.LOGGER.info("High-Tier is Disabled.");
     }
 
+    /**
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     */
     @SuppressWarnings("unused")
+    @Deprecated(forRemoval = true, since = "8.0.0")
     public static class RegisterEvent<K, V> extends GenericEvent<V> implements IModBusEvent {
 
         private final @Nullable GTRegistry<ResourceLocation, V> registry;
