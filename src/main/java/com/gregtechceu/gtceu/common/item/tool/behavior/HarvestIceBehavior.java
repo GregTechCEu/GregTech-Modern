@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.common.item.tool.ToolEventHandlers;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * @see com.gregtechceu.gtceu.common.item.tool.ToolEventHandlers#onHarvestDrops
+ * @see ToolEventHandlers#onHarvestDrops
  */
 public class HarvestIceBehavior implements IToolBehavior<HarvestIceBehavior> {
 

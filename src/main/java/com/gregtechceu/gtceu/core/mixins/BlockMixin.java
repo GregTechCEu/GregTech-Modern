@@ -16,7 +16,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -35,10 +34,9 @@ public abstract class BlockMixin {
                        at = @At(value = "RETURN"))
     private static List<ItemStack> gtceu$modifyDrops(List<ItemStack> original, BlockState state, ServerLevel level,
                                                      BlockPos pos, @Nullable BlockEntity blockEntity,
-                                                     @Nullable Entity entity, ItemStack tool,
-                                                     @Local LootParams.Builder lootParams) {
+                                                     @Nullable Entity entity, ItemStack tool) {
         if (!tool.isEmpty() && entity instanceof Player player) {
-            return ToolEventHandlers.onHarvestDrops(player, tool, level, pos, state, original, lootParams);
+            return ToolEventHandlers.onHarvestDrops(player, tool, level, pos, state, original);
         }
         return original;
     }
