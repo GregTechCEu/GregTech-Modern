@@ -146,7 +146,23 @@ public final class RecipeDB {
         if (list.isEmpty()) {
             return null;
         }
-        return list;
+
+        List<AbstractMapIngredient> uniqueIngredients = new ArrayList<>();
+        Set<Integer> ingredientHashes = new HashSet<>();
+        Set<AbstractMapIngredient> specialIngredients = new LinkedHashSet<>();
+        for (List<AbstractMapIngredient> ingredientGroup : list) {
+            for (AbstractMapIngredient ingredient : ingredientGroup) {
+                if (ingredient.isSpecialIngredient()) {
+                    if (specialIngredients.add(ingredient)) {
+                        uniqueIngredients.add(ingredient);
+                    }
+                } else if (ingredientHashes.add(ingredient.hashCode())) {
+                    uniqueIngredients.add(ingredient);
+                }
+            }
+        }
+
+        return List.of(uniqueIngredients);
     }
 
     /**
