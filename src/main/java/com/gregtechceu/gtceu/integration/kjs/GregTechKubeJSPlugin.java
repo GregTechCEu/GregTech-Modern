@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -674,7 +673,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             var info = ItemMaterialData.getMaterialInfo(item);
             if (info != null) {
                 for (var ms : info.getMaterials()) {
-                    if (ms.material() instanceof MarkerMaterial) continue;
                     materials.addTo(ms.material(), (ms.amount() * inCount) / outCount);
                 }
                 continue;
@@ -684,7 +682,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
 
             var matStack = ChemicalHelper.getMaterialStack(item);
-            if (!matStack.isEmpty() && !(matStack.material() instanceof MarkerMaterial)) {
+            if (!matStack.isEmpty()) {
                 materials.addTo(matStack.material(), (matStack.amount() * inCount) / outCount);
             }
 

@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
@@ -50,8 +48,6 @@ public class GTMaterials {
     public static Material[] VOLTAGE_COMMON_MATERIALS;
 
     public static void init() {
-        MarkerMaterials.register();
-
         ElementMaterials.register();
         FirstDegreeMaterials.register();
         OrganicChemistryMaterials.register();
@@ -307,7 +303,8 @@ public class GTMaterials {
         EXT2_METAL.addAll(Arrays.asList(GENERATE_LONG_ROD, GENERATE_BOLT_SCREW));
     }
 
-    public static final MarkerMaterial NULL = new MarkerMaterial(GTCEu.id("null"));
+    // Addon Devs: Don't you dare modify this material
+    public static final Material NULL = new Material.Builder(GTCEu.id("null")).buildAndRegister();
 
     /**
      * Direct Elements
