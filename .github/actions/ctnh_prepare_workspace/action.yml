@@ -26,11 +26,11 @@ inputs:
     description: CTNH-Core ref.
     required: false
     default: dev
-  cei_repository:
+  ctnh_cei_repository:
     description: Create-Enough-Items repository.
     required: false
     default: CTNH-Team/Create-Enough-Items
-  cei_ref:
+  ctnh_cei_ref:
     description: CEI ref
     required: false
     default: dev
@@ -179,8 +179,8 @@ runs:
       uses: actions/checkout@v4
       with:
         token: ${{ inputs.token }}
-        repository: ${{ inputs.cei_repository }}
-        ref: ${{ inputs.cei_ref }}
+        repository: ${{ inputs.ctnh_cei_repository }}
+        ref: ${{ inputs.ctnh_cei_ref }}
         path: CTNH-Modules/modules/Create-Enough-Items
     - name: Checkout GTM
       if: ${{ inputs.module_name != 'GregTech-Modern' }}
