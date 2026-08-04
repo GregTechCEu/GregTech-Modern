@@ -822,7 +822,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         }
     }
 
-    ResourceLocation COFH_SMASHING_ENCHANT_ID = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION, "smashing");
+    ResourceLocation COFH_SMASHING_ENCHANT_ID = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION,
+            "smashing");
     Set<ResourceLocation> AUTOSMELT_ENCHANT_IDS = Util.make(new HashSet<>(), set -> {
         set.add(ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENDERIO, "auto_smelt")); // EnderIO
         set.add(ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION, "smelting")); // CoFH

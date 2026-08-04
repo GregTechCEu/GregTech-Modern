@@ -30,7 +30,8 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
     // spotless:on
 
     @Getter
-    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, ResourceLocation.withDefaultNamespace("dummy"));
+    private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME,
+            ResourceLocation.withDefaultNamespace("dummy"));
 
     public BiomeCondition(boolean isReverse, ResourceKey<Biome> biome) {
         super(isReverse);

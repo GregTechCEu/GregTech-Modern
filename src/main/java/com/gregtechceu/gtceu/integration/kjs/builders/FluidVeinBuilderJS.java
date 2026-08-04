@@ -65,7 +65,8 @@ public class FluidVeinBuilderJS {
                         registry.getOrCreateTag(
                                 TagKey.create(Registries.BIOME, ResourceLocation.parse(biomes.substring(1)))) :
                         (HolderSet.direct(registry
-                                .getHolderOrThrow(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomes))))),
+                                .getHolderOrThrow(
+                                        ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomes))))),
                         weight));
         return this;
     }
@@ -75,7 +76,8 @@ public class FluidVeinBuilderJS {
         List<HolderSet<Biome>> biomeKeys = new LinkedList<>();
         for (String biome : biomes) {
             biomeKeys.add(biome.startsWith("#") ?
-                    registry.getOrCreateTag(TagKey.create(Registries.BIOME, ResourceLocation.parse(biome.substring(1)))) :
+                    registry.getOrCreateTag(
+                            TagKey.create(Registries.BIOME, ResourceLocation.parse(biome.substring(1)))) :
                     HolderSet.direct(registry
                             .getHolderOrThrow(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biome)))));
         }

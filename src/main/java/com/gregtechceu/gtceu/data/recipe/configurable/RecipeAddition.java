@@ -1319,7 +1319,8 @@ public class RecipeAddition {
     private static void addBedRecipe(Consumer<FinishedRecipe> provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed",
-                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_bed"))), "WWW", "PPP",
+                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_bed"))),
+                "WWW", "PPP",
                 "FrF",
                 'W', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet")),
                 'P', ItemTags.PLANKS,
@@ -1329,7 +1330,8 @@ public class RecipeAddition {
     private static void addCarpetRecipe(Consumer<FinishedRecipe> provider, DyeColor color) {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_carpet",
-                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet"))), "WW",
+                new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_carpet"))),
+                "WW",
                 'W', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(colorName + "_wool")));
     }
 
@@ -1340,7 +1342,8 @@ public class RecipeAddition {
         for (DyeColor color : DyeColor.values()) {
             String dyeName = color.getName();
             VanillaRecipeHelper.addShapedRecipe(provider, dyeName + "_glass_pane",
-                    new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane")), 2),
+                    new ItemStack(BuiltInRegistries.ITEM
+                            .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane")), 2),
                     "sG",
                     'G', BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass")));
         }

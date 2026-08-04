@@ -122,7 +122,8 @@ public class MixinHelpers {
                 return;
             }
             // If AE2 is loaded, add the Fluid P2P attunement tag to all the buckets
-            var p2pFluidAttunements = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_APPENG, "p2p_attunements/fluid_p2p_tunnel");
+            var p2pFluidAttunements = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_APPENG,
+                    "p2p_attunements/fluid_p2p_tunnel");
             for (Material material : GTRegistries.MATERIALS) {
                 FluidProperty property = material.getProperty(PropertyKey.FLUID);
                 if (property == null) {
@@ -274,7 +275,8 @@ public class MixinHelpers {
             if (TagPrefix.ORES.containsKey(prefix)) {
                 final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
-                    ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
+                    ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(
+                            blockEntry.getId().getNamespace(),
                             "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
@@ -336,7 +338,8 @@ public class MixinHelpers {
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
             ResourceLocation id = machine.getId();
-            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "blocks/" + id.getPath());
+            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
+                    "blocks/" + id.getPath());
             ((BlockBehaviourAccessor) block).setDrops(lootTableId);
             lootTables.put(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());

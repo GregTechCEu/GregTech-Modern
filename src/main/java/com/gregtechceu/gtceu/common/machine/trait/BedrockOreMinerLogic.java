@@ -79,7 +79,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             Material material = wm.material();
             if (material.isNull()) return null;
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
-            material, getOreToProduce());
+                    material, getOreToProduce());
             // backup 1: crushed; if raw ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce());
             // backup 2: gem; if crushed ore doesn't exist

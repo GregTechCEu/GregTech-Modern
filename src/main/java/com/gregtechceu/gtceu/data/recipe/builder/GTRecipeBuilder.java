@@ -1097,10 +1097,18 @@ public class GTRecipeBuilder {
         return addCondition(new CleanroomCondition(cleanroomType));
     }
 
+    /**
+     * @deprecated Use {@link #dimension(ResourceKey)} instead
+     */
+    @Deprecated
     public GTRecipeBuilder dimension(ResourceLocation dimension, boolean reverse) {
         return dimension(ResourceKey.create(Registries.DIMENSION, dimension), reverse);
     }
 
+    /**
+     * @deprecated Use {@link #dimension(ResourceKey, boolean)} instead
+     */
+    @Deprecated
     public GTRecipeBuilder dimension(ResourceLocation dimension) {
         return dimension(dimension, false);
     }

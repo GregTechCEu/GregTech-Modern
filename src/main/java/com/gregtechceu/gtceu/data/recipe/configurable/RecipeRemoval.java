@@ -281,13 +281,19 @@ public class RecipeRemoval {
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
         for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
             registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
+                    ResourceLocation
+                            .withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", colorMaterial.getName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", colorMaterial.getName())));
 
             registry.accept(ResourceLocation.withDefaultNamespace("white_dye"));
             registry.accept(ResourceLocation.withDefaultNamespace("black_dye"));

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
@@ -100,7 +99,7 @@ public class ChemistryRecipes {
         GAS_COLLECTOR_RECIPES.recipeBuilder("air")
                 .circuitMeta(1)
                 .outputFluids(Air.getFluid(10000))
-                .dimension(Level.OVERWORLD.location())
+                .dimension(Level.OVERWORLD)
                 .duration(200).EUt(16).save(provider);
 
         GAS_COLLECTOR_RECIPES.recipeBuilder("nether_air")
