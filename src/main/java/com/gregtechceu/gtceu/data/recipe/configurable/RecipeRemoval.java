@@ -287,36 +287,37 @@ public class RecipeRemoval {
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", name)));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", name)));
             registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", name)));
-
-            registry.accept(new ResourceLocation("white_dye"));
-            registry.accept(new ResourceLocation("black_dye"));
-            registry.accept(new ResourceLocation("black_dye_from_wither_rose"));
-            registry.accept(new ResourceLocation("blue_dye"));
-            registry.accept(new ResourceLocation("white_dye_from_lily_of_the_valley"));
-            registry.accept(new ResourceLocation("light_blue_dye_from_blue_orchid"));
-            registry.accept(new ResourceLocation("yellow_dye_from_dandelion"));
-            registry.accept(new ResourceLocation("light_gray_dye_from_white_tulip"));
-            registry.accept(new ResourceLocation("light_gray_dye_from_azure_bluet"));
-            registry.accept(new ResourceLocation("red_dye_from_poppy"));
-            registry.accept(new ResourceLocation("red_dye_from_tulip"));
-            registry.accept(new ResourceLocation("red_dye_from_rose_bush"));
-            registry.accept(new ResourceLocation("red_dye_from_beetroot"));
-            registry.accept(new ResourceLocation("orange_dye_from_orange_tulip"));
-            registry.accept(new ResourceLocation("orange_dye_from_torchflower"));
-            registry.accept(new ResourceLocation("yellow_dye_from_dandelion"));
-            registry.accept(new ResourceLocation("cyan_dye_from_pitcher_plant"));
-            registry.accept(new ResourceLocation("light_blue_dye_from_blue_orchid"));
-            registry.accept(new ResourceLocation("blue_dye_from_cornflower"));
-            registry.accept(new ResourceLocation("magenta_dye_from_allium"));
-            registry.accept(new ResourceLocation("magenta_dye_from_lilac"));
-            registry.accept(new ResourceLocation("lime_dye_from_lime"));
-            registry.accept(new ResourceLocation("pink_dye_from_pink_tulip"));
-            registry.accept(new ResourceLocation("pink_dye_from_pink_petals"));
-            registry.accept(new ResourceLocation("pink_dye_from_peony"));
-            registry.accept(new ResourceLocation("yellow_dye_from_sunflower"));
-            registry.accept(new ResourceLocation("light_gray_dye_from_oxeye_daisy"));
         }
-        registry.accept(new ResourceLocation("minecraft:dark_prismarine"));
+
+        registry.accept(ResourceLocation.withDefaultNamespace("white_dye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("black_dye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("black_dye_from_wither_rose"));
+        registry.accept(ResourceLocation.withDefaultNamespace("blue_dye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("white_dye_from_lily_of_the_valley"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_blue_dye_from_blue_orchid"));
+        registry.accept(ResourceLocation.withDefaultNamespace("yellow_dye_from_dandelion"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_white_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_azure_bluet"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_poppy"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_rose_bush"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_beetroot"));
+        registry.accept(ResourceLocation.withDefaultNamespace("orange_dye_from_orange_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("orange_dye_from_torchflower"));
+        registry.accept(ResourceLocation.withDefaultNamespace("yellow_dye_from_dandelion"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cyan_dye_from_pitcher_plant"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_blue_dye_from_blue_orchid"));
+        registry.accept(ResourceLocation.withDefaultNamespace("blue_dye_from_cornflower"));
+        registry.accept(ResourceLocation.withDefaultNamespace("magenta_dye_from_allium"));
+        registry.accept(ResourceLocation.withDefaultNamespace("magenta_dye_from_lilac"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lime_dye_from_lime"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pink_dye_from_pink_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pink_dye_from_pink_petals"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pink_dye_from_peony"));
+        registry.accept(ResourceLocation.withDefaultNamespace("yellow_dye_from_sunflower"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_oxeye_daisy"));
+
+        registry.accept(ResourceLocation.withDefaultNamespace("minecraft:dark_prismarine"));
     }
 
     private static void flintAndSteelRequireSteel(Consumer<ResourceLocation> registry) {
