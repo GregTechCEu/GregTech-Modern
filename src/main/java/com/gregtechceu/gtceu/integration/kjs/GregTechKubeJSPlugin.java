@@ -360,8 +360,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (clazz.isInstance(o)) return clazz.cast(o);
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(registry)
-                    .get(wrapper.wrapped());
+            return BuiltInRegistries.REGISTRY.get(registry).get(wrapper.wrapped());
         });
     }
 

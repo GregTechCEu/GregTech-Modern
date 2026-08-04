@@ -23,8 +23,7 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
     public ManagedSavedData() {}
 
     public ManagedSavedData(HolderLookup.Provider registries, CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), tag,
-                false);
+        getSyncDataHolder().deserializeNBT(registries, tag, false);
     }
 
     @Override
@@ -47,7 +46,6 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
 
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
-        return getSyncDataHolder().serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY),
-                false);
+        return getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), false);
     }
 }

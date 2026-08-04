@@ -50,8 +50,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     protected final void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.merge(getSyncDataHolder().serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY),
-                false));
+        tag.merge(getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), false));
     }
 
     /**
@@ -66,8 +65,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @MustBeInvokedByOverriders
     public void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), tag,
-                false);
+        getSyncDataHolder().deserializeNBT(GTRegistries.builtinRegistry(), tag, false);
     }
 
     /**
@@ -75,8 +73,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @MustBeInvokedByOverriders
     public void clientLoad(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), tag,
-                true);
+        getSyncDataHolder().deserializeNBT(GTRegistries.builtinRegistry(), tag, true);
     }
 
     @Override
@@ -97,8 +94,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY),
-                true, true));
+        tag.merge(getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), true, true));
         return tag;
     }
 

@@ -72,7 +72,7 @@ public class DimensionMarker {
     @Accessors(fluent = true, chain = true)
     public static class Builder {
 
-        private ResourceLocation id;
+        private final ResourceLocation id;
         private Supplier<Item> iconSupplier;
         private int tier = 0;
         @Nullable
