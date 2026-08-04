@@ -1,0 +1,9 @@
+{
+  "values": [
+    "gtceu:light_blue_glass_lens",
+    {
+      "id": "gtceu:diamond_lens",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "values": [
+    "gtceu:purple_glass_lens",
+    {
+      "id": "gtceu:amethyst_lens",
+      "required": false
+    }
+  ]
+}

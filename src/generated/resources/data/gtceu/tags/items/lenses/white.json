@@ -1,11 +1,11 @@
 {
   "values": [
     {
-      "id": "gtceu:lazurite_gem",
+      "id": "gtceu:glass_lens",
       "required": false
     },
     {
-      "id": "gtceu:sodalite_gem",
+      "id": "gtceu:nether_star_lens",
       "required": false
     }
   ]

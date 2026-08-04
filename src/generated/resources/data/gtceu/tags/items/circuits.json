@@ -10,25 +10,10 @@
     "#gtceu:circuits/zpm",
     "#gtceu:circuits/uv",
     "#gtceu:circuits/uhv",
-    {
-      "id": "#gtceu:circuits/uev",
-      "required": false
-    },
-    {
-      "id": "#gtceu:circuits/uiv",
-      "required": false
-    },
-    {
-      "id": "#gtceu:circuits/uxv",
-      "required": false
-    },
-    {
-      "id": "#gtceu:circuits/opv",
-      "required": false
-    },
-    {
-      "id": "#gtceu:circuits/max",
-      "required": false
-    }
+    "#gtceu:circuits/uev",
+    "#gtceu:circuits/uiv",
+    "#gtceu:circuits/uxv",
+    "#gtceu:circuits/opv",
+    "#gtceu:circuits/max"
   ]
 }
