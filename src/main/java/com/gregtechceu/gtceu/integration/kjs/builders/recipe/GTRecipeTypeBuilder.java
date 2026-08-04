@@ -120,6 +120,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         var type = new GTRecipeType(id, category);
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, id, type);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, id, new GTRecipeSerializer());
+        GTRegistries.register(GTRegistries.RECIPE_TYPES, id, type);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
         if (this.layout != null) {
