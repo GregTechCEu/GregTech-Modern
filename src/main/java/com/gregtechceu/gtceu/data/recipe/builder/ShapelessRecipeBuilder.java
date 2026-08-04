@@ -122,7 +122,7 @@ public class ShapelessRecipeBuilder {
             @Override
             public ResourceLocation getId() {
                 var ID = id == null ? defaultId() : id;
-                return ResourceLocation.fromNamespaceAndPath(ID.getNamespace(), "shapeless" + "/" + ID.getPath());
+                return ID.withPath("shapeless/" + ID.getPath());
             }
 
             @Override

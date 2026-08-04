@@ -811,8 +811,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                     .item(properties -> builder.itemFactory.apply((MetaMachineBlock) block.get(), properties))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                     // copied from BlockBuilder#item
-                    .model((ctx, prov) -> prov.withExistingParent(ctx.getName(), ResourceLocation.fromNamespaceAndPath(builder.registrate.getModid(),
-                            "block/machine/" + ctx.getName())))
+                    .model((ctx, prov) -> prov.withExistingParent(ctx.getName(), builder.registrate.makeResourceLocation("block/machine/" + ctx.getName())))
                     .color(() -> () -> builder.itemColor::apply)
                     .properties(builder.itemProp);
         }

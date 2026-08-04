@@ -189,7 +189,7 @@ public class ShapedEnergyTransferRecipeBuilder {
             @Override
             public ResourceLocation getId() {
                 var ID = id == null ? defaultId() : id;
-                return ResourceLocation.fromNamespaceAndPath(ID.getNamespace(), "shaped" + "/" + ID.getPath());
+                return ID.withPath("shaped/" + ID.getPath());
             }
 
             @Override

@@ -237,7 +237,7 @@ public class GTModels {
             ModelFile inactive = prov.models().cubeAll(name, casingType.getTexture());
             ModelFile active = prov.models().withExistingParent(name + "_active", GTCEu.id("block/cube_2_layer/all"))
                     .texture("bot_all", casingType.getTexture())
-                    .texture("top_all", ResourceLocation.parse(casingType.getTexture() + "_bloom"));
+                    .texture("top_all", casingType.getTexture().withSuffix("_bloom"));
             prov.getVariantBuilder(block)
                     .partialState().with(GTBlockStateProperties.ACTIVE, false).modelForState().modelFile(inactive)
                     .addModel()

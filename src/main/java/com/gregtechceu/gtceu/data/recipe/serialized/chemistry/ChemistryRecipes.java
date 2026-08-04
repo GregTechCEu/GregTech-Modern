@@ -106,13 +106,13 @@ public class ChemistryRecipes {
         GAS_COLLECTOR_RECIPES.recipeBuilder("nether_air")
                 .circuitMeta(2)
                 .outputFluids(NetherAir.getFluid(10000))
-                .dimension(Level.NETHER.location())
+                .dimension(Level.NETHER)
                 .duration(200).EUt(64).save(provider);
 
         GAS_COLLECTOR_RECIPES.recipeBuilder("ender_air")
                 .circuitMeta(3)
                 .outputFluids(EnderAir.getFluid(10000))
-                .dimension(Level.END.location())
+                .dimension(Level.END)
                 .duration(200).EUt(256).save(provider);
 
         // CaCO3 + 2NaCl -> Na2CO3 + CaCl2

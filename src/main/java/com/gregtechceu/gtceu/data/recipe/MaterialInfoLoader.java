@@ -23,11 +23,10 @@ public class MaterialInfoLoader {
         for (DyeColor color : DyeColor.values()) {
             String dye = color.getName();
             ItemMaterialData.registerMaterialInfo(
-                    new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(dye + "_terracotta"))).getItem(),
+                    BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dye + "_terracotta")),
                     new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
             ItemMaterialData.registerMaterialInfo(
-                    new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(dye + "_glazed_terracotta")))
-                            .getItem(),
+                    BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dye + "_glazed_terracotta")),
                     new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
         }
 

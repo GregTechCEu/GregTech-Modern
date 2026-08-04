@@ -55,7 +55,7 @@ public class OreVeinWorldEntry {
         info.operationsRemaining = tag.getInt("operationsRemaining");
 
         if (tag.contains("vein")) {
-            ResourceLocation id = ResourceLocation.tryParse(tag.getString("vein"));
+            ResourceLocation id = ResourceLocation.parse(tag.getString("vein"));
             if (GTRegistries.BEDROCK_ORE_DEFINITIONS.containsKey(id)) {
                 info.definition = GTRegistries.BEDROCK_ORE_DEFINITIONS.get(id);
             }

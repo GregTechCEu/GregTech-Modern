@@ -744,15 +744,11 @@ public class GTUtil {
     }
 
     public static boolean textureResourceExists(@NotNull ResourceLocation location) {
-        var textureLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
-                "textures/%s.png".formatted(location.getPath()));
-        return resourceExists(textureLocation);
+        return resourceExists(GTDynamicResourcePack.TEXTURE_ID_CONVERTER.idToFile(location));
     }
 
     public static boolean modelResourceExists(@NotNull ResourceLocation location) {
-        var modelLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
-                "models/%s.json".formatted(location.getPath()));
-        return resourceExists(modelLocation);
+        return resourceExists(GTDynamicResourcePack.MODEL_ID_CONVERTER.idToFile(location));
     }
 
     public static void openRecipeViewerCategory(GTRecipeCategory category) {

@@ -130,7 +130,7 @@ public class CapeRegistry extends SavedData {
             if (capeId.isEmpty())
                 continue;
             UUID uuid = entryTag.getUUID("owner");
-            CURRENT_CAPES.put(uuid, ResourceLocation.tryParse(capeId));
+            CURRENT_CAPES.put(uuid, ResourceLocation.parse(capeId));
         }
 
         return this;

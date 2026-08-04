@@ -226,7 +226,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         @Override
         public V readBuf(FriendlyByteBuf buf) {
             if (buf.readBoolean()) {
-                return get(ResourceLocation.parse(buf.readUtf()));
+                return get(buf.readResourceLocation());
             }
             return null;
         }
