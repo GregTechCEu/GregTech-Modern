@@ -94,7 +94,7 @@ inputs:
   gtm_ref:
     description: GTM ref.
     required: false
-    default: dev
+    default: ctnh
 
 runs:
   using: composite
