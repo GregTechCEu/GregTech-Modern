@@ -71,6 +71,8 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
         this.additionalTooltips.add(tooltip);
     }
 
+    /// delegates to {@link MultiPredicate#testMaxCount(BasePredicate, PredicateContext)},
+    /// with this predicate as the passing predicate
     public boolean checkMaxCount(PredicateContext context) {
         return getParent().testMaxCount(this, context);
     }

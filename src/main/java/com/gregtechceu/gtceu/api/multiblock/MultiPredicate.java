@@ -47,10 +47,9 @@ public abstract class MultiPredicate {
     }
 
     /// @param children list of multi predicate children
-    /// @param predicates list of testable predicates, must be modifiable
+    /// @param predicates list of testable predicates, should be sorted already
     protected MultiPredicate(Logic type, List<MultiPredicate> children, List<BasePredicate> predicates,
                              boolean hasAir) {
-        predicates.sort(BasePredicate::compareTo);
         predicates.forEach(p -> p.setParent(this));
         children.forEach(mp -> mp.setParent(this));
         this.predicates = Collections.unmodifiableList(predicates);
@@ -232,7 +231,7 @@ public abstract class MultiPredicate {
         return predicates.size() == 1 && !hasChildren();
     }
 
-    private boolean hasChildren() {
+    protected boolean hasChildren() {
         return !this.children.isEmpty();
     }
 
@@ -290,6 +289,7 @@ public abstract class MultiPredicate {
         List<MultiPredicate> children = new ArrayList<>();
         appendPredicates(type, a, predicates, children);
         appendPredicates(type, b, predicates, children);
+        predicates.sort(BasePredicate::compareTo);
         return type.makePredicate(children, predicates, a.hasAir || b.hasAir);
     }
 

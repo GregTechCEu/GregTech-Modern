@@ -47,11 +47,6 @@ public class AndPredicate extends MultiPredicate {
                 return false;
             }
         }
-        for (MultiPredicate child : children()) {
-            if (!child.testMaxCount(passedPredicate, context)) {
-                return false;
-            }
-        }
         return true;
     }
 }
