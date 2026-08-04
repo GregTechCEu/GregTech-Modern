@@ -18,7 +18,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
-            // todo error?
             .build();
 
     public static final BasePredicate ANY = new PredicateBuilder("Any")

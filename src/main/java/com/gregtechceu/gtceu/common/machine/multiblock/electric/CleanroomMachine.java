@@ -490,8 +490,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected static MultiPredicate innerPredicate() {
         return builder("InnerPredicate")
                 .predicate(ctx -> {
+                    // all non-GTMachines are allowed inside by default
                     if (ctx.blockEntity() instanceof MetaMachine machine) {
-                        return isMachineBanned(machine);
+                        return !isMachineBanned(machine);
                     }
                     return true;
                 })

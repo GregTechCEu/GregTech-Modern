@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
@@ -126,13 +127,14 @@ public class GTMultiMachines {
                     .slice("XXX", "X&X", "X#X", "X#X")
                     .slice("XXX", "XYX", "XXX", "XXX")
                     .where('X', blocks(CASING_PRIMITIVE_BRICKS.get()))
-                    .where('#', Predicates.air())
-                    .where('&', Predicates.air()
+                    .where('#', air())
+                    .where('&', air()
                             .or(builder("SnowPredicate")
                                     .predicate(ctx -> GTUtil.isBlockSnow(ctx.state()))
-                                    // .onError(ctx -> PLACEHOLDER)
+                                    // todo lang
+                                    .onError(ctx -> ctx.appendError(PatternStringError.literal("Can be snow")))
                                     .toMultiPredicate()))
-                    .where('Y', Predicates.controller(blocks(definition.getBlock())))
+                    .where('Y', controller(blocks(definition.getBlock())))
                     .build())
             .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
             .register();

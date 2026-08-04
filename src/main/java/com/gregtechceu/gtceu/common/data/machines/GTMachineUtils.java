@@ -748,13 +748,14 @@ public class GTMachineUtils {
                     }
                     return false;
                 })
-                .onError(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
+                .onError(ctx -> ctx.appendError(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER)))
                 .candidates(PartAbility.ROTOR_HOLDER.getAllBlocks()
                         .stream().map(BlockInfo::fromBlock))
                 .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
                 .toMultiPredicate()
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]));
+                // todo lang: must be of tier %s
+                .addTooltips(Component.literal("Can only be of tier: %s".formatted(VN[tier])));
     }
 
     // Tooltips
