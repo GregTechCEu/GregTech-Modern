@@ -64,14 +64,22 @@ public class GTMaterials {
         MaterialFlagAddition.register();
 
         CHEMICAL_DYES = new Material[] {
-                DyeWhite, DyeOrange,
-                DyeMagenta, DyeLightBlue,
-                DyeYellow, DyeLime,
-                DyePink, DyeGray,
-                DyeLightGray, DyeCyan,
-                DyePurple, DyeBlue,
-                DyeBrown, DyeGreen,
-                DyeRed, DyeBlack
+                DyeWhite,
+                DyeOrange,
+                DyeMagenta,
+                DyeLightBlue,
+                DyeYellow,
+                DyeLime,
+                DyePink,
+                DyeGray,
+                DyeLightGray,
+                DyeCyan,
+                DyePurple,
+                DyeBlue,
+                DyeBrown,
+                DyeGreen,
+                DyeRed,
+                DyeBlack
         };
 
         VOLTAGE_COMMON_MATERIALS = new Material[] {

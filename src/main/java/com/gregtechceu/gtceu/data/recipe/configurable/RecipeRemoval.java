@@ -278,15 +278,15 @@ public class RecipeRemoval {
     }
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
-        for (String color : GTValues.COLORS) {
-            registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", color)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", color)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", color)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", color)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", color)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", color)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", color)));
+        for (DyeColor color : DyeColor.values()) {
+            String name = color.getSerializedName();
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", name)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", name)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", name)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", name)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", name)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", name)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", name)));
 
             registry.accept(new ResourceLocation("white_dye"));
             registry.accept(new ResourceLocation("black_dye"));
@@ -402,8 +402,7 @@ public class RecipeRemoval {
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_carpet",
-                    color.name().toLowerCase(Locale.ROOT))));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_carpet", color.getSerializedName())));
         }
 
         // Slab replacement

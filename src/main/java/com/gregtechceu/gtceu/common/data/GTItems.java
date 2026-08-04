@@ -1459,16 +1459,17 @@ public class GTItems {
             .lang("Data Module").onRegister(attach(new DataItemBehavior(true, 256)))
             .register();
 
-    public static final Map<String, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<Item>[] GLASS_LENSES = new ItemEntry[DyeColor.values().length];
 
     static {
-        for (int i = 0; i < GTValues.COLORS.length; i++) {
-            String color = GTValues.COLORS[i];
-            if (color.equals("white")) continue;
-            GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
+        for (DyeColor color : DyeColor.values()) {
+            if (color == DyeColor.WHITE) continue;
+            int id = color.getId();
+            GLASS_LENSES[id] = REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
                     .lang("Glass Lens (%s)".formatted(toEnglishName(color)))
-                    .tag(CustomTags.LENSES_ARRAY[i])
-                    .register());
+                    .tag(CustomTags.LENSES_ARRAY[id])
+                    .register();
         }
     }
 
