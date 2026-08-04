@@ -404,22 +404,27 @@ public class MiscRecipeLoader {
                 .duration(40).EUt(6).save(provider);
 
         // Dyed Lens Recipes
-        GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("")
-                .inputItems(CustomTags.LENSES_GLASS)
-                .category(GTRecipeCategories.CHEM_DYES)
-                .duration(200).EUt(VA[HV]);
-        final int dyeAmount = 288;
+        {
+            GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("")
+                    .inputItems(CustomTags.LENSES_GLASS)
+                    .category(GTRecipeCategories.CHEM_DYES)
+                    .duration(200).EUt(VA[HV]);
+            final int dyeAmount = 288;
 
-        // skip white lens
-        for (int i = 1; i < CHEMICAL_DYES.length; i++) {
-            builder.copy(CHEMICAL_DYES[i].getName() + "_lens")
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
-                    .outputItems(GLASS_LENSES[i])
+            // skip white lens
+            for (int i = 1; i < CHEMICAL_DYES.length; i++) {
+                builder.copy(CHEMICAL_DYES[i].getName() + "_lens")
+                        .inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
+                        .outputItems(GLASS_LENSES[i])
+                        .save(provider);
+            }
+
+            builder.copy("colorless_lens")
+                    .inputFluids(DyeWhite.getFluid(dyeAmount))
+                    .outputItems(lens, Glass)
                     .save(provider);
         }
 
-        builder.copy("colorless_lens").inputFluids(DyeWhite.getFluid(dyeAmount)).outputItems(lens, Glass)
-                .save(provider);
         VanillaRecipeHelper.addShapelessRecipe(provider, "brown_dye_from_metal_mixture", new ItemStack(Items.BROWN_DYE),
                 new MaterialEntry(dust, MetalMixture));
 

@@ -36,7 +36,7 @@ public class VanillaStandardRecipes {
         smashingRecipes(provider);
         woodRecipes(provider);
         cuttingRecipes(provider);
-        dyingCleaningRecipes(provider);
+        dyeingCleaningRecipes(provider);
         redstoneRecipes(provider);
         metalRecipes(provider);
         miscRecipes(provider);
@@ -523,9 +523,9 @@ public class VanillaStandardRecipes {
     }
 
     /**
-     * + Adds dying and cleaning recipes for vanilla blocks
+     * + Adds dyeing and cleaning recipes for vanilla blocks
      */
-    private static void dyingCleaningRecipes(Consumer<FinishedRecipe> provider) {
+    private static void dyeingCleaningRecipes(Consumer<FinishedRecipe> provider) {
         for (DyeColor color : DyeColor.values()) {
             String dyeName = color.getName();
             MIXER_RECIPES.recipeBuilder(dyeName + "_concrete_powder").duration(200).EUt(VA[ULV])
@@ -534,6 +534,7 @@ public class VanillaStandardRecipes {
                     .inputFluids(CHEMICAL_DYES[color.getId()].getFluid(L))
                     .outputItems(new ItemStack(
                             BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete_powder")), 8))
+                    .category(GTRecipeCategories.CHEM_DYES)
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder(dyeName + "_concrete").duration(20).EUt(VA[ULV])

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.configurable;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 

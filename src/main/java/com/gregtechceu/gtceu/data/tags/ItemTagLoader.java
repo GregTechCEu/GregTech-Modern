@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 
@@ -95,34 +94,15 @@ public class ItemTagLoader {
                 .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(plate, TreatedWood))
                 .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(plate, Wood));
 
-        provider.addTag(CustomTags.CIRCUITS)
-                .addTag(CustomTags.ULV_CIRCUITS)
-                .addTag(CustomTags.LV_CIRCUITS)
-                .addTag(CustomTags.MV_CIRCUITS)
-                .addTag(CustomTags.HV_CIRCUITS)
-                .addTag(CustomTags.EV_CIRCUITS)
-                .addTag(CustomTags.IV_CIRCUITS)
-                .addTag(CustomTags.LuV_CIRCUITS)
-                .addTag(CustomTags.ZPM_CIRCUITS)
-                .addTag(CustomTags.UV_CIRCUITS)
-                .addTag(CustomTags.UHV_CIRCUITS)
-                .addOptionalTag(CustomTags.UEV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.UIV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.UXV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.OpV_CIRCUITS.location())
-                .addOptionalTag(CustomTags.MAX_CIRCUITS.location());
+        // add (likely empty) tags for the high tier circuits so we can add them to the `gtceu:circuits` tag easily
+        provider.addTag(CustomTags.UEV_CIRCUITS);
+        provider.addTag(CustomTags.UIV_CIRCUITS);
+        provider.addTag(CustomTags.UXV_CIRCUITS);
+        provider.addTag(CustomTags.OpV_CIRCUITS);
+        provider.addTag(CustomTags.MAX_CIRCUITS);
+        provider.addTag(CustomTags.CIRCUITS).addTags(CustomTags.CIRCUITS_ARRAY);
 
-        provider.addTag(CustomTags.BATTERIES)
-                .addTag(CustomTags.ULV_BATTERIES)
-                .addTag(CustomTags.LV_BATTERIES)
-                .addTag(CustomTags.MV_BATTERIES)
-                .addTag(CustomTags.HV_BATTERIES)
-                .addTag(CustomTags.EV_BATTERIES)
-                .addTag(CustomTags.IV_BATTERIES)
-                .addTag(CustomTags.LuV_BATTERIES)
-                .addTag(CustomTags.ZPM_BATTERIES)
-                .addTag(CustomTags.UV_BATTERIES)
-                .addTag(CustomTags.UHV_BATTERIES);
+        provider.addTag(CustomTags.BATTERIES).addTags(CustomTags.BATTERIES_ARRAY);
 
         // Add highTierContent items as optional entries so it doesn't error
         provider.addTag(CustomTags.ELECTRIC_MOTORS)
