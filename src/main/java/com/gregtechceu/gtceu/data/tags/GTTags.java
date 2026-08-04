@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.recipe;
+package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
@@ -19,7 +19,7 @@ import net.minecraftforge.common.Tags;
 // spotless:off
 @SuppressWarnings("deprecation")
 @UtilityClass
-public class CustomTags {
+public class GTTags {
 
     // region blocks
     @UtilityClass

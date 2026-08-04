@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.ToolHeadReplaceRecipe;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 
@@ -216,7 +216,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.Steel),
                     'S', GTItems.SENSOR_LV.asStack(),
                     'D', new MaterialEntry(plate, GTMaterials.Glass),
-                    'C', CustomTags.Items.LV_CIRCUITS,
+                    'C', GTTags.Items.LV_CIRCUITS,
                     'B', batteryItem.asStack());
 
             {
@@ -246,7 +246,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.Aluminium),
                     'S', GTItems.SENSOR_MV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
-                    'C', CustomTags.Items.MV_CIRCUITS,
+                    'C', GTTags.Items.MV_CIRCUITS,
                     'B', batteryItem.asStack());
         }
 
@@ -259,7 +259,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.StainlessSteel),
                     'S', GTItems.SENSOR_HV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
-                    'C', CustomTags.Items.HV_CIRCUITS,
+                    'C', GTTags.Items.HV_CIRCUITS,
                     'B', batteryItem.asStack());
 
             {
@@ -289,7 +289,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.RhodiumPlatedPalladium),
                     'S', GTItems.SENSOR_LuV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
-                    'C', CustomTags.Items.LuV_CIRCUITS,
+                    'C', GTTags.Items.LuV_CIRCUITS,
                     'B', batteryItem.asStack());
         }
     }

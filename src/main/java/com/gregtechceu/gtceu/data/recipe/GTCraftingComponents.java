@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEvent;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
@@ -77,39 +78,39 @@ public class GTCraftingComponents {
         /*
          * GTCEu must supply values for at least tiers 1 through 8 (through UV)
          */
-        CIRCUIT = CraftingComponent.of("circuit", CustomTags.Items.ULV_CIRCUITS)
-                .add(ULV, CustomTags.Items.ULV_CIRCUITS)
-                .add(LV, CustomTags.Items.LV_CIRCUITS)
-                .add(MV, CustomTags.Items.MV_CIRCUITS)
-                .add(HV, CustomTags.Items.HV_CIRCUITS)
-                .add(EV, CustomTags.Items.EV_CIRCUITS)
-                .add(IV, CustomTags.Items.IV_CIRCUITS)
-                .add(LuV, CustomTags.Items.LuV_CIRCUITS)
-                .add(ZPM, CustomTags.Items.ZPM_CIRCUITS)
-                .add(UV, CustomTags.Items.UV_CIRCUITS)
-                .add(UHV, CustomTags.Items.UHV_CIRCUITS)
-                .add(UEV, CustomTags.Items.UEV_CIRCUITS)
-                .add(UIV, CustomTags.Items.UIV_CIRCUITS)
-                .add(UXV, CustomTags.Items.UXV_CIRCUITS)
-                .add(OpV, CustomTags.Items.OpV_CIRCUITS)
-                .add(MAX, CustomTags.Items.MAX_CIRCUITS);
+        CIRCUIT = CraftingComponent.of("circuit", GTTags.Items.ULV_CIRCUITS)
+                .add(ULV, GTTags.Items.ULV_CIRCUITS)
+                .add(LV, GTTags.Items.LV_CIRCUITS)
+                .add(MV, GTTags.Items.MV_CIRCUITS)
+                .add(HV, GTTags.Items.HV_CIRCUITS)
+                .add(EV, GTTags.Items.EV_CIRCUITS)
+                .add(IV, GTTags.Items.IV_CIRCUITS)
+                .add(LuV, GTTags.Items.LuV_CIRCUITS)
+                .add(ZPM, GTTags.Items.ZPM_CIRCUITS)
+                .add(UV, GTTags.Items.UV_CIRCUITS)
+                .add(UHV, GTTags.Items.UHV_CIRCUITS)
+                .add(UEV, GTTags.Items.UEV_CIRCUITS)
+                .add(UIV, GTTags.Items.UIV_CIRCUITS)
+                .add(UXV, GTTags.Items.UXV_CIRCUITS)
+                .add(OpV, GTTags.Items.OpV_CIRCUITS)
+                .add(MAX, GTTags.Items.MAX_CIRCUITS);
 
-        BETTER_CIRCUIT = CraftingComponent.of("better_circuit", CustomTags.Items.ULV_CIRCUITS)
-                .add(ULV, CustomTags.Items.LV_CIRCUITS)
-                .add(LV, CustomTags.Items.MV_CIRCUITS)
-                .add(MV, CustomTags.Items.HV_CIRCUITS)
-                .add(HV, CustomTags.Items.EV_CIRCUITS)
-                .add(EV, CustomTags.Items.IV_CIRCUITS)
-                .add(IV, CustomTags.Items.LuV_CIRCUITS)
-                .add(LuV, CustomTags.Items.ZPM_CIRCUITS)
-                .add(ZPM, CustomTags.Items.UV_CIRCUITS)
-                .add(UV, CustomTags.Items.UHV_CIRCUITS)
-                .add(UHV, CustomTags.Items.UEV_CIRCUITS)
-                .add(UEV, CustomTags.Items.UIV_CIRCUITS)
-                .add(UIV, CustomTags.Items.UXV_CIRCUITS)
-                .add(UXV, CustomTags.Items.OpV_CIRCUITS)
-                .add(OpV, CustomTags.Items.MAX_CIRCUITS)
-                .add(MAX, CustomTags.Items.MAX_CIRCUITS);
+        BETTER_CIRCUIT = CraftingComponent.of("better_circuit", GTTags.Items.ULV_CIRCUITS)
+                .add(ULV, GTTags.Items.LV_CIRCUITS)
+                .add(LV, GTTags.Items.MV_CIRCUITS)
+                .add(MV, GTTags.Items.HV_CIRCUITS)
+                .add(HV, GTTags.Items.EV_CIRCUITS)
+                .add(EV, GTTags.Items.IV_CIRCUITS)
+                .add(IV, GTTags.Items.LuV_CIRCUITS)
+                .add(LuV, GTTags.Items.ZPM_CIRCUITS)
+                .add(ZPM, GTTags.Items.UV_CIRCUITS)
+                .add(UV, GTTags.Items.UHV_CIRCUITS)
+                .add(UHV, GTTags.Items.UEV_CIRCUITS)
+                .add(UEV, GTTags.Items.UIV_CIRCUITS)
+                .add(UIV, GTTags.Items.UXV_CIRCUITS)
+                .add(UXV, GTTags.Items.OpV_CIRCUITS)
+                .add(OpV, GTTags.Items.MAX_CIRCUITS)
+                .add(MAX, GTTags.Items.MAX_CIRCUITS);
 
         WIRE_ELECTRIC = CraftingComponent.of("wire_single", wireGtSingle, Gold)
                 .add(ULV, wireGtSingle, Gold)

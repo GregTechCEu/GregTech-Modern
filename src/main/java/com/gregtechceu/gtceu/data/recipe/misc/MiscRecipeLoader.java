@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
@@ -40,7 +40,7 @@ public class MiscRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_memory_card", MACHINE_MEMORY_CARD.asStack(),
                 "PWP", "SLS", "PPP", 'P', new MaterialEntry(plate, Steel), 'W',
                 new MaterialEntry(wireGtSingle, Copper), 'S', new MaterialEntry(screw, RedAlloy), 'L',
-                CustomTags.Items.LV_CIRCUITS);
+                GTTags.Items.LV_CIRCUITS);
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
                 new MaterialEntry(dust, Copper),
@@ -204,7 +204,7 @@ public class MiscRecipeLoader {
 
         // QuarkTech Suite
         ASSEMBLER_RECIPES.recipeBuilder("quantum_helmet").duration(1500).EUt(VA[IV])
-                .inputItems(CustomTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 5)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(SENSOR_IV)
@@ -219,7 +219,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
-                .inputItems(CustomTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 8)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(EMITTER_IV.asStack(2))
@@ -234,7 +234,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
-                .inputItems(CustomTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 7)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_MOTOR_IV, 4)
@@ -249,7 +249,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
-                .inputItems(CustomTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_PISTON_IV, 2)
@@ -270,7 +270,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireGtQuadruple, Osmium, 6)
                 .inputItems(plateDouble, Iridium, 4)
                 .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(CustomTags.Items.ZPM_CIRCUITS)
+                .inputItems(GTTags.Items.ZPM_CIRCUITS)
                 .inputItems(plateDense, RhodiumPlatedPalladium, 2)
                 .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
                 .inputItems(FIELD_GENERATOR_LuV, 2)
@@ -406,7 +406,7 @@ public class MiscRecipeLoader {
         // Dyed Lens Recipes
         {
             GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("")
-                    .inputItems(CustomTags.Items.LENSES_GLASS)
+                    .inputItems(GTTags.Items.LENSES_GLASS)
                     .category(GTRecipeCategories.CHEM_DYES)
                     .duration(200).EUt(VA[HV]);
             final int dyeAmount = 288;
@@ -498,11 +498,11 @@ public class MiscRecipeLoader {
         if (!ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 8),
                     "FFF", "FWF", "FFF",
-                    'F', CustomTags.Items.GRAINS_WHEAT,
+                    'F', GTTags.Items.GRAINS_WHEAT,
                     'W', Water.getBucket());
 
             MIXER_RECIPES.recipeBuilder("flour_to_dough")
-                    .inputItems(CustomTags.Items.GRAINS_WHEAT, 2)
+                    .inputItems(GTTags.Items.GRAINS_WHEAT, 2)
                     .inputFluids(Water.getFluid(250))
                     .outputItems(DOUGH, 3)
                     .EUt(VA[ULV])
@@ -510,14 +510,14 @@ public class MiscRecipeLoader {
                     .save(provider);
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "pumpkin_pie_from_dough", new ItemStack(Items.PUMPKIN_PIE),
-                    new ItemStack(Blocks.PUMPKIN), new ItemStack(Items.SUGAR), CustomTags.Items.DOUGHS);
+                    new ItemStack(Blocks.PUMPKIN), new ItemStack(Items.SUGAR), GTTags.Items.DOUGHS);
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "cookie_from_dough", new ItemStack(Items.COOKIE, 8),
-                    CustomTags.Items.DOUGHS, new ItemStack(Items.COCOA_BEANS));
+                    GTTags.Items.DOUGHS, new ItemStack(Items.COCOA_BEANS));
 
             FORMING_PRESS_RECIPES.recipeBuilder("cookie")
                     .notConsumable(SHAPE_MOLD_CYLINDER)
-                    .inputItems(CustomTags.Items.DOUGHS)
+                    .inputItems(GTTags.Items.DOUGHS)
                     .inputItems(Items.COCOA_BEANS, 2)
                     .outputItems(Items.COOKIE, 12)
                     .EUt(VA[LV])
@@ -529,15 +529,15 @@ public class MiscRecipeLoader {
                     'E', Items.EGG,
                     'S', Items.SUGAR,
                     'M', new FluidContainerIngredient(Milk.getFluidTag(), 1000),
-                    'D', CustomTags.Items.DOUGHS);
+                    'D', GTTags.Items.DOUGHS);
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "flour_to_dough", new ItemStack(DOUGH, 4),
                     "FFF", "FWF", "FFF",
-                    'F', CustomTags.Items.GRAINS_WHEAT,
+                    'F', GTTags.Items.GRAINS_WHEAT,
                     'W', Water.getBucket());
 
             MIXER_RECIPES.recipeBuilder("flour_to_dough")
-                    .inputItems(CustomTags.Items.GRAINS_WHEAT, 4)
+                    .inputItems(GTTags.Items.GRAINS_WHEAT, 4)
                     .inputItems(Items.EGG, 2)
                     .inputFluids(Milk.getFluid(250)) // 1 bucket = 1000mB, hence 250mb. Also its infinitely renewable
                     .outputItems(DOUGH, 7)
@@ -546,14 +546,14 @@ public class MiscRecipeLoader {
                     .save(provider);
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "pumpkin_pie_from_dough", new ItemStack(Items.PUMPKIN_PIE),
-                    new ItemStack(Blocks.PUMPKIN), CustomTags.Items.DOUGHS, new ItemStack(Items.SUGAR), 'r', 'k');
+                    new ItemStack(Blocks.PUMPKIN), GTTags.Items.DOUGHS, new ItemStack(Items.SUGAR), 'r', 'k');
 
             VanillaRecipeHelper.addShapelessRecipe(provider, "cookie", new ItemStack(Items.COOKIE, 4),
-                    new ItemStack(Items.COCOA_BEANS), CustomTags.Items.DOUGHS, new ItemStack(Items.SUGAR), 'r');
+                    new ItemStack(Items.COCOA_BEANS), GTTags.Items.DOUGHS, new ItemStack(Items.SUGAR), 'r');
 
             FORMING_PRESS_RECIPES.recipeBuilder("cookie")
                     .notConsumable(SHAPE_MOLD_CYLINDER)
-                    .inputItems(CustomTags.Items.DOUGHS)
+                    .inputItems(GTTags.Items.DOUGHS)
                     .inputItems(Items.COCOA_BEANS, 2)
                     .inputItems(Items.SUGAR)
                     .outputItems(Items.COOKIE, 8)
@@ -566,12 +566,12 @@ public class MiscRecipeLoader {
                     'B', Items.SWEET_BERRIES,
                     'S', Items.SUGAR,
                     'M', new FluidContainerIngredient(Milk.getFluidTag(), 1000),
-                    'D', CustomTags.Items.DOUGHS);
+                    'D', GTTags.Items.DOUGHS);
         }
 
         FORMING_PRESS_RECIPES.recipeBuilder("pumpkin_pie")
                 .notConsumable(SHAPE_MOLD_CYLINDER)
-                .inputItems(CustomTags.Items.DOUGHS, 2)
+                .inputItems(GTTags.Items.DOUGHS, 2)
                 .inputItems(Items.PUMPKIN)
                 .inputItems(Items.SUGAR)
                 .outputItems(Items.PUMPKIN_PIE, 2)
@@ -580,11 +580,11 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // XP set to 0.35, similar to vanilla food smelting
-        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", CustomTags.Items.DOUGHS, new ItemStack(Items.BREAD),
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS, new ItemStack(Items.BREAD),
                 0.35f);
-        VanillaRecipeHelper.addCampfireRecipe(provider, "dough_to_bread", CustomTags.Items.DOUGHS, new ItemStack(Items.BREAD),
+        VanillaRecipeHelper.addCampfireRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS, new ItemStack(Items.BREAD),
                 0.35f);
-        VanillaRecipeHelper.addSmokingRecipe(provider, "dough_to_bread", CustomTags.Items.DOUGHS, new ItemStack(Items.BREAD),
+        VanillaRecipeHelper.addSmokingRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS, new ItemStack(Items.BREAD),
                 0.35f);
 
         FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")

@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -474,7 +474,7 @@ public final class MaterialRecipeHandler {
                         "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
                                 "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
                 .inputItems(prevStack)
-                .notConsumable(CustomTags.Items.LENSES_WHITE)
+                .notConsumable(GTTags.Items.LENSES_WHITE)
                 .outputItems(prefix, material)
                 .duration(300)
                 .EUt(240)

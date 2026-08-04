@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
@@ -60,6 +60,6 @@ public class MaterialToolTier implements Tier {
 
     @Override
     public @Nullable TagKey<Block> getTag() {
-        return CustomTags.Blocks.TOOL_TIERS[getLevel()];
+        return GTTags.Blocks.TOOL_TIERS[getLevel()];
     }
 }

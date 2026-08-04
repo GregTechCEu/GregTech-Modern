@@ -26,7 +26,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.machines.GCYMMachines.*;
-import static com.gregtechceu.gtceu.data.recipe.CustomTags.*;
+import static com.gregtechceu.gtceu.data.tags.GTTags.*;
 
 public class GCYMRecipes {
 

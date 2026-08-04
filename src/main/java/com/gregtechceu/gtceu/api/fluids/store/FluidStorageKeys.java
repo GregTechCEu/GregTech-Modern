@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public final class FluidStorageKeys {
             m -> "gtceu.fluid.plasma",
             FluidState.PLASMA, -1);
 
-    public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"), CustomTags.Fluids.MOLTEN,
+    public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"), GTTags.Fluids.MOLTEN,
             MaterialIconType.molten,
             m -> "molten_" + m.getName(),
             m -> "gtceu.fluid.molten",

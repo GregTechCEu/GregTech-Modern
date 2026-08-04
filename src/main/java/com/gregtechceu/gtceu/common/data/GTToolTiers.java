@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Tier;
@@ -24,13 +24,13 @@ public class GTToolTiers {
         var duranium = GTCEu.id("duranium");
         var neutronium = GTCEu.id("neutronium");
         DURANIUM = TierSortingRegistry.registerTier(
-                new ForgeTier(5, 8193, 14.0F, 12.0F, 33, CustomTags.Blocks.NEEDS_DURANIUM_TOOL,
+                new ForgeTier(5, 8193, 14.0F, 12.0F, 33, GTTags.Blocks.NEEDS_DURANIUM_TOOL,
                         () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Duranium))),
                 duranium,
                 List.of(netherite),
                 List.of(neutronium));
         NEUTRONIUM = TierSortingRegistry.registerTier(
-                new ForgeTier(6, 65536, 180.0F, 100.0F, 33, CustomTags.Blocks.NEEDS_NEUTRONIUM_TOOL,
+                new ForgeTier(6, 65536, 180.0F, 100.0F, 33, GTTags.Blocks.NEEDS_NEUTRONIUM_TOOL,
                         () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Neutronium))),
                 neutronium,
                 List.of(duranium),

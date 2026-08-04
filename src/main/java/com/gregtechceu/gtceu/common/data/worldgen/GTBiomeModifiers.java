@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
@@ -28,7 +28,7 @@ public class GTBiomeModifiers {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
 
-        HolderSet<Biome> biomes = biomeLookup.getOrThrow(CustomTags.Biomes.HAS_RUBBER_TREE);
+        HolderSet<Biome> biomes = biomeLookup.getOrThrow(GTTags.Biomes.HAS_RUBBER_TREE);
         Holder<PlacedFeature> rubberTree = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RUBBER_CHECKED);
         ctx.register(RUBBER, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes,

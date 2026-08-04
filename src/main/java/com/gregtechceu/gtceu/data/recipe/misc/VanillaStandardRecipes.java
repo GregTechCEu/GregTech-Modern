@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -547,7 +547,7 @@ public class VanillaStandardRecipes {
 
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_concrete_to_" + dyeName).duration(20).EUt(VA[ULV])
-                        .inputItems(CustomTags.Items.CONCRETES)
+                        .inputItems(GTTags.Items.CONCRETES)
                         .inputFluids(CHEMICAL_DYES[color.getId()].getFluid(L / 8))
                         .outputItems(
                                 new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete"))))
@@ -659,7 +659,7 @@ public class VanillaStandardRecipes {
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_concrete")
-                .inputItems(CustomTags.Items.CONCRETES)
+                .inputItems(GTTags.Items.CONCRETES)
                 .inputFluids(Chlorine.getFluid(20))
                 .outputItems(Items.WHITE_CONCRETE)
                 .category(GTRecipeCategories.CHEM_DYES)

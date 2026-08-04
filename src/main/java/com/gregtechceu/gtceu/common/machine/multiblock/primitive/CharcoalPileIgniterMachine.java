@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.core.BlockPos;
@@ -154,7 +154,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         return new PatternPredicate("Wall Blocks",
                 multiblockState -> {
                     BlockPos p = multiblockState.getBlockPos();
-                    return multiblockState.getBlockState().is(CustomTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS) ?
+                    return multiblockState.getBlockState().is(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS) ?
                             null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
                                     p.getX(), p.getY(), p.getZ()));
                 }, null);
@@ -170,7 +170,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static int findWallPos(Level level, Direction direction, BlockPos.MutableBlockPos pos) {
         for (int i = 1; i <= MAX_RADIUS; i++) {
             BlockState state = level.getBlockState(pos.move(direction));
-            if (state.is(CustomTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS)) {
+            if (state.is(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS)) {
                 return i;
             }
         }
@@ -230,7 +230,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         var player = context.getPlayer();
         var hand = context.getHand();
 
-        if (!stack.is(CustomTags.Items.TOOLS_IGNITER)) {
+        if (!stack.is(GTTags.Items.TOOLS_IGNITER)) {
             return InteractionResult.PASS;
         }
 

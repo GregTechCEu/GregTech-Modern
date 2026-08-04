@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.block.explosive;
 
 import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -101,7 +101,7 @@ public abstract class GTExplosiveBlock extends Block {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && stack.is(CustomTags.Items.TOOLS_IGNITER)) {
+        if (!stack.isEmpty() && stack.is(GTTags.Items.TOOLS_IGNITER)) {
             this.explode(level, pos, player);
             level.removeBlock(pos, false);
             if (stack.isDamageableItem()) {

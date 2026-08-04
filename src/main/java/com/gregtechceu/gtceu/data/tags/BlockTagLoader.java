@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -17,12 +16,12 @@ import com.tterrag.registrate.providers.RegistrateTagsProvider;
 public class BlockTagLoader {
 
     public static void init(RegistrateTagsProvider.IntrinsicImpl<Block> provider) {
-        provider.addTag(CustomTags.Blocks.CONCRETES)
+        provider.addTag(GTTags.Blocks.CONCRETES)
                 .add(Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE,
                         Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE, Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE,
                         Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE, Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                         Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
-        provider.addTag(CustomTags.Blocks.CONCRETE_POWDERS)
+        provider.addTag(GTTags.Blocks.CONCRETE_POWDERS)
                 .add(Blocks.WHITE_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE_POWDER, Blocks.MAGENTA_CONCRETE_POWDER,
                         Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER, Blocks.LIME_CONCRETE_POWDER,
                         Blocks.PINK_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CONCRETE_POWDER,
@@ -30,7 +29,7 @@ public class BlockTagLoader {
                         Blocks.BROWN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER,
                         Blocks.BLACK_CONCRETE_POWDER);
 
-        var speedConcretes = provider.addTag(CustomTags.Blocks.VERY_FAST_WALKABLE_BLOCKS);
+        var speedConcretes = provider.addTag(GTTags.Blocks.VERY_FAST_WALKABLE_BLOCKS);
         speedConcretes.add(GTBlocks.LIGHT_CONCRETE.get(), GTBlocks.DARK_CONCRETE.get());
 
         GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_LIGHT)
@@ -38,12 +37,12 @@ public class BlockTagLoader {
         GTBlocks.STONE_BLOCKS.column(StoneTypes.CONCRETE_DARK)
                 .forEach((type, block) -> speedConcretes.add(block.get()));
 
-        var studs = provider.addTag(CustomTags.Blocks.FAST_WALKABLE_BLOCKS);
+        var studs = provider.addTag(GTTags.Blocks.FAST_WALKABLE_BLOCKS);
         GTBlocks.STUDS.forEach((color, block) -> studs.add(block.get()));
 
-        provider.addTag(CustomTags.Blocks.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
+        provider.addTag(GTTags.Blocks.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
 
-        provider.addTag(CustomTags.Blocks.TALL_PLANTS)
+        provider.addTag(GTTags.Blocks.TALL_PLANTS)
                 .add(Blocks.SUGAR_CANE, Blocks.CACTUS)
                 .add(Blocks.TALL_GRASS, Blocks.LARGE_FERN)
                 .add(Blocks.BAMBOO, Blocks.BAMBOO_SAPLING)
@@ -71,17 +70,17 @@ public class BlockTagLoader {
                 .add(GTMachines.WOODEN_CRATE.getBlock());
 
         // always add the wrench/pickaxe tag as a valid tag to mineable/wrench etc.
-        provider.addTag(CustomTags.Blocks.MINEABLE_WITH_WRENCH)
-                .addTag(CustomTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
+        provider.addTag(GTTags.Blocks.MINEABLE_WITH_WRENCH)
+                .addTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .add(Blocks.PISTON, Blocks.PISTON_HEAD, Blocks.STICKY_PISTON, Blocks.OBSERVER, Blocks.REDSTONE_LAMP,
                         Blocks.REDSTONE_BLOCK, Blocks.IRON_DOOR, Blocks.IRON_TRAPDOOR,
                         Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE, Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE,
                         Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE, Blocks.HOPPER, Blocks.DISPENSER, Blocks.DROPPER,
                         Blocks.LIGHTNING_ROD, Blocks.DAYLIGHT_DETECTOR, Blocks.BELL);
-        provider.addTag(CustomTags.Blocks.MINEABLE_WITH_WIRE_CUTTER)
-                .addTag(CustomTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
+        provider.addTag(GTTags.Blocks.MINEABLE_WITH_WIRE_CUTTER)
+                .addTag(GTTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
 
-        provider.addTag(CustomTags.Blocks.MINEABLE_WITH_SHEARS)
+        provider.addTag(GTTags.Blocks.MINEABLE_WITH_SHEARS)
                 .addTag(BlockTags.LEAVES)
                 .addTag(BlockTags.WOOL)
                 .add(Blocks.COBWEB, Blocks.DEAD_BUSH, Blocks.FERN, Blocks.GLOW_LICHEN, Blocks.HANGING_ROOTS,
@@ -89,7 +88,7 @@ public class BlockTagLoader {
                         Blocks.TALL_GRASS, Blocks.TALL_SEAGRASS, Blocks.TRIPWIRE, Blocks.TWISTING_VINES, Blocks.VINE,
                         Blocks.WEEPING_VINES);
 
-        provider.addTag(CustomTags.Blocks.CLEANROOM_FLOORS)
+        provider.addTag(GTTags.Blocks.CLEANROOM_FLOORS)
                 .addOptionalTag(new ResourceLocation("elevatorid:elevators"))
                 .addOptional(new ResourceLocation("enderio:travel_anchor"))
                 .addOptional(new ResourceLocation("rftoolsutility:matter_transmitter"))
@@ -97,13 +96,13 @@ public class BlockTagLoader {
                 .addOptional(new ResourceLocation("rftoolsutility:dialing_device"))
                 .addOptional(new ResourceLocation("travelanchors:travel_anchor"));
 
-        provider.addTag(CustomTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS)
+        provider.addTag(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS)
                 .addTag(BlockTags.DIRT) // any dirt blocks
                 .remove(Blocks.MOSS_BLOCK, Blocks.MUD, Blocks.MUDDY_MANGROVE_ROOTS) // except moss and mud
                 .add(Blocks.DIRT_PATH) // path blocks
                 .addTag(Tags.Blocks.SAND).addTag(BlockTags.SAND) // any sand blocks
                 .addTag(BlockTags.TERRACOTTA); // any terracotta
 
-        provider.addTag(CustomTags.Blocks.CLEANROOM_DOORS).add(Blocks.IRON_DOOR).addTag(BlockTags.WOODEN_DOORS);
+        provider.addTag(GTTags.Blocks.CLEANROOM_DOORS).add(Blocks.IRON_DOOR).addTag(BlockTags.WOODEN_DOORS);
     }
 }

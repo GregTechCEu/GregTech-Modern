@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
@@ -452,7 +452,7 @@ public class GTUtil {
             return FluidType.BUCKET_VOLUME / 4;
         } else if (biome.is(Tags.Biomes.IS_COLD)) {
             return FluidType.BUCKET_VOLUME * 175 / 1000;
-        } else if (biome.is(CustomTags.Biomes.IS_SANDY)) {
+        } else if (biome.is(GTTags.Biomes.IS_SANDY)) {
             return FluidType.BUCKET_VOLUME * 170 / 1000;
         }
         return FluidType.BUCKET_VOLUME / 10;

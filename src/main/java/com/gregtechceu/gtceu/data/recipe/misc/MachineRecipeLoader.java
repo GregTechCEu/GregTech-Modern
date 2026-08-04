@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -293,16 +293,16 @@ public class MachineRecipeLoader {
         registerCobbleRecipe(provider, stones, cobbles);
         registerMossRecipe(provider, cobbles, mossCobbles);
         registerSmoothRecipe(provider, stones, polisheds);
-        registerBricksRecipe(provider, polisheds, bricks, CustomTags.Items.LENSES_LIGHT_BLUE);
+        registerBricksRecipe(provider, polisheds, bricks, GTTags.Items.LENSES_LIGHT_BLUE);
         registerCobbleRecipe(provider, bricks, crackedBricks);
         registerMossRecipe(provider, bricks, mossBricks);
-        registerBricksRecipe(provider, polisheds, chiseledBricks, CustomTags.Items.LENSES_WHITE);
-        registerBricksRecipe(provider, polisheds, tiledBricks, CustomTags.Items.LENSES_RED);
-        registerBricksRecipe(provider, tiledBricks, smallTiledBricks, CustomTags.Items.LENSES_RED);
-        registerBricksRecipe(provider, polisheds, windmillA, CustomTags.Items.LENSES_BLUE);
-        registerBricksRecipe(provider, polisheds, windmillB, CustomTags.Items.LENSES_YELLOW);
-        registerBricksRecipe(provider, polisheds, squareBricks, CustomTags.Items.LENSES_GREEN);
-        registerBricksRecipe(provider, polisheds, smallBricks, CustomTags.Items.LENSES_PINK);
+        registerBricksRecipe(provider, polisheds, chiseledBricks, GTTags.Items.LENSES_WHITE);
+        registerBricksRecipe(provider, polisheds, tiledBricks, GTTags.Items.LENSES_RED);
+        registerBricksRecipe(provider, tiledBricks, smallTiledBricks, GTTags.Items.LENSES_RED);
+        registerBricksRecipe(provider, polisheds, windmillA, GTTags.Items.LENSES_BLUE);
+        registerBricksRecipe(provider, polisheds, windmillB, GTTags.Items.LENSES_YELLOW);
+        registerBricksRecipe(provider, polisheds, squareBricks, GTTags.Items.LENSES_GREEN);
+        registerBricksRecipe(provider, polisheds, smallBricks, GTTags.Items.LENSES_PINK);
 
         for (int i = 0; i < stones.size(); i++) {
             ResourceLocation bricksId = BuiltInRegistries.ITEM.getKey(bricks.get(i).getItem());
@@ -512,7 +512,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_energy_detector")
                 .inputItems(cableGtSingle, Copper, 4)
-                .inputItems(CustomTags.Items.LV_CIRCUITS)
+                .inputItems(GTTags.Items.LV_CIRCUITS)
                 .inputItems(plate, Iron)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ENERGY_DETECTOR)
@@ -540,7 +540,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_advanced_activity_cover")
                 .inputItems(wireFine, Gold, 4)
-                .inputItems(CustomTags.Items.HV_CIRCUITS)
+                .inputItems(GTTags.Items.HV_CIRCUITS)
                 .inputItems(plate, Aluminium)
                 .inputFluids(SolderingAlloy, L / 2)
                 .outputItems(COVER_ACTIVITY_DETECTOR_ADVANCED)
@@ -596,7 +596,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("cover_screen")
                 .inputItems(plate, Glass)
                 .inputItems(foil, Aluminium, 4)
-                .inputItems(CustomTags.Items.LV_CIRCUITS)
+                .inputItems(GTTags.Items.LV_CIRCUITS)
                 .inputItems(wireFine, Copper, 4)
                 .outputItems(COVER_SCREEN)
                 .EUt(16).duration(50)
@@ -606,7 +606,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("cover_infinite_water")
                 .inputItems(ELECTRIC_PUMP_HV, 2)
                 .inputItems(new ItemStack(Items.CAULDRON))
-                .inputItems(CustomTags.Items.HV_CIRCUITS)
+                .inputItems(GTTags.Items.HV_CIRCUITS)
                 .outputItems(COVER_INFINITE_WATER)
                 .EUt(VA[HV]).duration(100)
                 .addMaterialInfo(true)
@@ -641,7 +641,7 @@ public class MachineRecipeLoader {
                 .inputItems(plateDouble, Aluminium)
                 .inputItems(SENSOR_MV)
                 .inputItems(EMITTER_MV)
-                .inputItems(CustomTags.Items.MV_CIRCUITS)
+                .inputItems(GTTags.Items.MV_CIRCUITS)
                 .inputFluids(SolderingAlloy, L * 2)
                 .outputItems(COVER_ENDER_REDSTONE_LINK)
                 .EUt(VA[MV]).duration(320)
@@ -829,7 +829,7 @@ public class MachineRecipeLoader {
                 .outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("fusion_coil").EUt(VA[ZPM]).inputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack())
                 .inputItems(FIELD_GENERATOR_IV.asStack(2)).inputItems(ELECTRIC_PUMP_IV)
-                .inputItems(NEUTRON_REFLECTOR.asStack(2)).inputItems(CustomTags.Items.LuV_CIRCUITS, 4)
+                .inputItems(NEUTRON_REFLECTOR.asStack(2)).inputItems(GTTags.Items.LuV_CIRCUITS, 4)
                 .inputItems(pipeSmallFluid, Naquadah, 4).inputItems(plate, Europium, 4)
                 .inputFluids(VanadiumGallium, GTValues.L * 4).outputItems(GTBlocks.FUSION_COIL.asStack())
                 .duration(100).cleanroom(CleanroomType.CLEANROOM).addMaterialInfo(true, true)
@@ -905,7 +905,7 @@ public class MachineRecipeLoader {
 
         ASSEMBLER_RECIPES.recipeBuilder("assembly_control_casing")
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(CustomTags.Items.EV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.EV_CIRCUITS, 4)
                 .inputItems(SENSOR_IV)
                 .inputItems(EMITTER_IV)
                 .inputItems(ELECTRIC_MOTOR_IV)
@@ -1335,13 +1335,13 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_coral_block")
-                .inputItems(CustomTags.Items.CORAL_BLOCKS)
+                .inputItems(GTTags.Items.CORAL_BLOCKS)
                 .outputItems(dust, Calcite)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_coral")
-                .inputItems(CustomTags.Items.CORALS)
+                .inputItems(GTTags.Items.CORALS)
                 .outputItems(dustTiny, Calcite)
                 .duration(25).EUt(2)
                 .save(provider);

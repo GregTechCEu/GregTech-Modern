@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -641,7 +641,7 @@ public class ReactorRecipes {
         // Dyes
         for (int i = 0; i < CHEMICAL_DYES.length; i++) {
             CHEMICAL_RECIPES.recipeBuilder("chemical_" + CHEMICAL_DYES[i].getName())
-                    .inputItems(CustomTags.Items.DYES_ARRAY[i])
+                    .inputItems(GTTags.Items.DYES_ARRAY[i])
                     .inputItems(dust, Salt, 2)
                     .inputFluids(SulfuricAcid.getFluid(250))
                     .outputFluids(CHEMICAL_DYES[i].getFluid(288))
