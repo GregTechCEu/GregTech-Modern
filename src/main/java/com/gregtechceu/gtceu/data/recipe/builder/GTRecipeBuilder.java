@@ -1615,7 +1615,7 @@ public class GTRecipeBuilder {
 
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath());
+                return id.withPath(recipeType.registryName.getPath() + "/" + id.getPath());
             }
 
             @Override

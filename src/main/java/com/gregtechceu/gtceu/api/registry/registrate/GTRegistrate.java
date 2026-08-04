@@ -71,7 +71,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     public ResourceLocation makeResourceLocation(String path) {
-        return new ResourceLocation(this.getModid(), path);
+        return ResourceLocation.fromNamespaceAndPath(this.getModid(), path);
     }
 
     /**

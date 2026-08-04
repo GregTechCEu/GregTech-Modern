@@ -77,7 +77,7 @@ public class FluidVeinWorldEntry {
         if (tag.contains("vein")) {
             veinId = tag.getString("vein");
             vein = GTMemoizer.memoize(() -> {
-                ResourceLocation key = new ResourceLocation(veinId);
+                ResourceLocation key = ResourceLocation.tryParse(veinId);
                 return GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(key);
             });
         } else {

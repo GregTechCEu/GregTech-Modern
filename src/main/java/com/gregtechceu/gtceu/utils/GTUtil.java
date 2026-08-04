@@ -521,7 +521,7 @@ public class GTUtil {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
+        ResourceLocation javdVoidBiome = ResourceLocation.fromNamespaceAndPath("javd", "void");
         if (GTCEu.Mods.isJAVDLoaded() &&
                 world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
             return !world.isDay();
@@ -593,7 +593,7 @@ public class GTUtil {
 
     public static ItemStack loadItemStack(CompoundTag compoundTag) {
         try {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(compoundTag.getString("id")));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(compoundTag.getString("id")));
             int count = compoundTag.getInt("Count");
             ItemStack stack = new ItemStack(item, count);
             if (compoundTag.contains("tag", Tag.TAG_COMPOUND)) {
@@ -744,13 +744,13 @@ public class GTUtil {
     }
 
     public static boolean textureResourceExists(@NotNull ResourceLocation location) {
-        var textureLocation = new ResourceLocation(location.getNamespace(),
+        var textureLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
                 "textures/%s.png".formatted(location.getPath()));
         return resourceExists(textureLocation);
     }
 
     public static boolean modelResourceExists(@NotNull ResourceLocation location) {
-        var modelLocation = new ResourceLocation(location.getNamespace(),
+        var modelLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
                 "models/%s.json".formatted(location.getPath()));
         return resourceExists(modelLocation);
     }

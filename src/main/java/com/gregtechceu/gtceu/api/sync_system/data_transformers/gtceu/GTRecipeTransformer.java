@@ -50,16 +50,16 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         if (tag instanceof CompoundTag compoundTag) {
             result = GTRecipeSerializer.CODEC.parse(NbtOps.INSTANCE, compoundTag.get("recipe")).result().orElse(null);
             if (result != null) {
-                result.id = new ResourceLocation(compoundTag.getString("id"));
+                result.id = ResourceLocation.parse(compoundTag.getString("id"));
                 result.parallels = compoundTag.contains("parallels") ? compoundTag.getInt("parallels") : 1;
                 result.ocLevel = compoundTag.getInt("ocLevel");
             }
         } else if (tag instanceof StringTag stringTag) { // Backwards Compatibility
-            var recipe = recipeManager.byKey(new ResourceLocation(stringTag.getAsString())).orElse(null);
+            var recipe = recipeManager.byKey(ResourceLocation.parse(stringTag.getAsString())).orElse(null);
             if (recipe instanceof GTRecipe gtRecipe) {
                 result = gtRecipe;
             } else if (recipe instanceof SmeltingRecipe smeltingRecipe) {
-                result = GTRecipeTypes.FURNACE_RECIPES.toGTrecipe(new ResourceLocation(stringTag.getAsString()),
+                result = GTRecipeTypes.FURNACE_RECIPES.toGTrecipe(ResourceLocation.parse(stringTag.getAsString()),
                         smeltingRecipe);
             }
         } else if (tag instanceof ByteArrayTag byteArray) { // Backwards Compatibility

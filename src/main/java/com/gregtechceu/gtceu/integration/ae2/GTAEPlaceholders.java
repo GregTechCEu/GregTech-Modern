@@ -58,7 +58,7 @@ public class GTAEPlaceholders {
     }
 
     private static long countItems(String id, IGrid grid) {
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(id));
+        Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.parse(id));
         if (item == null) return 0;
         GenericStack stack = GenericStack.fromItemStack(new ItemStack(item, 1));
         if (stack == null) return 0;
@@ -85,7 +85,7 @@ public class GTAEPlaceholders {
             }
             return count;
         }
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(id));
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(ResourceLocation.parse(id));
         if (fluid == null) return 0;
         GenericStack stack = GenericStack.fromFluidStack(new FluidStack(fluid, 1));
         if (stack == null) return 0;

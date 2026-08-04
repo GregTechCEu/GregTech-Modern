@@ -859,7 +859,7 @@ public class GTMachineUtils {
                                 .rotationState(RotationState.NON_Y_AXIS)
                                 .recipeType(recipeType)
                                 .workableTieredHullModel(
-                                        new ResourceLocation(registrate.getModid(), "block/machines/" + name))
+                                        registrate.makeResourceLocation( "block/machines/" + name))
                                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                         tankScalingFunction.applyAsInt(tier), true))
                                 .ui(panelFactory);

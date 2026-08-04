@@ -452,7 +452,7 @@ public class GTRecipeComponents {
                     isTag = true;
                 }
                 var split = s.split(" ", 3);
-                ResourceLocation id = new ResourceLocation(split[0]);
+                ResourceLocation id = ResourceLocation.parse(split[0]);
                 int amount = UtilsJS.parseInt(split.length >= 2 ? split[1] : "", FluidType.BUCKET_VOLUME);
                 CompoundTag nbt = null;
                 if (split.length == 3) {
