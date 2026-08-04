@@ -42,13 +42,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class GTDynamicDataPack implements PackResources {
 
-    // change the path to `recipe` on 1.21!!
     public static final FileToIdConverter RECIPE_ID_CONVERTER = FileToIdConverter.json("recipes");
     // change the path to `advancement` on 1.21!!
     public static final FileToIdConverter ADVANCEMENT_ID_CONVERTER = FileToIdConverter.json("advancements");
     public static final Function<String, FileToIdConverter> TAG_ID_CONVERTER = Util
             .memoize(registryName -> FileToIdConverter.json("tags/" + registryName));
-    public static final FileToIdConverter TEXTURE_ID_CONVERTER = new FileToIdConverter("textures", ".png");
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
     protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
