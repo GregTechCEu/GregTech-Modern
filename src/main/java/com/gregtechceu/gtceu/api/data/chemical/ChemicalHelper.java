@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
@@ -75,7 +74,8 @@ public class ChemicalHelper {
     public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
         Material entryMaterial = entry.material();
         if (entryMaterial != null) {
-            return new MaterialStack(entryMaterial, entry.tagPrefix() == null ? -1 : entry.tagPrefix().getMaterialAmount(entryMaterial));
+            return new MaterialStack(entryMaterial,
+                    entry.tagPrefix() == null ? -1 : entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
         return MaterialStack.EMPTY;
     }
@@ -84,7 +84,8 @@ public class ChemicalHelper {
         var entry = getMaterialEntry(itemLike);
         if (!entry.isEmpty()) {
             Material entryMaterial = entry.material();
-            return new MaterialStack(entryMaterial, entry.tagPrefix() == null ? -1 : entry.tagPrefix().getMaterialAmount(Objects.requireNonNull(entryMaterial)));
+            return new MaterialStack(entryMaterial, entry.tagPrefix() == null ? -1 :
+                    entry.tagPrefix().getMaterialAmount(Objects.requireNonNull(entryMaterial)));
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike.asItem());
         if (info == null) return MaterialStack.EMPTY;

@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -369,7 +368,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         } else if (toolType.contains(GTToolType.CROWBAR)) {
             if (frameMaterial != null) {
                 Block.popResource(context.getLevel(), this.getBlockPos(),
-                        Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial)).asStack());
+                        Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial))
+                                .asStack());
                 frameMaterial = null;
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }

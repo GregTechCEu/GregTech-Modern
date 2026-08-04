@@ -6,7 +6,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;

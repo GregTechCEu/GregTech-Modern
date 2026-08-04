@@ -125,7 +125,9 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
             return;
         }
         if (pipeNode.getFrameMaterial() != null) {
-            BlockState frameState = Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial()))
+            BlockState frameState = Objects
+                    .requireNonNull(
+                            GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial()))
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
             return;

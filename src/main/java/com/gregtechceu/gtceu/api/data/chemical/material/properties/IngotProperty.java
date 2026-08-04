@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class IngotProperty implements IMaterialProperty {

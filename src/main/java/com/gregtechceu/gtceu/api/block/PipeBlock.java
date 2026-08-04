@@ -379,7 +379,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
         if (pipeNode.getFrameMaterial() != null) {
             BlockState frameState = Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS
-                            .get(TagPrefix.frameGt, pipeNode.getFrameMaterial()))
+                    .get(TagPrefix.frameGt, pipeNode.getFrameMaterial()))
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
         }
@@ -459,7 +459,9 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (blockEntity instanceof IPipeNode<?, ?> pipeTile) {
             if (pipeTile.getFrameMaterial() != null) {
-                drops.addAll(Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial()))
+                drops.addAll(Objects
+                        .requireNonNull(
+                                GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial()))
                         .getDefaultState().getDrops(builder));
             }
             for (Direction direction : GTUtil.DIRECTIONS) {

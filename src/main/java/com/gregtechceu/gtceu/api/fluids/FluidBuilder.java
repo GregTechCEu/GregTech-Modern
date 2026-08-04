@@ -363,7 +363,7 @@ public class FluidBuilder {
         if (state == FluidState.PLASMA) {
             luminosity = 15;
         } else if (material.hasFlag(MaterialFlags.PHOSPHORESCENT)) {
-                luminosity = 15;
+            luminosity = 15;
         } else if (state == FluidState.LIQUID && material.hasProperty(PropertyKey.DUST)) {
             // liquids only glow if not phosphorescent
             luminosity = 10;
