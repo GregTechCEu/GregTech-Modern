@@ -203,15 +203,15 @@ public abstract class MultiPredicate {
         return this;
     }
 
-    public MultiPredicate or(MultiPredicate other) {
+    public MultiPredicate or(@Nullable MultiPredicate other) {
         return combine(this, Logic.OR, other);
     }
 
-    public MultiPredicate and(MultiPredicate other) {
+    public MultiPredicate and(@Nullable MultiPredicate other) {
         return combine(this, Logic.AND, other);
     }
 
-    public MultiPredicate xor(MultiPredicate other) {
+    public MultiPredicate xor(@Nullable MultiPredicate other) {
         return combine(this, Logic.XOR, other);
     }
 
@@ -267,11 +267,11 @@ public abstract class MultiPredicate {
         return this.children;
     }
 
+    /// @return a flattened list of all base predicates
     public List<BasePredicate> expand() {
+        if (!hasChildren()) return this.predicates;
         List<BasePredicate> expanded = new ArrayList<>(this.predicates);
-        if (hasChildren()) {
-            forEachChild(mp -> expanded.addAll(mp.expand()));
-        }
+        forEachChild(mp -> expanded.addAll(mp.expand()));
         return expanded;
     }
 
@@ -279,9 +279,12 @@ public abstract class MultiPredicate {
         return EMPTY;
     }
 
-    /// @param a will have type set
-    /// @param b may or may not be a multi predicate
-    /// @return copy of {@code a} combined with {@code b}
+    /// @param a left operand
+    /// @param type logic of the new predicate
+    /// @param b right operand, may be null
+    /// @return If {@code b} is null, returns {@code a}. <br />
+    /// If {@code a} is EMPTY, returns {@code b}. <br />
+    /// Otherwise, returns a new MultiPredicate that combines {@code a} and {@code b}
     private static MultiPredicate combine(MultiPredicate a, Logic type, @Nullable MultiPredicate b) {
         if (b == null) return a; // no op
         if (a.isEmpty()) return b;
