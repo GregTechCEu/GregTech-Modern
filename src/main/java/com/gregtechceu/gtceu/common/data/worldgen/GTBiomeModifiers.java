@@ -28,7 +28,7 @@ public class GTBiomeModifiers {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
 
-        HolderSet<Biome> biomes = biomeLookup.getOrThrow(CustomTags.HAS_RUBBER_TREE);
+        HolderSet<Biome> biomes = biomeLookup.getOrThrow(CustomTags.Biomes.HAS_RUBBER_TREE);
         Holder<PlacedFeature> rubberTree = placedFeatureRegistry.getOrThrow(GTPlacedFeatures.RUBBER_CHECKED);
         ctx.register(RUBBER, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes,

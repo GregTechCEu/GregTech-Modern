@@ -300,7 +300,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             for (int k = 0; k < 3; k++) {
                 var checkPos = pos.immutable();
                 var s1 = level.getBlockState(checkPos);
-                if (s1 != getCasingState() && s1 != getGlassState() && !(s1.is(CustomTags.CLEANROOM_FLOORS))) {
+                if (s1 != getCasingState() && s1 != getGlassState() && !(s1.is(CustomTags.Blocks.CLEANROOM_FLOORS))) {
                     return false;
                 }
                 pos.move(Direction.NORTH);
@@ -477,7 +477,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     private static PatternPredicate getValidFloorBlocks() {
-        return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
+        return Predicates.blockTag(CustomTags.Blocks.CLEANROOM_FLOORS);
     }
 
     protected static PatternPredicate innerPredicate() {

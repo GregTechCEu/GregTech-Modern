@@ -54,7 +54,7 @@ public class CraftingRecipeLoader {
         addDuctRecipes(provider, TungstenSteel, 8);
 
         VanillaRecipeHelper.addShapelessRecipe(provider, "programmed_circuit", PROGRAMMED_CIRCUIT.asStack(),
-                CustomTags.LV_CIRCUITS);
+                CustomTags.Items.LV_CIRCUITS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, "item_filter", ITEM_FILTER.asStack(), "XXX", "XYX", "XXX", 'X',
                 new MaterialEntry(foil, Zinc), 'Y', new MaterialEntry(plate, Steel));
@@ -73,7 +73,7 @@ public class CraftingRecipeLoader {
                 "XXX", "XYX", "XXX", 'X', new MaterialEntry(foil, Zinc), 'Y', new MaterialEntry(plate, Amethyst));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "item_smart_filter_olivine", SMART_ITEM_FILTER.asStack(), "XEX",
-                "XCX", "XEX", 'X', new MaterialEntry(foil, Zinc), 'C', CustomTags.LV_CIRCUITS, 'E',
+                "XCX", "XEX", 'X', new MaterialEntry(foil, Zinc), 'C', CustomTags.Items.LV_CIRCUITS, 'E',
                 new MaterialEntry(plate, Ruby));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ",
@@ -133,17 +133,17 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_saber", NANO_SABER.asStack(), "PIC", "PIC",
                 "XEX", 'P', new MaterialEntry(plate, Platinum), 'I', new MaterialEntry(plate, Ruridit), 'C',
-                CARBON_FIBER_PLATE.asStack(), 'X', CustomTags.EV_CIRCUITS, 'E', ENERGIUM_CRYSTAL.asStack());
+                CARBON_FIBER_PLATE.asStack(), 'X', CustomTags.Items.EV_CIRCUITS, 'E', ENERGIUM_CRYSTAL.asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_basic", COVER_SOLAR_PANEL.asStack(), "WGW", "CPC",
-                'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', CustomTags.LV_CIRCUITS, 'P',
+                'W', SILICON_WAFER.asStack(), 'G', new ItemStack(Blocks.GLASS_PANE), 'C', CustomTags.Items.LV_CIRCUITS, 'P',
                 CARBON_FIBER_PLATE.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_ulv", COVER_SOLAR_PANEL_ULV.asStack(), "WGW", "CAC",
-                "P P", 'W', PHOSPHORUS_WAFER.asStack(), 'G', Tags.Items.GLASS_PANES, 'C', CustomTags.HV_CIRCUITS, 'P',
+                "P P", 'W', PHOSPHORUS_WAFER.asStack(), 'G', Tags.Items.GLASS_PANES, 'C', CustomTags.Items.HV_CIRCUITS, 'P',
                 ChemicalHelper.get(plate, GalliumArsenide), 'A', ChemicalHelper.get(wireGtQuadruple, Graphene));
         VanillaRecipeHelper.addShapedRecipe(provider, "solar_panel_lv", COVER_SOLAR_PANEL_LV.asStack(), "WGW", "CAC",
                 "P P", 'W', NAQUADAH_WAFER.asStack(), 'G', GTBlocks.CASING_TEMPERED_GLASS.asStack(), 'C',
-                CustomTags.LuV_CIRCUITS, 'P', ChemicalHelper.get(plate, IndiumGalliumPhosphide), 'A',
+                CustomTags.Items.LuV_CIRCUITS, 'P', ChemicalHelper.get(plate, IndiumGalliumPhosphide), 'A',
                 ChemicalHelper.get(wireGtHex, Graphene));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "universal_fluid_cell", FLUID_CELL_UNIVERSAL.asStack(), "C ",
@@ -154,7 +154,7 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "blacklight", BLACKLIGHT.asStack(), "SPS", "GRG", "CPK", 'S',
                 new MaterialEntry(screw, TungstenCarbide), 'P', new MaterialEntry(plate, TungstenCarbide), 'G',
                 GTBlocks.CASING_LAMINATED_GLASS.asStack(), 'R', new MaterialEntry(spring, Europium), 'C',
-                CustomTags.IV_CIRCUITS, 'K', new MaterialEntry(cableGtSingle, Platinum));
+                CustomTags.Items.IV_CIRCUITS, 'K', new MaterialEntry(cableGtSingle, Platinum));
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing", GTBlocks.FILTER_CASING.asStack(), "BBB",
                 "III", "MFR", 'B', new ItemStack(Blocks.IRON_BARS), 'I', ITEM_FILTER.asStack(), 'M',
@@ -250,21 +250,21 @@ public class CraftingRecipeLoader {
         // Armors //
         ///////////////////////////////////////////////////
         VanillaRecipeHelper.addShapedRecipe(provider, "nightvision_goggles", GTItems.NIGHTVISION_GOGGLES.asStack(),
-                "CSC", "RBR", "LdL", 'C', CustomTags.ULV_CIRCUITS, 'S', new MaterialEntry(screw, Steel), 'R',
+                "CSC", "RBR", "LdL", 'C', CustomTags.Items.ULV_CIRCUITS, 'S', new MaterialEntry(screw, Steel), 'R',
                 new MaterialEntry(ring, Rubber), 'B', GTItems.BATTERY_LV_SODIUM, 'L',
                 new MaterialEntry(lens, Glass));
         VanillaRecipeHelper.addShapedRecipe(provider, "fluid_jetpack", GTItems.LIQUID_FUEL_JETPACK.asStack(), "xCw",
-                "SUS", "RIR", 'C', CustomTags.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
+                "SUS", "RIR", 'C', CustomTags.Items.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U',
                 GTItems.ELECTRIC_PUMP_LV.asStack(), 'R', new MaterialEntry(rotor, Lead), 'I',
                 new MaterialEntry(pipeSmallFluid, Potin));
         VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack", GTItems.ELECTRIC_JETPACK.asStack(), "xCd",
-                "TBT", "I I", 'C', CustomTags.MV_CIRCUITS, 'T', GTItems.POWER_THRUSTER.asStack(), 'B',
+                "TBT", "I I", 'C', CustomTags.Items.MV_CIRCUITS, 'T', GTItems.POWER_THRUSTER.asStack(), 'B',
                 GTItems.BATTERY_MV_LITHIUM.asStack(), 'I', new MaterialEntry(wireGtDouble, AnnealedCopper));
         VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack_advanced",
                 GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), "xJd", "TBT", "WCW", 'J',
                 GTItems.ELECTRIC_JETPACK.asStack(), 'T', GTItems.POWER_THRUSTER_ADVANCED.asStack(), 'B',
                 ENERGIUM_CRYSTAL.asStack(), 'W', new MaterialEntry(wireGtQuadruple, Gold), 'C',
-                CustomTags.HV_CIRCUITS);
+                CustomTags.Items.HV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_helmet", GTItems.NANO_HELMET.asStack(), "PPP", "PNP", "xEd",
                 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'N', GTItems.NIGHTVISION_GOGGLES.asStack(), 'E',
                 GTItems.ENERGIUM_CRYSTAL.asStack());
@@ -278,7 +278,7 @@ public class CraftingRecipeLoader {
                 GTItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J',
                 GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N',
                 GTItems.NANO_CHESTPLATE.asStack(), 'W', new MaterialEntry(wireGtQuadruple, Platinum), 'C',
-                CustomTags.IV_CIRCUITS);
+                CustomTags.Items.IV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE",
                 "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new MaterialEntry(wireGtQuadruple, Osmium),
                 'P', new MaterialEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());

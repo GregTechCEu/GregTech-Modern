@@ -547,7 +547,7 @@ public class VanillaStandardRecipes {
 
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_concrete_to_" + dyeName).duration(20).EUt(VA[ULV])
-                        .inputItems(CustomTags.CONCRETE_ITEM)
+                        .inputItems(CustomTags.Items.CONCRETES)
                         .inputFluids(CHEMICAL_DYES[color.getId()].getFluid(L / 8))
                         .outputItems(
                                 new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete"))))
@@ -659,7 +659,7 @@ public class VanillaStandardRecipes {
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_concrete")
-                .inputItems(CustomTags.CONCRETE_ITEM)
+                .inputItems(CustomTags.Items.CONCRETES)
                 .inputFluids(Chlorine.getFluid(20))
                 .outputItems(Items.WHITE_CONCRETE)
                 .category(GTRecipeCategories.CHEM_DYES)

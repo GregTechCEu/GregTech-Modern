@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class BottleItemFluidHandler extends FilteredFluidHandlerItemStackSimple {
 
     public BottleItemFluidHandler(@NotNull ItemStack container) {
-        super(container, PotionFluidHelper.BOTTLE_AMOUNT, s -> s.getFluid().is(CustomTags.POTION_FLUIDS));
+        super(container, PotionFluidHelper.BOTTLE_AMOUNT, s -> s.getFluid().is(CustomTags.Fluids.POTION));
     }
 
     @Override

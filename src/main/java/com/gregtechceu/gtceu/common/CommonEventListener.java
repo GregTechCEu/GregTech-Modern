@@ -357,7 +357,7 @@ public class CommonEventListener {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
-            if (boots.is(CustomTags.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
+            if (boots.is(CustomTags.Items.STEP_BOOTS) && boots.getItem() instanceof ArmorComponentItem armor) {
                 armor.getArmorLogic().damageArmor(player, boots, player.damageSources().fall(),
                         (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
@@ -386,11 +386,11 @@ public class CommonEventListener {
                 speedBoost = 0.0f;
             } else {
                 var state = player.level().getBlockState(player.getOnPos());
-                if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) {
+                if (state.is(CustomTags.Blocks.VERY_FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.6f; // value that is added to the base MC speed
-                } else if (state.is(CustomTags.FAST_WALKABLE_BLOCKS)) {
+                } else if (state.is(CustomTags.Blocks.FAST_WALKABLE_BLOCKS)) {
                     speedBoost = 0.25f; // slower to walk on studs
-                } else if (state.is(CustomTags.SLOW_WALKABLE_BLOCKS)) {
+                } else if (state.is(CustomTags.Blocks.SLOW_WALKABLE_BLOCKS)) {
                     speedBoost = -0.20f; // slower on frames
                 }
             }
@@ -416,7 +416,7 @@ public class CommonEventListener {
         float MAGIC_STEP_HEIGHT = 1.0023f;
         if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
         CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
-        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
+        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.Items.STEP_BOOTS) &&
                 (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
             if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
                 player.setMaxUpStep(MAGIC_STEP_HEIGHT);

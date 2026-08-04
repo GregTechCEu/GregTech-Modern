@@ -232,7 +232,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
         if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) ||
                 state.hasProperty(BlockStateProperties.HALF) ||
-                state.is(CustomTags.TALL_PLANTS)) {
+                state.is(CustomTags.Blocks.TALL_PLANTS)) {
             return GrowthMode.DOUBLE_TRANSLATE;
         } else if (state.is(BlockTags.FLOWERS)) {
             return GrowthMode.TRANSLATE;

@@ -318,14 +318,14 @@ public class BatteryRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("lapotron_crystal")
                 .inputItems(gem, Lapotron)
-                .inputItems(CustomTags.HV_CIRCUITS, 2)
+                .inputItems(CustomTags.Items.HV_CIRCUITS, 2)
                 .outputItems(LAPOTRON_CRYSTAL)
                 .duration(600).EUt(VA[EV]).save(provider);
 
         // Lapotronic Energy Orb
         LASER_ENGRAVER_RECIPES.recipeBuilder("engraved_lapotron_chip")
                 .inputItems(LAPOTRON_CRYSTAL)
-                .notConsumable(CustomTags.LENSES_BLUE)
+                .notConsumable(CustomTags.Items.LENSES_BLUE)
                 .outputItems(ENGRAVED_LAPOTRON_CHIP, 3)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(256).EUt(VA[HV]).save(provider);
@@ -346,7 +346,7 @@ public class BatteryRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("lapotronic_energy_orb_cluster")
                 .inputItems(EXTREME_CIRCUIT_BOARD)
                 .inputItems(plate, Europium, 8)
-                .inputItems(CustomTags.LuV_CIRCUITS, 4)
+                .inputItems(CustomTags.Items.LuV_CIRCUITS, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(FIELD_GENERATOR_IV)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 16)
@@ -366,7 +366,7 @@ public class BatteryRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_module")
                 .inputItems(ELITE_CIRCUIT_BOARD)
                 .inputItems(plateDouble, Europium, 8)
-                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+                .inputItems(CustomTags.Items.ZPM_CIRCUITS, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
                 .inputItems(FIELD_GENERATOR_LuV)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 32)
@@ -388,7 +388,7 @@ public class BatteryRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_cluster")
                 .inputItems(WETWARE_CIRCUIT_BOARD)
                 .inputItems(plate, Americium, 16)
-                .inputItems(CustomTags.UV_CIRCUITS, 4)
+                .inputItems(CustomTags.Items.UV_CIRCUITS, 4)
                 .inputItems(ENERGY_MODULE)
                 .inputItems(FIELD_GENERATOR_ZPM)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 32)
@@ -411,7 +411,7 @@ public class BatteryRecipes {
         // Ultimate Battery
         ASSEMBLY_LINE_RECIPES.recipeBuilder("ultimate_battery")
                 .inputItems(plateDouble, Darmstadtium, 16)
-                .inputItems(CustomTags.UHV_CIRCUITS, 4)
+                .inputItems(CustomTags.Items.UHV_CIRCUITS, 4)
                 .inputItems(ENERGY_CLUSTER, 16)
                 .inputItems(FIELD_GENERATOR_UV, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER, 64)

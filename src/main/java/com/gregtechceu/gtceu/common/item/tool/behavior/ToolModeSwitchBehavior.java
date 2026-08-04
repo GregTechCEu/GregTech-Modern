@@ -73,7 +73,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         // Copied and adapted from
         // https://github.com/Creators-of-Create/Create/blob/mc1.20.1/dev/src/main/java/com/simibubi/create/content/equipment/wrench/WrenchItem.java
         if (toolTypes.contains(GTToolType.WRENCH) && GTCEu.Mods.isCreateLoaded() &&
-                state.is(CustomTags.CREATE_WRENCH_PICKUP)) {
+                state.is(CustomTags.Blocks.CREATE_WRENCH_PICKUP)) {
             if (!(world instanceof ServerLevel serverLevel))
                 return InteractionResult.SUCCESS;
             if (player != null && !player.isCreative())

@@ -27,7 +27,7 @@ public class GTFluids {
                     PotionFluid.PotionFluidType::new, PotionFluid::new)
             .lang("Potion")
             .source(PotionFluid::new).noBlock().noBucket()
-            .tag(CustomTags.POTION_FLUIDS)
+            .tag(CustomTags.Fluids.POTION)
             .register();
 
     public static void init() {

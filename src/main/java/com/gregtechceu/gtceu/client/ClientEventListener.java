@@ -112,7 +112,7 @@ public class ClientEventListener {
         float multi = 1;
         var state = player.level().getBlockState(player.getOnPos());
 
-        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
+        if (state.is(CustomTags.Blocks.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
 
         multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
         event.setNewFovModifier(event.getNewFovModifier() * multi);

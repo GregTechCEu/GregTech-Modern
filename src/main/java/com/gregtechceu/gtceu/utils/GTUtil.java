@@ -452,7 +452,7 @@ public class GTUtil {
             return FluidType.BUCKET_VOLUME / 4;
         } else if (biome.is(Tags.Biomes.IS_COLD)) {
             return FluidType.BUCKET_VOLUME * 175 / 1000;
-        } else if (biome.is(CustomTags.IS_SANDY)) {
+        } else if (biome.is(CustomTags.Biomes.IS_SANDY)) {
             return FluidType.BUCKET_VOLUME * 170 / 1000;
         }
         return FluidType.BUCKET_VOLUME / 10;

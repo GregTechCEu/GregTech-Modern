@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class WorldGeneratorUtils {
 
-    public static final RuleTest END_ORE_REPLACEABLES = new TagMatchTest(CustomTags.ENDSTONE_ORE_REPLACEABLES);
+    public static final RuleTest END_ORE_REPLACEABLES = new TagMatchTest(CustomTags.Blocks.ENDSTONE_ORE_REPLACEABLES);
 
     private static final Map<ServerLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
 

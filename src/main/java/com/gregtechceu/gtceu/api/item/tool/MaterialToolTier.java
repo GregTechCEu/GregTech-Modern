@@ -60,6 +60,6 @@ public class MaterialToolTier implements Tier {
 
     @Override
     public @Nullable TagKey<Block> getTag() {
-        return CustomTags.TOOL_TIERS[getLevel()];
+        return CustomTags.Blocks.TOOL_TIERS[getLevel()];
     }
 }

@@ -83,7 +83,7 @@ public class MixinHelpers {
                     OreProperty ore = material.getProperty(PropertyKey.ORE);
                     Material washedIn = ore.getWashedIn().first();
                     if (washedIn.isNull()) return;
-                    ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
+                    ResourceLocation generalTag = CustomTags.Items.CHEM_BATH_WASHABLE.location();
                     ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
 
                     tagMap.computeIfAbsent(generalTag, path -> new ArrayList<>()).addAll(entries);
@@ -150,14 +150,14 @@ public class MixinHelpers {
                 }
                 // Add tool tags
                 if (!entry.isIgnored() && !entry.tagPrefix().miningToolTag().isEmpty()) {
-                    tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
+                    tagMap.computeIfAbsent(CustomTags.Blocks.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
                             path -> new ArrayList<>()).addAll(entries);
                     if (material.hasProperty(PropertyKey.WOOD)) {
                         // Wood blocks with this tag always allow a Wrench, but only allow an Axe if the config is
                         // not set. Pickaxe is never allowed (special case)
                         if (entry.tagPrefix().miningToolTag()
-                                .contains(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)) {
-                            tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_WRENCH.location(),
+                                .contains(CustomTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)) {
+                            tagMap.computeIfAbsent(CustomTags.Blocks.MINEABLE_WITH_WRENCH.location(),
                                     path -> new ArrayList<>()).addAll(entries);
                             if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
                                 tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(),
@@ -182,13 +182,13 @@ public class MixinHelpers {
                 }
 
                 if (entry.tagPrefix() == TagPrefix.frameGt) {
-                    tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
+                    tagMap.computeIfAbsent(CustomTags.Blocks.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
                             .addAll(entries);
                 }
             });
 
             GTRegistries.MACHINES.forEach(machine -> {
-                tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location(),
+                tagMap.computeIfAbsent(CustomTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH.location(),
                         path -> new ArrayList<>()).add(makeBlockEntry(machine.getBlock()));
             });
 
@@ -197,8 +197,8 @@ public class MixinHelpers {
                 var tagList = tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_PICKAXE.location(),
                         path -> new ArrayList<>());
 
-                tagList.add(makeTagEntry(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH));
-                tagList.add(makeTagEntry(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER));
+                tagList.add(makeTagEntry(CustomTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH));
+                tagList.add(makeTagEntry(CustomTags.Blocks.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER));
             }
         } else if (registry == BuiltInRegistries.FLUID) {
             for (Material material : GTRegistries.MATERIALS) {

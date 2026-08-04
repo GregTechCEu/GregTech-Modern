@@ -101,7 +101,7 @@ public abstract class GTExplosiveBlock extends Block {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
                                  BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && stack.is(CustomTags.TOOLS_IGNITER)) {
+        if (!stack.isEmpty() && stack.is(CustomTags.Items.TOOLS_IGNITER)) {
             this.explode(level, pos, player);
             level.removeBlock(pos, false);
             if (stack.isDamageableItem()) {
