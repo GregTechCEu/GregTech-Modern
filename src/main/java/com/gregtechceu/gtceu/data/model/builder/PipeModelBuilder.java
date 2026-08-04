@@ -330,12 +330,14 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
 
     private static final MemoizedBiFunction<BlockModelProvider, Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
             .memoizeFunctionWeakIdent(PipeModelBuilder::makeRestrictorModels);
+    // multiply the offset by 16 because JSON model elements are in the range of [-32,16] instead of [-1,1]
+    private static final float RESTRICTOR_OFFSET = 0.003f * 16.0f;
 
     private static BlockModelBuilder[] makeRestrictorModels(BlockModelProvider provider, float thickness) {
         BlockModelBuilder[] models = new BlockModelBuilder[GTUtil.DIRECTIONS.length];
 
-        float min = (16.0f - thickness) / 2.0f - 0.003f;
-        float max = min + thickness + 0.006f; // offset by 0.003 * 2
+        float min = (16.0f - thickness) / 2.0f - RESTRICTOR_OFFSET;
+        float max = min + thickness + RESTRICTOR_OFFSET * 2.0f; // offset by 0.003 * 2
         for (Direction dir : GTUtil.DIRECTIONS) {
             String modelPath = "block/pipe/restrictor/" + dir.getName() + "/thickness_" + thickness;
             ResourceLocation modelName = GTCEu.id(modelPath);

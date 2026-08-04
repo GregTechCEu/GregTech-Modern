@@ -361,6 +361,8 @@ public class PipeModel {
                 (x1 == y1 && x1 == z1 && x1 <= 0.0f) &&
                 (x2 == y2 && x2 == z2 && x2 >= 16.0f);
 
+        // multiply the offset by 16 because JSON model elements are in the range of [-32,16] instead of [-1,1]
+        offset *= 16.0f;
         ModelBuilder<T>.ElementBuilder element = model.element()
                 .from(x1 - offset, y1 - offset, z1 - offset)
                 .to(x2 + offset, y2 + offset, z2 + offset);
