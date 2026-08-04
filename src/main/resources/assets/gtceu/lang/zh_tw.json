@@ -3638,7 +3638,7 @@
     "gui.gtceu.share_tank.title": "共享流體庫存",
     "gui.widget.incrementButton.default_tooltip": "按住Shift，Ctrl鍵或同時按住這兩個鍵來改變數量",
     "gui.widget.recipeProgressWidget.default_tooltip": "檢視配方",
-    "item.glass_lens": "玻璃透鏡（白色）",
+    "item.gtceu.glass_lens": "玻璃透鏡（白色）",
     "item.gtceu.activity_detector_cover": "活躍探測覆蓋板",
     "item.gtceu.activity_detector_cover.tooltip": "§7作§f覆蓋板§7時依照§f機器活躍狀態§7發出紅石訊號。",
     "item.gtceu.advanced_activity_detector_cover": "進階活躍狀態探測器",

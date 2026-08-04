@@ -3999,7 +3999,7 @@
     "gui.gtceu.share_tank.title": "Gemeinsames Tankinventar",
     "gui.widget.incrementButton.default_tooltip": "Halte Shift-, Strg- oder beide Tasten gedrückt, um die Menge zu ändern",
     "gui.widget.recipeProgressWidget.default_tooltip": "Rezepte anzeigen",
-    "item.glass_lens": "Glaslinse (weiß)",
+    "item.gtceu.glass_lens": "Glaslinse (weiß)",
     "item.gtceu.activity_detector_cover": "Aktivitätsdetektor",
     "item.gtceu.activity_detector_cover.tooltip": "§7Gibt §fAktivitätsstatus§7 als Redstone als §fAbdeckung§7 aus.",
     "item.gtceu.advanced_activity_detector_cover": "Erweiterter Aktivitätsdetektor",

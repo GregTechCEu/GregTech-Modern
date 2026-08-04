@@ -3951,7 +3951,7 @@
   "gui.gtceu.share_tank.title": "Інвентар спільного резервуара",
   "gui.widget.incrementButton.default_tooltip": "Утримуйте Shift, Ctrl чи обидва, щоб змінити кількість",
   "gui.widget.recipeProgressWidget.default_tooltip": "Показати рецепти",
-  "item.glass_lens": "Скляна лінза (Біла)",
+  "item.gtceu.glass_lens": "Скляна лінза (Біла)",
   "item.gtceu.activity_detector_cover": "Детектор активності",
   "item.gtceu.activity_detector_cover.tooltip": "§7Видає§f статус активності§7 як редстоун та§f кришка§7.",
   "item.gtceu.advanced_activity_detector_cover": "Вдосконалений детектор активності",

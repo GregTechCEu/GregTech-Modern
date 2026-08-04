@@ -3983,7 +3983,7 @@
     "gui.gtceu.share_tank.title": "共享流体库存",
     "gui.widget.incrementButton.default_tooltip": "按住Shift，Ctrl键或同时按住这两个键来改变数量",
     "gui.widget.recipeProgressWidget.default_tooltip": "查看配方",
-    "item.glass_lens": "玻璃透镜（白色）",
+    "item.gtceu.glass_lens": "玻璃透镜（白色）",
     "item.gtceu.activity_detector_cover": "活跃探测覆盖板",
     "item.gtceu.activity_detector_cover.tooltip": "§7作§f覆盖板§7时依照§f机器活跃状态§7发出红石信号。",
     "item.gtceu.advanced_activity_detector_cover": "进阶活跃状态探测覆盖板",

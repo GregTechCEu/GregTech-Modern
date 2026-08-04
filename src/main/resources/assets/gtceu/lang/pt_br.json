@@ -3998,7 +3998,7 @@
   "gui.gtceu.share_tank.title": "Inventário de Tanque Compartilhado",
   "gui.widget.incrementButton.default_tooltip": "Segure Shift, Ctrl ou ambos para alterar a quantidade",
   "gui.widget.recipeProgressWidget.default_tooltip": "Mostrar Receitas",
-  "item.glass_lens": "Lente de Vidro (Branca)",
+  "item.gtceu.glass_lens": "Lente de Vidro (Branca)",
   "item.gtceu.activity_detector_cover": "Detector de Atividade",
   "item.gtceu.activity_detector_cover.tooltip": "§7Emite §fStatus de Atividade§7 como Redstone como §fCobertura§7.",
   "item.gtceu.advanced_activity_detector_cover": "Detector de Atividade Avançado",

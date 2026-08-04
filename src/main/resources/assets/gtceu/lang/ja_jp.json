@@ -3921,7 +3921,7 @@
   "gui.gtceu.share_tank.title": "共有タンク在庫",
   "gui.widget.incrementButton.default_tooltip": "Shift、Ctrlまたはその両方で量を変更",
   "gui.widget.recipeProgressWidget.default_tooltip": "レシピを表示",
-  "item.glass_lens": "白いガラスレンズ",
+  "item.gtceu.glass_lens": "白いガラスレンズ",
   "item.gtceu.activity_detector_cover": "動作検出器",
   "item.gtceu.activity_detector_cover.tooltip": "§7レッドストーン信号として§f動作状態§7を検出する§fカバー§7",
   "item.gtceu.advanced_activity_detector_cover": "発展型動作検出器",

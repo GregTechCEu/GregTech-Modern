@@ -3389,7 +3389,7 @@
     "gtceu.tool.class.saw": "Пила",
     "gtceu.tool.class.screwdriver": "Отвертка",
     "gtceu.tool.class.shovel": "Лопата",
-    "item.glass_lens": "Стеклянная линза (Белый)",
+    "item.gtceu.glass_lens": "Стеклянная линза (Белый)",
     "item.gtceu.activity_detector_cover.tooltip": "§7Выдает §fПрогресс Работы§7 Сигналом Красного камня как §fУлучшение механизма§7.",
     "item.gtceu.advanced_activity_detector_cover.tooltip": "§7Выдает §fСтатус прогресса§7 Сигналом Красного камня как §fУлучшение механизма§7.",
     "item.gtceu.advanced_energy_detector_cover.tooltip": "§7Даёт §fRS-триггеру контроль§7 за §fУровнем энергии§7 Сигналом Красного камня как §fУлучшение механизма§7.",
