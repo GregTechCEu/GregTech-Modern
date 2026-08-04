@@ -103,7 +103,6 @@ public class XorPredicate extends MultiPredicate {
             return predicate.testGlobalMin(ctx);
         }
 
-
         public boolean testSliceMin(PredicateContext ctx) {
             return predicate.testSliceMin(ctx);
         }

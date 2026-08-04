@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
+import brachy.modularui.api.drawable.Text;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,11 +70,13 @@ class TestablePredicate extends BasePredicate {
             // todo actual lang
             if (minCount != -1) {
                 tooltips.add(Component.literal(Text.RED + "At least: " + Text.RESET + minCount));
-//                tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count", minCount, ctx.getGlobalCount(this)));
+                // tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count", minCount,
+                // ctx.getGlobalCount(this)));
             }
             if (maxCount != -1) {
-                tooltips.add(Component.literal( Text.RED + "At most: " + Text.RESET + maxCount));
-//                tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count", maxCount, ctx.getGlobalCount(this)));
+                tooltips.add(Component.literal(Text.RED + "At most: " + Text.RESET + maxCount));
+                // tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count", maxCount,
+                // ctx.getGlobalCount(this)));
             }
         }
         tooltips.forEach(c -> ctx.appendError(PatternStringError.component(c)));
