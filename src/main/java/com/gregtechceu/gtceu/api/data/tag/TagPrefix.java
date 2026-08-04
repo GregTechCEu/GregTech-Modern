@@ -93,12 +93,6 @@ public class TagPrefix {
         return GTRegistries.TAG_PREFIXES.get(GTCEu.id(name));
     }
 
-    public boolean isEmpty() {
-        return this == NULL_PREFIX;
-    }
-
-    public static final TagPrefix NULL_PREFIX = new TagPrefix(GTCEu.id("null"));
-
     public static final TagPrefix ore = oreTagPrefix(GTCEu.id("stone"), BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
             .registerOre(
@@ -1203,7 +1197,7 @@ public class TagPrefix {
     }
 
     public long getMaterialAmount(@NotNull Material material) {
-        if (material.isNull() || !isAmountModified(material)) {
+        if (!isAmountModified(material)) {
             return this.materialAmount;
         }
         return (long) (GTValues.M * materialAmounts.getFloat(material));
@@ -1228,7 +1222,7 @@ public class TagPrefix {
     public @Unmodifiable List<TagKey<Item>> getItemParentTags() {
         return tags.stream()
                 .filter(TagType::isParentTag)
-                .map(type -> type.getTag(this, GTMaterials.NULL))
+                .map(type -> type.getTag(this, null))
                 .filter(Objects::nonNull)
                 .toList();
     }

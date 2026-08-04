@@ -74,7 +74,7 @@ public class TooltipsHandler {
         }
 
         Material material = HazardProperty.getValidHazardMaterial(stack).material();
-        if (material.isNull()) {
+        if (material == null) {
             return;
         }
         GTUtil.appendHazardTooltips(material, tooltips);
@@ -94,7 +94,7 @@ public class TooltipsHandler {
         }
 
         var material = ChemicalHelper.getMaterial(fluid);
-        if (!material.isNull()) {
+        if (material != null) {
             var formula = material.getChemicalFormula();
             if (formula != null && !formula.isEmpty()) {
                 tooltips.accept(Component.literal(formula).withStyle(ChatFormatting.YELLOW));

@@ -189,7 +189,7 @@ public class MaterialBlock extends Block {
                 continue;
             }
             BlockEntity be = level.getBlockEntity(blockPos);
-            if (be instanceof PipeBlockEntity<?, ?> pbe && !pbe.getFrameMaterial().isNull()) {
+            if (be instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() != null) {
                 blockPos.move(Direction.UP);
                 continue;
             }
@@ -198,7 +198,7 @@ public class MaterialBlock extends Block {
                 if (!player.isCreative())
                     stack.shrink(1);
                 return InteractionResult.SUCCESS;
-            } else if (be instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial().isNull()) {
+            } else if (be instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial() == null) {
                 pbe.setFrameMaterial(frameBlock.material);
 
                 if (!player.isCreative())
@@ -227,8 +227,8 @@ public class MaterialBlock extends Block {
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof PipeBlockEntity<?, ?> pipeTile) {
             Material mat = pipeTile.getFrameMaterial();
-            if (!mat.isNull()) {
-                pipeTile.setFrameMaterial(GTMaterials.NULL);
+            if (mat != null) {
+                pipeTile.setFrameMaterial(null);
                 Block.popResource(level, pos, this.asItem().getDefaultInstance());
                 ToolHelper.damageItem(stack, player);
                 ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);

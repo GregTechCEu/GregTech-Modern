@@ -184,7 +184,7 @@ public abstract class LevelRendererMixin {
                 }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
             renderColoredOutline = true;
-            if (!pipe.getFrameMaterial().isNull()) {
+            if (pipe.getFrameMaterial() != null) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();
             } else if (pipe instanceof CableBlockEntity cable) {
                 rgb = GTValues.VCM[GTUtil.getTierByVoltage(cable.getNodeData().getVoltage())];

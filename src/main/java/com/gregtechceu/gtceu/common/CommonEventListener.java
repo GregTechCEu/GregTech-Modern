@@ -168,7 +168,7 @@ public class CommonEventListener {
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
             MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
-            if (entry.material().isNull()) {
+            if (entry.material() == null) {
                 continue;
             }
             HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
@@ -217,7 +217,7 @@ public class CommonEventListener {
         }
 
         MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
-        if (entry.material().isNull()) {
+        if (entry.material() == null) {
             return;
         }
         HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
@@ -564,7 +564,7 @@ public class CommonEventListener {
 
                 GTToolType type = GTToolType.getTypes().get(typeString);
                 Material material = GTMaterials.get(matString);
-                if (type == null || material.isNull()) {
+                if (type == null || material == null) {
                     mapping.warn();
                     return;
                 }

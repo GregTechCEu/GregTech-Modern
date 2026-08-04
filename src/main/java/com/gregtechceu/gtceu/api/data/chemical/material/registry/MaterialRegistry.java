@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Set;
@@ -25,10 +26,10 @@ public class MaterialRegistry extends GTRegistry.RL<Material> {
         super(GTCEu.id("material"));
     }
 
-    public Material get(java.lang.String name) {
+    public @Nullable Material get(java.lang.String name) {
         ResourceLocation location = ResourceLocation.tryParse(GTCEu.appendIdString(name));
         if (location != null) return get(location);
-        return GTMaterials.NULL;
+        return null;
     }
 
     @Override

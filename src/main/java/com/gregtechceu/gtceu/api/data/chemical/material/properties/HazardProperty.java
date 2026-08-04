@@ -185,7 +185,7 @@ public class HazardProperty implements IMaterialProperty {
             entry = new MaterialEntry(prefixItem.tagPrefix, prefixItem.material);
         } else if (item.getItem() instanceof BucketItem bucket) {
             if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
-                entry = new MaterialEntry(TagPrefix.NULL_PREFIX, ChemicalHelper.getMaterial(bucket.getFluid()));
+                entry = new MaterialEntry(null, ChemicalHelper.getMaterial(bucket.getFluid()));
                 isFluid = true;
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {

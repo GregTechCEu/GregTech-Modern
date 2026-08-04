@@ -35,7 +35,7 @@ public class StoneTypeEntry {
     public final Item pressurePlate;
     @Nullable
     public final Item wall;
-    public final Material material;
+    public final @Nullable Material material;
     public final long materialAmount;
     public final boolean addStoneOreDict;
     public final boolean addPolishedStoneOreDict;
@@ -61,7 +61,7 @@ public class StoneTypeEntry {
                            @Nullable Item crackedStone, @Nullable Item slab,
                            @Nullable Item stair, @Nullable Item button,
                            @Nullable Item wall, @Nullable Item pressurePlate,
-                           @NotNull Material material, long materialAmount,
+                           @Nullable Material material, long materialAmount,
                            boolean addStoneOreDict, boolean addPolishedStoneOreDict,
                            boolean addSlabOreDict,
                            boolean addStairOreDict, boolean addButtonOreDict,
@@ -118,8 +118,8 @@ public class StoneTypeEntry {
         public Item button = null;
         public Item wall = null;
         public Item pressurePlate = null;
-        @NotNull
-        private Material material = GTMaterials.NULL;
+        @Nullable
+        private Material material = null;
         private long materialAmount = GTValues.M;
         public boolean addStoneOreDict = false;
         public boolean addPolishedStoneOreDict = false;

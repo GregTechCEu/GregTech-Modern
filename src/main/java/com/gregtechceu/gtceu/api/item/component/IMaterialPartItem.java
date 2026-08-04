@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.client.color.item.ItemColor;
@@ -40,8 +41,8 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
             return defaultMaterial;
         }
         var materialName = compound.getString("Material");
-        var material = GTMaterials.get(materialName);
-        if (material.isNull() || !material.hasProperty(PropertyKey.INGOT)) {
+        Material material = GTRegistries.MATERIALS.get(materialName);
+        if (material == null || !material.hasProperty(PropertyKey.INGOT)) {
             return defaultMaterial;
         }
         return material;

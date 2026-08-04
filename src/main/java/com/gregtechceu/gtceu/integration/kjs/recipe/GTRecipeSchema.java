@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe;
 
+import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
@@ -71,6 +72,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -453,7 +455,6 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS notConsumable(TagPrefix orePrefix, Material material) {
             validateItems("not consumable", orePrefix);
-
             int lastChance = this.chance;
             this.chance = 0;
             inputItems(orePrefix, material);
@@ -726,7 +727,7 @@ public interface GTRecipeSchema {
             for (var fluidIng : inputs) {
                 for (var stack : fluidIng.ingredient().getStacks()) {
                     var mat = ChemicalHelper.getMaterial(stack.getFluid());
-                    if (!mat.isNull()) {
+                    if (mat != null) {
                         fluidMaterialStacks.add(new MaterialStack(mat,
                                 ((long) stack.getAmount() * GTValues.M) / GTValues.L));
                     }
@@ -809,7 +810,7 @@ public interface GTRecipeSchema {
 
         private void validateItems(@NotNull String type, TagPrefix... items) {
             for (var item : items) {
-                if (item == null || item.isEmpty()) {
+                if (item == null) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }

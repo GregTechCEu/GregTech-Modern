@@ -568,10 +568,6 @@ public final class Material implements Comparable<Material> {
         calculateDecompositionType();
     }
 
-    public boolean isNull() {
-        return this == GTMaterials.NULL;
-    }
-
     @RemapPrefixForJS("kjs$")
     @SuppressWarnings("unused") // API, need to treat all of these as used
     public static class Builder extends BuilderBase<Material> {

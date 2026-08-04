@@ -12,37 +12,32 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material material) {
+public record MaterialEntry(@Nullable TagPrefix tagPrefix, @Nullable Material material) {
 
-    public MaterialEntry {
-        Preconditions.checkNotNull(tagPrefix, "MaterialEntry TagPrefix cannot be null!");
-        Preconditions.checkNotNull(material, "MaterialEntry Material cannot be null!");
-    }
-
-    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.NULL_PREFIX, GTMaterials.NULL);
+    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(null, null);
 
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialEntry(TagPrefix tagPrefix) {
-        this(tagPrefix, GTMaterials.NULL);
+        this(tagPrefix, null);
     }
 
     public boolean isEmpty() {
-        return this == NULL_ENTRY || material() == GTMaterials.NULL || tagPrefix().isEmpty();
+        return material() == null || tagPrefix() == null;
     }
 
     public boolean isIgnored() {
-        return tagPrefix().isIgnored(material());
+        return tagPrefix() != null && tagPrefix().isIgnored(material());
     }
 
     public long getMaterialAmount() {
-        if (!tagPrefix.isEmpty()) {
-            if (!material.isNull()) {
+        if (tagPrefix != null) {
+            if (material != null) {
                 return tagPrefix.getMaterialAmount(material);
             }
             return tagPrefix.materialAmount();
         }
-        if (!material.isNull()) {
+        if (material != null) {
             return GTValues.M;
         } else {
             return 0;
@@ -50,8 +45,11 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
     }
 
     @Override
-    public String toString() {
-        if (tagPrefix.isEmpty()) {
+    public @NotNull String toString() {
+        if (material == null) {
+            return "MaterialEntry[empty]";
+        }
+        if (tagPrefix == null) {
             return material.getResourceLocation().toString();
         }
         var tags = tagPrefix.getItemTags(material);
