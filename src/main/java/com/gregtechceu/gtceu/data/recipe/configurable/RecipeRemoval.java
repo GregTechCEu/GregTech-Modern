@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.configurable;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 
@@ -279,15 +278,15 @@ public class RecipeRemoval {
     }
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
-        for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
+        for (String color : GTValues.COLORS) {
             registry.accept(
-                    new ResourceLocation(String.format("minecraft:%s_concrete_powder", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_terracotta", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_candle", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_wool", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_carpet", colorMaterial.getName())));
-            registry.accept(new ResourceLocation(String.format("minecraft:dye_%s_bed", colorMaterial.getName())));
+                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", color)));
 
             registry.accept(new ResourceLocation("white_dye"));
             registry.accept(new ResourceLocation("black_dye"));

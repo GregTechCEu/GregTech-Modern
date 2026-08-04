@@ -296,6 +296,11 @@ public class GTValues {
             "Ultra High Voltage", "Ultra Excessive Voltage", "Ultra Immense Voltage", "Ultra Extreme Voltage",
             "Overpowered Voltage", "Maximum Voltage" };
 
+    public static final String[] COLORS = new String[] {
+            "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan",
+            "purple", "blue", "brown", "green", "red", "black"
+    };
+
     /**
      * Used to tell if any high-tier machine (UHV+) was registered.
      */
