@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -73,11 +74,11 @@ public class TooltipsHandler {
             }
         }
 
-        Material material = HazardProperty.getValidHazardMaterial(stack).material();
+        MaterialEntry material = HazardProperty.getValidHazardMaterial(stack);
         if (material == null) {
             return;
         }
-        GTUtil.appendHazardTooltips(material, tooltips);
+        GTUtil.appendHazardTooltips(material.material(), tooltips);
     }
 
     public static void appendFluidTooltips(FluidStack fluidStack, Consumer<Component> tooltips, TooltipFlag flag) {

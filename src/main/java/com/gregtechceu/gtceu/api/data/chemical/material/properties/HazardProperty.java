@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
@@ -178,8 +179,8 @@ public class HazardProperty implements IMaterialProperty {
         }
     }
 
-    public static MaterialEntry getValidHazardMaterial(ItemStack item) {
-        MaterialEntry entry = MaterialEntry.NULL_ENTRY;
+    public static @Nullable MaterialEntry getValidHazardMaterial(ItemStack item) {
+        MaterialEntry entry = null;
         boolean isFluid = false;
         if (item.getItem() instanceof TagPrefixItem prefixItem) {
             entry = new MaterialEntry(prefixItem.tagPrefix, prefixItem.material);
@@ -192,12 +193,12 @@ public class HazardProperty implements IMaterialProperty {
             entry = ChemicalHelper.getMaterialEntry(item.getItem());
         }
 
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+        HazardProperty property = (entry == null || entry.material() == null)  ? null : entry.material().getProperty(PropertyKey.HAZARD);
         if (property == null) {
-            return MaterialEntry.NULL_ENTRY;
+            return null;
         }
         if (!isFluid && !property.hazardTrigger.isAffected(entry.tagPrefix())) {
-            return MaterialEntry.NULL_ENTRY;
+            return null;
         }
         return entry;
     }

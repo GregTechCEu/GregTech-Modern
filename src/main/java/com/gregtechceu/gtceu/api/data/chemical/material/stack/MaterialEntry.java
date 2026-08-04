@@ -13,8 +13,6 @@ import java.util.WeakHashMap;
 
 public record MaterialEntry(@Nullable TagPrefix tagPrefix, @Nullable Material material) {
 
-    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(null, null);
-
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialEntry(TagPrefix tagPrefix) {

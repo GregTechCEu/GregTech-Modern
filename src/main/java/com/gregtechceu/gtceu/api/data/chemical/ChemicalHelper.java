@@ -180,7 +180,7 @@ public class ChemicalHelper {
         return getDust(materialStack);
     }
 
-    public static MaterialEntry getMaterialEntry(ItemLike itemLike) {
+    public static @Nullable MaterialEntry getMaterialEntry(ItemLike itemLike) {
         // asItem is a bit slow, avoid calling it multiple times
         var itemKey = itemLike.asItem();
         var materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
@@ -198,18 +198,18 @@ public class ChemicalHelper {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
-                    if (!materialEntry1.isEmpty() &&
+                    if (materialEntry1 != null &&
                             materialEntry1.tagPrefix().getItemParentTags().stream().noneMatch(itemTag::equals)) {
                         return materialEntry1;
                     }
                 }
-                return MaterialEntry.NULL_ENTRY;
+                return null;
             });
         }
         return materialEntry;
     }
 
-    public static MaterialEntry getMaterialEntry(TagKey<Item> tag) {
+    public static @Nullable MaterialEntry getMaterialEntry(TagKey<Item> tag) {
         if (TAG_MATERIAL_ENTRY.isEmpty()) {
             // If the map is empty, resolve all possible tags to their values in an attempt to save time on later
             // lookups.
@@ -226,7 +226,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        return TAG_MATERIAL_ENTRY.getOrDefault(tag, MaterialEntry.NULL_ENTRY);
+        return TAG_MATERIAL_ENTRY.getOrDefault(tag, null);
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
