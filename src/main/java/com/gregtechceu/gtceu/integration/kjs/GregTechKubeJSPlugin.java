@@ -386,8 +386,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof RecipeCapability<?> recipeCapability) return recipeCapability;
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
-                    .registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(wrapper.wrapped());
+            return GTRegistries.RECIPE_CAPABILITIES.get(wrapper.wrapped());
         });
 
         typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
