@@ -190,6 +190,34 @@ public class ItemTagLoader {
 
         provider.addTag(CustomTags.TOOLS_IGNITER)
                 .addTag(ItemTags.CREEPER_IGNITERS);
+        // add these as "empty" tags so we can add them to `#forge:tools` easily
+        provider.addTag(CustomTags.BUTCHERY_KNIVES);
+        provider.addTag(CustomTags.BUZZSAWS);
+        provider.addTag(CustomTags.CHAINSAWS);
+        provider.addTag(CustomTags.CROWBARS);
+        provider.addTag(CustomTags.DRILLS);
+        provider.addTag(CustomTags.FILES);
+        provider.addTag(CustomTags.HAMMERS);
+        provider.addTag(CustomTags.KNIVES);
+        provider.addTag(CustomTags.MALLETS);
+        provider.addTag(CustomTags.MINING_HAMMERS);
+        provider.addTag(CustomTags.MORTARS);
+        provider.addTag(CustomTags.PLUNGERS);
+        provider.addTag(CustomTags.SAWS);
+        provider.addTag(CustomTags.SCREWDRIVERS);
+        provider.addTag(CustomTags.SCYTHES);
+        provider.addTag(CustomTags.SHEARS);
+        provider.addTag(CustomTags.SPADES);
+        provider.addTag(CustomTags.WIRE_CUTTERS);
+        provider.addTag(CustomTags.WRENCHES);
+        // mod compat
+        provider.addTag(CustomTags.WRENCH).addTag(CustomTags.WRENCHES);
+        provider.addTag(Tags.Items.TOOLS)
+                .addTags(CustomTags.BUTCHERY_KNIVES, CustomTags.BUZZSAWS, CustomTags.CHAINSAWS,
+                        CustomTags.CROWBARS, CustomTags.DRILLS, CustomTags.FILES, CustomTags.HAMMERS,
+                        CustomTags.KNIVES, CustomTags.MALLETS, CustomTags.MINING_HAMMERS, CustomTags.MORTARS,
+                        CustomTags.PLUNGERS, CustomTags.SAWS, CustomTags.SCREWDRIVERS, CustomTags.SCYTHES,
+                        CustomTags.SHEARS, CustomTags.SPADES, CustomTags.WIRE_CUTTERS, CustomTags.WRENCHES);
 
         // Add sodalite and lazurite as enchanting fuels
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
