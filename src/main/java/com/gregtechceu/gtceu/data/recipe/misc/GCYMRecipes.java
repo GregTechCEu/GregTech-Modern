@@ -167,8 +167,8 @@ public class GCYMRecipes {
                 ChemicalHelper.get(plateDouble, MolybdenumDisilicide), 'R', ChemicalHelper.get(rotor, Titanium), 'L',
                 ChemicalHelper.get(rodLong, MolybdenumDisilicide));
         VanillaRecipeHelper.addShapedRecipe(provider, "parallel_hatch_mk1", PARALLEL_HATCH[IV].asStack(1), "SZE", "ZHZ",
-                "CZC", 'S', SENSOR_IV.asStack(), 'E', EMITTER_IV.asStack(), 'Z', Items.LuV_CIRCUITS, 'H', HULL[IV].asStack(),
-                'C', new MaterialEntry(cableGtDouble, Platinum));
+                "CZC", 'S', SENSOR_IV.asStack(), 'E', EMITTER_IV.asStack(), 'Z', Items.LuV_CIRCUITS,
+                'H', HULL[IV].asStack(), 'C', new MaterialEntry(cableGtDouble, Platinum));
         VanillaRecipeHelper.addShapedRecipe(provider, "parallel_hatch_mk2", PARALLEL_HATCH[LuV].asStack(1), "SZE",
                 "ZHZ", "CZC", 'S', SENSOR_LuV.asStack(), 'E', EMITTER_LuV.asStack(), 'Z', Items.ZPM_CIRCUITS, 'H',
                 HULL[LuV].asStack(), 'C', new MaterialEntry(cableGtDouble, NiobiumTitanium));
@@ -176,8 +176,8 @@ public class GCYMRecipes {
                 "ZHZ", "CZC", 'S', SENSOR_ZPM.asStack(), 'E', EMITTER_ZPM.asStack(), 'Z', Items.UV_CIRCUITS, 'H',
                 HULL[ZPM].asStack(), 'C', new MaterialEntry(cableGtDouble, VanadiumGallium));
         VanillaRecipeHelper.addShapedRecipe(provider, "parallel_hatch_mk4", PARALLEL_HATCH[UV].asStack(1), "SZE", "ZHZ",
-                "CZC", 'S', SENSOR_UV.asStack(), 'E', EMITTER_UV.asStack(), 'Z', Items.UHV_CIRCUITS, 'H', HULL[UV].asStack(),
-                'C', new MaterialEntry(cableGtDouble, YttriumBariumCuprate));
+                "CZC", 'S', SENSOR_UV.asStack(), 'E', EMITTER_UV.asStack(), 'Z', Items.UHV_CIRCUITS,
+                'H', HULL[UV].asStack(), 'C', new MaterialEntry(cableGtDouble, YttriumBariumCuprate));
     }
 
     private static void registerMachineRecipes(Consumer<FinishedRecipe> provider) {

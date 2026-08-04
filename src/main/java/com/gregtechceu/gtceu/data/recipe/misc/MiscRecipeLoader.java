@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
@@ -289,7 +289,7 @@ public class MiscRecipeLoader {
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(GTMachines.MONITOR_SCREEN)
          * .save(provider);
-         * 
+         *
          * ASSEMBLER_RECIPES.recipeBuilder("central_monitor").duration(100).EUt(VA[HV])
          * .inputItems(COVER_SCREEN)
          * .inputItems(CraftingComponent.HULL.getIngredient(3))
@@ -308,7 +308,7 @@ public class MiscRecipeLoader {
          * .outputItems(COVER_DIGITAL_INTERFACE)
          * .save(provider);
          * \
-         * 
+         *
          */
         // todo digital interface cover
         /*
@@ -318,7 +318,7 @@ public class MiscRecipeLoader {
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(COVER_DIGITAL_INTERFACE_WIRELESS)
          * .save(provider);
-         * 
+         *
          * ASSEMBLER_RECIPES.recipeBuilder("plugin_text").duration(80).EUt(400)
          * .inputItems(COVER_SCREEN)
          * .inputItems(circuit, Tier.LV)
@@ -326,7 +326,7 @@ public class MiscRecipeLoader {
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(PLUGIN_TEXT)
          * .save(provider);
-         * 
+         *
          * ASSEMBLER_RECIPES.recipeBuilder("plugin_online_pic").duration(80).EUt(400)
          * .inputItems(COVER_SCREEN)
          * .inputItems(circuit, Tier.LV)
@@ -334,7 +334,7 @@ public class MiscRecipeLoader {
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(PLUGIN_ONLINE_PIC)
          * .save(provider);
-         * 
+         *
          * ASSEMBLER_RECIPES.recipeBuilder("plugin_fake_gui").duration(80).EUt(400)
          * .inputItems(COVER_SCREEN)
          * .inputItems(circuit, Tier.LV)
@@ -342,7 +342,7 @@ public class MiscRecipeLoader {
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(PLUGIN_FAKE_GUI)
          * .save(provider);
-         * 
+         *
          * ASSEMBLER_RECIPES.recipeBuilder("plugin_advanced_monitor").duration(80).EUt(400)
          * .inputItems(COVER_SCREEN)
          * .inputItems(circuit, Tier.HV)
@@ -362,7 +362,7 @@ public class MiscRecipeLoader {
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(WIRELESS)
          * .save(provider);
-         * 
+         *
          * ASSEMBLER_RECIPES.recipeBuilder("camera_upgrade").duration(100).EUt(VA[LV])
          * .inputItems(ELECTRIC_PISTON_LV, 2)
          * .inputItems(EMITTER_LV)
@@ -404,6 +404,7 @@ public class MiscRecipeLoader {
                 .duration(40).EUt(6).save(provider);
 
         // Dyed Lens Recipes
+        // add a block here so people don't accidentally use this temporary builder for other recipes
         {
             GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("")
                     .inputItems(GTTags.Items.LENSES_GLASS)
@@ -580,12 +581,12 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // XP set to 0.35, similar to vanilla food smelting
-        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS, new ItemStack(Items.BREAD),
-                0.35f);
-        VanillaRecipeHelper.addCampfireRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS, new ItemStack(Items.BREAD),
-                0.35f);
-        VanillaRecipeHelper.addSmokingRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS, new ItemStack(Items.BREAD),
-                0.35f);
+        VanillaRecipeHelper.addSmeltingRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS,
+                new ItemStack(Items.BREAD), 0.35f);
+        VanillaRecipeHelper.addCampfireRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS,
+                new ItemStack(Items.BREAD), 0.35f);
+        VanillaRecipeHelper.addSmokingRecipe(provider, "dough_to_bread", GTTags.Items.DOUGHS,
+                new ItemStack(Items.BREAD), 0.35f);
 
         FORMING_PRESS_RECIPES.recipeBuilder("laminated_glass")
                 .inputItems(GTBlocks.CASING_TEMPERED_GLASS.asStack(2))

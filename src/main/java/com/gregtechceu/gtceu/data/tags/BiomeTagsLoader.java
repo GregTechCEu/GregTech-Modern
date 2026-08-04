@@ -26,7 +26,7 @@ public class BiomeTagsLoader extends BiomeTagsProvider {
         tag(GTTags.Biomes.IS_SWAMP).add(Biomes.SWAMP).add(Biomes.MANGROVE_SWAMP);
         tag(GTTags.Biomes.HAS_RUBBER_TREE).addTag(GTTags.Biomes.IS_SWAMP).addTag(BiomeTags.IS_FOREST)
                 .addTag(BiomeTags.IS_JUNGLE);
-        tag(GTTags.Biomes.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT).add(Biomes.BEACH).add(Biomes.BADLANDS)
-                .add(Biomes.WOODED_BADLANDS);
+        tag(GTTags.Biomes.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT).add(Biomes.BEACH)
+                .add(Biomes.BADLANDS).add(Biomes.WOODED_BADLANDS);
     }
 }

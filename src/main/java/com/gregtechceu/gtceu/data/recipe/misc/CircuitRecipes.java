@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
@@ -117,7 +117,8 @@ public class CircuitRecipes {
                 .outputItems(RANDOM_ACCESS_MEMORY_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(GTTags.Items.LENSES_LIGHT_BLUE).outputItems(CENTRAL_PROCESSING_UNIT_WAFER).save(provider);
+                .notConsumable(GTTags.Items.LENSES_LIGHT_BLUE).outputItems(CENTRAL_PROCESSING_UNIT_WAFER)
+                .save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_phosphorus").duration(500).EUt(VA[HV])
                 .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_LIGHT_BLUE)
                 .outputItems(CENTRAL_PROCESSING_UNIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
@@ -145,7 +146,8 @@ public class CircuitRecipes {
                 .save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(GTTags.Items.LENSES_ORANGE).outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER).save(provider);
+                .notConsumable(GTTags.Items.LENSES_ORANGE).outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER)
+                .save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_phosphorus").duration(500).EUt(VA[HV])
                 .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_ORANGE)
                 .outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
@@ -170,11 +172,11 @@ public class CircuitRecipes {
                 .outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nand_phosphorus").duration(900).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_GRAY).outputItems(NAND_MEMORY_CHIP_WAFER)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_GRAY)
+                .outputItems(NAND_MEMORY_CHIP_WAFER).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nand_naquadah").duration(500).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_GRAY).outputItems(NAND_MEMORY_CHIP_WAFER, 4)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_GRAY)
+                .outputItems(NAND_MEMORY_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nand_neutronium").duration(200).EUt(VA[IV])
                 .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_GRAY)
                 .outputItems(NAND_MEMORY_CHIP_WAFER, 8)
@@ -184,8 +186,8 @@ public class CircuitRecipes {
                 .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_PINK).outputItems(NOR_MEMORY_CHIP_WAFER)
                 .cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nor_naquadah").duration(500).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_PINK).outputItems(NOR_MEMORY_CHIP_WAFER, 4)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_PINK)
+                .outputItems(NOR_MEMORY_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nor_neutronium").duration(200).EUt(VA[IV])
                 .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_PINK)
                 .outputItems(NOR_MEMORY_CHIP_WAFER, 8)
@@ -202,11 +204,11 @@ public class CircuitRecipes {
                 .outputItems(POWER_INTEGRATED_CIRCUIT_WAFER, 8).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_soc_phosphorus").duration(900).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW).outputItems(SYSTEM_ON_CHIP_WAFER)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(PHOSPHORUS_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW)
+                .outputItems(SYSTEM_ON_CHIP_WAFER).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_soc_naquadah").duration(500).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW).outputItems(SYSTEM_ON_CHIP_WAFER, 4)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
+                .inputItems(NAQUADAH_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW)
+                .outputItems(SYSTEM_ON_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_soc_neutronium").duration(200).EUt(VA[IV])
                 .inputItems(NEUTRONIUM_WAFER).notConsumable(GTTags.Items.LENSES_YELLOW)
                 .outputItems(SYSTEM_ON_CHIP_WAFER, 8)

@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
-import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -675,10 +675,10 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_ASSEMBLY_CONTROL.asStack(), 'S', GTTags.Items.IV_CIRCUITS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "large_chemical_reactor",
-                GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack(), "CRC", "PMP", "CHC", 'C', GTTags.Items.HV_CIRCUITS, 'R',
-                ChemicalHelper.get(TagPrefix.rotor, GTMaterials.StainlessSteel), 'P',
-                ChemicalHelper.get(TagPrefix.pipeLargeFluid, GTMaterials.Polytetrafluoroethylene), 'M',
-                GTItems.ELECTRIC_MOTOR_HV.asStack(), 'H', GTMachines.HULL[HV].asStack());
+                GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack(), "CRC", "PMP", "CHC", 'C', GTTags.Items.HV_CIRCUITS,
+                'R', ChemicalHelper.get(TagPrefix.rotor, GTMaterials.StainlessSteel),
+                'P', ChemicalHelper.get(TagPrefix.pipeLargeFluid, GTMaterials.Polytetrafluoroethylene),
+                'M', GTItems.ELECTRIC_MOTOR_HV.asStack(), 'H', GTMachines.HULL[HV].asStack());
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "power_substation",
                 GTMultiMachines.POWER_SUBSTATION.asStack(),

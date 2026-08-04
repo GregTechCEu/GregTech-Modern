@@ -431,7 +431,8 @@ public class GTItems {
             .properties(p -> p.stacksTo(1))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
-            .onRegister(attach(new FilteredFluidContainer(100, true, x -> x.getFluid().is(GTTags.Fluids.LIGHTER_FLUIDS)),
+            .onRegister(attach(
+                    new FilteredFluidContainer(100, true, x -> x.getFluid().is(GTTags.Fluids.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))
@@ -443,7 +444,8 @@ public class GTItems {
             .properties(p -> p.stacksTo(1).rarity(Rarity.UNCOMMON))
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(attach(new LighterBehavior(true, true, true)))
-            .onRegister(attach(new FilteredFluidContainer(1000, true, x -> x.getFluid().is(GTTags.Fluids.LIGHTER_FLUIDS)),
+            .onRegister(attach(
+                    new FilteredFluidContainer(1000, true, x -> x.getFluid().is(GTTags.Fluids.LIGHTER_FLUIDS)),
                     new ItemFluidContainer()))
             .onRegister(modelPredicate(GTCEu.id("lighter_open"),
                     (itemStack) -> itemStack.getOrCreateTag().getBoolean(LighterBehavior.LIGHTER_OPEN) ? 1.0f : 0.0f))

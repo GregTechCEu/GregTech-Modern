@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.tags;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 
-import lombok.experimental.UtilityClass;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -16,10 +15,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 
-// spotless:off
+import lombok.experimental.UtilityClass;
+
 @SuppressWarnings("deprecation")
 @UtilityClass
 public class GTTags {
+    // spotless:off
 
     // region blocks
     @UtilityClass
@@ -73,8 +74,7 @@ public class GTTags {
 
         public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
 
-        public static final TagKey<Block> CREATE_WRENCH_PICKUP = TagUtil.optionalTag(BuiltInRegistries.BLOCK,
-                ResourceLocation.fromNamespaceAndPath(GTValues.MODID_CREATE, "wrench_pickup"));
+        public static final TagKey<Block> CREATE_WRENCH_PICKUP = TagUtil.optionalTag(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(GTValues.MODID_CREATE, "wrench_pickup"));
     }
     // endregion blocks
 
@@ -83,8 +83,7 @@ public class GTTags {
     public static class EntityTypes {
 
         public static final TagKey<EntityType<?>> HEAT_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "heat_immune");
-        public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE,
-                "chemical_immune");
+        public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "chemical_immune");
     }
     // endregion entity types
 
@@ -345,5 +344,6 @@ public class GTTags {
         public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(Registries.BIOME, "has_rubber_tree");
     }
     // endregion biomes
-}
+
 // spotless:on
+}

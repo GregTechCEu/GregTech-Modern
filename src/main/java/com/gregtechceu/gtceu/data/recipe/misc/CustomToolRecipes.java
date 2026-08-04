@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.api.recipe.ToolHeadReplaceRecipe;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
-import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
