@@ -381,7 +381,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // Dyed Lens Decomposition
-        for (ItemEntry<Item> item : GLASS_LENSES.values()) {
+        for (ItemEntry<Item> item : GLASS_LENSES) {
             EXTRACTOR_RECIPES.recipeBuilder("extract_" + item.get()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputFluids(Glass.getFluid(108))
@@ -404,8 +404,10 @@ public class MiscRecipeLoader {
                 .duration(40).EUt(6).save(provider);
 
         // Dyed Lens Recipes
-        GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("").EUt(VA[HV]).duration(200).inputItems(lens,
-                Glass).category(GTRecipeCategories.CHEM_DYES);
+        GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("")
+                .inputItems(CustomTags.LENSES_GLASS)
+                .category(GTRecipeCategories.CHEM_DYES)
+                .duration(200).EUt(VA[HV]);
         final int dyeAmount = 288;
 
         // skip white lens

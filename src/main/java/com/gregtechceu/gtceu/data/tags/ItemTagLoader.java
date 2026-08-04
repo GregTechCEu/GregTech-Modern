@@ -66,6 +66,9 @@ public class ItemTagLoader {
                 .addTag(CustomTags.DEAD_CORAL_ITEMS);
         // spotless:on
 
+        provider.addTag(CustomTags.LENSES).addTags(CustomTags.LENSES_ARRAY)
+                .addTag(CustomTags.LENSES_GLASS);
+
         provider.addTag(CustomTags.LENSES_WHITE)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get())
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());

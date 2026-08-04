@@ -230,6 +230,9 @@ public class CustomTags {
 
     public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
 
+    public static final TagKey<Item> LENSES = TagUtil.createItemTag("lenses");
+    public static final TagKey<Item> LENSES_GLASS = TagUtil.createItemTag("lenses/glass");
+
     public static final TagKey<Item> LENSES_WHITE = TagUtil.createItemTag("lenses/white");
     public static final TagKey<Item> LENSES_ORANGE = TagUtil.createItemTag("lenses/orange");
     public static final TagKey<Item> LENSES_MAGENTA = TagUtil.createItemTag("lenses/magenta");

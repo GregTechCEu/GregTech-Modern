@@ -1469,6 +1469,7 @@ public class GTItems {
             GLASS_LENSES[id] = REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
                     .lang("Glass Lens (%s)".formatted(toEnglishName(color)))
                     .tag(CustomTags.LENSES_ARRAY[id])
+                    .tag(CustomTags.LENSES_GLASS)
                     .register();
         }
     }
