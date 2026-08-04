@@ -82,6 +82,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
             Codec.INT.fieldOf("invalid_blocks_threshold").forGetter((config) -> config.invalidBlocksThreshold))
             .apply(instance, GeodeVeinGenerator::new));
 
+
     @Setter
     public GeodeBlockSettings geodeBlockSettings;
     @Setter

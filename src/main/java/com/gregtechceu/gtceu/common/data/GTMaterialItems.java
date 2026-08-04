@@ -24,12 +24,9 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import snownee.jade.addon.harvest.HarvestToolProvider;
-import snownee.jade.addon.harvest.SimpleToolHandler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MATERIAL_ITEM;
@@ -164,16 +161,4 @@ public class GTMaterialItems {
         }
     }
 
-    public static class JadeCallWrapper {
-
-        public static void registerToolHandlers() {
-            GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-                if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
-                    return;
-                HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0),
-                        map.values().stream().filter(Objects::nonNull).filter(ItemProviderEntry::isPresent)
-                                .map(ItemProviderEntry::asItem).toArray(Item[]::new)));
-            });
-        }
-    }
 }

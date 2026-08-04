@@ -4,12 +4,19 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import snownee.jade.addon.harvest.HarvestToolProvider;
+import snownee.jade.addon.harvest.SimpleToolHandler;
 import snownee.jade.api.*;
+
+import java.util.Objects;
 
 @WailaPlugin
 public class GTJadePlugin implements IWailaPlugin {
@@ -106,5 +113,15 @@ public class GTJadePlugin implements IWailaPlugin {
             }
             reg.registerBlockComponent(provider, clazz);
         }
+    }
+
+    public static void registerToolHandlers() {
+        GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
+            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
+                return;
+            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0),
+                    map.values().stream().filter(Objects::nonNull).filter(ItemProviderEntry::isPresent)
+                            .map(ItemProviderEntry::asItem).toArray(Item[]::new)));
+        });
     }
 }

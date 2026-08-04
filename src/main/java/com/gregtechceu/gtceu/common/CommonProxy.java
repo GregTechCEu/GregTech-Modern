@@ -52,6 +52,7 @@ import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
+import com.gregtechceu.gtceu.integration.jade.GTJadePlugin;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -265,7 +266,7 @@ public class CommonProxy {
             GTMaterialItems.generateMaterialItems();
             GTMaterialItems.generateTools();
             GTMaterialItems.generateArmors();
-            if (GTCEu.Mods.isJadeLoaded()) GTMaterialItems.JadeCallWrapper.registerToolHandlers();
+            if (GTCEu.Mods.isJadeLoaded()) GTJadePlugin.registerToolHandlers();
 
         } else if (event.getRegistryKey() == Registries.FLUID) {
             GTFluids.registerMaterialFluids();
