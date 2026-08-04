@@ -293,16 +293,16 @@ public class MachineRecipeLoader {
         registerCobbleRecipe(provider, stones, cobbles);
         registerMossRecipe(provider, cobbles, mossCobbles);
         registerSmoothRecipe(provider, stones, polisheds);
-        registerBricksRecipe(provider, polisheds, bricks, CustomTags.LIGHT_BLUE_LENS);
+        registerBricksRecipe(provider, polisheds, bricks, CustomTags.LENSES_LIGHT_BLUE);
         registerCobbleRecipe(provider, bricks, crackedBricks);
         registerMossRecipe(provider, bricks, mossBricks);
-        registerBricksRecipe(provider, polisheds, chiseledBricks, CustomTags.WHITE_LENS);
-        registerBricksRecipe(provider, polisheds, tiledBricks, CustomTags.RED_LENS);
-        registerBricksRecipe(provider, tiledBricks, smallTiledBricks, CustomTags.RED_LENS);
-        registerBricksRecipe(provider, polisheds, windmillA, CustomTags.BLUE_LENS);
-        registerBricksRecipe(provider, polisheds, windmillB, CustomTags.YELLOW_LENS);
-        registerBricksRecipe(provider, polisheds, squareBricks, CustomTags.GREEN_LENS);
-        registerBricksRecipe(provider, polisheds, smallBricks, CustomTags.PINK_LENS);
+        registerBricksRecipe(provider, polisheds, chiseledBricks, CustomTags.LENSES_WHITE);
+        registerBricksRecipe(provider, polisheds, tiledBricks, CustomTags.LENSES_RED);
+        registerBricksRecipe(provider, tiledBricks, smallTiledBricks, CustomTags.LENSES_RED);
+        registerBricksRecipe(provider, polisheds, windmillA, CustomTags.LENSES_BLUE);
+        registerBricksRecipe(provider, polisheds, windmillB, CustomTags.LENSES_YELLOW);
+        registerBricksRecipe(provider, polisheds, squareBricks, CustomTags.LENSES_GREEN);
+        registerBricksRecipe(provider, polisheds, smallBricks, CustomTags.LENSES_PINK);
 
         for (int i = 0; i < stones.size(); i++) {
             ResourceLocation bricksId = BuiltInRegistries.ITEM.getKey(bricks.get(i).getItem());

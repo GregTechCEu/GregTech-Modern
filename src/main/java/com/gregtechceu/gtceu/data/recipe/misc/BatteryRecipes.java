@@ -325,7 +325,7 @@ public class BatteryRecipes {
         // Lapotronic Energy Orb
         LASER_ENGRAVER_RECIPES.recipeBuilder("engraved_lapotron_chip")
                 .inputItems(LAPOTRON_CRYSTAL)
-                .notConsumable(CustomTags.BLUE_LENS)
+                .notConsumable(CustomTags.LENSES_BLUE)
                 .outputItems(ENGRAVED_LAPOTRON_CHIP, 3)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(256).EUt(VA[HV]).save(provider);

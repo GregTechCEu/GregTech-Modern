@@ -230,41 +230,41 @@ public class CustomTags {
 
     public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
 
-    public static final TagKey<Item> WHITE_LENS = TagUtil.createItemTag("lens/white");
-    public static final TagKey<Item> ORANGE_LENS = TagUtil.createItemTag("lens/orange");
-    public static final TagKey<Item> MAGENTA_LENS = TagUtil.createItemTag("lens/magenta");
-    public static final TagKey<Item> LIGHT_BLUE_LENS = TagUtil.createItemTag("lens/light_blue");
-    public static final TagKey<Item> YELLOW_LENS = TagUtil.createItemTag("lens/yellow");
-    public static final TagKey<Item> LIME_LENS = TagUtil.createItemTag("lens/lime");
-    public static final TagKey<Item> PINK_LENS = TagUtil.createItemTag("lens/pink");
-    public static final TagKey<Item> GRAY_LENS = TagUtil.createItemTag("lens/gray");
-    public static final TagKey<Item> LIGHT_GRAY_LENS = TagUtil.createItemTag("lens/light_gray");
-    public static final TagKey<Item> CYAN_LENS = TagUtil.createItemTag("lens/cyan");
-    public static final TagKey<Item> PURPLE_LENS = TagUtil.createItemTag("lens/purple");
-    public static final TagKey<Item> BLUE_LENS = TagUtil.createItemTag("lens/blue");
-    public static final TagKey<Item> BROWN_LENS = TagUtil.createItemTag("lens/brown");
-    public static final TagKey<Item> GREEN_LENS = TagUtil.createItemTag("lens/green");
-    public static final TagKey<Item> RED_LENS = TagUtil.createItemTag("lens/red");
-    public static final TagKey<Item> BLACK_LENS = TagUtil.createItemTag("lens/black");
+    public static final TagKey<Item> LENSES_WHITE = TagUtil.createItemTag("lenses/white");
+    public static final TagKey<Item> LENSES_ORANGE = TagUtil.createItemTag("lenses/orange");
+    public static final TagKey<Item> LENSES_MAGENTA = TagUtil.createItemTag("lenses/magenta");
+    public static final TagKey<Item> LENSES_LIGHT_BLUE = TagUtil.createItemTag("lenses/light_blue");
+    public static final TagKey<Item> LENSES_YELLOW = TagUtil.createItemTag("lenses/yellow");
+    public static final TagKey<Item> LENSES_LIME = TagUtil.createItemTag("lenses/lime");
+    public static final TagKey<Item> LENSES_PINK = TagUtil.createItemTag("lenses/pink");
+    public static final TagKey<Item> LENSES_GRAY = TagUtil.createItemTag("lenses/gray");
+    public static final TagKey<Item> LENSES_LIGHT_GRAY = TagUtil.createItemTag("lenses/light_gray");
+    public static final TagKey<Item> LENSES_CYAN = TagUtil.createItemTag("lenses/cyan");
+    public static final TagKey<Item> LENSES_PURPLE = TagUtil.createItemTag("lenses/purple");
+    public static final TagKey<Item> LENSES_BLUE = TagUtil.createItemTag("lenses/blue");
+    public static final TagKey<Item> LENSES_BROWN = TagUtil.createItemTag("lenses/brown");
+    public static final TagKey<Item> LENSES_GREEN = TagUtil.createItemTag("lenses/green");
+    public static final TagKey<Item> LENSES_RED = TagUtil.createItemTag("lenses/red");
+    public static final TagKey<Item> LENSES_BLACK = TagUtil.createItemTag("lenses/black");
 
     @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] LENSES = new TagKey[] {
-            WHITE_LENS,
-            ORANGE_LENS,
-            MAGENTA_LENS,
-            LIGHT_BLUE_LENS,
-            YELLOW_LENS,
-            LIME_LENS,
-            PINK_LENS,
-            GRAY_LENS,
-            LIGHT_GRAY_LENS,
-            CYAN_LENS,
-            PURPLE_LENS,
-            BLUE_LENS,
-            BROWN_LENS,
-            GREEN_LENS,
-            RED_LENS,
-            BLACK_LENS
+    public static final TagKey<Item>[] LENSES_ARRAY = new TagKey[] {
+            LENSES_WHITE,
+            LENSES_ORANGE,
+            LENSES_MAGENTA,
+            LENSES_LIGHT_BLUE,
+            LENSES_YELLOW,
+            LENSES_LIME,
+            LENSES_PINK,
+            LENSES_GRAY,
+            LENSES_LIGHT_GRAY,
+            LENSES_CYAN,
+            LENSES_PURPLE,
+            LENSES_BLUE,
+            LENSES_BROWN,
+            LENSES_GREEN,
+            LENSES_RED,
+            LENSES_BLACK
     };
 
     @SuppressWarnings("unchecked")

@@ -66,18 +66,18 @@ public class ItemTagLoader {
                 .addTag(CustomTags.DEAD_CORAL_ITEMS);
         // spotless:on
 
-        provider.addTag(CustomTags.WHITE_LENS)
+        provider.addTag(CustomTags.LENSES_WHITE)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get())
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
-        provider.addTag(CustomTags.LIGHT_BLUE_LENS)
+        provider.addTag(CustomTags.LENSES_LIGHT_BLUE)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());
-        provider.addTag(CustomTags.RED_LENS)
+        provider.addTag(CustomTags.LENSES_RED)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get());
-        provider.addTag(CustomTags.GREEN_LENS)
+        provider.addTag(CustomTags.LENSES_GREEN)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get());
-        provider.addTag(CustomTags.BLUE_LENS)
+        provider.addTag(CustomTags.LENSES_BLUE)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
-        provider.addTag(CustomTags.PURPLE_LENS)
+        provider.addTag(CustomTags.LENSES_PURPLE)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
 
         provider.addTag(CustomTags.PISTONS).add(Items.PISTON, Items.STICKY_PISTON);

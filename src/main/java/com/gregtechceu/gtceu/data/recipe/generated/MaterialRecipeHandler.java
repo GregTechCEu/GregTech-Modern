@@ -474,7 +474,7 @@ public final class MaterialRecipeHandler {
                         "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
                                 "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
                 .inputItems(prevStack)
-                .notConsumable(CustomTags.WHITE_LENS)
+                .notConsumable(CustomTags.LENSES_WHITE)
                 .outputItems(prefix, material)
                 .duration(300)
                 .EUt(240)
