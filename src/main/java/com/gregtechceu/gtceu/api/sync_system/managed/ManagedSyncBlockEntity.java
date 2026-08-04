@@ -107,8 +107,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder()
-                .serializeNBT(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), true));
+        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), true));
     }
 
     @Override
