@@ -68,14 +68,16 @@ public class DimensionMarker {
         return stack;
     }
 
-    @Setter
     @Accessors(fluent = true, chain = true)
     public static class Builder {
 
         private final ResourceLocation id;
+        @Setter
         private Supplier<Item> iconSupplier;
+        @Setter
         private int tier = 0;
         @Nullable
+        @Setter
         private String overrideName;
 
         public Builder(ResourceLocation dimKey) {

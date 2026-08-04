@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.sync_system.managed;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
@@ -103,7 +102,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), true));
+        return ClientboundBlockEntityDataPacket.create(this,
+                b -> getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), true));
     }
 
     @Override

@@ -50,6 +50,8 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
+import static net.minecraft.resources.ResourceKey.createRegistryKey;
+
 @SuppressWarnings("unused")
 public final class GTRegistries {
 
@@ -63,37 +65,37 @@ public final class GTRegistries {
         private Keys() {}
 
         // Material related registries
-        public static final ResourceKey<Registry<Material>> MATERIAL = makeRegistryKey(GTCEu.id("material"));
-        public static final ResourceKey<Registry<Element>> ELEMENT = makeRegistryKey(GTCEu.id("element"));
-        public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX = makeRegistryKey(GTCEu.id("tag_prefix"));
-        public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET = makeRegistryKey(GTCEu.id("material_icon_set"));
+        public static final ResourceKey<Registry<Material>> MATERIAL = createRegistryKey(GTCEu.id("material"));
+        public static final ResourceKey<Registry<Element>> ELEMENT = createRegistryKey(GTCEu.id("element"));
+        public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX = createRegistryKey(GTCEu.id("tag_prefix"));
+        public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET = createRegistryKey(GTCEu.id("material_icon_set"));
 
         // Recipe related registries
 
-        public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
-        public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = makeRegistryKey(GTCEu.id("recipe_category"));
-        public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = makeRegistryKey(GTCEu.id("recipe_capability"));
-        public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(GTCEu.id("recipe_condition"));
-        public static final ResourceKey<Registry<ChanceLogic>> CHANCE_LOGIC = makeRegistryKey(GTCEu.id("chance_logic"));
+        public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPE = createRegistryKey(GTCEu.id("recipe_type"));
+        public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = createRegistryKey(GTCEu.id("recipe_category"));
+        public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = createRegistryKey(GTCEu.id("recipe_capability"));
+        public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = createRegistryKey(GTCEu.id("recipe_condition"));
+        public static final ResourceKey<Registry<ChanceLogic>> CHANCE_LOGIC = createRegistryKey(GTCEu.id("chance_logic"));
 
         // Datapack registries
 
-        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID = makeRegistryKey(GTCEu.id("bedrock_fluid"));
-        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE = makeRegistryKey(GTCEu.id("bedrock_ore"));
-        public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = makeRegistryKey(GTCEu.id("ore_vein"));
+        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID = createRegistryKey(GTCEu.id("bedrock_fluid"));
+        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE = createRegistryKey(GTCEu.id("bedrock_ore"));
+        public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = createRegistryKey(GTCEu.id("ore_vein"));
 
         // Other registries
 
-        public static final ResourceKey<Registry<CoverDefinition>> COVER = makeRegistryKey(GTCEu.id("cover"));
-        public static final ResourceKey<Registry<MachineDefinition>> MACHINE = makeRegistryKey(GTCEu.id("machine"));
+        public static final ResourceKey<Registry<CoverDefinition>> COVER = createRegistryKey(GTCEu.id("cover"));
+        public static final ResourceKey<Registry<MachineDefinition>> MACHINE = createRegistryKey(GTCEu.id("machine"));
 
-        public static final ResourceKey<Registry<SoundEntry>> SOUND = makeRegistryKey(GTCEu.id("sound"));
+        public static final ResourceKey<Registry<SoundEntry>> SOUND = createRegistryKey(GTCEu.id("sound"));
 
-        public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(GTCEu.id("dimension_marker"));
-        public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
-        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
-        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
-        public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
+        public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = createRegistryKey(GTCEu.id("dimension_marker"));
+        public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = createRegistryKey(GTCEu.id("medical_condition"));
+        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = createRegistryKey(GTCEu.id("world_gen_layer"));
+        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = createRegistryKey(GTCEu.id("pattern_error_type"));
+        public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = createRegistryKey(GTCEu.id("placeholder"));
     }
 
     // Be careful when changing the order of these static fields, as changing the order of them also changes the order of registry load.
@@ -123,10 +125,6 @@ public final class GTRegistries {
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
 
     // spotless:on
-
-    private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
-        return ResourceKey.createRegistryKey(registryId);
-    }
 
     private static <T> MappedRegistry<T> makeRegistry(ResourceKey<Registry<T>> key) {
         return makeRegistry(key, new MappedRegistry<>(key, Lifecycle.stable(), false));

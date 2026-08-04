@@ -15,6 +15,7 @@ import dev.latvian.mods.kubejs.registry.RegistryInfo;
 
 public class GTRegistryInfo {
 
+    // spotless:off
     public static final RegistryInfo<Element> ELEMENT = RegistryInfo.of(GTRegistries.Keys.ELEMENT, Element.class);
     public static final RegistryInfo<Material> MATERIAL = RegistryInfo.of(GTRegistries.Keys.MATERIAL, Material.class);
     public static final RegistryInfo<GTRecipeType> RECIPE_TYPE = RegistryInfo.of(GTRegistries.Keys.RECIPE_TYPE,

@@ -160,5 +160,4 @@ public class GTMaterialItems {
                     .register());
         }
     }
-
 }

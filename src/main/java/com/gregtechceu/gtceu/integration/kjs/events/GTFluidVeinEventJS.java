@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.FluidVeinBuilderJS;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,8 +13,8 @@ public class GTFluidVeinEventJS extends EventJS {
 
     public GTFluidVeinEventJS() {}
 
-    public void add(ResourceLocation id, Consumer<FluidVeinBuilderJS> consumer) {
-        FluidVeinBuilderJS builder = new FluidVeinBuilderJS(id);
+    public void add(ResourceLocation id, Consumer<BedrockFluidDefinition.Builder> consumer) {
+        BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(id);
         consumer.accept(builder);
         GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(id, builder.build());
     }

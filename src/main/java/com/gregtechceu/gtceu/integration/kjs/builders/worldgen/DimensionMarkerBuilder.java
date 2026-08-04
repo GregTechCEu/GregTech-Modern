@@ -9,7 +9,6 @@ import net.minecraft.world.item.Item;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -18,13 +17,14 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.DimensionMarker.MAX_TIER;
 
-@Getter
-@Setter
 @Accessors(fluent = true, chain = true)
 public class DimensionMarkerBuilder extends BuilderBase<DimensionMarker> {
 
+    @Setter
     private Supplier<Item> iconSupplier;
+    @Setter
     private int tier = 0;
+    @Setter
     @Nullable
     private String overrideName;
 

@@ -354,13 +354,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     }
 
     private <T> void registryObjectTypeWrapper(TypeWrappers typeWrappers, Class<T> clazz,
-                                               ResourceKey<Registry<T>> registry) {
+                                               ResourceKey<? extends Registry<T>> registry) {
         typeWrappers.register(clazz, (ctx, o) -> {
             o = Wrapper.unwrapped(o);
             if (clazz.isInstance(o)) return clazz.cast(o);
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return BuiltInRegistries.REGISTRY.get(registry).get(wrapper.wrapped());
+            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(registry)
+                    .get(wrapper.wrapped());
         });
     }
 
