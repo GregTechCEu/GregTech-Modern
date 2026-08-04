@@ -88,7 +88,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    @Setter
     protected MachineInstanceFactory<MACHINE> instanceFactory;
 
     @Setter

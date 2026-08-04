@@ -51,7 +51,8 @@ public abstract class SectionCompilerMixin {
             }
         };
         // intentionally no try-with-resource statement; closed in 'gtceu$clearBloomContextData'
-        BloomRenderer.bloomChunkContext().get().with(provider);
+        //noinspection resource
+        BloomRenderer.bloomChunkContext().with(provider);
     }
 
     @Inject(method = "compile(Lnet/minecraft/core/SectionPos;Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;Lcom/mojang/blaze3d/vertex/VertexSorting;Lnet/minecraft/client/renderer/SectionBufferBuilderPack;Ljava/util/List;)Lnet/minecraft/client/renderer/chunk/SectionCompiler$Results;",
@@ -66,6 +67,7 @@ public abstract class SectionCompilerMixin {
             BloomRenderer.SafeMode.bakeBloomChunkBuffers(sectionPos, vertexSorting);
         }
 
-        BloomRenderer.bloomChunkContext().get().close();
+        //noinspection resource
+        BloomRenderer.bloomChunkContext().close();
     }
 }

@@ -52,11 +52,11 @@ public abstract class BlockRendererMixin {
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
         if (BloomShaderManager.isBloomActive() && chunkContext != null &&
                 TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
-            var bloomBuilder = chunkContext.buffers.get(GTEmbeddiumCompat.getBloomRenderPass());
+            var bloomBuilder = chunkContext.buffers.get(GTEmbeddiumCompat.BLOOM_RENDER_PASS);
             bloomBuilderRef.set(bloomBuilder);
 
             // call the same method again, this time with the bloom chunk model builder
-            this.writeGeometry(ctx, bloomBuilder, offset, GTEmbeddiumCompat.getBloomMaterial(), quad, vertexColors,
+            this.writeGeometry(ctx, bloomBuilder, offset, GTEmbeddiumCompat.BLOOM_MATERIAL, quad, vertexColors,
                     lightData);
         } else {
             bloomBuilderRef.set(null);

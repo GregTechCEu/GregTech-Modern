@@ -87,11 +87,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
-        internal.additionalDisplay(additionalDisplay);
-        return this;
-    }
-
     public MultiblockMachineBuilderWrapper recoveryItems(Supplier<ItemLike[]> items) {
         internal.recoveryItems(items);
         return this;
@@ -375,11 +370,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public MultiblockMachineBuilderWrapper regressWhenWaiting(boolean regressWhenWaiting) {
         internal.regressWhenWaiting(regressWhenWaiting);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
-        internal.onBlockEntityRegister(onBlockEntityRegister);
         return this;
     }
 
