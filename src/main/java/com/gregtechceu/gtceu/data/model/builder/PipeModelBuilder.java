@@ -119,7 +119,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         for (Direction dir : GTUtil.DIRECTIONS) {
             ConfiguredModel[] rotatedModels = Arrays.stream(connectionModels)
                     .map(model -> ConfiguredModel.builder()
-                            .modelFile(model.model).uvLock(model.uvLock).weight(model.weight)
+                            .modelFile(model.model).uvLock(true).weight(model.weight)
                             .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 270 : 0)
                             .rotationY(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot() + 180) % 360)
                             .buildLast())
@@ -141,7 +141,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         for (Direction dir : GTUtil.DIRECTIONS) {
             ConfiguredModel[] rotatedModels = Arrays.stream(connectionModels)
                     .map(model -> ConfiguredModel.builder()
-                            .modelFile(model)
+                            .modelFile(model).uvLock(true)
                             .rotationX(dir == Direction.DOWN ? 0 : dir == Direction.UP ? 180 : 90)
                             .rotationY(dir.getAxis().isVertical() ? 0 : (int) dir.toYRot())
                             .buildLast())
