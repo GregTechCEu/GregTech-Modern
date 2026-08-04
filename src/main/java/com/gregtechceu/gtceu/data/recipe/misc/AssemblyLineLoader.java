@@ -20,7 +20,7 @@ public class AssemblyLineLoader {
     public static void init(Consumer<FinishedRecipe> provider) {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk1")
                 .inputItems(SUPERCONDUCTING_COIL.asStack())
-                .inputItems(GTTags.Items.ZPM_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 4)
                 .inputItems(plateDouble, Plutonium241)
                 .inputItems(plateDouble, Osmiridium)
                 .inputItems(FIELD_GENERATOR_IV, 2)
@@ -37,7 +37,7 @@ public class AssemblyLineLoader {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk2")
                 .inputItems(FUSION_COIL.asStack())
-                .inputItems(GTTags.Items.UV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_UV, 4)
                 .inputItems(plateDouble, Naquadria)
                 .inputItems(plateDouble, Europium)
                 .inputItems(FIELD_GENERATOR_LuV, 2)
@@ -55,7 +55,7 @@ public class AssemblyLineLoader {
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("fusion_reactor_mk3")
                 .inputItems(FUSION_COIL.asStack())
-                .inputItems(GTTags.Items.UHV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_UHV, 4)
                 .inputItems(QUANTUM_STAR)
                 .inputItems(plateDouble, Americium)
                 .inputItems(FIELD_GENERATOR_ZPM, 2)

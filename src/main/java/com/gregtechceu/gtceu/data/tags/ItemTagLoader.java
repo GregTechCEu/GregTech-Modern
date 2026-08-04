@@ -94,11 +94,11 @@ public class ItemTagLoader {
                 .addOptional(GTMaterialItems.MATERIAL_ITEMS.get(plate, Wood));
 
         // add (likely empty) tags for the high tier circuits so we can add them to the `gtceu:circuits` tag easily
-        provider.addTag(GTTags.Items.UEV_CIRCUITS);
-        provider.addTag(GTTags.Items.UIV_CIRCUITS);
-        provider.addTag(GTTags.Items.UXV_CIRCUITS);
-        provider.addTag(GTTags.Items.OpV_CIRCUITS);
-        provider.addTag(GTTags.Items.MAX_CIRCUITS);
+        provider.addTag(GTTags.Items.CIRCUITS_UEV);
+        provider.addTag(GTTags.Items.CIRCUITS_UIV);
+        provider.addTag(GTTags.Items.CIRCUITS_UXV);
+        provider.addTag(GTTags.Items.CIRCUITS_OpV);
+        provider.addTag(GTTags.Items.CIRCUITS_MAX);
         provider.addTag(GTTags.Items.CIRCUITS).addTags(GTTags.Items.CIRCUITS_ARRAY);
 
         provider.addTag(GTTags.Items.BATTERIES).addTags(GTTags.Items.BATTERIES_ARRAY);

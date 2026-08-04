@@ -144,64 +144,65 @@ public class GTTags {
 
         public static final TagKey<Item> CIRCUITS = TagUtil.createModItemTag("circuits");
 
-        public static final TagKey<Item> ULV_CIRCUITS = TagUtil.createModItemTag("circuits/ulv");
-        public static final TagKey<Item> LV_CIRCUITS = TagUtil.createModItemTag("circuits/lv");
-        public static final TagKey<Item> MV_CIRCUITS = TagUtil.createModItemTag("circuits/mv");
-        public static final TagKey<Item> HV_CIRCUITS = TagUtil.createModItemTag("circuits/hv");
-        public static final TagKey<Item> EV_CIRCUITS = TagUtil.createModItemTag("circuits/ev");
-        public static final TagKey<Item> IV_CIRCUITS = TagUtil.createModItemTag("circuits/iv");
-        public static final TagKey<Item> LuV_CIRCUITS = TagUtil.createModItemTag("circuits/luv");
-        public static final TagKey<Item> ZPM_CIRCUITS = TagUtil.createModItemTag("circuits/zpm");
-        public static final TagKey<Item> UV_CIRCUITS = TagUtil.createModItemTag("circuits/uv");
-        public static final TagKey<Item> UHV_CIRCUITS = TagUtil.createModItemTag("circuits/uhv");
-        public static final TagKey<Item> UEV_CIRCUITS = TagUtil.createModItemTag("circuits/uev");
-        public static final TagKey<Item> UIV_CIRCUITS = TagUtil.createModItemTag("circuits/uiv");
-        public static final TagKey<Item> UXV_CIRCUITS = TagUtil.createModItemTag("circuits/uxv");
-        public static final TagKey<Item> OpV_CIRCUITS = TagUtil.createModItemTag("circuits/opv");
-        public static final TagKey<Item> MAX_CIRCUITS = TagUtil.createModItemTag("circuits/max");
+        public static final TagKey<Item> CIRCUITS_ULV = TagUtil.createModItemTag("circuits/ulv");
+        public static final TagKey<Item> CIRCUITS_LV = TagUtil.createModItemTag("circuits/lv");
+        public static final TagKey<Item> CIRCUITS_MV = TagUtil.createModItemTag("circuits/mv");
+        public static final TagKey<Item> CIRCUITS_HV = TagUtil.createModItemTag("circuits/hv");
+        public static final TagKey<Item> CIRCUITS_EV = TagUtil.createModItemTag("circuits/ev");
+        public static final TagKey<Item> CIRCUITS_IV = TagUtil.createModItemTag("circuits/iv");
+        public static final TagKey<Item> CIRCUITS_LuV = TagUtil.createModItemTag("circuits/luv");
+        public static final TagKey<Item> CIRCUITS_ZPM = TagUtil.createModItemTag("circuits/zpm");
+        public static final TagKey<Item> CIRCUITS_UV = TagUtil.createModItemTag("circuits/uv");
+        public static final TagKey<Item> CIRCUITS_UHV = TagUtil.createModItemTag("circuits/uhv");
+        public static final TagKey<Item> CIRCUITS_UEV = TagUtil.createModItemTag("circuits/uev");
+        public static final TagKey<Item> CIRCUITS_UIV = TagUtil.createModItemTag("circuits/uiv");
+        public static final TagKey<Item> CIRCUITS_UXV = TagUtil.createModItemTag("circuits/uxv");
+        public static final TagKey<Item> CIRCUITS_OpV = TagUtil.createModItemTag("circuits/opv");
+        public static final TagKey<Item> CIRCUITS_MAX = TagUtil.createModItemTag("circuits/max");
         @SuppressWarnings("unchecked")
         public static final TagKey<Item>[] CIRCUITS_ARRAY = new TagKey[] {
-                ULV_CIRCUITS,
-                LV_CIRCUITS,
-                MV_CIRCUITS,
-                HV_CIRCUITS,
-                EV_CIRCUITS,
-                IV_CIRCUITS,
-                LuV_CIRCUITS,
-                ZPM_CIRCUITS,
-                UV_CIRCUITS,
-                UHV_CIRCUITS,
-                UEV_CIRCUITS,
-                UIV_CIRCUITS,
-                UXV_CIRCUITS,
-                OpV_CIRCUITS,
-                MAX_CIRCUITS
+                CIRCUITS_ULV,
+                CIRCUITS_LV,
+                CIRCUITS_MV,
+                CIRCUITS_HV,
+                CIRCUITS_EV,
+                CIRCUITS_IV,
+                CIRCUITS_LuV,
+                CIRCUITS_ZPM,
+                CIRCUITS_UV,
+                CIRCUITS_UHV,
+                CIRCUITS_UEV,
+                CIRCUITS_UIV,
+                CIRCUITS_UXV,
+                CIRCUITS_OpV,
+                CIRCUITS_MAX
         };
 
         public static final TagKey<Item> BATTERIES = TagUtil.createModItemTag("batteries");
 
-        public static final TagKey<Item> ULV_BATTERIES = TagUtil.createModItemTag("batteries/ulv");
-        public static final TagKey<Item> LV_BATTERIES = TagUtil.createModItemTag("batteries/lv");
-        public static final TagKey<Item> MV_BATTERIES = TagUtil.createModItemTag("batteries/mv");
-        public static final TagKey<Item> HV_BATTERIES = TagUtil.createModItemTag("batteries/hv");
-        public static final TagKey<Item> EV_BATTERIES = TagUtil.createModItemTag("batteries/ev");
-        public static final TagKey<Item> IV_BATTERIES = TagUtil.createModItemTag("batteries/iv");
-        public static final TagKey<Item> LuV_BATTERIES = TagUtil.createModItemTag("batteries/luv");
-        public static final TagKey<Item> ZPM_BATTERIES = TagUtil.createModItemTag("batteries/zpm");
-        public static final TagKey<Item> UV_BATTERIES = TagUtil.createModItemTag("batteries/uv");
-        public static final TagKey<Item> UHV_BATTERIES = TagUtil.createModItemTag("batteries/uhv");
+        public static final TagKey<Item> BATTERIES_ULV = TagUtil.createModItemTag("batteries/ulv");
+        public static final TagKey<Item> BATTERIES_LV = TagUtil.createModItemTag("batteries/lv");
+        public static final TagKey<Item> BATTERIES_MV = TagUtil.createModItemTag("batteries/mv");
+        public static final TagKey<Item> BATTERIES_HV = TagUtil.createModItemTag("batteries/hv");
+        public static final TagKey<Item> BATTERIES_EV = TagUtil.createModItemTag("batteries/ev");
+        public static final TagKey<Item> BATTERIES_IV = TagUtil.createModItemTag("batteries/iv");
+        public static final TagKey<Item> BATTERIES_LuV = TagUtil.createModItemTag("batteries/luv");
+        public static final TagKey<Item> BATTERIES_ZPM = TagUtil.createModItemTag("batteries/zpm");
+        public static final TagKey<Item> BATTERIES_UV = TagUtil.createModItemTag("batteries/uv");
+        public static final TagKey<Item> BATTERIES_UHV = TagUtil.createModItemTag("batteries/uhv");
+
         @SuppressWarnings("unchecked")
         public static final TagKey<Item>[] BATTERIES_ARRAY = new TagKey[] {
-                ULV_BATTERIES,
-                LV_BATTERIES,
-                MV_BATTERIES,
-                HV_BATTERIES,
-                EV_BATTERIES,
-                IV_BATTERIES,
-                LuV_BATTERIES,
-                ZPM_BATTERIES,
-                UV_BATTERIES,
-                UHV_BATTERIES
+                BATTERIES_ULV,
+                BATTERIES_LV,
+                BATTERIES_MV,
+                BATTERIES_HV,
+                BATTERIES_EV,
+                BATTERIES_IV,
+                BATTERIES_LuV,
+                BATTERIES_ZPM,
+                BATTERIES_UV,
+                BATTERIES_UHV
         };
 
         public static final TagKey<Item> ELECTRIC_MOTORS = TagUtil.createModItemTag("electric_motors");

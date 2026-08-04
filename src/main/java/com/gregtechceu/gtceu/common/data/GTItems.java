@@ -512,7 +512,7 @@ public class GTItems {
             .item("tantalum_capacitor", ComponentItem::create)
             .lang("Tantalum Capacitor")
             .onRegister(attach(ElectricStats.createRechargeableBattery(1000, GTValues.ULV)))
-            .tag(GTTags.Items.ULV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_ULV).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_SODIUM = REGISTRATE
             .item("lv_sodium_battery", ComponentItem::create)
@@ -520,21 +520,21 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(80000, GTValues.LV)))
-            .tag(GTTags.Items.LV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_LV).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_SODIUM = REGISTRATE
             .item("mv_sodium_battery", ComponentItem::create)
             .lang("Medium Sodium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(360000, GTValues.MV)))
-            .tag(GTTags.Items.MV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_MV).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_SODIUM = REGISTRATE
             .item("hv_sodium_battery", ComponentItem::create)
             .lang("Large Sodium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1200000, GTValues.HV)))
-            .tag(GTTags.Items.HV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_HV).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_LITHIUM = REGISTRATE
             .item("lv_lithium_battery", ComponentItem::create)
@@ -542,21 +542,21 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(120000, GTValues.LV)))
-            .tag(GTTags.Items.LV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_LV).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_LITHIUM = REGISTRATE
             .item("mv_lithium_battery", ComponentItem::create)
             .lang("Medium Lithium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(420000, GTValues.MV)))
-            .tag(GTTags.Items.MV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_MV).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_LITHIUM = REGISTRATE
             .item("hv_lithium_battery", ComponentItem::create)
             .lang("Large Lithium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1800000, GTValues.HV)))
-            .tag(GTTags.Items.HV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_HV).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_CADMIUM = REGISTRATE
             .item("lv_cadmium_battery", ComponentItem::create)
@@ -564,33 +564,33 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(100000, GTValues.LV)))
-            .tag(GTTags.Items.LV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_LV).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_CADMIUM = REGISTRATE
             .item("mv_cadmium_battery", ComponentItem::create)
             .lang("Medium Cadmium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(400000, GTValues.MV)))
-            .tag(GTTags.Items.MV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_MV).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_CADMIUM = REGISTRATE
             .item("hv_cadmium_battery", ComponentItem::create)
             .lang("Large Cadmium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1600000, GTValues.HV)))
-            .tag(GTTags.Items.HV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_HV).register();
 
     public static ItemEntry<ComponentItem> ENERGIUM_CRYSTAL = REGISTRATE.item("energy_crystal", ComponentItem::create)
             .lang("Energium Crystal")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(6_400_000L, GTValues.HV)))
-            .tag(GTTags.Items.HV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_HV).register();
     public static ItemEntry<ComponentItem> LAPOTRON_CRYSTAL = REGISTRATE.item("lapotron_crystal", ComponentItem::create)
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(25_000_000L, GTValues.EV)))
-            .tag(GTTags.Items.EV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_EV).register();
 
     public static ItemEntry<ComponentItem> BATTERY_EV_VANADIUM = REGISTRATE
             .item("ev_vanadium_battery", ComponentItem::create)
@@ -598,21 +598,21 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(10_240_000L, GTValues.EV)))
-            .tag(GTTags.Items.EV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_EV).register();
     public static ItemEntry<ComponentItem> BATTERY_IV_VANADIUM = REGISTRATE
             .item("iv_vanadium_battery", ComponentItem::create)
             .lang("Medium Vanadium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(40_960_000L, GTValues.IV)))
-            .tag(GTTags.Items.IV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_IV).register();
     public static ItemEntry<ComponentItem> BATTERY_LuV_VANADIUM = REGISTRATE
             .item("luv_vanadium_battery", ComponentItem::create)
             .lang("Large Vanadium Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(163_840_000L, GTValues.LuV)))
-            .tag(GTTags.Items.LuV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_LuV).register();
 
     public static ItemEntry<ComponentItem> BATTERY_ZPM_NAQUADRIA = REGISTRATE
             .item("zpm_naquadria_battery", ComponentItem::create)
@@ -620,14 +620,14 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(655_360_000L, GTValues.ZPM)))
-            .tag(GTTags.Items.ZPM_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_ZPM).register();
     public static ItemEntry<ComponentItem> BATTERY_UV_NAQUADRIA = REGISTRATE
             .item("uv_naquadria_battery", ComponentItem::create)
             .lang("Large Naquadria Battery")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(2_621_440_000L, GTValues.UV)))
-            .tag(GTTags.Items.UV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_UV).register();
 
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB = REGISTRATE
             .item("lapotronic_energy_orb", ComponentItem::create)
@@ -635,27 +635,27 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(250_000_000L, GTValues.IV)))
-            .tag(GTTags.Items.IV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_IV).register();
     public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB_CLUSTER = REGISTRATE
             .item("lapotronic_energy_orb_cluster", ComponentItem::create)
             .lang("Lapotronic Energy Orb Cluster")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(1_000_000_000L, GTValues.LuV)))
-            .tag(GTTags.Items.LuV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_LuV).register();
 
     public static ItemEntry<ComponentItem> ENERGY_MODULE = REGISTRATE.item("energy_module", ComponentItem::create)
             .lang("Energy Module")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(4_000_000_000L, GTValues.ZPM)))
-            .tag(GTTags.Items.ZPM_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_ZPM).register();
     public static ItemEntry<ComponentItem> ENERGY_CLUSTER = REGISTRATE.item("energy_cluster", ComponentItem::create)
             .lang("Energy Cluster")
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
-            .tag(GTTags.Items.UV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_UV).register();
 
     public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE
             .item("zero_point_module", ComponentItem::create)
@@ -668,7 +668,7 @@ public class GTItems {
             .model(overrideModel(GTCEu.id("battery"), 8))
             .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
             .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
-            .tag(GTTags.Items.UHV_BATTERIES).register();
+            .tag(GTTags.Items.BATTERIES_UHV).register();
 
     public static ItemEntry<Item> ELECTRIC_MOTOR_LV = REGISTRATE.item("lv_electric_motor", Item::new)
             .lang("LV Electric Motor")
@@ -1627,7 +1627,7 @@ public class GTItems {
             .register();
 
     public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("vacuum_tube", Item::new).lang("Vacuum Tube")
-            .tag(GTTags.Items.ULV_CIRCUITS).register();
+            .tag(GTTags.Items.CIRCUITS_ULV).register();
     public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("glass_tube", Item::new).lang("Glass Tube")
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M))))
             .register();
@@ -1668,96 +1668,96 @@ public class GTItems {
 
     // T1: Electronic
     public static ItemEntry<Item> ELECTRONIC_CIRCUIT_LV = REGISTRATE.item("basic_electronic_circuit", Item::new)
-            .lang("Basic Electronic Circuit").tag(GTTags.Items.LV_CIRCUITS)
+            .lang("Basic Electronic Circuit").tag(GTTags.Items.CIRCUITS_LV)
             .register();
     public static ItemEntry<Item> ELECTRONIC_CIRCUIT_MV = REGISTRATE.item("good_electronic_circuit", Item::new)
-            .lang("Good Electronic Circuit").tag(GTTags.Items.MV_CIRCUITS)
+            .lang("Good Electronic Circuit").tag(GTTags.Items.CIRCUITS_MV)
             .register();
 
     // T2: Integrated
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_LV = REGISTRATE.item("basic_integrated_circuit", Item::new)
-            .lang("Basic Integrated Circuit").tag(GTTags.Items.LV_CIRCUITS)
+            .lang("Basic Integrated Circuit").tag(GTTags.Items.CIRCUITS_LV)
             .register();
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_MV = REGISTRATE.item("good_integrated_circuit", Item::new)
-            .lang("Good Integrated Circuit").tag(GTTags.Items.MV_CIRCUITS)
+            .lang("Good Integrated Circuit").tag(GTTags.Items.CIRCUITS_MV)
             .register();
     public static ItemEntry<Item> INTEGRATED_CIRCUIT_HV = REGISTRATE.item("advanced_integrated_circuit", Item::new)
-            .lang("Advanced Integrated Circuit").tag(GTTags.Items.HV_CIRCUITS)
+            .lang("Advanced Integrated Circuit").tag(GTTags.Items.CIRCUITS_HV)
             .register();
 
     // ULV/LV easier circuits
     public static ItemEntry<Item> NAND_CHIP_ULV = REGISTRATE.item("nand_chip", Item::new).lang("NAND Chip")
-            .tag(GTTags.Items.ULV_CIRCUITS).register();
+            .tag(GTTags.Items.CIRCUITS_ULV).register();
     public static ItemEntry<Item> MICROPROCESSOR_LV = REGISTRATE.item("microchip_processor", Item::new)
-            .lang("Microchip Processor").tag(GTTags.Items.LV_CIRCUITS)
+            .lang("Microchip Processor").tag(GTTags.Items.CIRCUITS_LV)
             .register();
 
     // T3: Processor
     public static ItemEntry<Item> PROCESSOR_MV = REGISTRATE.item("micro_processor", Item::new).lang("Microprocessor")
-            .tag(GTTags.Items.MV_CIRCUITS).register();
+            .tag(GTTags.Items.CIRCUITS_MV).register();
     public static ItemEntry<Item> PROCESSOR_ASSEMBLY_HV = REGISTRATE.item("micro_processor_assembly", Item::new)
-            .lang("Microprocessor Assembly").tag(GTTags.Items.HV_CIRCUITS)
+            .lang("Microprocessor Assembly").tag(GTTags.Items.CIRCUITS_HV)
             .register();
     public static ItemEntry<Item> WORKSTATION_EV = REGISTRATE.item("micro_processor_computer", Item::new)
-            .lang("Microprocessor Supercomputer").tag(GTTags.Items.EV_CIRCUITS)
+            .lang("Microprocessor Supercomputer").tag(GTTags.Items.CIRCUITS_EV)
             .register();
     public static ItemEntry<Item> MAINFRAME_IV = REGISTRATE.item("micro_processor_mainframe", Item::new)
-            .lang("Microprocessor Mainframe").tag(GTTags.Items.IV_CIRCUITS)
+            .lang("Microprocessor Mainframe").tag(GTTags.Items.CIRCUITS_IV)
             .register();
 
     // T4: Nano
     public static ItemEntry<Item> NANO_PROCESSOR_HV = REGISTRATE.item("nano_processor", Item::new).lang("Nanoprocessor")
-            .tag(GTTags.Items.HV_CIRCUITS).register();
+            .tag(GTTags.Items.CIRCUITS_HV).register();
     public static ItemEntry<Item> NANO_PROCESSOR_ASSEMBLY_EV = REGISTRATE.item("nano_processor_assembly", Item::new)
-            .lang("Nanoprocessor Assembly").tag(GTTags.Items.EV_CIRCUITS)
+            .lang("Nanoprocessor Assembly").tag(GTTags.Items.CIRCUITS_EV)
             .register();
     public static ItemEntry<Item> NANO_COMPUTER_IV = REGISTRATE.item("nano_processor_computer", Item::new)
-            .lang("Nanoprocessor Supercomputer").tag(GTTags.Items.IV_CIRCUITS)
+            .lang("Nanoprocessor Supercomputer").tag(GTTags.Items.CIRCUITS_IV)
             .register();
     public static ItemEntry<Item> NANO_MAINFRAME_LuV = REGISTRATE.item("nano_processor_mainframe", Item::new)
-            .lang("Nanoprocessor Mainframe").tag(GTTags.Items.LuV_CIRCUITS)
+            .lang("Nanoprocessor Mainframe").tag(GTTags.Items.CIRCUITS_LuV)
             .register();
 
     // T5: Quantum
     public static ItemEntry<Item> QUANTUM_PROCESSOR_EV = REGISTRATE.item("quantum_processor", Item::new)
-            .lang("Quantum Processor").tag(GTTags.Items.EV_CIRCUITS)
+            .lang("Quantum Processor").tag(GTTags.Items.CIRCUITS_EV)
             .register();
     public static ItemEntry<Item> QUANTUM_ASSEMBLY_IV = REGISTRATE.item("quantum_processor_assembly", Item::new)
-            .lang("Quantum Processor Assembly").tag(GTTags.Items.IV_CIRCUITS)
+            .lang("Quantum Processor Assembly").tag(GTTags.Items.CIRCUITS_IV)
             .register();
     public static ItemEntry<Item> QUANTUM_COMPUTER_LuV = REGISTRATE.item("quantum_processor_computer", Item::new)
-            .lang("Quantum Processor Supercomputer").tag(GTTags.Items.LuV_CIRCUITS)
+            .lang("Quantum Processor Supercomputer").tag(GTTags.Items.CIRCUITS_LuV)
             .register();
     public static ItemEntry<Item> QUANTUM_MAINFRAME_ZPM = REGISTRATE.item("quantum_processor_mainframe", Item::new)
-            .lang("Quantum Processor Mainframe").tag(GTTags.Items.ZPM_CIRCUITS)
+            .lang("Quantum Processor Mainframe").tag(GTTags.Items.CIRCUITS_ZPM)
             .register();
 
     // T6: Crystal
     public static ItemEntry<Item> CRYSTAL_PROCESSOR_IV = REGISTRATE.item("crystal_processor", Item::new)
-            .lang("Crystal Processor").tag(GTTags.Items.IV_CIRCUITS)
+            .lang("Crystal Processor").tag(GTTags.Items.CIRCUITS_IV)
             .register();
     public static ItemEntry<Item> CRYSTAL_ASSEMBLY_LuV = REGISTRATE.item("crystal_processor_assembly", Item::new)
-            .lang("Crystal Processor Assembly").tag(GTTags.Items.LuV_CIRCUITS)
+            .lang("Crystal Processor Assembly").tag(GTTags.Items.CIRCUITS_LuV)
             .register();
     public static ItemEntry<Item> CRYSTAL_COMPUTER_ZPM = REGISTRATE.item("crystal_processor_computer", Item::new)
-            .lang("Crystal Processor Supercomputer").tag(GTTags.Items.ZPM_CIRCUITS)
+            .lang("Crystal Processor Supercomputer").tag(GTTags.Items.CIRCUITS_ZPM)
             .register();
     public static ItemEntry<Item> CRYSTAL_MAINFRAME_UV = REGISTRATE.item("crystal_processor_mainframe", Item::new)
-            .lang("Crystal Processor Mainframe").tag(GTTags.Items.UV_CIRCUITS)
+            .lang("Crystal Processor Mainframe").tag(GTTags.Items.CIRCUITS_UV)
             .register();
 
     // T7: Wetware
     public static ItemEntry<Item> WETWARE_PROCESSOR_LuV = REGISTRATE.item("wetware_processor", Item::new)
-            .lang("Wetware Processor").tag(GTTags.Items.LuV_CIRCUITS)
+            .lang("Wetware Processor").tag(GTTags.Items.CIRCUITS_LuV)
             .register();
     public static ItemEntry<Item> WETWARE_PROCESSOR_ASSEMBLY_ZPM = REGISTRATE
             .item("wetware_processor_assembly", Item::new).lang("Wetware Processor Assembly")
-            .tag(GTTags.Items.ZPM_CIRCUITS).register();
+            .tag(GTTags.Items.CIRCUITS_ZPM).register();
     public static ItemEntry<Item> WETWARE_SUPER_COMPUTER_UV = REGISTRATE.item("wetware_processor_computer", Item::new)
-            .lang("Wetware Processor Supercomputer").tag(GTTags.Items.UV_CIRCUITS)
+            .lang("Wetware Processor Supercomputer").tag(GTTags.Items.CIRCUITS_UV)
             .register();
     public static ItemEntry<Item> WETWARE_MAINFRAME_UHV = REGISTRATE.item("wetware_processor_mainframe", Item::new)
-            .lang("Wetware Processor Mainframe").tag(GTTags.Items.UHV_CIRCUITS)
+            .lang("Wetware Processor Mainframe").tag(GTTags.Items.CIRCUITS_UHV)
             .register();
 
     public static ItemEntry<Item> COMPONENT_GRINDER_DIAMOND = REGISTRATE.item("diamond_grinding_head", Item::new)

@@ -318,7 +318,7 @@ public class BatteryRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("lapotron_crystal")
                 .inputItems(gem, Lapotron)
-                .inputItems(GTTags.Items.HV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_HV, 2)
                 .outputItems(LAPOTRON_CRYSTAL)
                 .duration(600).EUt(VA[EV]).save(provider);
 
@@ -346,7 +346,7 @@ public class BatteryRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("lapotronic_energy_orb_cluster")
                 .inputItems(EXTREME_CIRCUIT_BOARD)
                 .inputItems(plate, Europium, 8)
-                .inputItems(GTTags.Items.LuV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_LuV, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(FIELD_GENERATOR_IV)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 16)
@@ -366,7 +366,7 @@ public class BatteryRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_module")
                 .inputItems(ELITE_CIRCUIT_BOARD)
                 .inputItems(plateDouble, Europium, 8)
-                .inputItems(GTTags.Items.ZPM_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
                 .inputItems(FIELD_GENERATOR_LuV)
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 32)
@@ -388,7 +388,7 @@ public class BatteryRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_cluster")
                 .inputItems(WETWARE_CIRCUIT_BOARD)
                 .inputItems(plate, Americium, 16)
-                .inputItems(GTTags.Items.UV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_UV, 4)
                 .inputItems(ENERGY_MODULE)
                 .inputItems(FIELD_GENERATOR_ZPM)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 32)
@@ -411,7 +411,7 @@ public class BatteryRecipes {
         // Ultimate Battery
         ASSEMBLY_LINE_RECIPES.recipeBuilder("ultimate_battery")
                 .inputItems(plateDouble, Darmstadtium, 16)
-                .inputItems(GTTags.Items.UHV_CIRCUITS, 4)
+                .inputItems(GTTags.Items.CIRCUITS_UHV, 4)
                 .inputItems(ENERGY_CLUSTER, 16)
                 .inputItems(FIELD_GENERATOR_UV, 4)
                 .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT_WAFER, 64)

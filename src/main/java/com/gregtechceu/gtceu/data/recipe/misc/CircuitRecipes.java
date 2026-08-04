@@ -982,7 +982,7 @@ public class CircuitRecipes {
                 .inputItems(PETRI_DISH)
                 .inputItems(ELECTRIC_PUMP_LuV)
                 .inputItems(SENSOR_IV)
-                .inputItems(GTTags.Items.IV_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_IV)
                 .inputItems(foil, NiobiumTitanium, 16)
                 .inputFluids(SterileGrowthMedium.getFluid(4000))
                 .outputItems(WETWARE_BOARD, 16)
@@ -1024,7 +1024,7 @@ public class CircuitRecipes {
                 .inputItems(BASIC_CIRCUIT_BOARD)
                 .inputItems(GTTags.Items.RESISTORS, 2)
                 .inputItems(wireGtSingle, RedAlloy, 2)
-                .inputItems(GTTags.Items.ULV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_ULV, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_LV, outputAmount)
                 .save(provider);
 
@@ -1588,7 +1588,7 @@ public class CircuitRecipes {
         // Data Orb
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("data_orb")
                 .inputItems(ADVANCED_CIRCUIT_BOARD)
-                .inputItems(GTTags.Items.HV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_HV, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 4)
                 .inputItems(NOR_MEMORY_CHIP, 32)
                 .inputItems(NAND_MEMORY_CHIP, 64)
@@ -1601,7 +1601,7 @@ public class CircuitRecipes {
         // Data Module
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("data_module")
                 .inputItems(WETWARE_CIRCUIT_BOARD)
-                .inputItems(GTTags.Items.ZPM_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 32)
                 .inputItems(NOR_MEMORY_CHIP, 64)
                 .inputItems(NAND_MEMORY_CHIP, 64)

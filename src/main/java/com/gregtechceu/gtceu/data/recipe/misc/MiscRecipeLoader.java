@@ -40,7 +40,7 @@ public class MiscRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_memory_card", MACHINE_MEMORY_CARD.asStack(),
                 "PWP", "SLS", "PPP", 'P', new MaterialEntry(plate, Steel), 'W',
                 new MaterialEntry(wireGtSingle, Copper), 'S', new MaterialEntry(screw, RedAlloy), 'L',
-                GTTags.Items.LV_CIRCUITS);
+                GTTags.Items.CIRCUITS_LV);
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
                 new MaterialEntry(dust, Copper),
@@ -204,7 +204,7 @@ public class MiscRecipeLoader {
 
         // QuarkTech Suite
         ASSEMBLER_RECIPES.recipeBuilder("quantum_helmet").duration(1500).EUt(VA[IV])
-                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_LuV, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 5)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(SENSOR_IV)
@@ -219,7 +219,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
-                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_LuV, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 8)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(EMITTER_IV.asStack(2))
@@ -234,7 +234,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
-                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_LuV, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 7)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_MOTOR_IV, 4)
@@ -249,7 +249,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
-                .inputItems(GTTags.Items.LuV_CIRCUITS, 2)
+                .inputItems(GTTags.Items.CIRCUITS_LuV, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_PISTON_IV, 2)
@@ -270,7 +270,7 @@ public class MiscRecipeLoader {
                 .inputItems(wireGtQuadruple, Osmium, 6)
                 .inputItems(plateDouble, Iridium, 4)
                 .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(GTTags.Items.ZPM_CIRCUITS)
+                .inputItems(GTTags.Items.CIRCUITS_ZPM)
                 .inputItems(plateDense, RhodiumPlatedPalladium, 2)
                 .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
                 .inputItems(FIELD_GENERATOR_LuV, 2)
@@ -302,7 +302,7 @@ public class MiscRecipeLoader {
          * ASSEMBLER_RECIPES.recipeBuilder("cover_digital_interface").duration(100).EUt(VA[HV])
          * .inputItems(COVER_SCREEN)
          * .inputItems(plate, Aluminium)
-         * .inputItems(CustomTags.MV_CIRCUITS)
+         * .inputItems(CustomTags.CIRCUITS_MV)
          * .inputItems(screw, StainlessSteel, 4)
          * .inputFluids(Polyethylene.getFluid(L))
          * .outputItems(COVER_DIGITAL_INTERFACE)

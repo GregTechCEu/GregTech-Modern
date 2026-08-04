@@ -216,7 +216,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.Steel),
                     'S', GTItems.SENSOR_LV.asStack(),
                     'D', new MaterialEntry(plate, GTMaterials.Glass),
-                    'C', GTTags.Items.LV_CIRCUITS,
+                    'C', GTTags.Items.CIRCUITS_LV,
                     'B', batteryItem.asStack());
 
             {
@@ -246,7 +246,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.Aluminium),
                     'S', GTItems.SENSOR_MV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
-                    'C', GTTags.Items.MV_CIRCUITS,
+                    'C', GTTags.Items.CIRCUITS_MV,
                     'B', batteryItem.asStack());
         }
 
@@ -259,7 +259,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.StainlessSteel),
                     'S', GTItems.SENSOR_HV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
-                    'C', GTTags.Items.HV_CIRCUITS,
+                    'C', GTTags.Items.CIRCUITS_HV,
                     'B', batteryItem.asStack());
 
             {
@@ -289,7 +289,7 @@ public final class CustomToolRecipes {
                     'P', new MaterialEntry(plate, GTMaterials.RhodiumPlatedPalladium),
                     'S', GTItems.SENSOR_LuV.asStack(),
                     'D', GTItems.COVER_SCREEN.asStack(),
-                    'C', GTTags.Items.LuV_CIRCUITS,
+                    'C', GTTags.Items.CIRCUITS_LuV,
                     'B', batteryItem.asStack());
         }
     }
