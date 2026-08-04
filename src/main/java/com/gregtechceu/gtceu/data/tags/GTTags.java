@@ -111,7 +111,7 @@ public class GTTags {
         public static final TagKey<Item> DOUGHS_WHEAT = TagUtil.createItemTag("dough/wheat");
         public static final TagKey<Item> GRAINS = TagUtil.createItemTag("grain");
         public static final TagKey<Item> GRAINS_WHEAT = TagUtil.createItemTag("grain/wheat");
-        public static final TagKey<Item> WRENCH = TagUtil.createItemTag("tools/wrench");
+        public static final TagKey<Item> TOOLS_WRENCH = TagUtil.createItemTag("tools/wrench");
         // endregion common/mod compat tags
 
         // region corals
@@ -216,29 +216,29 @@ public class GTTags {
         public static final TagKey<Item> SENSORS = TagUtil.createModItemTag("sensors");
         // endregion GT 'parts'
 
-        // region Tool tags
+        // region Tools
         public static final TagKey<Item> TOOLS_IGNITER = TagUtil.createItemTag("tools/igniter");
-        public static final TagKey<Item> BUTCHERY_KNIVES = TagUtil.createItemTag("tools/butchery_knives");
-        public static final TagKey<Item> BUZZSAWS = TagUtil.createItemTag("tools/buzzsaws");
-        public static final TagKey<Item> CHAINSAWS = TagUtil.createItemTag("tools/chainsaws");
-        public static final TagKey<Item> CROWBARS = TagUtil.createItemTag("tools/crowbars");
-        public static final TagKey<Item> DRILLS = TagUtil.createItemTag("tools/drills");
-        public static final TagKey<Item> FILES = TagUtil.createItemTag("tools/files");
-        public static final TagKey<Item> HAMMERS = TagUtil.createItemTag("tools/hammers");
-        public static final TagKey<Item> KNIVES = TagUtil.createItemTag("tools/knives");
-        public static final TagKey<Item> MALLETS = TagUtil.createItemTag("tools/mallets");
-        public static final TagKey<Item> MINING_HAMMERS = TagUtil.createItemTag("tools/mining_hammers");
-        public static final TagKey<Item> MORTARS = TagUtil.createItemTag("tools/mortars");
-        public static final TagKey<Item> PLUNGERS = TagUtil.createItemTag("tools/plungers");
-        public static final TagKey<Item> SAWS = TagUtil.createItemTag("tools/saws");
-        public static final TagKey<Item> SCREWDRIVERS = TagUtil.createItemTag("tools/screwdrivers");
-        public static final TagKey<Item> SCYTHES = TagUtil.createItemTag("tools/scythes");
-        public static final TagKey<Item> SHEARS = TagUtil.createItemTag("tools/shears");
-        public static final TagKey<Item> SPADES = TagUtil.createItemTag("tools/spades");
-        public static final TagKey<Item> WIRE_CUTTERS = TagUtil.createItemTag("tools/wire_cutters");
-        public static final TagKey<Item> WRENCHES = TagUtil.createItemTag("tools/wrenches");
+        public static final TagKey<Item> TOOLS_BUTCHERY_KNIVES = TagUtil.createItemTag("tools/butchery_knives");
+        public static final TagKey<Item> TOOLS_BUZZSAWS = TagUtil.createItemTag("tools/buzzsaws");
+        public static final TagKey<Item> TOOLS_CHAINSAWS = TagUtil.createItemTag("tools/chainsaws");
+        public static final TagKey<Item> TOOLS_CROWBARS = TagUtil.createItemTag("tools/crowbars");
+        public static final TagKey<Item> TOOLS_DRILLS = TagUtil.createItemTag("tools/drills");
+        public static final TagKey<Item> TOOLS_FILES = TagUtil.createItemTag("tools/files");
+        public static final TagKey<Item> TOOLS_HAMMERS = TagUtil.createItemTag("tools/hammers");
+        public static final TagKey<Item> TOOLS_KNIVES = TagUtil.createItemTag("tools/knives");
+        public static final TagKey<Item> TOOLS_MALLETS = TagUtil.createItemTag("tools/mallets");
+        public static final TagKey<Item> TOOLS_MINING_HAMMERS = TagUtil.createItemTag("tools/mining_hammers");
+        public static final TagKey<Item> TOOLS_MORTARS = TagUtil.createItemTag("tools/mortars");
+        public static final TagKey<Item> TOOLS_PLUNGERS = TagUtil.createItemTag("tools/plungers");
+        public static final TagKey<Item> TOOLS_SAWS = TagUtil.createItemTag("tools/saws");
+        public static final TagKey<Item> TOOLS_SCREWDRIVERS = TagUtil.createItemTag("tools/screwdrivers");
+        public static final TagKey<Item> TOOLS_SCYTHES = TagUtil.createItemTag("tools/scythes");
+        public static final TagKey<Item> TOOLS_SHEARS = TagUtil.createItemTag("tools/shears");
+        public static final TagKey<Item> TOOLS_SPADES = TagUtil.createItemTag("tools/spades");
+        public static final TagKey<Item> TOOLS_WIRE_CUTTERS = TagUtil.createItemTag("tools/wire_cutters");
+        public static final TagKey<Item> TOOLS_WRENCHES = TagUtil.createItemTag("tools/wrenches");
 
-        // region Tool Crafting Tags
+        // region Crafting Tools
         public static final TagKey<Item> CRAFTING_CROWBARS = TagUtil.createModItemTag("tools/crafting_crowbars");
         public static final TagKey<Item> CRAFTING_FILES = TagUtil.createModItemTag("tools/crafting_files");
         public static final TagKey<Item> CRAFTING_HAMMERS = TagUtil.createModItemTag("tools/crafting_hammers");
@@ -249,8 +249,8 @@ public class GTTags {
         public static final TagKey<Item> CRAFTING_SCREWDRIVERS = TagUtil.createModItemTag("tools/crafting_screwdrivers");
         public static final TagKey<Item> CRAFTING_WIRE_CUTTERS = TagUtil.createModItemTag("tools/crafting_wire_cutters");
         public static final TagKey<Item> CRAFTING_WRENCHES = TagUtil.createModItemTag("tools/crafting_wrenches");
-        // endregion Tool Crafting Tags
-        // endregion Tool tags
+        // endregion Crafting Tools
+        // endregion Tools
 
         // region lenses
         public static final TagKey<Item> LENSES = TagUtil.createModItemTag("lenses");

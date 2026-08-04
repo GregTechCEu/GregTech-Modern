@@ -170,33 +170,33 @@ public class ItemTagLoader {
         provider.addTag(GTTags.Items.TOOLS_IGNITER)
                 .addTag(ItemTags.CREEPER_IGNITERS);
         // add these as "empty" tags so we can add them to `#forge:tools` easily
-        provider.addTag(GTTags.Items.BUTCHERY_KNIVES);
-        provider.addTag(GTTags.Items.BUZZSAWS);
-        provider.addTag(GTTags.Items.CHAINSAWS);
-        provider.addTag(GTTags.Items.CROWBARS);
-        provider.addTag(GTTags.Items.DRILLS);
-        provider.addTag(GTTags.Items.FILES);
-        provider.addTag(GTTags.Items.HAMMERS);
-        provider.addTag(GTTags.Items.KNIVES);
-        provider.addTag(GTTags.Items.MALLETS);
-        provider.addTag(GTTags.Items.MINING_HAMMERS);
-        provider.addTag(GTTags.Items.MORTARS);
-        provider.addTag(GTTags.Items.PLUNGERS);
-        provider.addTag(GTTags.Items.SAWS);
-        provider.addTag(GTTags.Items.SCREWDRIVERS);
-        provider.addTag(GTTags.Items.SCYTHES);
-        provider.addTag(GTTags.Items.SHEARS);
-        provider.addTag(GTTags.Items.SPADES);
-        provider.addTag(GTTags.Items.WIRE_CUTTERS);
-        provider.addTag(GTTags.Items.WRENCHES);
+        provider.addTag(GTTags.Items.TOOLS_BUTCHERY_KNIVES);
+        provider.addTag(GTTags.Items.TOOLS_BUZZSAWS);
+        provider.addTag(GTTags.Items.TOOLS_CHAINSAWS);
+        provider.addTag(GTTags.Items.TOOLS_CROWBARS);
+        provider.addTag(GTTags.Items.TOOLS_DRILLS);
+        provider.addTag(GTTags.Items.TOOLS_FILES);
+        provider.addTag(GTTags.Items.TOOLS_HAMMERS);
+        provider.addTag(GTTags.Items.TOOLS_KNIVES);
+        provider.addTag(GTTags.Items.TOOLS_MALLETS);
+        provider.addTag(GTTags.Items.TOOLS_MINING_HAMMERS);
+        provider.addTag(GTTags.Items.TOOLS_MORTARS);
+        provider.addTag(GTTags.Items.TOOLS_PLUNGERS);
+        provider.addTag(GTTags.Items.TOOLS_SAWS);
+        provider.addTag(GTTags.Items.TOOLS_SCREWDRIVERS);
+        provider.addTag(GTTags.Items.TOOLS_SCYTHES);
+        provider.addTag(GTTags.Items.TOOLS_SHEARS).addTag(Tags.Items.SHEARS);
+        provider.addTag(GTTags.Items.TOOLS_SPADES);
+        provider.addTag(GTTags.Items.TOOLS_WIRE_CUTTERS);
+        provider.addTag(GTTags.Items.TOOLS_WRENCHES);
         // mod compat
-        provider.addTag(GTTags.Items.WRENCH).addTag(GTTags.Items.WRENCHES);
+        provider.addTag(GTTags.Items.TOOLS_WRENCH).addTag(GTTags.Items.TOOLS_WRENCHES);
         provider.addTag(Tags.Items.TOOLS)
-                .addTags(GTTags.Items.BUTCHERY_KNIVES, GTTags.Items.BUZZSAWS, GTTags.Items.CHAINSAWS,
-                        GTTags.Items.CROWBARS, GTTags.Items.DRILLS, GTTags.Items.FILES, GTTags.Items.HAMMERS,
-                        GTTags.Items.KNIVES, GTTags.Items.MALLETS, GTTags.Items.MINING_HAMMERS, GTTags.Items.MORTARS,
-                        GTTags.Items.PLUNGERS, GTTags.Items.SAWS, GTTags.Items.SCREWDRIVERS, GTTags.Items.SCYTHES,
-                        GTTags.Items.SHEARS, GTTags.Items.SPADES, GTTags.Items.WIRE_CUTTERS, GTTags.Items.WRENCHES);
+                .addTags(GTTags.Items.TOOLS_BUTCHERY_KNIVES, GTTags.Items.TOOLS_BUZZSAWS, GTTags.Items.TOOLS_CHAINSAWS,
+                        GTTags.Items.TOOLS_CROWBARS, GTTags.Items.TOOLS_DRILLS, GTTags.Items.TOOLS_FILES, GTTags.Items.TOOLS_HAMMERS,
+                        GTTags.Items.TOOLS_KNIVES, GTTags.Items.TOOLS_MALLETS, GTTags.Items.TOOLS_MINING_HAMMERS, GTTags.Items.TOOLS_MORTARS,
+                        GTTags.Items.TOOLS_PLUNGERS, GTTags.Items.TOOLS_SAWS, GTTags.Items.TOOLS_SCREWDRIVERS, GTTags.Items.TOOLS_SCYTHES,
+                        GTTags.Items.TOOLS_SHEARS, GTTags.Items.TOOLS_SPADES, GTTags.Items.TOOLS_WIRE_CUTTERS, GTTags.Items.TOOLS_WRENCHES);
 
         // Add sodalite and lazurite as enchanting fuels
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
