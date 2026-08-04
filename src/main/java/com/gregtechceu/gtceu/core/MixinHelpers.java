@@ -275,9 +275,7 @@ public class MixinHelpers {
             if (TagPrefix.ORES.containsKey(prefix)) {
                 final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
-                    ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(
-                            blockEntry.getId().getNamespace(),
-                            "blocks/" + blockEntry.getId().getPath());
+                    ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
                     Block block = blockEntry.get();
 
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
