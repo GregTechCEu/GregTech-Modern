@@ -239,16 +239,16 @@ public class GTTags {
         public static final TagKey<Item> TOOLS_WRENCHES = TagUtil.createItemTag("tools/wrenches");
 
         // region Crafting Tools
-        public static final TagKey<Item> CRAFTING_CROWBARS = TagUtil.createModItemTag("tools/crafting_crowbars");
-        public static final TagKey<Item> CRAFTING_FILES = TagUtil.createModItemTag("tools/crafting_files");
-        public static final TagKey<Item> CRAFTING_HAMMERS = TagUtil.createModItemTag("tools/crafting_hammers");
-        public static final TagKey<Item> CRAFTING_KNIVES = TagUtil.createModItemTag("tools/crafting_knives");
-        public static final TagKey<Item> CRAFTING_MALLETS = TagUtil.createModItemTag("tools/crafting_mallets");
-        public static final TagKey<Item> CRAFTING_MORTARS = TagUtil.createModItemTag("tools/crafting_mortars");
-        public static final TagKey<Item> CRAFTING_SAWS = TagUtil.createModItemTag("tools/crafting_saws");
-        public static final TagKey<Item> CRAFTING_SCREWDRIVERS = TagUtil.createModItemTag("tools/crafting_screwdrivers");
-        public static final TagKey<Item> CRAFTING_WIRE_CUTTERS = TagUtil.createModItemTag("tools/crafting_wire_cutters");
-        public static final TagKey<Item> CRAFTING_WRENCHES = TagUtil.createModItemTag("tools/crafting_wrenches");
+        public static final TagKey<Item> CRAFTING_CROWBARS = TagUtil.createModItemTag("crafting_tools/crowbars");
+        public static final TagKey<Item> CRAFTING_FILES = TagUtil.createModItemTag("crafting_tools/files");
+        public static final TagKey<Item> CRAFTING_HAMMERS = TagUtil.createModItemTag("crafting_tools/hammers");
+        public static final TagKey<Item> CRAFTING_KNIVES = TagUtil.createModItemTag("crafting_tools/knives");
+        public static final TagKey<Item> CRAFTING_MALLETS = TagUtil.createModItemTag("crafting_tools/mallets");
+        public static final TagKey<Item> CRAFTING_MORTARS = TagUtil.createModItemTag("crafting_tools/mortars");
+        public static final TagKey<Item> CRAFTING_SAWS = TagUtil.createModItemTag("crafting_tools/saws");
+        public static final TagKey<Item> CRAFTING_SCREWDRIVERS = TagUtil.createModItemTag("crafting_tools/screwdrivers");
+        public static final TagKey<Item> CRAFTING_WIRE_CUTTERS = TagUtil.createModItemTag("crafting_tools/wire_cutters");
+        public static final TagKey<Item> CRAFTING_WRENCHES = TagUtil.createModItemTag("crafting_tools/wrenches");
         // endregion Crafting Tools
         // endregion Tools
 
