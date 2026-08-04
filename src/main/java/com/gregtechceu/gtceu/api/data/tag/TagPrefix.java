@@ -620,8 +620,8 @@ public class TagPrefix {
 
     // 3/4 of a Plate or Gem used to shape a Lens. Normally only used on Transparent Materials.
     public static final TagPrefix lens = new TagPrefix(GTCEu.id("lens"))
-            .defaultTagPath("lenses/%s")
-            .unformattedTagPath("lenses")
+            .defaultGTCEuTagPath("lenses/%s")
+            .unformattedGTCEuTagPath("lenses")
             .materialAmount((GTValues.M * 3) / 4)
             .materialIconType(MaterialIconType.lens)
             .unificationEnabled(true)
@@ -1146,6 +1146,11 @@ public class TagPrefix {
         return this;
     }
 
+    public TagPrefix defaultGTCEuTagPath(String path) {
+        this.tags.add(TagType.withGTNamespaceDefaultFormatter(path));
+        return this;
+    }
+
     public TagPrefix prefixTagPath(String path) {
         this.tags.add(TagType.withPrefixFormatter(path));
         return this;
@@ -1162,6 +1167,11 @@ public class TagPrefix {
 
     public TagPrefix unformattedTagPath(String path, boolean isVanilla) {
         this.tags.add(TagType.withNoFormatter(path, isVanilla));
+        return this;
+    }
+
+    public TagPrefix unformattedGTCEuTagPath(String path) {
+        this.tags.add(TagType.withGTNamespaceNoFormatter(path));
         return this;
     }
 
