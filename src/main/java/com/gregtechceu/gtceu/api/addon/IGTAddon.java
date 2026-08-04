@@ -34,37 +34,43 @@ public interface IGTAddon {
     String addonModId();
 
     /**
-     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+     *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerTagPrefixes() {}
 
     /**
-     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+     *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerElements() {}
 
     /**
-     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+     *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerSounds() {}
 
     /**
-     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+     *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerCovers() {}
 
     /**
-     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+     *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerRecipeCapabilities() {}
 
     /**
-     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+     *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerWorldgenLayers() {}

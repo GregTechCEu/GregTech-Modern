@@ -57,7 +57,8 @@ public class GTCEuAPI {
     }
 
     /**
-     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+     * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+     *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
      */
     @SuppressWarnings("unused")
     @Deprecated(forRemoval = true, since = "8.0.0")

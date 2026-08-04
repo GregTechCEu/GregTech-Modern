@@ -347,7 +347,8 @@ public class PlaceholderHandler {
                                                 .child(new TextWidget<>(p.getName()).center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang(p.getId().toLanguageKey("placeholder_info"))
+                                                                .getSingleOrMultiLang(
+                                                                        p.getId().toLanguageKey("placeholder_info"))
                                                                 .stream()
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)

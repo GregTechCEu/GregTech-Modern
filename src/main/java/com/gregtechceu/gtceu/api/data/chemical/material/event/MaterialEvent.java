@@ -5,7 +5,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.IModBusEvent;
 
 /**
- * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g. {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
+ * @deprecated Your mod content classes should be loaded on startup instead, in your mod's main init files (e.g.
+ *             {@link com.gregtechceu.gtceu.common.CommonProxy#init(IEventBus)}
  */
 @Deprecated(forRemoval = true, since = "8.0.0")
 public class MaterialEvent extends Event implements IModBusEvent {
