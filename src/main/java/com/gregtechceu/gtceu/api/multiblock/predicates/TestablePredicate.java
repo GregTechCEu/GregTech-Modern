@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
+import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
@@ -63,15 +64,18 @@ class TestablePredicate extends BasePredicate {
         this.onError.accept(ctx);
         List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
         if (minCount == maxCount && maxCount != -1) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited_exact", minCount));
+            tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.exact", minCount));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited_within", minCount, maxCount));
+            tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.range", minCount, maxCount));
         } else {
+            // todo actual lang
             if (minCount != -1) {
-                tooltips.add(LangHandler.getFromMultiLang("gtceu.multiblock.pattern.error.limited", 1, minCount));
+                tooltips.add(Component.literal(Text.RED + "At least: " + Text.RESET + minCount));
+//                tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count", minCount, ctx.getGlobalCount(this)));
             }
             if (maxCount != -1) {
-                tooltips.add(LangHandler.getFromMultiLang("gtceu.multiblock.pattern.error.limited", 0, maxCount));
+                tooltips.add(Component.literal( Text.RED + "At most: " + Text.RESET + maxCount));
+//                tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count", maxCount, ctx.getGlobalCount(this)));
             }
         }
         tooltips.forEach(c -> ctx.appendError(PatternStringError.component(c)));
