@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.TagUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.client.renderer.RenderType;
@@ -239,6 +240,19 @@ public class TagPrefix {
             .idPattern("crushed_%s_ore")
             .defaultTagPath("crushed_ores/%s")
             .unformattedTagPath("crushed_ores")
+            .filteredCustomTag("chemical_bath_washable/%s", mat -> {
+                if (!mat.hasProperty(PropertyKey.ORE)) return false;
+                Material washedIn = mat.getProperty(PropertyKey.ORE).getWashedIn().first();
+                return !washedIn.isNull();
+                }, (path, mat) -> {
+                Material washedIn = mat.getProperty(PropertyKey.ORE).getWashedIn().first();
+                return TagUtil.createItemTag(path.formatted(washedIn.getName()));
+            })
+            .filteredUnformattedTag("chemical_bath_washable", false, mat -> {
+                if (!mat.hasProperty(PropertyKey.ORE)) return false;
+                Material washedIn = mat.getProperty(PropertyKey.ORE).getWashedIn().first();
+                return !washedIn.isNull();
+            })
             .langValue("Crushed %s Ore")
             .materialIconType(MaterialIconType.crushed)
             .unificationEnabled(true)
@@ -1157,6 +1171,17 @@ public class TagPrefix {
 
     public TagPrefix customTagPredicate(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
         this.tags.add(TagType.withCustomFilter(path, isVanilla, materialPredicate));
+        return this;
+    }
+
+    public TagPrefix filteredUnformattedTag(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
+        this.tags.add(TagType.filteredNoFormatter(path, isVanilla, materialPredicate));
+        return this;
+    }
+
+    public TagPrefix filteredCustomTag(String path, Predicate<Material> materialPredicate,
+                                       BiFunction<String, Material, TagKey<Item>> formatter) {
+        this.tags.add(TagType.filteredCustomFormatter(materialPredicate, (self, mat) -> formatter.apply(path, mat)));
         return this;
     }
 

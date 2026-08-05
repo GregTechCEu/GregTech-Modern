@@ -151,6 +151,17 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
+    public TagPrefixBuilder filteredUnformattedTag(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
+        base.filteredUnformattedTag(path, isVanilla, materialPredicate);
+        return this;
+    }
+
+    public TagPrefixBuilder filteredCustomTag(String path, Predicate<Material> materialPredicate,
+                                              BiFunction<String, Material, TagKey<Item>> formatter) {
+        base.filteredCustomTag(path, materialPredicate, formatter);
+        return this;
+    }
+
     public TagPrefixBuilder miningToolTag(TagKey<Block> tag) {
         base.miningToolTag(tag);
         return this;
