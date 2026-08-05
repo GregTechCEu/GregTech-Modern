@@ -7,24 +7,21 @@ import com.gregtechceu.gtceu.common.data.GTOreVeins;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.neoforge.resource.ContextAwareReloadListener;
 
 import org.jetbrains.annotations.NotNullByDefault;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
 @NotNullByDefault
-public class PostRegistryListener extends ContextAwareReloadListener implements PreparableReloadListener {
+public class PostRegistryListener extends ContextAwareReloadListener implements ResourceManagerReloadListener {
 
     public static final PostRegistryListener INSTANCE = new PostRegistryListener();
 
     private PostRegistryListener() {}
 
-    protected void apply() {
+    @Override
+    public void onResourceManagerReload(ResourceManager resourceManager) {
         var lookup = getRegistryLookup().lookupOrThrow(GTRegistries.Keys.ORE_VEIN);
         buildVeinGenerators(lookup);
         GTOreVeins.updateLargestVeinSize(lookup);
@@ -41,12 +38,5 @@ public class PostRegistryListener extends ContextAwareReloadListener implements 
                 veinGen.build();
             }
         }
-    }
-
-    @Override
-    public CompletableFuture<Void> reload(PreparationBarrier stage, ResourceManager resourceManager,
-                                          ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler,
-                                          Executor backgroundExecutor, Executor gameExecutor) {
-        return stage.wait(null).thenRunAsync(this::apply);
     }
 }
