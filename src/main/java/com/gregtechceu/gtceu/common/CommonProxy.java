@@ -33,7 +33,6 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.data.worldgen.GTFeatures;
@@ -77,6 +76,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
@@ -135,7 +135,6 @@ public class CommonProxy {
         GTCommandArguments.init(modBus);
         GTMobEffects.init(modBus);
         GTParticleTypes.init(modBus);
-        GTMenuTypes.init(modBus);
 
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -202,7 +201,8 @@ public class CommonProxy {
 
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
-        ModLoader.get().postEvent(new MaterialEvent());
+        MaterialEvent materialEvent = new MaterialEvent();
+        ModLoader.get().postEvent(materialEvent);
     }
 
     // Fire post material events after all other material registry events.
