@@ -55,7 +55,7 @@ import static net.minecraft.resources.ResourceKey.createRegistryKey;
 @SuppressWarnings("unused")
 public final class GTRegistries {
 
-    private static final LinkedList<ResourceLocation> LOAD_ORDER = new LinkedList<>();
+    private static final LinkedHashSet<ResourceLocation> LOAD_ORDER = new LinkedHashSet<>();
     private static final LinkedHashMap<ResourceKey<Registry<?>>, Registry<?>> REGISTRIES = new LinkedHashMap<>();
 
     private GTRegistries() {}
@@ -140,7 +140,7 @@ public final class GTRegistries {
     }
 
     @UnmodifiableView
-    public static LinkedList<ResourceLocation> getRegistryOrder() {
+    public static LinkedHashSet<ResourceLocation> getRegistryOrder() {
         return LOAD_ORDER;
     }
 

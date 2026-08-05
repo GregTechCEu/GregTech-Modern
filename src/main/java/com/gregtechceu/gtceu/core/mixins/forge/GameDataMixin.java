@@ -28,14 +28,8 @@ public class GameDataMixin {
                     shift = At.Shift.AFTER),
             name = "ordered")
     private static Set<ResourceLocation> gtceu$forceGTRegistriesFirst(Set<ResourceLocation> ordered) {
-        return ordered.stream().sorted(((Comparator<ResourceLocation>) (a, b) -> {
-            boolean aIsGT = GTRegistries.getRegistryOrder().contains(a);
-            boolean bIsGT = GTRegistries.getRegistryOrder().contains(b);
-            if (aIsGT && !bIsGT) return -1;
-            if (!aIsGT && bIsGT) return 1;
-            return Integer.compare(GTRegistries.getRegistryOrder().indexOf(a),
-                    GTRegistries.getRegistryOrder().indexOf(b));
-        }).thenComparing(Comparator.naturalOrder()))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        LinkedHashSet<ResourceLocation> newSet = new LinkedHashSet<>(GTRegistries.getRegistryOrder());
+        newSet.addAll(ordered);
+        return newSet;
     }
 }

@@ -275,6 +275,7 @@ public class CommonProxy {
             if (GTCEu.Mods.isJadeLoaded()) GTJadePlugin.registerToolHandlers();
 
         } else if (event.getRegistryKey() == Registries.FLUID) {
+            GTCEu.LOGGER.info("Generating material fluids...");
             GTFluids.registerMaterialFluids();
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
