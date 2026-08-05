@@ -22,7 +22,7 @@ public final class TagType {
     private boolean isParentTag = false;
     // this is now memoized because creating tag keys interns them and that's slow
     private final @NotNull BiFunction<TagPrefix, Material, TagKey<Item>> formatter;
-    private @Nullable Predicate<Material> filter;
+    /* package-private */ @Nullable Predicate<Material> filter;
 
     private TagType(BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
         this.formatter = Util.memoize(formatter);
@@ -64,19 +64,6 @@ public final class TagType {
 
     public static TagType withCustomFormatter(BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
         return new TagType(formatter);
-    }
-
-    public static TagType filteredCustomFormatter(Predicate<Material> filter,
-                                                  BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        TagType type = new TagType(formatter);
-        type.filter = filter;
-        return type;
-    }
-
-    public static TagType filteredNoFormatter(String tagPath, boolean isVanilla, Predicate<Material> filter) {
-        TagType type = new TagType((prefix, material) -> TagUtil.createItemTag(tagPath, isVanilla));
-        type.filter = filter;
-        return type;
     }
     // spotless:on
 

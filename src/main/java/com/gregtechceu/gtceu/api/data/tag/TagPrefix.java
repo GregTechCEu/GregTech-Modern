@@ -1270,7 +1270,9 @@ public class TagPrefix {
      * specific material should be added to the tag.
      */
     public TagPrefix filteredUnformattedTag(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
-        this.tags.add(TagType.filteredNoFormatter(path, isVanilla, materialPredicate));
+        TagType entry = TagType.withNoFormatter(path, isVanilla);
+        entry.filter = materialPredicate;
+        this.tags.add(entry);
         return this;
     }
 
@@ -1282,7 +1284,9 @@ public class TagPrefix {
      */
     public TagPrefix filteredCustomTag(String path, Predicate<Material> materialPredicate,
                                        BiFunction<String, Material, TagKey<Item>> formatter) {
-        this.tags.add(TagType.filteredCustomFormatter(materialPredicate, (self, mat) -> formatter.apply(path, mat)));
+        TagType entry = TagType.withCustomFormatter((self, mat) -> formatter.apply(path, mat));
+        entry.filter = materialPredicate;
+        this.tags.add(entry);
         return this;
     }
 
