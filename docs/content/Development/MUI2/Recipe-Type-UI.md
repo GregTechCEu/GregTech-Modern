@@ -293,7 +293,7 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
         .setMaxIOSize(3, 3, 3, 3)
         .setProgressBar(GTGuiTextures.PROGRESS_ARROW)
         .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SOLIDIFIER_OVERLAY)
-        .addRecipeInfo(recipe => `Temperature: ${recipe.data.getInt('RequiredTemp')}K`)
+        .addRecipeInfo(recipe => Text.literal(`Temperature: ${recipe.data.getInt('RequiredTemp')}K`))
         .setSound(GTSoundEntries.COOLING)
 })
 ```
@@ -307,16 +307,19 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 | `setFluidSlotsOverlay(io, startIndex, endIndex, overlay)`       | `setFluidSlotsOverlay`                             |
 | `setSlotOverlay(io, index, cap, overlay)`                       | `setSlotOverlay`                                   |
 | `setSlotsOverlay(io, startIndex, endIndex, cap, overlay)`       | `setSlotsOverlay`                                  |
-| `addRecipeInfo(recipe => text)`                                 | `addRecipeUIModifier`, adding one text line        |
+| `addRecipeInfo(recipe => component)`                            | `addRecipeUIModifier`, adding one text line        |
 
 `addRecipeInfo` is the KubeJS-facing form of a recipe UI modifier. It is given the recipe and returns
-the text to show for it. Returning an empty string draws no line, which is how a line is limited to
-some recipes. Call it more than once for more than one line.
+the component to show for it. Returning `Text.empty()` draws no line, which is how a line is limited
+to some recipes. Call it more than once for more than one line.
 
 ```js
 .addRecipeInfo(recipe => recipe.data.contains('RequiredTemp') ?
-    `Temperature: ${recipe.data.getInt('RequiredTemp')}K` : '')
+    Text.literal(`Temperature: ${recipe.data.getInt('RequiredTemp')}K`) : Text.empty())
 ```
+
+Build the return value with KubeJS's `Text` bindings, such as `Text.literal(string)` and
+`Text.translate(langKey, args...)`.
 
 `GTGuiTextures`, `IO` and `RecipeCapability` are bound as globals. Capabilities also accept their id
 as a string, so `setSlotsOverlay(IO.IN, 0, 2, 'item', overlay)` works.

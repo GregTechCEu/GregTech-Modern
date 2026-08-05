@@ -43,7 +43,7 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 		.category('multiblock')
 		.setMaxIOSize(1, 1, 0, 0)
 		.setProgressBar(GTGuiTextures.PROGRESS_FUSION)
-		.addRecipeInfo(recipe => `Temperature: ${recipe.data.getInt("RequiredTemp")}K`) // (3) (4)
+		.addRecipeInfo(recipe => Text.literal(`Temperature: ${recipe.data.getInt("RequiredTemp")}K`)) // (3) (4)
 		.setSound(GTSoundEntries.BATH);
 });
 

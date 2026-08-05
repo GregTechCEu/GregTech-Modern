@@ -25,14 +25,14 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 
 ## Recipe info lines
 
-`addRecipeInfo` adds a line of text below recipes of this type in the recipe viewer. It is given the recipe being displayed and returns the text to show for it. Return an empty string to show nothing for that recipe. Call it several times for several lines.
+`addRecipeInfo` adds a line of text below recipes of this type in the recipe viewer. It is given the recipe being displayed and returns the component to show for it, built with `Text.literal` or `Text.translate`. Return `Text.empty()` to show nothing for that recipe. Call it several times for several lines.
 
 ```js title="test_recipe_type.js"
 GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
     event.create('test_recipe_type')
         .addRecipeInfo(recipe => Text.translate('test_recipe_type.info'))
         .addRecipeInfo(recipe => recipe.data.contains('RequiredTemp') ?
-            `Temperature: ${recipe.data.getInt('RequiredTemp')}K` : '')
+            Text.literal(`Temperature: ${recipe.data.getInt('RequiredTemp')}K`) : Text.empty())
 })
 ```
    
