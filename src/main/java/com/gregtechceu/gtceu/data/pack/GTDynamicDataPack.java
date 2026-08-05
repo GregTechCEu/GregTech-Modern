@@ -114,9 +114,14 @@ public class GTDynamicDataPack implements PackResources {
         addResource(ADVANCEMENT_ID_CONVERTER.idToFile(loc), advancementJson);
     }
 
-    public static void addLootTable(ResourceLocation lootTableId, LootTable table, HolderLookup.Provider registries) {
-        JsonElement lootTableJson = LootTable.DIRECT_CODEC
-                .encodeStart(registries.createSerializationContext(JsonOps.INSTANCE), table).getOrThrow();
+    public static void addLootTable(ResourceLocation lootTableId, LootTable table,
+                                    HolderLookup.Provider registries) {
+        addLootTable(lootTableId, table, registries.createSerializationContext(JsonOps.INSTANCE));
+    }
+
+    public static void addLootTable(ResourceLocation lootTableId, LootTable table,
+                                    DynamicOps<JsonElement> serializationContext) {
+        JsonElement lootTableJson = LootTable.DIRECT_CODEC.encodeStart(serializationContext, table).getOrThrow();
 
         ResourceLocation fileName = LOOT_TABLE_ID_CONVERTER.idToFile(lootTableId);
         if (CONTENTS.getResource(fileName) != null) {
