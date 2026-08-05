@@ -626,7 +626,7 @@ public class TagPrefix {
             .materialAmount(-1);
 
     // made of 4 Ingots.
-    public static final TagPrefix toolHeadBuzzSaw = new TagPrefix(GTCEu.id("buzzsaw_blade"))
+    public static final TagPrefix toolHeadBuzzSaw = new TagPrefix(GTCEu.id("buzz_saw_blade"))
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Buzzsaw Blade")
             .materialAmount(GTValues.M * 4)
