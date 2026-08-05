@@ -867,7 +867,7 @@ public class TagPrefix {
             .enableRecycling();
 
     // Wires and cables
-    public static final TagPrefix wireGtHex = new TagPrefix(GTCEu.id("wire_hex"))
+    public static final TagPrefix wireGtHex = new TagPrefix(GTCEu.id("wire_gt_hex"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
@@ -875,7 +875,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix wireGtOctal = new TagPrefix(GTCEu.id("wire_octal"))
+    public static final TagPrefix wireGtOctal = new TagPrefix(GTCEu.id("wire_gt_octal"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
@@ -883,7 +883,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix wireGtQuadruple = new TagPrefix(GTCEu.id("wire_quadruple"))
+    public static final TagPrefix wireGtQuadruple = new TagPrefix(GTCEu.id("wire_gt_quadruple"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("4x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
@@ -891,7 +891,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix wireGtDouble = new TagPrefix(GTCEu.id("wire_double"))
+    public static final TagPrefix wireGtDouble = new TagPrefix(GTCEu.id("wire_gt_double"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
@@ -899,7 +899,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix wireGtSingle = new TagPrefix(GTCEu.id("wire_single"))
+    public static final TagPrefix wireGtSingle = new TagPrefix(GTCEu.id("wire_gt_single"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
@@ -908,34 +908,34 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling();
 
-    public static final TagPrefix cableGtHex = new TagPrefix(GTCEu.id("cable_hex"))
+    public static final TagPrefix cableGtHex = new TagPrefix(GTCEu.id("cable_gt_hex"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix cableGtOctal = new TagPrefix(GTCEu.id("cable_octal"))
+    public static final TagPrefix cableGtOctal = new TagPrefix(GTCEu.id("cable_gt_octal"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix cableGtQuadruple = new TagPrefix(GTCEu.id("cable_quadruple"))
+    public static final TagPrefix cableGtQuadruple = new TagPrefix(GTCEu.id("cable_gt_quadruple"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix cableGtDouble = new TagPrefix(GTCEu.id("cable_double"))
+    public static final TagPrefix cableGtDouble = new TagPrefix(GTCEu.id("cable_gt_double"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix cableGtSingle = new TagPrefix(GTCEu.id("cable_single"))
+    public static final TagPrefix cableGtSingle = new TagPrefix(GTCEu.id("cable_gt_single"))
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
@@ -1066,9 +1066,9 @@ public class TagPrefix {
     public TagPrefix(ResourceLocation id, boolean invertedName) {
         this.id = id;
         this.name = id.getPath();
-        this.idPattern = "%s_" + getLowerCaseName();
+        this.idPattern = "%s_" + name;
         this.invertedName = invertedName;
-        this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
+        this.langValue = "%s " + FormattingUtil.toEnglishName(name);
         GTRegistries.register(GTRegistries.TAG_PREFIXES, id, this);
     }
 
@@ -1279,12 +1279,8 @@ public class TagPrefix {
         return materialIconType;
     }
 
-    public String getLowerCaseName() {
-        return FormattingUtil.toLowerCaseUnderscore(this.name);
-    }
-
     public String getUnlocalizedName() {
-        return this.id.toLanguageKey("tag_prefix");
+        return "tagprefix." + name;
     }
 
     public MutableComponent getLocalizedName(Material material) {
@@ -1298,7 +1294,7 @@ public class TagPrefix {
             return matSpecificKey;
         }
         if (material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = String.format("tag_prefix.%s.polymer", id.toLanguageKey());
+            String localizationKey = String.format("tagprefix.polymer.%s", name);
             // Not every polymer tag prefix gets a special name
             if (Language.getInstance().has(localizationKey)) {
                 return localizationKey;

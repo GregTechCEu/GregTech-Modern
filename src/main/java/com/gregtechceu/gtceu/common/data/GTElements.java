@@ -144,7 +144,6 @@ public class GTElements {
     public static final Element Sp = createAndRegister(GTCEu.id("space"), 1, 0, -1, null, "Space", "Sp", false);
     public static final Element Ma = createAndRegister(GTCEu.id("magic"), 1, 0, -1, null, "Magic", "Ma", false);
     // spotless:on
-
     /**
      * @deprecated Use
      *             {@link GTElements#createAndRegister(ResourceLocation, long, long, long, String, String, String, boolean)}

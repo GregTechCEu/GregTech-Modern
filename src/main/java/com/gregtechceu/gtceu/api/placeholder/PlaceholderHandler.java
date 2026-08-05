@@ -95,9 +95,8 @@ public class PlaceholderHandler {
 
     public static @Nullable ResourceKey<Placeholder> toId(String placeholder) {
         try {
-            // TODO make placeholder ids actually snake_case so we can remove the snakecaseification
-            ResourceLocation id = GTCEu.id(FormattingUtil.toLowerCaseUnderscore(placeholder));
-            return ResourceKey.create(GTRegistries.Keys.PLACEHOLDER, id);
+            return ResourceKey.create(GTRegistries.Keys.PLACEHOLDER,
+                    GTCEu.id(FormattingUtil.toLowerCaseUnderscore(placeholder)));
         } catch (ResourceLocationException e) {
             return null;
         }

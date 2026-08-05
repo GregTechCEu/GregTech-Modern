@@ -53,6 +53,7 @@
         "InventoryMixin",
         "LevelMixin",
         "LootPoolAccessor",
+        "LootTableAccessor",
         "MapColorAccessor",
         "MappedRegistryAccessor",
         "OreConfigurationMixin",

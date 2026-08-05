@@ -25,9 +25,7 @@ public abstract class Placeholder {
                                              List<MultiLineComponent> args) throws PlaceholderException;
 
     public Placeholder(String str) {
-        // TODO make placeholder ids actually snake_case so we can remove the snakecaseification
-        this.id = GTCEu.id(FormattingUtil.toLowerCaseUnderscore(str));
-        this.name = str;
+        this(GTCEu.id(FormattingUtil.toLowerCaseUnderscore(str)));
     }
 
     public Placeholder(ResourceLocation id) {
