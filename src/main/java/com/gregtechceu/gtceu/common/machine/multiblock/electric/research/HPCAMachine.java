@@ -103,7 +103,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // Long2ObjectMaps::emptyMap);
         for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            componentTraits.addAll(part.getTraits(HPCAComponentTrait.TYPE));
+            componentTraits.addAll(part.getTraits(HPCAComponentTrait.class));
             if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
@@ -205,7 +205,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            part.getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
+            part.getTraitOptional(HPCAComponentTrait.class).ifPresent(t -> t.setActive(active));
         }
     }
 
@@ -263,7 +263,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         syncManager.syncValue("text", text);
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
+                () -> Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED)));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
         widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
@@ -739,10 +741,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 textList.add(
                         Component.translatable("gtceu.multiblock.hpca.error_damaged").withStyle(ChatFormatting.RED));
             }
-            if (this.controller != null && this.controller.hasNotEnoughEnergy) {
-                textList.add(
-                        Component.translatable("gtceu.multiblock.hpca.error_power").withStyle(ChatFormatting.RED));
-            }
         }
 
         public IDrawable getComponentTexture(int index) {
@@ -781,7 +779,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         BlockPos tempPos = testPos.relative(frontFacing, j).relative(relativeUp.getOpposite(), i);
                         MetaMachine be = MetaMachine.getMachine(world, tempPos);
                         if (be == null) continue;
-                        var trait = be.getTrait(HPCAComponentTrait.TYPE);
+                        var trait = be.getTrait(HPCAComponentTrait.class);
                         if (trait != null) {
                             components.add(trait);
                         }
