@@ -42,15 +42,12 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 	event.create('example_smelting')
 		.category('multiblock')
 		.setMaxIOSize(1, 1, 0, 0)
-		.setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, FillDirection.LEFT_TO_RIGHT)
+		.setProgressBar(GTGuiTextures.PROGRESS_FUSION)
+		.addRecipeInfo(recipe => `Temperature: ${recipe.data.getInt("RequiredTemp")}K`) // (3) (4)
 		.setSound(GTSoundEntries.BATH);
 });
 
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-
-	GTRecipeTypes.get("example_smelting").addDataInfo((data) => (
-		`Temperature: ${data.getInt("RequiredTemp")}K` // (4)
-	)) // (3)
 
 	event.create('example_smelter', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
