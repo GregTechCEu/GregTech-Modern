@@ -174,10 +174,12 @@ public final class GTRegistries {
     @SuppressWarnings({ "unchecked" })
     private static void actuallyRegister(RegisterEvent event) {
         if (!TO_REGISTER.containsRow(event.getVanillaRegistry())) return;
+
         for (var entry : TO_REGISTER.row(event.getVanillaRegistry()).entrySet()) {
             event.register((ResourceKey<? extends Registry<Object>>) event.getRegistryKey(), entry.getKey(),
                     entry::getValue);
         }
+        TO_REGISTER.row(event.getVanillaRegistry()).clear();
     }
 
     private static void onUnfreeze(RegisterEvent event) {
