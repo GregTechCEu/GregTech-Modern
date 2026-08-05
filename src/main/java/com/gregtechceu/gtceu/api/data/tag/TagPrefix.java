@@ -218,7 +218,7 @@ public class TagPrefix {
     public static final TagPrefix crushedRefined = new TagPrefix(GTCEu.id("refined_ore"))
             .idPattern("refined_%s_ore")
             .defaultTagPath("refined_ores/%s")
-            .defaultTagPath("refined_ores")
+            .unformattedTagPath("refined_ores")
             .langValue("Refined %s Ore")
             .materialIconType(MaterialIconType.crushedRefined)
             .unificationEnabled(true)
@@ -228,7 +228,7 @@ public class TagPrefix {
     public static final TagPrefix crushedPurified = new TagPrefix(GTCEu.id("purified_ore"))
             .idPattern("purified_%s_ore")
             .defaultTagPath("purified_ores/%s")
-            .defaultTagPath("purified_ores")
+            .unformattedTagPath("purified_ores")
             .customTagPredicate("siftables", false, m -> m.hasProperty(PropertyKey.GEM))
             .langValue("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
@@ -755,7 +755,8 @@ public class TagPrefix {
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
     public static final TagPrefix rock = new TagPrefix(GTCEu.id("rock"))
-            .defaultTagPath("%s")
+            // the 2nd 's' makes the tag plural, which is what Common tags are expected to be.
+            .defaultTagPath("%ss")
             .langValue("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(false)
