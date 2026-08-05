@@ -195,7 +195,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
 
     private static AbstractObject2IntMap<FluidIngredient> getFuels() {
-        if (FUELS.isEmpty()) {
+        if (FUELS.isEmpty() && !GTCEu.isClientSide()) {
             GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.getCategoryMap()
                     .get(GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.getCategory())
                     .forEach(recipe -> {
