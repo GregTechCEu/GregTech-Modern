@@ -41,35 +41,18 @@ public abstract class ReloadableServerResourcesMixin {
                                    FeatureFlagSet featureFlags, Commands.CommandSelection commands,
                                    int functionCompilationLevel, Executor backgroundExecutor, Executor gameExecutor,
                                    CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
-        // load and loot tables recipes *before* other data so that we have the registries loaded
-        // before saving recipes to JSON.
+        // load loot tables *before* other data so we have the registries loaded before saving recipes to JSON.
         // because it breaks if we don't do that.
 
         // this doesn't have dynamic registries available, by the way.
         RegistryAccess.Frozen frozen = access.compositeAccess();
 
-        // Register recipes & unification data again
+        // Register dynamic loot
         long startTime = System.currentTimeMillis();
-        GTCraftingComponents.init();
-        SteamBoilerLogic.clearBoilerRecipeCaches();
-        GTRecipes.recipeAddition(new RecipeOutput() {
-
-            @Override
-            public Advancement.@NotNull Builder advancement() {
-                // noinspection removal
-                return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
-            }
-
-            @Override
-            public void accept(@NotNull ResourceLocation id, @NotNull Recipe<?> recipe,
-                               @Nullable AdvancementHolder advancement, ICondition @NotNull... conditions) {
-                GTDynamicDataPack.addRecipe(id, recipe, advancement, frozen);
-            }
-        });
         MixinHelpers.generateGTDynamicLoot(GTDynamicDataPack::addLootTable, frozen);
         // Initialize dungeon loot additions
         DungeonLootLoader.init();
 
-        GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
+        GTCEu.LOGGER.info("GregTech Loot table loading took {}ms", System.currentTimeMillis() - startTime);
     }
 }

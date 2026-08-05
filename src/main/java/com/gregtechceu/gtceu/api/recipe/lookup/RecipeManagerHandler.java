@@ -28,7 +28,7 @@ public final class RecipeManagerHandler {
      * @param gtRecipeType the recipe type to add the recipes to, which owns the proxy recipes
      * @param proxyRecipes the list of proxy recipes to populate
      */
-    public static void addProxyRecipesToLookup(@NotNull Collection<RecipeHolder<?>> recipes,
+    public static void addProxyRecipesToLookup(@NotNull Collection<? extends RecipeHolder<?>> recipes,
                                                @NotNull GTRecipeType gtRecipeType, @NotNull RecipeType<?> proxyType,
                                                @NotNull List<RecipeHolder<GTRecipe>> proxyRecipes) {
         var lookup = gtRecipeType.getAdditionHandler();
@@ -50,7 +50,7 @@ public final class RecipeManagerHandler {
      * @param recipes      the recipes stored by their ID
      * @param gtRecipeType the recipe type to add recipes to
      */
-    public static void addRecipesToLookup(@NotNull Collection<RecipeHolder<?>> recipes,
+    public static void addRecipesToLookup(@NotNull Collection<? extends RecipeHolder<?>> recipes,
                                           @NotNull GTRecipeType gtRecipeType) {
         var lookup = gtRecipeType.getAdditionHandler();
         for (RecipeHolder<?> r : recipes) {
