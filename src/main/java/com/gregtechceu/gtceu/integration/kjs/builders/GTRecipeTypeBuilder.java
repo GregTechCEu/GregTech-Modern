@@ -198,11 +198,11 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         var type = GTRecipeTypes.register(name, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
-        var uiBuilder = new GTRecipeTypeUILayout.Builder(type);
         if (this.layout != null) {
-            this.layout.accept(uiBuilder);
+            var builder = new GTRecipeTypeUILayout.Builder(type);
+            this.layout.accept(builder);
+            type.setUiLayout(builder.build());
         }
-        type.setUiLayout(uiBuilder.build());
         type.setSound(sound);
         type.setHasResearchSlot(hasResearchSlot);
         type.setMaxTooltips(maxTooltips);

@@ -4,9 +4,8 @@ title: Machine UIs
 
 # Machine UIs
 
-Any machine that should open a UI when right-clicked implements `IMuiMachine`. The interface extends
-MUI2's `IUIHolder<PosGuiData>` and GTM's `IMachineFeature`, so implementing it on a `MetaMachine`
-subclass is all that is needed to get a working panel:
+When any machine that extends `IMuiMachine` or has a machine panel in its definition is right-clicked, it will attempt to open a UI. 
+Implementing `IMuiMachine` on a `MetaMachine` subclass is all that is needed to get a working panel:
 
 ```java
 public class MyMachine extends MetaMachine implements IMuiMachine {
