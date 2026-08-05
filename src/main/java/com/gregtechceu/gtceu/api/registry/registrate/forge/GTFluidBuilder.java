@@ -58,6 +58,8 @@ import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MATERIAL_FLUID;
+
 @Accessors(chain = true, fluent = true)
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -239,6 +241,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
                 .color(() -> () -> GTBucketItem::color)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .model(NonNullBiConsumer.noop())
+                .tab(MATERIAL_FLUID.getKey())
                 .onRegister(bucket -> this.bucket = () -> bucket);
     }
 

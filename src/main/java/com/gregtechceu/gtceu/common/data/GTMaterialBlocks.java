@@ -31,6 +31,8 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
 import java.util.Map;
 
+import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MATERIAL_PIPE;
+
 @SuppressWarnings("removal")
 public class GTMaterialBlocks {
 
@@ -210,6 +212,7 @@ public class GTMaterialBlocks {
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> MaterialPipeBlock::tintedColor)
                 .item(MaterialPipeBlockItem::new)
+                .tab(MATERIAL_PIPE.getKey())
                 .model(NonNullBiConsumer.noop())
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
@@ -258,6 +261,7 @@ public class GTMaterialBlocks {
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> MaterialPipeBlock::tintedColor)
                 .item(MaterialPipeBlockItem::new)
+                .tab(MATERIAL_PIPE.getKey())
                 .model(NonNullBiConsumer.noop())
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
@@ -305,6 +309,7 @@ public class GTMaterialBlocks {
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> MaterialPipeBlock::tintedColor)
                 .item(MaterialPipeBlockItem::new)
+                .tab(MATERIAL_PIPE.getKey())
                 .model(NonNullBiConsumer.noop())
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
