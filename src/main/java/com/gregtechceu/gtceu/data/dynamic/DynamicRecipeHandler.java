@@ -89,7 +89,7 @@ public final class DynamicRecipeHandler {
         addRecipesToLookup(recipeManager);
 
         long elapsed = (System.currentTimeMillis() - startTime) + earlyLoadElapsed.get();
-        GTCEu.LOGGER.info("GregTech Dynamic Recipe loading took {}ms", elapsed);
+        GTCEu.LOGGER.info("GregTech dynamic recipe generation took {}ms", elapsed);
     }
 
     private static void addRecipesToLookup(RecipeManager recipeManager) {

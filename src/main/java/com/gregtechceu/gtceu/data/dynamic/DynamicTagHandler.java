@@ -42,8 +42,10 @@ public final class DynamicTagHandler {
 
     private DynamicTagHandler() {}
 
-    public static <T> void generateGTDynamicTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> parsedTags,
-                                                 Registry<T> registry) {
+    public static <T> void generateDynamicTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> parsedTags,
+                                               Registry<T> registry) {
+        long startTime = System.currentTimeMillis();
+
         if (registry == BuiltInRegistries.ITEM) {
             generateItemTags(parsedTags);
         } else if (registry == BuiltInRegistries.BLOCK) {
@@ -51,6 +53,9 @@ public final class DynamicTagHandler {
         } else if (registry == BuiltInRegistries.FLUID) {
             generateFluidTags(parsedTags);
         }
+
+        GTCEu.LOGGER.info("GregTech dynamic {} tag generation took {}ms", registry.key().location().getPath(),
+                System.currentTimeMillis() - startTime);
     }
 
     private static void generateItemTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tags) {

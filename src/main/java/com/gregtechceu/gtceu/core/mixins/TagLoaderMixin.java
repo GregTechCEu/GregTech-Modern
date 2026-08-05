@@ -29,7 +29,7 @@ public class TagLoaderMixin implements IGTTagLoader {
     public void gtceu$load(ResourceManager resourceManager,
                            CallbackInfoReturnable<Map<ResourceLocation, List<TagLoader.EntryWithSource>>> cir) {
         if (gtceu$storedRegistry == null) return;
-        DynamicTagHandler.generateGTDynamicTags(cir.getReturnValue(), gtceu$storedRegistry);
+        DynamicTagHandler.generateDynamicTags(cir.getReturnValue(), gtceu$storedRegistry);
     }
 
     @Override
