@@ -109,8 +109,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
@@ -124,6 +124,7 @@ import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeComponentFactoryRegistryEvent;
 import dev.latvian.mods.kubejs.recipe.schema.RegisterRecipeSchemasEvent;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
@@ -143,15 +144,19 @@ import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.PATTERN;
 import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema.RESULT;
 
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void initStartup() {
         super.initStartup();
 
-        for (var registry : GTRegistries.getRegistries()) {
-            GTCEuStartupEvents.REGISTRY.post(new GTRegistryEventJS<>(RegistryInfo.of(registry.key())));
+        for (var extraId : GTCEuStartupEvents.REGISTRY.findUniqueExtraIds(ScriptType.STARTUP)) {
+            if (extraId instanceof ResourceKey<?> key) {
+                RegistryInfo<?> info = RegistryInfo.of((ResourceKey) key);
+                var event = new GTRegistryEventJS<>(info);
+                GTCEuStartupEvents.REGISTRY.post(event, key);
+                event.created.forEach(BuilderBase::createAdditionalObjects);
+            }
         }
     }
 
@@ -201,8 +206,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTCEuServerEvents.GROUP.register();
     }
 
-    @SubscribeEvent
-    public void registerMachines(RegisterEvent event) {
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void registerMachines(RegisterEvent event) {
         if (event.getRegistryKey().equals(GTRegistries.Keys.MACHINE)) {
             for (var builder : GTRegistryInfo.MACHINE) {
                 builder.createObject();
