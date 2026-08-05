@@ -69,50 +69,36 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @Override
     public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
-        List<Object> list = new ObjectArrayList<>(ingredients.size());
-        for (Object item : ingredients) {
-            if (item instanceof SizedIngredient ingredient) {
-                boolean isEqual = false;
+        List<Object> list = new ArrayList<>(ingredients.size());
+        MAIN_LOOP:
+        for (Object entry : ingredients) {
+            if (entry instanceof SizedIngredient ingredient) {
                 for (Object obj : list) {
                     if (obj instanceof SizedIngredient ingredient1) {
                         if (ingredient.ingredient().equals(ingredient1.ingredient())) {
-                            isEqual = true;
-                            break;
+                            continue MAIN_LOOP;
                         }
                     } else if (obj instanceof ItemStack stack) {
                         if (ingredient.ingredient().test(stack)) {
-                            isEqual = true;
-                            break;
+                            continue MAIN_LOOP;
                         }
                     }
                 }
-                if (isEqual) continue;
-                // spotless:off
-                if (ingredient.getContainedCustom() instanceof IntCircuitIngredient) {
-                    list.addFirst(ingredient);
-                } else if (ingredient.getContainedCustom() instanceof IntProviderIngredient intProvider &&
-                        intProvider.getInner().getCustomIngredient() instanceof IntCircuitIngredient) {
-                    list.addFirst(ingredient);
-                } else {
-                    list.add(ingredient);
-                }
-                // spotless:on
-            } else if (item instanceof ItemStack stack) {
-                boolean isEqual = false;
+
+                list.add(ingredient);
+            } else if (entry instanceof ItemStack stack) {
                 for (Object obj : list) {
-                    if (obj instanceof Ingredient ingredient) {
-                        if (ingredient.test(stack)) {
-                            isEqual = true;
-                            break;
+                    if (obj instanceof SizedIngredient ingredient) {
+                        if (ingredient.ingredient().test(stack)) {
+                            continue MAIN_LOOP;
                         }
                     } else if (obj instanceof ItemStack stack1) {
                         if (ItemStack.isSameItemSameComponents(stack, stack1)) {
-                            isEqual = true;
-                            break;
+                            continue MAIN_LOOP;
                         }
                     }
                 }
-                if (isEqual) continue;
+
                 list.add(stack);
             }
         }
