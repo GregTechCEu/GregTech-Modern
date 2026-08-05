@@ -12,7 +12,7 @@ Gregtech will iterate through all materials and all tag prefixes possible for th
 
 public static void recipeAddition(Consumer<FinishedRecipe> consumer) {
 
-    for (Material material : GTRegistries.MATERIALS.values()) {
+    for (Material material : GTRegistries.MATERIALS) {
             if (material.hasFlag(MaterialFlags.NO_UNIFICATION)) {
                 continue;
             }
