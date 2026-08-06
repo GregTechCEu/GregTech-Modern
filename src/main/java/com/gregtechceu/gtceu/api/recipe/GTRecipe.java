@@ -95,14 +95,15 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     CompoundTag data,
                     int duration,
-                    List<Integer> allParallels,
+                    RecipeParallels allParallels,
                     GTRecipeCategory recipeCategory,
                     int groupColor) {
         this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
                 recipeIO.inputChanceLogics(), recipeIO.outputChanceLogics(), recipeIO.tickInputChanceLogics(),
                 recipeIO.tickOutputChanceLogics(),
-                conditions, ingredientActions, data, duration, allParallels.get(0), allParallels.get(1),
-                allParallels.get(2), recipeCategory, groupColor);
+                conditions, ingredientActions, data, duration, allParallels.parallels(),
+                allParallels.subtickParallels(),
+                allParallels.batchParallels(), recipeCategory, groupColor);
     }
 
     /**

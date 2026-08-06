@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public record RecipeIO(
                        Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
                        Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics) {
 
-    public static final Codec<RecipeIO> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<RecipeIO> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
             RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
             RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
