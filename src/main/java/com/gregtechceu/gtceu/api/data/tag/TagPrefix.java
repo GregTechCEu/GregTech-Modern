@@ -1019,7 +1019,7 @@ public class TagPrefix {
     private boolean generateBlock;
     @Getter
     @Setter
-    private BlockConstructor blockConstructor = MaterialBlock::new;
+    private BlockConstructor blockConstructor = MaterialBlock::createAndAddModel;
     @Getter
     @Setter
     private BlockItemConstructor blockItemConstructor = MaterialBlockItem::new;

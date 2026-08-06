@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.client.renderer.block.LampItemRenderer;
+import com.gregtechceu.gtceu.client.renderer.item.LampItemRenderer;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
