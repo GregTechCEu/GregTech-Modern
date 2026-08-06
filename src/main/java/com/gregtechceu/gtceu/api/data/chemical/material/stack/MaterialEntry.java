@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -9,45 +8,36 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
-public record MaterialEntry(@Nullable TagPrefix tagPrefix, @Nullable Material material) {
+public record MaterialEntry(@NotNull TagPrefix tagPrefix, @Nullable Material material) {
+
+    public MaterialEntry {
+        Objects.requireNonNull(tagPrefix, "MaterialEntry cannot have null TagPrefix");
+    }
 
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
 
-    public MaterialEntry(TagPrefix tagPrefix) {
-        this(tagPrefix, null);
-    }
-
     public boolean isEmpty() {
-        return material() == null || tagPrefix() == null;
+        return material() == null;
     }
 
     public boolean isIgnored() {
-        return tagPrefix() != null && tagPrefix().isIgnored(material());
+        return tagPrefix().isIgnored(material());
     }
 
     public long getMaterialAmount() {
-        if (tagPrefix != null) {
-            if (material != null) {
-                return tagPrefix.getMaterialAmount(material);
-            }
-            return tagPrefix.materialAmount();
-        }
         if (material != null) {
-            return GTValues.M;
-        } else {
-            return 0;
+            return tagPrefix.getMaterialAmount(material);
         }
+        return tagPrefix.materialAmount();
     }
 
     @Override
     public @NotNull String toString() {
         if (material == null) {
             return "MaterialEntry[empty]";
-        }
-        if (tagPrefix == null) {
-            return material.getResourceLocation().toString();
         }
         var tags = tagPrefix.getItemTags(material);
         if (tags.isEmpty()) {

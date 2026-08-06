@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -11,6 +12,8 @@ import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
@@ -179,27 +182,29 @@ public class HazardProperty implements IMaterialProperty {
         }
     }
 
-    public static @Nullable MaterialEntry getValidHazardMaterial(ItemStack item) {
-        MaterialEntry entry = null;
-        boolean isFluid = false;
+    public static @Nullable Either<Material, MaterialEntry> getValidHazardMaterial(ItemStack item) {
+        Material material = null;
+        TagPrefix prefix = null;
+
         if (item.getItem() instanceof TagPrefixItem prefixItem) {
-            entry = new MaterialEntry(prefixItem.tagPrefix, prefixItem.material);
+            material = prefixItem.material;
+            prefix = prefixItem.tagPrefix;
         } else if (item.getItem() instanceof BucketItem bucket) {
             if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
-                entry = new MaterialEntry(null, ChemicalHelper.getMaterial(bucket.getFluid()));
-                isFluid = true;
+                material = ChemicalHelper.getMaterial(bucket.getFluid());
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
-            entry = ChemicalHelper.getMaterialEntry(item.getItem());
+            var entry = ChemicalHelper.getMaterialEntry(item.getItem());
+            if (entry == null) return null;
+            material = entry.material();
+            prefix = entry.tagPrefix();
         }
 
-        HazardProperty property = (entry == null || entry.material() == null)  ? null : entry.material().getProperty(PropertyKey.HAZARD);
-        if (property == null) {
+        HazardProperty property = (material == null)  ? null : material.getProperty(PropertyKey.HAZARD);
+        if (property == null || prefix != null && !property.hazardTrigger.isAffected(prefix)) {
             return null;
         }
-        if (!isFluid && !property.hazardTrigger.isAffected(entry.tagPrefix())) {
-            return null;
-        }
-        return entry;
+
+        return prefix == null ? Either.left(material) : Either.right(new MaterialEntry(prefix, material));
     }
 }
