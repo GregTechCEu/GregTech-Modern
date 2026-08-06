@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
+import com.gregtechceu.gtceu.client.model.runtimegen.*;
 import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
@@ -17,9 +18,6 @@ import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTTankItemFluidPreview;
@@ -209,12 +207,12 @@ public class ClientProxy {
             block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
         }
 
-        MaterialBlockRenderer.reinitModels();
-        TagPrefixItemRenderer.reinitModels();
-        OreBlockRenderer.reinitModels();
-        ToolItemRenderer.reinitModels();
-        ArmorItemRenderer.reinitModels();
-        SurfaceRockRenderer.reinitModels();
+        MaterialBlockModelGenerator.reinitModels();
+        TagPrefixItemModelGenerator.reinitModels();
+        OreBlockModelGenerator.reinitModels();
+        ToolItemModelGenerator.reinitModels();
+        ArmorItemModelGenerator.reinitModels();
+        SurfaceRockModelGenerator.reinitModels();
         GTModels.registerMaterialFluidModels();
     }
 
