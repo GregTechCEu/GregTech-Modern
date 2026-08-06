@@ -21,7 +21,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -510,22 +509,23 @@ public class GTUtil {
             return false;
         }
 
-        Biome biome = world.getBiome(blockPos.above()).value();
+        Holder<Biome> biome = world.getBiome(blockPos.above());
         if (world.isRaining()) {
-            if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
+            if (biome.value().warmEnoughToRain(blockPos.above()) || biome.value().coldEnoughToSnow(blockPos.above())) {
                 return false;
             }
         }
 
-        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
+        if (biome.is(BiomeTags.IS_END)) {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.Mods.isJAVDLoaded() &&
-                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
-            return !world.isDay();
-        } else return world.isDay();
+        // skip the fixed time check Level.isDay() does
+
+        // skyDarken is the amount of light subtracted from the stored skylight value in
+        // `Level.getMaxLocalRawBrightness(pos)` depending on the time of day.
+        // this here is the same code Level.isDay() uses to determine whether it's day or not.
+        return world.getSkyDarken() < 4;
     }
 
     /**
