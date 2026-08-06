@@ -260,15 +260,15 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
     }
 
-    public static record RecipeIO(
-                                  Map<RecipeCapability<?>, List<Content>> inputs,
-                                  Map<RecipeCapability<?>, List<Content>> outputs,
-                                  Map<RecipeCapability<?>, List<Content>> tickInputs,
-                                  Map<RecipeCapability<?>, List<Content>> tickOutputs,
-                                  Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
-                                  Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
-                                  Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
-                                  Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics) {
+    public record RecipeIO(
+                           Map<RecipeCapability<?>, List<Content>> inputs,
+                           Map<RecipeCapability<?>, List<Content>> outputs,
+                           Map<RecipeCapability<?>, List<Content>> tickInputs,
+                           Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                           Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                           Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                           Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                           Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics) {
 
         public static final MapCodec<RecipeIO> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
@@ -287,10 +287,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 .apply(instance, RecipeIO::new));
     }
 
-    public static record RecipeParallels(
-                                         int parallels,
-                                         int subtickParallels,
-                                         int batchParallels) {
+    public record RecipeParallels(
+                                  int parallels,
+                                  int subtickParallels,
+                                  int batchParallels) {
 
         public static final Codec<RecipeParallels> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("parallels").forGetter(RecipeParallels::parallels),
