@@ -22,6 +22,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import org.jetbrains.annotations.NotNull;
@@ -257,5 +258,44 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             // noinspection unchecked must be List<?> to be able to load without KJS.
             IngredientAction.writeList(buf, (List<IngredientAction>) ingredientActions);
         }
+    }
+
+    public static record RecipeIO(
+                                  Map<RecipeCapability<?>, List<Content>> inputs,
+                                  Map<RecipeCapability<?>, List<Content>> outputs,
+                                  Map<RecipeCapability<?>, List<Content>> tickInputs,
+                                  Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                                  Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                                  Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                                  Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                                  Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics) {
+
+        public static final MapCodec<RecipeIO> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
+                RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
+                RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
+                RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
+                Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
+                        .optionalFieldOf("inputChanceLogics", Map.of()).forGetter(val -> val.inputChanceLogics),
+                Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
+                        .optionalFieldOf("outputChanceLogics", Map.of()).forGetter(val -> val.outputChanceLogics),
+                Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
+                        .optionalFieldOf("tickInputChanceLogics", Map.of()).forGetter(val -> val.tickInputChanceLogics),
+                Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
+                        .optionalFieldOf("tickOutputChanceLogics", Map.of())
+                        .forGetter(val -> val.tickOutputChanceLogics))
+                .apply(instance, RecipeIO::new));
+    }
+
+    public static record RecipeParallels(
+                                         int parallels,
+                                         int subtickParallels,
+                                         int batchParallels) {
+
+        public static final Codec<RecipeParallels> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("parallels").forGetter(RecipeParallels::parallels),
+                Codec.INT.fieldOf("subtickParallels").forGetter(RecipeParallels::subtickParallels),
+                Codec.INT.fieldOf("batchParallels").forGetter(RecipeParallels::batchParallels))
+                .apply(instance, RecipeParallels::new));
     }
 }

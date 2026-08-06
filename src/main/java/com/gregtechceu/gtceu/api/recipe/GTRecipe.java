@@ -86,16 +86,16 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     /**
      * Accepts Parallels, Batches, and BatchParallels as a single List,
-     * as well as combining all I/O data into a {@link RecipeIO} record.
+     * as well as combining all I/O data into a {@link GTRecipeSerializer.RecipeIO} record.
      * Necessary for {@link GTRecipeSerializer}
      */
     public GTRecipe(GTRecipeType recipeType,
-                    RecipeIO recipeIO,
+                    GTRecipeSerializer.RecipeIO recipeIO,
                     List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     CompoundTag data,
                     int duration,
-                    RecipeParallels allParallels,
+                    GTRecipeSerializer.RecipeParallels allParallels,
                     GTRecipeCategory recipeCategory,
                     int groupColor) {
         this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
@@ -267,8 +267,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return ChanceLogic.OR;
     }
 
-    public RecipeIO getRecipeIO() {
-        return new RecipeIO(inputs, outputs,
+    public GTRecipeSerializer.RecipeIO getRecipeIO() {
+        return new GTRecipeSerializer.RecipeIO(inputs, outputs,
                 tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics,
                 tickInputChanceLogics, tickOutputChanceLogics);
