@@ -52,6 +52,11 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
                 initHandlers();
             }
             checkNetwork();
+
+            if (defaultHandler == null) {
+                // if the default handler is null, return LazyOptional.empty because that means the pipenet is invalid
+                return LazyOptional.empty();
+            }
             return GTCapability.CAPABILITY_HAZARD_CONTAINER.orEmpty(cap,
                     LazyOptional.of(() -> handlers.getOrDefault(side, defaultHandler)));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
@@ -112,8 +117,8 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
             MetaMachine adjacent = MetaMachine.getMachine(level, relative);
             return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) != null ||
                     (adjacent != null &&
-                            (adjacent.getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null ||
-                                    adjacent.getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null));
+                            (adjacent.getTrait(EnvironmentalHazardEmitterTrait.class) != null ||
+                                    adjacent.getTrait(EnvironmentalHazardCleanerTrait.class) != null));
         }
         return false;
     }

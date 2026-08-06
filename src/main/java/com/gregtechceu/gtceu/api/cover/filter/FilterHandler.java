@@ -62,8 +62,8 @@ public class FilterHandler<T> implements ISyncManaged {
             }
         };
 
-        this.filterSlot.setOnContentsChanged(this::updateFilter);
         this.filterSlot.setFilter(this::canInsertFilterItem);
+        this.filterSlot.setOnContentsChanged(this::updateFilter);
     }
 
     //////////////////////////////////

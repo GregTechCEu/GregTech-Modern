@@ -79,7 +79,7 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
 
     @Override
     public boolean shouldRender(WorkableMultiblockMachine machine, Vec3 cameraPos) {
-        return machine.getTrait(MultiblockFluidRendererTrait.TYPE) != null;
+        return machine.getTrait(MultiblockFluidRendererTrait.class) != null;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
                        int packedLight, int packedOverlay) {
         if (!ConfigHolder.INSTANCE.client.renderer.renderFluids) return;
 
-        var trait = machine.getTrait(MultiblockFluidRendererTrait.TYPE);
+        var trait = machine.getTrait(MultiblockFluidRendererTrait.class);
         if (trait == null || !machine.isFormed() || trait.getFluidOffsets().isEmpty()) return;
 
         if (!fixedFluid) {
@@ -115,8 +115,8 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
         for (RelativeDirection face : this.drawFaces) {
             poseStack.pushPose();
 
-            var dir = face.getRelativeFacing(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
-                    machine.self().isFlipped());
+            var dir = face.getRelativeFacing(machine.getFrontFacing(), machine.getUpwardsFacing(),
+                    machine.isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, trait.getFluidOffsets(), poseStack, consumer, cachedFluid,
@@ -138,7 +138,7 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
     @Override
     public AABB getRenderBoundingBox(WorkableMultiblockMachine machine) {
         AABB box = super.getRenderBoundingBox(machine);
-        var trait = machine.getTrait(MultiblockFluidRendererTrait.TYPE);
+        var trait = machine.getTrait(MultiblockFluidRendererTrait.class);
         if (trait == null) return box;
         var offsets = trait.getFluidOffsets();
         for (var offset : offsets) {

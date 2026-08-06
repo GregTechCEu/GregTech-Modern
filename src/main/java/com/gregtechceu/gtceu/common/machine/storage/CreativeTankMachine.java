@@ -74,7 +74,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
         tag.putInt("mBPerCycle", mBPerCycle);
         tag.putInt("ticksPerCycle", ticksPerCycle);
     }
@@ -89,7 +89,10 @@ public class CreativeTankMachine extends QuantumTankMachine {
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         var heldItem = context.getItemInHand();
         var player = context.getPlayer();
-        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
+        if (context.getClickedFace() == getFrontFacing() && FluidUtil.getFluidHandler(heldItem).isPresent()) {
+            if (isRemote()) {
+                return InteractionResult.SUCCESS;
+            }
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
                 return FluidUtil.getFluidContained(heldItem)

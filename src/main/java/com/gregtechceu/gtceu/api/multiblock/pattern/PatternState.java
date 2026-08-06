@@ -81,7 +81,7 @@ public class PatternState {
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
         if (!(currentBlockInfo.getLevel() instanceof ServerLevel serverLevel)) return;
         if (pos.equals(controllerPos)) {
-            if (controller != null && !newState.is(controller.self().getBlockState().getBlock())) {
+            if (controller != null && !newState.is(controller.getBlockState().getBlock())) {
                 controller.invalidateStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
                 MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(this);
             }

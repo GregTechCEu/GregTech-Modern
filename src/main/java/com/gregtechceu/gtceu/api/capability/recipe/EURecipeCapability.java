@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -130,7 +130,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
 
     @Override
     public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableEnergyContainer.TYPE);
+        return machine.getTraits(NotifiableEnergyContainer.class);
     }
 
     @Override

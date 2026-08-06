@@ -2,9 +2,8 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
@@ -13,6 +12,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
@@ -29,13 +29,20 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.class);
     }
 
     @Override
     protected CompoundTag write(RecipeLogic capability) {
         var data = new CompoundTag();
         data.putBoolean("Working", capability.isWorking());
+        if (!capability.isWorking() && capability.isWorkingEnabled()) {
+            var failureReason = capability.getBestFailureReason();
+            if (failureReason != null) {
+                data.putString("FailureReason", Component.Serializer.toJson(failureReason));
+                data.putBoolean("Waiting", capability.isWaiting());
+            }
+        }
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
@@ -129,18 +136,13 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     }
                 }
             }
-        } else {
-            if (blockEntity instanceof IRecipeLogicMachine rlm) {
-                var logic = rlm.getRecipeLogic();
-
-                if (!logic.getWaitingReasons().isEmpty() && logic.isWorkingEnabled()) {
-                    Component status = logic.isWaiting() ?
-                            Component.translatable("gtceu.recipe_logic.recipe_waiting")
-                                    .withStyle(ChatFormatting.YELLOW) :
-                            Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
-                    tooltip.add(status);
-                    logic.getWaitingReasons().forEach(tooltip::add);
-                }
+        } else if (capData.contains("FailureReason", Tag.TAG_STRING)) {
+            Component reason = Component.Serializer.fromJson(capData.getString("FailureReason"));
+            if (reason != null) {
+                tooltip.add(capData.getBoolean("Waiting") ?
+                        Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.YELLOW) :
+                        Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
+                tooltip.add(reason);
             }
         }
     }

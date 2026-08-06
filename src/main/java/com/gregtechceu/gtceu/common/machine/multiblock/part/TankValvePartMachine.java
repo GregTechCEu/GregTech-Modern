@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
+import com.gregtechceu.gtceu.common.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -31,7 +31,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     public TankValvePartMachine(BlockEntityCreationInfo info, boolean isMetal) {
         super(info);
 
-        tankProxy = attachTrait(new FluidTankProxyTrait(IO.BOTH));
+        tankProxy = attachTrait(new FluidTankProxyTrait(getIO()));
         autoIOSubscription = new ConditionalSubscriptionHandler(this, this::autoIO, this::shouldAutoIO);
     }
 
@@ -103,5 +103,9 @@ public class TankValvePartMachine extends MultiblockPartMachine {
         if (getFrontFacing() != Direction.DOWN) return false;
         if (tankProxy.isEmpty()) return false;
         return getTargetTank() != null;
+    }
+
+    private IO getIO() {
+        return shouldAutoIO() ? IO.OUT : IO.BOTH;
     }
 }

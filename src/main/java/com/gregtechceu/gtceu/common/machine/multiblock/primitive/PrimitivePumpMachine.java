@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
@@ -32,7 +32,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ListWidget;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,22 +45,22 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
 
     private int biomeModifier = 0;
     private int hatchModifier = 0;
-    private NotifiableFluidTank fluidTank;
-    private TickableSubscription produceWaterSubscription;
+    private @Nullable NotifiableFluidTank fluidTank;
+    private @Nullable TickableSubscription produceWaterSubscription;
 
     public PrimitivePumpMachine(BlockEntityCreationInfo info) {
         super(info);
     }
 
     @Override
-    public void formStructure(@NotNull String name) {
+    public void formStructure(String name) {
         super.formStructure(name);
         initializeTank();
         produceWaterSubscription = subscribeServerTick(this::produceWater);
     }
 
     private void initializeTank() {
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             var handlerLists = part.getRecipeHandlers();
 
             for (var handlerList : handlerLists) {

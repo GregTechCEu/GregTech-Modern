@@ -46,6 +46,7 @@
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
+        "jei.RecipesGuiAccessor",
         "rei.FluidEntryRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",
@@ -56,6 +57,7 @@
     "mixins": [
         "AnvilMenuMixin",
         "BeehiveBlockAccessor",
+        "BinomialDistributionGeneratorAccessor",
         "BlockBehaviourAccessor",
         "BlockMixin",
         "BlockPropertiesAccessor",
@@ -84,6 +86,7 @@
         "TagLoaderMixin",
         "TagManagerMixin",
         "TagValueAccessor",
+        "UniformGeneratorAccessor",
         "client.ItemEntityMixin",
         "client.bloom.normal.embeddium.SodiumWorldRendererMixin",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",

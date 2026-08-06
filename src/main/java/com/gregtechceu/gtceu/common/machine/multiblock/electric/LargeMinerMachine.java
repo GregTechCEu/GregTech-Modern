@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
@@ -19,18 +19,33 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,7 +124,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         List<IFluidHandler> fluidTanks = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             // if (io == IO.NONE) continue;
 
@@ -174,6 +189,109 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
             }
         }
         return true;
+    }
+
+    @Override
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panelBuilder = getPanelBuilder(data, syncManager, settings);
+        panelBuilder.mainContents(parent -> buildMainUI(parent, data, syncManager, settings));
+        var machinePanel = panelBuilder.build(syncManager, settings);
+
+        BooleanSyncValue silk = syncManager.getOrCreateSyncHandler("silkTouch", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isSilkTouchMode(),
+                        (v) -> getRecipeLogic().setSilkTouchMode(v)).allowC2S());
+        BooleanSyncValue chunk = syncManager.getOrCreateSyncHandler("chunk", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isChunkMode(),
+                        (v) -> getRecipeLogic().setChunkMode(v)).allowC2S());
+
+        machinePanel.getRightConfiguratorPanel()
+                .child(new ToggleButton()
+                        .value(silk)
+                        .overlay(new ItemDrawable(Items.FEATHER))
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.silk_touch")
+                                .append(Component.translatable(
+                                        "cover.voiding.label." + (silk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipAutoUpdate(true))
+                .child(new ToggleButton()
+                        .value(chunk)
+                        .overlay(false, GTGuiTextures.BUTTON_CHUNK_ALIGN[0])
+                        .overlay(true, GTGuiTextures.BUTTON_CHUNK_ALIGN[1])
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.chunk_mode")
+                                .append(Component.translatable(
+                                        "cover.voiding.label." + (chunk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipAutoUpdate(true));
+
+        return machinePanel;
+    }
+
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+
+        BooleanSyncValue done = syncManager.getOrCreateSyncHandler("done", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isDone()));
+        IntSyncValue workingArea = syncManager.getOrCreateSyncHandler("workingArea", IntSyncValue.class,
+                () -> new IntSyncValue(() -> getRecipeLogic().getCurrentRadius()));
+        LongSyncValue x = syncManager.getOrCreateSyncHandler("x", LongSyncValue.class, () -> new LongSyncValue(() -> {
+            if (getRecipeLogic().getX() == Integer.MAX_VALUE) return 0;
+            return getRecipeLogic().getX();
+        }));
+        LongSyncValue y = syncManager.getOrCreateSyncHandler("y", LongSyncValue.class, () -> new LongSyncValue(() -> {
+            if (getRecipeLogic().getY() == Integer.MAX_VALUE) return 0;
+            return getRecipeLogic().getY();
+        }));
+        LongSyncValue z = syncManager.getOrCreateSyncHandler("z", LongSyncValue.class, () -> new LongSyncValue(() -> {
+            if (getRecipeLogic().getZ() == Integer.MAX_VALUE) return 0;
+            return getRecipeLogic().getZ();
+        }));
+        LongSyncValue startX = syncManager.getOrCreateSyncHandler("startx", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    if (getRecipeLogic().getStartX() == Integer.MAX_VALUE) return 0;
+                    return getRecipeLogic().getStartX();
+                }));
+        LongSyncValue startY = syncManager.getOrCreateSyncHandler("starty", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    if (getRecipeLogic().getStartY() == Integer.MAX_VALUE) return 0;
+                    return getRecipeLogic().getStartY();
+                }));
+        LongSyncValue startZ = syncManager.getOrCreateSyncHandler("startz", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    if (getRecipeLogic().getStartZ() == Integer.MAX_VALUE) return 0;
+                    return getRecipeLogic().getStartZ();
+                }));
+        BooleanSyncValue chunk = syncManager.getOrCreateSyncHandler("chunk", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isChunkMode(),
+                        (v) -> getRecipeLogic().setChunkMode(v)).allowC2S());
+        IntSyncValue mineProgress = syncManager.getOrCreateSyncHandler("mineProgress", IntSyncValue.class,
+                () -> new IntSyncValue(() -> getRecipeLogic().getProgress()));
+        IntSyncValue totalMine = syncManager.getOrCreateSyncHandler("totalMine", IntSyncValue.class,
+                () -> new IntSyncValue(() -> getRecipeLogic().getMaxProgress()));
+
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.machine.miner.x", x.getLongValue(), startX.getLongValue()))
+                .asWidget());
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.machine.miner.y", y.getLongValue(), startY.getLongValue()))
+                .asWidget());
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.machine.miner.z", z.getLongValue(), startZ.getLongValue()))
+                .asWidget());
+        widgets.add(Text.dynamic(() -> {
+            if (chunk.getBoolValue()) {
+                return Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                        workingArea.getIntValue() * 2 / CHUNK_LENGTH, workingArea.getIntValue() * 2 / CHUNK_LENGTH);
+            }
+            return Component.translatable("gtceu.universal.tooltip.working_area", workingArea.getIntValue(),
+                    workingArea.getIntValue());
+        }).asWidget());
+        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)))
+                .asWidget()
+                .setEnabledIf((w) -> done.getBoolValue()));
+        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.machine.miner.progress",
+                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget());
+
+        return widgets;
     }
 
     //////////////////////////////////////
