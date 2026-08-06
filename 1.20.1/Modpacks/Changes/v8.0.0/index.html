@@ -5363,7 +5363,16 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
 <li><code>ICopyable::copyConfig</code>'s <code>CompoundTag</code> argument should now be mutated by reference instead of a new one returned (and thus, the return type has been changed to <code>void</code>).</li>
 <li>Tiered Chance Boosting has been formally removed from the API (as it was deprecated in v7.0.) <code>ChancedInput</code> and <code>ChancedOutput</code> kubeJS calls will throw errors if they still had chance boost values as arguments.</li>
 <li>Any custom <code>IDistinctPart</code>'s will have to implement <code>supportsDistinct</code> if they don't extend <code>ItemBusPartMachine</code>.</li>
+<li>Runtime model generators (previously named <code>ArmorItemRenderer</code>, <code>TagPrefixItemRenderer</code>, <code>ToolItemRenderer</code>, <code>MaterialBlockRenderer</code>, <code>OreBlockRenderer</code>, and <code>SurfaceRockRenderer</code>) have been renamed and moved from various packages under <code>client.renderer</code> to their own package, <code>client.model.runtimegen</code>.<br />
+  The classes' names are now as follows (all start with <code>com.gregtechceu.gtceu.client.</code>):</li>
+<li><code>renderer.item.ArmorItemRenderer</code> -&gt; <code>model.runtimegen.ArmorItemModelGenerator</code></li>
+<li><code>renderer.item.TagPrefixItemRenderer</code> -&gt; <code>model.runtimegen.TagPrefixItemModelGenerator</code></li>
+<li><code>renderer.item.ToolItemRenderer</code> -&gt; <code>model.runtimegen.ToolItemModelGenerator</code></li>
+<li><code>renderer.block.MaterialBlockRenderer</code> -&gt; <code>model.runtimegen.MaterialBlockModelGenerator</code></li>
+<li><code>renderer.block.OreBlockRenderer</code> -&gt; <code>model.runtimegen.OreBlockModelGenerator</code></li>
+<li><code>renderer.block.SurfaceRockRenderer</code> -&gt; <code>model.runtimegen.SurfaceRockModelGenerator</code></li>
 </ul>
+<p>The <code>#create</code> function common to all of them has also been renamed to <code>#add</code>. Simply changing the name is enough, as the functions' parameters weren't changed.</p>
 
 
 
