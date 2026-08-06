@@ -335,7 +335,7 @@ public class MixinHelpers {
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
             ResourceLocation id = machine.getId();
-            ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
+            ResourceLocation lootTableId = BuiltInRegistries.BLOCK.getKey(block).withPrefix("blocks/");
             ((BlockBehaviourAccessor) block).setDrops(lootTableId);
             lootTables.put(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
