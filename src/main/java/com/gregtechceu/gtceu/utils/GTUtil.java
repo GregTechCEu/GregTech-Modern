@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
+import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
@@ -21,7 +22,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -58,9 +58,14 @@ import dev.emi.emi.api.EmiApi;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.runtime.IRecipesGui;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -70,6 +75,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
@@ -510,22 +516,23 @@ public class GTUtil {
             return false;
         }
 
-        Biome biome = world.getBiome(blockPos.above()).value();
+        Holder<Biome> biome = world.getBiome(blockPos.above());
         if (world.isRaining()) {
-            if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
+            if (biome.value().warmEnoughToRain(blockPos.above()) || biome.value().coldEnoughToSnow(blockPos.above())) {
                 return false;
             }
         }
 
-        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
+        if (biome.is(BiomeTags.IS_END)) {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.Mods.isJAVDLoaded() &&
-                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
-            return !world.isDay();
-        } else return world.isDay();
+        // skip the fixed time check Level.isDay() does
+
+        // skyDarken is the amount of light subtracted from the stored skylight value in
+        // `Level.getMaxLocalRawBrightness(pos)` depending on the time of day.
+        // this here is the same code Level.isDay() uses to determine whether it's day or not.
+        return world.getSkyDarken() < 4;
     }
 
     /**
@@ -768,27 +775,51 @@ public class GTUtil {
     private static class EmiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            var categories = category.getRecipeType().getCategories().stream().map(GTRecipeEMICategory::machineCategory)
+            List<EmiRecipeCategory> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeEMICategory::machineCategory)
                     .toList();
             Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
-            for (var cat : categories) {
+            for (EmiRecipeCategory cat : categories) {
                 recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
             }
             EmiApiAccessor.gtceu$setPages(recipes, EmiStack.EMPTY);
+
+            // switch to the requested category if possible
+            if (Minecraft.getInstance().screen instanceof RecipeScreen emiRecipeScreen) {
+                emiRecipeScreen.focusCategory(GTRecipeEMICategory.machineCategory(category));
+            }
         }
     }
 
     private static class JeiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
+            List<RecipeType<?>> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeJEICategory::machineType)
+                    .collect(Collectors.toList());
+            IRecipesGui recipesGui = GTJEIPlugin.getRuntime().getRecipesGui();
+            recipesGui.showTypes(categories);
+
+            // switch to the requested category if possible
+            if (recipesGui instanceof RecipesGuiAccessor accessor) {
+                IRecipeCategory<?> specificCategory = GTJEIPlugin.getRuntime().getRecipeManager()
+                        .getRecipeCategory(GTRecipeJEICategory.machineType(category));
+                accessor.gtceu$getLogic().setRecipeCategory(specificCategory);
+            }
         }
     }
 
     private static class ReiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
+            List<CategoryIdentifier<?>> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeREICategory::machineCategory)
+                    .collect(Collectors.toList());
+            ViewSearchBuilder.builder()
+                    .addCategories(categories)
+                    // switch to the requested category if possible
+                    .setPreferredOpenedCategory(GTRecipeREICategory.machineCategory(category))
+                    .open();
         }
     }
 }
