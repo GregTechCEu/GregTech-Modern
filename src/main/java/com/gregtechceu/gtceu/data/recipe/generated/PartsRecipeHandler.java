@@ -239,7 +239,8 @@ public final class PartsRecipeHandler {
             }
         }
 
-        if (material.hasFlag(GENERATE_PLATE) && material.hasFlag(GENERATE_ROD)) {
+        if (material.hasFlag(GENERATE_PLATE) && material.hasFlag(GENERATE_ROD) &&
+                material.shouldGenerateRecipesFor(ingot)) {
             if (isSmall) {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_gear_%s", material.getName()),
                         stack,
