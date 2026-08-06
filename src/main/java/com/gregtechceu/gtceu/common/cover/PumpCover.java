@@ -345,13 +345,13 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putInt("transferRate", getTransferRate());
         tag.putInt("io", getIo().ordinal());
         tag.putInt("manualIO", getManualIOMode().ordinal());
         tag.put("filter", filterHandler.getFilterItem().serializeNBT());
         tag.putInt("bucketMode", getBucketMode().ordinal());
-        return super.copyConfig(tag);
     }
 
     @Override

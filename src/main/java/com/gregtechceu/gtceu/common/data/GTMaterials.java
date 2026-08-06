@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -50,8 +48,6 @@ public class GTMaterials {
     public static Material[] VOLTAGE_COMMON_MATERIALS;
 
     public static void init() {
-        MarkerMaterials.register();
-
         ElementMaterials.register();
         FirstDegreeMaterials.register();
         OrganicChemistryMaterials.register();
@@ -272,7 +268,7 @@ public class GTMaterials {
 
     @NotNull
     public static Material get(String name) {
-        var mat = GTCEuAPI.materialManager.getMaterial(name);
+        var mat = GTRegistries.MATERIALS.get(name);
         // material could be null here due to the registry grabbing a material that isn't in the map
         if (mat == null) {
             GTCEu.LOGGER.warn("{} is not a known Material", name);
@@ -307,7 +303,8 @@ public class GTMaterials {
         EXT2_METAL.addAll(Arrays.asList(GENERATE_LONG_ROD, GENERATE_BOLT_SCREW));
     }
 
-    public static final MarkerMaterial NULL = new MarkerMaterial(GTCEu.id("null"));
+    // Addon Devs: Don't you dare modify this material
+    public static final Material NULL = new Material.Builder(GTCEu.id("null")).buildAndRegister();
 
     /**
      * Direct Elements

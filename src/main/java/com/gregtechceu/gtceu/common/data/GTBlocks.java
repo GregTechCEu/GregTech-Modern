@@ -19,7 +19,9 @@ import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
+import com.gregtechceu.gtceu.common.data.blocks.GTDevBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.data.worldgen.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
@@ -67,6 +69,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
@@ -269,7 +272,7 @@ public class GTBlocks {
 
         MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
         AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
-
+        ModLoader.get().postEvent(event);
         MATERIALS_TO_CASINGS = builder.build();
     }
 
@@ -1299,6 +1302,7 @@ public class GTBlocks {
                             .initialProperties(() -> Blocks.GLASS)
                             .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                             .addLayer(() -> RenderType::cutout)
+                            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                             .blockstate(GTModels.lampModel(dyeColor, true))
                             .item(LampBlockItem::new)
                             .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
@@ -1313,6 +1317,7 @@ public class GTBlocks {
                     .block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor, false))
                     .initialProperties(() -> Blocks.GLASS)
                     .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                     .blockstate(GTModels.lampModel(dyeColor, false))
                     .item(LampBlockItem::new)
                     .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
@@ -1425,6 +1430,11 @@ public class GTBlocks {
 
         // GCYM
         GCYMBlocks.init();
+
+        // Dev-only test blocks
+        if (GTCEu.isDev()) {
+            GTDevBlocks.init();
+        }
     }
 
     private static void initializeCobbleReplacements() {

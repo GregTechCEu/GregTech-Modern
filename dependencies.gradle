@@ -1,9 +1,6 @@
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    // LDLib
-    jarJar(modApi(forge.ldlib.get()))
-
     // Registrate
     jarJar(modApi(forge.registrate.get()))
 
@@ -48,8 +45,7 @@ dependencies {
     modCompileOnly(forge.architectury)
     modCompileOnly(forge.rhino)
 
-    // Shimmer
-    modCompileOnly(forge.shimmer)
+    // Performance
     modCompileOnly(forge.embeddium)
     modCompileOnly(forge.oculus)
     modCompileOnly(forge.modernfix)
@@ -111,9 +107,10 @@ dependencies {
     modExtraLocalRuntime(forge.heracles)
     modExtraLocalRuntime(forge.resourcefullib)
 
-//    modExtraLocalRuntime(forge.xaerosminimap)
-//    modExtraLocalRuntime(forge.xaerosworldmap)
-//    modExtraLocalRuntime(forge.journeymap.forge)
+    modExtraLocalRuntime(forge.xaeroslib)
+    modExtraLocalRuntime(forge.xaerosworldmap)
+    modExtraLocalRuntime(forge.xaerosminimap)
+    modExtraLocalRuntime(forge.journeymap.forge)
 //    modExtraLocalRuntime(forge.ftbchunks)
 
     modExtraLocalRuntime(forge.gamestages)

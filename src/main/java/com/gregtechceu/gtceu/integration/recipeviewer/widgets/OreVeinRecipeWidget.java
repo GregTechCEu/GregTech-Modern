@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -38,26 +39,32 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
     private final int weight;
     private final @Nullable String range;
     private final @Nullable Set<ResourceKey<Level>> dimensionFilter;
+    private final @Nullable String veinYield;
+    private final @Nullable String depleted;
     public final static int WIDTH = 120;
 
     private OreVeinRecipeWidget(int width, int height, String nameLang, int weight, @Nullable String range,
-                                @Nullable Set<ResourceKey<Level>> dimensionFilter) {
+                                @Nullable Set<ResourceKey<Level>> dimensionFilter, @Nullable String veinYield,
+                                @Nullable String depleted) {
         size(width, height);
         this.nameLang = nameLang;
         this.weight = weight;
         this.range = range;
         this.dimensionFilter = dimensionFilter;
+        this.veinYield = veinYield;
+        this.depleted = depleted;
     }
 
     public OreVeinRecipeWidget(BedrockFluidDefinition fluid) {
-        this(WIDTH, 140, getFluidName(fluid), fluid.getWeight(), null, fluid.dimensionFilter);
+        this(WIDTH, 140, getFluidName(fluid), fluid.getWeight(), null, fluid.dimensionFilter, veinYield(fluid),
+                depletion(fluid));
         drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create()
                 .value(new FluidStack(fluid.getStoredFluid().get(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
     }
 
     public OreVeinRecipeWidget(GTOreDefinition oreDefinition) {
         this(WIDTH, 160, getOreName(oreDefinition), oreDefinition.weight(), range(oreDefinition),
-                oreDefinition.dimensionFilter());
+                oreDefinition.dimensionFilter(), null, null);
 
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
         List<Integer> chances = oreDefinition.veinGenerator().getAllChances();
@@ -75,7 +82,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
     }
 
     public OreVeinRecipeWidget(BedrockOreDefinition bedrockOre) {
-        this(WIDTH, 140, getBedrockOreName(bedrockOre), bedrockOre.weight(), null, bedrockOre.dimensionFilter());
+        this(WIDTH, 140, getBedrockOreName(bedrockOre), bedrockOre.weight(), null, bedrockOre.dimensionFilter(),
+                veinYield(bedrockOre), depletion(bedrockOre));
 
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
         IntList chances = bedrockOre.getAllChances();
@@ -100,6 +108,9 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
                         () -> Text.lang("gtceu.jei.ore_vein_diagram.spawn_range").asWidget().marginBottom(1))
                 .childIf(range != null, () -> Text.str(Objects.requireNonNull(range)).asWidget().marginBottom(3))
                 .child(Text.lang("gtceu.jei.ore_vein_diagram.weight", weight).asWidget().marginBottom(3))
+                .childIf(veinYield != null,
+                        () -> Text.str(Objects.requireNonNull(veinYield)).asWidget().marginBottom(3))
+                .childIf(depleted != null, () -> Text.str(Objects.requireNonNull(depleted)).asWidget().marginBottom(3))
                 .child(Text.lang("gtceu.jei.ore_vein_diagram.dimensions").asWidget());
 
         if (this.dimensionFilter != null) {
@@ -182,5 +193,28 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
     public static String getBedrockOreName(BedrockOreDefinition oreDefinition) {
         ResourceLocation id = ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(oreDefinition);
         return "gtceu.jei.bedrock_ore." + id.getPath();
+    }
+
+    private static String veinYield(BedrockFluidDefinition fluidDefinition) {
+        int minYield = fluidDefinition.getMinimumYield();
+        int maxYield = fluidDefinition.getMaximumYield();
+        return String.format("%d - %dmB/s", minYield, maxYield);
+    }
+
+    private static String depletion(BedrockFluidDefinition fluidDefinition) {
+        int depletion = fluidDefinition.getDepletedYield();
+        return String.format("%dmB/s", depletion);
+    }
+
+    private static String veinYield(BedrockOreDefinition oreDefinition) {
+        IntProvider yieldProvider = oreDefinition.yield();
+        int minYield = yieldProvider.getMinValue();
+        int maxYield = yieldProvider.getMaxValue();
+        return String.format("%d - %d", minYield, maxYield);
+    }
+
+    private static String depletion(BedrockOreDefinition oreDefinition) {
+        int depletion = oreDefinition.depletedYield();
+        return String.format("%d", depletion);
     }
 }

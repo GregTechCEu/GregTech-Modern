@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SPacketStartProspectionShare;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
@@ -155,7 +157,18 @@ public class GTCommands {
                                                 .executes(ctx -> {
                                                     ServerPlayer player = ctx.getSource().getPlayerOrException();
                                                     return setActiveCape(ctx.getSource(), player, null);
-                                                })))));
+                                                }))))
+                        .then(literal("share_prospection_data")
+                                .then(argument("player", EntityArgument.player())
+                                        .executes(ctx -> {
+                                            // resolve both players server-side (uses the server player list),
+                                            // then ask the sender's client to read its cache and send the data
+                                            ServerPlayer sender = ctx.getSource().getPlayerOrException();
+                                            ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
+                                            GTNetwork.sendToPlayer(sender,
+                                                    new SPacketStartProspectionShare(receiver.getUUID()));
+                                            return 1;
+                                        }))));
     }
     // spotless:on
 

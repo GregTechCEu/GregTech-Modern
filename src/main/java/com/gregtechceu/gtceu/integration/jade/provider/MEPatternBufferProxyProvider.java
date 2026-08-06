@@ -7,57 +7,53 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMac
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class MEPatternBufferProxyProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public class MEPatternBufferProxyProvider extends MachineInfoProvider<MEPatternBufferProxyPartMachine, CompoundTag> {
 
-    @Override
-    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferProxyPartMachine) {
-            CompoundTag serverData = blockAccessor.getServerData();
-            if (!serverData.getBoolean("formed")) return;
-            if (!serverData.getBoolean("bound")) {
-                iTooltip.add(Component.translatable("gtceu.top.buffer_not_bound").withStyle(ChatFormatting.RED));
-                return;
-            }
-
-            int[] pos = serverData.getIntArray("pos");
-            iTooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
-                    .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
-
-            MEPatternBufferProvider.readBufferTag(iTooltip, serverData);
-        }
+    public MEPatternBufferProxyProvider() {
+        super(GTCEu.id("me_pattern_buffer_proxy"), MEPatternBufferProxyPartMachine.class);
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MEPatternBufferProxyPartMachine proxy) {
-            if (!proxy.isFormed()) {
-                compoundTag.putBoolean("formed", false);
-                return;
-            }
-            compoundTag.putBoolean("formed", true);
-            var buffer = proxy.getBuffer();
-            if (buffer == null) {
-                compoundTag.putBoolean("bound", false);
-                return;
-            }
-            compoundTag.putBoolean("bound", true);
-
-            var pos = buffer.getBlockPos();
-            compoundTag.putIntArray("pos", new int[] { pos.getX(), pos.getY(), pos.getZ() });
-            MEPatternBufferProvider.writeBufferTag(compoundTag, buffer);
+    protected CompoundTag write(MEPatternBufferProxyPartMachine proxy) {
+        var compoundTag = new CompoundTag();
+        if (!proxy.isFormed()) {
+            compoundTag.putBoolean("formed", false);
+            return compoundTag;
         }
+        compoundTag.putBoolean("formed", true);
+        var buffer = proxy.getBuffer();
+        if (buffer == null) {
+            compoundTag.putBoolean("bound", false);
+            return compoundTag;
+        }
+        compoundTag.putBoolean("bound", true);
+
+        var pos = buffer.getBlockPos();
+        compoundTag.putIntArray("pos", new int[] { pos.getX(), pos.getY(), pos.getZ() });
+        MEPatternBufferProvider.writeBufferTag(compoundTag, buffer);
+        return compoundTag;
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return GTCEu.id("me_pattern_buffer_proxy");
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
+        if (!data.getBoolean("formed")) return;
+        if (!data.getBoolean("bound")) {
+            tooltip.add(Component.translatable("gtceu.top.buffer_not_bound").withStyle(ChatFormatting.RED));
+            return;
+        }
+
+        int[] pos = data.getIntArray("pos");
+        tooltip.add(Component.translatable("gtceu.top.buffer_bound_pos", pos[0], pos[1], pos[2])
+                .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+
+        MEPatternBufferProvider.readBufferTag(tooltip, data);
     }
 }

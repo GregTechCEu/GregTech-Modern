@@ -132,7 +132,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
     public final static BonkRecipeCapability CAP = new BonkRecipeCapability();
 
     protected BonkRecipeCapability() {
-        super("bonk", 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
+        super(new ResourceLocation("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 
     @Override
     public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableBonkHandler.TYPE);
+        return machine.getTraits(NotifiableBonkHandler.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -177,8 +177,6 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 ```java title="NotifiableBonkHandler"
 public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngredient>
         implements ICapabilityTrait {
-
-    public static final MachineTraitType<NotifiableBonkHandler> TYPE = new MachineTraitType<>(NotifiableBonkHandler.class);
     
     @Getter
     public final IO handlerIO;
@@ -196,11 +194,6 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
         super();
         this.handlerIO = handlerIO;
         this.capabilityIO = capabilityIO;
-    }
-
-    @Override
-    public MachineTraitType<NotifiableBonkHandler> getTraitType() {
-        return TYPE;
     }
 
     public boolean addBonk(int bonkToAdd, boolean simulate){
@@ -234,7 +227,7 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
                 break;
             }
         }
-        return left.isEmpty() ? null : left;
+        return left;
     }
 
     @Override

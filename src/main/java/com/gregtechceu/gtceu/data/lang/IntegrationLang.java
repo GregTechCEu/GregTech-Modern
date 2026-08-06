@@ -25,6 +25,8 @@ public class IntegrationLang {
         provider.add("gtceu.jei.programmed_circuit", "Programmed Circuit Page");
         provider.add("gtceu.jei.bedrock_fluid_diagram", "Bedrock Fluid Diagram");
         provider.add("gtceu.jei.bedrock_ore_diagram", "Bedrock Ore Diagram");
+        provider.add("gtceu.jei.bedrock_vein_diagram.yield", "Yield: %s");
+        provider.add("gtceu.jei.bedrock_vein_diagram.depleted", "Depleted: %s");
         provider.add("gtceu.jei.ore_vein_diagram.chance", "§eChance: %s§r");
         provider.add("gtceu.jei.ore_vein_diagram.spawn_range", "Spawn Range:");
         provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");
@@ -84,6 +86,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.allow_output_input", "Allow Input");
         provider.add("gtceu.top.cable_voltage", "Voltage: ");
         provider.add("gtceu.top.cable_amperage", "Amperage: ");
+        provider.add("gtceu.top.cable_overloaded", "§4OVERHEATING: %s%%§r");
         provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
@@ -102,12 +105,13 @@ public class IntegrationLang {
         provider.add("gtceu.jade.at", " @ ");
         provider.add("gtceu.jade.remaining_charge_time", "Until charged: %s");
         provider.add("gtceu.jade.remaining_discharge_time", "Until empty: %s");
-        provider.add("gtceu.jade.changes_eu_sec", "%s EU/s");
+        provider.add("gtceu.jade.changes_eu_tick", "%s EU/t");
         provider.add("gtceu.jade.seconds", "%s seconds");
         provider.add("gtceu.jade.minutes", "%s minutes");
         provider.add("gtceu.jade.hours", "%s hours");
         provider.add("gtceu.jade.days", "%s days");
         provider.add("gtceu.jade.years", "%s years");
+        provider.add("gtceu.jade.generator.too_small", "Energy Output too small!");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

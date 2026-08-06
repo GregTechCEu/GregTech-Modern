@@ -4,6 +4,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ContentJS;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.event.IModBusEvent;
+
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 
@@ -11,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class KJSRecipeKeyEvent {
+public class KJSRecipeKeyEvent extends Event implements IModBusEvent {
 
     @Getter
     private final Map<RecipeCapability<?>, Pair<ContentJS<?>, ContentJS<?>>> registeredKeys = new HashMap<>();

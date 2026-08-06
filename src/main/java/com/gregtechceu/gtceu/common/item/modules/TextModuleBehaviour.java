@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item.modules;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
+import com.gregtechceu.gtceu.api.placeholder.GraphicsComponent;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
@@ -30,6 +31,9 @@ import java.util.UUID;
 public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation {
 
     private PlaceholderContext getContext(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+        if (!stack.getOrCreateTag().contains("placeholderUUID")) {
+            stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
+        }
         return new PlaceholderContext(
                 group.getTargetLevel(machine.getLevel()),
                 group.getTarget(machine.getLevel()),
@@ -42,9 +46,6 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
     }
 
     private void updateText(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
-        if (!stack.getOrCreateTag().contains("placeholderUUID")) {
-            stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
-        }
         MultiLineComponent text = PlaceholderHandler.processPlaceholders(
                 getPlaceholderText(stack), getContext(stack, machine, group));
         stack.getOrCreateTag().put("text",
@@ -70,11 +71,14 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
         PlaceholderContext ctx = getContext(stack, machine, group);
         StringSyncValue code = SyncHandlers.string(
                 () -> getPlaceholderText(stack),
-                s -> setPlaceholderText(stack, s));
+                s -> setPlaceholderText(stack, s))
+                .allowC2S();
         DoubleSyncValue scale = SyncHandlers.doubleNumber(
                 () -> getScale(stack),
-                s -> setScale(stack, s));
-        BooleanSyncValue pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p));
+                s -> setScale(stack, s))
+                .allowC2S();
+        BooleanSyncValue pause = SyncHandlers.bool(() -> isPaused(stack), p -> setPaused(stack, p))
+                .allowC2S();
         Runnable updateText = () -> updateText(stack, machine, group);
         assert ctx.itemStackHandler() != null;
         return PlaceholderHandler.createPlaceholderEditor("text_module_" + group.getName(), syncManager, ctx, code,
@@ -134,6 +138,11 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
             tooltipComponents.addAll(MultiLineComponent.literal(getPlaceholderText(stack)));
             tooltipComponents.add(Component.literal("Processed text:").withStyle(ChatFormatting.GOLD));
             tooltipComponents.addAll(getText(stack));
+            tooltipComponents.add(Component.literal("Graphics components:").withStyle(ChatFormatting.GOLD));
+            tooltipComponents.addAll(getText(stack).getGraphics().stream()
+                    .map(GraphicsComponent::rendererId)
+                    .map(Component::literal)
+                    .toList());
         }
     }
 }

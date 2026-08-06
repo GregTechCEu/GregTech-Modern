@@ -13,16 +13,12 @@ import com.gregtechceu.gtceu.client.model.item.FacadeUnbakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModelLoader;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModelLoader;
+import com.gregtechceu.gtceu.client.model.runtimegen.*;
+import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.client.particle.HazardParticle;
 import com.gregtechceu.gtceu.client.particle.MufflerParticle;
-import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
-import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
-import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTBoatRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTComponentItemDecorator;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTLampItemOverlayRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.decorator.GTTankItemFluidPreview;
@@ -30,6 +26,7 @@ import com.gregtechceu.gtceu.client.renderer.item.decorator.GTToolBarRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderManager;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.*;
 import com.gregtechceu.gtceu.client.renderer.machine.impl.BoilerMultiPartRender;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 import com.gregtechceu.gtceu.common.CommonEventListener;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.*;
@@ -39,9 +36,12 @@ import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
+import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
@@ -52,7 +52,6 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.Timer;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
@@ -61,17 +60,16 @@ import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.Getter;
 
 public class ClientProxy extends CommonProxy {
@@ -95,17 +93,17 @@ public class ClientProxy extends CommonProxy {
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
             CommonEventListener.registerCapes(new RegisterGTCapesEvent());
+
+            if (GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
+                GTEmbeddiumCompat.init();
+            }
         }
         initializeDynamicRenders();
-    }
+        ModelEventHelper.initInternalAssetReloadListeners();
 
-    @Override
-    public void preInit(FMLConstructModEvent event) {
-        super.preInit(event);
-        if (!GTCEu.isDataGen()) {
-            // enable stencil bits, must call on render thread
-            RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
-        }
+        MinecraftForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
+        GTGuiTextures.init();
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(GTGuiTheme::onReloadThemes);
     }
 
     @SubscribeEvent
@@ -119,10 +117,13 @@ public class ClientProxy extends CommonProxy {
 
         event.registerEntityRenderer(GTEntityTypes.BOAT.get(), c -> new GTBoatRenderer(c, false));
         event.registerEntityRenderer(GTEntityTypes.CHEST_BOAT.get(), c -> new GTBoatRenderer(c, true));
+    }
 
+    @SubscribeEvent
+    public void onRegisterEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         for (var type : GTBoat.BoatType.values()) {
-            ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
-            ForgeHooksClient.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type),
+            event.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
+            event.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type),
                     ChestBoatModel::createBodyModel);
         }
     }
@@ -173,7 +174,7 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    public static void initializeDynamicRenders() {
+    private static void initializeDynamicRenders() {
         DynamicRenderManager.register(GTCEu.id("quantum_tank_fluid"), QuantumTankFluidRender.TYPE);
         DynamicRenderManager.register(GTCEu.id("quantum_chest_item"), QuantumChestItemRender.TYPE);
 
@@ -216,12 +217,12 @@ public class ClientProxy extends CommonProxy {
             block.get().createPipeModel(RuntimeBlockstateProvider.INSTANCE).dynamicModel();
         }
 
-        MaterialBlockRenderer.reinitModels();
-        TagPrefixItemRenderer.reinitModels();
-        OreBlockRenderer.reinitModels();
-        ToolItemRenderer.reinitModels();
-        ArmorItemRenderer.reinitModels();
-        SurfaceRockRenderer.reinitModels();
+        MaterialBlockModelGenerator.reinitModels();
+        TagPrefixItemModelGenerator.reinitModels();
+        OreBlockModelGenerator.reinitModels();
+        ToolItemModelGenerator.reinitModels();
+        ArmorItemModelGenerator.reinitModels();
+        SurfaceRockModelGenerator.reinitModels();
         GTModels.registerMaterialFluidModels();
     }
 

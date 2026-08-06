@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
@@ -31,7 +31,6 @@ import brachy.modularui.widget.scroll.VerticalScrollData;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +55,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
     @Override
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteTank(this);
+        return new InaccessibleInfiniteTank();
     }
 
     @Override
@@ -137,7 +136,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
 
         FluidStorageDelegate storage;
 
-        public InaccessibleInfiniteTank(MetaMachine holder) {
+        public InaccessibleInfiniteTank() {
             super(List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
             storage = (FluidStorageDelegate) getStorages()[0];
@@ -183,7 +182,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         }
 
         @Override
-        @Nullable
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
                                                        boolean simulate) {
             if (io != IO.OUT) return left;
@@ -195,17 +193,30 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                     continue;
                 }
 
-                var fluids = ingredient.getStacks();
+                FluidStack[] fluids;
+                if (ingredient instanceof IntProviderFluidIngredient provider) {
+                    provider.setFluidStacks(null);
+                    provider.setSampledCount(-1);
+
+                    if (simulate) {
+                        fluids = new FluidStack[] { provider.getMaxSizeStack() };
+                    } else {
+                        fluids = provider.getStacks();
+                    }
+                } else {
+                    fluids = ingredient.getStacks();
+                }
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();
                     continue;
                 }
 
                 FluidStack output = fluids[0];
-                ingredient.shrink(storage.fill(output, action));
-                if (ingredient.getAmount() <= 0) it.remove();
+                int filled = storage.fill(output, action);
+                ingredient.shrink(filled);
+                if (filled <= 0) it.remove();
             }
-            return left.isEmpty() ? null : left;
+            return left;
         }
     }
 

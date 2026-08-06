@@ -107,9 +107,8 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.put("filter", filterHandler.getFilterItem().serializeNBT());
-        return super.copyConfig(tag);
     }
 
     @Override

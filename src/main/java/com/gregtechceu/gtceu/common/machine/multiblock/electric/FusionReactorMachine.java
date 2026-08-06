@@ -6,13 +6,13 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.bloom.BloomRenderTicket;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -36,9 +37,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2IntSortedMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -73,17 +74,33 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     protected long heat = 0;
     @SaveField
     protected final NotifiableEnergyContainer energyContainer;
-    @Getter
-    @SyncToClient
-    private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
+
+    // Used for rendering
+    @Getter
+    @SyncToClient
+    private int color = 0xFFFFFFFF;
+    public float delta = 0;
+    public int lastColor = -1;
+
+    @Setter
+    @Nullable
+    protected BloomRenderTicket registeredBloomTicket = null;
 
     public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
         super(info);
         this.tier = tier;
         this.energyContainer = attachTrait(new NotifiableEnergyContainer(0, 0, 0, 0, 0));
         energyContainer.setCapabilityValidator(Objects::isNull);
+    }
+
+    // lazy to prevent loading on server
+    public BloomRenderTicket getRegisteredBloomTicket() {
+        if (registeredBloomTicket == null) {
+            registeredBloomTicket = BloomRenderTicket.INVALID;
+        }
+        return registeredBloomTicket;
     }
 
     //////////////////////////////////////
@@ -99,18 +116,18 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         // capture all energy containers
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            if (io == IO.NONE || io == IO.OUT) continue;
+        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+        // Long2ObjectMaps::emptyMap);
+        for (MultiblockPartMachine part : getParts()) {
+            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            // if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
+                // if (!handlerList.isValid(io)) continue;
 
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
@@ -125,8 +142,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         this.inputEnergyContainers = null;
         heat = 0;
         energyContainer.resetBasicInfo(0, 0, 0, 0, 0);
@@ -245,10 +262,12 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onWaiting() {
-        super.onWaiting();
-        color = -1;
-        syncDataHolder.markClientSyncFieldDirty("color");
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.recipeLogicStatusChanged(oldStatus, newStatus);
+        if (newStatus == RecipeLogic.Status.WAITING) {
+            color = -1;
+            syncDataHolder.markClientSyncFieldDirty("color");
+        }
     }
 
     @Override

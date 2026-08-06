@@ -42,7 +42,7 @@ public class ShapedRecipeBuilder {
         this(null);
     }
 
-    public ShapedRecipeBuilder aisle(String... data) {
+    public ShapedRecipeBuilder slice(String... data) {
         this.shape.add(data);
         return this;
     }
@@ -53,7 +53,7 @@ public class ShapedRecipeBuilder {
     }
 
     public ShapedRecipeBuilder pattern(String slice) {
-        return aisle(slice);
+        return slice(slice);
     }
 
     public ShapedRecipeBuilder define(char cha, TagKey<Item> itemStack) {

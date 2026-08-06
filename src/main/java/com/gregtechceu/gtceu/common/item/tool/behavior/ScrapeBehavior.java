@@ -52,7 +52,6 @@ public class ScrapeBehavior implements IToolBehavior {
                 blocks = List.of(pos);
             } else {
                 blocks = getScrapableBlocks(aoeDefinition, context);
-                blocks.add(0, context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;

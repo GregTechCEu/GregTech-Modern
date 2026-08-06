@@ -352,6 +352,6 @@ public class ItemLang {
         provider.add("item.gtceu.terminal.tooltip",
                 "Shift + R-Click on a controller to automatically build a multiblock with items from your inventory");
 
-        provider.add("item.gtceu.sus_record.desc", "§7sussy!");
+        provider.add("item.gtceu.sus_record.desc", "sussy!");
     }
 }

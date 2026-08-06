@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
@@ -20,10 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 
@@ -180,6 +176,13 @@ public final class ToolRecipeHandler {
                             'P', plate,
                             'T', new MaterialEntry(TagPrefix.screw, material),
                             'S', rod);
+
+                    addToolRecipe(provider, material, GTToolType.SHEARS, false,
+                            "PTP", "hRf", "SdS",
+                            'P', plate,
+                            'T', new MaterialEntry(TagPrefix.screw, material),
+                            'R', new MaterialEntry(TagPrefix.ring, material),
+                            'S', stick);
                 } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
                             .info("Did not find bolt for {}, skipping wirecutter recipe", material.getName());
@@ -378,18 +381,18 @@ public final class ToolRecipeHandler {
                                             @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
-        for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
-            ToolHelper.getToolTag(toolStack).putInt(ToolHelper.TINT_COLOR_KEY, color.getKey().getTextColor());
+        for (var color : DyeColor.values()) {
+            ToolHelper.getToolTag(toolStack).putInt(ToolHelper.TINT_COLOR_KEY, color.getTextColor());
             Object[] recipeWithDye = ArrayUtils.addAll(recipe, 'D',
-                    new MaterialEntry(TagPrefix.dye, color.getValue()));
+                    color.getTag());
 
             if (mirrored) { // todo mirrored
                 VanillaRecipeHelper.addShapedRecipe(provider,
-                        String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName()),
+                        String.format("%s_%s_%s", tool.name, material.getName(), color.getSerializedName()),
                         toolStack, recipeWithDye);
             } else {
                 VanillaRecipeHelper.addShapedRecipe(provider,
-                        String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName()),
+                        String.format("%s_%s_%s", tool.name, material.getName(), color.getSerializedName()),
                         toolStack, recipeWithDye);
             }
         }

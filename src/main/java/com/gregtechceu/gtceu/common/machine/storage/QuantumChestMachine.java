@@ -5,10 +5,8 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -55,7 +53,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class QuantumChestMachine extends TieredMachine implements IControllable,
-                                 IDropSaveMachine, IMuiMachine {
+                                 IMuiMachine {
 
     /**
      * Sourced from FunctionalStorage's
@@ -114,17 +112,8 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     }
 
     @Override
-    public boolean savePickClone() {
-        return false;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
-    }
-
-    @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
+        if (clone || stored.isEmpty()) return;
         tag.put("stored", stored.save(new CompoundTag()));
         tag.putLong("storedAmount", storedAmount);
     }
@@ -307,21 +296,14 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     //////////////////////////////////////
     @Override
     public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                        Direction side) {
+                                        ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (side == getFrontFacing()) return null;
         }
-        return super.sideTips(player, pos, state, toolTypes, side);
+        return super.sideTips(player, pos, state, toolTypes, held, side);
     }
 
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
-
-        public static final MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class);
-
-        @Override
-        public MachineTraitType<ItemCache> getTraitType() {
-            return TYPE;
-        }
 
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
                 GTUtil.isSameItemSameTags(i, getLockedItem());

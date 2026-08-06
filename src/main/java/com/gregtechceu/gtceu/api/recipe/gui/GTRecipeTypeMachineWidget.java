@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.api.widget.ITooltip;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -57,7 +59,17 @@ public class GTRecipeTypeMachineWidget extends Flow {
             return true;
         });
 
-        child(progressWidget.tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes")))));
+        if (progressWidget.hasChildren()) {
+            for (IWidget w : progressWidget.getChildren()) {
+                if (w instanceof ITooltip<?> tooltipWidget) {
+                    tooltipWidget
+                            .tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+                }
+            }
+        } else {
+            progressWidget.tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+        }
+        child(progressWidget);
         child(outputColumn);
 
         for (var entry : recipeType.maxInputs.object2IntEntrySet()) {

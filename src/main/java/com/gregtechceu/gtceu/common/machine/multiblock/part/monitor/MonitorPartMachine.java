@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.monitor;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.Direction;
@@ -29,7 +29,8 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
 
     public Vector2d getMousePos(HitResult hitResult) {
         if (hitResult instanceof BlockHitResult hit) {
-            Direction direction = RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false);
+            Direction direction = RelativeDirection.RIGHT.getRelativeFacing(getFrontFacing(), getUpwardsFacing(),
+                    false);
             double x = hit.getLocation().get(direction.getAxis());
             if (direction.getAxisDirection().getStep() == 1) {
                 x = 1 - x;

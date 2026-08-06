@@ -4,14 +4,17 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -19,6 +22,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraftforge.fluids.FluidUtil;
 
 import brachy.modularui.api.ITheme;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IGuiAction;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -56,24 +61,30 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
         ITheme uiTheme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
-                () -> new DoubleSyncValue(() -> {
-                    if (recipeLogic == null) return -1f;
-                    return recipeLogic.getProgressPercent();
-                }));
+                () -> new DoubleSyncValue(recipeLogic::getProgressPercent));
 
         Flow row = Flow.row().coverChildren();
+
+        var progressWidget = new ProgressWidget()
+                .value(progressPercent)
+                .size(20, 20)
+                .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
+                .margin(4, 0)
+                .tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+
+        progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
+            if (!guiContext.isMouseAbove(progressWidget)) return false;
+            if (!GTRecipeTypes.COKE_OVEN_RECIPES.getCategory().isXEIVisible()) return false;
+            GTUtil.openRecipeViewerCategory(GTRecipeTypes.COKE_OVEN_RECIPES.getCategory());
+            return true;
+        });
 
         row.child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                 new ModularSlot(importItems.storage, 0)
                         .slotGroup(new SlotGroup("import_items", 1))))
                 .background(uiTheme.getItemSlotTheme().theme().getBackground(),
                         GTGuiTextures.PRIMITIVE_FURNACE_OVERLAY))
-                .child(new ProgressWidget()
-                        .value(progressPercent)
-                        .size(20, 15)
-                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, ProgressDrawable.Direction.RIGHT)
-                        .margin(4, 0))
-
+                .child(progressWidget)
                 .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(
                         new ModularSlot(exportItems.storage, 0)
                                 .slotGroup(new SlotGroup("export_items", 1))
@@ -123,15 +134,18 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (!isRemote()) {
-            if (super.onUseWithItem(context) == InteractionResult.SUCCESS) {
+        var toolResult = super.onUseWithItem(context);
+        if (toolResult != InteractionResult.PASS) {
+            return toolResult;
+        }
+        if (FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
                 return InteractionResult.SUCCESS;
             }
             if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), exportFluids)) {
-                return InteractionResult.SUCCESS;
+                return InteractionResult.CONSUME;
             }
-            return InteractionResult.PASS;
         }
-        return super.onUseWithItem(context);
+        return InteractionResult.PASS;
     }
 }

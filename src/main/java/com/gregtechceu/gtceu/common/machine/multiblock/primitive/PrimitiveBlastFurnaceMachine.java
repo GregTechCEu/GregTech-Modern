@@ -2,16 +2,14 @@ package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.trait.multiblock.MultiblockFluidRendererTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -21,6 +19,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -30,6 +29,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import brachy.modularui.api.ITheme;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IGuiAction;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -70,18 +71,6 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
-                IO.NONE);
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
-                IO.NONE);
-    }
-
-    @Override
     public void onUnload() {
         super.onUnload();
         unsubscribe(hurtSubscription);
@@ -89,8 +78,8 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        super.notifyStatusChanged(oldStatus, newStatus);
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.recipeLogicStatusChanged(oldStatus, newStatus);
         if (newStatus == RecipeLogic.Status.WORKING) {
             this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntitiesAndBreakSnow);
         } else if (oldStatus == RecipeLogic.Status.WORKING && hurtSubscription != null) {
@@ -114,7 +103,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
             float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
 
-            var up = RelativeDirection.UP.getRelative(getFrontFacing(), getUpwardsFacing(), isFlipped());
+            var up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
             var sign = up.getAxisDirection().getStep();
             var shouldX = up.getAxis() == Direction.Axis.X;
             var shouldY = up.getAxis() == Direction.Axis.Y;
@@ -155,12 +144,22 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
 
         var row = Flow.row().coverChildren().center();
 
+        var progressWidget = new ProgressWidget()
+                .value(progressPercent)
+                .size(20, 15)
+                .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, ProgressDrawable.Direction.RIGHT)
+                .margin(5, 5, 0, 0)
+                .tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes"))));
+
+        progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
+            if (!guiContext.isMouseAbove(progressWidget)) return false;
+            if (!GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES.getCategory().isXEIVisible()) return false;
+            GTUtil.openRecipeViewerCategory(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES.getCategory());
+            return true;
+        });
+
         row.child(createImportItemSlot(syncManager, theme))
-                .child(new ProgressWidget()
-                        .value(progressPercent)
-                        .size(20, 15)
-                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, ProgressDrawable.Direction.RIGHT)
-                        .margin(5, 5, 0, 0))
+                .child(progressWidget)
                 .child(createExportItemSlot(syncManager, theme));
 
         mainWidget.child(row);
@@ -240,7 +239,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     private void hurtEntitiesAndBreakSnow() {
-        BlockPos middlePos = self().getBlockPos().offset(getFrontFacing().getOpposite().getNormal());
+        BlockPos middlePos = getBlockPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null, new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
 
         if (getOffsetTimer() % 10 == 0) {

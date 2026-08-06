@@ -5,7 +5,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
@@ -56,7 +55,7 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        public ItemStack getFilterItem() {
             return null;
         }
 

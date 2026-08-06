@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -88,7 +88,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
+        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems.storage, "data_inventory",
+                getInventorySize(), 'I',
                 i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
                 GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
 
@@ -158,14 +159,14 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public boolean canShared() {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return isCreative;
     }
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
+    public void addedToController(MultiblockControllerMachine controller, String name) {
         rebuildData(controller instanceof DataBankMachine);
-        super.addedToController(controller);
+        super.addedToController(controller, name);
     }
 
     @Override

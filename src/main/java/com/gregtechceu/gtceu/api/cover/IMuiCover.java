@@ -50,14 +50,18 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
         ItemStack stack = this.self().coverHolder.getCoverAtSide(this.self().attachedSide).getAttachItem();
         panel.child(GTMuiWidgets.createTitleBar(() -> stack, 176, GTGuiTextures.BACKGROUND));
 
+        panel.coverChildrenHeight();
+
         Flow column = Flow.column()
-                .top(7).margin(7, 0)
+                .margin(7)
                 .childPadding(2)
-                .widthRel(1.0f).coverChildrenHeight();
+                .widthRel(1.0f)
+                .coverChildrenHeight();
 
         createCoverUIRows(column, data, syncManager, settings);
-        return panel.child(column)
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+
+        column.child(SlotGroupWidget.playerInventory(0, false).marginTop(2));
+        return panel.child(column);
     }
 
     /**

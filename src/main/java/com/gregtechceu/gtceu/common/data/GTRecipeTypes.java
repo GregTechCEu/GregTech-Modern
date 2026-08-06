@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.ModLoader;
@@ -87,11 +88,19 @@ public class GTRecipeTypes {
             .setIconSupplier(() -> GTMachines.ALLOY_SMELTER[GTValues.LV].asStack())
             .setSound(GTSoundEntries.FURNACE);
 
-    public final static GTRecipeType ARC_FURNACE_RECIPES = register("arc_furnace", ELECTRIC).setMaxIOSize(1, 4, 1, 1)
+    public final static GTRecipeType ARC_FURNACE_RECIPES = register("arc_furnace", ELECTRIC).setMaxIOSize(1, 9, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
-                    .setLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT,
-                            l -> GTMuiWidgets.createGrid(4, 2, true, 's')))
+                    .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT,
+                            (machine, l) -> {
+                                int slots = l.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP);
+                                if (machine instanceof ITieredMachine tieredMachine) {
+                                    if (tieredMachine.getTier() < GTValues.EV) {
+                                        slots = 4;
+                                    }
+                                }
+                                return GTMuiWidgets.createGrid(slots, (int) Mth.sqrt(slots), true, 's');
+                            }))
             .setSound(GTSoundEntries.ARC)
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() &&
@@ -134,8 +143,8 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(150).EUt(2))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MACERATE)
                     .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT, (machine, layout) -> {
-                        var slots = layout.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP);
-                        var width = 3;
+                        int slots = layout.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP);
+                        int width = 3;
                         if (machine instanceof ITieredMachine tieredMachine) {
                             if (tieredMachine.getTier() < GTValues.HV) {
                                 slots = 1;
@@ -470,6 +479,8 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.COOLING);
 
     public static final GTRecipeType RESEARCH_STATION_RECIPES = register("research_station", ELECTRIC)
+            .setEUIO(IO.IN)
+            .setMaxSize(IO.IN, GTRecipeCapabilities.CWU, 1)
             .setMaxIOSize(2, 1, 0, 0)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SCANNER_OVERLAY)
@@ -491,6 +502,7 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.FIRE);
 
     public static final GTRecipeType SCANNER_RECIPES = register("scanner", ELECTRIC)
+            .setEUIO(IO.IN)
             .setMaxIOSize(2, 1, 1, 0)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DATA_ORB_OVERLAY)
@@ -593,10 +605,8 @@ public class GTRecipeTypes {
 
                         if (shouldDivide && fluidsDivisible) {
                             builder.chance(inputContent.chance())
-                                    .tierChanceBoost(inputContent.tierChanceBoost())
                                     .inputFluids(dividedInputFluid)
                                     .chance(outputContent.chance())
-                                    .tierChanceBoost(outputContent.tierChanceBoost())
                                     .outputFluids(dividedOutputFluid)
                                     .duration(Math.max(1, recipeDuration / ratio));
                         } else if (!shouldDivide) {
@@ -605,10 +615,8 @@ public class GTRecipeTypes {
                             }
                             builder.conditions.addAll(recipeBuilder.conditions);
                             builder.chance(inputContent.chance())
-                                    .tierChanceBoost(inputContent.tierChanceBoost())
                                     .inputFluids(input)
                                     .chance(outputContent.chance())
-                                    .tierChanceBoost(outputContent.tierChanceBoost())
                                     .outputFluids(output)
                                     .duration(recipeDuration)
                                     .save(provider);

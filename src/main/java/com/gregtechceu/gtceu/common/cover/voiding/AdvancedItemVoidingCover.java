@@ -157,10 +157,9 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putInt("voidingMode", getVoidingMode().ordinal());
         tag.putInt("voidSize", getGlobalVoidingLimit());
-        return super.copyConfig(tag);
     }
 
     @Override

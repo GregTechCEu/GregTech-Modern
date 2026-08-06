@@ -21,6 +21,7 @@ public class CategoryIcon {
     private Object wrappedValue;
 
     public CategoryIcon(ResourceLocation texture) {
+        if (!GTCEu.isClientSide()) return;
         if (GTCEu.Mods.isEMILoaded()) {
             wrappedValue = EmiCallWrapper.getRenderable(texture);
         } else if (GTCEu.Mods.isREILoaded()) {
@@ -31,6 +32,7 @@ public class CategoryIcon {
     }
 
     public CategoryIcon(ItemStack stack) {
+        if (!GTCEu.isClientSide()) return;
         if (GTCEu.Mods.isEMILoaded()) {
             wrappedValue = EmiCallWrapper.getRenderable(stack);
         } else if (GTCEu.Mods.isREILoaded()) {
@@ -47,7 +49,7 @@ public class CategoryIcon {
     private static class EmiCallWrapper {
 
         public static EmiRenderable getRenderable(ResourceLocation location) {
-            return new EmiTexture(location, 0, 0, 16, 16);
+            return new EmiTexture(location, 0, 0, 16, 16, 16, 16, 16, 16);
         }
 
         public static EmiRenderable getRenderable(ItemStack stack) {

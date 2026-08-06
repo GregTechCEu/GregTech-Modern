@@ -147,7 +147,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                                 .tooltip(false, t -> t.add("cover.advanced_energy_detector.invert.disabled"))
                                 .tooltip(true, t -> t.add("cover.advanced_energy_detector.invert.enabled")))
                         .child(new ToggleButton().value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent))
-                                .selectedBackground(ThemeAPI.INSTANCE.getTheme(settings.getTheme())
+                                .background(true, ThemeAPI.INSTANCE.getTheme(settings.getTheme())
                                         .getToggleButtonTheme().theme().getBackground())
                                 .overlay(false, GTGuiTextures.BUTTON_EU)
                                 .overlay(true, GTGuiTextures.BUTTON_PERCENT)
@@ -174,11 +174,11 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putLong("min", minValue);
         tag.putLong("max", maxValue);
         tag.putBoolean("percent", usePercent);
-        return super.copyConfig(tag);
     }
 
     @Override

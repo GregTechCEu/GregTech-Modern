@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -36,7 +35,7 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (Material mat : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+        for (Material mat : GTRegistries.MATERIALS) {
             if (mat.hasProperty(ORE) && !mat.hasFlag(MaterialFlags.NO_ORE_PROCESSING_TAB)) {
                 registry.addRecipe(new GTEmiOreProcessingWrapper(mat));
             }
@@ -49,7 +48,8 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
                 MACERATOR_RECIPES, ORE_WASHER_RECIPES, THERMAL_CENTRIFUGE_RECIPES, CENTRIFUGE_RECIPES,
                 CHEMICAL_BATH_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, SIFTER_RECIPES
         };
-        for (MachineDefinition machine : GTRegistries.MACHINES.values()
+        for (MachineDefinition machine : GTRegistries.MACHINES
+                .values()
                 .stream()
                 .sorted(sortDefinition)
                 .toList()) {

@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -68,7 +68,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     }
 
     @Override
-    public ISyncManaged getParentSyncObject() {
+    public @Nullable ISyncManaged getParentSyncObject() {
         return coverHolder;
     }
 
@@ -141,6 +141,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
 
     public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         var toolType = context.getToolType();
+        if (toolType.isEmpty() && context.getPlayer().isShiftKeyDown()) {
+            return Pair.of(null, onScrewdriverClick(context));
+        }
         if (toolType.contains(GTToolType.SCREWDRIVER)) {
             return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(context));
         } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
@@ -190,7 +193,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
 
     @Override
     public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                        Direction side) {
+                                        ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.CROWBAR)) {
             return GTGuiTextures.TOOL_REMOVE_COVER;
         }

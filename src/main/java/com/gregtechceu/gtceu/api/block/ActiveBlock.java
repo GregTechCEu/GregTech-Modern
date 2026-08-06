@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
+import com.gregtechceu.gtceu.api.multiblock.pattern.IStructureChangeIgnored;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +20,7 @@ import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.AC
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ActiveBlock extends Block {
+public class ActiveBlock extends Block implements IStructureChangeIgnored {
 
     public ActiveBlock(Properties properties) {
         super(properties);
