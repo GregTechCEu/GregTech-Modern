@@ -51,7 +51,7 @@ import java.util.function.UnaryOperator;
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
-public class Material implements Comparable<Material> {
+public final class Material implements Comparable<Material> {
 
     /**
      * Basic Info of this Material.
@@ -202,7 +202,7 @@ public class Material implements Comparable<Material> {
         return Arrays.stream(flags).anyMatch(this::hasFlag);
     }
 
-    protected void calculateDecompositionType() {
+    private void calculateDecompositionType() {
         if (!materialInfo.componentList.isEmpty() &&
                 !hasFlag(MaterialFlags.DECOMPOSITION_BY_CENTRIFUGING) &&
                 !hasFlag(MaterialFlags.DECOMPOSITION_BY_ELECTROLYZING) &&

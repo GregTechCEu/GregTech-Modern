@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 
-import net.caffeinemc.mods.sodium.api.util.ColorARGB;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.SectionPos;
@@ -69,9 +68,10 @@ public class BlockRendererMixin {
         if (normal == 0) normal = quad.getComputedFaceNormal();
 
         bloomBuffer.vertex(v.x, v.y, v.z)
-                .color(ColorARGB.toABGR(v.color))
+                .color(v.color)
                 .uv(v.u, v.v)
                 .uv2(v.light)
-                .normal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));
+                .normal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal))
+                .endVertex();
     }
 }

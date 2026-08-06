@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableComputationContainer;
-import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.*;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
@@ -83,7 +81,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                                  int exportSlots,
                                  int fluidImportSlots, int fluidExportSlots, boolean energyEmitter,
                                  Int2IntFunction tankScalingFunction) {
-        super(info, tier, energyEmitter);
+        super(info, tier, (energyEmitter ?
+                RecipeAmperageEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1) :
+                RecipeAmperageEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1)));
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -94,14 +94,56 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
         this.recipeLogic.setKeepSubscribing(false);
-        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
         this.importFluids = attachTrait(
                 new NotifiableFluidTank(fluidImportSlots, tankScalingFunction.applyAsInt(getTier()),
-                        IO.IN, IO.BOTH));
+                        IO.IN));
         this.exportFluids = attachTrait(
                 new NotifiableFluidTank(fluidExportSlots, tankScalingFunction.applyAsInt(getTier()),
                         IO.OUT));
+        this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
+        this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
+    }
+
+    /**
+     * Creates a {@link WorkableTieredMachine} with default settings.<br>
+     * The amount of item and fluid input and output slots is determined by the machine's recipe type.
+     *
+     * @param info                {@link BlockEntityCreationInfo}
+     * @param tier                Machine tier.
+     * @param energyEmitter       If this machine should input or output energy.
+     * @param recipeLogic         The recipe logic to use.
+     * @param tankScalingFunction The tank scaling function which determines the capaacity of fluid slots.
+     */
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter, RecipeLogic recipeLogic,
+                                 Int2IntFunction tankScalingFunction) {
+        super(info, tier, (energyEmitter ?
+                RecipeAmperageEnergyContainer.emitterContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1) :
+                RecipeAmperageEnergyContainer.receiverContainer(GTValues.V[tier] * 64L, GTValues.V[tier], 1)));
+        this.overclockTier = getMaxOverclockTier();
+        this.recipeTypes = getDefinition().getRecipeTypes();
+        this.activeRecipeType = 0;
+        this.capabilitiesProxy = new EnumMap<>(IO.class);
+        this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.recipeVersions = new RecipeCapabilityVersions();
+        this.traitSubscriptions = new ArrayList<>();
+        this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
+        this.recipeLogic = attachTrait(recipeLogic);
+        this.recipeLogic.setKeepSubscribing(false);
+        this.importItems = attachTrait(
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN));
+        this.exportItems = attachTrait(
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.OUT));
+        this.importFluids = attachTrait(
+                new NotifiableFluidTank(getDefinition().getInputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
+                        tankScalingFunction.applyAsInt(getTier()), IO.IN));
+        this.exportFluids = attachTrait(
+                new NotifiableFluidTank(getDefinition().getOutputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
+                        tankScalingFunction.applyAsInt(getTier()), IO.OUT));
         this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
     }
@@ -117,32 +159,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
      */
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter,
                                  Int2IntFunction tankScalingFunction) {
-        super(info, tier, energyEmitter);
-        this.overclockTier = getMaxOverclockTier();
-        this.recipeTypes = getDefinition().getRecipeTypes();
-        this.activeRecipeType = 0;
-        this.capabilitiesProxy = new EnumMap<>(IO.class);
-        this.capabilitiesFlat = new EnumMap<>(IO.class);
-        this.recipeVersions = new RecipeCapabilityVersions();
-        this.traitSubscriptions = new ArrayList<>();
-        this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
-        this.recipeLogic = attachTrait(new RecipeLogic());
-        this.recipeLogic.setKeepSubscribing(false);
-        this.importItems = attachTrait(
-                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
-                        IO.IN, IO.BOTH));
-        this.exportItems = attachTrait(
-                new NotifiableItemStackHandler(
-                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
-                        IO.OUT));
-        this.importFluids = attachTrait(
-                new NotifiableFluidTank(getDefinition().getInputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
-                        tankScalingFunction.applyAsInt(getTier()), IO.IN));
-        this.exportFluids = attachTrait(
-                new NotifiableFluidTank(getDefinition().getOutputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
-                        tankScalingFunction.applyAsInt(getTier()), IO.OUT));
-        this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
-        this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
+        this(info, tier, energyEmitter, new RecipeLogic(), tankScalingFunction);
     }
 
     //////////////////////////////////////

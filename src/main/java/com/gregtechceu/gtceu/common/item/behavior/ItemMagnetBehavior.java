@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -98,9 +99,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .allowC2S();
 
         PagedWidget<?> pages = new PagedWidget<>()
-                .left((176 - 80) / 2)
+                .left((176 - 150) / 2)
                 .top((60 - 55) / 2 + 15)
-                .size(80, 55)
+                .size(150, 55)
                 .initialPage(selectedFilter.ordinal())
                 .addPage(createSimpleFilterPage((SimpleItemFilter) ItemFilter.loadFilter(stacks.get(Filter.SIMPLE))))
                 .addPage(createTagFilterPage((TagItemFilter) ItemFilter.loadFilter(stacks.get(Filter.TAG))));
@@ -159,23 +160,26 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).value(ignoreNBT));
 
         return new ParentWidget<>()
-                .size(80, 55)
-                .child(filterGrid.left(0).top(0))
-                .child(filterButtons.left(58).top(0));
+                .size(150, 55)
+                .child(filterGrid.left(38).top(0))
+                .child(filterButtons.left(96).top(0));
     }
 
     private ParentWidget<?> createTagFilterPage(TagItemFilter filter) {
         StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString).allowC2S();
-        RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");
+        RichTooltip infoTooltip = new RichTooltip();
+        LangHandler.getMultiLang("cover.tag_filter.info").forEach(infoTooltip::addLine);
 
         return new ParentWidget<>()
-                .size(80, 55)
+                .size(150, 55)
                 .child(Flow.row()
                         .coverChildren()
-                        .left(0)
-                        .top(18)
+                        .childPadding(2)
+                        .left(7)
+                        .top(19)
                         .child(new TextFieldWidget()
-                                .width(62)
+                                .width(117)
+                                .height(18)
                                 .value(filterString))
                         .child(GTGuiTextures.INFO.asWidget()
                                 .size(16)

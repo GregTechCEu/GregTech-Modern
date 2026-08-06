@@ -22,7 +22,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrait, CompoundTag> {
 
     public AutoOutputBlockProvider() {
-        super(GTCEu.id("auto_output_info"), AutoOutputTrait.TYPE);
+        super(GTCEu.id("auto_output_info"), AutoOutputTrait.class);
     }
 
     @Override

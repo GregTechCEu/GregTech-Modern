@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.pattern.*;
@@ -124,12 +123,13 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type from this multiblock's parts.
+     * Gets the first trait (trait with highest priority) of a specified class from this multiblock's parts.<br>
+     * Also includes traits that are a subtype of the specified class.
      *
      * @param type The trait type to get.
      * @return The trait, or null if no traits of the given type are present.
      */
-    public <T extends MachineTrait> @Nullable T getTraitFromParts(MachineTraitType<T> type) {
+    public <T extends MachineTrait> @Nullable T getTraitFromParts(Class<T> type) {
         T trait = null;
         for (var part : getParts()) {
             T partTrait = part.getTrait(type);
@@ -140,12 +140,13 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * Get all traits with the specified type.
+     * Get all traits with the specified class from this multiblock's parts.<br>
+     * Also includes traits that are a subtype of the specified class.
      *
      * @param type The trait type to get
      * @return An unmodifiable list containing all traits of the specified type.
      */
-    public <T extends MachineTrait> List<T> getTraitsFromParts(MachineTraitType<T> type) {
+    public <T extends MachineTrait> List<T> getTraitsFromParts(Class<T> type) {
         List<T> traits = new ObjectArrayList<>();
         for (var part : getParts()) {
             traits.addAll(part.getTraits(type));
@@ -377,7 +378,6 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void invalidateStructure(String name) {
         var pState = patternStates.get(name);
-        // if (!pState.isFormed()) return;
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
@@ -426,7 +426,6 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     protected void forEachFormed(String name, BiConsumer<BlockInfo, BlockPos.MutableBlockPos> action) {
-        // var cache = getSubstructure(name).getCache();
         var cache = patternStates.get(name).getCache();
         var pos = new BlockPos.MutableBlockPos();
         for (var entry : cache.long2ObjectEntrySet()) {

@@ -23,18 +23,17 @@ public final class MachineTraitHolder {
     private boolean allowTraitAttachment = true;
 
     private final List<MachineTrait> traits;
-    private final Map<MachineTraitType<?>, List<MachineTrait>> traitsByType;
 
     private final Map<String, MachineTrait> traitsToSave;
 
     private @Nullable List<MachineTrait> allTraits = null;
 
-    private final Map<Class<?>, List<?>> traitsByClass = new Object2ObjectOpenHashMap<>();
+    private final Map<Class<?>, List<MachineTrait>> traitsByClass;
 
     public MachineTraitHolder(MetaMachine machine) {
         this.machine = machine;
         this.traits = new ObjectArrayList<>();
-        this.traitsByType = new Object2ObjectOpenHashMap<>();
+        this.traitsByClass = new Object2ObjectOpenHashMap<>();
         this.traitsToSave = new Object2ObjectOpenHashMap<>();
     }
 
@@ -58,7 +57,7 @@ public final class MachineTraitHolder {
             if (clazz.isAssignableFrom(t.getClass())) list.add(clazz.cast(t));
         }
 
-        if (!allowTraitAttachment) traitsByClass.put(clazz, Collections.unmodifiableList(list));
+        if (!allowTraitAttachment) traitsByClass.put(clazz, (List<MachineTrait>) Collections.unmodifiableList(list));
         return list;
     }
 
@@ -86,21 +85,24 @@ public final class MachineTraitHolder {
 
         trait.setTraitPriority(callbackPriority);
 
-        var traitType = trait.getTraitType();
-
-        var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
-        if (!traitType.allowsMultipleInstances() && !list.isEmpty()) {
-            throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
-        }
-
-        list.add(trait);
-        list.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
+        addTraitToClassMap(trait.getClass(), trait);
         traits.add(trait);
         traits.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
 
         trait.setMachine(machine);
         trait.onTraitAttached();
         return trait;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addTraitToClassMap(Class<? extends MachineTrait> clazz, MachineTrait trait) {
+        var list = traitsByClass.computeIfAbsent(clazz, $ -> new ObjectArrayList<>(1));
+
+        list.add(trait);
+        list.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
+
+        if (!clazz.getSuperclass().equals(MachineTrait.class))
+            addTraitToClassMap((Class<? extends MachineTrait>) clazz.getSuperclass(), trait);
     }
 
     /**
@@ -163,35 +165,38 @@ public final class MachineTraitHolder {
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
-     * 
-     * @param type The trait type to get
+     * Gets the first trait (trait with highest priority) with the specified class.
+     * Also includes traits that are a subtype of the specified class.
+     *
+     * @param type The trait class to get
      * @return The trait, or null if no traits of the given type are present.
      */
-    public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
-        List<MachineTrait> traitList = traitsByType.get(type);
+    public <T extends MachineTrait> @Nullable T getTrait(Class<T> type) {
+        List<MachineTrait> traitList = traitsByClass.get(type);
         if (traitList == null || traitList.isEmpty()) return null;
-        return type.castTrait(traitList.get(0));
+        return type.cast(traitList.get(0));
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
-     * 
-     * @param type The trait type to get
+     * Gets the first trait (trait with highest priority) with the specified class.
+     * Also includes traits that are a subtype of the specified class.
+     *
+     * @param type The trait class to get
      * @return An optional result containing the trait if present.
      */
-    public <T extends MachineTrait> Optional<T> getTraitOptional(MachineTraitType<T> type) {
+    public <T extends MachineTrait> Optional<T> getTraitOptional(Class<T> type) {
         return Optional.ofNullable(getTrait(type));
     }
 
     /**
-     * Get all traits with the specified type.
+     * Get all traits with the specified class.
+     * Also includes traits that are a subtype of the specified class.
      * 
-     * @return An unmodifiable list containing all traits of the specified type.
+     * @return An unmodifiable list containing all traits of the specified class.
      */
     @SuppressWarnings("unchecked")
-    public <T extends MachineTrait> @UnmodifiableView List<T> getTraits(MachineTraitType<T> type) {
-        List<T> traitList = (List<T>) traitsByType.get(type);
+    public <T extends MachineTrait> @UnmodifiableView List<T> getTraits(Class<T> type) {
+        List<T> traitList = (List<T>) traitsByClass.get(type);
         if (traitList == null) return List.of();
         return Collections.unmodifiableList(traitList);
     }

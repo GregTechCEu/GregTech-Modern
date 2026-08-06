@@ -69,16 +69,59 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        IDrawable coilTexture = new UITexture.Builder()
-                .location(CoilBlock.CoilType.values()[coilTier].getTexture())
-                .imageSize(16, 16)
+        var Texlocation = (CoilBlock.CoilType.values()[coilTier].getTexture());
+
+        IDrawable leftTop = new UITexture.Builder()
+                .location(Texlocation)
+                .subAreaUV(0f, 0f, 7f / 16f, 4f / 16f)
                 .colorType(ColorType.DEFAULT)
-                .tiled().build();
+                .build();
+
+        IDrawable leftMiddle = new UITexture.Builder()
+                .location(Texlocation)
+                .imageSize(16, 16)
+                .subAreaUV(0f, 4f / 16f, 7f / 16f, 12f / 16f)
+                .colorType(ColorType.DEFAULT)
+                .tiled(7, 8)
+                .build();
+
+        IDrawable leftBottom = new UITexture.Builder()
+                .location(Texlocation)
+                .subAreaUV(0f, 12f / 16f, 7f / 16f, 16f / 16f)
+                .colorType(ColorType.DEFAULT)
+                .build();
+
+        IDrawable rightBottom = new UITexture.Builder()
+                .location(Texlocation)
+                .subAreaUV(7f / 16f, 4f / 16f, 0f, 0f / 16f)
+                .colorType(ColorType.DEFAULT)
+                .build();
+
+        IDrawable rightMiddle = new UITexture.Builder()
+                .location(Texlocation)
+                .imageSize(16, 16)
+                .subAreaUV(7f / 16f, 12f / 16f, 0f, 4f / 16f)
+                .colorType(ColorType.DEFAULT)
+                .tiled(7, 8)
+                .build();
+
+        IDrawable rightTop = new UITexture.Builder()
+                .location(Texlocation)
+                .subAreaUV(7f / 16f, 16f / 16f, 0f, 12f / 16f)
+                .colorType(ColorType.DEFAULT)
+                .build();
 
         mainWidget
                 .child(Flow.row().height(MULTI_UI_TEXT_PANEL_HEIGHT).coverChildrenWidth()
-                        .child(new IDrawable.DrawableWidget(coilTexture).size(4, MULTI_UI_TEXT_PANEL_HEIGHT))
+                        .child(Flow.col().coverChildrenWidth()
+                                .child(new IDrawable.DrawableWidget(leftTop).size(7, 4))
+                                .child(new IDrawable.DrawableWidget(leftMiddle).size(7, MULTI_UI_TEXT_PANEL_HEIGHT - 8))
+                                .child(new IDrawable.DrawableWidget(leftBottom).size(7, 4)))
                         .child(getMainTextPanel(syncManager))
-                        .child(new IDrawable.DrawableWidget(coilTexture).size(4, MULTI_UI_TEXT_PANEL_HEIGHT)));
+                        .child(Flow.col().coverChildrenWidth()
+                                .child(new IDrawable.DrawableWidget(rightTop).size(7, 4))
+                                .child(new IDrawable.DrawableWidget(rightMiddle).size(7,
+                                        MULTI_UI_TEXT_PANEL_HEIGHT - 8))
+                                .child(new IDrawable.DrawableWidget(rightBottom).size(7, 4))));
     }
 }
