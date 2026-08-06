@@ -19,6 +19,8 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.cover.ConveyorCover;
+import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
@@ -732,8 +734,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                        FormattingUtil.formatNumbers(1280 / 20)));
+                lines.add(fluidRateTooltip(GTValues.LV));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -743,8 +744,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                        FormattingUtil.formatNumbers(1280 * 4 / 20)));
+                lines.add(fluidRateTooltip(GTValues.MV));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -753,8 +753,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                        FormattingUtil.formatNumbers(1280 * 16 / 20)));
+                lines.add(fluidRateTooltip(GTValues.HV));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -763,8 +762,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                        FormattingUtil.formatNumbers(1280 * 64 / 20)));
+                lines.add(fluidRateTooltip(GTValues.EV));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -773,8 +771,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                        FormattingUtil.formatNumbers(1280 * 64 * 4 / 20)));
+                lines.add(fluidRateTooltip(GTValues.IV));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -784,8 +781,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                        FormattingUtil.formatNumbers(1280 * 64 * 16 / 20)));
+                lines.add(fluidRateTooltip(GTValues.LuV));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -795,8 +791,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                        FormattingUtil.formatNumbers(1280 * 64 * 64 / 20)));
+                lines.add(fluidRateTooltip(GTValues.ZPM));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -805,9 +800,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                lines.add(
-                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                FormattingUtil.formatNumbers(1280 * 64 * 64 * 4 / 20)));
+                lines.add(fluidRateTooltip(GTValues.UV));
             })))
             .tag(CustomTags.ELECTRIC_PUMPS)
             .register();
@@ -818,8 +811,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[8])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UHV));
                     })))
                     .register() :
             null;
@@ -830,8 +822,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[9])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UEV));
                     })))
                     .register() :
             null;
@@ -842,8 +833,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[10])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UIV));
                     })))
                     .register() :
             null;
@@ -854,8 +844,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[11])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UXV));
                     })))
                     .register() :
             null;
@@ -866,8 +855,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[12])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.OpV));
                     })))
                     .register() :
             null;
@@ -878,7 +866,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[0])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+                lines.add(fluidRateTooltip(GTValues.LV));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -888,7 +876,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[1])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+                lines.add(fluidRateTooltip(GTValues.MV));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -898,7 +886,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[2])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+                lines.add(fluidRateTooltip(GTValues.HV));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -908,7 +896,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[3])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+                lines.add(fluidRateTooltip(GTValues.EV));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -918,7 +906,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[4])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+                lines.add(fluidRateTooltip(GTValues.IV));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -928,7 +916,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[5])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+                lines.add(fluidRateTooltip(GTValues.LuV));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -938,7 +926,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[6])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+                lines.add(fluidRateTooltip(GTValues.ZPM));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -948,8 +936,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[7])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                lines.add(
-                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+                lines.add(fluidRateTooltip(GTValues.UV));
             })))
             .tag(CustomTags.FLUID_REGULATORS)
             .register();
@@ -959,8 +946,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[8])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UHV));
                     })))
                     .register() :
             null;
@@ -970,8 +956,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[9])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UEV));
                     })))
                     .register() :
             null;
@@ -981,8 +966,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[10])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UIV));
                     })))
                     .register() :
             null;
@@ -992,8 +976,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[11])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.UXV));
                     })))
                     .register() :
             null;
@@ -1003,8 +986,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[12])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
-                                1280 * 64 * 64 * 4 / 20));
+                        lines.add(fluidRateTooltip(GTValues.OpV));
                     })))
                     .register() :
             null;
@@ -1021,7 +1003,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[0])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
+                lines.add(itemRateTooltip(GTValues.LV));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1031,7 +1013,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[1])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
+                lines.add(itemRateTooltip(GTValues.MV));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1041,7 +1023,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[2])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
+                lines.add(itemRateTooltip(GTValues.HV));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1051,7 +1033,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[3])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
+                lines.add(itemRateTooltip(GTValues.EV));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1061,7 +1043,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[4])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
+                lines.add(itemRateTooltip(GTValues.IV));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1071,7 +1053,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                lines.add(itemRateTooltip(GTValues.LuV));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1081,7 +1063,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[6])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                lines.add(itemRateTooltip(GTValues.ZPM));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1091,7 +1073,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[7])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                lines.add(itemRateTooltip(GTValues.UV));
             })))
             .tag(CustomTags.CONVEYOR_MODULES)
             .register();
@@ -1101,7 +1083,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[8])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UHV));
                     })))
                     .register() :
             null;
@@ -1111,7 +1093,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[9])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UEV));
                     })))
                     .register() :
             null;
@@ -1121,7 +1103,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[10])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UIV));
                     })))
                     .register() :
             null;
@@ -1131,7 +1113,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[11])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UXV));
                     })))
                     .register() :
             null;
@@ -1141,7 +1123,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[12])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.OpV));
                     })))
                     .register() :
             null;
@@ -1204,7 +1186,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[0])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
+                lines.add(itemRateTooltip(GTValues.LV));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1213,7 +1195,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[1])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
+                lines.add(itemRateTooltip(GTValues.MV));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1222,7 +1204,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[2])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
+                lines.add(itemRateTooltip(GTValues.HV));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1231,7 +1213,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[3])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
+                lines.add(itemRateTooltip(GTValues.EV));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1240,7 +1222,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[4])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
+                lines.add(itemRateTooltip(GTValues.IV));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1249,7 +1231,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                lines.add(itemRateTooltip(GTValues.LuV));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1258,7 +1240,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[6])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                lines.add(itemRateTooltip(GTValues.ZPM));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1267,7 +1249,7 @@ public class GTItems {
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[7])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                lines.add(itemRateTooltip(GTValues.UV));
             })))
             .tag(CustomTags.ROBOT_ARMS)
             .register();
@@ -1277,7 +1259,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[8])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UHV));
                     })))
                     .register() :
             null;
@@ -1287,7 +1269,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[9])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UEV));
                     })))
                     .register() :
             null;
@@ -1297,7 +1279,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[10])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UIV));
                     })))
                     .register() :
             null;
@@ -1307,7 +1289,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[11])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.UXV));
                     })))
                     .register() :
             null;
@@ -1317,7 +1299,7 @@ public class GTItems {
                     .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[12])))
                     .onRegister(attach(new TooltipBehavior(lines -> {
                         lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                        lines.add(itemRateTooltip(GTValues.OpV));
                     })))
                     .register() :
             null;
@@ -2694,6 +2676,20 @@ public class GTItems {
             return builder;
         };
     }
+
+    private static Component itemRateTooltip(int tier) {
+        var itemsPerSecond = ConveyorCover.CONVEYOR_SCALING.applyAsInt(tier);
+        return itemsPerSecond > 64 ?
+                Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", itemsPerSecond / 64) :
+                Component.translatable("gtceu.universal.tooltip.item_transfer_rate", itemsPerSecond);
+    }
+
+    private static Component fluidRateTooltip(int tier) {
+        var mbPerTick = PumpCover.PUMP_SCALING.applyAsInt(tier);
+        return Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                FormattingUtil.formatNumbers(mbPerTick));
+    }
+
 
     @FunctionalInterface
     public interface StackProperty {
