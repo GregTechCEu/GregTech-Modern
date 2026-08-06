@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
+import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
 import com.gregtechceu.gtceu.core.mixins.MapColorAccessor;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
@@ -18,9 +20,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -53,8 +52,14 @@ import net.neoforged.neoforge.fluids.FluidType;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import dev.emi.emi.api.EmiApi;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.runtime.IRecipesGui;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,6 +69,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
@@ -722,14 +728,37 @@ public class GTUtil {
     private static class EmiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
+            List<EmiRecipeCategory> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeEMICategory::machineCategory)
+                    .toList();
+            Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
+            for (EmiRecipeCategory cat : categories) {
+                recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
+            }
+            EmiApiAccessor.gtceu$setPages(recipes, EmiStack.EMPTY);
+
+            // switch to the requested category if possible
+            if (Minecraft.getInstance().screen instanceof RecipeScreen emiRecipeScreen) {
+                emiRecipeScreen.focusCategory(GTRecipeEMICategory.machineCategory(category));
+            }
         }
     }
 
     private static class JeiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
+            List<mezz.jei.api.recipe.RecipeType<?>> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeJEICategory::machineType)
+                    .collect(Collectors.toList());
+            IRecipesGui recipesGui = GTJEIPlugin.getRuntime().getRecipesGui();
+            recipesGui.showTypes(categories);
+
+            // switch to the requested category if possible
+            if (recipesGui instanceof RecipesGuiAccessor accessor) {
+                IRecipeCategory<?> specificCategory = GTJEIPlugin.getRuntime().getRecipeManager()
+                        .getRecipeCategory(GTRecipeJEICategory.machineType(category));
+                accessor.gtceu$getLogic().setRecipeCategory(specificCategory);
+            }
         }
     }
 }
