@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -46,7 +45,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeOutputProvider() {
-        super(GTCEu.id("recipe_output_info"), RecipeLogic.TYPE);
+        super(GTCEu.id("recipe_output_info"), RecipeLogic.class);
     }
 
     @Override
@@ -56,8 +55,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
             data.putBoolean("Working", recipeLogic.isWorking());
             var recipe = recipeLogic.getLastRecipe();
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
+
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
                 int runs = recipe.getTotalRuns();

@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -45,6 +44,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -310,8 +310,10 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Multiblock related
         event.add("RotationState", RotationState.class);
         event.add("FactoryBlockPattern", MultiblockPatternBuilder.class);
+        event.add("MultiblockPatternBuilder", MultiblockPatternBuilder.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
+        event.add("RelativeDirection", RelativeDirection.class);
         // Recipe related
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTRecipeCategories", GTRecipeCategories.class);
@@ -671,7 +673,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             var info = ItemMaterialData.getMaterialInfo(item);
             if (info != null) {
                 for (var ms : info.getMaterials()) {
-                    if (ms.material() instanceof MarkerMaterial) continue;
                     materials.addTo(ms.material(), (ms.amount() * inCount) / outCount);
                 }
                 continue;
@@ -681,7 +682,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
 
             var matStack = ChemicalHelper.getMaterialStack(item);
-            if (!matStack.isEmpty() && !(matStack.material() instanceof MarkerMaterial)) {
+            if (!matStack.isEmpty()) {
                 materials.addTo(matStack.material(), (matStack.amount() * inCount) / outCount);
             }
 

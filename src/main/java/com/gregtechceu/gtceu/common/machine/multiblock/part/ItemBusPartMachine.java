@@ -70,7 +70,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
         this(info, tier, io,
-                new NotifiableItemStackHandler(getInventorySize(tier), io, io.support(IO.IN) ? IO.BOTH : io));
+                new NotifiableItemStackHandler(getInventorySize(tier), io));
     }
 
     /**
@@ -125,6 +125,13 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
+    public void onMachineDestroyed() {
+        if (filterHandler.isFilterPresent())
+            Block.popResource(getLevel(), getBlockPos(), filterHandler.getFilterItem());
+        super.onMachineDestroyed();
+    }
+
+    @Override
     public void onPaintingColorChanged(int color) {
         getHandlerList().setColor(color, true);
     }
@@ -134,6 +141,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         isDistinct = (io != IO.OUT && distinct);
         syncDataHolder.markClientSyncFieldDirty("isDistinct");
         getHandlerList().setDistinctAndNotify(isDistinct);
+    }
+
+    @Override
+    public boolean supportsDistinct() {
+        return !io.support(IO.OUT);
     }
 
     @Override
@@ -248,7 +260,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 .center()
                 .margin(7, 5)
                 .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
-                        .slot(SyncHandlers.itemSlot(inventory, index)
+                        .slot(SyncHandlers.itemSlot(inventory.storage, index)
                                 .slotGroup(group)
                                 .changeListener((oldStack, newStack, client, init) -> {
                                     if (ItemStack.isSameItem(oldStack, newStack)) {

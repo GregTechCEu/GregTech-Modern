@@ -53,6 +53,12 @@ public class CrateMachine extends MetaMachine implements IMuiMachine {
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        inventory.shouldDropInventoryInWorld(!isTaped);
+    }
+
+    @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return MachineUIPanelBuilder.panelBuilder(this).addTitleBar(false);
     }

@@ -162,7 +162,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                                                         GuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusLayers))
                                         .child(new TextWidget<>(Text.dynamic(() -> Component.literal(Integer.toString(
-                                                2 * AoESymmetrical.getLayer(tag, defaultDefinition) + 1)))))
+                                                AoESymmetrical.getLayer(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
                                                 .background(GuiTextures.MC_BUTTON,

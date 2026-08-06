@@ -102,7 +102,9 @@ public class DrumMachine extends MetaMachine {
 
     @Override
     public void loadFromItem(CompoundTag tag) {
-        if (!tag.contains("Fluid")) {
+        if (tag.contains("Fluid")) {
+            stored = FluidStack.loadFluidStackFromNBT(tag.getCompound("Fluid"));
+        } else {
             stored = FluidStack.EMPTY;
         }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
@@ -111,10 +113,14 @@ public class DrumMachine extends MetaMachine {
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (!isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
+        if (FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
                 return InteractionResult.SUCCESS;
             }
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
+                return InteractionResult.CONSUME;
+            }
+            return InteractionResult.PASS;
         }
         return super.onUseWithItem(context);
     }

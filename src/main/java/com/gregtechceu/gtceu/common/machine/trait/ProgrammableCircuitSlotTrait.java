@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
@@ -33,9 +32,6 @@ import java.util.List;
 public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<Ingredient>
                                           implements IAttachConfiguratorsTrait, ICapabilityTrait {
 
-    public static final MachineTraitType<ProgrammableCircuitSlotTrait> TYPE = new MachineTraitType<>(
-            ProgrammableCircuitSlotTrait.class);
-
     @SaveField
     public final CustomItemStackHandler storage;
 
@@ -49,11 +45,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
         setEnabled(ConfigHolder.INSTANCE.machines.ghostCircuit);
         storage = new CustomItemStackHandler(1);
         storage.setFilter(IntCircuitBehaviour::isIntegratedCircuit);
-    }
-
-    @Override
-    public MachineTraitType<ProgrammableCircuitSlotTrait> getTraitType() {
-        return TYPE;
+        storage.setOnContentsChanged(this::notifyListeners);
     }
 
     // Returns the current circuit value

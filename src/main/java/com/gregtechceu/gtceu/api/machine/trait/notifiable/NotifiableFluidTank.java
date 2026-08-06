@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -28,13 +27,6 @@ import java.util.function.Predicate;
 
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
-
-    public static final MachineTraitType<NotifiableFluidTank> TYPE = new MachineTraitType<>(NotifiableFluidTank.class);
-
-    @Override
-    public MachineTraitType<NotifiableFluidTank> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     public final IO handlerIO;
@@ -64,6 +56,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             this.storages[i] = new CustomFluidTank(capacity);
             this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
@@ -77,6 +70,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         if (io == IO.IN) {
             this.allowSameFluids = true;
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(int slots, int capacity, IO io) {
@@ -91,6 +85,26 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         isEmpty = null;
         syncDataHolder.markClientSyncFieldDirty("storages");
         notifyListeners();
+    }
+
+    protected void onLockedFluidChanged() {
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
+        var newFluid = this.lockedFluid.getFluid();
+        if (newFluid.isEmpty()) {
+            this.setFilter(stack -> true);
+            this.onContentsChanged();
+            return;
+        }
+        for (int i = 0; i < this.getTanks(); i++) {
+            if (this.getFluidInTank(i).isEmpty()) continue;
+            if (!this.getFluidInTank(i).isFluidEqual(newFluid)) {
+                // Fluid in a tank that doesn't equal the new locked fluid
+                this.lockedFluid.setFluid(FluidStack.EMPTY);
+                return;
+            }
+        }
+        this.setFilter(stack -> stack.isFluidEqual(newFluid));
+        this.onContentsChanged();
     }
 
     @Override

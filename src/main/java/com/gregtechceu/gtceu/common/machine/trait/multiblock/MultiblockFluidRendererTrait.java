@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.trait.multiblock;
 
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -14,9 +13,6 @@ import java.util.function.Supplier;
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
-
-    public static final MachineTraitType<MultiblockFluidRendererTrait> TYPE = new MachineTraitType<>(
-            MultiblockFluidRendererTrait.class, false);
 
     @SyncToClient
     @RerenderOnChanged
@@ -42,10 +38,5 @@ public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
         if (DEFAULT_STRUCTURE.equals(name)) {
             fluidBlockOffsets.clear();
         }
-    }
-
-    @Override
-    public MachineTraitType<MultiblockFluidRendererTrait> getTraitType() {
-        return TYPE;
     }
 }

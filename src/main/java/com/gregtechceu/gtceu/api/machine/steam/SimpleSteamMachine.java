@@ -49,7 +49,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
     public SimpleSteamMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic, boolean isHighPressure,
                               int importSlots, int exportSlots) {
         super(info, isHighPressure, recipeLogic);
-        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
     }
@@ -57,9 +57,12 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
         this.importItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN, IO.BOTH));
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN));
         this.exportItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT));
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.OUT));
 
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);

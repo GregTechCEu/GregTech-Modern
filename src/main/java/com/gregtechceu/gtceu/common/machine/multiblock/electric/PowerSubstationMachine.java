@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
@@ -437,14 +436,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {
-
-        public static final MachineTraitType<PowerStationEnergyBank> TYPE = new MachineTraitType<>(
-                PowerStationEnergyBank.class);
-
-        @Override
-        public MachineTraitType<PowerStationEnergyBank> getTraitType() {
-            return TYPE;
-        }
 
         private static final String NBT_SIZE = "Size";
         private static final String NBT_STORED = "Stored";

@@ -39,6 +39,7 @@ public class GTJadePlugin implements IWailaPlugin {
                 new StainedColorProvider(),
                 new HazardCleanerBlockProvider(),
                 new TransformerBlockProvider(),
+                new DiodeModeProvider(),
                 new PrimitivePumpBlockProvider(),
                 new DataBankBlockProvider(),
                 new EnergyConverterModeProvider(),
@@ -46,7 +47,8 @@ public class GTJadePlugin implements IWailaPlugin {
                 new LDPEndpointProvider());
 
         if (GTCEu.Mods.isAE2Loaded()) {
-            register(registration, new MEPatternBufferProvider(), new MEPatternBufferProxyProvider());
+            register(registration, new MEGridConnectedProvider(), new MEPatternBufferProvider(),
+                    new MEPatternBufferProxyProvider());
         }
 
         registration.registerItemStorage(GTItemStorageProvider.INSTANCE, MetaMachine.class);
@@ -72,6 +74,7 @@ public class GTJadePlugin implements IWailaPlugin {
                 new StainedColorProvider(),
                 new HazardCleanerBlockProvider(),
                 new TransformerBlockProvider(),
+                new DiodeModeProvider(),
                 new PrimitivePumpBlockProvider(),
                 new DataBankBlockProvider(),
                 new LDPEndpointProvider(),
@@ -80,7 +83,8 @@ public class GTJadePlugin implements IWailaPlugin {
                 new CableBlockProvider());
 
         if (GTCEu.Mods.isAE2Loaded()) {
-            register(registration, new MEPatternBufferProvider(), new MEPatternBufferProxyProvider());
+            register(registration, new MEGridConnectedProvider(), new MEPatternBufferProvider(),
+                    new MEPatternBufferProxyProvider());
         }
 
         registration.registerItemStorageClient(GTItemStorageProvider.INSTANCE);
