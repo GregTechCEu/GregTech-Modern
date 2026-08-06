@@ -229,22 +229,22 @@ public class CustomTags {
 
     public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
 
-    public static final TagKey<Item> WHITE_LENS = TagUtil.createItemTag("lens/white");
-    public static final TagKey<Item> ORANGE_LENS = TagUtil.createItemTag("lens/orange");
-    public static final TagKey<Item> MAGENTA_LENS = TagUtil.createItemTag("lens/magenta");
-    public static final TagKey<Item> LIGHT_BLUE_LENS = TagUtil.createItemTag("lens/light_blue");
-    public static final TagKey<Item> YELLOW_LENS = TagUtil.createItemTag("lens/yellow");
-    public static final TagKey<Item> LIME_LENS = TagUtil.createItemTag("lens/lime");
-    public static final TagKey<Item> PINK_LENS = TagUtil.createItemTag("lens/pink");
-    public static final TagKey<Item> GRAY_LENS = TagUtil.createItemTag("lens/gray");
-    public static final TagKey<Item> LIGHT_GRAY_LENS = TagUtil.createItemTag("lens/light_gray");
-    public static final TagKey<Item> CYAN_LENS = TagUtil.createItemTag("lens/cyan");
-    public static final TagKey<Item> PURPLE_LENS = TagUtil.createItemTag("lens/purple");
-    public static final TagKey<Item> BLUE_LENS = TagUtil.createItemTag("lens/blue");
-    public static final TagKey<Item> BROWN_LENS = TagUtil.createItemTag("lens/brown");
-    public static final TagKey<Item> GREEN_LENS = TagUtil.createItemTag("lens/green");
-    public static final TagKey<Item> RED_LENS = TagUtil.createItemTag("lens/red");
-    public static final TagKey<Item> BLACK_LENS = TagUtil.createItemTag("lens/black");
+    public static final TagKey<Item> WHITE_LENS = TagUtil.createItemTag("lenses/white");
+    public static final TagKey<Item> ORANGE_LENS = TagUtil.createItemTag("lenses/orange");
+    public static final TagKey<Item> MAGENTA_LENS = TagUtil.createItemTag("lenses/magenta");
+    public static final TagKey<Item> LIGHT_BLUE_LENS = TagUtil.createItemTag("lenses/light_blue");
+    public static final TagKey<Item> YELLOW_LENS = TagUtil.createItemTag("lenses/yellow");
+    public static final TagKey<Item> LIME_LENS = TagUtil.createItemTag("lenses/lime");
+    public static final TagKey<Item> PINK_LENS = TagUtil.createItemTag("lenses/pink");
+    public static final TagKey<Item> GRAY_LENS = TagUtil.createItemTag("lenses/gray");
+    public static final TagKey<Item> LIGHT_GRAY_LENS = TagUtil.createItemTag("lenses/light_gray");
+    public static final TagKey<Item> CYAN_LENS = TagUtil.createItemTag("lenses/cyan");
+    public static final TagKey<Item> PURPLE_LENS = TagUtil.createItemTag("lenses/purple");
+    public static final TagKey<Item> BLUE_LENS = TagUtil.createItemTag("lenses/blue");
+    public static final TagKey<Item> BROWN_LENS = TagUtil.createItemTag("lenses/brown");
+    public static final TagKey<Item> GREEN_LENS = TagUtil.createItemTag("lenses/green");
+    public static final TagKey<Item> RED_LENS = TagUtil.createItemTag("lenses/red");
+    public static final TagKey<Item> BLACK_LENS = TagUtil.createItemTag("lenses/black");
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Item>[] LENSES = new TagKey[] {
