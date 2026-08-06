@@ -18,6 +18,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -497,14 +500,16 @@ public class GTUtil {
             }
         }
 
-        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
+        if (biome.is(BiomeTags.IS_END)) {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_JAVD, "void");
-        if (GTCEu.isModLoaded(GTValues.MODID_JAVD) && biome.is(javdVoidBiome)) {
-            return !world.isDay();
-        } else return world.isDay();
+        // skip the fixed time check Level.isDay() does
+
+        // skyDarken is the amount of light subtracted from the stored skylight value in
+        // `Level.getMaxLocalRawBrightness(pos)` depending on the time of day.
+        // this here is the same code Level.isDay() uses to determine whether it's day or not.
+        return world.getSkyDarken() < 4;
     }
 
     /**
