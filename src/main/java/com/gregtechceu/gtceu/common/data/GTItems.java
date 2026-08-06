@@ -1467,7 +1467,7 @@ public class GTItems {
             if (color.equals("white")) continue;
             GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
                     .lang("Glass Lens (%s)".formatted(toEnglishName(color)))
-                    .tag(TagUtil.createItemTag("lens/" + color))
+                    .tag(TagUtil.createItemTag("lenses/" + color))
                     .register());
         }
     }
