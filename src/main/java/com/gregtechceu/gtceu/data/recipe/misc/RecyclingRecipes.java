@@ -114,8 +114,7 @@ public class RecyclingRecipes {
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry.material() != null &&
-                entry.tagPrefix().unificationEnabled()) {
+        if (entry != null && entry.tagPrefix().unificationEnabled()) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
@@ -152,7 +151,7 @@ public class RecyclingRecipes {
                                                    @Nullable TagPrefix prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry.material() != null) {
+        if (entry != null) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
         }
 
@@ -456,7 +455,7 @@ public class RecyclingRecipes {
             if (stack == ItemStack.EMPTY) continue;
             if (stack.getCount() > 64) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
-                if (entry != null && !entry.isEmpty()) { // should always be true
+                if (entry != null) { // should always be true
                     TagPrefix prefix = entry.tagPrefix();
 
                     // These are the highest forms that a Material can have (for Ingot and Dust, respectively),

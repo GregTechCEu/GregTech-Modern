@@ -68,7 +68,6 @@ public class MixinHelpers {
             ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
                 var material = entry.material();
-                if (material == null || entry.tagPrefix() == null) return;
                 var entries = itemLikes.stream().map(MixinHelpers::makeItemEntry).collect(toArrayList());
 
                 var prefixTagKeys = entry.tagPrefix().getAllItemTags(material);
@@ -142,7 +141,6 @@ public class MixinHelpers {
             ItemMaterialData.MATERIAL_ENTRY_BLOCK_MAP.forEach((entry, blocks) -> {
                 if (blocks.isEmpty()) return;
                 var material = entry.material();
-                if (material == null) return;
 
                 var entries = blocks.stream().map(MixinHelpers::makeBlockEntry).collect(toArrayList());
                 var materialTags = entry.tagPrefix().getAllBlockTags(material);

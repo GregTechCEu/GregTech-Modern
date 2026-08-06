@@ -141,15 +141,7 @@ public final class Material implements Comparable<Material> {
         verifyMaterial();
     }
 
-    // thou shall not call
-    protected Material(ResourceLocation resourceLocation) {
-        materialInfo = new MaterialInfo(resourceLocation);
-        materialInfo.iconSet = MaterialIconSet.DULL;
-        properties = new MaterialProperties();
-        flags = new MaterialFlags();
-    }
-
-    protected void registerMaterial() {
+    private void registerMaterial() {
         GTRegistries.MATERIALS.register(getResourceLocation(), this);
     }
 

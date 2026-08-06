@@ -324,6 +324,7 @@ public class VanillaRecipeHelper {
      * @param result              the output for the recipe
      * @param recipe              the contents of the recipe
      */
+    @SuppressWarnings("unchecked")
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData, boolean isStrict,
                                        boolean matchSize, @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                        @NotNull Object... recipe) {
@@ -373,8 +374,6 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
-                    builder.define(sign, entry.asStack());
                 }
             }
         }
@@ -429,6 +428,7 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
+    @SuppressWarnings("unchecked")
     public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean overrideCharge, boolean transferMaxCharge,
                                                      @NotNull ResourceLocation regName,
@@ -474,8 +474,6 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
-                    builder.define(sign, entry.asStack());
                 }
             }
         }
@@ -498,6 +496,7 @@ public class VanillaRecipeHelper {
                 GTCEu.id(regName), chargeIngredient, result, recipe);
     }
 
+    @SuppressWarnings("unchecked")
     public static void addShapedFluidContainerRecipe(Consumer<FinishedRecipe> provider, boolean setMaterialInfoData,
                                                      boolean isStrict,
                                                      @NotNull ResourceLocation regName, @NotNull ItemStack result,
@@ -547,8 +546,6 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
-                    builder.define(sign, entry.asStack());
                 }
             }
         }
@@ -601,6 +598,7 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, regName, result, recipe);
     }
 
+    @SuppressWarnings("unchecked")
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                           @NotNull ItemStack result, @NotNull Object... recipe) {
         var builder = new ShapelessRecipeBuilder(regName).output(result);
@@ -618,8 +616,6 @@ public class VanillaRecipeHelper {
                 if (tag != null) {
                     builder.requires(tag);
                 } else builder.requires(ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-            } else if (content instanceof ItemProviderEntry<?> entry) {
-                builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
                 builder.requires(ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
             }
@@ -712,8 +708,6 @@ public class VanillaRecipeHelper {
                 ItemStack stack = ChemicalHelper.get(entry.tagPrefix(), entry.material());
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
-            } else if (ingredient instanceof ItemProviderEntry<?> entry) {
-                itemLike = entry.asItem();
             } else continue; // throw out bad entries
 
             // First try to get ItemMaterialInfo

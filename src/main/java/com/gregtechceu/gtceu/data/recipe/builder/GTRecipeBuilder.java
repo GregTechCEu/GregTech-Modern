@@ -434,12 +434,6 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
         TagPrefix tagPrefix = input.tagPrefix();
         Material material = input.material();
-        if (tagPrefix == null || material == null) {
-            GTCEu.LOGGER.error(
-                    "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, tagPrefix, material, count);
-            return this;
-        }
         return inputItems(tagPrefix, material, count);
     }
 
@@ -1539,9 +1533,9 @@ public class GTRecipeBuilder {
             addOutputMaterialInfo();
         }
 
-        tempItemStacks = null;
-        tempItemMaterialStacks = null;
-        tempFluidStacks = null;
+        tempItemStacks.clear();
+        tempItemMaterialStacks.clear();
+        tempFluidStacks.clear();
 
         consumer.accept(build());
     }
