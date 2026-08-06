@@ -966,8 +966,8 @@ public class TagPrefix {
                           Supplier<BlockBehaviour.Properties> template, ResourceLocation baseModelLocation,
                           boolean isDoubleDrops, boolean isSand, boolean shouldDropAsItem) {}
 
-    public record BlockProperties(Supplier<Supplier<RenderType>> renderType,
-                                  UnaryOperator<BlockBehaviour.Properties> properties) {}
+    public record BlockProperties(@NotNull Supplier<Supplier<RenderType>> renderType,
+                                  @NotNull UnaryOperator<BlockBehaviour.Properties> properties) {}
 
     @Getter
     public final ResourceLocation id;
@@ -1009,7 +1009,6 @@ public class TagPrefix {
     @Setter
     private BlockItemConstructor blockItemConstructor = MaterialBlockItem::new;
     @Getter
-    @Setter
     private BlockProperties blockProperties = new BlockProperties(() -> RenderType::translucent,
             UnaryOperator.identity());
 
@@ -1162,6 +1161,19 @@ public class TagPrefix {
 
     public TagPrefix miningToolTag(TagKey<Block> tag) {
         this.miningToolTag.add(tag);
+        return this;
+    }
+
+    public TagPrefix blockProperties(BlockProperties blockProperties) {
+        if (blockProperties.renderType() == null) {
+            throw new IllegalArgumentException(
+                    "Could not set blockProperties with null renderType in TagPrefix " + this.id());
+        }
+        if (blockProperties.properties() == null) {
+            throw new IllegalArgumentException(
+                    "Could not set blockProperties with null properties in TagPrefix " + this.id());
+        }
+        this.blockProperties = blockProperties;
         return this;
     }
 
