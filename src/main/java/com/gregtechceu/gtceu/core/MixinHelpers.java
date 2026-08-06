@@ -324,8 +324,7 @@ public class MixinHelpers {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
         GTMaterialBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
-            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
-                    "blocks/" + blockEntry.getId().getPath());
+            ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
             LootTable.Builder builder = BLOCK_LOOT
                     .createSingleItemTable(ChemicalHelper.get(TagPrefix.dustTiny, material).getItem(),
                             UniformGenerator.between(3, 5))
@@ -336,8 +335,7 @@ public class MixinHelpers {
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
             ResourceLocation id = machine.getId();
-            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(),
-                    "blocks/" + id.getPath());
+            ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
             ((BlockBehaviourAccessor) block).setDrops(lootTableId);
             lootTables.put(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
@@ -347,8 +345,7 @@ public class MixinHelpers {
     public static void addMaterialBlockLootTables(Map<ResourceLocation, LootTable> lootTables, TagPrefix prefix,
                                                   Map<Material, ? extends BlockEntry<? extends Block>> map) {
         map.forEach((material, blockEntry) -> {
-            ResourceLocation lootTableId = ResourceLocation.fromNamespaceAndPath(blockEntry.getId().getNamespace(),
-                    "blocks/" + blockEntry.getId().getPath());
+            ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
             ((BlockBehaviourAccessor) blockEntry.get()).setDrops(lootTableId);
             lootTables.put(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build());
