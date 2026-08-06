@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
@@ -1461,17 +1459,16 @@ public class GTItems {
             .lang("Data Module").onRegister(attach(new DataItemBehavior(true, 256)))
             .register();
 
-    public static final Map<MarkerMaterial, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
+    public static final Map<String, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
 
     static {
-        for (int i = 0; i < MarkerMaterials.Color.VALUES.length; i++) {
-            MarkerMaterial color = MarkerMaterials.Color.VALUES[i];
-            if (color != MarkerMaterials.Color.White) {
-                GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color.getName()), Item::new)
-                        .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
-                        .transform(unificationItem(TagPrefix.lens, color))
-                        .register());
-            }
+        for (int i = 0; i < GTValues.COLORS.length; i++) {
+            String color = GTValues.COLORS[i];
+            if (color.equals("white")) continue;
+            GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
+                    .lang("Glass Lens (%s)".formatted(toEnglishName(color)))
+                    .tag(TagUtil.createItemTag("lenses/" + color))
+                    .register());
         }
     }
 
