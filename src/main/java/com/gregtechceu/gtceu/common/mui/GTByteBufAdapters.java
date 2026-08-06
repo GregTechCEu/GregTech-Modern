@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -10,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.utils.EqualityTest;
 import brachy.modularui.utils.serialization.network.*;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +24,7 @@ public class GTByteBufAdapters {
     public static final IByteBufAdapter<MonitorGroup> MONITOR_GROUPS = makeAdapter(MonitorGroup.CODEC);
     public static final IByteBufAdapter<Component> COMPONENT = ByteBufAdapters.makeAdapter(FriendlyByteBuf::readComponent, FriendlyByteBuf::writeComponent,
             (a, b) -> Objects.equals(a.toString(), b.toString()));
+    public static final IByteBufAdapter<PatternError> PATTERN_ERRORS = makeAdapter(PatternError.CODEC);
 
     // spotless:on
 
@@ -68,8 +71,8 @@ public class GTByteBufAdapters {
 
             @Override
             public boolean areEqual(T a, T b) {
-                String encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().toString();
-                String encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().toString();
+                JsonObject encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().getAsJsonObject();
+                JsonObject encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().getAsJsonObject();
                 return Objects.equals(encoded1, encoded2);
             }
         };

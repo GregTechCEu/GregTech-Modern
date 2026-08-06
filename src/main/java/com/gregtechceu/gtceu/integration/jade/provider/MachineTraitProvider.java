@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -31,9 +30,9 @@ public abstract class MachineTraitProvider<T extends MachineTrait, TagType exten
 
     @Getter
     private final ResourceLocation uid;
-    public final MachineTraitType<T> traitType;
+    public final Class<T> traitType;
 
-    protected MachineTraitProvider(ResourceLocation uid, MachineTraitType<T> type) {
+    protected MachineTraitProvider(ResourceLocation uid, Class<T> type) {
         this.uid = uid;
         this.traitType = type;
     }

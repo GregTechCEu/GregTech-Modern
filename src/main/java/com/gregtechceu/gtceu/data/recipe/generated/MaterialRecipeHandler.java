@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -11,6 +10,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -74,7 +74,7 @@ public final class MaterialRecipeHandler {
                 AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
-                        .chancedOutput(gemStack, 7500, 0)
+                        .chancedOutput(gemStack, 7500)
                         .duration(1200).EUt(24)
                         .save(provider);
 
@@ -90,28 +90,28 @@ public final class MaterialRecipeHandler {
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_powderbarrel")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(new ItemStack(GTBlocks.POWDERBARREL, 8))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesAmount(4)
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(GTItems.DYNAMITE.asStack(2))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_itnt")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
                         .save(provider);
             }
@@ -474,7 +474,7 @@ public final class MaterialRecipeHandler {
                         "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
                                 "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
                 .inputItems(prevStack)
-                .notConsumable(lens, MarkerMaterials.Color.White)
+                .notConsumable(CustomTags.WHITE_LENS)
                 .outputItems(prefix, material)
                 .duration(300)
                 .EUt(240)
@@ -524,7 +524,7 @@ public final class MaterialRecipeHandler {
                             .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
                             .inputFluids(stack)
                             .outputItems(nugget, material, 9)
-                            .duration((int) material.getMass())
+                            .duration(20)
                             .EUt(VA[ULV])
                             .save(provider);
                 }
@@ -583,7 +583,7 @@ public final class MaterialRecipeHandler {
                         .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
                         .inputFluids(stack)
                         .outputItems(blockStack)
-                        .duration((int) material.getMass()).EUt(VA[ULV])
+                        .duration(180).EUt(VA[ULV])
                         .save(provider);
             }
         }

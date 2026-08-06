@@ -2,24 +2,19 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -27,23 +22,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionResult;
 
+import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -52,114 +48,29 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MinerMachine extends WorkableTieredMachine
                           implements IControllable, IMuiMachine, IDataInfoProvider, IMiner {
 
-    @Getter
-    @SaveField
-    protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
-    @Nullable
-    protected TickableSubscription batterySubs;
-    @Nullable
-    protected ISubscription energySubs;
 
     @SaveField
     @SyncToClient
     public final AutoOutputTrait autoOutput;
 
     public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
-        super(info, tier,
-                new MinerLogic(fortune, speed, maximumRadius),
-                0, (tier + 1) * (tier + 1), 0, 0, ($) -> 0);
+        super(info, tier, new MinerLogic(fortune, speed, maximumRadius),
+                0, (tier + 1) * (tier + 1), 0,
+                0, false, ($) -> 0);
+
         this.energyPerTick = GTValues.V[tier - 1];
-        this.chargerInventory = createChargerItemHandler();
+
+        attachPersistentTrait("batterySlot", new BatterySlotTrait(energyContainer));
+
         this.autoOutput = attachTrait(AutoOutputTrait.ofItems(exportItems));
         autoOutput.setItemOutputDirectionValidator(d -> d != Direction.DOWN);
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    protected CustomItemStackHandler createChargerItemHandler() {
-        var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        // Remove the miner pipes below this miner
-        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        getRecipeLogic().resetRecipeLogic();
     }
 
     @Override
     public MinerLogic getRecipeLogic() {
         return (MinerLogic) super.getRecipeLogic();
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (!isRemote()) {
-            updateBatterySubscription();
-            energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
-            chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (energySubs != null) {
-            energySubs.unsubscribe();
-            energySubs = null;
-        }
-    }
-
-    //////////////////////////////////////
-    // ********** LOGIC **********//
-    //////////////////////////////////////
-    protected void updateBatterySubscription() {
-        if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true)) {
-            batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
-        } else if (batterySubs != null) {
-            batterySubs.unsubscribe();
-            batterySubs = null;
-        }
-    }
-
-    protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false)) {
-            updateBatterySubscription();
-        }
-    }
-
-    private void addDisplayText(List<Component> textList) {
-        int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-        textList.add(recipeLogic.getCustomProgressLine());
-        textList.add(
-                Component.translatable("gtceu.machine.miner.x", getRecipeLogic().getX(), getRecipeLogic().getMineX()));
-        textList.add(
-                Component.translatable("gtceu.machine.miner.y", getRecipeLogic().getY(), getRecipeLogic().getMineY()));
-        textList.add(
-                Component.translatable("gtceu.machine.miner.x", getRecipeLogic().getZ(), getRecipeLogic().getMineZ()));
-        textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
-        if (getRecipeLogic().isDone())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-        else if (getRecipeLogic().isWorking())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.working")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
-        else if (!this.isWorkingEnabled())
-            textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-        if (getRecipeLogic().isInventoryFull())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-        if (!drainInput(true))
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.needspower")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
     }
 
     @Override
@@ -212,31 +123,75 @@ public class MinerMachine extends WorkableTieredMachine
         return new ArrayList<>();
     }
 
-    // TODO(Onion): fix the gui stuff for this
-
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
+        IntSyncValue startX = new IntSyncValue(() -> getRecipeLogic().getStartX()).allowC2S();
+        IntSyncValue startY = new IntSyncValue(() -> getRecipeLogic().getStartY()).allowC2S();
+        IntSyncValue startZ = new IntSyncValue(() -> getRecipeLogic().getStartZ()).allowC2S();
+        IntSyncValue mineX = new IntSyncValue(() -> getRecipeLogic().getMineX()).allowC2S();
+        IntSyncValue mineY = new IntSyncValue(() -> getRecipeLogic().getMineY()).allowC2S();
+        IntSyncValue mineZ = new IntSyncValue(() -> getRecipeLogic().getMineZ()).allowC2S();
+        IntSyncValue workingArea = new IntSyncValue(() -> IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius()))
+                .allowC2S();
+
+        ListWidget<?, ?> textList = new ListWidget<>()
+                .heightRel(1.0f)
+                .collapseDisabledChildren()
+                .coverChildrenWidth()
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .childSeparator(IIcon.EMPTY_2PX)
+                .child(Text
+                        .dynamic(() -> Objects.requireNonNull(
+                                getRecipeLogic().getCustomProgressLine().copy().withStyle(ChatFormatting.WHITE)))
+                        .asWidget())
+                .child(Text.dynamic(
+                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue())
+                                .withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text.dynamic(
+                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue())
+                                .withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text.dynamic(
+                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue())
+                                .withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text
+                        .dynamic(() -> Component.translatable("gtceu.universal.tooltip.working_area",
+                                workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))).asWidget()
+                        .setEnabledIf(w -> getRecipeLogic().isDone()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.working")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))).asWidget()
+                        .setEnabledIf(w -> getRecipeLogic().isWorking()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused")).asWidget()
+                        .setEnabledIf(w -> !isWorkingEnabled()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.invfull")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))).asWidget()
+                        .setEnabledIf(w -> getRecipeLogic().isInventoryFull()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.needspower")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))).asWidget()
+                        .setEnabledIf(w -> !drainInput(true)));
+
         mainWidget
+                .name("content")
+                .coverChildrenWidth(170)
                 .child(Flow.row()
-                        .width(220)
-                        .coverChildrenHeight()
-                        .margin(5)
-                        .childPadding(5)
-                        .child(Flow.column()
-                                .crossAxisAlignment(Alignment.CrossAxis.START)
-                                .padding(5)
-                                .background(GTGuiTextures.DISPLAY)
-                                .widthRel(.6f)
-                                .child(new TextWidget<>(Text.dynamic(() -> {
-                                    List<Component> text = new ArrayList<>();
-                                    addDisplayText(text);
-                                    return text.stream()
-                                            .map(Component::copy)
-                                            .reduce((a, b) -> a.append("\n").append(b))
-                                            .orElse(Component.empty());
-                                })).color(Color.WHITE.main)))
-                        .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(exportItems, "export_inv",
-                                syncManager)));
+                        .name("mainRow")
+                        .coverChildrenWidth(170)
+                        .childPadding(4)
+                        .child(new ParentWidget<>()
+                                .name("displayScreen")
+                                .heightRel(1.0f)
+                                .coverChildrenWidth()
+                                .background(GuiTextures.DISPLAY)
+                                .child(textList.heightRel(1.0f).padding(3)))
+                        .child(GTMuiMachineUtil
+                                .createSquareSlotGroupFromInventory(exportItems, "export_inv", syncManager)
+                                .verticalCenter())
+                        .padding(4, 0));
     }
 }

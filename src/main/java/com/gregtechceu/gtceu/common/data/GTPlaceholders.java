@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
@@ -22,6 +21,7 @@ import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer
 import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
@@ -434,10 +434,10 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
                 if (ctx.pos() == null) throw new NoTargetException();
-                IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(ctx.level(),
-                        ctx.pos(), ctx.side());
-                if (maintenance == null) throw new NotSupportedException();
-                return MultiLineComponent.literal(maintenance.hasMaintenanceProblems() ? 1 : 0);
+                MetaMachine machine = MetaMachine.getMachine(ctx.level(), ctx.pos());
+                if (machine instanceof MaintenanceHatchPartMachine maint)
+                    return MultiLineComponent.literal(maint.hasMaintenanceProblems() ? 1 : 0);
+                throw new NotSupportedException();
             }
 
             @Override

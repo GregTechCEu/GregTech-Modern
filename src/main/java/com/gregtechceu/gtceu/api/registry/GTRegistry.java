@@ -38,11 +38,27 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         REGISTERED.put(registryName, this);
     }
 
-    public boolean containKey(K key) {
+    public boolean containsKey(K key) {
         return keyToValue.containsKey(key);
     }
 
+    /**
+     * @deprecated use {@link #containsKey(Object)} (Object)} (Object)}
+     */
+    @Deprecated(since = "8.0.0")
+    public boolean containKey(K key) {
+        return containsKey(key);
+    }
+
+    /**
+     * @deprecated use {@link #containsValue(Object)} (Object)}
+     */
+    @Deprecated(since = "8.0.0")
     public boolean containValue(V value) {
+        return containsValue(value);
+    }
+
+    public boolean containsValue(V value) {
         return keyToValue.containsValue(value);
     }
 
@@ -106,7 +122,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     @Nullable
     public <T extends V> T replace(K key, T value) {
-        if (!containKey(key)) {
+        if (!containsKey(key)) {
             GTCEu.LOGGER.warn("[replace] couldn't find key {} in registry {}", registryName, key);
         }
 
@@ -193,53 +209,6 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     // ************************ Built-in Registry ************************//
 
-    public static class String<V> extends GTRegistry<java.lang.String, V> {
-
-        public String(ResourceLocation registryName) {
-            super(registryName);
-        }
-
-        @Override
-        public void writeBuf(V value, FriendlyByteBuf buf) {
-            buf.writeBoolean(containValue(value));
-            if (containValue(value)) {
-                buf.writeUtf(getKey(value));
-            }
-        }
-
-        @Override
-        public V readBuf(FriendlyByteBuf buf) {
-            if (buf.readBoolean()) {
-                return get(buf.readUtf());
-            }
-            return null;
-        }
-
-        @Override
-        public Tag saveToNBT(V value) {
-            if (containValue(value)) {
-                return StringTag.valueOf(getKey(value));
-            }
-            return new CompoundTag();
-        }
-
-        @Override
-        public V loadFromNBT(Tag tag) {
-            return get(tag.getAsString());
-        }
-
-        @Override
-        public Codec<V> codec() {
-            return Codec.STRING.flatXmap(
-                    key -> Optional.ofNullable(this.get(key)).map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(
-                                    () -> "Unknown registry key in %s: %s".formatted(this.registryName, key))),
-                    val -> Optional.ofNullable(this.getKey(val)).map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(
-                                    () -> "Unknown registry value in %s: %s".formatted(this.registryName, val))));
-        }
-    }
-
     public static class RL<V> extends GTRegistry<ResourceLocation, V> {
 
         public RL(ResourceLocation registryName) {
@@ -248,8 +217,8 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public void writeBuf(V value, FriendlyByteBuf buf) {
-            buf.writeBoolean(containValue(value));
-            if (containValue(value)) {
+            buf.writeBoolean(containsValue(value));
+            if (containsValue(value)) {
                 buf.writeUtf(getKey(value).toString());
             }
         }
@@ -264,7 +233,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public Tag saveToNBT(V value) {
-            if (containValue(value)) {
+            if (containsValue(value)) {
                 return StringTag.valueOf(getKey(value).toString());
             }
             return new CompoundTag();

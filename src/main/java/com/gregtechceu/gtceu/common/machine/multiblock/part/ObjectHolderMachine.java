@@ -6,8 +6,10 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -33,20 +35,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMachine {
 
-    // purposefully not exposed to automation or capabilities
     @SaveField
-    private final ObjectHolderHandler heldItems;
+    private final NotifiableItemStackHandler heldItems;
     @Getter
     @SaveField
     @SyncToClient
     private boolean isLocked;
 
-    @Getter
-    private NotifiableItemStackHandler handler;
-
     public ObjectHolderMachine(BlockEntityCreationInfo info) {
         super(info);
-        heldItems = attachTrait(new ObjectHolderHandler());
+        heldItems = attachTrait(new NotifiableItemStackHandler(2, IO.IN, IO.BOTH, ObjectHolderStorage::new));
     }
 
     public void setLocked(boolean locked) {
@@ -88,7 +86,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMa
                 .center()
                 .coverChildren()
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(heldItems, 1).slotGroup(orbGroup))
+                        .slot(new ModularSlot(heldItems.storage, 1).slotGroup(orbGroup))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY)
                         .marginLeft(30)
                         .marginRight(30)
@@ -99,7 +97,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMa
                         .pos(75, 0))
 
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(heldItems, 0).slotGroup(objectGroup))
+                        .slot(new ModularSlot(heldItems.storage, 0).slotGroup(objectGroup))
                         .background(GTGuiTextures.SLOT, GTGuiTextures.RESEARCH_STATION_OVERLAY)
                         .marginLeft(30)
                         .marginRight(30)
@@ -111,22 +109,19 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMa
         super.setFrontFacing(frontFacing);
         var controllers = getControllers();
         for (var controller : controllers) {
-            if (controller != null && controller.isFormed()) {
-                controller.checkPatternWithLock();
+            if (controller.isFormed()) {
+                PatternState patternState = controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE);
+                if (!patternState.getState().isValid()) {
+                    controller.checkDefaultStructurePattern();
+                }
             }
         }
     }
 
-    private class ObjectHolderHandler extends NotifiableItemStackHandler {
+    private class ObjectHolderStorage extends CustomItemStackHandler {
 
-        public ObjectHolderHandler() {
-            super(2, IO.IN, IO.BOTH, size -> new CustomItemStackHandler(size) {
-
-                @Override
-                public int getSlotLimit(int slot) {
-                    return 1;
-                }
-            });
+        public ObjectHolderStorage(int size) {
+            super(size);
         }
 
         // only allow a single item, no stack size
@@ -138,15 +133,18 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IMuiMa
         // prevent extracting the item while running
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (!isLocked()) {
-                return super.extractItem(slot, amount, simulate);
+            if (isLocked()) {
+                return ItemStack.EMPTY;
             }
-            return ItemStack.EMPTY;
+            return super.extractItem(slot, amount, simulate);
         }
 
-        // only allow data items in the second slot
+        // only allow data items in the second slot, and nothing at all while running
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
+            if (isLocked()) {
+                return false;
+            }
             if (stack.isEmpty()) {
                 return true;
             }

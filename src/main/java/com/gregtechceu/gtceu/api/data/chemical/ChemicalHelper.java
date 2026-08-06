@@ -20,6 +20,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -97,7 +98,7 @@ public class ChemicalHelper {
     public static Material getMaterial(Fluid fluid) {
         if (FLUID_MATERIAL.isEmpty()) {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
-            for (final Material material : GTRegistries.MATERIALS.values()) {
+            for (final Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     FluidStorageKey.allKeys().stream()
@@ -209,7 +210,7 @@ public class ChemicalHelper {
             // lookups.
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
-                for (Material material : GTRegistries.MATERIALS.values()) {
+                for (Material material : GTRegistries.MATERIALS) {
                     prefix.getItemTags(material).stream()
                             .filter(allItemTags::contains)
                             .forEach(tagKey -> {
@@ -238,6 +239,16 @@ public class ChemicalHelper {
             }
             return items;
         }).stream().map(Supplier::get).collect(Collectors.toList());
+    }
+
+    public static Item getItem(MaterialEntry materialEntry) {
+        List<ItemLike> items = getItems(materialEntry);
+        if (items.isEmpty()) return Items.AIR;
+        return items.get(0).asItem();
+    }
+
+    public static Item getItem(TagPrefix tagPrefix, Material material) {
+        return getItem(new MaterialEntry(tagPrefix, material));
     }
 
     public static ItemStack get(MaterialEntry materialEntry, int size) {

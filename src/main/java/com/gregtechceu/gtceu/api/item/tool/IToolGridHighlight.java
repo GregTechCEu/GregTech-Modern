@@ -36,11 +36,12 @@ public interface IToolGridHighlight {
      * @param pos       Block pos
      * @param state     Block state
      * @param toolTypes The GT tool types of the held item, if any
+     * @param held
      * @param side      The machine side which this grid segment correspond to
      * @return The icon to be rendered, or null
      */
     default @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                         Direction side) {
+                                         ItemStack held, Direction side) {
         return null;
     }
 }

@@ -130,7 +130,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
 
             sidesToRender.add(gas ? Direction.DOWN : Direction.UP);
         }
-        RenderBufferHelper.renderCube(builder, poseStack.last(), sidesToRender,
+        RenderBufferHelper.renderTexturedCube(builder, poseStack.last(), sidesToRender,
                 ext.getTintColor(fluid) | 0xff000000, LightTexture.FULL_BRIGHT, fluidSprite,
                 MIN, minY, minZ, MAX, maxY, maxZ);
 

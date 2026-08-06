@@ -193,10 +193,6 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_MODERNFIX);
         }
 
-        public static boolean isJAVDLoaded() {
-            return isModLoaded(GTValues.MODID_JAVD);
-        }
-
         public static boolean isFTBTeamsLoaded() {
             return isModLoaded(GTValues.MODID_FTB_TEAMS);
         }

@@ -5,8 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -97,13 +96,6 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     //////////////////////////////
 
     public class FEContainer extends MachineTrait implements IEnergyStorage {
-
-        public static final MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class);
-
-        @Override
-        public MachineTraitType<FEContainer> getTraitType() {
-            return TYPE;
-        }
 
         public FEContainer() {
             super();

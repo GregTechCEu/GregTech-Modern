@@ -68,4 +68,10 @@ public class CustomItemStackHandler extends ItemStackHandler
         }
         clear();
     }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        if (nbt.getInt("Size") != stacks.size()) nbt.putInt("Size", stacks.size());
+        super.deserializeNBT(nbt);
+    }
 }

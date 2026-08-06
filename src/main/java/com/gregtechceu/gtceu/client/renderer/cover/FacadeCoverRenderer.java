@@ -190,10 +190,10 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 // fix the quad's UVs based on the original & clamped vertices
                 interpolator.transform(emitter);
 
+                quads.add(emitter.toBlockBakedQuad());
                 emitter.emit();
             }
         }
-        meshBuilder.build().asBlockBakedQuads(quads::add);
     }
 
     @Override
@@ -366,12 +366,12 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         // fix the quad's UVs based on the original & clamped vertices
                         interpolator.transform(emitter);
 
+                        quads.add(emitter.toBlockBakedQuad());
                         emitter.emit();
                     }
                 }
             }
 
-            meshBuilder.build().asBlockBakedQuads(quads::add);
             return quads;
         }
 

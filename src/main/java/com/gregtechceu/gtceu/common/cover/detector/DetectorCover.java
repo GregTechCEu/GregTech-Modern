@@ -84,7 +84,7 @@ public abstract class DetectorCover extends CoverBehavior implements IControllab
             context.getPlayer().sendSystemMessage(Component.translatable(translationKey));
         }
 
-        return InteractionResult.CONSUME;
+        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
     }
 
     @Override
