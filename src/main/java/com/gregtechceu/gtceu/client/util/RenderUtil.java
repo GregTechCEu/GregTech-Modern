@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -48,13 +49,13 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.*;
 import java.util.function.BiFunction;
+
+import static net.minecraft.util.FastColor.ARGB32.*;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderUtil {
@@ -133,27 +134,46 @@ public class RenderUtil {
         return DIRECTION_NORMAL_MAP.get(direction);
     }
 
-    public static int getFluidLight(Fluid fluid, BlockPos pos) {
-        if (Minecraft.getInstance().level == null) return 0;
-        return LevelRenderer.getLightColor(Minecraft.getInstance().level, fluid.defaultFluidState().createLegacyBlock(),
-                pos);
+    public static int getFluidLight(Fluid fluid, BlockPos pos, @Nullable BlockAndTintGetter level) {
+        if (level == null) level = Minecraft.getInstance().level;
+        if (level == null) return 0;
+
+        return LevelRenderer.getLightColor(level, fluid.defaultFluidState().createLegacyBlock(), pos);
     }
 
-    public static void vertex(Matrix4f pose, VertexConsumer vertexConsumer, float x, float y, float z,
-                              int r, int g, int b, int a, float u, float v, int overlayCoords, int lightOverlay,
+    public static void vertex(PoseStack.Pose pose, VertexConsumer vertexConsumer,
+                              Vector3fc pos, Vector3fc normal, float u, float v,
+                              int argb, int packedOverlay, int packedLight) {
+        /*
+         * For future reference:
+         * The order of the vertex calls is important.
+         * Change it, and it'll break and complain that you didn't fill all elements (even though you did).
+         */
+        vertexConsumer.gtceu$vertex(pose.pose(), pos)
+                .color(argb)
+                .uv(u, v)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .gtceu$normal(pose.normal(), normal)
+                .endVertex();
+    }
+
+    public static void vertex(PoseStack.Pose pose, VertexConsumer vertexConsumer,
+                              float x, float y, float z,
+                              int r, int g, int b, int a, float u, float v,
+                              int packedOverlay, int packedLight,
                               float v0, float v1, float v2) {
         /*
          * For future reference:
          * The order of the vertex calls is important.
          * Change it, and it'll break and complain that you didn't fill all elements (even though you did).
          */
-        vertexConsumer
-                .vertex(pose, x, y, z)
+        vertexConsumer.vertex(pose.pose(), x, y, z)
                 .color(r, g, b, a)
                 .uv(u, v)
-                .overlayCoords(overlayCoords)
-                .uv2(lightOverlay)
-                .normal(v0, v1, v2)
+                .overlayCoords(packedOverlay)
+                .uv2(packedLight)
+                .normal(pose.normal(), v0, v1, v2)
                 .endVertex();
     }
 
@@ -204,6 +224,86 @@ public class RenderUtil {
         return fluid;
     }
 
+    /**
+     * Fills a rectangle with a gradient color from colorFrom to colorTo at the specified z-level using the given render
+     * type and coordinates as the boundaries.
+     *
+     * @param y2         the y-coordinate of the second corner of the rectangle.
+     * @param x2         the x-coordinate of the second corner of the rectangle.
+     * @param y1         the y-coordinate of the first corner of the rectangle.
+     * @param x1         the x-coordinate of the first corner of the rectangle.
+     * @param renderType the render type to use.
+     * @param z          the z-level of the rectangle.
+     * @param colorTo    the ending color of the gradient.
+     * @param colorFrom  the starting color of the gradient.
+     */
+    public static void fillHorizontalGradient(GuiGraphics graphics, RenderType renderType, int x1, int y1, int x2,
+                                              int y2, int colorFrom, int colorTo, int z) {
+        VertexConsumer vertexconsumer = graphics.bufferSource().getBuffer(renderType);
+        fillHorizontalGradient(graphics, vertexconsumer, x1, y1, x2, y2, z, colorFrom, colorTo);
+        ((GuiGraphicsAccessor) graphics).callFlushIfUnmanaged();
+    }
+
+    /**
+     * The core `fillGradient` method.
+     * <p>
+     * Fills a rectangle with a gradient color from colorFrom to colorTo at the specified z-level using the given render
+     * type and coordinates as the boundaries.
+     *
+     * @param consumer  the {@linkplain VertexConsumer} object for drawing the vertices on screen.
+     * @param x1        the x-coordinate of the first corner of the rectangle.
+     * @param y1        the y-coordinate of the first corner of the rectangle.
+     * @param x2        the x-coordinate of the second corner of the rectangle.
+     * @param y2        the y-coordinate of the second corner of the rectangle.
+     * @param z         the z-level of the rectangle.
+     * @param colorFrom the starting color of the gradient.
+     * @param colorTo   the ending color of the gradient.
+     */
+    private static void fillHorizontalGradient(GuiGraphics graphics, VertexConsumer consumer,
+                                               float x1, float y1, float x2, float y2, float z,
+                                               int colorFrom, int colorTo) {
+        int a1 = alpha(colorFrom), r1 = red(colorFrom), g1 = green(colorFrom), b1 = blue(colorFrom);
+        int a2 = alpha(colorTo), r2 = red(colorTo), g2 = green(colorTo), b2 = blue(colorTo);
+
+        Matrix4f pose = graphics.pose().last().pose();
+        consumer.vertex(pose, x1, y1, z).color(r1, g1, b1, a1).endVertex();
+        consumer.vertex(pose, x1, y2, z).color(r1, g1, b1, a1).endVertex();
+        consumer.vertex(pose, x2, y2, z).color(r2, g2, b2, a2).endVertex();
+        consumer.vertex(pose, x2, y1, z).color(r2, g2, b2, a2).endVertex();
+    }
+
+    /**
+     * Converts an (A)RGB integer color into an array of floats, for use in GL calls
+     *
+     * @return float[]{R, G, B, A}
+     */
+    public static float[] floats(int argb) {
+        return new float[] {
+                (float) (argb >> 16 & 255) / 255.0F,
+                (float) (argb >> 8 & 255) / 255.0F,
+                (float) (argb & 255) / 255.0F,
+                (float) (argb >> 24 & 255) / 255.0F
+        };
+    }
+
+    public static int interpolateColor(int color1, int color2, float blend) {
+        int a1 = color1 >> 24 & 255;
+        int r1 = color1 >> 16 & 255;
+        int g1 = color1 >> 8 & 255;
+        int b1 = color1 & 255;
+
+        int a2 = color2 >> 24 & 255;
+        int r2 = color2 >> 16 & 255;
+        int g2 = color2 >> 8 & 255;
+        int b2 = color2 & 255;
+
+        int a = (int) (a1 * (1 - blend) + a2 * blend);
+        int r = (int) (r1 * (1 - blend) + r2 * blend);
+        int g = (int) (g1 * (1 - blend) + g2 * blend);
+        int b = (int) (b1 * (1 - blend) + b2 * blend);
+        return a << 24 | r << 16 | g << 8 | b;
+    }
+
     public static void moveToFace(PoseStack poseStack, Vector3fc pos, Direction face) {
         moveToFace(poseStack, pos.x(), pos.y(), pos.z(), face);
     }
@@ -212,6 +312,10 @@ public class RenderUtil {
         poseStack.translate(Math.fma(face.getStepX(), 0.5f, x),
                 Math.fma(face.getStepY(), 0.5f, y),
                 Math.fma(face.getStepZ(), 0.5f, z));
+    }
+
+    public static BakedModel getModelForState(BlockState state) {
+        return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
     }
 
     public static void drawBlock(BlockAndTintGetter level, BlockPos pos, BlockState state,

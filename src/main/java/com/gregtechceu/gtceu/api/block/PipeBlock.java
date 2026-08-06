@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -43,7 +44,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -73,7 +73,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType,
         WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block
-                               implements EntityBlock, SimpleWaterloggedBlock {
+                               implements ManagedSyncEntityBlock, SimpleWaterloggedBlock {
 
     public final PipeType pipeType;
 
@@ -434,22 +434,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return shape;
         }
         return getShapes(connections);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                  BlockEntityType<T> blockEntityType) {
-        if (blockEntityType == getBlockEntityType()) {
-            if (!level.isClientSide) {
-                return (pLevel, pPos, pState, pTile) -> {
-                    if (pTile instanceof IPipeNode<?, ?> pipeNode) {
-                        pipeNode.serverTick();
-                    }
-                };
-            }
-        }
-        return null;
     }
 
     @Override

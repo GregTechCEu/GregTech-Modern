@@ -314,11 +314,11 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putBoolean("inverted", isInverted);
         tag.putInt("redstoneLvl", minRedstoneStrength);
         tag.putBoolean("preventPowerfail", preventPowerFail);
-        return super.copyConfig(tag);
     }
 
     @Override

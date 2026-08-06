@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
@@ -14,12 +16,17 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.placeholder.ModulePlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
+import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -48,6 +55,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -57,6 +65,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class GTPlaceholders {
+
+    static {
+        GTRegistries.PLACEHOLDERS.unfreeze();
+    }
 
     public static int countItems(String id, @Nullable IItemHandler itemHandler) {
         if (itemHandler == null) return 0;
@@ -92,7 +104,7 @@ public class GTPlaceholders {
         return cnt;
     }
 
-    public static void initPlaceholders() {
+    public static void init() {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
         PlaceholderHandler.addPlaceholder(new Placeholder("energy") {
 
@@ -1170,6 +1182,21 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(ctx.monitorGroup().getDataSlot() + 1);
             }
         });
+
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init();
+        }
+
+        if (GTCEu.Mods.isCCTweakedLoaded()) {
+            CCTweakedPlugin.initPlaceholders();
+        }
+
+        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
+            GTCreateIntegration.initPlaceholders();
+        }
+
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.PLACEHOLDERS, Placeholder.class));
+        GTRegistries.PLACEHOLDERS.freeze();
     }
 
     @OnlyIn(Dist.CLIENT)

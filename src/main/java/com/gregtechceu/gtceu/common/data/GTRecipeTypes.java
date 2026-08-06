@@ -470,6 +470,8 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.COOLING);
 
     public static final GTRecipeType RESEARCH_STATION_RECIPES = register("research_station", ELECTRIC)
+            .setEUIO(IO.IN)
+            .setMaxSize(IO.IN, GTRecipeCapabilities.CWU, 1)
             .setMaxIOSize(2, 1, 0, 0)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SCANNER_OVERLAY)
@@ -491,6 +493,7 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.FIRE);
 
     public static final GTRecipeType SCANNER_RECIPES = register("scanner", ELECTRIC)
+            .setEUIO(IO.IN)
             .setMaxIOSize(2, 1, 1, 0)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DATA_ORB_OVERLAY)

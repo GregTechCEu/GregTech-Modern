@@ -293,7 +293,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     public GTRecipeType getRecipeType() {
-        return recipeTypes[activeRecipeType];
+        int index = activeRecipeType >= 0 && activeRecipeType < recipeTypes.length ? activeRecipeType : 0;
+        return recipeTypes[index];
     }
 
     /**

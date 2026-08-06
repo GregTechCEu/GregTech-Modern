@@ -25,6 +25,8 @@ public class IntegrationLang {
         provider.add("gtceu.jei.programmed_circuit", "Programmed Circuit Page");
         provider.add("gtceu.jei.bedrock_fluid_diagram", "Bedrock Fluid Diagram");
         provider.add("gtceu.jei.bedrock_ore_diagram", "Bedrock Ore Diagram");
+        provider.add("gtceu.jei.bedrock_vein_diagram.yield", "Yield: %s");
+        provider.add("gtceu.jei.bedrock_vein_diagram.depleted", "Depleted: %s");
         provider.add("gtceu.jei.ore_vein_diagram.chance", "§eChance: %s§r");
         provider.add("gtceu.jei.ore_vein_diagram.spawn_range", "Spawn Range:");
         provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");
@@ -84,6 +86,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.allow_output_input", "Allow Input");
         provider.add("gtceu.top.cable_voltage", "Voltage: ");
         provider.add("gtceu.top.cable_amperage", "Amperage: ");
+        provider.add("gtceu.top.cable_overloaded", "§4OVERHEATING: %s%%§r");
         provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");

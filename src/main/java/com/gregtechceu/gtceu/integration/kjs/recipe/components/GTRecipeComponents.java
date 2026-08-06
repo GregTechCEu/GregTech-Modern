@@ -24,6 +24,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.ModLoader;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -378,6 +379,7 @@ public class GTRecipeComponents {
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
         AddonFinder.getAddons().forEach(addon -> addon.registerRecipeKeys(event));
+        ModLoader.get().postEvent(event);
         VALID_CAPS.putAll(event.getRegisteredKeys());
     }
 

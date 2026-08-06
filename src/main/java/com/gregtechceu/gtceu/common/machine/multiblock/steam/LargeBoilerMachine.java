@@ -132,12 +132,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
-                    if (drainWater == null || drainWater.isEmpty()) {
+                    if (drainWater.isEmpty()) {
                         break;
                     }
                 }
-                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
-                        maxDrain - drainWater.get(0).getAmount();
+                var drained = drainWater.isEmpty() ? maxDrain : maxDrain - drainWater.get(0).getAmount();
 
                 steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
@@ -149,7 +148,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
                         fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
-                        if (fillSteam == null) break;
+                        if (fillSteam.isEmpty()) break;
                     }
                 }
 

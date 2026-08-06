@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.ore;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.client.util.DrawUtil;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
@@ -85,7 +85,7 @@ public class OreVeinElementRenderer extends
 
         Material firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
         int materialARGB = firstMaterial.getMaterialARGB();
-        float[] colors = DrawUtil.floats(materialARGB);
+        float[] colors = RenderUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         ResourceLocation oreTexture = MaterialIconType.rawOre
@@ -101,7 +101,7 @@ public class OreVeinElementRenderer extends
         oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), "secondary", true);
         if (oreTexture != null) {
             int materialSecondaryARGB = firstMaterial.getMaterialSecondaryARGB();
-            colors = DrawUtil.floats(materialSecondaryARGB);
+            colors = RenderUtil.floats(materialSecondaryARGB);
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                     .apply(oreTexture);

@@ -103,7 +103,7 @@ public abstract class GuiGraphicsMixin {
         RichTooltip tooltip = new RichTooltip();
         tooltip.parent(area -> RichTooltip.findIngredientArea(area, mouseX, mouseY));
         // Other positions don't really work due to the lack of GuiContext in non-modular uis
-        tooltip.add(textLines.get(0)).newLine();
+        tooltip.add((Component) textLines.get(0)).newLine();
         // vanilla inserts the bundle tooltip here so we need to do it as the 2nd item too
         tooltipComponent.ifPresent(component -> tooltip.addLine(component.toString()));
 
@@ -111,7 +111,7 @@ public abstract class GuiGraphicsMixin {
             tooltip.spaceLine();
         }
         for (int i = 1, n = textLines.size(); i < n; i++) {
-            tooltip.add(textLines.get(i)).newLine();
+            tooltip.add((Component) textLines.get(i)).newLine();
         }
 
         GuiContext context = GuiContext.getDefault();

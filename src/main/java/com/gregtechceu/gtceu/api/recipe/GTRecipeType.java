@@ -105,10 +105,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         this.proxyRecipes = map;
     }
 
-    public GTRecipeType setMaxIOSize(int maxInputs, int maxOutputs, int maxFluidInputs, int maxFluidOutputs) {
-        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxInputs)
+    public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
+        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxItemInputs)
                 .setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
-                .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxOutputs)
+                .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxItemOutputs)
                 .setMaxSize(IO.OUT, FluidRecipeCapability.CAP, maxFluidOutputs);
     }
 

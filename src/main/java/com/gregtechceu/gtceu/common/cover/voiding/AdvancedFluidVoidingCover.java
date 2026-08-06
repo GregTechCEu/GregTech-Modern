@@ -172,11 +172,10 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putInt("voidingMode", getVoidingMode().ordinal());
         tag.putInt("voidSize", getGlobalTransferSizeMillibuckets());
         tag.putInt("voidBucketMode", getTransferBucketMode().ordinal());
-        return super.copyConfig(tag);
     }
 
     @Override

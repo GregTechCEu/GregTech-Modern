@@ -27,6 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.factory.SidedPosGuiData;
@@ -37,6 +38,7 @@ import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
+import brachy.modularui.utils.MutableSingletonList;
 import brachy.modularui.utils.serialization.network.IByteBufAdapter;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.EmptyWidget;
@@ -51,6 +53,7 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("SameParameterValue")
@@ -210,11 +213,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putString("colorStr", colorStr);
         tag.putInt("permission", getPermission().ordinal());
         tag.putInt("io", getIo().ordinal());
-        return super.copyConfig(tag);
     }
 
     @Override
@@ -225,9 +227,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         super.pasteConfig(player, tag);
     }
 
-    private List<VirtualEntry> getVirtualEntries() {
+    private List<VirtualEntry> getVirtualEntries(Predicate<VirtualEntry> filter) {
         return VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).getEntries(getOwner(), getEntryType())
-                .values().stream().toList();
+                .values()
+                .stream()
+                .filter(filter)
+                .toList();
     }
 
     protected enum Permissions {
@@ -277,9 +282,11 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .tooltip(1, t -> t.addLine(Text.lang(Permissions.PROTECTED.tooltip)))
                         .tooltip(2, t -> t.addLine(Text.lang(Permissions.PRIVATE.tooltip)))
                         .value(new EnumSyncValue<>(Permissions.class, this::getPermission,
-                                this::setPermission)))
+                                this::setPermission)
+                                .allowC2S()))
                 .child(new TextFieldWidget()
-                        .value(new StringSyncValue(this::getColorStr, this::setColorStr))
+                        .value(new StringSyncValue(this::getColorStr, this::setColorStr)
+                                .allowC2S())
                         .setMaxLength(8)
                         .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
                         .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_name")))
@@ -294,7 +301,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .setMaxLength(32)
                 .widthRel(1f)
                 .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_description"))
-                .value(new StringSyncValue(this::getDescription, this::setDescription))));
+                .value(new StringSyncValue(this::getDescription, this::setDescription)
+                        .allowC2S())));
 
         Flow bottomRow = coverUIRow();
         bottomRow.child(GTMuiWidgets.createPowerButton(this));
@@ -347,8 +355,24 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .closeOnOutOfBoundsClick(true)
                 .child(GTMuiWidgets.createTitleBar(() -> getAttachItem(), 176, GTGuiTextures.BACKGROUND));
 
+        MutableSingletonList<String> searchString = new MutableSingletonList<>("");
+        var searchSync = SyncHandlers.string(searchString::get, searchString::set)
+                .allowC2S();
+        Flow col = Flow.col()
+                .childPadding(4)
+                .widthRel(1)
+                .marginTop(7);
+        panel.child(col);
+        col.child(Flow.row()
+                .coverChildrenHeight()
+                .widthRel(0.8f)
+                .child(GuiTextures.SEARCH.asWidget())
+                .child(new TextFieldWidget()
+                        .widthRelOffset(1f, -20)
+                        .value(searchSync)));
+
         var entries = new GenericListSyncHandler.Builder<VirtualEntry>()
-                .getter(this::getVirtualEntries)
+                .getter(() -> this.getVirtualEntries(entry -> entry.getDescription().contains(searchString.get())))
                 .adapter(new VirtualEntryAdapter())
                 .build();
         syncManager.syncValue("entries", entries);
@@ -377,9 +401,8 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
             }
         });
 
-        panel.child(new DynamicSyncedWidget<>()
-                .syncHandler(dynamicLinkedSyncHandler)
-                .top(7).margin(7, 0)
+        col.child(new DynamicSyncedWidget<>()
+                .syncHandler(dynamicLinkedSyncHandler).margin(7, 0)
                 .widthRel(1.0f).coverChildrenHeight());
 
         return panel;

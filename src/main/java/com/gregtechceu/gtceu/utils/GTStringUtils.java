@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -8,6 +9,7 @@ import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -168,5 +170,19 @@ public class GTStringUtils {
             if (n >= i && max < i) max = i;
         }
         return "%.2f%s".formatted(((double) n) / max, suffixes.get(max));
+    }
+
+    public static String getPropertyValueString(Map.Entry<Property<?>, Comparable<?>> entry) {
+        Property<?> property = entry.getKey();
+        Comparable<?> value = entry.getValue();
+
+        String valueString = Util.getPropertyName(property, value);
+        if (Boolean.TRUE.equals(value)) {
+            valueString = ChatFormatting.GREEN + valueString;
+        } else if (Boolean.FALSE.equals(value)) {
+            valueString = ChatFormatting.RED + valueString;
+        }
+
+        return property.getName() + ": " + valueString;
     }
 }

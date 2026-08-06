@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.commands.arguments;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -26,7 +26,7 @@ public class MaterialArgument implements ArgumentType<Material> {
 
     @Override
     public Material parse(StringReader reader) throws CommandSyntaxException {
-        return MaterialParser.parseForMaterial(GTCEuAPI.materialManager, reader);
+        return MaterialParser.parseForMaterial(GTRegistries.MATERIALS, reader);
     }
 
     public static <S> Material getMaterial(CommandContext<S> context, String name) {
@@ -35,7 +35,7 @@ public class MaterialArgument implements ArgumentType<Material> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return MaterialParser.fillSuggestions(GTCEuAPI.materialManager, builder);
+        return MaterialParser.fillSuggestions(GTRegistries.MATERIALS, builder);
     }
 
     @Override

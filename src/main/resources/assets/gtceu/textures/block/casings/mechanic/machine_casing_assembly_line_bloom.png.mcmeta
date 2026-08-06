@@ -2,10 +2,7 @@
 	"animation":{
 		"frametime":2
 	},
-    "ldlib": {
-        "emissive": true
-    },
-    "shimmer": {
+    "gtceu": {
         "bloom": true
     }
 }

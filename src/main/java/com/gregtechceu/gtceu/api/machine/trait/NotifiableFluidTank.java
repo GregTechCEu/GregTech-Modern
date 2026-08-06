@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -90,10 +91,10 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                             boolean simulate) {
+    public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                            boolean simulate) {
         if (io != handlerIO) return left;
-        if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
+        if (io != IO.IN && io != IO.OUT) return left;
 
         // Temporarily remove listeners so that we can broadcast the entire set of transactions once
         Runnable[] listeners = new Runnable[storages.length];
@@ -217,7 +218,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             if (changed && action.execute()) listeners[i].run();
         }
 
-        return left.isEmpty() ? null : left;
+        return left;
     }
 
     @Override

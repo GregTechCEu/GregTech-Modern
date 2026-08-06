@@ -7,16 +7,15 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElementHelper;
@@ -24,44 +23,18 @@ import snownee.jade.api.ui.IElementHelper;
 import static com.gregtechceu.gtceu.utils.GTUtil.formatLongNumber;
 import static com.gregtechceu.gtceu.utils.GTUtil.getStringRemainTime;
 
-public class BatteryStorageInfoProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBufferMachine, CompoundTag> {
+
+    public BatteryStorageInfoProvider() {
+        super(GTCEu.id("battery_info"), BatteryBufferMachine.class);
+    }
 
     @Override
-    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getBlockEntity() instanceof BatteryBufferMachine) {
-            CompoundTag serverData = blockAccessor.getServerData();
-            if (serverData.contains("batteries")) {
-                CompoundTag tag = serverData.getCompound("batteries");
-                CompoundTag container = tag.getCompound("energy");
-                long changed = container.getLong("changed"), stored = container.getLong("stored"),
-                        capacity = container.getLong("capacity");
-                iTooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
-                if (changed > 0L) {
-                    iTooltip.add(Component
-                            .translatable("gtceu.jade.remaining_charge_time",
-                                    getStringRemainTime((capacity - stored) / changed)));
-                } else if (changed < 0L) {
-                    iTooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
-                            getStringRemainTime((stored) / -changed)));
-                }
-                if (Minecraft.getInstance().player.isShiftKeyDown()) {
-                    CustomItemStackHandler handler = new CustomItemStackHandler();
-                    handler.deserializeNBT(tag.getCompound("storage"));
-                    IElementHelper helper = iTooltip.getElementHelper();
-                    for (int i = 0; i < handler.getSlots(); i++) {
-                        if (handler.getStackInSlot(i).getCount() != 0) {
-                            ItemStack stack = handler.getStackInSlot(i);
-                            iTooltip.add(helper.smallItem(stack));
-                            IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
-                            if (item == null) continue;
-                            iTooltip.append(Component.literal(
-                                    GTValues.VNF[item.getTier()] + "§r " + formatLongNumber(item.getCharge()) +
-                                            " / " + formatLongNumber(item.getMaxCharge()) + " EU"));
-                        }
-                    }
-                }
-            }
-        }
+    protected CompoundTag write(BatteryBufferMachine machine) {
+        CompoundTag tag = new CompoundTag();
+        tag.put("energy", getEnergyData(machine.energyContainer));
+        tag.put("storage", machine.getBatteryInventory().serializeNBT());
+        return tag;
     }
 
     private CompoundTag getEnergyData(IEnergyContainer container) {
@@ -73,17 +46,35 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof BatteryBufferMachine machine) {
-            CompoundTag tag = new CompoundTag();
-            tag.put("energy", getEnergyData(machine.energyContainer));
-            tag.put("storage", machine.getBatteryInventory().serializeNBT());
-            compoundTag.put("batteries", tag);
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
+        CompoundTag container = data.getCompound("energy");
+        long changed = container.getLong("changed"), stored = container.getLong("stored"),
+                capacity = container.getLong("capacity");
+        tooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
+        if (changed > 0L) {
+            tooltip.add(Component
+                    .translatable("gtceu.jade.remaining_charge_time",
+                            getStringRemainTime((capacity - stored) / changed)));
+        } else if (changed < 0L) {
+            tooltip.add(Component.translatable("gtceu.jade.remaining_discharge_time",
+                    getStringRemainTime((stored) / -changed)));
         }
-    }
-
-    @Override
-    public ResourceLocation getUid() {
-        return GTCEu.id("battery_info");
+        if (GTUtil.isShiftDown()) {
+            CustomItemStackHandler handler = new CustomItemStackHandler();
+            handler.deserializeNBT(data.getCompound("storage"));
+            IElementHelper helper = tooltip.getElementHelper();
+            for (int i = 0; i < handler.getSlots(); i++) {
+                if (handler.getStackInSlot(i).getCount() != 0) {
+                    ItemStack stack = handler.getStackInSlot(i);
+                    tooltip.add(helper.smallItem(stack));
+                    IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
+                    if (item == null) continue;
+                    tooltip.append(Component.literal(
+                            GTValues.VNF[item.getTier()] + "§r " + formatLongNumber(item.getCharge()) +
+                                    " / " + formatLongNumber(item.getMaxCharge()) + " EU"));
+                }
+            }
+        }
     }
 }

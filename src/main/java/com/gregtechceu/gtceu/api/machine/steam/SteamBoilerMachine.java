@@ -284,7 +284,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
-        return InteractionResult.PASS;
+        if (!isRemote()) {
+            context.getPlayer().sendSystemMessage(Component.translatable("behaviour.soft_hammer.ignored"));
+        }
+        return InteractionResult.sidedSuccess(getLevel().isClientSide);
     }
 
     @Override

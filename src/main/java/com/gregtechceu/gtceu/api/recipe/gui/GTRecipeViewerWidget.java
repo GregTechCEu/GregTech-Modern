@@ -184,7 +184,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
                 .overlay(Text.str("ID"))
                 .decoration()
-                .bottom(16).right(3)
+                .bottom(3).right(3)
                 .size(15, 15)
                 .tooltip(r -> r.addLine("Click to copy recipe ID: " + baseRecipe.id))
                 .onMousePressed((ctx, b) -> {
@@ -194,36 +194,34 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     }
 
     private void attachOverclockButton() {
-        childIf(RecipeHelper.getRealEUtWithIO(baseRecipe).isInput(),
-                () -> new ButtonWidget<>().background(IDrawable.NONE)
-                        .hoverBackground(IDrawable.NONE)
-                        .size(22, 15)
-                        .bottomRel(0).rightRel(0)
-                        .decoration()
-                        .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
-                        .tooltipBuilder(tooltip -> {
-                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
-                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
-                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
-                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
-                            tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
-                        })
-                        .onMousePressed((ctx, b) -> {
-                            var mouse = MouseData.create(b);
+        textComponents.child(new ButtonWidget<>().background(IDrawable.NONE)
+                .hoverBackground(IDrawable.NONE)
+                .size(22, 12)
+                .rightRel(0.0f)
+                .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
+                .tooltipBuilder(tooltip -> {
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
+                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
+                })
+                .onMousePressed((ctx, b) -> {
+                    var mouse = MouseData.create(b);
 
-                            if (b == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                                if (tier == GTValues.MAX) return true;
-                                tier++;
-                            } else if (b == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-                                if (tier == minTier) return true;
-                                tier--;
-                            } else if (b == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
-                                tier = minTier;
-                            }
+                    if (b == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                        if (tier == GTValues.MAX) return true;
+                        tier++;
+                    } else if (b == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                        if (tier == minTier) return true;
+                        tier--;
+                    } else if (b == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+                        tier = minTier;
+                    }
 
-                            updateOverclock(mouse);
-                            return true;
-                        }));
+                    updateOverclock(mouse);
+                    return true;
+                }).setEnabledIf(w -> RecipeHelper.getRealEUtWithIO(baseRecipe).isInput()));
     }
 
     private void updateOverclock(MouseData data) {

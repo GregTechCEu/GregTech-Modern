@@ -26,14 +26,15 @@ import snownee.jade.api.config.IPluginConfig;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
+public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeLogicProvider() {
         super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
     }
 
     @Override
-    protected void write(CompoundTag data, BlockAccessor blockAccessor, RecipeLogic capability) {
+    protected CompoundTag write(RecipeLogic capability) {
+        var data = new CompoundTag();
         data.putBoolean("Working", capability.isWorking());
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
@@ -48,6 +49,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
+        return data;
     }
 
     public static long getVoltage(RecipeLogic capability) {

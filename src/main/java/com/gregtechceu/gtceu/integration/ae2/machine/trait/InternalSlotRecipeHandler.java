@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,8 +84,8 @@ public final class InternalSlotRecipeHandler {
         }
 
         @Override
-        public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                                            boolean simulate) {
+        public @NotNull List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                           boolean simulate) {
             if (io != IO.IN || slot.isItemEmpty()) return left;
             return slot.handleItemInternal(left, simulate);
         }
@@ -128,8 +128,8 @@ public final class InternalSlotRecipeHandler {
         }
 
         @Override
-        public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                                 boolean simulate) {
+        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                boolean simulate) {
             if (io != IO.IN || slot.isFluidEmpty()) return left;
             return slot.handleFluidInternal(left, simulate);
         }

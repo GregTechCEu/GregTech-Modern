@@ -111,7 +111,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                                         .value(selected)
                                         .widthRel(1f).height(18)
                                         .background(GuiTextures.BUTTON_CLEAN)
-                                        .selectedBackground(WHITE_BORDER)
+                                        .background(true, WHITE_BORDER)
                                         .setEnabledIf(w -> {
                                             String searched = searchValue.getStringValue();
                                             if (Strings.isNullOrEmpty(searched)) {

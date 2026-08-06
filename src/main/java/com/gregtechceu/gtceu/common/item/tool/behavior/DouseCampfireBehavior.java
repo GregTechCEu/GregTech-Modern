@@ -52,7 +52,6 @@ public class DouseCampfireBehavior implements IToolBehavior {
                 blocks = List.of(pos);
             } else {
                 blocks = getDousableBlocks(aoeDefinition, context);
-                blocks.add(0, context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;

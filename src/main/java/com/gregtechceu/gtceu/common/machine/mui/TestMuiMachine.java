@@ -24,13 +24,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.client.schemarenderer.BlockHighlight;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import brachy.modularui.drawable.progress.ProgressDrawable;
+import brachy.modularui.drawable.schema.ArraySchema;
+import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.schema.ArraySchema;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
@@ -279,7 +279,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                             .alignment(Alignment.TopCenter));
                                                                                     tooltip.addLine(Text.str("And here a circle:"));
                                                                                     tooltip.addDrawableLine(new Circle()
-                                                                                                    .setColor(Color.RED.darker(2), Color.RED.brighter(2))
+                                                                                                    .color(Color.RED.darker(2), Color.RED.brighter(2))
                                                                                                     .asIcon()
                                                                                                     .size(20))
                                                                                             .addDrawableLine(new ItemDrawable(Items.DIAMOND).asIcon())
@@ -594,7 +594,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         panel.child(ButtonWidget.panelCloseButton())
                 .child(new ButtonWidget<>()
                         .size(10).top(14).right(4)
-                        .overlay((new FluidDrawable().setFluid(GTMaterials.Iron.getFluid(200))), Text.str("3"))
+                        .overlay((new FluidDrawable().fluid(GTMaterials.Iron.getFluid(200))), Text.str("3"))
                         .size(50, 50)
                         .onMousePressed((context, mouseButton) -> {
                             panelSyncHandler.openPanel();

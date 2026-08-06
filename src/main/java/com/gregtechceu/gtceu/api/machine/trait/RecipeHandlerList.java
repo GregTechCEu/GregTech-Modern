@@ -184,7 +184,7 @@ public class RecipeHandlerList {
             var handlerList = getCapability(entry.getKey());
             for (var handler : handlerList) {
                 var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
-                if (left == null) {
+                if (left.isEmpty()) {
                     it.remove();
                     break;
                 } else {

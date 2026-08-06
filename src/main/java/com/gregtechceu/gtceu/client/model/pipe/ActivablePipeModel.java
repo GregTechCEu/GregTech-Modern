@@ -151,15 +151,15 @@ public class ActivablePipeModel extends PipeModel {
         ResourceLocation sideOverlay = this.sideOverlayActive != null ? this.sideOverlayActive : this.sideOverlay;
         ResourceLocation endOverlay = this.endOverlayActive != null ? this.endOverlayActive : this.endOverlay;
 
-        makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
+        makePartModelElement(model, endFace, false, 0.0f, 0, 1,
                 x1, y1, z1, x2, y2, z2, side, end, SIDE_KEY, END_KEY,
                 this.sideActive != null, this.endActive != null);
 
-        makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,
+        makePartModelElement(model, endFace, true, 0.001f, 0, 1,
                 x1, y1, z1, x2, y2, z2, sideSecondary, endSecondary, SIDE_SECONDARY_KEY, END_SECONDARY_KEY,
                 this.sideSecondaryActive != null, this.endSecondaryActive != null);
 
-        makePartModelElement(model, endFace, true, faceEndpoints, 0.002f, 2, 2,
+        makePartModelElement(model, endFace, true, 0.002f, 2, 2,
                 x1, y1, z1, x2, y2, z2, sideOverlay, endOverlay, SIDE_OVERLAY_KEY, END_OVERLAY_KEY,
                 this.sideOverlayActive != null, this.endOverlayActive != null);
 
@@ -168,7 +168,6 @@ public class ActivablePipeModel extends PipeModel {
 
     protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction endFace,
                                                                     boolean useEndWithFullCube,
-                                                                    Reference2FloatMap<Direction> faceEndpoints,
                                                                     float offset, int sideTintIndex, int endTintIndex,
                                                                     final float x1, final float y1, final float z1,
                                                                     final float x2, final float y2, final float z2,
@@ -176,7 +175,21 @@ public class ActivablePipeModel extends PipeModel {
                                                                     @Nullable ResourceLocation endTexture,
                                                                     String sideKey, String endKey,
                                                                     boolean sideEmissive, boolean endEmissive) {
-        this.makePartModelElement(model, endFace, useEndWithFullCube, faceEndpoints, offset,
+        this.makePartModelElement(model, endFace, useEndWithFullCube, false, offset,
+                sideTintIndex, endTintIndex, x1, y1, z1, x2, y2, z2,
+                sideTexture, endTexture, sideKey, endKey, sideEmissive, endEmissive);
+    }
+
+    protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction endFace,
+                                                                    boolean useEndWithFullCube, boolean alwaysAddEnd,
+                                                                    float offset, int sideTintIndex, int endTintIndex,
+                                                                    final float x1, final float y1, final float z1,
+                                                                    final float x2, final float y2, final float z2,
+                                                                    @Nullable ResourceLocation sideTexture,
+                                                                    @Nullable ResourceLocation endTexture,
+                                                                    String sideKey, String endKey,
+                                                                    boolean sideEmissive, boolean endEmissive) {
+        this.makePartModelElement(model, endFace, useEndWithFullCube, alwaysAddEnd, offset,
                 sideTintIndex, endTintIndex, x1, y1, z1, x2, y2, z2, sideTexture, endTexture, sideKey, endKey,
                 (face, textureKey, builder) -> {
                     if (activeEmissivity == 0) {

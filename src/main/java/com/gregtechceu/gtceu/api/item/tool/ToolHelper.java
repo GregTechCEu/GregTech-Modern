@@ -304,6 +304,13 @@ public class ToolHelper {
         var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
             for (BlockPos pos : harvestableBlocks) {
+                // Skip targeted block as already handled by the tool (fix AOE items using n+1 durability)
+                if (pos.equals(targeted)) {
+                    Level world = player.level();
+                    BlockState state = world.getBlockState(pos);
+                    world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+                    continue;
+                }
                 if (!breakBlockRoutine(player, stack, pos, pos.equals(targeted))) {
                     return true;
                 }
@@ -459,10 +466,6 @@ public class ToolHelper {
     }
 
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
-        // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
-        if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
-            return false;
-        }
         Level world = player.level();
 
         boolean canBreak = onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
@@ -705,9 +708,9 @@ public class ToolHelper {
     /**
      * Shearing a Block.
      *
-     * @return -1 if not shearable, otherwise return 0 or 1, 0 if tool is now broken.
+     * @return -1 if not shearable or if shearing gave nothing, otherwise return 0 or 1, 0 if tool is now broken.
      */
-    public static int shearBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
+    public static int shearBlock(ServerPlayer player, ItemStack tool, BlockPos pos) {
         if (!player.isCreative()) {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
@@ -715,6 +718,9 @@ public class ToolHelper {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos,
                             tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
+                    if (shearedDrops.isEmpty()) {
+                        return -1;
+                    }
                     boolean relocateMinedBlocks = hasBehaviorsTag(tool) &&
                             getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
@@ -734,8 +740,6 @@ public class ToolHelper {
                         }
                     }
                     ToolHelper.damageItem(tool, player, 1);
-                    player.awardStat(Stats.BLOCK_MINED.get((Block) shearable));
-                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
                     return tool.isEmpty() ? 0 : 1;
                 }
             }

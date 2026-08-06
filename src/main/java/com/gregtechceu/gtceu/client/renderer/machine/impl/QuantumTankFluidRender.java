@@ -101,11 +101,11 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
         EnumSet<Direction> sidesToRender = EnumSet.of(frontFacing);
         VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
 
-        var gas = fluid.getFluid().getFluidType().isLighterThanAir();
-        var percentFull = isCreative || maxAmount <= storedAmount ? 1f : (float) storedAmount / maxAmount;
+        boolean gas = fluid.getFluid().getFluidType().isLighterThanAir();
+        float percentFull = isCreative || maxAmount <= storedAmount ? 1f : (float) storedAmount / maxAmount;
 
-        var maxTop = gas ? MAX : MIN + percentFull * (MAX - MIN);
-        var minBot = gas ? MIN + (1 - percentFull) * (MAX - MIN) : MIN;
+        float maxTop = gas ? MAX : MIN + percentFull * (MAX - MIN);
+        float minBot = gas ? MIN + (1 - percentFull) * (MAX - MIN) : MIN;
         float minY, maxY, minZ, maxZ;
         if (frontFacing.getAxis() == Direction.Axis.Y) {
             minY = MIN;

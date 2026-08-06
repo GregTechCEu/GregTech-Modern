@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.rei;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreProcessingRecipeWidget;
 
 import net.minecraft.network.chat.Component;
@@ -47,7 +47,7 @@ public class GTOreProcessingReiCategory extends
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (Material mat : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+        for (Material mat : GTRegistries.MATERIALS.values()) {
             if (mat.hasProperty(ORE) && !mat.hasFlag(MaterialFlags.NO_ORE_PROCESSING_TAB)) {
                 registry.add(new GTOreProcessingDisplay(mat));
             }
