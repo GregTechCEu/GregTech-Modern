@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.cover;
 
-import brachy.modularui.widgets.SlotGroupWidget;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
@@ -18,6 +17,7 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 
 public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
