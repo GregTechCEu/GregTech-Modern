@@ -73,6 +73,7 @@ public abstract class VeinGenerator {
     public List<ObjectIntPair<Material>> getValidMaterialsChances() {
         return getAllEntries().stream()
                 .map(entry -> ObjectIntPair.of(entry.mapToMaterial(), entry.chance))
+                .filter(pair -> pair.first() != null)
                 .toList();
     }
 

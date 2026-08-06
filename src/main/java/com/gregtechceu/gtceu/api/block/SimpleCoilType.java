@@ -57,6 +57,6 @@ public class SimpleCoilType implements ICoilType, StringRepresentable {
 
     @Override
     public Material getMaterial() {
-        return Objects.requireNonNull(material.get(), "Material for coil '%s' cannot be null".formatted(name));
+        return material.get();
     }
 }
