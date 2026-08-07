@@ -245,6 +245,7 @@ public class GTMuiWidgets {
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);
+                                    else circuitSyncValue.setValue(-1);
                                 })));
 
         return new Dialog<>("circuit_panel")
