@@ -27,7 +27,10 @@ public class XorPredicate extends MultiPredicate {
     private boolean isNoneValid() {
         boolean noneValid = false;
         for (BasePredicate predicate : expand()) {
-            noneValid |= predicate.getMinCount() <= 0 && predicate.getMinSliceCount() <= 0;
+            if (predicate.getMinCount() <= 0 && predicate.getMinSliceCount() <= 0) {
+                noneValid = true;
+                break;
+            }
         }
         return noneValid;
     }
@@ -36,23 +39,27 @@ public class XorPredicate extends MultiPredicate {
     public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
         for (BasePredicate predicate : predicates()) {
             if (predicate.test(context)) {
-                setPassedPredicate(predicate, null);
-                if (checkPredicate(predicate)) {
+                if (this.passedPredicate != null && !this.passedPredicate.is(predicate)) {
                     xorError(context, predicate);
                     // error
                     return null;
                 }
+                if (this.passedPredicate == null) {
+                    this.passedPredicate = ofPredicate(predicate);
+                }
                 return predicate;
             }
         }
-        for (MultiPredicate predicates : children()) {
-            BasePredicate p = predicates.getPredicateAtPos(context);
+        for (MultiPredicate child : children()) {
+            BasePredicate p = child.getPredicateAtPos(context);
             if (p != null) {
-                setPassedPredicate(p, predicates);
-                if (checkPredicate(p)) {
+                if (this.passedPredicate != null && !this.passedPredicate.is(child)) {
                     xorError(context, p);
                     // error
                     return null;
+                }
+                if (this.passedPredicate == null) {
+                    this.passedPredicate = ofChild(child);
                 }
                 return p;
             }
@@ -70,16 +77,6 @@ public class XorPredicate extends MultiPredicate {
         context.appendError(
                 PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
         context.skipFlipCheck();
-    }
-
-    private boolean checkPredicate(BasePredicate predicate) {
-        return this.passedPredicate != null && !this.passedPredicate.matches(predicate);
-    }
-
-    private void setPassedPredicate(BasePredicate predicate, @Nullable MultiPredicate multiPredicate) {
-        if (this.passedPredicate == null) {
-            this.passedPredicate = new PassedPredicate(predicate, multiPredicate);
-        }
     }
 
     @Override
@@ -109,27 +106,41 @@ public class XorPredicate extends MultiPredicate {
         this.passedPredicate = null;
     }
 
+    private static PassedPredicate ofPredicate(BasePredicate predicate) {
+        return new PassedPredicate(predicate, null);
+    }
+
+    private static PassedPredicate ofChild(MultiPredicate predicate) {
+        return new PassedPredicate(null, predicate);
+    }
+
     // this needs to hold both base predicate or passing children
-    private record PassedPredicate(BasePredicate predicate, @Nullable MultiPredicate multiPredicate) {
+    private record PassedPredicate(@Nullable BasePredicate predicate, @Nullable MultiPredicate multiPredicate) {
 
         public boolean testGlobalMin(PredicateContext ctx) {
-            return predicate.testGlobalMin(ctx);
+            if (this.predicate != null) {
+                return this.predicate.testGlobalMin(ctx);
+            } else if (this.multiPredicate != null) {
+                return this.multiPredicate.testGlobalMin(ctx);
+            }
+            throw new IllegalStateException();
         }
 
         public boolean testSliceMin(PredicateContext ctx) {
-            return predicate.testSliceMin(ctx);
-        }
-
-        public boolean testMaxCount(PredicateContext context) {
-            if (multiPredicate == null) {
-                return predicate.testGlobalMax(context) && predicate.testSliceMax(context);
-            } else {
-                return multiPredicate.testMaxCount(predicate, context);
+            if (predicate != null) {
+                return predicate.testSliceMin(ctx);
+            } else if (multiPredicate != null) {
+                return multiPredicate.testSliceMin(ctx);
             }
+            throw new IllegalStateException();
         }
 
-        public boolean matches(BasePredicate p) {
-            return p == predicate && (multiPredicate == null || p.getParent() == multiPredicate);
+        public boolean is(BasePredicate predicate) {
+            return this.predicate == null || this.predicate == predicate;
+        }
+
+        public boolean is(MultiPredicate multiPredicate) {
+            return this.multiPredicate == null || this.multiPredicate == multiPredicate;
         }
     }
 }

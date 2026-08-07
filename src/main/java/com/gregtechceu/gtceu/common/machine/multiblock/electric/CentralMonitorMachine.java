@@ -135,6 +135,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public static boolean isValidMonitorBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return false;
+        CONTEXT.reset();
         CONTEXT.setCheckLayer(false);
         CONTEXT.updateLevel(level);
         CONTEXT.updatePos(pos);
