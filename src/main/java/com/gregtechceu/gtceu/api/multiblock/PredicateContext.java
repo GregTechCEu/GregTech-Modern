@@ -25,6 +25,7 @@ import java.util.*;
 
 public class PredicateContext {
 
+    @Nullable
     private final PatternState state;
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
@@ -40,7 +41,7 @@ public class PredicateContext {
     private boolean checkLayer = true;
 
     @Getter
-    private boolean checkFlipped = false;
+    private boolean checkFlipped = true;
 
     @Getter
     private FailureReason lastFailureReason = FailureReason.NONE;
@@ -48,7 +49,7 @@ public class PredicateContext {
     @Setter
     protected PredicateStage stage = PredicateStage.INTERNAL;
 
-    public PredicateContext(PatternState state) {
+    public PredicateContext(@Nullable PatternState state) {
         this.state = state;
     }
 
@@ -82,10 +83,13 @@ public class PredicateContext {
     }
 
     public void commitSliceErrors() {
+        if (state == null) return;
         for (var entry : this.sliceErrors.int2ObjectEntrySet()) {
             this.state.appendErrors(entry.getValue());
         }
-        this.checkFlipped = this.lastFailureReason.shouldCheckFlip();
+        if (this.checkFlipped) {
+            this.checkFlipped = this.lastFailureReason.shouldCheckFlip();
+        }
         this.sliceErrors.clear();
         this.currentSlice = -1;
     }
@@ -159,6 +163,7 @@ public class PredicateContext {
 
     public void reset() {
         setStage(PredicateStage.INTERNAL);
+        this.checkFlipped = true;
         this.currentBlockInfo = new CurrentBlockInfo();
         this.currentSlice = 0;
         this.sliceErrors.clear();
