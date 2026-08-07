@@ -18,9 +18,9 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
@@ -2689,7 +2689,6 @@ public class GTItems {
         return Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
                 FormattingUtil.formatNumbers(mbPerTick));
     }
-
 
     @FunctionalInterface
     public interface StackProperty {
