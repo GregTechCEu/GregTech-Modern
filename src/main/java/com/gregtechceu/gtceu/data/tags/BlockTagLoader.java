@@ -32,7 +32,6 @@ public class BlockTagLoader {
 
         provider.addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
         provider.addTag(CustomTags.NEEDS_DURANIUM_TOOL);
-
         @SuppressWarnings("unchecked")
         TagKey<Block>[] newToolRequirements = new TagKey[] {
                 CustomTags.NEEDS_NEUTRONIUM_TOOL,
@@ -53,6 +52,12 @@ public class BlockTagLoader {
         // do these manually
         provider.addTag(CustomTags.INCORRECT_FOR_NEUTRONIUM_TOOL);
         provider.addTag(CustomTags.INCORRECT_FOR_DURANIUM_TOOL).addTag(CustomTags.NEEDS_NEUTRONIUM_TOOL);
+
+        provider.addTag(CustomTags.MINEABLE_WITH_SAW).addTag(BlockTags.ICE);
+        // create empty tag files for the (currently) unused ones so MC is happy
+        provider.addTag(CustomTags.MINEABLE_WITH_HAMMER);
+        provider.addTag(CustomTags.MINEABLE_WITH_CROWBAR);
+        provider.addTag(CustomTags.MINEABLE_WITH_KNIFE);
 
         // this is awful. I don't care, though.
         provider.addTag(BlockTags.REPLACEABLE)
