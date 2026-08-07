@@ -52,6 +52,10 @@ public final class DynamicTagHandler {
             generateBlockTags(parsedTags);
         } else if (registry == BuiltInRegistries.FLUID) {
             generateFluidTags(parsedTags);
+        } else {
+            // skip printing the "tag generation took ..." message if this isn't one of the registries we're
+            // generating tags for
+            return;
         }
 
         GTCEu.LOGGER.info("GregTech dynamic {} tag generation took {}ms", registry.key().location().getPath(),
