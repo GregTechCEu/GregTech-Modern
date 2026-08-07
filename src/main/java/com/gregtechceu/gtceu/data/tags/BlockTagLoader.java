@@ -100,6 +100,12 @@ public class BlockTagLoader {
                 .addTag(Tags.Blocks.SANDS).addTag(BlockTags.SAND) // any sand blocks
                 .addTag(BlockTags.TERRACOTTA); // any terracotta
 
-        provider.addTag(CustomTags.CLEANROOM_DOORS).add(Blocks.IRON_DOOR).addTag(BlockTags.WOODEN_DOORS);
+        provider.addTag(CustomTags.CLEANROOM_DOORS)
+                .add(Blocks.IRON_DOOR).addTag(BlockTags.WOODEN_DOORS)
+                // disallow unwaxed copper doors specifically
+                .add(Blocks.WAXED_COPPER_DOOR,
+                        Blocks.WAXED_EXPOSED_COPPER_DOOR,
+                        Blocks.WAXED_WEATHERED_COPPER_DOOR,
+                        Blocks.WAXED_OXIDIZED_COPPER_DOOR);
     }
 }
