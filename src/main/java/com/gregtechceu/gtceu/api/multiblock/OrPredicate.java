@@ -11,11 +11,6 @@ public class OrPredicate extends MultiPredicate {
     }
 
     @Override
-    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext ctx) {
-        return passedPredicate.testGlobalMax(ctx) && passedPredicate.testSliceMax(ctx);
-    }
-
-    @Override
     public boolean testGlobalMin(PredicateContext ctx) {
         for (BasePredicate predicate : predicates()) {
             if (predicate.testGlobalMin(ctx)) {

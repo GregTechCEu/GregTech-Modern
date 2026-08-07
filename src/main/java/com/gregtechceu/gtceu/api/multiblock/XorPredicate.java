@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.multiblock;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -34,6 +36,11 @@ public class XorPredicate extends MultiPredicate {
         for (BasePredicate predicate : predicates()) {
             if (predicate.test(context)) {
                 setPassedPredicate(predicate, null);
+                if (checkPredicate(predicate)) {
+                    xorError(context, predicate);
+                    // error
+                    return null;
+                }
                 return predicate;
             }
         }
@@ -41,6 +48,11 @@ public class XorPredicate extends MultiPredicate {
             BasePredicate p = predicates.getPredicateAtPos(context);
             if (p != null) {
                 setPassedPredicate(p, predicates);
+                if (checkPredicate(p)) {
+                    xorError(context, p);
+                    // error
+                    return null;
+                }
                 return p;
             }
         }
@@ -48,6 +60,17 @@ public class XorPredicate extends MultiPredicate {
             onError(context);
         }
         return null;
+    }
+
+    private void xorError(PredicateContext context, BasePredicate predicate) {
+        MutableComponent found = Component.literal(predicate + " present in multiblock");
+        MutableComponent expected = Component.literal("expected only: " + Objects.requireNonNull(passedPredicate).predicate());
+        context.appendError(PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
+        context.skipFlipCheck();
+    }
+
+    private boolean checkPredicate(BasePredicate predicate) {
+        return this.passedPredicate != null && !this.passedPredicate.matches(predicate);
     }
 
     private void setPassedPredicate(BasePredicate predicate, @Nullable MultiPredicate multiPredicate) {
@@ -80,23 +103,12 @@ public class XorPredicate extends MultiPredicate {
     }
 
     @Override
-    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
-        Objects.requireNonNull(this.passedPredicate); // should not be null by this pouint
-        context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX); // set stage early to avoid flip check
-        if (!this.passedPredicate.matches(passedPredicate)) {
-            // todo prettier error
-            context.appendError(PatternStringError.literal(passedPredicate + " present in multi"));
-            return false;
-        }
-        return this.passedPredicate.testMaxCount(context);
-    }
-
-    @Override
     public void resetLogic() {
         super.resetLogic();
         this.passedPredicate = null;
     }
 
+    // this needs to hold both base predicate or passing children
     private record PassedPredicate(BasePredicate predicate, @Nullable MultiPredicate multiPredicate) {
 
         public boolean testGlobalMin(PredicateContext ctx) {

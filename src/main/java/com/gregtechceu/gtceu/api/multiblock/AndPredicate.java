@@ -39,14 +39,4 @@ public class AndPredicate extends MultiPredicate {
         }
         return true;
     }
-
-    @Override
-    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
-        for (BasePredicate predicate : predicates()) {
-            if (!predicate.testGlobalMax(context) || !predicate.testSliceMax(context)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

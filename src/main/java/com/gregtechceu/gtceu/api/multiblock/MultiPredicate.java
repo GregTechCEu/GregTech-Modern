@@ -65,7 +65,9 @@ public abstract class MultiPredicate {
     public abstract boolean testSliceMin(PredicateContext ctx);
 
     /// test against global/slice max counts
-    public abstract boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context);
+    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
+        return passedPredicate.testGlobalMax(context) && passedPredicate.testSliceMax(context);
+    }
 
     public List<List<BlockInfo>> getCandidates() {
         return this.predicates.stream()

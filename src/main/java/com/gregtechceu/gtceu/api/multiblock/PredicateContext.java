@@ -168,6 +168,10 @@ public class PredicateContext {
         this.clearLayerCounts();
     }
 
+    public void skipFlipCheck() {
+        this.checkFlipped = false;
+    }
+
     public enum PredicateStage {
 
         INTERNAL,
