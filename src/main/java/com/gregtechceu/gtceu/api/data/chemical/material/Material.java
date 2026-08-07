@@ -145,6 +145,10 @@ public final class Material implements Comparable<Material> {
         GTRegistries.MATERIALS.register(getResourceLocation(), this);
     }
 
+    public ResourceLocation getID() {
+        return  materialInfo.resourceLocation;
+    }
+
     public String getName() {
         return materialInfo.resourceLocation.getPath();
     }

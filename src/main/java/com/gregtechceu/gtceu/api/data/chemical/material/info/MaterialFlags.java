@@ -33,7 +33,7 @@ public class MaterialFlags {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        flags.forEach(f -> sb.append(f.toString()).append("\n"));
+        flags.forEach(f -> sb.append(f).append("\n"));
         return sb.toString();
     }
 

@@ -224,8 +224,7 @@ public final class WoodTypeEntry {
         if (this.material == GTMaterials.Wood) {
             return Tags.Items.RODS_WOODEN;
         } else {
-            // noinspection DataFlowIssue is valid.
-            return ChemicalHelper.getTag(TagPrefix.rod, this.material);
+            return ChemicalHelper.getTagOrThrow(TagPrefix.rod, this.material);
         }
     }
 

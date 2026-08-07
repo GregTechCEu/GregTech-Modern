@@ -116,7 +116,7 @@ public abstract class VeinGenerator {
 
         public BlockState mapToBlockState() {
             return vein.map(Function.identity(),
-                    material -> ChemicalHelper.getBlock(TagPrefix.ore, material).defaultBlockState());
+                    material -> ChemicalHelper.getBlockOrThrow(TagPrefix.ore, material).defaultBlockState());
         }
 
         public @Nullable Material mapToMaterial() {

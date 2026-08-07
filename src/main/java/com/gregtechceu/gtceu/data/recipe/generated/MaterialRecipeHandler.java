@@ -120,7 +120,7 @@ public final class MaterialRecipeHandler {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
                 if (smeltingResult != null) {
                     VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
-                            ChemicalHelper.getTag(dust, material), ChemicalHelper.get(ingot, smeltingResult));
+                            ChemicalHelper.getTagOrThrow(dust, material), ChemicalHelper.get(ingot, smeltingResult));
                 }
             }
 
@@ -142,7 +142,7 @@ public final class MaterialRecipeHandler {
                     if (!material.hasFlag(IS_MAGNETIC)) {
                         // do not register inputs by tag prefix here. Let other mods register their own dust -> ingots
                         VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
-                                ChemicalHelper.getTag(dust, material), ingotStack);
+                                ChemicalHelper.getTagOrThrow(dust, material), ingotStack);
                     }
                 } else {
                     IngotProperty ingotProperty = material.getProperty(PropertyKey.INGOT);
@@ -170,7 +170,7 @@ public final class MaterialRecipeHandler {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
                         VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
-                                ChemicalHelper.getTag(dust, material), ingotStack);
+                                ChemicalHelper.getTagOrThrow(dust, material), ingotStack);
                     }
                 }
             }

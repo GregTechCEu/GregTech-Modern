@@ -220,10 +220,10 @@ public final class OreRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, "compress_" + material.getName() + "_to_ore_block",
                     ChemicalHelper.get(rawOreBlock, material),
                     "BBB", "BBB", "BBB",
-                    'B', ChemicalHelper.getTag(rawOre, material));
+                    'B', ChemicalHelper.getTagOrThrow(rawOre, material));
             VanillaRecipeHelper.addShapelessRecipe(provider, "decompress_" + material.getName() + "_from_ore_block",
                     ChemicalHelper.get(rawOre, material, 9),
-                    ChemicalHelper.getTag(rawOreBlock, material));
+                    ChemicalHelper.getTagOrThrow(rawOreBlock, material));
         }
 
         COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_to_raw_ore_block")

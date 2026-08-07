@@ -339,7 +339,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
             itemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
-            return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
+            return inputItems(ChemicalHelper.getTagOrThrow(orePrefix, material), count);
         }
 
         public GTRecipeJS inputItems(MachineDefinition machine) {

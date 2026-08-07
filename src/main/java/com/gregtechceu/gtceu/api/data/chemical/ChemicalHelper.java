@@ -296,6 +296,10 @@ public class ChemicalHelper {
         return getBlock(new MaterialEntry(tagPrefix, material));
     }
 
+    public static Block getBlockOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getBlock(tagPrefix, material), "Block for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
+    }
+
     @Nullable
     public static TagKey<Block> getBlockTag(TagPrefix tagPrefix, Material material) {
         var tags = tagPrefix.getBlockTags(material);
@@ -305,6 +309,10 @@ public class ChemicalHelper {
         return tags.get(0);
     }
 
+    public static TagKey<Block> getBlockTagOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getBlockTag(tagPrefix, material), "Block tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
+    }
+
     @Nullable
     public static TagKey<Item> getTag(TagPrefix tagPrefix, Material material) {
         var tags = tagPrefix.getItemTags(material);
@@ -312,6 +320,10 @@ public class ChemicalHelper {
             return null;
         }
         return tags.get(0);
+    }
+
+    public static TagKey<Item> getTagOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getTag(tagPrefix, material), "Item tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

@@ -102,9 +102,9 @@ public class GTOreByProduct {
         ItemTagList oreStacks = new ItemTagList();
         for (TagPrefix prefix : ORES) {
             // get all ores with the relevant oredicts instead of just the first unified ore
-            oreStacks.add(Objects.requireNonNull(ChemicalHelper.getTag(prefix, material)), 1, null);
+            oreStacks.add(ChemicalHelper.getTagOrThrow(prefix, material), 1, null);
         }
-        oreStacks.add(Objects.requireNonNull(ChemicalHelper.getTag(TagPrefix.rawOre, material)), 1, null);
+        oreStacks.add(ChemicalHelper.getTagOrThrow(TagPrefix.rawOre, material), 1, null);
         itemInputs.add(oreStacks);
 
         // set up machines as inputs
@@ -148,7 +148,7 @@ public class GTOreByProduct {
 
         // add prefixes that should count as inputs to input lists (they will not be displayed in actual page)
         for (TagPrefix prefix : IN_PROCESSING_STEPS) {
-            itemInputs.add(ItemTagList.of(Objects.requireNonNull(ChemicalHelper.getTag(prefix, material)), 1, null));
+            itemInputs.add(ItemTagList.of(ChemicalHelper.getTagOrThrow(prefix, material), 1, null));
         }
 
         // total number of inputs added

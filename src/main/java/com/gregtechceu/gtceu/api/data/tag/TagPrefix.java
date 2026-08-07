@@ -1174,14 +1174,8 @@ public class TagPrefix {
     }
 
     public TagPrefix blockProperties(BlockProperties blockProperties) {
-        if (blockProperties.renderType() == null) {
-            throw new IllegalArgumentException(
-                    "Could not set blockProperties with null renderType in TagPrefix " + this.id());
-        }
-        if (blockProperties.properties() == null) {
-            throw new IllegalArgumentException(
-                    "Could not set blockProperties with null properties in TagPrefix " + this.id());
-        }
+        Objects.requireNonNull(blockProperties.renderType(),  "Could not set blockProperties with null renderType in TagPrefix " + this.id());
+        Objects.requireNonNull(blockProperties.properties(),  "Could not set blockProperties with null properties in TagPrefix " + this.id());
         this.blockProperties = blockProperties;
         return this;
     }

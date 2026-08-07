@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +54,7 @@ public record MaterialStack(@Nullable Material material, long amount) {
             copy = copy.substring(spaceIndex + 1);
         }
 
-        cached = new MaterialStack(GTMaterials.get(copy), count);
+        cached = new MaterialStack(GTRegistries.MATERIALS.get(copy), count);
         PARSE_CACHE.put(trimmed, cached);
         return cached;
     }

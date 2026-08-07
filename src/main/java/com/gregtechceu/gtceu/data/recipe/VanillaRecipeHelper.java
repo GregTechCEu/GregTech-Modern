@@ -35,34 +35,34 @@ import java.util.function.Consumer;
 
 public class VanillaRecipeHelper {
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, TagKey<Item> input,
-                                         ItemStack output) {
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, @NotNull TagKey<Item> input,
+                                         @NotNull ItemStack output) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                         TagKey<Item> input, ItemStack output) {
+                                         @NotNull TagKey<Item> input, @NotNull ItemStack output) {
         addSmeltingRecipe(provider, regName, input, output, 0.0f);
     }
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, TagKey<Item> input,
-                                         ItemStack output, float experience) {
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, @NotNull TagKey<Item> input,
+                                         @NotNull ItemStack output, float experience) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, Ingredient input,
-                                         ItemStack output, float experience) {
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, @NotNull Ingredient input,
+                                         @NotNull ItemStack output, float experience) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                         ItemStack input,
-                                         ItemStack output) {
+                                         @NotNull ItemStack input,
+                                         @NotNull ItemStack output) {
         addSmeltingRecipe(provider, regName, input, output, 0);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                         Ingredient input, ItemStack output, float experience) {
+                                         @NotNull Ingredient input, @NotNull ItemStack output, float experience) {
         SimpleCookingRecipeBuilder.smelting(regName).input(input).output(output).cookingTime(200).experience(experience)
                 .save(provider);
     }
