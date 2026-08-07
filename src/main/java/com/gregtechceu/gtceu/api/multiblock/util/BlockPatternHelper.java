@@ -153,12 +153,15 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 return true;
             }
         }
+        for (MultiPredicate child : predicate.children()) {
+            if (tryMinCount(resultStructure, child, pos, dir, offset)) return true;
+        }
         return false;
     }
 
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate.expand()) {
+        for (BasePredicate basePredicate : predicate.predicates()) {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
@@ -180,6 +183,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 return true;
             }
         }
+        for (MultiPredicate child : predicate.children()) {
+            if (tryMaxCount(resultStructure, child, pos, dir, offset)) return true;
+        }
         return false;
     }
 
@@ -190,7 +196,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
         // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
         // (this slice) wouldn't be exceeded by placing it here.
-        for (BasePredicate basePredicate : predicate.expand()) {
+        for (BasePredicate basePredicate : predicate.predicates()) {
             if (!basePredicate.getCandidates().contains(newInfo)) continue;
 
             int maxCount = getMaxCount(predicate, basePredicate);
@@ -201,6 +207,11 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
             if (basePredicate.getMaxSliceCount() == -1 || layerAlreadyPopulated < basePredicate.getMaxSliceCount()) {
+                return true;
+            }
+        }
+        for (MultiPredicate child : predicate.children()) {
+            if (isValidCandidate(resultStructure, child, pos, newInfo, sliceDir)) {
                 return true;
             }
         }

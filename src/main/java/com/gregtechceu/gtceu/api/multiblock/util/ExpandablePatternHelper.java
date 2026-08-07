@@ -110,7 +110,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.expand()) {
+        for (BasePredicate basePredicate : predicate.predicates()) {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
@@ -126,12 +126,15 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
         }
+        for (MultiPredicate child : predicate.children()) {
+            if (tryMinCount(resultStructure, child, pos)) return true;
+        }
         return false;
     }
 
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.expand()) {
+        for (BasePredicate basePredicate : predicate.predicates()) {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
@@ -146,6 +149,9 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             }
             if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
+        }
+        for (MultiPredicate child : predicate.children()) {
+            if (tryMaxCount(resultStructure, child, pos)) return true;
         }
         return false;
     }
