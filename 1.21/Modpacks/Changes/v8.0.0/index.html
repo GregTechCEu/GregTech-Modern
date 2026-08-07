@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#updating-from-740-to-800" class="md-skip">
+        <a href="#updating-from-753-to-800" class="md-skip">
           Skip to content
         </a>
       
@@ -3919,50 +3919,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#connected-texture-reimplementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Connected texture reimplementation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#irecipehandler-nullability" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IRecipeHandler nullability
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#empty-content-check-for-recipe-capabilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Empty content check for recipe capabilities
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#other-changes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Other Changes
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -5240,50 +5196,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#connected-texture-reimplementation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Connected texture reimplementation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#irecipehandler-nullability" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        IRecipeHandler nullability
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#empty-content-check-for-recipe-capabilities" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Empty content check for recipe capabilities
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#other-changes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Other Changes
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -5312,7 +5224,7 @@
   
 
 
-<h1 id="updating-from-740-to-800">Updating from <code>7.4.0</code> to <code>8.0.0</code></h1>
+<h1 id="updating-from-753-to-800">Updating from <code>7.5.3</code> to <code>8.0.0</code></h1>
 <h2 id="new-data-savesync-system">New Data Save/Sync System</h2>
 <p>A new system for saving and syncing object fields has been added. See <a href="../../../Development/Data-Sync-System/Migrating-From-LDLib-SyncData/">this page</a> for migration instructions.</p>
 <h2 id="machine-refactor-part-1-metamachine-and-metamachineblockentity-merge">Machine Refactor Part 1: <code>MetaMachine</code> and <code>MetaMachineBlockEntity</code> merge</h2>
@@ -5406,6 +5318,16 @@ When migrating, remove the <code>this</code> argument from the machine trait con
 <li><code>IFluidRendererMulti</code> - Use <code>MultiblockFluidRendererTrait</code></li>
 <li><code>IMaintenanceMachine</code> Use <code>MaintenanceHatchPartMachine</code></li>
 </ul>
+<h1 id="modularui-changes">ModularUI changes</h1>
+<p>All your machines need to be migrated from LDLib's UI system to ModularUI's system. See <a href="../../../Development/MUI2/">this category</a>.</p>
+<p>As part of this migration, your machine builder's<br />
+<code>.additionalDisplay((controller, components) -&gt; { components.add(...)})</code><br />
+is now<br />
+<code>.additionalDisplay((controller, syncManager) -&gt; { return List.of(... your widgets here) })</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not forget that just like in your machine UI builders, you need to sync your data to the client. See <a href="../../../Development/MUI2/Syncing/Sync-Basics/">this page on syncing</a>.</p>
+</div>
 <h2 id="connected-texture-reimplementation">Connected texture reimplementation</h2>
 <p>The mod's connected texture logic has been reimplemented in GTM proper.
 Texture packs, addons, and modpacks will have to change their texture metadata files for connected texures slightly.<br />
@@ -5422,6 +5344,8 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
 <p>Previously, <code>handleRecipeInner</code> should return <code>null</code> when there's nothing left to process. This has been changed to requiring an empty list (e.g. the list of remaining ingredients). Returning <code>null</code> is now wrong and will crash (NPE).</p>
 <h2 id="empty-content-check-for-recipe-capabilities">Empty content check for recipe capabilities</h2>
 <p>As a recipe-matching optimization, input handlers whose <code>getTotalContentAmount()</code> returns <code>0</code> are now skipped during recipe handling. If your <code>RecipeCapability</code> has handlers that legitimately report a total content amount of <code>0</code> but can still satisfy a recipe (e.g. rate-based capabilities like computation/CWU, where nothing is "stored" but the handler can still provide), you must now override <code>RecipeCapability#skipEmptyContentCheck()</code> to return <code>true</code>, otherwise these capabilities will break (their handlers will never be run).</p>
+<h2 id="removal-of-marker-materials">Removal of marker materials</h2>
+<p>Marker materials have been removed. This means that a few utils related to colored items have been moved. All GT color values are now located in <code>GTValues.COLORS</code>, and getting a colored lens should now be done using the <code>forge:lenses/&lt;color&gt;</code> tags.</p>
 <h2 id="other-changes">Other Changes</h2>
 <ul>
 <li><code>BlastingRecipeBuilder</code>, <code>CampfireRecipeBuilder</code>, <code>SmeltingRecipeBuilder</code> and <code>SmokingRecipeBuilder</code> have been merged into <code>SimpleCookingRecipeBuilder</code><ul>
@@ -5439,7 +5363,16 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
 <li><code>ICopyable::copyConfig</code>'s <code>CompoundTag</code> argument should now be mutated by reference instead of a new one returned (and thus, the return type has been changed to <code>void</code>).</li>
 <li>Tiered Chance Boosting has been formally removed from the API (as it was deprecated in v7.0.) <code>ChancedInput</code> and <code>ChancedOutput</code> kubeJS calls will throw errors if they still had chance boost values as arguments.</li>
 <li>Any custom <code>IDistinctPart</code>'s will have to implement <code>supportsDistinct</code> if they don't extend <code>ItemBusPartMachine</code>.</li>
+<li>Runtime model generators (previously named <code>ArmorItemRenderer</code>, <code>TagPrefixItemRenderer</code>, <code>ToolItemRenderer</code>, <code>MaterialBlockRenderer</code>, <code>OreBlockRenderer</code>, and <code>SurfaceRockRenderer</code>) have been renamed and moved from various packages under <code>client.renderer</code> to their own package, <code>client.model.runtimegen</code>.<br />
+  The classes' names are now as follows (all start with <code>com.gregtechceu.gtceu.client.</code>):</li>
+<li><code>renderer.item.ArmorItemRenderer</code> -&gt; <code>model.runtimegen.ArmorItemModelGenerator</code></li>
+<li><code>renderer.item.TagPrefixItemRenderer</code> -&gt; <code>model.runtimegen.TagPrefixItemModelGenerator</code></li>
+<li><code>renderer.item.ToolItemRenderer</code> -&gt; <code>model.runtimegen.ToolItemModelGenerator</code></li>
+<li><code>renderer.block.MaterialBlockRenderer</code> -&gt; <code>model.runtimegen.MaterialBlockModelGenerator</code></li>
+<li><code>renderer.block.OreBlockRenderer</code> -&gt; <code>model.runtimegen.OreBlockModelGenerator</code></li>
+<li><code>renderer.block.SurfaceRockRenderer</code> -&gt; <code>model.runtimegen.SurfaceRockModelGenerator</code></li>
 </ul>
+<p>The <code>#create</code> function common to all of them has also been renamed to <code>#add</code>. Simply changing the name is enough, as the functions' parameters weren't changed.</p>
 
 
 
