@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.data.tags.*;
+import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
+import com.gregtechceu.gtceu.data.tags.DamageTypeTagsLoader;
+import com.gregtechceu.gtceu.data.tags.EnchantmentTagsLoader;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
