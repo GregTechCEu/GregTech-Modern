@@ -139,9 +139,8 @@ public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult 
 
 ## Overriding `buildUI` directly
 
-Override `buildUI` when you need to attach something to the panel that is not part of the main
-content area, such as an extra popup panel. Reproduce the default three steps, then keep working
-with the returned panel. `LargeMinerMachine` does this:
+Override `buildUI` when you need more granular control outside what getPanelBuilder would allow you. 
+One way to do this is to reproduce the default three steps, then keep working with the returned panel like so:
 
 ```java
 @Override
@@ -150,7 +149,7 @@ public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UI
     panelBuilder.mainContents(parent -> buildMainUI(parent, data, syncManager, settings));
     var machinePanel = panelBuilder.build(syncManager, settings);
 
-    // ... attach extra widgets and panels to machinePanel here
+    // ... attach extra widgets and panels to or make further changes to machinePanel here
 
     return machinePanel;
 }
