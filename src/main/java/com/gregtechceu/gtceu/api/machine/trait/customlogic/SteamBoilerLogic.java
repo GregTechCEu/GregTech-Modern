@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.Util;
@@ -65,7 +65,7 @@ public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogi
                 .inputItems(input.copyWithCount(1))
                 .duration(modifyBurnTime(burnTime))
                 .build();
-        recipe.setId(recipe.getId().withPrefix("/"));
+        recipe.id = recipe.id.withPrefix("/");
         return recipe;
     }
 

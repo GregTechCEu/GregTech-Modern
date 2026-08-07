@@ -1,47 +1,44 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.machine.multiblock.DummyCleanroom;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomReceiverTrait;
 
 import lombok.Getter;
 
-import java.util.Collections;
+import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.GTValues.UHV;
 import static com.gregtechceu.gtceu.api.GTValues.UV;
 
 public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPartMachine {
 
-    // must come after the static block
-    private final ICleanroomProvider DUMMY_CLEANROOM;
+    private final CleanroomProviderTrait cleanroomProvider;
 
     @Getter
     private final CleanroomType cleanroomType;
 
-    public CleaningMaintenanceHatchPartMachine(IMachineBlockEntity holder, CleanroomType cleanroomType) {
-        super(holder);
+    public CleaningMaintenanceHatchPartMachine(BlockEntityCreationInfo info, CleanroomType cleanroomType) {
+        super(info);
         this.cleanroomType = cleanroomType;
-        DUMMY_CLEANROOM = DummyCleanroom.createForTypes(Collections.singletonList(cleanroomType));
+        this.cleanroomProvider = attachTrait(new CleanroomProviderTrait(Set.of(cleanroomType)));
+        cleanroomProvider.setActive(true);
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
-        super.addedToController(controller);
-        if (controller instanceof ICleanroomReceiver receiver) {
-            receiver.setCleanroom(DUMMY_CLEANROOM);
-        }
+    public void addedToController(MultiblockControllerMachine controller, String name) {
+        super.addedToController(controller, name);
+        controller.getTraitOptional(CleanroomReceiverTrait.class)
+                .ifPresent(t -> t.setCleanroomProvider(cleanroomProvider));
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
-        if (controller instanceof ICleanroomReceiver receiver && receiver.getCleanroom() == DUMMY_CLEANROOM) {
-            receiver.setCleanroom(null);
-        }
+        controller.getTraitOptional(CleanroomReceiverTrait.class)
+                .ifPresent(CleanroomReceiverTrait::removeCleanroom);
     }
 
     @Override

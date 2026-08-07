@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
 
-    public LDFluidEndpointMachine(IMachineBlockEntity holder) {
-        super(holder, LDFluidPipeType.INSTANCE);
+    public LDFluidEndpointMachine(BlockEntityCreationInfo info) {
+        super(info, LDFluidPipeType.INSTANCE);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         if (endpoint == null) {
             return null;
         }
-        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), endpoint.getPos(), endpoint.getOutputFacing())
+        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), endpoint.getBlockPos(), endpoint.getOutputFacing())
                 .map(LDFluidEndpointMachine.FluidHandlerWrapper::new)
                 .orElse(null);
     }

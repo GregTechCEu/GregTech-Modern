@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public record ComputerMonitorConfig(@With List<String> lines, @With List<String> args, @With int updateInterval)
         implements TooltipProvider {
 
-    //spotless:off
+    // spotless:off
     public static final Codec<ComputerMonitorConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.listOf().fieldOf("lines").forGetter(ComputerMonitorConfig::lines),
             Codec.STRING.listOf().fieldOf("arguments").forGetter(ComputerMonitorConfig::args),
@@ -32,7 +32,7 @@ public record ComputerMonitorConfig(@With List<String> lines, @With List<String>
             ByteBufCodecs.VAR_INT, ComputerMonitorConfig::updateInterval,
             ComputerMonitorConfig::new
     );
-    //spotless:on
+    // spotless:on
 
     public static final ComputerMonitorConfig EMPTY = new ComputerMonitorConfig(Collections.emptyList(),
             Collections.emptyList(), 100);

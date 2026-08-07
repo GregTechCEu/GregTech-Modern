@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -17,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class CustomItemStackHandler extends ItemStackHandler
-                                    implements IContentChangeAware, INBTSerializable<CompoundTag> {
+                                    implements INBTSerializable<CompoundTag> {
 
     @Getter
     @Setter
@@ -55,7 +57,7 @@ public class CustomItemStackHandler extends ItemStackHandler
     /**
      * Don't use unless necessary.<br>
      * (A good use case is loading/saving this container's items from/to a {@link ItemContainerContents} component)
-     * 
+     *
      * @return the internal list of items in this handler
      */
     @ApiStatus.Internal
@@ -66,5 +68,24 @@ public class CustomItemStackHandler extends ItemStackHandler
     public void clear() {
         stacks.clear();
         onContentsChanged.run();
+    }
+
+    public NonNullList<ItemStack> toList() {
+        NonNullList<ItemStack> list = NonNullList.create();
+        for (int slot = 0; slot < getSlots(); slot++) list.add(getStackInSlot(slot));
+        return list;
+    }
+
+    public void dropInventoryInWorld(Level world, BlockPos pos) {
+        for (ItemStack stack : stacks) {
+            Block.popResource(world, pos, stack);
+        }
+        clear();
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        if (nbt.getInt("Size") != stacks.size()) nbt.putInt("Size", stacks.size());
+        super.deserializeNBT(provider, nbt);
     }
 }

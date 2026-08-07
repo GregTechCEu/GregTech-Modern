@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.common.capability;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
-import com.gregtechceu.gtceu.api.material.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
@@ -12,6 +13,11 @@ import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -65,7 +71,7 @@ public class LocalizedHazardSavedData extends SavedData {
             CompoundTag zoneTag = allHazardZones.getCompound(i);
 
             BlockPos source = BlockPos.of(zoneTag.getLong("pos"));
-            HazardZone zone = HazardZone.deserializeNBT(zoneTag);
+            HazardZone zone = HazardZone.deserializeNBT(zoneTag, serverLevel.registryAccess());
 
             this.hazardZones.put(source, zone);
         }
@@ -119,7 +125,7 @@ public class LocalizedHazardSavedData extends SavedData {
                 return;
             }
 
-            IMedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
+            MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             tracker.progressCondition(zone.condition(), zone.strength() / 1000f);
         });
     }
@@ -292,7 +298,7 @@ public class LocalizedHazardSavedData extends SavedData {
             CompoundTag zoneTag = new CompoundTag();
 
             zoneTag.putLong("pos", entry.getKey().asLong());
-            entry.getValue().serializeNBT(zoneTag);
+            entry.getValue().serializeNBT(zoneTag, provider);
 
             hazardZonesTag.add(zoneTag);
         }
@@ -307,7 +313,7 @@ public class LocalizedHazardSavedData extends SavedData {
             return blocks.size();
         }
 
-        public CompoundTag serializeNBT(CompoundTag zoneTag) {
+        public CompoundTag serializeNBT(CompoundTag zoneTag, HolderLookup.Provider lookup) {
             ListTag blocksTag = new ListTag();
             blocks.stream()
                     .map(NbtUtils::writeBlockPos)
@@ -315,12 +321,12 @@ public class LocalizedHazardSavedData extends SavedData {
             zoneTag.put("blocks", blocksTag);
             zoneTag.putBoolean("can_spread", canSpread);
             zoneTag.putString("trigger", trigger.name());
-            zoneTag.putString("condition", condition.name);
+            zoneTag.putString("condition", condition.id.toString());
 
             return zoneTag;
         }
 
-        public static HazardZone deserializeNBT(CompoundTag zoneTag) {
+        public static HazardZone deserializeNBT(CompoundTag zoneTag, HolderLookup.Provider lookup) {
             Set<BlockPos> blocks = zoneTag.getList("blocks", Tag.TAG_INT_ARRAY).stream()
                     .map(IntArrayTag.class::cast)
                     .map(tag -> {
@@ -331,9 +337,12 @@ public class LocalizedHazardSavedData extends SavedData {
             boolean canSpread = zoneTag.getBoolean("can_spread");
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
-            MedicalCondition condition = MedicalCondition.CONDITIONS.get(zoneTag.getString("condition"));
 
-            return new HazardZone(blocks, canSpread, trigger, condition);
+            ResourceKey<MedicalCondition> id = ResourceKey.create(GTRegistries.Keys.MEDICAL_CONDITION,
+                    GTCEu.id(zoneTag.getString("condition")));
+
+            return lookup.holder(id).map(medicalConditionReference -> new HazardZone(blocks, canSpread, trigger,
+                    medicalConditionReference.value())).orElse(null);
         }
     }
 }

@@ -1,0 +1,350 @@
+package com.gregtechceu.gtceu.api.recipe;
+
+import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+
+public class GTRecipe implements Recipe<RecipeInput> {
+
+    public final GTRecipeType recipeType;
+    @Getter
+    @Setter
+    public ResourceLocation id;
+    public final Map<RecipeCapability<?>, List<Content>> inputs;
+    public final Map<RecipeCapability<?>, List<Content>> outputs;
+    public final Map<RecipeCapability<?>, List<Content>> tickInputs;
+    public final Map<RecipeCapability<?>, List<Content>> tickOutputs;
+
+    public final Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics;
+    public final Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics;
+    public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics;
+    public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics;
+
+    public final List<RecipeCondition<?>> conditions;
+    // for KubeJS. actual type is List<IngredientAction>.
+    // Must be List<?> to not cause crashes without KubeJS.
+    public final List<?> ingredientActions;
+    @NotNull
+    public CompoundTag data;
+    public int duration;
+    public int parallels;
+    public int subtickParallels;
+    public int batchParallels;
+    public int ocLevel = 0;
+    public final GTRecipeCategory recipeCategory;
+    // Lazy fields, since we need the recipe EUt very often
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
+    public int groupColor;
+
+    public GTRecipe(GTRecipeType recipeType,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration, int parallels, int subtickParallels, int batchParallels,
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
+        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels,
+                recipeCategory, groupColor);
+    }
+
+    /**
+     * Accepts Parallels, Batches, and BatchParallels as a single List,
+     * as well as combining all I/O data into a {@link GTRecipeSerializer.RecipeIO} record.
+     * Necessary for {@link GTRecipeSerializer}
+     */
+    public GTRecipe(GTRecipeType recipeType,
+                    GTRecipeSerializer.RecipeIO recipeIO,
+                    List<RecipeCondition<?>> conditions,
+                    List<?> ingredientActions,
+                    CompoundTag data,
+                    int duration,
+                    GTRecipeSerializer.RecipeParallels allParallels,
+                    GTRecipeCategory recipeCategory,
+                    int groupColor) {
+        this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
+                recipeIO.inputChanceLogics(), recipeIO.outputChanceLogics(), recipeIO.tickInputChanceLogics(),
+                recipeIO.tickOutputChanceLogics(),
+                conditions, ingredientActions, data, duration, allParallels.parallels(),
+                allParallels.subtickParallels(),
+                allParallels.batchParallels(), recipeCategory, groupColor);
+    }
+
+    /**
+     * non-KJS version for {@link GTRecipeSerializer}
+     */
+    public GTRecipe(GTRecipeType recipeType,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    List<Integer> allParallels,
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
+        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, List.of(), data, duration, allParallels.get(0), allParallels.get(1),
+                allParallels.get(2), recipeCategory, groupColor);
+    }
+
+    /**
+     * Main constructor, used by {@link GTRecipeBuilder#build()}
+     */
+    public GTRecipe(GTRecipeType recipeType,
+                    @Nullable ResourceLocation id,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
+        this(recipeType, id, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor);
+    }
+
+    public GTRecipe(GTRecipeType recipeType,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
+        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, List.of(), data, duration, recipeCategory, groupColor);
+    }
+
+    public GTRecipe(GTRecipeType recipeType,
+                    @Nullable ResourceLocation id,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration, int parallels, int subtickParallels, int batchParallels,
+                    @NotNull GTRecipeCategory recipeCategory, int groupColor) {
+        this.recipeType = recipeType;
+        this.id = id;
+
+        this.inputs = inputs;
+        this.outputs = outputs;
+        this.tickInputs = tickInputs;
+        this.tickOutputs = tickOutputs;
+
+        this.inputChanceLogics = inputChanceLogics;
+        this.outputChanceLogics = outputChanceLogics;
+        this.tickInputChanceLogics = tickInputChanceLogics;
+        this.tickOutputChanceLogics = tickOutputChanceLogics;
+
+        this.conditions = conditions;
+        this.ingredientActions = ingredientActions;
+        this.data = data;
+        this.duration = duration;
+        this.parallels = parallels;
+        this.subtickParallels = subtickParallels;
+        this.batchParallels = batchParallels;
+        this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
+        this.groupColor = groupColor;
+    }
+
+    public GTRecipe copy() {
+        return copy(ContentModifier.IDENTITY, false);
+    }
+
+    public GTRecipe copy(ContentModifier modifier) {
+        return copy(modifier, true);
+    }
+
+    public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
+        var copied = new GTRecipe(recipeType, id,
+                modifier.applyContents(inputs), modifier.applyContents(outputs),
+                modifier.applyContents(tickInputs), modifier.applyContents(tickOutputs),
+                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
+                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
+                new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, parallels, subtickParallels, batchParallels,
+                recipeCategory, groupColor);
+        if (modifyDuration) {
+            copied.duration = modifier.apply(this.duration);
+        }
+        copied.ocLevel = ocLevel;
+        return copied;
+    }
+
+    @Override
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return recipeType.getSerializer();
+    }
+
+    @Override
+    public @NotNull GTRecipeType getType() {
+        return recipeType;
+    }
+
+    @Override
+    public boolean matches(@NotNull RecipeInput pContainer, @NotNull Level pLevel) {
+        return false;
+    }
+
+    @Override
+    public @NotNull ItemStack assemble(@NotNull RecipeInput input, HolderLookup.@NotNull Provider registries) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int pWidth, int pHeight) {
+        return false;
+    }
+
+    @Override
+    public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider registries) {
+        return ItemStack.EMPTY;
+    }
+
+    public List<Content> getInputContents(RecipeCapability<?> capability) {
+        return inputs.getOrDefault(capability, Collections.emptyList());
+    }
+
+    public List<Content> getOutputContents(RecipeCapability<?> capability) {
+        return outputs.getOrDefault(capability, Collections.emptyList());
+    }
+
+    public List<Content> getTickInputContents(RecipeCapability<?> capability) {
+        return tickInputs.getOrDefault(capability, Collections.emptyList());
+    }
+
+    public List<Content> getTickOutputContents(RecipeCapability<?> capability) {
+        return tickOutputs.getOrDefault(capability, Collections.emptyList());
+    }
+
+    public boolean hasTick() {
+        return !tickInputs.isEmpty() || !tickOutputs.isEmpty();
+    }
+
+    /**
+     * Get the chance logic for a recipe capability + io + tick io combination
+     *
+     * @param cap the recipe capability to get the chance logic for
+     * @param io  the {@link IO} of the chance per-tick logic or the normal one
+     * @return the chance logic for the aforementioned combination. Defaults to {@link ChanceLogic#OR}.
+     */
+    public ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap, IO io, boolean isTick) {
+        if (io == IO.OUT) {
+            if (isTick) {
+                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            } else {
+                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            }
+        } else if (io == IO.IN) {
+            if (isTick) {
+                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            } else {
+                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+            }
+        }
+        return ChanceLogic.OR;
+    }
+
+    public GTRecipeSerializer.RecipeIO getRecipeIO() {
+        return new GTRecipeSerializer.RecipeIO(inputs, outputs,
+                tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics,
+                tickInputChanceLogics, tickOutputChanceLogics);
+    }
+
+    // Technically should account for overflow but realistically not an issue.
+    protected @NotNull EnergyStack calculateEUt(Map<RecipeCapability<?>, List<Content>> contents) {
+        var outputs = contents.get(EURecipeCapability.CAP);
+        if (outputs == null) return EnergyStack.EMPTY;
+        long v = 0, a = 0;
+        for (var content : outputs) {
+            EnergyStack stack = EURecipeCapability.CAP.of(content.content());
+            v += stack.voltage();
+            a += stack.amperage();
+        }
+        return new EnergyStack(v, a);
+    }
+
+    public int getTotalRuns() {
+        return parallels * subtickParallels * batchParallels;
+    }
+
+    // Just check id as there *should* only ever be 1 instance of a recipe with this id.
+    // If this doesn't work, fix.
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GTRecipe recipe)) return false;
+        return this.id.equals(recipe.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return id != null ? id.toString() : "null id";
+    }
+}

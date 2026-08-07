@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -10,15 +9,16 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,20 +27,32 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ELECTRIC;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
 public class TestUtils {
 
@@ -171,9 +183,13 @@ public class TestUtils {
      * Forces a structure check on multiblocks after being placed, to avoid having to wait ticks.
      * Ideally this doesn't need to happen, but it seems not doing this makes the multiblock tests flakey
      */
-    public static void formMultiblock(MultiblockControllerMachine controller) {
-        controller.getPattern().checkPatternAt(controller.getMultiblockState(), false);
-        controller.onStructureFormed();
+    public static void formMultiblock(GameTestHelper helper, MultiblockControllerMachine controller) {
+        controller.checkAndFormStructure();
+        helper.assertTrue(controller.isFormed(),
+                "Multiblock failed to form: " + controller + " at " + controller.getBlockPos());
+        helper.assertFalse(controller.getParts().isEmpty(),
+                "Multiblock reported formed but registered no parts: " + controller + " at " +
+                        controller.getBlockPos());
     }
 
     /**
@@ -182,7 +198,8 @@ public class TestUtils {
      */
     public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeType original) {
         GTRecipeType type = createRecipeType(name, original);
-        type.getLookup().addRecipe(type
+        type.getAdditionHandler().beginStaging();
+        type.getAdditionHandler().addStaging(type
                 .recipeBuilder(GTCEu.id("test_recipe"))
                 .inputItems(new ItemStack(Items.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
@@ -227,9 +244,22 @@ public class TestUtils {
                 .setEUIO(IO.IN)
                 .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
 
-        ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).freeze();
-        ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).freeze();
+        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
+        GTRegistries.RECIPE_CATEGORIES.freeze();
+        BuiltInRegistries.RECIPE_TYPE.freeze();
         return type;
+    }
+
+    /**
+     * Fetches the most-relevant failure reason from a machine's {@link RecipeLogic},
+     * along with the recipe it was attributed to.
+     */
+    public static String getFailures(RecipeLogic recipeLogic) {
+        var reason = recipeLogic.getBestFailureReason();
+        if (reason == null) return "";
+        var recipe = recipeLogic.getBestFailureRecipe();
+        String id = recipe == null ? "<no recipe>" : recipe.getId().toString();
+        return id + " - " + reason.getString() + "\n";
     }
 
     public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
@@ -257,7 +287,7 @@ public class TestUtils {
 
     public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
-        return ((IMachineBlockEntity) Objects.requireNonNull(helper.getBlockEntity(pos))).getMetaMachine();
+        return ((MetaMachine) Objects.requireNonNull(helper.getBlockEntity(pos)));
     }
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
@@ -284,16 +314,6 @@ public class TestUtils {
 
     public static void assertLampOff(GameTestHelper helper, BlockPos pos) {
         helper.assertBlockProperty(pos, RedstoneLampBlock.LIT, false);
-    }
-
-    /**
-     * Shortcut function to retrieve a metamachine from a blockentity's
-     *
-     * @param entity The MetaMachineBlockEntity
-     * @return the machine held, if any
-     */
-    public static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
     }
 
     /**
@@ -344,5 +364,71 @@ public class TestUtils {
                     "Expected redstone signal to be one of %s, got %d".formatted(values, strength),
                     absolutePos, pos, helper.getTick());
         }
+    }
+
+    public static ServerPlayer makeMockSurvivalServerPlayer(GameTestHelper helper) {
+        MinecraftServer server = helper.getLevel().getServer();
+        ServerPlayer player = new ServerPlayer(server, helper.getLevel(),
+                new GameProfile(UUID.randomUUID(), "test-mock-player"), ClientInformation.createDefault()) {
+
+            @Override
+            public void tick() {
+                super.tick();
+                this.doTick();
+            }
+        };
+        player.setGameMode(GameType.SURVIVAL);
+
+        player.connection = new FakeServerGamePacketListenerImpl(server, player);
+        return player;
+    }
+
+    /**
+     * This function bypasses the requirement to register the entity to the world to tick it.<br>
+     * Basically a duplicate of {@link net.minecraft.server.level.ServerLevel#tick ServerLevel:329-353}.
+     * Do note that this method does <b>not</b> check whether the entity should be removed via despawn, or otherwise.
+     */
+    public static void tickEntity(GameTestHelper helper, Entity entity) {
+        if (entity.isRemoved()) return;
+        if (!(entity.level() instanceof ServerLevel level)) return;
+        ProfilerFiller profiler = level.getProfiler();
+
+        // don't tick the entity if it's in a vehicle to follow Vanilla ticking rules
+        Entity vehicle = entity.getVehicle();
+        if (vehicle != null) {
+            if (!vehicle.isRemoved() && vehicle.hasPassenger(entity)) return;
+            entity.stopRiding();
+        }
+
+        profiler.push("tick");
+        // don't tick part entities, like vanilla
+        if (!entity.isRemoved() && !(entity instanceof net.neoforged.neoforge.entity.PartEntity)) {
+            level.guardEntityTick(level::tickNonPassenger, entity);
+        }
+        profiler.pop();
+    }
+
+    public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item) {
+        return useItem(helper, player, item, InteractionHand.MAIN_HAND);
+    }
+
+    public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item,
+                                                             InteractionHand hand) {
+        return item.use(helper.getLevel(), player, hand);
+    }
+
+    public static void assertHeldItemCountIs(GameTestHelper helper, Player player,
+                                             @Nullable Item item, int count, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (item != null && item != Items.AIR) {
+            helper.assertTrue(stack.is(item), "Item stack " + stack + " in hand " + hand + " is not a " + item);
+        }
+        helper.assertTrue(stack.getCount() == count,
+                "Item stack " + stack + " in hand " + hand + " should have " + count + " items, has " +
+                        stack.getCount());
+    }
+
+    public static void assertEntityAlive(GameTestHelper helper, Entity entity) {
+        helper.assertTrue(entity.isAlive(), "Entity " + entity + " should be alive");
     }
 }

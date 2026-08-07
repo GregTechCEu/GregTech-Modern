@@ -38,6 +38,10 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
         return setDataGeneric(ProviderType.BLOCKSTATE, (ctx, prov) -> cons.accept(ctx, (GTBlockstateProvider) prov));
     }
 
+    public GTBlockBuilder<T, P> gtBlockstate(NonNullBiConsumer<DataGenContext<Block, ? extends T>, GTBlockstateProvider> cons) {
+        return setData(ProviderType.BLOCKSTATE, (ctx, prov) -> cons.accept(ctx, (GTBlockstateProvider) prov));
+    }
+
     // region default overrides
 
     @Override
@@ -120,6 +124,11 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     public <D extends RegistrateProvider> GTBlockBuilder<T, P> setDataGeneric(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, ? extends Block>, D> cons) {
         getOwner().setDataGenerator(this, type, prov -> cons.accept(DataGenContext.from(this), prov));
         return this;
+    }
+
+    @Override
+    public  <D extends RegistrateProvider> GTBlockBuilder<T, P> setData(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, T>, D> cons) {
+        return (GTBlockBuilder<T, P>) super.setData(type, cons);
     }
 
     // spotless:on

@@ -1,27 +1,23 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -30,8 +26,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -40,7 +34,6 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
@@ -57,10 +50,11 @@ import java.util.function.*;
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
                                              implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder internal;
+    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
 
-    public MultiblockMachineBuilderWrapper(ResourceLocation id, MultiblockMachineBuilder internal) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+    public MultiblockMachineBuilderWrapper(ResourceLocation id,
+                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal) {
+        super(id);
         this.internal = internal;
         this.dummyBuilder = true;
     }
@@ -70,7 +64,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
+    public MultiblockMachineBuilderWrapper pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         internal.pattern(pattern);
         return this;
     }
@@ -80,28 +74,13 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partSorter(Comparator<IMultiPart> partSorter) {
+    public MultiblockMachineBuilderWrapper partSorter(Comparator<MultiblockPartMachine> partSorter) {
         internal.partSorter(partSorter);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         internal.partAppearance(partAppearance);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper additionalDisplay(BiConsumer<IMultiController, List<Component>> additionalDisplay) {
-        internal.additionalDisplay(additionalDisplay);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
-        internal.shapeInfo(shape);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
-        internal.shapeInfos(shapes);
         return this;
     }
 
@@ -120,8 +99,8 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper machine(Function<IMachineBlockEntity, MetaMachine> machine) {
-        internal.machine(machine);
+    public MultiblockMachineBuilderWrapper blockEntityFactory(MachineInstanceFactory machine) {
+        internal.instanceFactory(machine);
         return this;
     }
 
@@ -391,16 +370,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper editableUI(@Nullable EditableMachineUI editableUI) {
-        internal.editableUI(editableUI);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
-        internal.onBlockEntityRegister(onBlockEntityRegister);
-        return this;
-    }
-
     public MultiblockMachineBuilderWrapper allowExtendedFacing(boolean allowExtendedFacing) {
         internal.allowExtendedFacing(allowExtendedFacing);
         return this;
@@ -419,7 +388,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     @Override
     public void generateLang(LangKubeEvent lang) {
-        super.generateLang(lang);
         if (object != null && object.getLangValue() != null) {
             lang.add(id.getNamespace(), object.getDescriptionId(), object.getLangValue());
         }
@@ -430,23 +398,21 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
-        var baseBuilder = new MultiblockMachineBuilder(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
+        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
-                WorkableElectricMultiblockMachine::new,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::new);
+                WorkableElectricMultiblockMachine::new);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
                                                                  KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        var baseBuilder = new MultiblockMachineBuilder(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
+        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
-                machine::create,
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
-                MetaMachineBlockEntity::new);
+                machine::create);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 }

@@ -7,11 +7,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.dustTiny;
-import static com.gregtechceu.gtceu.data.item.GTItems.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustTiny;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class GrowthMediumRecipes {
 
@@ -21,8 +21,8 @@ public class GrowthMediumRecipes {
                 .inputItems(PLANT_BALL, 2)
                 .outputItems(BIO_CHAFF)
                 .outputItems(BIO_CHAFF)
-                .chancedOutput(BIO_CHAFF.asStack(), 5000, 0)
-                .chancedOutput(BIO_CHAFF.asStack(), 2500, 0)
+                .chancedOutput(BIO_CHAFF.asStack(), 5000)
+                .chancedOutput(BIO_CHAFF.asStack(), 2500)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("dirt_from_bio_chaff").EUt(4).duration(300)

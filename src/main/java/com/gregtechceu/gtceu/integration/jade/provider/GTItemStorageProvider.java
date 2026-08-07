@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
@@ -48,11 +46,7 @@ public enum GTItemStorageProvider implements IServerExtensionProvider<ItemStack>
 
     @Override
     public @Nullable List<ViewGroup<ItemStack>> getGroups(Accessor<?> accessor) {
-        if (!(accessor.getTarget() instanceof MetaMachineBlockEntity mmbe)) {
-            return List.of();
-        }
-        MetaMachine machine = mmbe.getMetaMachine();
-        if (machine instanceof QuantumChestMachine qcm) {
+        if (accessor.getTarget() instanceof QuantumChestMachine qcm) {
             ItemStack stored = qcm.getStored();
             long amount = qcm.getStoredAmount();
             if (qcm instanceof CreativeChestMachine ccm) {
@@ -63,11 +57,11 @@ public enum GTItemStorageProvider implements IServerExtensionProvider<ItemStack>
                 list.add(stored.copyWithCount(stack));
             }
             return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
-        } else if (machine instanceof MEPatternBufferProxyPartMachine proxy) {
+        } else if (accessor.getTarget() instanceof MEPatternBufferProxyPartMachine proxy) {
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
             Accessor<?> accessor1 = new BlockAccessorImpl.Builder().from((BlockAccessor) accessor)
-                    .blockEntity(buffer.holder.self())
+                    .blockEntity(buffer.self())
                     .build();
             return ItemStorageProvider.Extension.INSTANCE.getGroups(accessor1);
         }

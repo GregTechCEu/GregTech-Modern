@@ -12,6 +12,7 @@ bin/
 */.factorypath
 .project
 .idea/
+.run/
 classes/
 .metadata
 .vscode
@@ -20,6 +21,7 @@ classes/
 src/generated/resources/.cache/
 
 *.patch
+*.cap
 *.DS_Store
 
 qodana.yaml

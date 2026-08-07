@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeCategories;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,10 +22,10 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class VanillaStandardRecipes {
 
@@ -224,6 +224,7 @@ public class VanillaStandardRecipes {
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BOTTLE)
                 .outputItems(new ItemStack(Items.GLASS_BOTTLE))
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .addMaterialInfo(true)
                 .save(provider);
 
@@ -249,6 +250,7 @@ public class VanillaStandardRecipes {
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BLOCK)
                 .outputItems(new ItemStack(Blocks.GLASS, 1))
+                .category(GTRecipeCategories.INGOT_MOLDING)
                 .save(provider);
 
         CUTTER_RECIPES.recipeBuilder("cut_glass_block_to_plate").duration(50).EUt(VA[ULV])
@@ -277,7 +279,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("gravel_to_flint")
                 .inputItems(new ItemStack(Blocks.GRAVEL, 1))
                 .outputItems(dust, Stone)
-                .chancedOutput(new ItemStack(Items.FLINT), 3300, 0)
+                .chancedOutput(new ItemStack(Items.FLINT), 3300)
                 .duration(400).EUt(2)
                 .save(provider);
 
@@ -344,7 +346,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_block")
                 .inputItems(new ItemStack(Blocks.MELON))
                 .outputItems(new ItemStack(Items.MELON_SLICE, 8))
-                .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8500, 0)
+                .chancedOutput(new ItemStack(Items.MELON_SEEDS), 8500)
                 .duration(400).EUt(2)
                 .save(provider);
 
@@ -363,9 +365,9 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_wool")
                 .inputItems(ItemTags.WOOL)
                 .outputItems(new ItemStack(Items.STRING))
-                .chancedOutput(new ItemStack(Items.STRING), 9000, 0)
-                .chancedOutput(new ItemStack(Items.STRING), 5000, 0)
-                .chancedOutput(new ItemStack(Items.STRING), 2000, 0)
+                .chancedOutput(new ItemStack(Items.STRING), 9000)
+                .chancedOutput(new ItemStack(Items.STRING), 5000)
+                .chancedOutput(new ItemStack(Items.STRING), 2000)
                 .duration(200).EUt(2)
                 .save(provider);
     }
@@ -377,7 +379,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_logs")
                 .inputItems(ItemTags.LOGS)
                 .outputItems(dust, Wood, 6)
-                .chancedOutput(dust, Wood, 8500, 0)
+                .chancedOutput(dust, Wood, 8500)
                 .duration(150).EUt(2)
                 .save(provider);
 
@@ -1394,11 +1396,13 @@ public class VanillaStandardRecipes {
                 .inputItems(new ItemStack(Items.BONE_MEAL))
                 .outputItems(new ItemStack(Items.WHITE_DYE, 1))
                 .save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("lapis_dye")
+
+        EXTRACTOR_RECIPES.recipeBuilder("blue_dye")
                 .inputItems(new ItemStack(Items.LAPIS_LAZULI))
                 .outputItems(new ItemStack(Items.BLUE_DYE))
                 .save(provider);
-        EXTRACTOR_RECIPES.recipeBuilder("ink_dye")
+
+        EXTRACTOR_RECIPES.recipeBuilder("black_dye")
                 .inputItems(new ItemStack(Items.INK_SAC))
                 .outputItems(new ItemStack(Items.BLACK_DYE))
                 .save(provider);

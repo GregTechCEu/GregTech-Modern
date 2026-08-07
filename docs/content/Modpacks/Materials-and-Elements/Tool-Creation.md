@@ -59,7 +59,7 @@ The builder has the same arguments as the constructor, and can have chained meth
 - `ignoreCraftingTools()`
     - Disable crafting tools being made from this Material.
 
-- `addEnchantmentForTools(Enchantment enchantment, int level)`
+- `.enchantment(Enchantment enchantment, int level)`
     - Enchantment is the default enchantment applied on tool creation.  
       Level is the level of said enchantment.
 - `enchantability(int enchantability)`
@@ -82,7 +82,7 @@ Here is an example of using the builder in a material:
                     ]
                 )
                 .unbreakable()
-                .addEnchantmentForTools(silk_touch, 1)
+                .enchantment(SILK_TOUCH, 1)
                 .build()
             ) 
     });

@@ -66,8 +66,8 @@ public record MultiVariantModel(List<VariantState> variants) implements UnbakedM
 
     public static class Deserializer implements JsonDeserializer<MultiVariantModel> {
 
-        public MultiVariantModel deserialize(JsonElement json, Type type, JsonDeserializationContext context)
-                                                                                                              throws JsonParseException {
+        public MultiVariantModel deserialize(JsonElement json, Type type,
+                                             JsonDeserializationContext context) throws JsonParseException {
             List<VariantState> variants = new ArrayList<>();
             if (json.isJsonArray()) {
                 JsonArray array = json.getAsJsonArray();

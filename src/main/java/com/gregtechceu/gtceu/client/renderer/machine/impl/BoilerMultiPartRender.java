@@ -1,17 +1,16 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.model.machine.IControllerModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -32,7 +31,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -93,42 +91,45 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
     @SuppressWarnings("DataFlowIssue")
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderPartModel(List<BakedQuad> quads, IMultiController controller, IMultiPart part,
+    public void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine controller,
+                                MultiblockPartMachine part,
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand,
-                                @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                ModelData modelData, @Nullable RenderType renderType) {
         if (this.fireboxIdleModel == null) {
-            this.fireboxIdleModel = ModelUtils.getModelForState(fireboxIdle);
+            this.fireboxIdleModel = RenderUtil.getModelForState(fireboxIdle);
         }
         if (this.fireboxActiveModel == null) {
-            this.fireboxActiveModel = ModelUtils.getModelForState(fireboxActive);
+            this.fireboxActiveModel = RenderUtil.getModelForState(fireboxActive);
         }
         if (this.casingModel == null) {
-            this.casingModel = ModelUtils.getModelForState(casing);
+            this.casingModel = RenderUtil.getModelForState(casing);
         }
 
-        BlockPos partPos = part.self().getPos();
+        BlockPos partPos = part.getBlockPos();
 
-        MultiblockControllerMachine machine = controller.self();
-        BlockPos controllerPos = machine.getPos();
-        Direction multiFront = machine.getFrontFacing();
-        Direction multiUpward = machine.getUpwardsFacing();
-        boolean flipped = machine.isFlipped();
-        Direction relativeDown = RelativeDirection.DOWN.getRelative(multiFront, multiUpward, flipped);
+        BlockPos controllerPos = controller.getBlockPos();
+        Direction multiFront = controller.getFrontFacing();
+        Direction multiUpward = controller.getUpwardsFacing();
+        boolean flipped = controller.isFlipped();
+        Direction relativeDown = RelativeDirection.DOWN.getRelativeFacing(multiFront, multiUpward, flipped);
 
         int belowControllerY = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
         int partY = partPos.get(relativeDown.getAxis());
         if (belowControllerY == partY) {
             // firebox
-            if (controller instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
-                emitQuads(quads, fireboxActiveModel, machine.getLevel(), partPos, fireboxActive,
+
+            var recipeLogic = controller.getTrait(RecipeLogic.class);
+
+            if (recipeLogic != null && recipeLogic.isWorking()) {
+                emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
                         side, rand, modelData, renderType);
             } else {
-                emitQuads(quads, fireboxIdleModel, machine.getLevel(), partPos, fireboxIdle,
+                emitQuads(quads, fireboxIdleModel, controller.getLevel(), partPos, fireboxIdle,
                         side, rand, modelData, renderType);
             }
         } else {
             // Not exactly one below the controller, so not a firebox
-            emitQuads(quads, casingModel, machine.getLevel(), partPos, casing,
+            emitQuads(quads, casingModel, controller.getLevel(), partPos, casing,
                     side, rand, modelData, renderType);
         }
     }

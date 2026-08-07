@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,8 +16,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A machine can handle recipes.
  */
-public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver,
-                                     IVoidable {
+public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, IVoidable {
 
     /**
      * RecipeType held
@@ -30,11 +30,6 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     int getActiveRecipeType();
 
     void setActiveRecipeType(int type);
-
-    /**
-     * Called when recipe logic status changed
-     */
-    default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {}
 
     /**
      * Recipe logic
@@ -55,16 +50,14 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nullable
     default GTRecipe doModifyRecipe(GTRecipe recipe) {
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
-    }
+        recipe = self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+        if (recipe == null) return null;
 
-    /**
-     * Whether the recipe logic should keep subscribing tick logic when no recipe is available after one cycle.
-     * if false. you should call {@link RecipeLogic#updateTickSubscription()} manually later to active recipe logic
-     * again.
-     */
-    default boolean keepSubscribing() {
-        return true;
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            recipe = rlTrait.modifyRecipe(recipe);
+            if (recipe == null) return null;
+        }
+        return recipe;
     }
 
     /**
@@ -75,17 +68,47 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
+     * Called when the recipe logic status changes
+     * 
+     * @param oldStatus Old recipe logic status
+     * @param newStatus New recipe logic status
      */
-    default boolean beforeWorking(@Nullable GTRecipe recipe) {
-        return self().getDefinition().getBeforeWorking().test(this, recipe);
+    default void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            rlTrait.recipeLogicStatusChanged(oldStatus, newStatus);
+        }
     }
 
     /**
-     * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
+     * Called when a recipe is about to be run, just before inputs are consumed.
+     *
+     * @return false to cancel the recipe, true to continue
+     *
+     * @see RecipeLogic#setupRecipe(GTRecipe)
+     */
+    default boolean beforeWorking(@Nullable GTRecipe recipe) {
+        if (!self().getDefinition().getBeforeWorking().test(this, recipe)) return false;
+
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            if (!rlTrait.beforeWorking(recipe)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Called every tick while the recipe is working.
+     *
+     * @return false to interrupt and suspend the recipe, true to continue working
+     *
+     * @see RecipeLogic#handleRecipeWorking()
      */
     default boolean onWorking() {
-        return self().getDefinition().getOnWorking().test(this);
+        if (!self().getDefinition().getOnWorking().test(this)) return false;
+
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            if (!rlTrait.onWorking()) return false;
+        }
+        return true;
     }
 
     /**
@@ -96,34 +119,36 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
+     * Called when the recipe finishes, before outputs are produced.
+     *
+     * @see RecipeLogic#onRecipeFinish()
      */
     default void afterWorking() {
         self().getDefinition().getAfterWorking().accept(this);
-    }
-
-    /**
-     * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
-     */
-    default boolean regressWhenWaiting() {
-        return self().getDefinition().isRegressWhenWaiting();
-    }
-
-    /**
-     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
-     * 
-     * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
-     *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
-     */
-    default boolean alwaysTryModifyRecipe() {
-        // make it *always* do overclock and parallel so that the machine doesn't get stuck running a lower-tier recipe
-        // in any possible scenario.
-        return true;
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            rlTrait.afterWorking();
+        }
     }
 
     default boolean shouldWorkingPlaySound() {
         return ConfigHolder.INSTANCE.machines.machineSounds &&
                 (!(self() instanceof IMufflableMachine mufflableMachine) || !mufflableMachine.isMuffled());
+    }
+
+    /**
+     * Display recipe voltage used by {@link RecipeLogicProvider}
+     */
+
+    default long getDisplayRecipeVoltage() {
+        return -1;
+    }
+
+    /**
+     * Max output EU/t of a generator
+     * is negative when it is not a generator
+     */
+    default long getDisplayGeneratorPower() {
+        return -1;
     }
 
     //////////////////////////////////////

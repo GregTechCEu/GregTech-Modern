@@ -6,7 +6,6 @@
         "side": "#top",
 
         "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
-        "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
         "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive"
     }
 }

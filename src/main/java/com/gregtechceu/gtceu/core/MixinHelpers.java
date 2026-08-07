@@ -1,38 +1,39 @@
 package com.gregtechceu.gtceu.core;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.fluid.FluidState;
-import com.gregtechceu.gtceu.api.fluid.GTFluid;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.FluidProperty;
-import com.gregtechceu.gtceu.api.material.material.properties.OreProperty;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
-import com.gregtechceu.gtceu.data.item.GTMaterialItems;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinKubeEvent;
-import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinKubeEvent;
-import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
@@ -45,7 +46,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -61,33 +61,19 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
+@ApiStatus.Internal
 public class MixinHelpers {
-
-    /**
-     * This is set at the start of:
-     * <ul>
-     * <li>{@link BlockEntity#loadAdditional(CompoundTag, HolderLookup.Provider)}
-     * <li>{@link BlockEntity#saveAdditional(CompoundTag, HolderLookup.Provider)}
-     * </ul>
-     * and cleared when the method exits.
-     */
-    public static final ThreadLocal<HolderLookup.Provider> CURRENT_BE_SAVE_LOAD_REGISTRIES = new ThreadLocal<>();
-
-    /**
-     * @return the registry access provided to the currently saving/loading block entity
-     *         or null if no saving or loading is happening.
-     */
-    public static HolderLookup.Provider getCurrentBERegistries() {
-        return CURRENT_BE_SAVE_LOAD_REGISTRIES.get();
-    }
 
     public static <T> void generateGTDynamicTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap,
                                                  Registry<T> registry) {
@@ -158,7 +144,7 @@ public class MixinHelpers {
             // If AE2 is loaded, add the Fluid P2P attunement tag to all the buckets
             var p2pFluidAttunements = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_APPENG,
                     "p2p_attunements/fluid_p2p_tunnel");
-            for (Material material : GTCEuAPI.materialManager) {
+            for (Material material : GTRegistries.MATERIALS) {
                 FluidProperty property = material.getProperty(PropertyKey.FLUID);
                 if (property == null) {
                     continue;
@@ -211,6 +197,11 @@ public class MixinHelpers {
                     }
                 }
 
+                if (entry.tagPrefix() == TagPrefix.oreEndstone) {
+                    // Make endstone-based ores dragon-immune
+                    tagMap.computeIfAbsent(BlockTags.DRAGON_IMMUNE.location(), $ -> new ArrayList<>()).addAll(entries);
+                }
+
                 if (entry.tagPrefix() == TagPrefix.frameGt) {
                     tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
                             .addAll(entries);
@@ -231,7 +222,7 @@ public class MixinHelpers {
                 tagList.add(makeTagEntry(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER));
             }
         } else if (registry == BuiltInRegistries.FLUID) {
-            for (Material material : GTCEuAPI.materialManager) {
+            for (Material material : GTRegistries.MATERIALS) {
                 FluidProperty property = material.getProperty(PropertyKey.FLUID);
                 if (property == null) {
                     continue;
@@ -391,18 +382,20 @@ public class MixinHelpers {
         });
     }
 
-    public static void postKJSVeinEvents(WritableRegistry<?> registry) {
+    public static void postKJSVeinEvents(RegistryAccess.Frozen registries) {
         if (!GTCEu.Mods.isKubeJSLoaded()) {
             return;
         }
+        KJSCallWrapper.updateRegistryAccessContainer(registries);
 
-        if (registry.key() == GTRegistries.ORE_VEIN_REGISTRY) {
-            KJSCallWrapper.postOreVeinEvent();
-        } else if (registry.key() == GTRegistries.BEDROCK_FLUID_REGISTRY) {
-            KJSCallWrapper.postBedrockFluidEvent();
-        } else if (registry.key() == GTRegistries.BEDROCK_ORE_REGISTRY) {
-            KJSCallWrapper.postBedrockOreEvent();
-        }
+        KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postOreVeinEvent,
+                registries.registryOrThrow(GTRegistries.Keys.ORE_VEIN));
+
+        KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postBedrockFluidEvent,
+                registries.registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID));
+
+        KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postBedrockOreEvent,
+                registries.registryOrThrow(GTRegistries.Keys.BEDROCK_ORE));
     }
 
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
@@ -417,16 +410,33 @@ public class MixinHelpers {
 
     private static final class KJSCallWrapper {
 
-        private static void postOreVeinEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinKubeEvent());
+        private static <T> void postEventWithRegistry(Consumer<WritableRegistry<T>> eventProvider,
+                                                      Registry<T> registry) {
+            if (registry instanceof MappedRegistry<T> writable) {
+                // unfreeze the registry, register to it, refreeze it.
+                writable.unfreeze();
+                eventProvider.accept(writable);
+                writable.freeze();
+            }
         }
 
-        private static void postBedrockFluidEvent() {
-            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinKubeEvent());
+        private static void postOreVeinEvent(WritableRegistry<GTOreDefinition> registry) {
+            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS(registry));
         }
 
-        private static void postBedrockOreEvent() {
-            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinKubeEvent());
+        private static void postBedrockFluidEvent(WritableRegistry<BedrockFluidDefinition> registry) {
+            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinEventJS(registry));
+        }
+
+        private static void postBedrockOreEvent(WritableRegistry<BedrockOreDefinition> registry) {
+            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinEventJS(registry));
+        }
+
+        private static void updateRegistryAccessContainer(RegistryAccess.Frozen registriesWithEverything) {
+            if (RegistryAccessContainer.current.access().registries().count() <
+                    registriesWithEverything.registries().count()) {
+                RegistryAccessContainer.current = new RegistryAccessContainer(registriesWithEverything);
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
-import com.gregtechceu.gtceu.api.material.material.properties.ItemPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.FacingPos;
@@ -51,7 +51,7 @@ public class ItemRoutePath implements IRoutePath<IItemHandler> {
 
     @Override
     public @NotNull BlockPos getTargetPipePos() {
-        return targetPipe.getPipePos();
+        return targetPipe.getBlockPos();
     }
 
     @Override

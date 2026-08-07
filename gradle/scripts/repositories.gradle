@@ -1,6 +1,30 @@
 repositories {
     mavenLocal()
     mavenCentral()
+    // force gradle to download FastUtil and LWJGL from the central maven so we can get source artifacts
+    exclusiveContent { // Force
+        forRepository { mavenCentral() }
+        filter {
+            includeGroup("it.unimi.dsi")
+            includeGroup("org.lwjgl")
+            includeGroupAndSubgroups("io.netty")
+            includeGroup("com.google.guava")
+            includeGroup("io.netty")
+        }
+    }
+
+    exclusiveContent { // JEI, embeddium, ModernFix
+        forRepository { maven { url = "https://maven.blamejared.com" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("org.embeddedt")
+        }
+    }
+
+    maven {
+        name = 'GTCEu Maven'
+        url = 'https://maven.gtceu.com'
+    }
 
     maven { // JEI
         name = "Jared's Maven"
@@ -17,8 +41,6 @@ repositories {
         url = "https://maven.firstdark.dev/snapshots"
     }
 
-    maven { url = "https://maven.createmod.net" }
-
 
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository {
@@ -27,11 +49,15 @@ repositories {
         filter {
             includeGroup("net.createmod.ponder")
             includeGroup("com.simibubi.create")
-            includeGroup("dev.engine-room.flywheel")
+            includeGroupAndSubgroups("dev.engine-room")
         }
     }
     exclusiveContent { // Configuration
-        forRepository { maven { url = "https://repo.repsy.io/mvn/toma/public" } }
+        forRepositories(
+                maven { url = "https://repo.repsy.io/mvn/toma/public" },
+                maven { url = "https://repo.repsy.io/toma/public" },
+                maven { url = "https://api.repsy.io/mvn/toma/public" },
+        )
         filter { includeGroup("dev.toma.configuration")}
     }
     exclusiveContent { // KubeJS and Rhino
@@ -44,10 +70,6 @@ repositories {
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases/" } }
         filter { includeGroup("dev.ftb.mods") }
-    }
-    exclusiveContent { // TOP
-        forRepository { maven { url = "https://maven.k-4u.nl/" } }
-        filter { includeGroup('mcjty.theoneprobe') }
     }
     exclusiveContent { // JourneyMap API
         forRepository { maven { url = "https://jm.gserv.me/repository/maven-public/" } }
@@ -98,5 +120,25 @@ repositories {
     exclusiveContent { // This one lib that KJS 1.21 uses for whatever reason?
         forRepository { maven { url = "https://jitpack.io/" } }
         filter { includeGroup("com.github.rtyley") }
+    }
+    exclusiveContent { // Xaero's
+        forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
+        filter { includeGroupAndSubgroups("xaero") }
+    }
+    exclusiveContent { // sodium
+        forRepository { maven { url = "https://maven.caffeinemc.net/releases" } }
+        filter { includeGroup("net.caffeinemc") }
+    }
+    exclusiveContent { // forgigied fabric api (dependency of sodium)
+        forRepository { maven { url = "https://maven.su5ed.dev/releases" } }
+        filter { includeGroup("org.sinytra.forgified-fabric-api") }
+    }
+    exclusiveContent { // Sable + Create Aeronautics (physics sub-levels)
+        forRepository { maven { url = "https://maven.ryanhcode.dev/releases" } }
+        filter {
+            includeGroupAndSubgroups("dev.ryanhcode")
+            includeGroupAndSubgroups("dev.eriksonn")
+            includeGroupAndSubgroups("dev.simulated_team")
+        }
     }
 }

@@ -1,20 +1,23 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.material.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.recipe.builder.*;
+import com.gregtechceu.gtceu.data.recipe.builder.*;
 
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -24,7 +27,9 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import it.unimi.dsi.fastutil.chars.*;
+import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
+import it.unimi.dsi.fastutil.chars.CharArraySet;
+import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -284,6 +289,31 @@ public class VanillaRecipeHelper {
     }
 
     /**
+     * @see #addShapedRecipe(RecipeOutput, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(RecipeOutput provider, @NotNull String regName,
+                                                 @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictSizeShapedRecipe(provider, GTCEu.id(regName), result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(RecipeOutput, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(RecipeOutput provider, boolean setMaterialInfoData,
+                                                 @NotNull String regName,
+                                                 @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictSizeShapedRecipe(provider, setMaterialInfoData, GTCEu.id(regName), result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(RecipeOutput, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(RecipeOutput provider, @NotNull ResourceLocation regName,
+                                                 @NotNull ItemStack result, @NotNull Object... recipe) {
+        addStrictSizeShapedRecipe(provider, false, regName, result, recipe);
+    }
+
+    /**
      * Adds Shaped Crafting Recipes.
      * <p/>
      * For Enums - {@link Enum#name()} is called.
@@ -305,6 +335,7 @@ public class VanillaRecipeHelper {
      * </ul>
      *
      * @param setMaterialInfoData whether to add material decomposition information to the recipe output
+     *
      * @param regName             the registry name for the recipe
      * @param result              the output for the recipe
      * @param recipe              the contents of the recipe
@@ -394,6 +425,15 @@ public class VanillaRecipeHelper {
     public static void addStrictShapedRecipe(RecipeOutput provider, boolean setMaterialInfoData,
                                              @NotNull ResourceLocation regName, @NotNull ItemStack result,
                                              @NotNull Object... recipe) {
+        addShapedRecipe(provider, setMaterialInfoData, true, regName, result, recipe);
+    }
+
+    /**
+     * @see #addShapedRecipe(RecipeOutput, boolean, boolean, ResourceLocation, ItemStack, Object...)
+     */
+    public static void addStrictSizeShapedRecipe(RecipeOutput provider, boolean setMaterialInfoData,
+                                                 @NotNull ResourceLocation regName, @NotNull ItemStack result,
+                                                 @NotNull Object... recipe) {
         addShapedRecipe(provider, setMaterialInfoData, true, regName, result, recipe);
     }
 
@@ -605,6 +645,38 @@ public class VanillaRecipeHelper {
         builder.save(provider);
     }
 
+    public static void addSmithingTransformRecipe(RecipeOutput provider, @NotNull ResourceLocation regName,
+                                                  @NotNull Item result, @NotNull ItemLike baseInput,
+                                                  @NotNull ItemLike template, @NotNull ItemLike addition,
+                                                  @NotNull RecipeCategory category) {
+        SmithingTransformRecipeBuilder
+                .smithing(Ingredient.of(template), Ingredient.of(baseInput), Ingredient.of(addition), category, result)
+                .unlocks(String.format("has_%s", baseInput), InventoryChangeTrigger.TriggerInstance.hasItems(baseInput))
+                .save(provider, regName);
+    }
+
+    public static void addSmithingTransformRecipe(RecipeOutput provider, @NotNull String regName,
+                                                  @NotNull Item result, @NotNull ItemLike baseInput,
+                                                  @NotNull ItemLike template, @NotNull ItemLike addition) {
+        addSmithingTransformRecipe(provider, GTCEu.id(regName), result, baseInput, template, addition,
+                RecipeCategory.MISC);
+    }
+
+    public static void addToolUpgradingRecipe(@NotNull RecipeOutput provider, @NotNull GTToolType tool,
+                                              @NotNull Material upgradeMaterial, @NotNull Material baseMaterial,
+                                              @NotNull ItemLike template, @NotNull ItemLike addition) {
+        ItemStack upgradeToolStack = ToolHelper.get(tool, upgradeMaterial);
+        ItemStack baseToolStack = ToolHelper.get(tool, baseMaterial);
+
+        if (upgradeToolStack.isEmpty() || baseToolStack.isEmpty()) return;
+
+        VanillaRecipeHelper.addSmithingTransformRecipe(provider,
+                String.format("%s_%s_smithing_transform_from_%s", upgradeMaterial.getName(), tool.name,
+                        baseMaterial.getName()),
+                upgradeToolStack.getItem(), baseToolStack.getItem(),
+                template, addition);
+    }
+
     /**
      * @param material the material to check
      * @return if the material is a wood
@@ -675,16 +747,14 @@ public class VanillaRecipeHelper {
             ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(itemLike);
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
-                    if (!(ms.material() instanceof MarkerMaterial)) {
-                        addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
-                    }
+                    addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                 }
                 continue;
             }
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
             MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
-            if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
+            if (!materialStack.isEmpty()) {
                 addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, materialStack);
             }
 

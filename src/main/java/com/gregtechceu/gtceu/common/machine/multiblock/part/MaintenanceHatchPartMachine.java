@@ -1,46 +1,54 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.FloatSyncValue;
+import brachy.modularui.value.sync.InteractionSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -50,76 +58,152 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.DoubleSupplier;
+import java.util.stream.Stream;
 
 public class MaintenanceHatchPartMachine extends TieredPartMachine
-                                         implements IMachineLife, IMaintenanceMachine, IInteractedMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+                                         implements IMuiMachine {
 
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
     private static final float DURATION_ACTION_AMOUNT = 0.01f;
 
+    public static final byte ALL_PROBLEMS = 0;
+    public static final byte NO_PROBLEMS = 0b111111;
+
     @Getter
     private final boolean isConfigurable;
-    @Persisted
+    @SaveField
     private final NotifiableItemStackHandler itemStackHandler;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     private boolean isTaped;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected int timeActive;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected byte maintenanceProblems = startProblems();
+    /**
+     * Duration modifier for recipe.
+     * It's configurable in the Configurable Maintenance Part.
+     */
     @Getter
-    @Persisted
+    @SaveField
     private float durationMultiplier = 1f;
     @Nullable
     protected TickableSubscription maintenanceSubs;
 
-    public MaintenanceHatchPartMachine(IMachineBlockEntity holder, boolean isConfigurable) {
-        super(holder, isConfigurable ? GTValues.HV : GTValues.LV);
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, int tier, boolean isConfigurable) {
+        super(info, tier);
         this.isConfigurable = isConfigurable;
-        this.itemStackHandler = createInventory();
+        this.itemStackHandler = attachTrait(createInventory());
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
+    }
+
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
+        this(info, isConfigurable ? GTValues.HV : GTValues.LV, isConfigurable);
+    }
+
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
+        return false;
     }
 
     //////////////////////////////////////
     // ****** Initialization ******//
     //////////////////////////////////////
     protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.BOTH);
+        return new NotifiableItemStackHandler(1, IO.BOTH, IO.BOTH);
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public void onMachineRemoved() {
-        clearInventory(itemStackHandler);
-    }
-
-    @Override
     public byte startProblems() {
         return ALL_PROBLEMS;
+    }
+
+    public void setDurationMultiplier(float durationMultiplier) {
+        this.durationMultiplier = durationMultiplier;
+        syncDataHolder.markClientSyncFieldDirty("durationMultiplier");
     }
 
     //////////////////////////////////////
     // ********* Logic **********//
     //////////////////////////////////////
+
+    /**
+     * Used to calculate whether a maintenance problem should happen based on machine time active
+     *
+     * @param duration in ticks to add to the counter of active time
+     */
+    public void calculateMaintenance(int duration) {
+        if (!ConfigHolder.INSTANCE.machines.enableMaintenance || isFullAuto()) {
+            return;
+        }
+
+        setTimeActive(getTimeActive() + duration);
+        float rate = ConfigHolder.INSTANCE.machines.maintenanceCheckRate / getTimeMultiplier();
+        if (getTimeActive() >= rate) {
+            setTimeActive(0);
+            if (GTValues.RNG.nextInt(6000) == 0) {
+                causeRandomMaintenanceProblems();
+                setTaped(false);
+            }
+        }
+    }
+
+    /**
+     * Used to calculate whether a maintenance problem should happen based on machine time active
+     */
+    public void calculateMaintenance() {
+        calculateMaintenance(1);
+    }
+
+    public int getNumMaintenanceProblems() {
+        return ConfigHolder.INSTANCE.machines.enableMaintenance ? 6 - Integer.bitCount(getMaintenanceProblems()) : 0;
+    }
+
+    public boolean hasMaintenanceProblems() {
+        return ConfigHolder.INSTANCE.machines.enableMaintenance && this.getMaintenanceProblems() < 63;
+    }
+
+    public void setMaintenanceFixed(int index) {
+        setMaintenanceProblems((byte) (getMaintenanceProblems() | (byte) (1 << index)));
+    }
+
+    public void causeRandomMaintenanceProblems() {
+        setMaintenanceProblems(
+                (byte) (getMaintenanceProblems() & (byte) ~(1 << GTValues.RNG.nextInt(6))));
+    }
+
     @Override
+    public boolean onWorking(WorkableMultiblockMachine controller) {
+        calculateMaintenance();
+        if (hasMaintenanceProblems()) {
+            controller.getRecipeLogic().markLastRecipeDirty();
+        }
+        return true;
+    }
+
+    @Override
+    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+        if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
+            if (hasMaintenanceProblems()) {
+                return null;
+            }
+            var durationMultiplier = getDurationMultiplier();
+            if (durationMultiplier != 1) {
+                recipe = recipe.copy();
+                recipe.duration = Math.max(1, Math.round(recipe.duration * durationMultiplier));
+            }
+        }
+        return recipe;
+    }
+
     public void setMaintenanceProblems(byte problems) {
         this.maintenanceProblems = problems;
         updateMaintenanceSubscription();
+        syncDataHolder.markClientSyncFieldDirty("maintenanceProblems");
     }
 
     @Override
@@ -203,7 +287,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         return false;
     }
 
-    private boolean consumeDuctTape(Player player, ItemStack held) {
+    private boolean consumeDuctTape(Player player, InteractionHand hand) {
+        var held = player.getItemInHand(hand);
         if (!held.isEmpty() && held.is(GTItems.DUCT_TAPE.get())) {
             if (!player.isCreative()) {
                 held.shrink(1);
@@ -221,7 +306,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * @param entityPlayer Target Player which their inventory would be scanned for tools to fix
      */
     private void fixProblemsWithTools(byte problems, Player entityPlayer) {
-        List<GTToolType> toolsToMatch = Arrays.asList(new GTToolType[6]);
+        List<@Nullable GTToolType> toolsToMatch = Arrays.asList(new GTToolType[6]);
         boolean proceed = false;
         for (byte index = 0; index < 6; index++) {
             if (((problems >> index) & 1) == 0) {
@@ -295,12 +380,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         for (int i = 0; i < 6; i++) setMaintenanceFixed(i);
     }
 
-    @Override
     public boolean isFullAuto() {
         return false;
     }
 
-    @Override
     public void setTaped(boolean isTaped) {
         if (this.isTaped != isTaped) {
             this.isTaped = isTaped;
@@ -308,7 +391,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         }
     }
 
-    @Override
+    /**
+     * Higher {@link #getDurationMultiplier()} refers to a lower time multiplier.
+     * The lower time multiplier means more likely causing problems.
+     */
     public float getTimeMultiplier() {
         var result = 1f;
         if (durationMultiplier < 1.0)
@@ -323,73 +409,93 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ******* INTERACTION *******//
     //////////////////////////////////////
+
     @Override
-    public ItemInteractionResult onUseWithItem(ItemStack stack, BlockState state, Level world, BlockPos pos,
-                                               Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (hasMaintenanceProblems()) {
-            if (consumeDuctTape(player, stack)) {
+            if (consumeDuctTape(context.getPlayer(), context.getHand())) {
                 fixAllMaintenanceProblems();
                 setTaped(true);
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return super.onUseWithItem(context);
     }
 
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
+
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group;
-        if (isConfigurable) {
-            group = new WidgetGroup(0, 0, 150, 70);
-            group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 150 - 8, 70 - 8).setBackground(GuiTextures.DISPLAY)
-                    .addWidget(new ComponentPanelWidget(4, 5, list -> {
-                        list.add(getTextWidgetText("duration", this::getDurationMultiplier));
-                        list.add(getTextWidgetText("time", this::getTimeMultiplier));
-                        var buttonText = Component.translatable("gtceu.maintenance.configurable_duration.modify");
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-                        list.add(buttonText);
-                    }).setMaxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
-                        if (!clickData.isRemote) {
-                            if (componentData.equals("sub")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier - DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            } else if (componentData.equals("add")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier + DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            }
-                        }
-                    })));
-
-        } else {
-            group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
-        }
-        group.addWidget(new SlotWidget(itemStackHandler, 0, group.getSize().width - 4 - 18, 4)
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tape_slot.tooltip"));
-        group.addWidget(new ButtonWidget(group.getSize().width - 4 - 18, 4 + 20, 18, 18, GuiTextures.MAINTENANCE_BUTTON,
-                data -> fixMaintenanceProblems(group.getGui().entityPlayer))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tool_slot.tooltip"));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
-
-    private static Component getTextWidgetText(String type, DoubleSupplier multiplier) {
-        Component tooltip;
-        if (multiplier.getAsDouble() == 1.0) {
-            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
-        } else {
-            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description",
-                    FormattingUtil.formatNumber2Places(multiplier.getAsDouble()));
-        }
-        return Component
-                .translatable("gtceu.maintenance.configurable_" + type,
-                        FormattingUtil.formatNumber2Places(multiplier.getAsDouble()))
-                .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        InteractionSyncHandler syncHandler = new InteractionSyncHandler();
+        Flow maintenanceStatusWidget = Flow.column()
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .coverChildren()
+                .padding(5)
+                .childPadding(2);
+        Runnable updateWidget = () -> {
+            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
+            maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
+                    Component.translatable("gtceu.top.maintenance_broken") :
+                    Component.translatable("gtceu.top.maintenance_fixed"))))
+                    .child(Flow.row()
+                            .coverChildren()
+                            .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
+                                    .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
+                                    .map(GTUtil::getMaintenanceText)
+                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())))
+                                    .map(IWidget.class::cast)
+                                    .toList()));
+        };
+        syncHandler.setOnMousePressed((button) -> {
+            fixMaintenanceProblems(guiData.getPlayer());
+            updateWidget.run();
+        });
+        updateWidget.run();
+        mainWidget.child(Flow.column()
+                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .childIf(this.isConfigurable, () -> Flow.column()
+                        .coverChildren()
+                        .padding(5)
+                        .paddingLeft(0)
+                        .marginLeft(5)
+                        .child(Flow.row()
+                                .coverChildren()
+                                .childPadding(5)
+                                .leftRel(0)
+                                .child(new TextWidget<>(
+                                        Text.lang("gtceu.maintenance.configurable_duration.modify")))
+                                .child(new TextFieldWidget()
+                                        .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER,
+                                                () -> MAX_DURATION_MULTIPLIER)
+                                        .setDefaultNumber(1)
+                                        .value(new FloatSyncValue(this::getDurationMultiplier,
+                                                this::setDurationMultiplier))
+                                        .addTooltipElement(Text.dynamic(() -> getDurationMultiplier() == 1.0 ?
+                                                Component.translatable(
+                                                        "gtceu.maintenance.configurable_duration.unchanged_description") :
+                                                Component.translatable(
+                                                        "gtceu.maintenance.configurable_duration.changed_description")))))
+                        .child(new TextWidget<>(Text.lang("gtceu.maintenance.configurable_time",
+                                this.getTimeMultiplier()))
+                                .leftRel(0)))
+                .child(Flow.row()
+                        .leftRel(0.5f)
+                        .coverChildren()
+                        .padding(5)
+                        .child(new ItemSlot()
+                                .slot(new ModularSlot(itemStackHandler, 0).changeListener(
+                                        (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
+                                .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
+                        .child(new ButtonWidget<>()
+                                .background(GTGuiTextures.BUTTON_MAINTENANCE)
+                                .disableHoverBackground()
+                                .addTooltipElement(
+                                        Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
+                                .syncHandler(syncHandler)))
+                .child(maintenanceStatusWidget));
     }
 }

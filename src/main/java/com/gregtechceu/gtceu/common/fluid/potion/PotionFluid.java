@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.fluid.potion;
 
-import com.gregtechceu.gtceu.data.fluid.GTFluids;
+import com.gregtechceu.gtceu.common.data.GTFluids;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;

@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.integration.map.journeymap;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.integration.map.layer.Layers;
 
 import journeymap.api.v2.client.IClientAPI;
-import journeymap.api.v2.client.option.BooleanOption;
-import journeymap.api.v2.client.option.OptionCategory;
+import journeymap.api.v2.common.option.BooleanOption;
+import journeymap.api.v2.common.option.OptionCategory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,14 +15,12 @@ public class JourneymapOptions {
     private final Map<String, BooleanOption> layerOptions = new HashMap<>();
 
     public JourneymapOptions() {
-        final String prefix = "gtceu.journeymap.options.layers.";
         final OptionCategory category = new OptionCategory(GTCEu.MOD_ID, "gtceu.journeymap.options.layers");
 
-        final BooleanOption oreLayer = new BooleanOption(category, "ore_veins", prefix + "ore_veins", false);
-        layerOptions.put(oreLayer.getFieldName(), oreLayer);
-        final BooleanOption fluidLayer = new BooleanOption(category, "bedrock_fluids", prefix + "bedrock_fluids",
-                false);
-        layerOptions.put(fluidLayer.getFieldName(), fluidLayer);
+        for (String layerName : Layers.allKeys()) {
+            final BooleanOption layer = new BooleanOption(category, layerName, "gtceu.button." + layerName, false);
+            layerOptions.put(layerName, layer);
+        }
     }
 
     public boolean showLayer(String name) {
@@ -33,7 +32,7 @@ public class JourneymapOptions {
         if (!active) {
             JourneymapRenderer.getMarkers().forEach((id, marker) -> {
                 if (id.split("@")[0].equals(name)) {
-                    IClientAPI api = JourneyMapPlugin.getJmApi();
+                    IClientAPI api = GTJourneyMapPlugin.getJmApi();
                     api.remove(marker);
                 }
             });
@@ -41,7 +40,7 @@ public class JourneymapOptions {
             JourneymapRenderer.getMarkers().forEach((id, marker) -> {
                 if (id.split("@")[0].equals(name)) {
                     try {
-                        IClientAPI api = JourneyMapPlugin.getJmApi();
+                        IClientAPI api = GTJourneyMapPlugin.getJmApi();
                         api.show(marker);
                     } catch (Exception e) {
                         // It never actually throws anything...

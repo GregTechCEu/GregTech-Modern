@@ -1,24 +1,24 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
+import com.gregtechceu.gtceu.client.model.ctm.CTMMeshBuilder;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
-import com.gregtechceu.gtceu.data.model.GTModels;
-
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.custommodel.CustomBakedModel;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -38,11 +38,11 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.QuadTransformers;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
@@ -53,17 +53,14 @@ import com.mojang.math.Transformation;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.gregtechceu.gtceu.api.machine.IMachineBlockEntity.*;
-
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
-                                IBlockEntityRendererBakedModel<BlockEntity> {
+                                IBlockEntityRendererBakedModel<MetaMachine> {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
@@ -139,7 +136,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings("deprecation")
     @Override
-    public @NotNull TextureAtlasSprite getParticleIcon() {
+    public TextureAtlasSprite getParticleIcon() {
         if (particleIcon != null) {
             return particleIcon;
         } else if (multiPart != null) {
@@ -153,9 +150,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon(@NotNull ModelData modelData) {
-        BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
-        BlockPos pos = modelData.get(MODEL_DATA_POS);
+    public TextureAtlasSprite getParticleIcon(ModelData modelData) {
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
 
         MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
         MachineRenderState renderState = machine != null ? machine.getRenderState() :
@@ -172,11 +169,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos,
-                                           @NotNull BlockState state, @NotNull ModelData modelData) {
+    public ModelData getModelData(BlockAndTintGetter level, BlockPos pos,
+                                  BlockState state, ModelData modelData) {
         ModelData.Builder builder = modelData.derive()
-                .with(MODEL_DATA_LEVEL, level)
-                .with(MODEL_DATA_POS, pos);
+                .with(GTModelProperties.LEVEL, level)
+                .with(GTModelProperties.POS, pos);
         MetaMachine machine = MetaMachine.getMachine(level, pos);
         MachineRenderState renderState = machine == null ? definition.defaultRenderState() : machine.getRenderState();
 
@@ -190,13 +187,56 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 builder.with(key, data.get(key));
             }
         }
+
+        if (machine != null) {
+            Map<Direction, ModelData> coverModelData = new EnumMap<>(Direction.class);
+            for (Direction side : GTUtil.DIRECTIONS) {
+                CoverBehavior coverBehavior = machine.getCoverContainer().getCoverAtSide(side);
+                if (coverBehavior == null) continue;
+
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
+                ModelData data = coverBehavior.getCoverRenderer().get()
+                        .getModelData(coverBehavior, pos, level, modelData);
+
+                coverModelData.put(side, data);
+            }
+            builder.with(GTModelProperties.COVER_MODEL_DATA, coverModelData);
+        }
+
         return builder.build();
     }
 
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                             @NotNull RandomSource rand,
-                                             @NotNull ModelData modelData, @Nullable RenderType renderType) {
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData modelData) {
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
+
+        MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
+        MachineRenderState renderState = machine != null ? machine.getRenderState() : definition.defaultRenderState();
+
+        Set<ChunkRenderTypeSet> renderTypeSets = new HashSet<>();
+        renderTypeSets.add(super.getRenderTypes(state, rand, modelData));
+
+        if (multiPart != null) {
+            renderTypeSets.add(multiPart.getRenderTypes(state, rand, modelData));
+        }
+        if (modelsByState.containsKey(renderState)) {
+            renderTypeSets.add(modelsByState.get(renderState).getRenderTypes(state, rand, modelData));
+        }
+
+        if (machine != null) {
+            var coverRenderTypes = ICoverableRenderer.super.getCoverRenderTypes(machine.getCoverContainer(),
+                    pos, level, rand, modelData);
+            renderTypeSets.add(coverRenderTypes);
+        }
+
+        return ChunkRenderTypeSet.union(renderTypeSets);
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                    RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
         // If there is a root transform, undo the ModelState transform, apply it,
         // then re-apply the ModelState transform.
         // This is necessary because of things like UV locking, which should only respond to the ModelState,
@@ -207,7 +247,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         List<BakedQuad> quads;
-        if (modelData.has(MODEL_DATA_LEVEL) && modelData.has(MODEL_DATA_POS)) {
+        if (modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS)) {
             quads = getMachineQuads(state, side, rand, modelData, renderType);
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
@@ -218,10 +258,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     public List<BakedQuad> getMachineQuads(@Nullable BlockState blockState, @Nullable Direction side,
-                                           @NotNull RandomSource rand, @NotNull ModelData modelData,
-                                           @Nullable RenderType renderType) {
-        BlockAndTintGetter level = modelData.get(MODEL_DATA_LEVEL);
-        BlockPos pos = modelData.get(MODEL_DATA_POS);
+                                           RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
 
         MetaMachine machine = (level == null || pos == null) ? null : MetaMachine.getMachine(level, pos);
         // render machine quads
@@ -231,23 +270,24 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
 
         // render output overlays
-        if (machine instanceof IAutoOutputItem autoOutputItem) {
-            var itemFace = autoOutputItem.getOutputFacingItems();
+        var outputTrait = machine.getTrait(AutoOutputTrait.class);
+        if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
+            var itemFace = outputTrait.getItemOutputDirection();
             if (itemFace != null && side == itemFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (autoOutputItem.isAutoOutputItems()) {
-                    quads.add(FaceQuad.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            itemOutputOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, true));
+                if (outputTrait.isAutoOutputItems()) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                            itemOutputOverlaySprite));
                 }
             }
         }
-        if (machine instanceof IAutoOutputFluid autoOutputFluid) {
-            var fluidFace = autoOutputFluid.getOutputFacingFluids();
+        if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
+            var fluidFace = outputTrait.getFluidOutputDirection();
             if (fluidFace != null && side == fluidFace) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (autoOutputFluid.isAutoOutputFluids()) {
-                    quads.add(FaceQuad.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            fluidOutputOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, true));
+                if (outputTrait.isAutoOutputFluids()) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                            fluidOutputOverlaySprite));
                 }
             }
         }
@@ -262,7 +302,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public List<BakedQuad> renderMachine(@Nullable MetaMachine machine, @Nullable BlockAndTintGetter level,
                                          @Nullable BlockPos pos, @Nullable BlockState blockState,
                                          @Nullable Direction side, RandomSource rand,
-                                         @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                         ModelData modelData, @Nullable RenderType renderType) {
         List<BakedQuad> quads = new LinkedList<>();
 
         MachineRenderState renderState = machine != null ? machine.getRenderState() : definition.defaultRenderState();
@@ -272,21 +312,21 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             quads.addAll(render.getRenderQuads(machine, level, pos, blockState, side, rand, modelData, renderType));
         }
         // the instanceof check also ensures it's not null
-        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
+        if (machine instanceof MultiblockPartMachine part && part.replacePartModelWhenFormed()) {
             quads = replacePartBaseModel(quads, part, machine.getFrontFacing(), side, rand, modelData, renderType);
         }
 
         // we have to recalculate CTM ourselves.
         // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
-        if (level != null && pos != null && blockState != null) {
-            return CustomBakedModel.reBakeCustomQuads(quads, level, pos, blockState, side, 0.0f);
+        if (level != null && pos != null && blockState != null && side != null) {
+            return CTMMeshBuilder.buildCTMQuads(level, pos, blockState, quads, side);
         }
         return quads;
     }
 
-    public void renderBaseModel(List<BakedQuad> quads, @NotNull MachineRenderState renderState,
+    public void renderBaseModel(List<BakedQuad> quads, MachineRenderState renderState,
                                 @Nullable BlockState blockState, @Nullable Direction side, RandomSource rand,
-                                @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                ModelData modelData, @Nullable RenderType renderType) {
         if (multiPart != null) {
             quads.addAll(multiPart.getMachineQuads(definition, renderState, blockState,
                     side, rand, modelData, renderType));
@@ -296,13 +336,15 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
     }
 
-    public List<BakedQuad> replacePartBaseModel(List<BakedQuad> originalQuads, IMultiPart part, Direction frontFacing,
+    public List<BakedQuad> replacePartBaseModel(List<BakedQuad> originalQuads, MultiblockPartMachine part,
+                                                Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
-        for (IMultiController controller : controllers) {
-            var state = controller.self().getBlockState();
-            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+        for (MultiblockControllerMachine controller : controllers) {
+            if (controller == null) continue;
+            var state = controller.getBlockState();
+            BakedModel model = RenderUtil.getModelForState(state);
             List<BakedQuad> newQuads = null;
 
             // spotless:off
@@ -331,8 +373,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
     }
 
-    private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, IMultiController controller,
-                                                List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
+    private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, MultiblockControllerMachine controller,
+                                                List<BakedQuad> quads, MultiblockPartMachine part,
+                                                Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var overrides = controllerModel.textureOverrides;
@@ -388,17 +431,15 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void render(@NotNull BlockEntity blockEntity, float partialTick,
-                       @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
+    public void render(MetaMachine machine, float partialTick,
+                       PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return;
-        if (machineBE.getDefinition() != getDefinition()) return;
-        ICoverableRenderer.super.renderDynamicCovers(machineBE.getMetaMachine(), partialTick, poseStack, buffer,
+        if (machine.getDefinition() != getDefinition()) return;
+        ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer,
                 packedLight,
                 packedOverlay);
         if (dynamicRenders.isEmpty()) return;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
         for (DynamicRender model : dynamicRenders) {
             if (!model.shouldRender(machine, cameraPos)) {
@@ -420,14 +461,12 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public AABB getRenderBoundingBox(BlockEntity blockEntity) {
-        AABB bounds = IBlockEntityRendererBakedModel.super.getRenderBoundingBox(blockEntity);
+    public AABB getRenderBoundingBox(MetaMachine machine) {
+        AABB bounds = IBlockEntityRendererBakedModel.super.getRenderBoundingBox(machine);
 
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return bounds;
-        if (machineBE.getDefinition() != getDefinition()) return bounds;
+        if (machine.getDefinition() != getDefinition()) return bounds;
         if (dynamicRenders.isEmpty()) return bounds;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
             bounds = bounds.minmax(model.getRenderBoundingBox(machine));
         }
@@ -436,12 +475,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public boolean shouldRenderOffScreen(BlockEntity blockEntity) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
-        if (machineBE.getDefinition() != getDefinition()) return false;
+    public boolean shouldRenderOffScreen(MetaMachine machine) {
+        if (machine.getDefinition() != getDefinition()) return false;
         if (dynamicRenders.isEmpty()) return false;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender render : dynamicRenders) {
             if (render.shouldRenderOffScreen(machine)) return true;
         }
@@ -450,15 +487,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public boolean shouldRender(BlockEntity blockEntity, @NotNull Vec3 cameraPos) {
-        if (!(blockEntity instanceof IMachineBlockEntity machineBE)) return false;
-        if (machineBE.getDefinition() != getDefinition()) return false;
-        if (machineBE.getMetaMachine().getCoverContainer().hasDynamicCovers()) return true;
+    public boolean shouldRender(MetaMachine machine, Vec3 cameraPos) {
+        if (machine.getDefinition() != getDefinition()) return false;
+        if (machine.getCoverContainer().hasDynamicCovers()) return true;
         if (dynamicRenders.isEmpty()) return false;
 
-        MetaMachine machine = machineBE.getMetaMachine();
         for (DynamicRender model : dynamicRenders) {
-            if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
+            if (model.shouldRender(machine, cameraPos)) {
                 return true;
             }
         }
@@ -475,7 +510,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     @Override
-    public BlockEntityType<? extends BlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
         return getDefinition().getBlockEntityType();
     }
 }

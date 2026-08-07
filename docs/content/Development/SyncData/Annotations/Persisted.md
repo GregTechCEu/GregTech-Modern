@@ -1,6 +1,0 @@
----
-title: "@Persisted"
----
-
-
-# Using `@Persisted`

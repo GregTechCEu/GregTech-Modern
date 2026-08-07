@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
+import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -60,7 +60,6 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
                 blocks = List.of(pos);
             } else {
                 blocks = getStrippableBlocks(aoeDefinition, context);
-                blocks.add(context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;

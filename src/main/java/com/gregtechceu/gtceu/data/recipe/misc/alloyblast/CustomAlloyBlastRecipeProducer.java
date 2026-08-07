@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe.misc.alloyblast;
 
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ public class CustomAlloyBlastRecipeProducer extends AlloyBlastRecipeProducer {
      * @param circuitNum    the custom circuit number to use
      * @param gasCircuitNum the custom gas circuit number to use
      * @param outputAmount  the custom output amount in quantities of
-     *                      {@link com.gregtechceu.gtceu.api.tag.TagPrefix#ingot}
+     *                      {@link TagPrefix#ingot}
      *                      / {@link com.gregtechceu.gtceu.api.GTValues#M}) to use
      */
     public CustomAlloyBlastRecipeProducer(int circuitNum, int gasCircuitNum, int outputAmount) {

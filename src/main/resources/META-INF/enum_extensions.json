@@ -5,7 +5,7 @@
       "name": "GTCEU_RUBBER",
       "constructor": "(Ljava/util/function/Supplier;Ljava/lang/String;Ljava/util/function/Supplier;Ljava/util/function/Supplier;Ljava/util/function/Supplier;Z)V",
       "parameters": {
-        "class": "com/gregtechceu/gtceu/data/inject/GTEnumProxies",
+        "class": "com/gregtechceu/gtceu/common/data/GTEnumProxies",
         "field": "RUBBER_BOAT_PROXY"
       }
     },
@@ -14,7 +14,7 @@
       "name": "GTCEU_TREATED_WOOD",
       "constructor": "(Ljava/util/function/Supplier;Ljava/lang/String;Ljava/util/function/Supplier;Ljava/util/function/Supplier;Ljava/util/function/Supplier;Z)V",
       "parameters": {
-        "class": "com/gregtechceu/gtceu/data/inject/GTEnumProxies",
+        "class": "com/gregtechceu/gtceu/common/data/GTEnumProxies",
         "field": "TREATED_WOOD_BOAT_PROXY"
       }
     }

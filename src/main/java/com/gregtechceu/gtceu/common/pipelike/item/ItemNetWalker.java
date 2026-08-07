@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.material.material.properties.ItemPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -102,7 +102,7 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
         if (neighbourTile == null || (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
             return;
         }
-        var handler = GTTransferUtils.getAdjacentItemHandler(pipeTile.getPipeLevel(), pipePos, faceToNeighbour);
+        var handler = GTTransferUtils.getAdjacentItemHandler(pipeTile.getLevel(), pipePos, faceToNeighbour);
         if (handler.isPresent()) {
             List<Predicate<ItemStack>> filters = new ArrayList<>(this.filters);
             List<Predicate<ItemStack>> moreFilters = nextFilters.get(faceToNeighbour);

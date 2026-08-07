@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

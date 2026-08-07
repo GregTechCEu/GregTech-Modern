@@ -13,16 +13,17 @@ import lombok.With;
 import java.util.Collections;
 import java.util.List;
 
-public record TextLineList(@With List<Component> lines, @With float scale) {
+public record TextLineList(@With List<Component> lines, @With double scale, @With boolean paused) {
 
     // spotless:off
     public static final Codec<TextLineList> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ComponentSerialization.CODEC.listOf().fieldOf("lines").forGetter(TextLineList::lines),
-            Codec.FLOAT.fieldOf("scale").forGetter(TextLineList::scale)
+            Codec.DOUBLE.fieldOf("scale").forGetter(TextLineList::scale),
+            Codec.BOOL.fieldOf("paused").forGetter(TextLineList::paused)
     ).apply(instance, TextLineList::new));
     // spotless:on
 
-    public static final TextLineList EMPTY = new TextLineList(Collections.emptyList(), 1.0f);
+    public static final TextLineList EMPTY = new TextLineList(Collections.emptyList(), 1.0f, false);
 
     public TextLineList {
         lines = Collections.unmodifiableList(lines);

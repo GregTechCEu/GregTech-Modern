@@ -12,21 +12,21 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IBlockEntityRendererBakedModel<T extends BlockEntity>
                                                extends IDynamicBakedModel, BlockEntityRenderer<T> {
 
+    @Nullable
     BlockEntityType<? extends T> getBlockEntityType();
 
-    void render(@NotNull T blockEntity, float partialTick,
-                @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer,
+    void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                 int packedLight, int packedOverlay);
 
     default void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
                               PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {}
 
-    default boolean shouldRender(T blockEntity, @NotNull Vec3 cameraPos) {
+    default boolean shouldRender(T blockEntity, Vec3 cameraPos) {
         return Vec3.atCenterOf(blockEntity.getBlockPos()).closerThan(cameraPos, this.getViewDistance());
     }
 

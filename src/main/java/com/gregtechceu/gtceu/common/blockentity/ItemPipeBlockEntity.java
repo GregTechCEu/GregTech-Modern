@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.blockentity;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.material.material.properties.ItemPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
+import java.util.Objects;
 
 public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeProperties> {
 
@@ -47,12 +48,8 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         super(type, pos, blockState);
     }
 
-    public static ItemPipeBlockEntity create(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        return new ItemPipeBlockEntity(type, pos, blockState);
-    }
-
     public long getLevelTime() {
-        return hasLevel() ? getLevel().getGameTime() : 0L;
+        return hasLevel() ? Objects.requireNonNull(getLevel()).getGameTime() : 0L;
     }
 
     public void ensureHandlersInitialized() {
@@ -74,10 +71,10 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
     public void checkNetwork() {
         if (defaultHandler != null) {
             ItemPipeNet current = getItemPipeNet();
-            if (defaultHandler.getNet() != current) {
-                defaultHandler.updateNetwork(current);
+            if (defaultHandler.getNetwork() != current) {
+                defaultHandler.setNetwork(current);
                 for (ItemNetHandler handler : handlers.values()) {
-                    handler.updateNetwork(current);
+                    handler.setNetwork(current);
                 }
             }
         }
@@ -123,7 +120,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
      *       }
      *       }
      *       <p/>
-     *       if it was in a ticking TileEntity
+     *       if it was in a ticking BlockEntity
      */
     private void updateTransferredState() {
         long currentTime = getLevelTime();

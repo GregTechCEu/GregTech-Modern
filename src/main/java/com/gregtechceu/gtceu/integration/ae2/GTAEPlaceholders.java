@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2;
 
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -43,23 +42,17 @@ public class GTAEPlaceholders {
     private GTAEPlaceholders() {}
 
     private static IGrid getGrid(PlaceholderContext ctx) throws PlaceholderException {
-        if (ctx.pos() == null) throw new NotSupportedException();
+        if (ctx.pos() == null) throw new NoTargetException();
         IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(ctx.level(), ctx.pos());
         if (nodeHost != null) {
             IGridNode node = nodeHost.getGridNode(ctx.side());
             if (node != null) return node.getGrid();
         } ;
         BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity) {
-            if (machineBlockEntity.getMetaMachine() instanceof IGridConnectedBlockEntity gridMachine) {
-                IGrid nullable = gridMachine.getMainNode().getGrid();
-                if (nullable == null) throw new NoMENetworkException();
-                return nullable;
-            }
-        }
-        if (blockEntity instanceof IGridConnectedBlockEntity gridBlockEntity) {
-            IGridNode node = gridBlockEntity.getGridNode();
-            if (node != null) return gridBlockEntity.getGridNode().getGrid();
+        if (blockEntity instanceof IGridConnectedBlockEntity gridMachine) {
+            IGrid nullable = gridMachine.getMainNode().getGrid();
+            if (nullable == null) throw new NoMENetworkException();
+            return nullable;
         }
         throw new NoMENetworkException();
     }

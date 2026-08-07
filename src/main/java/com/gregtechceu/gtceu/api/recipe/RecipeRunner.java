@@ -4,16 +4,19 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupColor;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+
+import net.minecraft.network.chat.Component;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BUS_DISTINCT;
-import static com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness.BYPASS_DISTINCT;
+import static com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness.BUS_DISTINCT;
+import static com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness.BYPASS_DISTINCT;
 import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
 public class RecipeRunner {
@@ -37,6 +40,12 @@ public class RecipeRunner {
     private Map<RecipeCapability<?>, List<Object>> recipeContents;
     private final Map<RecipeCapability<?>, List<Object>> searchRecipeContents;
     private final Predicate<RecipeCapability<?>> outputVoid;
+    @Getter
+    private int groupColor;
+
+    /** Highest closeness score seen across handler-group attempts, and the leftover map that produced it. */
+    private double bestScore = 0;
+    private @Nullable Map<RecipeCapability<?>, List<Object>> bestLeftover;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -50,6 +59,7 @@ public class RecipeRunner {
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
         this.outputVoid = cap -> holder instanceof IVoidable voidable && voidable.canVoidRecipeOutputs(cap);
+        this.groupColor = recipe.groupColor;
     }
 
     @NotNull
@@ -67,9 +77,6 @@ public class RecipeRunner {
      * Populates the content match list to know if conditions are satisfied.
      */
     private void fillContentMatchList(Map<RecipeCapability<?>, List<Content>> entries) {
-        ChanceBoostFunction function = recipe.getType().getChanceFunction();
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         for (var entry : entries.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             if (!cap.doMatchInRecipe()) continue;
@@ -83,15 +90,15 @@ public class RecipeRunner {
             var contentList = this.recipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
             var searchContentList = this.searchRecipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
             for (Content cont : entry.getValue()) {
-                searchContentList.add(cont.content);
+                searchContentList.add(cont.content());
 
                 // When simulating the recipe handling (used for recipe matching),
                 // searchRecipeContents == recipeContents, so all contents, chanced and unchanced, must match
                 if (simulated) continue;
 
-                if (cont.chance >= cont.maxChance) {
-                    contentList.add(cont.content);
-                } else if (cont.chance > 0 || cont.tierChanceBoost > 0) {
+                if (cont.chance() >= cont.maxChance()) {
+                    contentList.add(cont.content());
+                } else if (cont.chance() > 0) {
                     chancedContents.add(cont);
                 }
                 // Do not add Non-Consumed ingredients; they'd just get dropped after the chance roll anyway
@@ -100,11 +107,10 @@ public class RecipeRunner {
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
-                chancedContents = logic.roll(cap, chancedContents, function, recipeTier, chanceTier, cache,
-                        recipe.getTotalRuns());
+                chancedContents = logic.roll(cap, chancedContents, cache, recipe.getTotalRuns());
 
                 for (Content cont : chancedContents) {
-                    contentList.add(cont.content);
+                    contentList.add(cont.content());
                 }
             }
 
@@ -115,7 +121,11 @@ public class RecipeRunner {
     private ActionResult handleContents() {
         if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
         if (!capabilityProxies.containsKey(io)) {
-            return ActionResult.FAIL_NO_CAPABILITIES;
+            return ActionResult.fail(
+                    Component.translatable("gtceu.recipe_logic.no_capabilities")
+                            .append(Component.literal(": "))
+                            .append(Component.translatable(io.getTooltip())),
+                    null, io);
         }
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
@@ -140,9 +150,15 @@ public class RecipeRunner {
                 }
             }
             if (io == IO.OUT) {
-                if (hasAnyNonVoidingContents(res)) continue;
+                if (hasAnyNonVoidingContents(res)) {
+                    recordLeftover(res);
+                    continue;
+                }
             } else if (io == IO.IN) {
-                if (!res.isEmpty()) continue;
+                if (!res.isEmpty()) {
+                    recordLeftover(res);
+                    continue;
+                }
             }
             if (!simulated) {
                 // Actually consume the contents of this handler and also all the bypassed handlers
@@ -164,6 +180,13 @@ public class RecipeRunner {
         for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
 
+            if (handlerListEntry.getKey() instanceof RecipeHandlerGroupColor coloredGroup) {
+                if (io == IO.IN && simulated && !isTick) {
+                    groupColor = coloredGroup.color();
+                } else if (coloredGroup.color() != -1 && coloredGroup.color() != groupColor) {
+                    continue;
+                }
+            }
             // List to keep track of the remaining items for this RecipeHandlerGroup
             Map<RecipeCapability<?>, List<Object>> copiedRecipeContents = searchRecipeContents;
 
@@ -185,9 +208,15 @@ public class RecipeRunner {
             }
 
             if (io == IO.OUT) {
-                if (hasAnyNonVoidingContents(copiedRecipeContents)) continue;
+                if (hasAnyNonVoidingContents(copiedRecipeContents)) {
+                    recordLeftover(copiedRecipeContents);
+                    continue;
+                }
             } else if (io == IO.IN) {
-                if (!copiedRecipeContents.isEmpty()) continue;
+                if (!copiedRecipeContents.isEmpty()) {
+                    recordLeftover(copiedRecipeContents);
+                    continue;
+                }
             }
             if (simulated) return ActionResult.SUCCESS;
             // Start actually removing items.
@@ -218,7 +247,16 @@ public class RecipeRunner {
                 entry.getValue().clear();
             }
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return ActionResult.fail(null, entry.getKey(), io);
+                RecipeCapability<?> failedCap = entry.getKey();
+                if (simulated && bestLeftover != null) {
+                    for (var leftoverEntry : bestLeftover.entrySet()) {
+                        if (leftoverEntry.getValue() != null && !leftoverEntry.getValue().isEmpty() &&
+                                leftoverEntry.getKey() != null) {
+                            failedCap = leftoverEntry.getKey();
+                        }
+                    }
+                }
+                return ActionResult.fail(null, failedCap, io, bestScore);
             }
         }
 
@@ -234,7 +272,33 @@ public class RecipeRunner {
             return ActionResult.PASS_NO_CONTENTS;
         }
 
-        return ActionResult.FAIL_NO_REASON;
+        return ActionResult.fail(null, null, io, bestScore);
+    }
+
+    /**
+     * Records a failed handler-group attempt's leftover map if it's the closest match seen so far. Higher score wins;
+     * ties keep the earlier attempt. The retained map identifies which capabilities the closest attempt was short on.
+     */
+    private void recordLeftover(Map<RecipeCapability<?>, List<Object>> leftover) {
+        double score = scoreLeftover(leftover);
+        if (bestLeftover == null || score > bestScore) {
+            bestScore = score;
+            bestLeftover = leftover;
+        }
+    }
+
+    private double scoreLeftover(Map<RecipeCapability<?>, List<Object>> leftover) {
+        double sum = 0;
+        int caps = 0;
+        for (var entry : searchRecipeContents.entrySet()) {
+            int total = entry.getValue().size();
+            if (total <= 0) continue;
+            caps++;
+            var leftList = leftover.get(entry.getKey());
+            int leftCount = leftList == null ? 0 : Math.min(leftList.size(), total);
+            sum += (double) (total - leftCount) / total;
+        }
+        return caps == 0 ? 1.0 : sum / caps;
     }
 
     private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {

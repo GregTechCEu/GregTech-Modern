@@ -1,21 +1,20 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.*;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.block.GTMaterialBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeCategories;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.util.Mth;
@@ -31,10 +30,10 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public final class MaterialRecipeHandler {
 
@@ -76,7 +75,7 @@ public final class MaterialRecipeHandler {
                 AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
                         .inputItems(dustStack)
                         .inputFluids(Water.getFluid(250))
-                        .chancedOutput(gemStack, 7500, 0)
+                        .chancedOutput(gemStack, 7500)
                         .duration(1200).EUt(24)
                         .save(provider);
 
@@ -92,28 +91,28 @@ public final class MaterialRecipeHandler {
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_powderbarrel")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(new ItemStack(GTBlocks.POWDERBARREL, 8))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesAmount(4)
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(GTItems.DYNAMITE.asStack(2))
                         .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_itnt")
                         .inputItems(dustStack.copyWithCount(4))
                         .outputItems(gemStack.copyWithCount(3))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500)
                         .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
                         .save(provider);
             }
@@ -256,9 +255,12 @@ public final class MaterialRecipeHandler {
         ItemStack smallDustStack = ChemicalHelper.get(dustSmall, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
-        VanillaRecipeHelper.addStrictShapedRecipe(provider,
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
                 String.format("small_dust_disassembling_%s", material.getName()),
                 smallDustStack.copyWithCount(4), " X", "  ", 'X', new MaterialEntry(dust, material));
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
+                String.format("small_dust_disassembling_3x3_%s", material.getName()),
+                smallDustStack.copyWithCount(4), " X ", "   ", "   ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_dust_assembling_%s", material.getName()),
                 dustStack, "XX", "XX", 'X', new MaterialEntry(dustSmall, material));
 
@@ -284,9 +286,12 @@ public final class MaterialRecipeHandler {
         ItemStack tinyDustStack = ChemicalHelper.get(dustTiny, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
-        VanillaRecipeHelper.addStrictShapedRecipe(provider,
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
                 String.format("tiny_dust_disassembling_%s", material.getName()),
                 tinyDustStack.copyWithCount(9), "X ", "  ", 'X', new MaterialEntry(dust, material));
+        VanillaRecipeHelper.addStrictSizeShapedRecipe(provider,
+                String.format("tiny_dust_disassembling_3x3_%s", material.getName()),
+                tinyDustStack.copyWithCount(9), "X  ", "   ", "   ", 'X', new MaterialEntry(dust, material));
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_dust_assembling_%s", material.getName()),
                 dustStack, "XXX", "XXX", "XXX", 'X', new MaterialEntry(dustTiny, material));
 
@@ -436,7 +441,7 @@ public final class MaterialRecipeHandler {
         if (material.hasFlag(MORTAR_GRINDABLE)) {
             VanillaRecipeHelper.addShapedRecipe(provider,
                     String.format("gem_to_dust_%s_%s", material.getName(),
-                            FormattingUtil.toLowerCaseUnderscore(prefix.name)),
+                            prefix.name),
                     crushedStack,
                     "X", "m", 'X', new MaterialEntry(prefix, material));
         }
@@ -451,14 +456,14 @@ public final class MaterialRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
-                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name),
+                String.format("gem_to_gem_%s_%s", lowerPrefix.name,
                         material.getName()),
                 prevStack,
                 'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
-                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                        "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                .recipeBuilder("cut_" + material.getName() + "_" + prefix.name +
+                        "_to_" + prefix.name)
                 .inputItems(prefix, material)
                 .outputItems(prevStack)
                 .duration(20)
@@ -467,10 +472,10 @@ public final class MaterialRecipeHandler {
 
         LASER_ENGRAVER_RECIPES
                 .recipeBuilder(
-                        "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                                "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                        "engrave_" + material.getName() + "_" + prefix.name +
+                                "_to_" + lowerPrefix.name)
                 .inputItems(prevStack)
-                .notConsumable(lens, MarkerMaterials.Color.White)
+                .notConsumable(CustomTags.WHITE_LENS)
                 .outputItems(prefix, material)
                 .duration(300)
                 .EUt(240)
@@ -520,7 +525,7 @@ public final class MaterialRecipeHandler {
                             .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
                             .inputFluids(stack)
                             .outputItems(nugget, material, 9)
-                            .duration((int) material.getMass())
+                            .duration(20)
                             .EUt(VA[ULV])
                             .save(provider);
                 }
@@ -579,7 +584,7 @@ public final class MaterialRecipeHandler {
                         .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
                         .inputFluids(stack)
                         .outputItems(blockStack)
-                        .duration((int) material.getMass()).EUt(VA[ULV])
+                        .duration(180).EUt(VA[ULV])
                         .save(provider);
             }
         }

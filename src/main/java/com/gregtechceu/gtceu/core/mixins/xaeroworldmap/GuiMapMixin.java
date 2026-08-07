@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xaero.lib.client.gui.widget.Tooltip;
 import xaero.map.MapProcessor;
 import xaero.map.gui.*;
 
@@ -118,7 +119,7 @@ public abstract class GuiMapMixin extends ScreenBase implements IRightClickableE
                         ButtonState.toggleButton(button);
                         init(minecraft, width, height);
                     },
-                    () -> new CursorBox("gtceu.button." + button.name));
+                    () -> new Tooltip("gtceu.button." + button.name));
 
             addButton(mapButton);
             offset++;

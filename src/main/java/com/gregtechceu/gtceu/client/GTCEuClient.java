@@ -11,6 +11,6 @@ import net.neoforged.fml.javafmlmod.FMLModContainer;
 public class GTCEuClient {
 
     public GTCEuClient(IEventBus modBus, FMLModContainer container) {
-        ClientInit.init(modBus);
+        ClientProxy.init(modBus);
     }
 }

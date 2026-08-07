@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.item.capability;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;

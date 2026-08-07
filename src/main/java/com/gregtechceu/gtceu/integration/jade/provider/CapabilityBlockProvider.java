@@ -18,6 +18,11 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
+/**
+ * Jade provider which provides info for a capability.
+ *
+ * @param <C> Capability class
+ */
 public abstract class CapabilityBlockProvider<C>
                                              implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
@@ -62,7 +67,7 @@ public abstract class CapabilityBlockProvider<C>
         // use uid as key for capability data
         var capData = data.getCompound(uid.toString());
 
-        var capability = getCapability(blockAccessor.getLevel(), blockAccessor.getPosition(), null);
+        C capability = getCapability(blockAccessor.getLevel(), blockAccessor.getPosition(), null);
         if (capability != null && allowDisplaying(capability)) {
             var tag = new CompoundTag();
             write(tag, capability);

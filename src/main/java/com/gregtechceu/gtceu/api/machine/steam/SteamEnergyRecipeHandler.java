@@ -4,22 +4,23 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
+    @Getter
     private final NotifiableFluidTank steamTank;
     private final double conversionRate; // mB steam per EU
 
@@ -29,49 +30,36 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
     }
 
     @Override
-    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
-        // <<<<<<< HEAD
-        long eut = left.stream().reduce(EnergyStack.EMPTY, EnergyStack::sum).getTotalEU();
-        int totalSteam = GTMath.saturatedCast((long) Math.ceil(eut * conversionRate));
-        if (totalSteam > 0) {
-            SizedFluidIngredient steam = io == IO.IN ?
-                    SizedFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
-                    SizedFluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
-            List<SizedFluidIngredient> list = new ArrayList<>();
-            list.add(steam);
-            var leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
-            if (leftSteam == null || leftSteam.isEmpty()) return null;
-            eut = (long) (leftSteam.getFirst().amount() / conversionRate);
-            // =======
-            // for (var it = left.listIterator(); it.hasNext();) {
-            // EnergyStack stack = it.next();
-            // if (stack.isEmpty()) {
-            // it.remove();
-            // continue;
-            // }
+    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
+                                               boolean simulate) {
+        for (var it = left.listIterator(); it.hasNext();) {
+            EnergyStack stack = it.next();
+            if (stack.isEmpty()) {
+                it.remove();
+                continue;
+            }
 
-            // long totalEU = stack.getTotalEU();
-            // int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
-            // if (totalSteam > 0) {
-            // var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
-            // FluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
-            // var list = new ArrayList<FluidIngredient>();
-            // list.add(steam);
-            // var leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
-            // if (leftSteam == null || leftSteam.isEmpty()) {
-            // it.remove();
-            // } else {
-            // totalEU = (long) (leftSteam.get(0).getAmount() / conversionRate);
-            // it.set(new EnergyStack(totalEU));
-            // }
-            // }
-            // >>>>>>> v7.1.0-1.20.1
+            long totalEU = stack.getTotalEU();
+            int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
+            if (totalSteam > 0) {
+                var steam = io == IO.IN ? SizedFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
+                        SizedFluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
+                List<SizedFluidIngredient> list = new ArrayList<>();
+                list.add(steam);
+                List<SizedFluidIngredient> leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
+                if (leftSteam.isEmpty()) {
+                    it.remove();
+                } else {
+                    totalEU = (long) (leftSteam.get(0).amount() / conversionRate);
+                    it.set(new EnergyStack(totalEU));
+                }
+            }
         }
-        return left.isEmpty() ? null : left;
+        return left;
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         List<FluidStack> tankContents = new ArrayList<>();
         for (int i = 0; i < steamTank.getTanks(); ++i) {
             FluidStack stack = steamTank.getFluidInTank(i);

@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.trait.miner;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,14 +21,11 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class LargeMinerLogic extends MinerLogic {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerLogic.class,
-            MinerLogic.MANAGED_FIELD_HOLDER);
     private static final int CHUNK_LENGTH = 16;
 
     @Setter
@@ -42,31 +36,25 @@ public class LargeMinerLogic extends MinerLogic {
     private int overclockAmount = 0;
 
     @Getter
-    @Persisted
+    @SaveField
     private boolean isChunkMode;
     @Getter
-    @Persisted
+    @SaveField
     private boolean isSilkTouchMode;
 
     /**
      * Creates the logic for multiblock ore block miners
      *
-     * @param machine       the {@link IRecipeLogicMachine} this logic belongs to
      * @param fortune       the fortune amount to apply when mining ores
      * @param speed         the speed in ticks per block mined
      * @param maximumRadius the maximum radius (square shaped) the miner can mine in
      */
-    public LargeMinerLogic(IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius) {
-        super(machine, fortune, speed, maximumRadius);
+    public LargeMinerLogic(int fortune, int speed, int maximumRadius) {
+        super(fortune, speed, maximumRadius);
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public void initPos(@NotNull BlockPos pos, int currentRadius) {
+    public void initPos(BlockPos pos, int currentRadius) {
         if (!isChunkMode) {
             super.initPos(pos, currentRadius);
         } else {
@@ -121,7 +109,7 @@ public class LargeMinerLogic extends MinerLogic {
 
     @Override
     public BlockPos getMiningPos() {
-        return getMachine().getPos().relative(getMachine().getFrontFacing().getOpposite());
+        return getMachine().getBlockPos().relative(getMachine().getFrontFacing().getOpposite());
     }
 
     @Override

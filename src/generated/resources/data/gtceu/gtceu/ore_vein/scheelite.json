@@ -55,6 +55,6 @@
             "radius": 5
         }
     ],
-    "layer": "endstone",
+    "layer": "gtceu:endstone",
     "weight": 20
 }

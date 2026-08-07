@@ -2,57 +2,58 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeViewerWidget;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.bloom.BloomRenderTicket;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.widgets.TextWidget;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2IntSortedMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_HALF_DURATION_FACTOR;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_HALF_VOLTAGE_FACTOR;
-import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
-            WorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     // Standard OC used for Fusion
     public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,
@@ -69,37 +70,42 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     private final int tier;
     @Nullable
     protected EnergyContainerList inputEnergyContainers;
-    @Persisted
+    @SaveField
     protected long heat = 0;
-    @Persisted
+    @SaveField
     protected final NotifiableEnergyContainer energyContainer;
-    @Getter
-    @DescSynced
-    private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
 
-    public FusionReactorMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    // Used for rendering
+    @Getter
+    @SyncToClient
+    private int color = 0xFFFFFFFF;
+    public float delta = 0;
+    public int lastColor = -1;
+
+    @Setter
+    @Nullable
+    protected BloomRenderTicket registeredBloomTicket = null;
+
+    public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
-        this.energyContainer = createEnergyContainer();
+        this.energyContainer = attachTrait(new NotifiableEnergyContainer(0, 0, 0, 0, 0));
+        energyContainer.setCapabilityValidator(Objects::isNull);
+    }
+
+    // lazy to prevent loading on server
+    public BloomRenderTicket getRegisteredBloomTicket() {
+        if (registeredBloomTicket == null) {
+            registeredBloomTicket = BloomRenderTicket.INVALID;
+        }
+        return registeredBloomTicket;
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    public NotifiableEnergyContainer createEnergyContainer() {
-        // create an internal energy container for temp storage. its capacity is decided when the structure formed.
-        // it doesn't provide any capability of all sides, but null for the goggles mod to check it storages.
-        var container = new NotifiableEnergyContainer(this, 0, 0, 0, 0, 0);
-        container.setCapabilityValidator(Objects::isNull);
-        return container;
-    }
 
     @Override
     public void onLoad() {
@@ -110,18 +116,18 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         // capture all energy containers
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if (io == IO.NONE || io == IO.OUT) continue;
+        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+        // Long2ObjectMaps::emptyMap);
+        for (MultiblockPartMachine part : getParts()) {
+            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            // if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
+                // if (!handlerList.isValid(io)) continue;
 
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
@@ -136,8 +142,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         this.inputEnergyContainers = null;
         heat = 0;
         energyContainer.resetBasicInfo(0, 0, 0, 0, 0);
@@ -172,14 +178,15 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Fusion Reactor and recipe
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
             return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
-            return ModifierFunction.NULL;
+            return ModifierFunction
+                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
         }
 
         long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
@@ -189,7 +196,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
         }
         // if the remaining energy needed is more than stored, do not run
-        if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff) return ModifierFunction.NULL;
+        if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
+            return ModifierFunction
+                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
 
         // remove the energy needed
         fusionReactorMachine.energyContainer.removeEnergy(heatDiff);
@@ -223,10 +232,11 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         if (color == -1) {
             if (!recipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
                 var stack = FluidRecipeCapability.CAP
-                        .of(recipe.getOutputContents(FluidRecipeCapability.CAP).getFirst().getContent()).getFluids()[0];
+                        .of(recipe.getOutputContents(FluidRecipeCapability.CAP).getFirst().content()).getFluids()[0];
                 int newColor = 0xFF000000 | GTUtil.getFluidColor(stack);
                 if (!Objects.equals(color, newColor)) {
                     color = newColor;
+                    syncDataHolder.markClientSyncFieldDirty("color");
                 }
             }
         }
@@ -252,15 +262,19 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onWaiting() {
-        super.onWaiting();
-        color = -1;
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.recipeLogicStatusChanged(oldStatus, newStatus);
+        if (newStatus == RecipeLogic.Status.WAITING) {
+            color = -1;
+            syncDataHolder.markClientSyncFieldDirty("color");
+        }
     }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
         color = -1;
+        syncDataHolder.markClientSyncFieldDirty("color");
     }
 
     @Override
@@ -270,33 +284,22 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     //////////////////////////////////////
     // ******** GUI *********//
-    //////////////////////////////////////
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        if (isFormed()) {
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy",
-                    this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
-        }
-    }
 
-    public static void addEUToStartLabel(GTRecipe recipe, WidgetGroup group) {
+    public static void addEUToStartLabel(GTRecipe recipe, GTRecipeViewerWidget widget) {
         long euToStart = recipe.data.getLong("eu_to_start");
         if (euToStart <= 0) return;
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
-        group.addWidget(new LabelWidget(-8, group.getSizeHeight() - 10,
-                LocalizationUtils.format("gtceu.recipe.eu_to_start",
-                        FormattingUtil.formatNumberReadable2F(euToStart, false),
+        widget.textComponents.child(new TextWidget<>(
+                Text.lang("gtceu.recipe.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
                         FUSION_NAMES.get(tier))));
     }
 
     //////////////////////////////////////
     // ******** MISC *********//
     //////////////////////////////////////
-    public static void registerFusionTier(int tier, @NotNull String name) {
+    public static void registerFusionTier(int tier, String name) {
         long maxEU = calculateEnergyStorageFactor(tier, 16);
         FUSION_ENERGY.put(maxEU, tier);
         FUSION_NAMES.put(tier, name);
@@ -318,7 +321,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         return energyInputAmount * (long) Math.pow(2, tier - LuV) * 10000000L;
     }
 
-    public static net.minecraft.world.level.block.Block getCasingState(int tier) {
+    public static Block getCasingState(int tier) {
         return switch (tier) {
             case LuV -> FUSION_CASING.get();
             case ZPM -> FUSION_CASING_MK2.get();
@@ -326,7 +329,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         };
     }
 
-    public static net.minecraft.world.level.block.Block getCoilState(int tier) {
+    public static Block getCoilState(int tier) {
         if (tier == GTValues.LuV)
             return SUPERCONDUCTING_COIL.get();
 

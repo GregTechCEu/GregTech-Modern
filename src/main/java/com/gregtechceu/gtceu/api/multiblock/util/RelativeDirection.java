@@ -1,180 +1,99 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.util.StringRepresentable;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
 import java.util.Locale;
-import java.util.function.UnaryOperator;
+import java.util.function.BinaryOperator;
+import java.util.function.ToIntFunction;
 
+/**
+ * Relative direction when facing horizontally and vertically
+ */
 public enum RelativeDirection implements StringRepresentable {
 
-    UP(dir -> dir.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP, Direction.UP),
-    DOWN(dir -> dir.getAxis() == Direction.Axis.Y ? Direction.SOUTH : Direction.DOWN, Direction.DOWN),
-    LEFT(dir -> {
-        if (dir == Direction.UP) return Direction.EAST;
-        else if (dir == Direction.DOWN) return Direction.WEST;
-        else return dir.getCounterClockWise();
-    }, Direction.WEST),
-    RIGHT(dir -> {
-        if (dir == Direction.UP) return Direction.WEST;
-        else if (dir == Direction.DOWN) return Direction.EAST;
-        else return dir.getClockWise();
-    }, Direction.EAST),
-    FRONT(UnaryOperator.identity(), Direction.NORTH),
-    BACK(Direction::getOpposite, Direction.SOUTH);
+    UP((f, u) -> u),
+    DOWN((f, u) -> u.getOpposite()),
+    LEFT((f, u) -> GTUtil.cross(f, u).getOpposite()),
+    RIGHT(GTUtil::cross),
+    FRONT((f, u) -> f),
+    BACK((f, u) -> f.getOpposite());
 
-    public static final StringRepresentable.EnumCodec<RelativeDirection> CODEC = StringRepresentable
+    private final BinaryOperator<Direction> facingFunction;
+
+    public static final EnumCodec<RelativeDirection> CODEC = StringRepresentable
             .fromEnum(RelativeDirection::values);
 
     public static final RelativeDirection[] VALUES = values();
-    private static final RelativeDirection[] BY_GLOBAL_DIRECTION = new RelativeDirection[GTUtil.DIRECTIONS.length];
 
-    static {
-        for (var relative : VALUES) {
-            BY_GLOBAL_DIRECTION[relative.global.ordinal()] = relative;
-        }
-    }
-
-    private final UnaryOperator<Direction> actualDirection;
-    /**
-     * Equivalent global direction to this relative direction
-     * with {@link Direction#NORTH NORTH} as the "forward" direction.
-     */
-    public final Direction global;
-
-    RelativeDirection(UnaryOperator<Direction> actualDirection, Direction global) {
-        this.actualDirection = actualDirection;
-        this.global = global;
-    }
-
-    @Override
-    public @NotNull String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+    RelativeDirection(BinaryOperator<Direction> facingFunction) {
+        this.facingFunction = facingFunction;
     }
 
     public RelativeDirection getOpposite() {
-        return switch (this) {
-            case UP -> DOWN;
-            case DOWN -> UP;
-            case LEFT -> RIGHT;
-            case RIGHT -> LEFT;
-            case FRONT -> BACK;
-            case BACK -> FRONT;
+        return VALUES[oppositeOrdinal()];
+    }
+
+    public int oppositeOrdinal() {
+        return switch (ordinal()) {
+            case 0 -> 1;
+            case 1 -> 0;
+            case 2 -> 3;
+            case 3 -> 2;
+            case 4 -> 5;
+            case 5 -> 4;
+            default -> throw new IllegalStateException("Unexpected value: " + ordinal());
         };
     }
 
-    public Direction getActualDirection(Direction direction) {
-        return actualDirection.apply(direction);
+    public Direction getRelativeFacing(Direction frontFacing, Direction upwardsFacing) {
+        if (frontFacing.getAxis() == upwardsFacing.getAxis()) {
+            return Direction.UP;
+            // throw new IllegalArgumentException("front facing and up facing must be on different axes");
+        }
+        return facingFunction.apply(frontFacing, upwardsFacing);
     }
 
-    /**
-     * @param other The other direction to check
-     * @return Whether both directions are on the same axis
-     */
-    public boolean isSameAxis(RelativeDirection other) {
-        return this.global.getAxis() == other.global.getAxis();
-    }
-
-    public Vec3i applyVec3i(Direction facing) {
-        return getActualDirection(facing).getNormal();
-    }
-
-    /**
-     * @deprecated Renamed to {@link RelativeDirection#getRelative(Direction, Direction, boolean) getRelative}.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.0.0", forRemoval = true)
     public Direction getRelativeFacing(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
-        return getRelative(frontFacing, upwardsFacing, isFlipped);
+        return (isFlipped && (this == LEFT || this == RIGHT)) ?
+                getRelativeFacing(frontFacing, upwardsFacing).getOpposite() :
+                getRelativeFacing(frontFacing, upwardsFacing);
     }
 
-    public Direction getRelative(Direction frontDir, Direction upwardsDir, boolean isFlipped) {
-        Direction.Axis frontAxis = frontDir.getAxis();
-        return switch (this) {
-            case UP -> {
-                if (frontAxis == Direction.Axis.Y) {
-                    // same direction as upwards facing
-                    yield upwardsDir;
-                } else {
-                    // transform the upwards facing into a real facing
-                    yield switch (upwardsDir) {
-                        case NORTH -> Direction.UP;
-                        case SOUTH -> Direction.DOWN;
-                        case EAST -> frontDir.getCounterClockWise();
-                        default -> frontDir.getClockWise(); // WEST
-                    };
-                }
-            }
-            case DOWN -> {
-                if (frontAxis == Direction.Axis.Y) {
-                    // opposite direction as upwards facing
-                    yield upwardsDir.getOpposite();
-                } else {
-                    // transform the upwards facing into a real facing
-                    yield switch (upwardsDir) {
-                        case NORTH -> Direction.DOWN;
-                        case SOUTH -> Direction.UP;
-                        case EAST -> frontDir.getClockWise();
-                        default -> frontDir.getCounterClockWise(); // WEST
-                    };
-                }
-            }
-            case LEFT -> {
-                Direction direction;
-                if (frontAxis == Direction.Axis.Y) {
-                    direction = frontDir.getStepY() > 0 ? upwardsDir.getClockWise() : upwardsDir.getCounterClockWise();
-                } else {
-                    direction = switch (upwardsDir) {
-                        case NORTH -> frontDir.getCounterClockWise();
-                        case SOUTH -> frontDir.getClockWise();
-                        case EAST -> Direction.DOWN;
-                        default -> Direction.UP; // WEST
-                    };
-                }
-                yield isFlipped ? direction.getOpposite() : direction;
-            }
-            case RIGHT -> {
-                Direction direction;
-                if (frontAxis == Direction.Axis.Y) {
-                    direction = frontDir.getStepY() > 0 ? upwardsDir.getCounterClockWise() : upwardsDir.getClockWise();
-                } else {
-                    direction = switch (upwardsDir) {
-                        case NORTH -> frontDir.getClockWise();
-                        case SOUTH -> frontDir.getCounterClockWise();
-                        case EAST -> Direction.UP;
-                        default -> Direction.DOWN; // WEST
-                    };
-                }
-                // invert if flipped
-                yield isFlipped ? direction.getOpposite() : direction;
-            }
-            // same direction as front facing, upwards facing doesn't matter
-            case FRONT -> frontDir;
-            // opposite direction as front facing, upwards facing doesn't matter
-            case BACK -> frontDir.getOpposite();
-        };
-    }
-
-    public Comparator<BlockPos> getSorter(Direction frontDir, Direction upwardsDir, boolean isFlipped) {
+    public ToIntFunction<BlockPos> getPosSorter(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
         // get the direction to go in for the part sorter
-        Direction sorterDirection = getRelative(frontDir, upwardsDir, isFlipped);
+        Direction sorterDirection = getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
 
         // Determined by Direction.Axis + Direction.AxisDirection
         return switch (sorterDirection) {
-            case UP -> Comparator.comparingInt(BlockPos::getY);
-            case DOWN -> Comparator.comparingInt(pos -> -pos.getY());
-            case NORTH -> Comparator.comparingInt(pos -> -pos.getZ());
-            case EAST -> Comparator.comparingInt(BlockPos::getX);
-            case SOUTH -> Comparator.comparingInt(BlockPos::getZ);
-            case WEST -> Comparator.comparingInt(pos -> -pos.getX());
+            case UP -> BlockPos::getY;
+            case DOWN -> pos -> -pos.getY();
+            case EAST -> BlockPos::getX;
+            case WEST -> pos -> -pos.getX();
+            case NORTH -> pos -> -pos.getZ();
+            case SOUTH -> BlockPos::getZ;
+        };
+    }
+
+    public ToIntFunction<MultiblockPartMachine> getMultiSorter(Direction frontFacing, Direction upwardsFacing,
+                                                               boolean isFlipped) {
+        // get the direction to go in for the part sorter
+        Direction sorterDirection = getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
+
+        // Determined by Direction.Axis + Direction.AxisDirection
+        return switch (sorterDirection) {
+            case UP -> p -> p.getBlockPos().getY();
+            case DOWN -> p -> -p.getBlockPos().getY();
+            case EAST -> p -> p.getBlockPos().getX();
+            case WEST -> p -> -p.getBlockPos().getX();
+            case NORTH -> p -> -p.getBlockPos().getZ();
+            case SOUTH -> p -> p.getBlockPos().getZ();
         };
     }
 
@@ -183,80 +102,55 @@ public enum RelativeDirection implements StringRepresentable {
      *
      * @return Returns the new upwards facing.
      */
-    public static Direction simulateAxisRotation(Direction newFrontDir, Direction oldFrontDir, Direction upwardsDir) {
-        if (newFrontDir == oldFrontDir) return upwardsDir;
+    public static Direction simulateAxisRotation(Direction newFrontFacing, Direction oldFrontFacing,
+                                                 Direction upwardsFacing) {
+        if (newFrontFacing.getAxis() == oldFrontFacing.getAxis()) return upwardsFacing;
 
-        Direction.Axis newAxis = newFrontDir.getAxis();
-        Direction.Axis oldAxis = oldFrontDir.getAxis();
+        Direction cross = GTUtil.cross(newFrontFacing, oldFrontFacing);
 
-        if (newAxis != Direction.Axis.Y && oldAxis != Direction.Axis.Y) {
-            // no change needed
-            return upwardsDir;
-        } else if (newAxis == Direction.Axis.Y && oldAxis != Direction.Axis.Y) {
-            // going from horizontal to vertical axis
-            Direction newUpwardsDir = switch (upwardsDir) {
-                case NORTH -> oldFrontDir.getOpposite();
-                case SOUTH -> oldFrontDir;
-                case EAST -> oldFrontDir.getCounterClockWise();
-                default -> oldFrontDir.getClockWise(); // WEST
-            };
-            return newFrontDir == Direction.DOWN && upwardsDir.getAxis() == Direction.Axis.Z ?
-                    newUpwardsDir.getOpposite() : newUpwardsDir;
-        } else if (newAxis != Direction.Axis.Y) {
-            // going from vertical to horizontal axis
-            Direction newUpwardsDir;
-            if (upwardsDir == newFrontDir) {
-                newUpwardsDir = Direction.SOUTH;
-            } else if (upwardsDir == newFrontDir.getOpposite()) {
-                newUpwardsDir = Direction.NORTH;
-            } else if (upwardsDir == newFrontDir.getClockWise()) {
-                newUpwardsDir = Direction.WEST;
-            } else { // getCounterClockWise
-                newUpwardsDir = Direction.EAST;
-            }
-            return oldFrontDir == Direction.DOWN && newUpwardsDir.getAxis() == Direction.Axis.Z ?
-                    newUpwardsDir.getOpposite() : newUpwardsDir;
-        } else {
-            // was on vertical axis and still is. Must have flipped from up to down or vice versa
-            return upwardsDir.getOpposite();
-        }
+        assert cross != null;
+        if (cross.getAxis() == upwardsFacing.getAxis()) return upwardsFacing;
+
+        if (oldFrontFacing.getClockWise(cross.getAxis()) == newFrontFacing)
+            return oldFrontFacing.getOpposite();
+
+        return oldFrontFacing;
     }
 
     /**
      * Offset a BlockPos relatively in any direction by any amount. Pass negative values to offset down, right or
      * backwards.
      */
-    public static BlockPos offsetPos(BlockPos pos, Direction frontDir, Direction upwardsDir, boolean isFlipped,
+    public static BlockPos offsetPos(BlockPos pos, Direction frontFacing, Direction upwardsFacing, boolean isFlipped,
                                      int upOffset, int leftOffset, int forwardOffset) {
-        if (upOffset == 0 && leftOffset == 0 && forwardOffset == 0) {
-            return pos;
-        }
-
-        int oX = 0, oY = 0, oZ = 0;
-        final Direction relUp = UP.getRelative(frontDir, upwardsDir, isFlipped);
-        oX += relUp.getStepX() * upOffset;
-        oY += relUp.getStepY() * upOffset;
-        oZ += relUp.getStepZ() * upOffset;
-
-        final Direction relLeft = LEFT.getRelative(frontDir, upwardsDir, isFlipped);
-        oX += relLeft.getStepX() * leftOffset;
-        oY += relLeft.getStepY() * leftOffset;
-        oZ += relLeft.getStepZ() * leftOffset;
-
-        final Direction relForward = FRONT.getRelative(frontDir, upwardsDir, isFlipped);
-        oX += relForward.getStepX() * forwardOffset;
-        oY += relForward.getStepY() * forwardOffset;
-        oZ += relForward.getStepZ() * forwardOffset;
-
-        return pos.offset(oX, oY, oZ);
+        BlockPos.MutableBlockPos mbp = pos.mutable();
+        mbp.move(UP.getRelativeFacing(frontFacing, upwardsFacing, isFlipped), upOffset);
+        mbp.move(LEFT.getRelativeFacing(frontFacing, upwardsFacing, isFlipped), leftOffset);
+        mbp.move(FRONT.getRelativeFacing(frontFacing, upwardsFacing, isFlipped), forwardOffset);
+        return mbp.immutable();
     }
 
-    public static RelativeDirection fromGlobalDirection(Direction direction) {
-        return BY_GLOBAL_DIRECTION[direction.ordinal()];
+    public static <T extends Enum<T>> void validateFacingsArray(T[] facings) {
+        if (facings.length != 3) throw new IllegalArgumentException("Facings must be array of length 3!");
+
+        int c = 0;
+        for (int i = 0; i < 3; i++) {
+            c |= (1 << facings[i].ordinal() / 2);
+        }
+
+        if (c != 7) throw new IllegalArgumentException("The 3 facings must use each axis exactly once!");
+    }
+
+    /**
+     * @param other The other direction to check
+     * @return Whether both directions are on the same axis
+     */
+    public boolean isSameAxis(RelativeDirection other) {
+        return (other.ordinal() ^ this.ordinal() & 0x01) != 0;
     }
 
     public static Direction getActualDirection(Direction original, Direction current, Direction direction) {
-        return findRelativeOf(original, current).getActualDirection(direction);
+        return findRelativeOf(original, current).applyDirection(direction);
     }
 
     /**
@@ -270,7 +164,7 @@ public enum RelativeDirection implements StringRepresentable {
      * @return The difference of {@code baseDir} and {@code relativeDir} as a relative direction
      */
     public static RelativeDirection findRelativeOf(Direction baseDir, Direction relativeDir) {
-        return findRelativeOf(baseDir, relativeDir, Direction.NORTH);
+        return findRelativeOf(baseDir, relativeDir, Direction.UP);
     }
 
     /**
@@ -311,5 +205,34 @@ public enum RelativeDirection implements StringRepresentable {
                 return dir;
             }
         }
+    }
+
+    public Direction getDefaultFacing() {
+        return switch (this) {
+            case UP -> Direction.UP;
+            case DOWN -> Direction.DOWN;
+            case LEFT -> Direction.WEST;
+            case RIGHT -> Direction.EAST;
+            case FRONT -> Direction.NORTH;
+            case BACK -> Direction.SOUTH;
+        };
+    }
+
+    public Direction applyDirection(Direction dir) {
+        return switch (this) {
+            case UP -> dir.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
+            case DOWN -> dir.getAxis() == Direction.Axis.Y ? Direction.SOUTH : Direction.DOWN;
+            case LEFT -> dir.getAxis().isHorizontal() ? dir.getCounterClockWise() :
+                    dir.getAxisDirection().getStep() > 0 ? Direction.WEST : Direction.EAST;
+            case RIGHT -> dir.getAxis().isHorizontal() ? dir.getClockWise() :
+                    dir.getAxisDirection().getStep() > 0 ? Direction.EAST : Direction.WEST;
+            case FRONT -> dir;
+            case BACK -> dir.getOpposite();
+        };
+    }
+
+    @Override
+    public @NotNull String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
     }
 }

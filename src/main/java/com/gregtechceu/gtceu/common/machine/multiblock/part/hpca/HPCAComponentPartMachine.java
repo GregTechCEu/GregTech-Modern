@@ -1,49 +1,63 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
-import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCACoolantProviderTrait;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
+
+import brachy.modularui.api.drawable.IDrawable;
+import lombok.Getter;
 
 import java.util.List;
 
-public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
-                                               implements IHPCAComponentHatch, IMachineModifyDrops {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            HPCAComponentPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+public class HPCAComponentPartMachine extends MultiblockPartMachine {
 
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    private boolean damaged;
+    @Getter
+    protected final HPCAComponentTrait hpcaComponentTrait;
+    @Getter
+    protected final boolean isAdvanced;
+    protected final IDrawable componentIcon;
+    protected final IDrawable damagedComponentIcon;
 
-    public HPCAComponentPartMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public HPCAComponentPartMachine(BlockEntityCreationInfo info, boolean isAdvanced, IDrawable hpcaComponentIcon,
+                                    IDrawable hpcaComponentIconDamaged,
+                                    HPCAComponentTrait hpcaTrait) {
+        super(info);
+        this.isAdvanced = isAdvanced;
+        this.componentIcon = hpcaComponentIcon;
+        this.damagedComponentIcon = hpcaComponentIconDamaged;
+        this.hpcaComponentTrait = attachTrait(hpcaTrait);
     }
 
-    public abstract boolean isAdvanced();
-
-    public boolean doesAllowBridging() {
-        return false;
+    public static HPCAComputationProviderTrait createHPCAComputationTrait(boolean isAdvanced) {
+        int upkeepEUt = GTValues.VA[isAdvanced ? GTValues.IV : GTValues.EV];
+        int maxEUt = GTValues.VA[isAdvanced ? GTValues.ZPM : GTValues.LuV];
+        int cooling = isAdvanced ? 4 : 2;
+        int cwu = isAdvanced ? 16 : 4;
+        return new HPCAComputationProviderTrait(upkeepEUt, maxEUt, true, false, cwu, cooling);
     }
 
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
+    public static HPCAComponentTrait createHPCACoolerTrait(boolean isAdvanced) {
+        int upkeepEU = isAdvanced ? GTValues.VA[GTValues.IV] : 0;
+        int coolingAmount = isAdvanced ? 2 : 1;
+        int maxCoolant = isAdvanced ? 8 : 0;
+        return new HPCACoolantProviderTrait(upkeepEU, upkeepEU, false, false, coolingAmount, maxCoolant,
+                isAdvanced);
+    }
+
+    public IDrawable getComponentIcon() {
+        return hpcaComponentTrait.isDamaged() ? damagedComponentIcon : componentIcon;
     }
 
     @Override
@@ -52,49 +66,16 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
     }
 
     @Override
-    public boolean canShared() {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 
-    // Handle damaged state
-
     @Override
-    public final boolean isBridge() {
-        return doesAllowBridging() && !(canBeDamaged() && isDamaged());
-    }
-
-    @Override
-    public boolean isDamaged() {
-        return canBeDamaged() && damaged;
-    }
-
-    @Override
-    public void setDamaged(boolean damaged) {
-        if (!canBeDamaged()) return;
-        if (this.damaged != damaged) {
-            this.damaged = damaged;
-            markDirty();
-
-            MachineRenderState state = getRenderState();
-            if (state.hasProperty(GTMachineModelProperties.IS_HPCA_PART_DAMAGED)) {
-                setRenderState(state.setValue(GTMachineModelProperties.IS_HPCA_PART_DAMAGED, damaged));
-            }
-        }
-    }
-
-    public void setActive(boolean active) {
-        MachineRenderState state = getRenderState();
-        if (state.hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
-            setRenderState(state.setValue(GTMachineModelProperties.IS_ACTIVE, active));
-        }
-    }
-
-    @Override
-    public void onDrops(List<ItemStack> drops) {
+    public void modifyDrops(List<ItemStack> drops) {
         for (int i = 0; i < drops.size(); ++i) {
             ItemStack drop = drops.get(i);
             if (drop.getItem() == this.getDefinition().getItem()) {
-                if (canBeDamaged() && isDamaged()) {
+                if (hpcaComponentTrait.isDamaged()) {
                     if (isAdvanced()) {
                         drops.set(i, GTBlocks.ADVANCED_COMPUTER_CASING.asStack());
                     } else {
@@ -104,21 +85,5 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine
                 break;
             }
         }
-    }
-
-    /*
-     * // TODO add some way to show a custom display name for machines
-     * 
-     * @Override
-     * public String getMetaName() {
-     * if (canBeDamaged() && isDamaged()) {
-     * return super.getMetaName() + ".damaged";
-     * }
-     * return super.getMetaName();
-     * }
-     */
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

@@ -10,14 +10,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xaero.common.IXaeroMinimap;
+import xaero.common.HudMod;
 import xaero.common.minimap.MinimapProcessor;
 import xaero.common.minimap.render.MinimapFBORenderer;
 import xaero.common.minimap.render.MinimapRenderer;
 import xaero.hud.minimap.Minimap;
 import xaero.hud.minimap.compass.render.CompassRenderer;
 import xaero.hud.minimap.element.render.map.MinimapElementMapRendererHandler;
-import xaero.hud.minimap.waypoint.render.WaypointsGuiRenderer;
+import xaero.hud.minimap.waypoint.render.WaypointMapRenderer;
 
 // TODO move to xaeros api once that exists
 @Mixin(value = MinimapFBORenderer.class, remap = false)
@@ -26,9 +26,9 @@ public abstract class MinimapFBORendererMixin extends MinimapRenderer {
     @Shadow
     private MinimapElementMapRendererHandler minimapElementMapRendererHandler;
 
-    public MinimapFBORendererMixin(IXaeroMinimap modMain, Minecraft mc, WaypointsGuiRenderer waypointsGuiRenderer,
+    public MinimapFBORendererMixin(HudMod modMain, Minecraft mc, WaypointMapRenderer waypointMapRenderer,
                                    Minimap minimap, CompassRenderer compassRenderer) {
-        super(modMain, mc, waypointsGuiRenderer, minimap, compassRenderer);
+        super(modMain, mc, waypointMapRenderer, minimap, compassRenderer);
     }
 
     @Inject(method = "loadFrameBuffer",

@@ -1,6 +1,0 @@
----
-title: "@DescSynced"
----
-
-
-# Using `@DescSynced`

@@ -1,46 +1,51 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,13 +54,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.data.material.GTMaterials.DrillingFluid;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                                implements IMiner, IControllable, IDataInfoProvider {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeMinerMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
     public static final int CHUNK_LENGTH = 16;
     @Getter
     private final int tier;
@@ -65,29 +72,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     protected FluidHandlerList inputFluidInventory;
     private final int drillingFluidConsumePerTick;
 
-    public LargeMinerMachine(IMachineBlockEntity holder, int tier, int speed, int maximumChunkDiameter, int fortune,
+    public LargeMinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumChunkDiameter, int fortune,
                              int drillingFluidConsumePerTick) {
-        super(holder, fortune, speed, maximumChunkDiameter);
+        super(info, new LargeMinerLogic(fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    @Override
-    protected @NotNull RecipeLogic createRecipeLogic(Object... args) {
-        if (args[args.length - 3] instanceof Integer fortune && args[args.length - 2] instanceof Integer speed &&
-                args[args.length - 1] instanceof Integer maxRadius) {
-            return new LargeMinerLogic(this, fortune, speed, maxRadius * CHUNK_LENGTH / 2);
-        }
-        throw new IllegalArgumentException(
-                "MinerMachine need args [inventorySize, fortune, speed, maximumRadius] for initialization");
-    }
-
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -102,7 +91,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         return GTMaterials.Steel;
     }
 
-    public static net.minecraft.world.level.block.Block getCasingState(int tier) {
+    public static Block getCasingState(int tier) {
         return GTBlocks.MATERIALS_TO_CASINGS.get(getMaterial(tier)).get();
     }
 
@@ -114,31 +103,34 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // ******* Logic *********//
     //////////////////////////////////////
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         Direction opposite = this.getUpwardsFacing().getOpposite();
         getRecipeLogic().setDir(opposite == Direction.NORTH ? Direction.UP : Direction.DOWN);
         initializeAbilities();
     }
 
     @Override
-    public boolean checkPattern() {
-        return super.checkPattern() &&
-                (this.getUpwardsFacing() == Direction.NORTH || this.getUpwardsFacing() == Direction.SOUTH);
+    public PatternState checkStructurePattern(String name) {
+        var patternState = super.checkStructurePattern(name);
+        if (this.getUpwardsFacing() != Direction.UP && this.getUpwardsFacing() != Direction.DOWN) {
+            patternState.setError(Predicates.PLACEHOLDER);
+        }
+        return patternState;
     }
 
     private void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IFluidHandler> fluidTanks = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if (io == IO.NONE) continue;
+        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+        // Long2ObjectMaps::emptyMap);
+        for (MultiblockPartMachine part : getParts()) {
+            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            // if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
+                // if (!handlerList.isValid(io)) continue;
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
@@ -155,7 +147,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         getRecipeLogic().setVoltageTier(GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()));
         getRecipeLogic().setOverclockAmount(
                 Math.max(1, GTUtil.getTierByVoltage(this.energyContainer.getInputVoltage()) - this.tier));
-        getRecipeLogic().initPos(getPos(), getRecipeLogic().getCurrentRadius());
+        getRecipeLogic().initPos(getBlockPos(), getRecipeLogic().getCurrentRadius());
     }
 
     public int getEnergyTier() {
@@ -199,67 +191,116 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         return true;
     }
 
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
     @Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        if (this.isFormed()) {
-            int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-            int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-            textList.add(Component.translatable("gtceu.machine.miner.startx",
-                    getRecipeLogic().getX() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getX()));
-            textList.add(Component.translatable("gtceu.machine.miner.starty",
-                    getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
-            textList.add(Component.translatable("gtceu.machine.miner.startz",
-                    getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
-            textList.add(Component.translatable("gtceu.universal.tooltip.silk_touch")
-                    .append(ComponentPanelWidget.withButton(Component.literal("[")
-                            .append(getRecipeLogic().isSilkTouchMode() ?
-                                    Component.translatable("gtceu.creative.activity.on") :
-                                    Component.translatable("gtceu.creative.activity.off"))
-                            .append(Component.literal("]")), "silk_touch")));
-            textList.add(Component.translatable("gtceu.universal.tooltip.chunk_mode")
-                    .append(ComponentPanelWidget.withButton(Component.literal("[")
-                            .append(getRecipeLogic().isChunkMode() ?
-                                    Component.translatable("gtceu.creative.activity.on") :
-                                    Component.translatable("gtceu.creative.activity.off"))
-                            .append(Component.literal("]")), "chunk_mode")));
-            if (getRecipeLogic().isChunkMode()) {
-                textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks,
-                        workingAreaChunks));
-            } else {
-                textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
-            }
-            if (getRecipeLogic().isDone()) {
-                textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-            }
-        }
+    public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var panelBuilder = getPanelBuilder(data, syncManager, settings);
+        panelBuilder.mainContents(parent -> buildMainUI(parent, data, syncManager, settings));
+        var machinePanel = panelBuilder.build(syncManager, settings);
+
+        BooleanSyncValue silk = syncManager.getOrCreateSyncHandler("silkTouch", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isSilkTouchMode(),
+                        (v) -> getRecipeLogic().setSilkTouchMode(v)).allowC2S());
+        BooleanSyncValue chunk = syncManager.getOrCreateSyncHandler("chunk", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isChunkMode(),
+                        (v) -> getRecipeLogic().setChunkMode(v)).allowC2S());
+
+        machinePanel.getRightConfiguratorPanel()
+                .child(new ToggleButton()
+                        .value(silk)
+                        .overlay(new ItemDrawable(Items.FEATHER))
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.silk_touch")
+                                .append(Component.translatable(
+                                        "cover.voiding.label." + (silk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipAutoUpdate(true))
+                .child(new ToggleButton()
+                        .value(chunk)
+                        .overlay(false, GTGuiTextures.BUTTON_CHUNK_ALIGN[0])
+                        .overlay(true, GTGuiTextures.BUTTON_CHUNK_ALIGN[1])
+                        .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.universal.tooltip.chunk_mode")
+                                .append(Component.translatable(
+                                        "cover.voiding.label." + (chunk.getBoolValue() ? "enabled" : "disabled")))))
+                        .tooltipAutoUpdate(true));
+
+        return machinePanel;
     }
 
     @Override
-    public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
-            if (componentData.equals("chunk_mode")) {
-                getRecipeLogic().setChunkMode(!getRecipeLogic().isChunkMode());
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+
+        BooleanSyncValue done = syncManager.getOrCreateSyncHandler("done", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isDone()));
+        IntSyncValue workingArea = syncManager.getOrCreateSyncHandler("workingArea", IntSyncValue.class,
+                () -> new IntSyncValue(() -> getRecipeLogic().getCurrentRadius()));
+        LongSyncValue x = syncManager.getOrCreateSyncHandler("x", LongSyncValue.class, () -> new LongSyncValue(() -> {
+            if (getRecipeLogic().getX() == Integer.MAX_VALUE) return 0;
+            return getRecipeLogic().getX();
+        }));
+        LongSyncValue y = syncManager.getOrCreateSyncHandler("y", LongSyncValue.class, () -> new LongSyncValue(() -> {
+            if (getRecipeLogic().getY() == Integer.MAX_VALUE) return 0;
+            return getRecipeLogic().getY();
+        }));
+        LongSyncValue z = syncManager.getOrCreateSyncHandler("z", LongSyncValue.class, () -> new LongSyncValue(() -> {
+            if (getRecipeLogic().getZ() == Integer.MAX_VALUE) return 0;
+            return getRecipeLogic().getZ();
+        }));
+        LongSyncValue startX = syncManager.getOrCreateSyncHandler("startx", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    if (getRecipeLogic().getStartX() == Integer.MAX_VALUE) return 0;
+                    return getRecipeLogic().getStartX();
+                }));
+        LongSyncValue startY = syncManager.getOrCreateSyncHandler("starty", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    if (getRecipeLogic().getStartY() == Integer.MAX_VALUE) return 0;
+                    return getRecipeLogic().getStartY();
+                }));
+        LongSyncValue startZ = syncManager.getOrCreateSyncHandler("startz", LongSyncValue.class,
+                () -> new LongSyncValue(() -> {
+                    if (getRecipeLogic().getStartZ() == Integer.MAX_VALUE) return 0;
+                    return getRecipeLogic().getStartZ();
+                }));
+        BooleanSyncValue chunk = syncManager.getOrCreateSyncHandler("chunk", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> getRecipeLogic().isChunkMode(),
+                        (v) -> getRecipeLogic().setChunkMode(v)).allowC2S());
+        IntSyncValue mineProgress = syncManager.getOrCreateSyncHandler("mineProgress", IntSyncValue.class,
+                () -> new IntSyncValue(() -> getRecipeLogic().getProgress()));
+        IntSyncValue totalMine = syncManager.getOrCreateSyncHandler("totalMine", IntSyncValue.class,
+                () -> new IntSyncValue(() -> getRecipeLogic().getMaxProgress()));
+
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.machine.miner.x", x.getLongValue(), startX.getLongValue()))
+                .asWidget());
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.machine.miner.y", y.getLongValue(), startY.getLongValue()))
+                .asWidget());
+        widgets.add(Text
+                .dynamic(() -> Component.translatable("gtceu.machine.miner.z", z.getLongValue(), startZ.getLongValue()))
+                .asWidget());
+        widgets.add(Text.dynamic(() -> {
+            if (chunk.getBoolValue()) {
+                return Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                        workingArea.getIntValue() * 2 / CHUNK_LENGTH, workingArea.getIntValue() * 2 / CHUNK_LENGTH);
             }
-            if (componentData.equals("silk_touch")) {
-                getRecipeLogic().setSilkTouchMode(!getRecipeLogic().isSilkTouchMode());
-            }
-        }
+            return Component.translatable("gtceu.universal.tooltip.working_area", workingArea.getIntValue(),
+                    workingArea.getIntValue());
+        }).asWidget());
+        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)))
+                .asWidget()
+                .setEnabledIf((w) -> done.getBoolValue()));
+        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.machine.miner.progress",
+                mineProgress.getIntValue(), totalMine.getIntValue())).asWidget());
+
+        return widgets;
     }
 
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    public ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, ItemStack held,
-                                                    Direction facing,
-                                                    BlockHitResult hitResult) {
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (isRemote() || !this.isFormed())
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
 
         if (!this.isActive()) {
             int currentRadius = getRecipeLogic().getCurrentRadius();
@@ -270,8 +311,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH);
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-                playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
-                        workingAreaChunks, workingAreaChunks));
+                context.getPlayer()
+                        .sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                                workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
                     getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
@@ -279,17 +321,16 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH / 2);
                 }
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
             }
             getRecipeLogic().resetArea(true);
         } else {
-            playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

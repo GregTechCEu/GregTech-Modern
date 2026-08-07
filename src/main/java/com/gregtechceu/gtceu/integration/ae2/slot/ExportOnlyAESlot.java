@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -14,8 +12,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * An export only slot to hold {@link appeng.api.stacks.GenericStack}
  */
-public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSerializable<CompoundTag>,
-                                       IContentChangeAware {
+public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSerializable<CompoundTag> {
 
     protected final static String CONFIG_TAG = "config";
     protected final static String STOCK_TAG = "stock";

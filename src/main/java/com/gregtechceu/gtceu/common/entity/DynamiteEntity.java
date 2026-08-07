@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.entity;
 
-import com.gregtechceu.gtceu.data.entity.GTEntityTypes;
-import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.common.data.GTEntityTypes;
+import com.gregtechceu.gtceu.common.data.GTItems;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;

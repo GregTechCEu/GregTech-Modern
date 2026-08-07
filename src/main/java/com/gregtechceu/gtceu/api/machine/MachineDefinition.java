@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-
-import com.lowdragmc.lowdraglib.utils.ShapeUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
@@ -18,20 +18,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import brachy.modularui.theme.ThemeAPI;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -42,7 +41,7 @@ import java.util.function.*;
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<IMachineBlock> {
+public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -58,15 +57,13 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Setter
     private Supplier<? extends MetaMachineItem> itemSupplier;
     @Setter
-    private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
-    @Setter
-    private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
+    private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
     @Getter
     @Setter
-    private @NotNull GTRecipeType @NotNull [] recipeTypes;
+    private GTRecipeType[] recipeTypes;
     @Getter
     @Setter
-    private int tier;
+    private int tier = -1;
     @Getter
     @Setter
     private int defaultPaintingColor;
@@ -76,19 +73,15 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private boolean alwaysTryModifyRecipe;
-    @NotNull
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
-    @NotNull
+    private BiPredicate<IRecipeLogicMachine, @Nullable GTRecipe> beforeWorking = (machine, recipe) -> true;
     @Getter
     @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
@@ -121,10 +114,13 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private boolean allowCoverOnFront;
-    @Nullable
     @Getter
     @Setter
-    private EditableMachineUI editableUI;
+    @Nullable
+    private PanelFactory UI;
+    @Getter
+    @Setter
+    private String themeId = ThemeAPI.DEFAULT_ID;
     @Getter
     @Setter
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
@@ -140,6 +136,10 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
         this.id = id;
     }
 
+    public boolean isTiered() {
+        return tier != -1;
+    }
+
     public final void registerDefaultState(MachineRenderState state) {
         this.defaultRenderState = state;
     }
@@ -152,12 +152,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
         return itemSupplier.get();
     }
 
-    public BlockEntityType<? extends BlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
         return blockEntityTypeSupplier.get();
-    }
-
-    public MetaMachine createMetaMachine(IMachineBlockEntity blockEntity) {
-        return machineSupplier.apply(blockEntity);
     }
 
     public ItemStack asStack() {
@@ -170,12 +166,12 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     public VoxelShape getShape(Direction direction) {
         if (shape.isEmpty() || shape == Shapes.block() || direction == Direction.NORTH) return shape;
-        return this.cache.computeIfAbsent(direction, dir -> ShapeUtils.rotate(shape, dir));
+        return this.cache.computeIfAbsent(direction, dir -> GTUtil.rotateVoxelShape(shape, dir));
     }
 
     @Override
-    public IMachineBlock get() {
-        return (IMachineBlock) blockSupplier.get();
+    public MetaMachineBlock get() {
+        return (MetaMachineBlock) blockSupplier.get();
     }
 
     public String getName() {
@@ -222,5 +218,28 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
 
     public static void clearBuilt() {
         STATE.remove();
+    }
+
+    /**
+     * Gets the input size for a machine for the capability with the machine having the specified recipe types
+     */
+    public int getInputSize(RecipeCapability<?> cap, GTRecipeType... recipeTypes) {
+        int recipeTypeInputSize = 0;
+        for (var recipeType : recipeTypes) {
+            recipeTypeInputSize = Math.max(recipeType.getMaxInputs(cap), recipeTypeInputSize);
+        }
+        return recipeTypeInputSize;
+    }
+
+    /**
+     * Gets the output size for a machine for the capability with the machine having the specified recipe types
+     */
+    public int getOutputSize(RecipeCapability<?> cap, GTRecipeType... recipeTypes) {
+        int recipeTypeOutputSize = 0;
+        for (var recipeType : recipeTypes) {
+            recipeTypeOutputSize = Math.max(recipeType.getMaxOutputs(cap), recipeTypeOutputSize);
+        }
+        int machineTypeOutputLimit = this.getRecipeOutputLimits().getOrDefault(cap, recipeTypeOutputSize);
+        return Math.min(recipeTypeOutputSize, machineTypeOutputLimit);
     }
 }

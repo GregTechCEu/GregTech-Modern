@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait.customlogic;
 import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.STEAM_BOILER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.STEAM_BOILER_RECIPES;
 
 public class SmallBoilerLogic extends SteamBoilerLogic {
 
@@ -18,6 +18,6 @@ public class SmallBoilerLogic extends SteamBoilerLogic {
 
     @Override
     protected int modifyBurnTime(int originalBurnTime) {
-        return originalBurnTime * 12;
+        return originalBurnTime;
     }
 }

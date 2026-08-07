@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.helpers;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
@@ -16,19 +16,19 @@ public final class MachineConstructors {
 
     // This one in particular stops a crash when trying to define a new LCE
     // The crash is caused by the static FluidStack members in LargeCombustionEngine.class
-    public static MultiblockControllerMachine createLargeCombustionEngine(IMachineBlockEntity holder, int tier) {
-        return new LargeCombustionEngineMachine(holder, tier);
+    public static MultiblockControllerMachine createLargeCombustionEngine(BlockEntityCreationInfo info, int tier) {
+        return new LargeCombustionEngineMachine(info, tier);
     }
 
-    public static MultiblockControllerMachine createLargeTurbine(IMachineBlockEntity holder, int tier) {
-        return new LargeTurbineMachine(holder, tier);
+    public static MultiblockControllerMachine createLargeTurbine(BlockEntityCreationInfo info, int tier) {
+        return new LargeTurbineMachine(info, tier);
     }
 
-    public static MultiblockControllerMachine createFusionReactor(IMachineBlockEntity holder, int tier) {
-        return new FusionReactorMachine(holder, tier);
+    public static MultiblockControllerMachine createFusionReactor(BlockEntityCreationInfo info, int tier) {
+        return new FusionReactorMachine(info, tier);
     }
 
-    public static MultiblockControllerMachine createSteamMultiblock(IMachineBlockEntity holder, int parallels) {
-        return new SteamParallelMultiblockMachine(holder, parallels);
+    public static MultiblockControllerMachine createSteamMultiblock(BlockEntityCreationInfo info, int parallels) {
+        return new SteamParallelMultiblockMachine(info, parallels);
     }
 }

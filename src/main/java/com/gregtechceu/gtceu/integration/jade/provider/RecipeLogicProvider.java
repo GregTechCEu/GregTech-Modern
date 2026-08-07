@@ -2,51 +2,47 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"));
-    }
-
-    @Nullable
-    @Override
-    protected RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.class);
     }
 
     @Override
-    protected void write(CompoundTag data, RecipeLogic capability) {
+    protected CompoundTag write(RecipeLogic capability) {
+        var data = new CompoundTag();
         data.putBoolean("Working", capability.isWorking());
+        if (!capability.isWorking() && capability.isWorkingEnabled()) {
+            var failureReason = capability.getBestFailureReason();
+            if (failureReason != null) {
+                data.putString("FailureReason", failureReason.getString());
+                data.putBoolean("Waiting", capability.isWaiting());
+            }
+        }
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
@@ -57,28 +53,23 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
+        // Returns -1 if not a generator
+        long generatorPower = capability.getRLMachine().getDisplayGeneratorPower();
+        if (generatorPower > 0) {
+            recipeInfo.putLong("generatorPower", generatorPower);
+        }
+
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
+        return data;
     }
 
     public static long getVoltage(RecipeLogic capability) {
-        long voltage = -1;
-        if (capability.machine instanceof SimpleTieredMachine machine) {
-            voltage = GTValues.V[machine.getTier()];
-        } else if (capability.machine instanceof SimpleGeneratorMachine machine) {
-            voltage = GTValues.V[machine.getTier()];
-        } else if (capability.machine instanceof WorkableElectricMultiblockMachine machine) {
-            voltage = machine.getParts().stream()
-                    .filter(EnergyHatchPartMachine.class::isInstance)
-                    .map(EnergyHatchPartMachine.class::cast)
-                    .mapToLong(dynamo -> GTValues.V[dynamo.getTier()])
-                    .max()
-                    .orElse(-1);
-        }
+        long voltage = capability.getRLMachine().getDisplayRecipeVoltage();
+
         // default display as LV, this shouldn't happen because a machine is either electric or steam
-        if (voltage == -1) voltage = 32;
-        return voltage;
+        return voltage == -1 ? GTValues.V[GTValues.LV] : voltage;
     }
 
     @Override
@@ -92,15 +83,12 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 boolean isSteam = false;
 
                 if (EUt > 0) {
-                    if (blockEntity instanceof MetaMachineBlockEntity mbe) {
-                        var machine = mbe.getMetaMachine();
-                        if (machine instanceof SimpleSteamMachine ssm) {
-                            EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
-                            isSteam = true;
-                        } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                            EUt = (long) Math.ceil(EUt * smb.getConversionRate());
-                            isSteam = true;
-                        }
+                    if (blockEntity instanceof SimpleSteamMachine ssm) {
+                        EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
+                        isSteam = true;
+                    } else if (blockEntity instanceof SteamParallelMultiblockMachine smb) {
+                        EUt = (long) Math.ceil(EUt * smb.getConversionRate());
+                        isSteam = true;
                     }
 
                     MutableComponent text;
@@ -140,8 +128,21 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                         tooltip.add(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text));
                     } else {
                         tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
+                        long generatorPower = recipeInfo.getLong("generatorPower");
+                        if (generatorPower > 0 && generatorPower < EUt) {
+                            tooltip.add(Component.translatable("gtceu.jade.generator.too_small")
+                                    .withStyle(ChatFormatting.RED));
+                        }
                     }
                 }
+            }
+        } else if (capData.contains("FailureReason", Tag.TAG_STRING)) {
+            Component reason = Component.translatable(capData.getString("FailureReason"));
+            if (reason != null) {
+                tooltip.add(capData.getBoolean("Waiting") ?
+                        Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.YELLOW) :
+                        Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
+                tooltip.add(reason);
             }
         }
     }

@@ -2,19 +2,19 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.RegisterWoodsKubeEvent;
+import com.gregtechceu.gtceu.integration.kjs.events.RegisterWoodsEventJS;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -33,10 +33,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.BIO_CHAFF;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.BIO_CHAFF;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class WoodMachineRecipes {
 
@@ -312,10 +312,8 @@ public class WoodMachineRecipes {
         }
         if (CUSTOM_ENTRIES == null) {
             if (GTCEu.Mods.isKubeJSLoaded()) {
-                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>();
-                var evt = new RegisterWoodsKubeEvent();
-                GTCEuStartupEvents.REGISTER_WOODS.post(evt);
-                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>(evt.woods);
+                List<WoodTypeEntry> eventResult = KJSCallWrapper.registerWoods();
+                CUSTOM_ENTRIES = new ArrayList<>(eventResult);
             } else {
                 CUSTOM_ENTRIES = List.of();
             }
@@ -1233,23 +1231,32 @@ public class WoodMachineRecipes {
         // COAL TAR ============================================
         PYROLYSE_RECIPES.recipeBuilder("charcoal_to_coal_tar").circuitMeta(8)
                 .inputItems(Items.CHARCOAL, 32)
-                .chancedOutput(dust, Ash, 5000, 0)
+                .chancedOutput(dust, Ash, 5000)
                 .outputFluids(CoalTar.getFluid(1000))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coal_to_coal_tar").circuitMeta(8)
                 .inputItems(Items.COAL, 12)
-                .chancedOutput(dust, DarkAsh, 5000, 0)
+                .chancedOutput(dust, DarkAsh, 5000)
                 .outputFluids(CoalTar.getFluid(3000))
                 .duration(320).EUt(96)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coke_to_coal_tar").circuitMeta(8)
                 .inputItems(gem, Coke, 8)
-                .chancedOutput(dust, Ash, 7500, 0)
+                .chancedOutput(dust, Ash, 7500)
                 .outputFluids(CoalTar.getFluid(4000))
                 .duration(320).EUt(96)
                 .save(provider);
+    }
+
+    private static final class KJSCallWrapper {
+
+        private static List<WoodTypeEntry> registerWoods() {
+            RegisterWoodsEventJS event = new RegisterWoodsEventJS();
+            GTCEuStartupEvents.REGISTER_WOODS.post(event);
+            return event.woods;
+        }
     }
 }

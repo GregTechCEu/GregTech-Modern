@@ -7,7 +7,6 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -20,8 +19,8 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     protected static final String DESC_KEY = "description";
 
     @Setter
-    @NotNull
     private String description = "";
+    @Getter
     private int color = 0xFFFFFFFF;
     private String colorStr = DEFAULT_COLOR;
 
@@ -58,7 +57,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.@NotNull Provider registries) {
+    public CompoundTag serializeNBT(HolderLookup.Provider registries) {
         var tag = new CompoundTag();
         tag.putString(COLOR_KEY, this.colorStr);
 
@@ -69,7 +68,7 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider registries, CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider registries, CompoundTag nbt) {
         setColor(nbt.getString(COLOR_KEY));
 
         if (nbt.contains(DESC_KEY))
@@ -77,6 +76,6 @@ public abstract class VirtualEntry implements INBTSerializable<CompoundTag> {
     }
 
     public boolean canRemove() {
-        return this.description.isEmpty();
+        return this.description.isBlank();
     }
 }

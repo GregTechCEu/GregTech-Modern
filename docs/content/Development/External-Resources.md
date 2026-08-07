@@ -21,14 +21,6 @@ as other resources you might find helpful.
     - [MCJty's Modding Wiki](https://www.mcjty.eu/docs/intro)
 
 
-## LDLib
-
-LDLib is the main library we're using for GTCEu-Modern.
-
-!!! link "LDLib Docs"
-    [:material-github: LDLib-Architectury :material-arrow-right: Wiki](https://github.com/Low-Drag-MC/LDLib-Architectury/wiki)
-
-
 ## Mixins
 
 !!! link "Overview on using Mixins"

@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.api.recipe.category;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import lombok.Getter;
@@ -22,7 +21,8 @@ import org.jetbrains.annotations.Nullable;
 public class GTRecipeCategory {
 
     // Placeholder category used if category isn't defined for a recipe for registration
-    public static final GTRecipeCategory DEFAULT = new GTRecipeCategory("default", GTRecipeTypes.DUMMY_RECIPES);
+    public static final GTRecipeCategory DEFAULT = new GTRecipeCategory(GTCEu.id("default"),
+            GTRecipeTypes.DUMMY_RECIPES);
 
     public final ResourceLocation registryKey;
     public final String name;
@@ -32,7 +32,7 @@ public class GTRecipeCategory {
     private final String languageKey;
     @Nullable
     @Setter
-    private IGuiTexture icon = null;
+    private CategoryIcon icon = null;
     @Getter
     @Setter
     private boolean isXEIVisible = true;
@@ -44,11 +44,11 @@ public class GTRecipeCategory {
         this.languageKey = recipeType.getTranslationKey();
     }
 
-    public GTRecipeCategory(@NotNull String categoryName, @NotNull GTRecipeType recipeType) {
+    public GTRecipeCategory(@NotNull ResourceLocation registryKey, @NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
-        this.name = categoryName;
-        this.registryKey = GTCEu.id(categoryName);
-        this.languageKey = "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, categoryName);
+        this.name = registryKey.getPath();
+        this.registryKey = registryKey;
+        this.languageKey = registryKey.toLanguageKey("recipe_category");
     }
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
@@ -57,10 +57,13 @@ public class GTRecipeCategory {
         return category;
     }
 
-    public IGuiTexture getIcon() {
+    public CategoryIcon getIcon() {
         if (icon == null) {
-            if (recipeType.getIconSupplier() != null) icon = new ItemStackTexture(recipeType.getIconSupplier().get());
-            else icon = new ItemStackTexture(Items.BARRIER);
+            if (recipeType.getIconSupplier() != null) {
+                icon = new CategoryIcon(recipeType.getIconSupplier().get());
+            } else {
+                icon = new CategoryIcon(new ItemStack(Items.BARRIER));
+            }
         }
         return icon;
     }
@@ -88,6 +91,6 @@ public class GTRecipeCategory {
 
     @Override
     public String toString() {
-        return "GTRecipeCategory{%s}".formatted(name);
+        return "GTRecipeCategory{%s}".formatted(this.registryKey);
     }
 }

@@ -2,12 +2,9 @@ package com.gregtechceu.gtceu;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.material.material.IMaterialRegistry;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.CommonInit;
+import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
@@ -25,7 +22,6 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import com.mojang.serialization.Codec;
 import dev.emi.emi.config.EmiConfig;
-import me.shedaniel.rei.api.client.REIRuntime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
@@ -43,6 +39,7 @@ public class GTCEu {
 
     public static final String NAME = "GTCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
+    public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
     @ApiStatus.Internal
     public static IEventBus gtModBus;
@@ -54,15 +51,13 @@ public class GTCEu {
 
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
-        GTCEuAPI.materialManager = (IMaterialRegistry) GTRegistries.MATERIALS;
         GTCEuAPI.initializeHighTier();
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
-        CommonInit.init(modBus);
+        CommonProxy.init(modBus);
 
-        modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
         modBus.addListener(GTNetwork::registerPayloads);
     }
 
@@ -79,6 +74,9 @@ public class GTCEu {
         }
         // only convert it to camel_case if it has any uppercase to begin with
         if (FormattingUtil.hasUpperCase(path)) {
+            GTCEu.LOGGER.warn(
+                    "Resource location {} has uppercase characters, which are not allowed. Renaming resource location to {}",
+                    path, FormattingUtil.toLowerCaseUnderscore(path));
             path = FormattingUtil.toLowerCaseUnderscore(path);
         }
         return TEMPLATE_LOCATION.withPath(path);
@@ -118,7 +116,7 @@ public class GTCEu {
 
     /**
      * A friendly reminder that the server instance is populated on the server side only, so null/side check it!
-     * 
+     *
      * @return the current minecraft server instance
      */
     public static MinecraftServer getMinecraftServer() {
@@ -135,7 +133,7 @@ public class GTCEu {
 
     /**
      * For async stuff use this, otherwise use {@link GTCEu isClientSide}
-     * 
+     *
      * @return if the current thread is the client thread
      */
     @SuppressWarnings("ConstantValue")
@@ -155,7 +153,7 @@ public class GTCEu {
 
     /**
      * This check isn't the same for client and server!
-     * 
+     *
      * @return if it's safe to access the current instance {@link net.minecraft.world.level.Level Level} on client or if
      *         it's safe to access any level on server.
      */
@@ -187,10 +185,6 @@ public class GTCEu {
                     isModLoaded(GTValues.MODID_JEI);
         }
 
-        public static boolean isREILoaded() {
-            return isModLoaded(GTValues.MODID_REI) && (!isClientSide() || REIRuntime.getInstance().isOverlayVisible());
-        }
-
         public static boolean isEMILoaded() {
             return isModLoaded(GTValues.MODID_EMI) && (!isClientSide() || EmiConfig.enabled);
         }
@@ -199,12 +193,12 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_KUBEJS);
         }
 
-        public static boolean isIrisLoaded() {
-            return isModLoaded(GTValues.MODID_IRIS);
+        public static boolean isIrisOculusLoaded() {
+            return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
         }
 
-        public static boolean isSodiumLoaded() {
-            return isModLoaded(GTValues.MODID_SODIUM);
+        public static boolean isSodiumEmbeddiumLoaded() {
+            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_EMBEDDIUM);
         }
 
         public static boolean isAE2Loaded() {
@@ -213,10 +207,6 @@ public class GTCEu {
 
         public static boolean isCuriosLoaded() {
             return isModLoaded(GTValues.MODID_CURIOS);
-        }
-
-        public static boolean isShimmerLoaded() {
-            return isModLoaded(GTValues.MODID_SHIMMER);
         }
 
         public static boolean isModernFixLoaded() {
@@ -249,6 +239,10 @@ public class GTCEu {
 
         public static boolean isCreateLoaded() {
             return isModLoaded(GTValues.MODID_CREATE);
+        }
+
+        public static boolean isSableLoaded() {
+            return isModLoaded(GTValues.MODID_SABLE);
         }
     }
 }

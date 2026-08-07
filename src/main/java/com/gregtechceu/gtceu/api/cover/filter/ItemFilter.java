@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
@@ -52,8 +54,13 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public WidgetGroup openConfigurator(int x, int y) {
-            throw new NotImplementedException("Not available for empty item filter");
+        public ItemStack getFilterItem() {
+            return null;
+        }
+
+        @Override
+        public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+            return null;
         }
 
         @Override

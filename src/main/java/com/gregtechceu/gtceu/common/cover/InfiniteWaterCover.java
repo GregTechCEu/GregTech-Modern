@@ -23,7 +23,7 @@ public class InfiniteWaterCover extends CoverBehavior {
     @Override
     public boolean canAttach() {
         return super.canAttach() &&
-                FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).isPresent();
+                FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide).isPresent();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class InfiniteWaterCover extends CoverBehavior {
 
     public void update() {
         if (coverHolder.getOffsetTimer() % 20 == 0) {
-            FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
+            FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
                     .ifPresent(h -> h.fill(new FluidStack(Fluids.WATER, 16 * FluidType.BUCKET_VOLUME),
                             IFluidHandler.FluidAction.EXECUTE));
         }

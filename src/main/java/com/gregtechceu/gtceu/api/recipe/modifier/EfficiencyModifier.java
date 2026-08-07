@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;

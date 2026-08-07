@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -11,10 +11,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.GELLED_TOLUENE;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTItems.GELLED_TOLUENE;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class ReactorRecipes {
 
@@ -375,7 +375,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(gem, Charcoal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -383,7 +383,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(gem, Coal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -391,7 +391,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(dust, Charcoal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -400,7 +400,7 @@ public class ReactorRecipes {
                 .inputItems(dust, Coal)
                 .circuitMeta(1)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .save(provider);
 
@@ -445,7 +445,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(gem, Charcoal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -453,7 +453,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(gem, Coal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -461,7 +461,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(dust, Charcoal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -469,7 +469,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(dust, Coal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -639,8 +639,8 @@ public class ReactorRecipes {
 
         // Dyes
         for (int i = 0; i < GTMaterials.CHEMICAL_DYES.length; i++) {
-            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + MarkerMaterials.Color.VALUES[i].getName())
-                    .inputItems(dye, MarkerMaterials.Color.VALUES[i])
+            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + COLORS[i])
+                    .inputItems(TagUtil.createItemTag("dyes" + COLORS[i]))
                     .inputItems(dust, Salt, 2)
                     .inputFluids(SulfuricAcid.getFluid(250))
                     .outputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(288))

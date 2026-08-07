@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import org.jetbrains.annotations.NotNull;
 

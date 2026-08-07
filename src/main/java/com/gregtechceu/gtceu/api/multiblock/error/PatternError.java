@@ -1,55 +1,47 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.api.multiblock.MultiblockState;
-import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
 import java.util.List;
 
-public class PatternError {
+public abstract class PatternError {
 
-    protected MultiblockState worldState;
+    public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERROR_TYPES.byNameCodec()
+            .dispatch(PatternError::type, PatternErrorType::codec);
 
-    public void setWorldState(MultiblockState worldState) {
-        this.worldState = worldState;
+    @Getter
+    protected @Nullable BlockPos pos;
+    @Getter
+    protected List<List<BlockInfo>> candidates;
+
+    public PatternError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
+        this.pos = pos;
+        this.candidates = candidates;
     }
 
-    public Level getWorld() {
-        return worldState.getWorld();
+    public PatternError(@Nullable BlockPos pos, PatternPredicate predicate) {
+        this(pos, predicate.getCandidates());
     }
 
-    public BlockPos getPos() {
-        return worldState.getPos();
+    public PatternError(@Nullable BlockPos pos, BasePredicate failingPredicate) {
+        this(pos, Collections.singletonList(failingPredicate.getCandidates()));
     }
 
-    public List<List<ItemStack>> getCandidates() {
-        TraceabilityPredicate predicate = worldState.predicate;
-        List<List<ItemStack>> candidates = new ArrayList<>();
-        for (SimplePredicate common : predicate.common) {
-            candidates.add(common.getCandidates());
-        }
-        for (SimplePredicate limited : predicate.limited) {
-            candidates.add(limited.getCandidates());
-        }
-        return candidates;
-    }
+    public abstract PatternErrorType type();
 
-    public Component getErrorInfo() {
-        List<List<ItemStack>> candidates = getCandidates();
-        StringBuilder builder = new StringBuilder();
-        for (List<ItemStack> candidate : candidates) {
-            if (!candidate.isEmpty()) {
-                builder.append(candidate.get(0).getDisplayName());
-                builder.append(", ");
-            }
-        }
-        builder.append("...");
-        return Component.translatable("gtceu.multiblock.pattern.error", builder.toString(), worldState.getPos());
-    }
+    public abstract PatternErrorUI getPatternErrorUIModifier();
+
+    public record PatternErrorType(ResourceLocation id, MapCodec<? extends PatternError> codec) {}
 }

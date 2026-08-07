@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IIOCover;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
-
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -23,7 +21,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -48,7 +45,7 @@ public class IOCoverRenderer implements ICoverRenderer {
                            @Nullable ResourceLocation invertedOverlay,
                            @Nullable ResourceLocation emissiveOverlay,
                            @Nullable ResourceLocation invertedEmissiveOverlay) {
-        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
+        ModelEventHelper.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             var atlas = event.getAtlas();
 
             if (overlay != null) {
@@ -69,8 +66,8 @@ public class IOCoverRenderer implements ICoverRenderer {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
-                            @NotNull CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
-                            @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                            CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+                            ModelData modelData, @Nullable RenderType renderType) {
         if ((side == null || side == coverBehavior.attachedSide) && coverBehavior instanceof IIOCover ioCover) {
             boolean isInverted = ioCover.getIo() != IO.OUT;
 
@@ -82,10 +79,10 @@ public class IOCoverRenderer implements ICoverRenderer {
                         overlaySprite));
             }
             if (isInverted && invertedEmissiveOverlaySprite != null) {
-                quads.add(FaceQuad.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
                         invertedEmissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false));
             } else if (emissiveOverlaySprite != null) {
-                quads.add(FaceQuad.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
+                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
                         emissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false));
             }
         }

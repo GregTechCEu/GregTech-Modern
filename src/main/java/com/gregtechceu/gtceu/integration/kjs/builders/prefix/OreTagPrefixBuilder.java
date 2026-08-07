@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
 
 import com.gregtechceu.gtceu.api.block.OreBlock;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -16,7 +15,7 @@ import lombok.experimental.Accessors;
 
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.Conditions.hasOreProperty;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 import static com.gregtechceu.gtceu.integration.kjs.Validator.*;
 
 @Accessors(fluent = true, chain = true)
@@ -38,7 +37,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     public transient boolean shouldDropAsItem = false;
 
     public OreTagPrefixBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
     }
 
     @Override

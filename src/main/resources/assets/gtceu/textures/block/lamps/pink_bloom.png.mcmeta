@@ -1,0 +1,6 @@
+{
+    "gtceu": {
+        "connection_texture": "gtceu:block/lamps/pink_bloom_ctm",
+        "bloom": true
+    }
+}

@@ -1,5 +1,5 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/casings/solid/machine_casing_sturdy_hsse_ctm"
+    "gtceu": {
+        "connection_texture": "gtceu:block/casings/solid/machine_casing_sturdy_hsse_ctm"
     }
 }

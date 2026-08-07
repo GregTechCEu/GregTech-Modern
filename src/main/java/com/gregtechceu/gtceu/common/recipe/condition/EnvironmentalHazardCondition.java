@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
+import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.medicalcondition.GTMedicalConditions;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -24,11 +25,11 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalHazardCondition> {
 
-    public static final MapCodec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder
-            .mapCodec(instance -> RecipeCondition.isReverse(instance)
-                    .and(
-                            MedicalCondition.CODEC.fieldOf("condition").forGetter(val -> val.condition))
-                    .apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:off
+    public static final MapCodec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
+            GTRegistries.MEDICAL_CONDITIONS.byNameCodec().fieldOf("condition").forGetter(EnvironmentalHazardCondition::getCondition)
+    ).apply(instance, EnvironmentalHazardCondition::new));
+    // spotless:on
 
     @Getter
     private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING;
@@ -46,10 +47,8 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
     @Override
     public Component getTooltips() {
         return isReverse ?
-                Component.translatable("gtceu.recipe.environmental_hazard.reverse",
-                        Component.translatable("gtceu.medical_condition." + condition.name)) :
-                Component.translatable("gtceu.recipe.environmental_hazard",
-                        Component.translatable("gtceu.medical_condition." + condition.name));
+                Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.getTranslatableName()) :
+                Component.translatable("gtceu.recipe.environmental_hazard", condition.getTranslatableName());
     }
 
     @Override
@@ -59,7 +58,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
             return false;
         }
         EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-        var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getPos());
+        var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getBlockPos());
         return zone != null && zone.strength() > 0;
     }
 

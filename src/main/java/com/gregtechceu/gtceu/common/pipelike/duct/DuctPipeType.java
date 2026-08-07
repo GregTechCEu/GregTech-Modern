@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.pipelike.duct;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
-import com.gregtechceu.gtceu.client.model.PipeModel;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -53,11 +52,5 @@ public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringReprese
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
-    }
-
-    public PipeModel createPipeModel() {
-        return new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_duct_side"),
-                () -> GTCEu.id("block/pipe/pipe_duct_in"),
-                null, null);
     }
 }

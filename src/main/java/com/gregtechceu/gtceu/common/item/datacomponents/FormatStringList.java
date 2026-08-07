@@ -5,13 +5,14 @@ import net.minecraft.network.codec.StreamCodec;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import lombok.With;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public record FormatStringList(List<String> lines) {
+public record FormatStringList(@With List<String> lines) {
 
     public static final Codec<FormatStringList> CODEC = Codec.STRING.listOf()
             .xmap(FormatStringList::new, FormatStringList::lines);

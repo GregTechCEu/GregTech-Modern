@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.world.level.block.Block;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class PartAbility {
+
+    public static final Map<String, PartAbility> VALUES = new HashMap<>();
 
     public static final PartAbility EXPORT_ITEMS = new PartAbility("export_items");
     public static final PartAbility IMPORT_ITEMS = new PartAbility("import_items");
@@ -56,7 +58,7 @@ public class PartAbility {
     /**
      * tier -> available blocks
      */
-    private final Int2ObjectMap<Set<Block>> registry = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<LinkedHashSet<Block>> registry = new Int2ObjectLinkedOpenHashMap<>();
 
     private final Supplier<Collection<Block>> allBlocks = GTMemoizer
             .memoize(() -> registry.values().stream().flatMap(Collection::stream).toList());
@@ -66,10 +68,11 @@ public class PartAbility {
 
     public PartAbility(String name) {
         this.name = name;
+        VALUES.put(name, this);
     }
 
     public void register(int tier, Block block) {
-        registry.computeIfAbsent(tier, T -> new HashSet<>()).add(block);
+        registry.computeIfAbsent(tier, T -> new LinkedHashSet<>()).add(block);
     }
 
     public Collection<Block> getAllBlocks() {
@@ -87,9 +90,6 @@ public class PartAbility {
                 .toList();
     }
 
-    /**
-     * [from, to]
-     */
     public Collection<Block> getBlockRange(int from, int to) {
         return registry.int2ObjectEntrySet().stream()
                 .filter(entry -> entry.getIntKey() <= to && entry.getIntKey() >= from)

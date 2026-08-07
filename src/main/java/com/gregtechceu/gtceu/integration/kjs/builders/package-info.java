@@ -1,7 +1,4 @@
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NotNullByDefault
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jetbrains.annotations.NotNullByDefault;

@@ -4,20 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.codec.StreamDecoder;
-import net.minecraft.network.codec.StreamEncoder;
+import net.minecraft.network.codec.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Tuple;
@@ -36,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.gregtechceu.gtceu.api.codec.GTCodecUtils.quietExceptionCodec;
+import static com.gregtechceu.gtceu.utils.codec.GTCodecUtils.quietExceptionCodec;
 
 @SuppressWarnings("DataFlowIssue")
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
@@ -71,7 +65,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     };
 
     public static final Codec<Map<RecipeCapability<?>, ChanceLogic>> CHANCE_LOGIC_MAP_CODEC = Codec.
-            unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.byNameCodec());
+            unboundedMap(GTRegistries.RECIPE_CAPABILITIES.byNameCodec(), GTRegistries.CHANCE_LOGICS.byNameCodec());
 
     public static final MapCodec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
     public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipe> STREAM_CODEC = StreamCodec
@@ -89,14 +83,17 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(RegistryFriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readResourceLocation());
+        RecipeCapability<?> capability = buf.registryAccess()
+                .holderOrThrow(buf.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)).value();
         List<Content> contents = readCollection(buf, capability.serializer::fromNetworkContent);
         return new Tuple<>(capability, contents);
     }
 
     public static Tuple<RecipeCapability<?>, ChanceLogic> changeLogicEntryReader(RegistryFriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readResourceLocation());
-        ChanceLogic logic = GTRegistries.CHANCE_LOGICS.get(buf.readResourceLocation());
+        RecipeCapability<?> capability = buf.registryAccess()
+                .holderOrThrow(buf.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)).value();
+        ChanceLogic logic = buf.registryAccess().holderOrThrow(buf.readResourceKey(GTRegistries.Keys.CHANCE_LOGIC))
+                .value();
         return new Tuple<>(capability, logic);
     }
 
@@ -104,7 +101,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                                    Map.Entry<RecipeCapability<?>, ? extends List<Content>> entry) {
         RecipeCapability<?> capability = entry.getKey();
         List<Content> contents = entry.getValue();
-        buf.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
+        buf.writeResourceKey(buf.registryAccess().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)
+                .getResourceKey(capability).orElseThrow());
         writeCollection(contents, buf, capability.serializer::toNetworkContent);
     }
 
@@ -112,25 +110,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                                               Map.Entry<RecipeCapability<?>, ChanceLogic> entry) {
         RecipeCapability<?> capability = entry.getKey();
         ChanceLogic logic = entry.getValue();
-        buf.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
-        buf.writeResourceLocation(GTRegistries.CHANCE_LOGICS.getKey(logic));
-    }
-
-    public static RecipeCondition<?> conditionReader(RegistryFriendlyByteBuf buf) {
-        RecipeCondition<?> condition = GTRegistries.RECIPE_CONDITIONS.get(buf.readResourceLocation()).factory
-                .createDefault();
-        return condition.fromNetwork(buf);
-    }
-
-    public static RecipeCondition<?> conditionReader(FriendlyByteBuf buf) {
-        // Consume the condition key that's set in conditionWriter
-        buf.readUtf();
-        return RecipeCondition.fromNetwork(buf);
-    }
-
-    public static void conditionWriter(RegistryFriendlyByteBuf buf, RecipeCondition<?> condition) {
-        buf.writeResourceLocation(GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
-        condition.toNetwork(buf);
+        buf.writeResourceKey(buf.registryAccess().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)
+                .getResourceKey(capability).orElseThrow());
+        buf.writeResourceKey(buf.registryAccess().registryOrThrow(GTRegistries.Keys.CHANCE_LOGIC).getResourceKey(logic)
+                .orElseThrow());
     }
 
     public static Map<RecipeCapability<?>, List<Content>> tuplesToMap(List<Tuple<RecipeCapability<?>, List<Content>>> entries) {
@@ -145,11 +128,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    @NotNull
     public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
+        if (!buf.readBoolean()) return null;
         ResourceLocation recipeType = buf.readResourceLocation();
         ResourceLocation id = buf.readResourceLocation();
-        int duration = buf.readVarInt();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 readCollection(buf, GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(
@@ -159,7 +141,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(
                 readCollection(buf, GTRecipeSerializer::entryReader));
 
-        List<RecipeCondition<?>> conditions = readCollection(buf, GTRecipeSerializer::conditionReader);
+        List<RecipeCondition<?>> conditions = readCollection(buf, RecipeCondition::fromNetwork);
 
         Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = logicTuplesToMap(
                 readCollection(buf, GTRecipeSerializer::changeLogicEntryReader));
@@ -178,6 +160,12 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         if (data == null) {
             data = new CompoundTag();
         }
+        int duration = buf.readVarInt();
+        int parallels = buf.readVarInt();
+        int subtickParallels = buf.readVarInt();
+        int batchParallels = buf.readVarInt();
+
+        int groupColor = buf.readInt();
         ResourceLocation categoryLoc = buf.readResourceLocation();
 
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
@@ -186,7 +174,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, category);
+                conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels, category,
+                groupColor);
 
         recipe.recipeCategory.addRecipe(recipe);
 
@@ -203,14 +192,15 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
+        buf.writeBoolean(recipe != null);
+        if (recipe == null) return;
         buf.writeResourceLocation(recipe.recipeType.registryName);
         buf.writeResourceLocation(recipe.id);
-        buf.writeVarInt(recipe.duration);
         writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.outputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.tickOutputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
-        writeCollection(recipe.conditions, buf, GTRecipeSerializer::conditionWriter);
+        writeCollectionWithMember(recipe.conditions, buf, RecipeCondition::toNetwork);
 
         writeCollection(recipe.inputChanceLogics.entrySet(), buf,
                 GTRecipeSerializer::changeLogicEntryWriter);
@@ -225,6 +215,11 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
         }
         buf.writeNbt(recipe.data);
+        buf.writeVarInt(recipe.duration);
+        buf.writeVarInt(recipe.parallels);
+        buf.writeVarInt(recipe.subtickParallels);
+        buf.writeVarInt(recipe.batchParallels);
+        buf.writeInt(recipe.groupColor);
         buf.writeResourceLocation(recipe.recipeCategory.registryKey);
     }
 
@@ -248,42 +243,50 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         }
     }
 
+    public static <T> void writeCollectionWithMember(Collection<T> collection, RegistryFriendlyByteBuf buf,
+                                                     StreamMemberEncoder<? super RegistryFriendlyByteBuf, T> encoder) {
+        buf.writeVarInt(collection.size());
+
+        for (T t : collection) {
+            encoder.encode(t, buf);
+        }
+    }
+
+    /**
+     * Codecs can only have up to 16 inputs. This is at 16 now, so the three recipe Parallel/Batch values are
+     * condensed to a List.
+     */
+    @SuppressWarnings("unchecked")
     private static MapCodec<GTRecipe> makeCodec(boolean isKubeLoaded) {
         // spotless:off
         if (!isKubeLoaded) {
             // I'll admit, it's not great.
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    GT_RECIPE_TYPE_CODEC.fieldOf("type").forGetter(val -> val.recipeType),
-                    RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
-                    RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
-                    RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
-                    RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("inputChanceLogics", Map.of()).forGetter(val -> val.inputChanceLogics),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("outputChanceLogics", Map.of()).forGetter(val -> val.outputChanceLogics),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickInputChanceLogics", Map.of()).forGetter(val -> val.tickInputChanceLogics),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickOutputChanceLogics", Map.of()).forGetter(val -> val.tickOutputChanceLogics),
-                    RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
-                    CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
-                    GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory)
-            ).apply(instance, GTRecipe::new));
+                            GT_RECIPE_TYPE_CODEC.fieldOf("type").forGetter(val -> val.recipeType),
+                            RecipeIO.CODEC.forGetter(GTRecipe::getRecipeIO),
+                            RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
+                            CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
+                            quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", false).forGetter(val -> val.duration),
+                            RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
+                            GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
+                            Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
+                    .apply(instance, (type,
+                                      recipeIO,
+                                      conditions, data, duration, allParallels, recipeCategory, groupColor) ->
+                            new GTRecipe(type, recipeIO,
+                                    conditions, List.of(), data, duration, allParallels, recipeCategory, groupColor)));
         } else {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                     GT_RECIPE_TYPE_CODEC.fieldOf("type").forGetter(val -> val.recipeType),
-                    RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
-                    RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
-                    RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
-                    RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("inputChanceLogics", Map.of()).forGetter(val -> val.inputChanceLogics),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("outputChanceLogics", Map.of()).forGetter(val -> val.outputChanceLogics),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickInputChanceLogics", Map.of()).forGetter(val -> val.tickInputChanceLogics),
-                    CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickOutputChanceLogics", Map.of()).forGetter(val -> val.tickOutputChanceLogics),
+                            RecipeIO.CODEC.forGetter(GTRecipe::getRecipeIO),
                     RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                     IngredientActionHolder.CODEC.listOf().optionalFieldOf("kubejs:actions", List.of()).forGetter(val -> (List<IngredientActionHolder>) val.ingredientActions),
                     CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
-                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT,"duration",isKubeLoaded).forGetter(val -> val.duration),
-                    GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory)
-            ).apply(instance, GTRecipe::new));
+                    quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", true).forGetter(val -> val.duration),
+                    RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
+                    GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
+                    Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
+            .apply(instance, GTRecipe::new));
         }
         // spotless:on
     }
@@ -302,4 +305,40 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             STREAM_CODEC.encode(buf, (List<IngredientActionHolder>) ingredientActions);
         }
     }
+
+    // spotless:off
+    public record RecipeIO(
+                           Map<RecipeCapability<?>, List<Content>> inputs,
+                           Map<RecipeCapability<?>, List<Content>> outputs,
+                           Map<RecipeCapability<?>, List<Content>> tickInputs,
+                           Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                           Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                           Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                           Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                           Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics) {
+
+        public static final MapCodec<RecipeIO> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
+                RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
+                RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
+                RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
+                CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("inputChanceLogics", Map.of()).forGetter(val -> val.inputChanceLogics),
+                CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("outputChanceLogics", Map.of()).forGetter(val -> val.outputChanceLogics),
+                CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickInputChanceLogics", Map.of()).forGetter(val -> val.tickInputChanceLogics),
+                CHANCE_LOGIC_MAP_CODEC.optionalFieldOf("tickOutputChanceLogics", Map.of()).forGetter(val -> val.tickOutputChanceLogics))
+                .apply(instance, RecipeIO::new));
+    }
+
+    public record RecipeParallels(
+                                  int parallels,
+                                  int subtickParallels,
+                                  int batchParallels) {
+
+        public static final Codec<RecipeParallels> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("parallels").forGetter(RecipeParallels::parallels),
+                Codec.INT.fieldOf("subtickParallels").forGetter(RecipeParallels::subtickParallels),
+                Codec.INT.fieldOf("batchParallels").forGetter(RecipeParallels::batchParallels))
+                .apply(instance, RecipeParallels::new));
+    }
+    // spotless:on
 }

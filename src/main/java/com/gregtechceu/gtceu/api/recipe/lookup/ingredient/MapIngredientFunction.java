@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient;
 
-import com.gregtechceu.gtceu.data.recipe.GTRecipeCapabilities;
+import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;

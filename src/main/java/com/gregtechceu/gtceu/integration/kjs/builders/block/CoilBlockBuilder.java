@@ -3,10 +3,9 @@ package com.gregtechceu.gtceu.integration.kjs.builders.block;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -29,8 +28,8 @@ public class CoilBlockBuilder extends ActiveBlockBuilder {
     @Setter
     public transient String texture = "minecraft:missingno";
 
-    public CoilBlockBuilder(ResourceLocation i) {
-        super(GTResourceLocation.implicitAsGtceu(i));
+    public CoilBlockBuilder(ResourceLocation id) {
+        super(id);
         property(GTBlockStateProperties.ACTIVE);
         renderType(BlockRenderType.CUTOUT_MIPPED);
         noValidSpawns(true);

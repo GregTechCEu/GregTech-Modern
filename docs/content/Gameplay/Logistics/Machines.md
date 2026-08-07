@@ -42,6 +42,37 @@ the power button in its UI or by right-clicking it with a Soft Mallet.
 
 Buses and Hatches can accept automated import or export from other sides, so long as something else is causing it.
 
+### Distinct, Painted, and Filtered Inputs and Outputs
+Under normal circumstances, **all** input Buses and Hatches and on a multiblock machine will be checked for recipe
+inputs, and all output buses and hatches will be used to place recipe outputs. However, this can lead to unwanted behavior
+where a user wants a single machine to do multiple recipes, but the ingredients to those recipes can conflict and be used
+to run an unwanted third recipe. Additionally, when a machine is being used like this, the output bus/hatch to which
+produced items/fluids are delivered is chosen somewhat arbitrarily, making it difficult or unwieldy to plan pipes to carry
+specific output products away.
+
+GTM offers three tools for this problem: Fluid Hatch Filter Locking, Distinct Buses and Painted Buses/Hatches.  
+
+* Fluid Hatch Filter Locking is a simple system for resolving the problem of deciding what output hatches receive what
+produced fluids. Using the same interface as a Super Tank, a Fluid Output Hatch can have its current contained fluid
+Locked, meaning that only that fluid will ever be placed in it; or the Hatch can be pre-emptively locked to a fluid by
+dragging that fluid from JEI/EMI into the Hatch's output slot.
+* Filter Locking only works with standard *single* fluid hatches, and cannot be done to the higher-tier Quadruple or 
+Nonuple Fluid Hatches. (However, those Hatches also cannot contain a single fluid in more than one slot, so they do
+still allow for some degree of output separation when used with Quadruple or Nonuple Fluid Pipes.)
+* Distinct Buses is a toggle used on Input Buses (not Hatches), which causes the machine to look at this bus as being
+separate from all other Distinct Buses. (One distinct bus has no meaning, but two distinct buses on one machine will
+cause the machine to search each distinct bus separately).
+* Painted Buses/Hatches are hatches which have been Painted using a can of spray paint. Input Buses/Hatches which have been
+Painted in the same color are looked at together by the machine searching for recipe inputs, but any items/fluids stored
+in buses/hatches with a different color are not used for the search. The isolation works the same as for Distinct Buses,
+but it allows for multiple buses/hatches to be searched together as a group.
+* Prior to version 7.5.0, painting **Output** Buses/Hatches had no effect. Version 7.5.0 introduced machines pairing their 
+Painted Outputs to their Painted Inputs, such that if a recipe pulls items from a Painted Input, it can only output the 
+products of that recipe to a Painted Output of the same color (or an unpainted output).
+* Buses and Hatches that are not painted, or not set to Distinct, are always fair game for the machine - Distinct and 
+Painted Inputs can always pull from other non-distinct and non-painted inputs; and recipes that used ingredients from 
+Painted Inputs can always send their products to non-painted outputs.
+
 ## Passthrough Hatches and the Cleanroom
 The Cleanroom is a unique multiblock with unique restrictions. Because the Cleanroom must have solid walls, pipes, cables,
 and inventories outside cannot directly connect to machines inside. For this purpose, Passthrough Hatches exist.

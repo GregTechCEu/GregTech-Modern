@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
@@ -27,13 +27,13 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
 
     private TickableSubscription hurtSub;
 
-    public LargeMacerationTowerMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public LargeMacerationTowerMachine(BlockEntityCreationInfo info) {
+        super(info);
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         updateBounds();
         for (var holder : getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP)) {
             if (holder instanceof IItemHandler ih) {
@@ -44,8 +44,8 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(@NotNull String name) {
+        super.invalidateStructure(name);
         unsubscribe(hurtSub);
         hurtSub = null;
         handlers.clear();
@@ -60,8 +60,10 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
     }
 
     private void updateBounds() {
-        var fl = RelativeDirection.offsetPos(getPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 1, 1, -1);
-        var br = RelativeDirection.offsetPos(getPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 2, -2, -4);
+        var fl = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 1, 1,
+                -1);
+        var br = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(), isFlipped(), 2, -2,
+                -4);
         grindBound = AABB.encapsulatingFullBlocks(fl, br);
     }
 

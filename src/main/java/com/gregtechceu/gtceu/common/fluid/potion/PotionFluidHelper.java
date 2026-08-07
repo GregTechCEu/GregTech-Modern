@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.fluid.potion;
 
-import com.gregtechceu.gtceu.data.fluid.GTFluids;
+import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 

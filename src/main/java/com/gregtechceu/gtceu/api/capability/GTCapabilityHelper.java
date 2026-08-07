@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.data.misc.GTAttachmentTypes;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
+import com.gregtechceu.gtceu.common.data.GTAttachmentTypes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,11 +55,6 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IToolable getToolable(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(GTCapability.CAPABILITY_TOOLABLE, pos, side);
-    }
-
-    @Nullable
     public static IWorkable getWorkable(Level level, BlockPos pos, @Nullable Direction side) {
         return level.getCapability(GTCapability.CAPABILITY_WORKABLE, pos, side);
     }
@@ -77,16 +72,6 @@ public class GTCapabilityHelper {
     @Nullable
     public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         return level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
-    }
-
-    @Nullable
-    public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(GTCapability.CAPABILITY_CLEANROOM_RECEIVER, pos, side);
-    }
-
-    @Nullable
-    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, pos, side);
     }
 
     @Nullable
@@ -110,7 +95,7 @@ public class GTCapabilityHelper {
         return level.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, pos, side);
     }
 
-    public static IMedicalConditionTracker getMedicalConditionTracker(@NotNull Player entity) {
+    public static MedicalConditionTracker getMedicalConditionTracker(@NotNull Player entity) {
         return entity.getData(GTAttachmentTypes.MEDICAL_CONDITION_TRACKER);
     }
 

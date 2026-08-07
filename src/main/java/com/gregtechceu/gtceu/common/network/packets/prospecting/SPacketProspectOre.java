@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.network.packets.prospecting;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;

@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
 
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -105,11 +105,11 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
         EnumSet<Direction> sidesToRender = EnumSet.of(frontFacing);
         VertexConsumer builder = buffer.getBuffer(Sheets.translucentCullBlockSheet());
 
-        var gas = fluid.getFluid().getFluidType().isLighterThanAir();
-        var percentFull = isCreative || maxAmount <= storedAmount ? 1f : (float) storedAmount / maxAmount;
+        boolean gas = fluid.getFluid().getFluidType().isLighterThanAir();
+        float percentFull = isCreative || maxAmount <= storedAmount ? 1f : (float) storedAmount / maxAmount;
 
-        var maxTop = gas ? MAX : MIN + percentFull * (MAX - MIN);
-        var minBot = gas ? MIN + (1 - percentFull) * (MAX - MIN) : MIN;
+        float maxTop = gas ? MAX : MIN + percentFull * (MAX - MIN);
+        float minBot = gas ? MIN + (1 - percentFull) * (MAX - MIN) : MIN;
         float minY, maxY, minZ, maxZ;
         if (frontFacing.getAxis() == Direction.Axis.Y) {
             minY = MIN;
@@ -134,7 +134,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
 
             sidesToRender.add(gas ? Direction.DOWN : Direction.UP);
         }
-        RenderBufferHelper.renderCube(builder, poseStack.last(), sidesToRender,
+        RenderBufferHelper.renderTexturedCube(builder, poseStack.last(), sidesToRender,
                 ext.getTintColor(fluid) | 0xff000000, LightTexture.FULL_BRIGHT, fluidSprite,
                 MIN, minY, minZ, MAX, maxY, maxZ);
 

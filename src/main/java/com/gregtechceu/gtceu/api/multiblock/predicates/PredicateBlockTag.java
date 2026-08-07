@@ -1,42 +1,42 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
-public class PredicateBlockTag extends SimplePredicate {
+import org.jetbrains.annotations.Nullable;
 
-    public TagKey<Block> tag = null;
+import java.util.Objects;
 
-    public PredicateBlockTag() {
-        super("tags");
-    }
+public class PredicateBlockTag extends BasePredicate {
+
+    public TagKey<Block> tag;
 
     public PredicateBlockTag(TagKey<Block> tag) {
-        this();
-        this.tag = tag;
-        buildPredicate();
+        this(null, tag);
     }
 
-    @Override
-    public SimplePredicate buildPredicate() {
-        if (tag == null) {
-            predicate = state -> false;
-            candidates = () -> new BlockInfo[] { BlockInfo.fromBlock(Blocks.BARRIER) };
-            return this;
-        }
-        predicate = state -> state.getBlockState().is(tag);
-        candidates = () -> BuiltInRegistries.BLOCK.getTag(tag)
+    public PredicateBlockTag(@Nullable String debugName, TagKey<Block> tag) {
+        Objects.requireNonNull(tag, "PredicateBlockTag tag cannot be null");
+        this.tag = tag;
+
+        errorPredicate = state -> state.retrieveCurrentBlockState().is(tag) ? null : Predicates.PLACEHOLDER;
+        candidates = BuiltInRegistries.BLOCK.getTag(tag)
                 .stream()
                 .flatMap(HolderSet.Named::stream)
                 .map(Holder::value)
                 .map(BlockInfo::fromBlock)
-                .toArray(BlockInfo[]::new);
-        return this;
+                .toList();
+
+        if (debugName == null) {
+            this.debugName = tag.registry().location() + "/" + tag.location();
+        } else {
+            this.debugName = debugName;
+        }
     }
 }

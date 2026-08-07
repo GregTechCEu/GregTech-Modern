@@ -151,7 +151,7 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
             if (nextPipeFacings.isEmpty())
                 return true;
             if (nextPipeFacings.size() == 1) {
-                currentPos.set(nextPipes.get(0).getPipePos());
+                currentPos.set(nextPipes.get(0).getBlockPos());
                 currentPipe = nextPipes.get(0);
                 from = nextPipeFacings.get(0).getOpposite();
                 walkedBlocks++;

@@ -34,18 +34,18 @@ public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider>
     @Nullable
     public IOpticalDataAccessHatch getDataHatch() {
         IDataAccessHatch dataAccessHatch = getTargetCapability(GTCapability.CAPABILITY_DATA_ACCESS,
-                targetPipe.getPipeLevel());
+                targetPipe.getLevel());
         return dataAccessHatch instanceof IOpticalDataAccessHatch opticalHatch ? opticalHatch : null;
     }
 
     @Nullable
     public IOpticalComputationProvider getComputationHatch() {
-        return getTargetCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, targetPipe.getPipeLevel());
+        return getTargetCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, targetPipe.getLevel());
     }
 
     @Override
     public @NotNull BlockPos getTargetPipePos() {
-        return targetPipe.getPipePos();
+        return targetPipe.getBlockPos();
     }
 
     @Nullable

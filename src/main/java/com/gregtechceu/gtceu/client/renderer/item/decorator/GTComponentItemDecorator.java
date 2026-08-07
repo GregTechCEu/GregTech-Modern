@@ -18,15 +18,16 @@ public final class GTComponentItemDecorator implements IItemDecorator {
     @Override
     public boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font,
                           ItemStack stack, int xOffset, int yOffset) {
-        if (stack.getItem() instanceof IComponentItem componentItem) {
-            var retVal = false;
-            for (var component : componentItem.getComponents()) {
-                if (component instanceof IItemDecorator decorator) {
-                    retVal |= decorator.render(guiGraphics, font, stack, xOffset, yOffset);
-                }
-            }
-            return retVal;
+        if (!(stack.getItem() instanceof IComponentItem componentItem)) {
+            return false;
         }
-        return false;
+
+        boolean modified = false;
+        for (var component : componentItem.getComponents()) {
+            if (component instanceof IItemDecorator decorator) {
+                modified |= decorator.render(guiGraphics, font, stack, xOffset, yOffset);
+            }
+        }
+        return modified;
     }
 }

@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.map.cache.server;
 
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
-import com.gregtechceu.gtceu.api.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectOre;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.DimensionCache;
@@ -64,7 +64,7 @@ public class ServerCache extends WorldCache {
 
     public void prospectBySurfaceRockMaterial(ResourceKey<Level> dim, final Material material, BlockPos pos,
                                               ServerPlayer player, int radius) {
-        if (radius < 0) return;
+        if (radius <= 0) return;
         List<GeneratedVeinMetadata> nearbyVeins = getNearbyVeins(dim, pos, radius);
         List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
         for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {
@@ -87,7 +87,7 @@ public class ServerCache extends WorldCache {
 
     public void prospectByOreMaterial(ResourceKey<Level> dim, Material material, BlockPos origin, ServerPlayer player,
                                       int radius) {
-        if (radius < 0) return;
+        if (radius <= 0) return;
         List<GeneratedVeinMetadata> nearbyVeins = getNearbyVeins(dim, origin, radius);
         List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
         for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {
@@ -98,10 +98,10 @@ public class ServerCache extends WorldCache {
         PacketDistributor.sendToPlayer(player, new SPacketProspectOre(dim, foundVeins));
     }
 
-    public void prospectByDepositName(ResourceKey<Level> dim, ResourceKey<OreVeinDefinition> veinId, BlockPos origin,
+    public void prospectByDepositName(ResourceKey<Level> dim, ResourceKey<GTOreDefinition> veinId, BlockPos origin,
                                       ServerPlayer player,
                                       int radius) {
-        if (radius < 0) return;
+        if (radius <= 0) return;
         List<GeneratedVeinMetadata> nearbyVeins = getNearbyVeins(dim, origin, radius);
         List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
         for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {

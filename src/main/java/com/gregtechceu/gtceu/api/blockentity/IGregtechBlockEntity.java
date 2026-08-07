@@ -1,0 +1,81 @@
+package com.gregtechceu.gtceu.api.blockentity;
+
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.extensions.IBlockEntityExtension;
+
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
+
+public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IBlockEntityExtension {
+
+    @UnknownNullability
+    Level getLevel();
+
+    BlockPos getBlockPos();
+
+    BlockState getBlockState();
+
+    long getOffsetTimer();
+
+    boolean isRemoved();
+
+    /**
+     * Called to notify neighboring blocks that this block has changed.
+     */
+    default void notifyBlockUpdate() {
+        if (isChunkUnloaded()) return;
+        if (getLevel() != null) {
+            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        }
+    }
+
+    default void scheduleNeighborShapeUpdate() {
+        Level level = getLevel();
+        BlockPos pos = getBlockPos();
+
+        if (level == null) return;
+        if (isChunkUnloaded()) return;
+
+        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
+    }
+
+    default boolean isRemote() {
+        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
+    }
+
+    default void scheduleRenderUpdate() {
+        if (isChunkUnloaded()) return;
+        var pos = getBlockPos();
+        var level = getLevel();
+        if (level != null) {
+            var state = getLevel().getBlockState(pos);
+            if (level.isClientSide) {
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
+                requestModelDataUpdate();
+            } else {
+                level.blockEvent(pos, state.getBlock(), 1, 0);
+            }
+        }
+    }
+
+    default @Nullable BlockEntity getNeighbor(Direction direction) {
+        return getLevel().getBlockEntity(getBlockPos().relative(direction));
+    }
+
+    private boolean isChunkUnloaded() {
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            BlockPos pos = getBlockPos();
+            return serverLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) == null;
+        }
+        return false;
+    }
+}

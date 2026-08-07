@@ -1,31 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
-import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
+import com.gregtechceu.gtceu.common.machine.trait.FluidTankProxyTrait;
+import com.gregtechceu.gtceu.common.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
-
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
 
 public class CokeOvenHatch extends MultiblockPartMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CokeOvenHatch.class,
-            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     public final ItemHandlerProxyTrait inputInventory, outputInventory;
     public final FluidTankProxyTrait tank;
@@ -34,20 +26,16 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     @Nullable
     protected ISubscription outputInventorySubs, outputTankSubs;
 
-    public CokeOvenHatch(IMachineBlockEntity holder, Object... args) {
-        super(holder);
-        this.inputInventory = new ItemHandlerProxyTrait(this, IO.IN);
-        this.outputInventory = new ItemHandlerProxyTrait(this, IO.OUT);
-        this.tank = new FluidTankProxyTrait(this, IO.BOTH);
+    public CokeOvenHatch(BlockEntityCreationInfo info) {
+        super(info);
+        this.inputInventory = attachTrait(new ItemHandlerProxyTrait(IO.IN));
+        this.outputInventory = attachTrait(new ItemHandlerProxyTrait(IO.OUT));
+        this.tank = attachTrait(new FluidTankProxyTrait(IO.BOTH));
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public void onUnload() {
@@ -66,8 +54,8 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
-        super.addedToController(controller);
+    public void addedToController(MultiblockControllerMachine controller, String name) {
+        super.addedToController(controller, name);
         if (controller instanceof CokeOvenMachine cokeOven) {
             outputInventorySubs = cokeOven.exportItems.addChangedListener(this::updateAutoIOSubscription);
             outputTankSubs = cokeOven.exportFluids.addChangedListener(this::updateAutoIOSubscription);
@@ -79,7 +67,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         super.removedFromController(controller);
         inputInventory.setProxy(null);
         outputInventory.setProxy(null);
@@ -95,7 +83,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     @Override
-    public boolean canShared() {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 
@@ -122,8 +110,9 @@ public class CokeOvenHatch extends MultiblockPartMachine {
 
     protected void updateAutoIOSubscription() {
         if ((!outputInventory.isEmpty() &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getPos(), getFrontFacing())) ||
-                (!tank.isEmpty() && GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), getFrontFacing()))) {
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getFrontFacing())) ||
+                (!tank.isEmpty() &&
+                        GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), getFrontFacing()))) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -137,13 +126,5 @@ public class CokeOvenHatch extends MultiblockPartMachine {
             tank.exportToNearby(getFrontFacing());
             updateAutoIOSubscription();
         }
-    }
-
-    //////////////////////////////////////
-    // ********* GUI *********//
-    //////////////////////////////////////
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
     }
 }

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.helpers;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.core.IResourceLocationExtensions;
 
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Holder;
@@ -12,7 +11,6 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.core.RegistryObjectKJS;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
-import dev.latvian.mods.rhino.Wrapper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.UnaryOperator;
@@ -26,15 +24,12 @@ public record GTResourceLocation(ResourceLocation wrapped) {
     public static final Codec<GTResourceLocation> CODEC = GTCEu.GTCEU_ID.xmap(GTResourceLocation::new,
             GTResourceLocation::wrapped);
 
-    @Nullable
-    public static GTResourceLocation wrap(@Nullable Object o) {
-        if (o == null) return null;
-        o = Wrapper.unwrapped(o);
-
-        ResourceLocation id = switch (o) {
-            case ResourceLocation resLoc -> resLoc;
+    public static @Nullable GTResourceLocation wrap(@Nullable Object o) {
+        ResourceLocation inner = switch (o) {
+            case null -> null;
+            case ResourceLocation id -> id;
             case ResourceKey<?> key -> key.location();
-            case Holder<?> holder when holder.getKey() != null -> holder.getKey().location();
+            case Holder<?> holder -> holder.getKey() == null ? null : holder.getKey().location();
             case RegistryObjectKJS<?> key -> key.kjs$getIdLocation();
             default -> {
                 var s = o instanceof JsonPrimitive p ? p.getAsString() : o.toString();
@@ -47,7 +42,8 @@ public record GTResourceLocation(ResourceLocation wrapped) {
                 }
             }
         };
-        return new GTResourceLocation(id);
+        if (inner == null) return null;
+        return new GTResourceLocation(inner);
     }
 
     @Override
@@ -69,9 +65,5 @@ public record GTResourceLocation(ResourceLocation wrapped) {
 
     public GTResourceLocation withSuffix(String pathSuffix) {
         return new GTResourceLocation(wrapped.withSuffix(pathSuffix));
-    }
-
-    public static ResourceLocation implicitAsGtceu(ResourceLocation loc) {
-        return ((IResourceLocationExtensions) (Object) loc).gtm$asNonImplicit();
     }
 }

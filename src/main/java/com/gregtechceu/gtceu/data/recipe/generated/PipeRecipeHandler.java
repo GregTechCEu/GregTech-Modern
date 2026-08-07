@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.material.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -17,10 +16,10 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.NO_SMASHING;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_SMASHING;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public final class PipeRecipeHandler {
 
@@ -66,7 +65,7 @@ public final class PipeRecipeHandler {
                 .save(provider);
 
         VanillaRecipeHelper.addShapedRecipe(provider,
-                FormattingUtil.toLowerCaseUnderscore(prefix + "_" + material.getName()),
+                prefix + "_" + material.getName(),
                 ChemicalHelper.get(prefix, material), "PR", "Rh",
                 'P', new MaterialEntry(unrestrictive, material), 'R', ChemicalHelper.get(ring, Iron));
     }
@@ -89,7 +88,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_tiny_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_TINY)
+                    .notConsumable(GTItems.SHAPE_MOLD_TINY_PIPE)
                     .inputFluids(material.getFluid(L / 2))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) / 2)
@@ -130,7 +129,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_small_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_SMALL)
+                    .notConsumable(GTItems.SHAPE_MOLD_SMALL_PIPE)
                     .inputFluids(material.getFluid(L))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()))
@@ -171,7 +170,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_normal_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_NORMAL)
+                    .notConsumable(GTItems.SHAPE_MOLD_NORMAL_PIPE)
                     .inputFluids(material.getFluid(L * 3))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 3)
@@ -212,7 +211,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_large_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_LARGE)
+                    .notConsumable(GTItems.SHAPE_MOLD_LARGE_PIPE)
                     .inputFluids(material.getFluid(L * 6))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 6)
@@ -252,7 +251,7 @@ public final class PipeRecipeHandler {
 
         if (material.hasFluid()) {
             FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_to_huge_pipe")
-                    .notConsumable(GTItems.SHAPE_MOLD_PIPE_HUGE)
+                    .notConsumable(GTItems.SHAPE_MOLD_HUGE_PIPE)
                     .inputFluids(material.getFluid(L * 12))
                     .outputItems(pipeStack)
                     .duration((int) (material.getMass()) * 24)

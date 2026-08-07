@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +18,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class FluidDrillLogic extends RecipeLogic {
 
     public static final int MAX_PROGRESS = 20;
@@ -26,13 +28,18 @@ public class FluidDrillLogic extends RecipeLogic {
     @Nullable
     private Fluid veinFluid;
 
-    public FluidDrillLogic(FluidDrillMachine machine) {
-        super(machine);
+    public FluidDrillLogic() {
+        super();
     }
 
     @Override
     public FluidDrillMachine getMachine() {
         return (FluidDrillMachine) super.getMachine();
+    }
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(FluidDrillMachine.class);
     }
 
     @Override
@@ -52,7 +59,7 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+                if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -106,15 +113,15 @@ public class FluidDrillLogic extends RecipeLogic {
 
     @Override
     public void onRecipeFinish() {
-        machine.afterWorking();
+        getMachine().afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT, this.chanceCaches);
+            RecipeHelper.handleRecipeIO(getMachine(), lastRecipe, IO.OUT, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+            if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
                 setupRecipe(match);
                 return;
             }
@@ -145,10 +152,10 @@ public class FluidDrillLogic extends RecipeLogic {
     }
 
     private int getChunkX() {
-        return SectionPos.blockToSectionCoord(getMachine().getPos().getX());
+        return SectionPos.blockToSectionCoord(getMachine().getBlockPos().getX());
     }
 
     private int getChunkZ() {
-        return SectionPos.blockToSectionCoord(getMachine().getPos().getZ());
+        return SectionPos.blockToSectionCoord(getMachine().getBlockPos().getZ());
     }
 }

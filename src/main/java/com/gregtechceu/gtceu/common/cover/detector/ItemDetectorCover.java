@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 
@@ -47,6 +47,7 @@ public class ItemDetectorCover extends DetectorCover {
 
     @Nullable
     protected IItemHandler getItemHandler() {
-        return GTTransferUtils.getItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).orElse(null);
+        return GTTransferUtils.getItemHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
+                .orElse(null);
     }
 }

@@ -4,29 +4,24 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.placeholder.IPlaceholderInfoProviderCover;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderContext;
 import com.gregtechceu.gtceu.api.placeholder.PlaceholderHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.datacomponents.ComputerMonitorConfig;
-import com.gregtechceu.gtceu.data.datagen.lang.LangHandler;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -36,9 +31,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -49,43 +49,38 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ComputerMonitorCover extends CoverBehavior
-                                  implements IUICover, IDataStickInteractable, IPlaceholderInfoProviderCover {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ComputerMonitorCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
+                                  implements IDataStickInteractable, IPlaceholderInfoProviderCover, IMuiCover {
 
     private @Nullable TickableSubscription subscription;
     private final CoverTextRenderer renderer;
-    @Persisted
+    @SaveField
     @Getter
-    private final List<String> formatStringArgs = new ArrayList<>(8);
-    @Persisted
+    private List<String> formatStringArgs = new ArrayList<>(8);
+    @SaveField
     @Getter
-    private final List<String> formatStringLines = new ArrayList<>(8);
-    @Persisted
-    @DescSynced
+    private List<String> formatStringLines = new ArrayList<>(8);
+    @SaveField
+    @SyncToClient
     @Getter
     private List<MutableComponent> text = new ArrayList<>();
-    @Persisted
-    public final CustomItemStackHandler itemHandler = new CustomItemStackHandler(8);
-    @Setter
-    private String placeholderSearch = "";
+    @SaveField
+    public CustomItemStackHandler itemStackHandler = new CustomItemStackHandler(8);
     @Setter
     @Getter
-    @Persisted
+    @SaveField
     private int updateInterval = 100;
     @Getter
-    @Persisted
+    @SaveField
     private long ticksSincePlaced = 0;
-    @Persisted
+    @SaveField
     @Getter
-    private final List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
-    @Persisted
+    private List<MutableComponent> createDisplayTargetBuffer = new ArrayList<>();
+    @SaveField
     @Getter
-    private final List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
-    @Persisted
+    private List<MutableComponent> computerCraftTextBuffer = new ArrayList<>();
+    @SaveField
     @Getter
-    private final UUID placeholderUUID;
+    private UUID placeholderUUID;
 
     public ComputerMonitorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -97,14 +92,26 @@ public class ComputerMonitorCover extends CoverBehavior
         }
     }
 
+    public PlaceholderContext createPlaceholderContext() {
+        return new PlaceholderContext(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide,
+                itemStackHandler,
+                this, null, new MultiLineComponent(text), placeholderUUID);
+    }
+
+    public String getCode() {
+        return formatStringLines.stream().reduce((a, b) -> a + "\n" + b).orElse("");
+    }
+
+    public void setCode(String code) {
+        formatStringLines.clear();
+        formatStringLines.addAll(List.of(code.split("\n")));
+    }
+
     public List<MutableComponent> getRenderedText() {
-        String s = formatStringLines.stream().reduce((a, b) -> a + "\n" + b).orElse("");
         List<String> tmp = new ArrayList<>(formatStringArgs);
         tmp = tmp.stream().map(str -> '{' + str + '}').toList();
         return PlaceholderHandler.processPlaceholders(
-                GTStringUtils.replace(s, "\\{}", tmp),
-                new PlaceholderContext(coverHolder.getLevel(), coverHolder.getPos(), attachedSide, itemHandler,
-                        this, new MultiLineComponent(text), placeholderUUID));
+                GTStringUtils.replace(getCode(), "\\{}", tmp), createPlaceholderContext());
     }
 
     public void setDisplayTargetBufferLine(int line, MutableComponent component) {
@@ -127,92 +134,6 @@ public class ComputerMonitorCover extends CoverBehavior
     }
 
     @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public Widget createUIWidget() {
-        int textFieldWidth = 160, horizontalPadding = 10, verticalPadding = 2;
-        final WidgetGroup group = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
-        final WidgetGroup mainPage = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
-        final WidgetGroup formatStringArgsPage = new WidgetGroup(0, 0, 2 * textFieldWidth + 3 * horizontalPadding, 150);
-        for (int i = 0; i < 8; i++) {
-            TextFieldWidget formatStringInput = new TextFieldWidget();
-            formatStringInput.setSize(textFieldWidth, 15);
-            formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth / 2,
-                    10 + verticalPadding + i * (15 + verticalPadding));
-            formatStringInput.setHoverTooltips(GTStringUtils.toImmutable(
-                    LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.main_textbox_tooltip", i + 1)));
-            int finalI = i;
-            if (i >= formatStringLines.size()) formatStringLines.add("");
-            formatStringInput.setCurrentString(formatStringLines.get(i));
-            formatStringInput.setTextResponder((s) -> formatStringLines.set(finalI, s));
-            mainPage.addWidget(formatStringInput);
-            SlotWidget slot = new com.gregtechceu.gtceu.api.gui.widget.SlotWidget(
-                    itemHandler,
-                    i,
-                    horizontalPadding + 50,
-                    20 * i);
-            slot.setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE);
-            slot.setHoverTooltips(GTStringUtils
-                    .toImmutable(LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.slot_tooltip", i + 1)));
-            mainPage.addWidget(slot);
-        }
-        for (int i = 0; i < 8; i++) {
-            TextFieldWidget formatStringArgsInput = new TextFieldWidget();
-            formatStringArgsInput.setSize(textFieldWidth, 15);
-            formatStringArgsInput.setSelfPosition(textFieldWidth / 2 + horizontalPadding,
-                    10 + verticalPadding + i * (15 + verticalPadding));
-            formatStringArgsInput.setHoverTooltips(GTStringUtils.toImmutable(
-                    LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
-                            GTStringUtils.getIntOrderingSuffix(i + 1))));
-
-            int finalI = i;
-            if (i >= formatStringArgs.size()) formatStringArgs.add("");
-            formatStringArgsInput.setCurrentString(formatStringArgs.get(i));
-            formatStringArgsInput.setTextResponder((s) -> formatStringArgs.set(finalI, s));
-            formatStringArgsPage.addWidget(formatStringArgsInput);
-        }
-        ButtonWidget switchToFormatStringArgsPageButton = new ButtonWidget(
-                horizontalPadding + 50,
-                10 * (15 + verticalPadding) + verticalPadding,
-                20, 20,
-                new ResourceBorderTexture(),
-                clickData -> {
-                    group.clearAllWidgets();
-                    group.addWidget(formatStringArgsPage);
-                });
-        ButtonWidget switchBack = new ButtonWidget(
-                horizontalPadding + 50,
-                10 * (15 + verticalPadding) + verticalPadding,
-                20, 20,
-                new ResourceBorderTexture(),
-                clickData -> {
-                    group.clearAllWidgets();
-                    group.addWidget(mainPage);
-                });
-        mainPage.addWidget(PlaceholderHandler.getPlaceholderHandlerUI(""));
-        // TextFieldWidget searchBox = new TextFieldWidget(280, 0, 80, 15, null, onSearch);
-        // searchBox.setHoverTooltips("Search");
-        // mainPage.addWidget(searchBox);
-        IntInputWidget updateIntervalInput = new IntInputWidget(0, 0, 60, 20, this::getUpdateInterval,
-                this::setUpdateInterval);
-        updateIntervalInput.setMin(1);
-        updateIntervalInput.setMax(60 * 20);
-        updateIntervalInput
-                .setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.update_interval"));
-        mainPage.addWidget(updateIntervalInput);
-        switchToFormatStringArgsPageButton
-                .setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_blank_placeholders"));
-        switchBack.setHoverTooltips(Component.translatable("gtceu.gui.computer_monitor_cover.edit_displayed_text"));
-        mainPage.addWidget(switchToFormatStringArgsPageButton);
-        formatStringArgsPage.addWidget(switchBack);
-        group.addWidget(mainPage);
-        return group;
-    }
-
-    @Override
     public void onLoad() {
         super.onLoad();
         subscription = coverHolder.subscribeServerTick(subscription, this::update);
@@ -230,6 +151,7 @@ public class ComputerMonitorCover extends CoverBehavior
                 text = GTUtil.list(
                         Component.translatable("gtceu.computer_monitor_cover.error.exception", e.getMessage()));
             }
+            syncDataHolder.markClientSyncFieldDirty("text");
         }
     }
 
@@ -250,8 +172,8 @@ public class ComputerMonitorCover extends CoverBehavior
     public List<ItemStack> getAdditionalDrops() {
         List<ItemStack> drops = super.getAdditionalDrops();
         for (int i = 0; i < 8; i++) {
-            if (!itemHandler.getStackInSlot(i).isEmpty()) {
-                drops.add(itemHandler.getStackInSlot(i));
+            if (!itemStackHandler.getStackInSlot(i).isEmpty()) {
+                drops.add(itemStackHandler.getStackInSlot(i));
             }
         }
         return drops;
@@ -276,5 +198,20 @@ public class ComputerMonitorCover extends CoverBehavior
         dataStick.set(GTDataComponents.COMPUTER_MONITOR_CONFIG,
                 new ComputerMonitorConfig(formatStringLines, formatStringArgs, updateInterval));
         return InteractionResult.sidedSuccess(player.level().isClientSide);
+    }
+
+    @Override
+    public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        var codeSync = SyncHandlers.string(this::getCode, this::setCode).allowC2S();
+        var intervalSync = SyncHandlers.intNumber(this::getUpdateInterval, this::setUpdateInterval).allowC2S();
+        IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
+                true,
+                (syncManager1, panelHandler1) -> PlaceholderHandler.createHelpPanel());
+        return PlaceholderHandler.createPlaceholderEditorPanel(
+                "main", createPlaceholderContext(),
+                codeSync, null, intervalSync, null, helpPanel, null)
+                .child(GTMuiWidgets.verticalPlayerInventory((index, slot) -> slot)
+                        .verticalCenter()
+                        .left(-80));
     }
 }

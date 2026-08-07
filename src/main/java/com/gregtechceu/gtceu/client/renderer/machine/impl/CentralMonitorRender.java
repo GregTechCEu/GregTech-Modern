@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
@@ -41,10 +42,10 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                        int packedLight, int packedOverlay) {
         poseStack.pushPose();
         RenderUtil.moveToFace(poseStack, 0.5f, 0.5f, 0.5f, machine.getFrontFacing());
-        RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), machine.getUpwardsFacing());
+        RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), Direction.NORTH);
         poseStack.translate(-machine.getRightDist() - 0.5f, -machine.getUpDist() - 0.5f, SCREEN_OFFSET_Z);
 
-        if (machine.getRecipeLogic().isActive()) {
+        if (machine.getRecipeLogic().isWorking()) {
             for (MonitorGroup group : machine.getMonitorGroups()) {
                 ItemStack itemStack = group.getItemStackHandler().getStackInSlot(0);
                 if (!(itemStack.getItem() instanceof ComponentItem item)) {
@@ -76,7 +77,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
 
     @Override
     public AABB getRenderBoundingBox(CentralMonitorMachine machine) {
-        BlockPos pos = machine.getPos();
+        BlockPos pos = machine.getBlockPos();
         BoundingBox bounds = new BoundingBox(
                 pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
                 pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
@@ -86,7 +87,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 IMonitorComponent component = machine.getComponent(row, col);
                 if (component != null && component.isMonitor()) {
                     // noinspection deprecation
-                    bounds.encapsulate(component.getPos());
+                    bounds.encapsulate(component.getComponentPos());
                 }
             }
         }

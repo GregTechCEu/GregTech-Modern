@@ -1,0 +1,16 @@
+{
+    "providers": [
+        {
+            "type": "reference",
+            "id": "gtceu:include/mono_space"
+        },
+        {
+            "type": "reference",
+            "id": "gtceu:include/monocraft"
+        },
+        {
+            "type": "reference",
+            "id": "minecraft:default"
+        }
+    ]
+}

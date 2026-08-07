@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.particle;
 
-import com.gregtechceu.gtceu.data.particle.GTParticleTypes;
+import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;

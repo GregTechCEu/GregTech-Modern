@@ -3,46 +3,45 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemFilterCover extends CoverBehavior implements IUICover {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemFilterCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
+@ParametersAreNonnullByDefault
+public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
-    protected ItemFilter itemFilter;
-    @Persisted
-    @DescSynced
+    protected @Nullable ItemFilter itemFilter;
+    @Setter
+    @SaveField
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
-    private FilteredItemHandlerWrapper itemFilterWrapper;
-    @Persisted
+    private @Nullable FilteredItemHandlerWrapper itemFilterWrapper;
     @Setter
+    @SaveField
     @Getter
     protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
 
@@ -54,16 +53,11 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         if (itemFilter == null) {
             itemFilter = ItemFilter.loadFilter(attachItem);
             if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
-                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getPos());
+                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
             }
         }
         return itemFilter;
-    }
-
-    public void setFilterMode(FilterMode filterMode) {
-        this.filterMode = filterMode;
-        coverHolder.markDirty();
     }
 
     @Override
@@ -72,7 +66,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public @Nullable IItemHandlerModifiable getItemHandlerCap(IItemHandlerModifiable defaultValue) {
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable IItemHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
@@ -88,19 +82,21 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 178, 85);
-        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
-                FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getItemFilter().openConfigurator(62, 25));
-        return group;
-    }
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
+                this::getFilterMode, this::setFilterMode).allowC2S();
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+        EnumSyncValue<ManualIOMode> ioMode = new EnumSyncValue<>(ManualIOMode.class,
+                this::getAllowFlow, this::setAllowFlow).allowC2S();
+
+        syncManager.syncValue("filterMode", filterMode);
+        syncManager.syncValue("ioMode", ioMode);
+
+        column.child(getItemFilter().getFilterUI(data, syncManager, settings));
+
+        GTMuiCoverUtil.addFilterModeRow(column, filterMode);
+        GTMuiCoverUtil.addManualIORow(column, ioMode);
     }
 
     private class FilteredItemHandlerWrapper extends ItemHandlerDelegate {
@@ -110,7 +106,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         }
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if (filterMode == FilterMode.FILTER_EXTRACT) {
                 if (allowFlow == ManualIOMode.DISABLED) {
                     return stack;
@@ -126,7 +122,7 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
         }
 
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (filterMode == FilterMode.FILTER_INSERT) {
                 if (allowFlow == ManualIOMode.DISABLED) {
                     return ItemStack.EMPTY;
@@ -141,5 +137,22 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
             }
             return simulate ? result : super.extractItem(slot, amount, false);
         }
+    }
+
+    @Override
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
+        tag.putInt("manualIO", getAllowFlow().ordinal());
+        tag.putInt("filterMode", getFilterMode().ordinal());
+        tag.put("filter", attachItem.save(coverHolder.getLevel().registryAccess()));
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
+        setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
+        itemFilter = ItemFilter.loadFilter(ItemStack
+                .parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter")).orElse(ItemStack.EMPTY));
+        super.pasteConfig(player, tag);
     }
 }

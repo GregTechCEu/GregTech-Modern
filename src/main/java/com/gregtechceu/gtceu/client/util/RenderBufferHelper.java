@@ -2,20 +2,31 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.*;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-import java.util.EnumSet;
 import java.util.Set;
 
+import static com.gregtechceu.gtceu.utils.GTMath.getFirstPerpendicular;
+import static com.gregtechceu.gtceu.utils.GTMath.getSecondPerpendicular;
+
+@SuppressWarnings("DuplicatedCode")
 @OnlyIn(Dist.CLIENT)
 public class RenderBufferHelper {
 
@@ -39,8 +50,8 @@ public class RenderBufferHelper {
      * @param alpha      transparency
      * @param axis       The axial direction of the "ring pipe" determines which axis the "ring pipe" rotates around.
      */
-    public static void renderRing(PoseStack poseStack, VertexConsumer buffer, float x, float y, float z, float r,
-                                  float tubeRadius,
+    public static void renderRing(PoseStack poseStack, VertexConsumer buffer, float x, float y, float z,
+                                  float r, float tubeRadius,
                                   int sides, int segments, float red, float green, float blue, float alpha,
                                   Direction.Axis axis) {
         Matrix4f mat = poseStack.last().pose();
@@ -96,17 +107,131 @@ public class RenderBufferHelper {
         }
     }
 
-    public static void renderCube(VertexConsumer buffer, PoseStack.Pose pose,
-                                  int color, int combinedLight, TextureAtlasSprite sprite,
-                                  float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
-        renderCube(buffer, pose, EnumSet.allOf(Direction.class),
-                color, combinedLight, sprite,
-                minX, minY, minZ, maxX, maxY, maxZ);
+    public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text,
+                                         int colorARGB, Vec3 pos) {
+        renderInWorldText(multiBuf, stack, camera, text, 0.030F, colorARGB, pos);
     }
 
-    public static void renderCube(VertexConsumer buffer, PoseStack.Pose pose, Set<Direction> sidesToRender,
-                                  int color, int combinedLight, TextureAtlasSprite sprite,
-                                  float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+    public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text,
+                                         float scale, int colorARGB, Vec3 pos) {
+        Font fontRender = Minecraft.getInstance().font;
+        Vec3 c = pos.subtract(camera.getPosition());
+        float stringMiddle = (float) fontRender.width(text) / 2.0F;
+        stack.pushPose();
+        stack.translate(c.x, c.y, c.z);
+        stack.mulPose(camera.rotation());
+        stack.scale(-scale, -scale, scale);
+        Matrix4f mat = stack.last().pose();
+        fontRender.drawInBatch(text, -stringMiddle, 0.0F, colorARGB, false, mat, multiBuf, Font.DisplayMode.SEE_THROUGH,
+                0, 15728880);
+        stack.popPose();
+    }
+
+    public static void renderLine(VertexConsumer buf, PoseStack stack, BlockPos from, BlockPos to, double thickness,
+                                  int colorARGB) {
+        renderLine(buf, stack, from.getCenter(), to.getCenter(), thickness, colorARGB);
+    }
+
+    public static void renderLine(VertexConsumer buf, PoseStack stack, Vec3 from, Vec3 to, double thickness,
+                                  int colorARGB) {
+        Vec3 law = getFirstPerpendicular(from, to).scale(thickness);
+        Vec3 law2 = getSecondPerpendicular(from, to).scale(thickness);
+        Vec3 topRight = from.add(law2);
+        Vec3 bottomRight = from.subtract(law);
+        Vec3 bottomLeft = from.subtract(law2);
+        Vec3 topLeft = from.add(law);
+        Vec3 topRight2 = to.add(law2);
+        Vec3 bottomRight2 = to.subtract(law);
+        Vec3 bottomLeft2 = to.subtract(law2);
+        Vec3 topLeft2 = to.add(law);
+
+        renderSide(buf, stack, topRight, topLeft, bottomRight, bottomLeft, colorARGB);
+        renderSide(buf, stack, topRight2, topRight, bottomRight2, bottomRight, colorARGB);
+        renderSide(buf, stack, topLeft2, topRight2, bottomLeft2, bottomRight2, colorARGB);
+        renderSide(buf, stack, topLeft, topLeft2, bottomLeft, bottomLeft2, colorARGB);
+        renderSide(buf, stack, topLeft2, topRight2, topLeft, topRight, colorARGB);
+        renderSide(buf, stack, bottomLeft2, bottomRight2, bottomLeft, bottomRight, colorARGB);
+    }
+
+    public static void renderCube(VertexConsumer buf, PoseStack stack, BlockPos pos, float size, int colorARGB) {
+        renderCube(buf, stack, pos.getCenter(), size, colorARGB);
+    }
+
+    public static void renderCube(VertexConsumer buf, PoseStack stack, Vec3 pos, float size, int colorARGB) {
+        float half = size / 2.0F;
+
+        AABB box = new AABB(pos.x - (double) half, pos.y - (double) half, pos.z - (double) half, pos.x + (double) half,
+                pos.y + (double) half, pos.z + (double) half);
+
+        Vec3 topRight = new Vec3(box.maxX, box.maxY, box.maxZ);
+        Vec3 bottomRight = new Vec3(box.maxX, box.minY, box.maxZ);
+        Vec3 bottomLeft = new Vec3(box.minX, box.minY, box.maxZ);
+        Vec3 topLeft = new Vec3(box.minX, box.maxY, box.maxZ);
+        Vec3 topRight2 = new Vec3(box.maxX, box.maxY, box.minZ);
+        Vec3 bottomRight2 = new Vec3(box.maxX, box.minY, box.minZ);
+        Vec3 bottomLeft2 = new Vec3(box.minX, box.minY, box.minZ);
+        Vec3 topLeft2 = new Vec3(box.minX, box.maxY, box.minZ);
+        renderSide(buf, stack, topRight, topLeft, bottomRight, bottomLeft, colorARGB);
+        renderSide(buf, stack, topRight2, topRight, bottomRight2, bottomRight, colorARGB);
+        renderSide(buf, stack, topLeft2, topRight2, bottomLeft2, bottomRight2, colorARGB);
+        renderSide(buf, stack, topLeft, topLeft2, bottomLeft, bottomLeft2, colorARGB);
+        renderSide(buf, stack, topLeft2, topRight2, topLeft, topRight, colorARGB);
+        renderSide(buf, stack, bottomLeft2, bottomRight2, bottomLeft, bottomRight, colorARGB);
+    }
+
+    public static void renderAABBOutline(VertexConsumer buf, PoseStack pose, AABB aabb, double thickness,
+                                         int colorARGB) {
+        double minX = aabb.minX;
+        double minY = aabb.minY;
+        double minZ = aabb.minZ;
+
+        double maxX = aabb.maxX;
+        double maxY = aabb.maxY;
+        double maxZ = aabb.maxZ;
+
+        // Bottom face vertices
+        Vec3 bot00 = new Vec3(minX, minY, minZ);
+        Vec3 bot10 = new Vec3(maxX, minY, minZ);
+        Vec3 bot11 = new Vec3(maxX, minY, maxZ);
+        Vec3 bot01 = new Vec3(minX, minY, maxZ);
+
+        // Top face vertices
+        Vec3 top00 = new Vec3(minX, maxY, minZ);
+        Vec3 top10 = new Vec3(maxX, maxY, minZ);
+        Vec3 top11 = new Vec3(maxX, maxY, maxZ);
+        Vec3 top01 = new Vec3(minX, maxY, maxZ);
+
+        // Bottom rectangle edges
+        renderLine(buf, pose, bot00, bot10, thickness, colorARGB);
+        renderLine(buf, pose, bot10, bot11, thickness, colorARGB);
+        renderLine(buf, pose, bot11, bot01, thickness, colorARGB);
+        renderLine(buf, pose, bot01, bot00, thickness, colorARGB);
+
+        // Top rectangle edges
+        renderLine(buf, pose, top00, top10, thickness, colorARGB);
+        renderLine(buf, pose, top10, top11, thickness, colorARGB);
+        renderLine(buf, pose, top11, top01, thickness, colorARGB);
+        renderLine(buf, pose, top01, top00, thickness, colorARGB);
+
+        // Vertical edges
+        renderLine(buf, pose, bot00, top00, thickness, colorARGB);
+        renderLine(buf, pose, bot10, top10, thickness, colorARGB);
+        renderLine(buf, pose, bot11, top11, thickness, colorARGB);
+        renderLine(buf, pose, bot01, top01, thickness, colorARGB);
+    }
+
+    private static void renderSide(VertexConsumer buf, PoseStack pose, Vec3 tr, Vec3 tl, Vec3 br, Vec3 bl,
+                                   int colorARGB) {
+        Matrix4f mat = pose.last().pose();
+        buf.addVertex(mat, (float) tr.x, (float) tr.y, (float) tr.z).setColor(colorARGB);
+        buf.addVertex(mat, (float) br.x, (float) br.y, (float) br.z).setColor(colorARGB);
+        buf.addVertex(mat, (float) bl.x, (float) bl.y, (float) bl.z).setColor(colorARGB);
+        buf.addVertex(mat, (float) tl.x, (float) tl.y, (float) tl.z).setColor(colorARGB);
+    }
+
+    public static void renderTexturedCube(VertexConsumer buffer, PoseStack.Pose pose, Set<Direction> sidesToRender,
+                                          int color, int combinedLight, TextureAtlasSprite sprite,
+                                          float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
         float uMin = sprite.getU0(), uMax = sprite.getU1(), vMin = sprite.getV0(), vMax = sprite.getV1();
 
         if (sidesToRender.contains(Direction.UP))
@@ -152,6 +277,80 @@ public class RenderBufferHelper {
                     maxX, minY, maxZ, uMin, vMin);
     }
 
+    public static void renderColorCube(PoseStack poseStack, VertexConsumer buffer, AABB cuboid,
+                                       float r, float g, float b, float a, boolean shade) {
+        renderColorCube(buffer, poseStack,
+                (float) cuboid.minX, (float) cuboid.minY, (float) cuboid.minZ,
+                (float) cuboid.maxX, (float) cuboid.maxY, (float) cuboid.maxZ,
+                r, g, b, a, shade);
+    }
+
+    public static void renderColorCube(PoseStack poseStack, VertexConsumer buffer,
+                                       float minX, float minY, float minZ,
+                                       float maxX, float maxY, float maxZ,
+                                       float red, float green, float blue, float alpha) {
+        renderColorCube(buffer, poseStack, minX, minY, minZ, maxX, maxY, maxZ, red, green, blue, alpha, false);
+    }
+
+    public static void renderColorCube(VertexConsumer buffer, PoseStack poseStack,
+                                       float minX, float minY, float minZ,
+                                       float maxX, float maxY, float maxZ,
+                                       float red, float green, float blue, float a,
+                                       boolean shade) {
+        Matrix4f pose = poseStack.last().pose();
+        float r = red, g = green, b = blue;
+
+        if (shade) {
+            r *= 0.6f;
+            g *= 0.6f;
+            b *= 0.6f;
+        }
+        buffer.addVertex(pose, minX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, minX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, minX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, minX, maxY, minZ).setColor(r, g, b, a);
+
+        buffer.addVertex(pose, maxX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, maxY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, minY, maxZ).setColor(r, g, b, a);
+
+        if (shade) {
+            r = red * 0.5f;
+            g = green * 0.5f;
+            b = blue * 0.5f;
+        }
+        buffer.addVertex(pose, minX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, minX, minY, maxZ).setColor(r, g, b, a);
+
+        if (shade) {
+            r = red;
+            g = green;
+            b = blue;
+        }
+        buffer.addVertex(pose, minX, maxY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, minX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, maxY, minZ).setColor(r, g, b, a);
+
+        if (shade) {
+            r = red * 0.8f;
+            g = green * 0.8f;
+            b = blue * 0.8f;
+        }
+        buffer.addVertex(pose, minX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, minX, maxY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, maxY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, minY, minZ).setColor(r, g, b, a);
+
+        buffer.addVertex(pose, minX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, maxX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(pose, minX, maxY, maxZ).setColor(r, g, b, a);
+    }
+
     public static void renderCubeFace(VertexConsumer buffer, PoseStack.Pose pose,
                                       int color, int combinedLight, Direction normalDir,
                                       float x1, float y1, float z1, float u1, float v1,
@@ -160,30 +359,16 @@ public class RenderBufferHelper {
                                       float x4, float y4, float z4, float u4, float v4) {
         Vector3fc normal = GTMatrixUtils.getDirectionAxis(normalDir);
 
-        vertex(buffer, pose, x1, y1, z1, color, u1, v1, combinedLight, normal.x(), normal.y(), normal.z());
-        vertex(buffer, pose, x2, y2, z2, color, u2, v2, combinedLight, normal.x(), normal.y(), normal.z());
-        vertex(buffer, pose, x3, y3, z3, color, u3, v3, combinedLight, normal.x(), normal.y(), normal.z());
-        vertex(buffer, pose, x4, y4, z4, color, u4, v4, combinedLight, normal.x(), normal.y(), normal.z());
-    }
+        Vector3f pos = new Vector3f(x1, y1, z1);
+        RenderUtil.vertex(pose, buffer, pos, normal, u1, v1, color, OverlayTexture.NO_OVERLAY, combinedLight);
 
-    public static void vertex(VertexConsumer buffer, PoseStack.Pose pose,
-                              float x, float y, float z,
-                              int color, float texU, float texV, int lightmapUV,
-                              float normalX, float normalY, float normalZ) {
-        vertex(buffer, pose, x, y, z, color,
-                texU, texV, OverlayTexture.NO_OVERLAY, lightmapUV,
-                normalX, normalY, normalZ);
-    }
+        pos.set(x2, y2, z2);
+        RenderUtil.vertex(pose, buffer, pos, normal, u2, v2, color, OverlayTexture.NO_OVERLAY, combinedLight);
 
-    public static void vertex(VertexConsumer buffer, PoseStack.Pose pose,
-                              float x, float y, float z, int color,
-                              float texU, float texV, int overlayUV, int lightmapUV,
-                              float normalX, float normalY, float normalZ) {
-        buffer.addVertex(pose, x, y, z);
-        buffer.setColor(color);
-        buffer.setUv(texU, texV);
-        buffer.setOverlay(overlayUV);
-        buffer.setLight(lightmapUV);
-        buffer.setNormal(pose, normalX, normalY, normalZ);
+        pos.set(x3, y3, z3);
+        RenderUtil.vertex(pose, buffer, pos, normal, u3, v3, color, OverlayTexture.NO_OVERLAY, combinedLight);
+
+        pos.set(x4, y4, z4);
+        RenderUtil.vertex(pose, buffer, pos, normal, u4, v4, color, OverlayTexture.NO_OVERLAY, combinedLight);
     }
 }

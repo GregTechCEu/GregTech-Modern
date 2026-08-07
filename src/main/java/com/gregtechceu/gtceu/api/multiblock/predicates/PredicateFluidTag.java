@@ -1,42 +1,40 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 
-public class PredicateFluidTag extends SimplePredicate {
+import org.jetbrains.annotations.Nullable;
 
-    public TagKey<Fluid> tag = null;
+import java.util.Objects;
 
-    public PredicateFluidTag() {
-        super("tags");
-    }
+public class PredicateFluidTag extends BasePredicate {
+
+    public TagKey<Fluid> tag;
 
     public PredicateFluidTag(TagKey<Fluid> tag) {
-        this();
-        this.tag = tag;
-        buildPredicate();
+        this(null, tag);
     }
 
-    @Override
-    public SimplePredicate buildPredicate() {
-        if (tag == null) {
-            predicate = state -> false;
-            candidates = () -> new BlockInfo[] { BlockInfo.fromBlock(Blocks.BARRIER) };
-            return this;
-        }
-        predicate = state -> state.getBlockState().getFluidState().is(tag);
-        candidates = () -> BuiltInRegistries.FLUID.getTag(tag)
+    public PredicateFluidTag(@Nullable String debugName, TagKey<Fluid> tag) {
+        Objects.requireNonNull(tag, "PredicateFluidTag tag cannot be null");
+
+        this.tag = tag;
+
+        errorPredicate = state -> state.retrieveCurrentBlockState().getFluidState().is(tag) ? null :
+                Predicates.PLACEHOLDER;
+        candidates = BuiltInRegistries.FLUID.getTag(tag)
                 .stream()
                 .flatMap(HolderSet.Named::stream)
                 .map(Holder::value)
                 .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
-                .toArray(BlockInfo[]::new);
-        return this;
+                .toList();
+
+        this.debugName = Objects.requireNonNullElse(debugName, tag.registry().location() + "/" + tag.location());
     }
 }

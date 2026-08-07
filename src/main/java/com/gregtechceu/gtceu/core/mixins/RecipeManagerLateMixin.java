@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.machine.trait.customlogic.SteamBoilerLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.api.recipe.lookup.StagingRecipeDB;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -75,10 +75,9 @@ public abstract class RecipeManagerLateMixin {
         });
         gtceu$replaceRecipes(recipesByName);
 
-        SteamBoilerLogic.clearBoilerRecipeCaches();
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                gtRecipeType.getLookup().removeAllRecipes();
+                var stagingDB = new StagingRecipeDB();
 
                 var proxyRecipes = gtRecipeType.getProxyRecipes();
                 for (Map.Entry<RecipeType<?>, List<RecipeHolder<GTRecipe>>> entry : proxyRecipes.entrySet()) {
@@ -100,13 +99,15 @@ public abstract class RecipeManagerLateMixin {
                             .forEach(holder -> {
                                 GTRecipe recipe = (GTRecipe) holder.value();
                                 recipe.setId(holder.id());
-                                gtRecipeType.getLookup().addRecipe(recipe);
+                                stagingDB.add(recipe);
                             });
                 } else if (!proxyRecipes.isEmpty()) {
                     proxyRecipes.values().stream()
                             .flatMap(List::stream)
-                            .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe.value()));
+                            .forEach(gtRecipe -> stagingDB.add(gtRecipe.value()));
                 }
+
+                stagingDB.populateDB(gtRecipeType.db());
             }
         }
     }

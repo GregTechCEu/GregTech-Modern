@@ -4,18 +4,20 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class IgnoreEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
     @Override
-    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
-        return null;
+    public @NotNull List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
+                                                        boolean simulate) {
+        return Collections.emptyList();
     }
 
     @Override
