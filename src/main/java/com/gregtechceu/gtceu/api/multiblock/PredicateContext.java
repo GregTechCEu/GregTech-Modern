@@ -59,11 +59,8 @@ public class PredicateContext {
     public void appendError(PatternError error) {
         if (currentSlice != -1) {
             getCurrentSliceErrors().add(error);
-        } else {
-            this.state.setError(error);
+            this.lastFailureReason = this.stage.getFailureReason();
         }
-        this.lastFailureReason = this.stage.getFailureReason();
-        this.checkFlipped = this.lastFailureReason.shouldCheckFlip();
     }
 
     public void clearErrors() {
@@ -88,6 +85,7 @@ public class PredicateContext {
         for (var entry : this.sliceErrors.int2ObjectEntrySet()) {
             this.state.appendErrors(entry.getValue());
         }
+        this.checkFlipped = this.lastFailureReason.shouldCheckFlip();
         this.sliceErrors.clear();
         this.currentSlice = -1;
     }
