@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -64,8 +65,10 @@ public class XorPredicate extends MultiPredicate {
 
     private void xorError(PredicateContext context, BasePredicate predicate) {
         MutableComponent found = Component.literal(predicate + " present in multiblock");
-        MutableComponent expected = Component.literal("expected only: " + Objects.requireNonNull(passedPredicate).predicate());
-        context.appendError(PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
+        MutableComponent expected = Component
+                .literal("expected only: " + Objects.requireNonNull(passedPredicate).predicate());
+        context.appendError(
+                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
         context.skipFlipCheck();
     }
 
