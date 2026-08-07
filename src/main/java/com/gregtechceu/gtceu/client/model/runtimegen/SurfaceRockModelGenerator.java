@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.client.renderer.block;
+package com.gregtechceu.gtceu.client.model.runtimegen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
@@ -17,16 +18,16 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SurfaceRockRenderer {
+import javax.annotation.ParametersAreNonnullByDefault;
 
-    private static final Set<SurfaceRockRenderer> MODELS = new HashSet<>();
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+public class SurfaceRockModelGenerator {
 
-    public static void create(Block block) {
-        MODELS.add(new SurfaceRockRenderer(block));
-    }
+    private static final Set<SurfaceRockModelGenerator> MODELS = new HashSet<>();
 
     public static void reinitModels() {
-        for (SurfaceRockRenderer model : MODELS) {
+        for (SurfaceRockModelGenerator model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = blockId.withPrefix("block/");
 
@@ -51,7 +52,11 @@ public class SurfaceRockRenderer {
 
     private final Block block;
 
-    protected SurfaceRockRenderer(Block block) {
+    protected SurfaceRockModelGenerator(Block block) {
         this.block = block;
+    }
+
+    public static void add(Block block) {
+        MODELS.add(new SurfaceRockModelGenerator(block));
     }
 }

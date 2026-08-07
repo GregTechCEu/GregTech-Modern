@@ -21,7 +21,7 @@ import snownee.jade.api.ui.IElementHelper;
 public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMachineTrait, CompoundTag> {
 
     public ExhaustVentBlockProvider() {
-        super(GTCEu.id("exhaust_vent_info"), ExhaustVentMachineTrait.TYPE);
+        super(GTCEu.id("exhaust_vent_info"), ExhaustVentMachineTrait.class);
     }
 
     @Override

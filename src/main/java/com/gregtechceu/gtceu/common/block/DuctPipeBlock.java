@@ -105,8 +105,8 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
                                          Direction side, Level level, BlockPos pos) {
         return (level.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, pos, side.getOpposite()) != null ||
                 level.getBlockEntity(pos) instanceof MetaMachine metaMachine &&
-                        (metaMachine.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null ||
-                                metaMachine.getTraitHolder().getTrait(EnvironmentalHazardEmitterTrait.TYPE) !=
+                        (metaMachine.getTraitHolder().getTrait(EnvironmentalHazardCleanerTrait.class) != null ||
+                                metaMachine.getTraitHolder().getTrait(EnvironmentalHazardEmitterTrait.class) !=
                                         null));
     }
 
