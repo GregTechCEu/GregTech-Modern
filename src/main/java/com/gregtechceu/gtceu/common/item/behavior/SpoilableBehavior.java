@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.component.SpoilContext;
 import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
@@ -23,6 +24,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * This object holds all spoilage-related data for specific item types,
+ * NOT individual item stacks. This class handles attaching the {@link ISpoilableItem}
+ * capability by registering its' instances to the {@link AttachCapabilitiesEvent}
+ */
 public class SpoilableBehavior {
 
     private final Function<ItemStack, Long> ticks;
@@ -41,6 +47,13 @@ public class SpoilableBehavior {
         this.spoilsIntoTooltip = spoilsIntoTooltip;
     }
 
+    /**
+     * Registers this object to the {@link AttachCapabilitiesEvent} if it wasn't registered yet,
+     * and adds the specified item to the list of items that this will attach to.
+     * 
+     * @param item the item to attach the behavior to
+     * @return this
+     */
     public SpoilableBehavior attachTo(ItemLike item) {
         if (attachedTo.isEmpty()) {
             MinecraftForge.EVENT_BUS.register(this);
@@ -57,6 +70,10 @@ public class SpoilableBehavior {
         }
     }
 
+    /**
+     * An implementation of {@link ISpoilableItem} which returns spoil information from its'
+     * {@code SpoilableBehavior} object.
+     */
     public class SpoilableBehaviourStack extends SpoilableItemStack {
 
         private SpoilableBehaviourStack(ItemStack stack) {
@@ -74,7 +91,7 @@ public class SpoilableBehavior {
         }
 
         @Override
-        protected Component getSpoilResultTooltip() {
+        protected @NotNull Component getSpoilResultTooltip() {
             return spoilsIntoTooltip.apply(getStack());
         }
     }
