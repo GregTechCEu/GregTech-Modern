@@ -1,7 +1,5 @@
 {
     "values": [
-        "minecraft:skeleton",
-        "minecraft:stray",
-        "minecraft:bogged"
+        "#minecraft:skeletons"
     ]
 }
