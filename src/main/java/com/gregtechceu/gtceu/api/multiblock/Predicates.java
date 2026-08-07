@@ -344,6 +344,7 @@ public class Predicates {
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
             return abilities(PartAbility.DATA_ACCESS)
                     .xor(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
+                    // todo is this a required thing?
                     .setGlobalMinMax(0, 1)
                     .setPriority(1);
         }

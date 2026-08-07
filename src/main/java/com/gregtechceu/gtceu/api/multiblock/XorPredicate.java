@@ -86,7 +86,6 @@ public class XorPredicate extends MultiPredicate {
             ctx.appendError(PatternStringError.literal("need one of: " + this));
             return false;
         }
-        // if (!global) return true;
         return true;
     }
 
@@ -97,8 +96,7 @@ public class XorPredicate extends MultiPredicate {
             ctx.appendError(PatternStringError.literal("need one of: " + this));
             return false;
         }
-        // if (global) return true;
-        // if (!global) resetLogic();
+        if (!global) resetLogic();
         return true;
     }
 

@@ -36,6 +36,7 @@ public abstract class MultiPredicate {
     @Getter
     @Setter
     private MultiPredicate parent;
+    protected boolean global = true;
 
     public static MultiPredicate of(BasePredicate predicate) {
         return Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
@@ -58,6 +59,29 @@ public abstract class MultiPredicate {
         this.hasAir = hasAir;
     }
 
+    /// @return innermost base predicate that passes state check at given pos
+    public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
+        for (BasePredicate predicate : predicates()) {
+            if (predicate.test(context)) {
+                return predicate;
+            }
+        }
+        for (MultiPredicate predicates : children()) {
+            BasePredicate p = predicates.getPredicateAtPos(context);
+            if (p != null) return p;
+        }
+        if (!hasChildren()) {
+            onError(context);
+        }
+        return null;
+    }
+
+    /// called when all predicates failed
+    protected void onError(PredicateContext ctx) {
+        this.forEach(p -> p.onError(ctx));
+        this.forEachChild(mp -> mp.onError(ctx));
+    }
+
     /// test against global min count
     public abstract boolean testGlobalMin(PredicateContext ctx);
 
@@ -76,7 +100,7 @@ public abstract class MultiPredicate {
     }
 
     public void resetLogic() {
-        children.forEach(MultiPredicate::resetLogic);
+        this.children.forEach(MultiPredicate::resetLogic);
     }
 
     public boolean isOr() {
@@ -200,31 +224,51 @@ public abstract class MultiPredicate {
         return setDisableRenderFormed(true);
     }
 
-    private MultiPredicate setDisableRenderFormed(boolean disable) {
+    public MultiPredicate setDisableRenderFormed(boolean disable) {
         this.forEach(p -> p.setDisableRenderFormed(disable));
         return this;
     }
 
+    /// Setting this to {@code true} means that this multi predicate will
+    /// only consider the final global state of the multiblock.
+    /// <br/>
+    /// If {@code false}, the multi predicate logic will only consider
+    /// each slice separately. Only noticable for XOR logic type multi predicates
+    /// <br/><br/>
+    /// Defaults to {@code true}
+    public MultiPredicate setGlobal(boolean global) {
+        this.global = global;
+        return this;
+    }
+
+    /// @return a new multi predicate where any predicate may pass or be present in the multiblock
     public MultiPredicate or(@Nullable MultiPredicate other) {
         return combine(this, Logic.OR, other);
     }
 
+    /// @return a new multi predicate where every predicate must pass or be present in the multiblock
     public MultiPredicate and(@Nullable MultiPredicate other) {
         return combine(this, Logic.AND, other);
     }
 
+    /// @return a new multi predicate with every predicate exclusively <br/>
+    /// OR-ed (only one predicate may be present in the multi)
     public MultiPredicate xor(@Nullable MultiPredicate other) {
         return combine(this, Logic.XOR, other);
     }
 
+    /// @return a new multi predicate where any predicate may pass or be present in the multiblock
     public static MultiPredicate or(List<BasePredicate> predicates) {
         return of(Logic.OR, predicates);
     }
 
+    /// @return a new multi predicate where every predicate must pass or be present in the multiblock
     public static MultiPredicate and(List<BasePredicate> predicates) {
         return of(Logic.AND, predicates);
     }
 
+    /// @return a new multi predicate with every predicate exclusively <br/>
+    /// OR-ed (only one predicate may be present in the multi)
     public static MultiPredicate xor(List<BasePredicate> predicates) {
         return of(Logic.XOR, predicates);
     }
@@ -284,8 +328,8 @@ public abstract class MultiPredicate {
     /// @param a left operand
     /// @param type logic of the new predicate
     /// @param b right operand, may be null
-    /// @return If {@code b} is null, returns {@code a}. <br />
-    /// If {@code a} is EMPTY, returns {@code b}. <br />
+    /// @return If {@code b == null}, returns {@code a}. <br />
+    /// If {@code a == EMPTY}, returns {@code b}. <br />
     /// Otherwise, returns a new MultiPredicate that combines {@code a} and {@code b}
     private static MultiPredicate combine(MultiPredicate a, Logic type, @Nullable MultiPredicate b) {
         if (b == null) return a; // no op
@@ -305,29 +349,6 @@ public abstract class MultiPredicate {
         } else {
             children.add(multiPredicate);
         }
-    }
-
-    /// @return innermost base predicate that passes state check at given pos
-    public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
-        for (BasePredicate predicate : predicates()) {
-            if (predicate.test(context)) {
-                return predicate;
-            }
-        }
-        for (MultiPredicate predicates : children()) {
-            BasePredicate p = predicates.getPredicateAtPos(context);
-            if (p != null) return p;
-        }
-        if (!hasChildren()) {
-            onError(context);
-        }
-        return null;
-    }
-
-    /// called when all predicates failed
-    protected void onError(PredicateContext ctx) {
-        this.forEach(p -> p.onError(ctx));
-        this.forEachChild(mp -> mp.onError(ctx));
     }
 
     protected enum Logic {
