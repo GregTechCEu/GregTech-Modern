@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.loader.DeferredOwnerUnwrappingHolderLookupAdapter;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -18,6 +19,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.*;
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
@@ -25,6 +27,7 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.WithConditions;
 
 import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,12 +45,21 @@ public final class DynamicRecipeHandler {
     // reload time spent in handleRecipesEarly, in milliseconds.
     private static final AtomicLong earlyLoadElapsed = new AtomicLong();
 
-    public static void handleRecipesEarly(Map<ResourceLocation, JsonElement> map, HolderLookup.Provider registries,
-                                          final ConditionalOps<JsonElement> serializationContext) {
+    public static void handleRecipesEarly(Map<ResourceLocation, JsonElement> recipes,
+                                          HolderLookup.Provider registryLookup,
+                                          ICondition.IContext conditionContext) {
         long startTime = System.currentTimeMillis();
+        // this has to be final, so...
+        final ConditionalOps<JsonElement> serializationContext;
+        {
+            // using a block here removes the possibility of accidentally using the context without condition support.
+            RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE,
+                    new DeferredOwnerUnwrappingHolderLookupAdapter(registryLookup));
+            serializationContext = new ConditionalOps<>(registryOps, conditionContext);
+        }
 
         // first, remove old recipes & clear caches
-        GTRecipes.recipeRemoval(map::remove);
+        GTRecipes.recipeRemoval(recipes::remove);
         SteamBoilerLogic.clearBoilerRecipeCaches();
         GTCraftingComponents.init();
 
@@ -65,7 +77,7 @@ public final class DynamicRecipeHandler {
                 JsonElement recipeJson = Recipe.CONDITIONAL_CODEC
                         .encodeStart(serializationContext, Optional.of(new WithConditions<>(recipe, conditions)))
                         .getOrThrow();
-                map.put(id, recipeJson);
+                recipes.put(id, recipeJson);
 
                 if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                     // add the recipe JSON to the generated datapack if data dumping is enabled so it can be dumped

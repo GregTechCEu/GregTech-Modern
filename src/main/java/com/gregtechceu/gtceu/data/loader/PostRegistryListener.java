@@ -11,9 +11,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.neoforge.resource.ContextAwareReloadListener;
 
-import org.jetbrains.annotations.NotNullByDefault;
-
-@NotNullByDefault
 public class PostRegistryListener extends ContextAwareReloadListener implements ResourceManagerReloadListener {
 
     public static final PostRegistryListener INSTANCE = new PostRegistryListener();
