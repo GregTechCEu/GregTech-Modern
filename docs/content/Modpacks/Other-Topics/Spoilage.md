@@ -31,7 +31,7 @@ The `SpoilableBehavior.builder()` can accept a function as a `result`, so you ca
 ### SpoilableBehavior
 `SpoilableBehavior` is a helper class used to make items spoilable.
 
-`SpoilableBehavior.builder()` is a convenient way to create a `SpoilableBehavior`, currently it has the following methods:
+`SpoilableBehavior` builders can be obtained from a `RegisterSpoilablesEvent` and are used to create behaviors, currently they have the following methods:
 
 - `.ticks(long)`
     used to specify ticks until spoiled
@@ -40,7 +40,7 @@ The `SpoilableBehavior.builder()` can accept a function as a `result`, so you ca
 - `.result(ItemLike)`
     used to specify the resulting item
 - `.result(ItemStack)`
-    used to specify the resulting stack (may be with NBT, but not count)
+    used to specify the resulting stack (may have NBT, but not count)
 - `.result(Function<ItemStack, ItemStack>)`
     used to specify the resulting stack that may depend on the original stack
 - `.result(EntityType<? extends Mob>)`
@@ -73,13 +73,14 @@ It can be chained if you want to make multiple items spoil using the same behavi
     public class Example {
             
         // Make diamonds spoil into dirt and a dragon in 100 seconds, apples into jigsaws in 35 seconds
-        public static void attachSpoilables() {
-            SpoilageBehaviour.builder()
+        @SubscribeEvent
+        public static void attachSpoilables(RegisterSpoilablesEvent event) {
+            event.getBuilder()
                     .ticks(20*100)
                     .result(Items.DIRT)
                     .result(EntityType.ENDER_DRAGON)
                     .build().attachTo(Items.DIAMOND);
-            SpoilableBehaviour.builder()
+            event.getBuilder()
                     .ticks(20*35)
                     .result(Items.JIGSAW)
                     .build().attachTo(Items.APPLE);
