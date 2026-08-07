@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.WoodTypeEntry;
+import com.gregtechceu.gtceu.data.recipe.event.WoodTypeEntryEvent;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -21,11 +23,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -48,7 +50,7 @@ public class WoodMachineRecipes {
     private static List<WoodTypeEntry> getDefaultEntries() {
         if (DEFAULT_ENTRIES == null) {
             final String mcModId = "minecraft";
-            return DEFAULT_ENTRIES = Arrays.asList(
+            return DEFAULT_ENTRIES = GTUtil.list(
                     new WoodTypeEntry.Builder(mcModId, "oak")
                             .planks(Items.OAK_PLANKS, "oak_planks")
                             .log(Items.OAK_LOG).removeCharcoalRecipe()
@@ -306,6 +308,8 @@ public class WoodMachineRecipes {
                             .registerMaterialInfo(false, true, true, true, true, true, true, true, true, true)
                             .build());
         }
+        MinecraftForge.EVENT_BUS.post(new WoodTypeEntryEvent(DEFAULT_ENTRIES));
+
         return DEFAULT_ENTRIES;
     }
 
