@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
@@ -375,16 +374,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Getter
     class AggregateItemHandler extends NotifiableRecipeHandlerTrait<SizedIngredient> {
 
-        static final MachineTraitType<AggregateItemHandler> TYPE = new MachineTraitType<>(AggregateItemHandler.class);
-
         private final RecipeCapability<SizedIngredient> capability = ItemRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
-
-        @Override
-        public MachineTraitType<AggregateItemHandler> getTraitType() {
-            return TYPE;
-        }
 
         @Override
         public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
@@ -419,16 +411,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Getter
     class AggregateFluidHandler extends NotifiableRecipeHandlerTrait<SizedFluidIngredient> {
 
-        static final MachineTraitType<AggregateFluidHandler> TYPE = new MachineTraitType<>(AggregateFluidHandler.class);
-
         private final RecipeCapability<SizedFluidIngredient> capability = FluidRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
-
-        @Override
-        public MachineTraitType<AggregateFluidHandler> getTraitType() {
-            return TYPE;
-        }
 
         @Override
         public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,

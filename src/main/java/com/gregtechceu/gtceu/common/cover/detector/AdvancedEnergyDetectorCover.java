@@ -141,7 +141,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                         .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0,
                                 () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
                 .child(coverUIRow()
-                        .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
+                        .child(new ToggleButton()
+                                .value(new BooleanSyncValue(this::isInverted, this::setInverted).allowC2S())
                                 .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                                 .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
                                 .tooltip(false, t -> t.add("cover.advanced_energy_detector.invert.disabled"))

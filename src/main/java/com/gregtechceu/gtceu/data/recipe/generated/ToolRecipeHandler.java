@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
@@ -21,10 +20,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
@@ -385,18 +381,18 @@ public final class ToolRecipeHandler {
                                             @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
-        for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
-            toolStack.set(DataComponents.DYED_COLOR, new DyedItemColor(color.getKey().getTextColor(), false));
+        for (var color : DyeColor.values()) {
+            toolStack.set(DataComponents.DYED_COLOR, new DyedItemColor(color.getTextColor(), false));
             Object[] recipeWithDye = ArrayUtils.addAll(recipe, 'D',
-                    new MaterialEntry(TagPrefix.dye, color.getValue()));
+                    color.getTag());
 
             if (mirrored) { // todo mirrored
                 VanillaRecipeHelper.addShapedRecipe(provider,
-                        String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName()),
+                        String.format("%s_%s_%s", tool.name, material.getName(), color.getSerializedName()),
                         toolStack, recipeWithDye);
             } else {
                 VanillaRecipeHelper.addShapedRecipe(provider,
-                        String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName()),
+                        String.format("%s_%s_%s", tool.name, material.getName(), color.getSerializedName()),
                         toolStack, recipeWithDye);
             }
         }

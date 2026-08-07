@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -410,7 +409,7 @@ public class MiscRecipeLoader {
         // skip white lens
         for (int i = 1; i < CHEMICAL_DYES.length; i++) {
             builder.copy(CHEMICAL_DYES[i].getName() + "_lens").inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
-                    .outputItems(GLASS_LENSES.get(Color.VALUES[i]))
+                    .outputItems(GLASS_LENSES.get(COLORS[i]))
                     .save(provider);
         }
 

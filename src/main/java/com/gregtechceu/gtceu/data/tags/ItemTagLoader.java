@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -72,18 +71,18 @@ public class ItemTagLoader {
                 .addTag(CustomTags.DEAD_CORAL_ITEMS);
         // spotless:on
 
-        addTag(provider, lens, Color.White)
+        provider.addTag(CustomTags.WHITE_LENS)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Glass).get())
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, NetherStar).get());
-        addTag(provider, lens, Color.LightBlue)
+        provider.addTag(CustomTags.LIGHT_BLUE_LENS)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Diamond).get());
-        addTag(provider, lens, Color.Red)
+        provider.addTag(CustomTags.RED_LENS)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Ruby).get());
-        addTag(provider, lens, Color.Green)
+        provider.addTag(CustomTags.GREEN_LENS)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Emerald).get());
-        addTag(provider, lens, Color.Blue)
+        provider.addTag(CustomTags.BLUE_LENS)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Sapphire).get());
-        addTag(provider, lens, Color.Purple)
+        provider.addTag(CustomTags.PURPLE_LENS)
                 .add(GTMaterialItems.MATERIAL_ITEMS.get(lens, Amethyst).get());
 
         provider.addTag(CustomTags.PISTONS).add(Items.PISTON, Items.STICKY_PISTON);

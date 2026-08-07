@@ -124,6 +124,11 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         if (this.redstoneSignalOutput == redstoneSignalOutput) return;
         this.redstoneSignalOutput = redstoneSignalOutput;
         coverHolder.notifyBlockUpdate();
+        var level = coverHolder.getLevel();
+        if (level != null) {
+            BlockPos poweredPos = coverHolder.getBlockPos().relative(attachedSide);
+            level.updateNeighborsAt(poweredPos, level.getBlockState(poweredPos).getBlock());
+        }
     }
 
     public boolean canConnectRedstone() {
