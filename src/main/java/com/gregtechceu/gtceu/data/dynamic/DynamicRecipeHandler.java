@@ -101,7 +101,9 @@ public final class DynamicRecipeHandler {
 
             for (var entry : recipeType.getProxyRecipes().entrySet()) {
                 RecipeType<?> proxyRecipeType = entry.getKey();
-                Collection<? extends RecipeHolder<?>> recipes = recipeManager.getAllRecipesFor(proxyRecipeType);
+                // Bypass Java Generic Hell™
+                @SuppressWarnings({ "unchecked", "rawtypes" })
+                List<RecipeHolder<?>> recipes = recipeManager.getAllRecipesFor((RecipeType) proxyRecipeType);
                 if (recipes.isEmpty()) {
                     continue;
                 }
@@ -109,7 +111,7 @@ public final class DynamicRecipeHandler {
                 RecipeManagerHandler.addProxyRecipesToLookup(recipes, recipeType, proxyRecipeType, proxyRecipes);
             }
 
-            Collection<? extends RecipeHolder<?>> recipesByID = recipeManager.getAllRecipesFor(recipeType);
+            List<RecipeHolder<GTRecipe>> recipesByID = recipeManager.getAllRecipesFor(recipeType);
             RecipeManagerHandler.addRecipesToLookup(recipesByID, recipeType);
             recipeType.completeStagingRecipes();
         }
