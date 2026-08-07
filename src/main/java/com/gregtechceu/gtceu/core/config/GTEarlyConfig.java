@@ -29,10 +29,10 @@ public class GTEarlyConfig {
         // Defines the default rules which can be configured by the user or other mods.
         // You must manually add a rule for any new mixins not covered by an existing package rule.
 
-        Option option = addMixinRule(SAFE_MODE, false);
+        Option option = addMixinRule(SAFE_MODE, true);
         option.addComment(
                 "Whether to use a 'safe mode' for bloom rendering",
-                "NOTE: considerably slower than the normal logic, but likely fixes compatibility issues with other mods.",
+                "NOTE: may be slower than 'normal' logic, but is considerably more stable and less prone to compatibility issues with other mods.",
                 "Requires restarting the client to take effect.");
 
         addDelegateRule("client.bloom.safemode", SAFE_MODE, false);
