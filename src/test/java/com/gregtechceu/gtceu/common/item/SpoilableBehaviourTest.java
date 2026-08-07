@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
@@ -69,37 +68,6 @@ public class SpoilableBehaviourTest {
                 .keepSpoilingProgress(false)
                 .buildRawRecipe());
         LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
-        attachSpoilables();
-    }
-
-    private static void attachSpoilables() {
-        SpoilableBehavior.builder()
-                .ticks(10)
-                .result(Items.DIRT)
-                .build()
-                .attachTo(Items.JIGSAW);
-        SpoilableBehavior.builder()
-                .ticks(10)
-                .result(Items.STRUCTURE_BLOCK)
-                .build()
-                .attachTo(Items.APPLE);
-        SpoilableBehavior.builder()
-                .ticks(40)
-                .result(Items.STRUCTURE_VOID)
-                .build()
-                .attachTo(Items.STRUCTURE_BLOCK);
-        SpoilableBehavior.builder()
-                .ticks(10)
-                .result(Items.JIGSAW)
-                .build()
-                .attachTo(Items.STRUCTURE_VOID);
-        SpoilableBehavior.builder()
-                .ticks(10)
-                .result(Items.DRAGON_EGG)
-                .result(EntityType.PIG)
-                .multiplyResult(3)
-                .build()
-                .attachTo(Items.EGG);
     }
 
     private static BusHolder getBussesAndForm(GameTestHelper helper) {

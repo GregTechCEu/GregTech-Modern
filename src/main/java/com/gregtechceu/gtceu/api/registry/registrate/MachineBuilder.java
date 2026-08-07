@@ -860,7 +860,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             }
         }
 
-        public static <T extends MachineDefinition> void fireKJSEvent(ModifyMachineEvent event) {
+        public static void fireKJSEvent(ModifyMachineEvent event) {
             GTCEuStartupEvents.MACHINE_MODIFICATION.post(new ModifyMachineEventJS(event));
         }
     }
