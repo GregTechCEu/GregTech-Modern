@@ -181,7 +181,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 if (isMachineBanned(machine)) {
                     return;
                 }
-                machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(this.cleanroomReceivers::add);
+                machine.getTraitOptional(CleanroomReceiverTrait.class).ifPresent(this.cleanroomReceivers::add);
             }
         });
         this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroomProvider(this.cleanroomProviderTrait));
@@ -496,7 +496,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected static boolean isMachineBanned(MetaMachine machine) {
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
-        if (machine.getTrait(CleanroomProviderTrait.TYPE) != null) return true;
+        if (machine.getTrait(CleanroomProviderTrait.class) != null) return true;
         if (machine instanceof MufflerPartMachine) return true;
         if (machine instanceof SimpleGeneratorMachine) return true;
         if (machine instanceof LargeCombustionEngineMachine) return true;

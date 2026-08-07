@@ -18,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -58,7 +57,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Setter
     private Supplier<? extends MetaMachineItem> itemSupplier;
     @Setter
-    private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
+    private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
     @Getter
     @Setter
     private GTRecipeType[] recipeTypes;
@@ -153,7 +152,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return itemSupplier.get();
     }
 
-    public BlockEntityType<? extends BlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
         return blockEntityTypeSupplier.get();
     }
 

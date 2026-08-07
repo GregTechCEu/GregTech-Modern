@@ -26,7 +26,7 @@ public class TankValvePartMachine extends MultiblockPartMachine {
     public TankValvePartMachine(BlockEntityCreationInfo info, boolean isMetal) {
         super(info);
 
-        tankProxy = attachTrait(new FluidTankProxyTrait(IO.BOTH));
+        tankProxy = attachTrait(new FluidTankProxyTrait(getIO()));
         autoIOSubscription = new ConditionalSubscriptionHandler(this, this::autoIO, this::shouldAutoIO);
     }
 
@@ -98,5 +98,9 @@ public class TankValvePartMachine extends MultiblockPartMachine {
         if (getFrontFacing() != Direction.DOWN) return false;
         if (tankProxy.isEmpty()) return false;
         return getTargetTank() != null;
+    }
+
+    private IO getIO() {
+        return shouldAutoIO() ? IO.OUT : IO.BOTH;
     }
 }

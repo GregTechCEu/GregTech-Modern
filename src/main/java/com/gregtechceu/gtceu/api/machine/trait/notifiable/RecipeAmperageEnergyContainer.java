@@ -21,7 +21,7 @@ public class RecipeAmperageEnergyContainer extends NotifiableEnergyContainer {
 
     @Override
     public long getInputAmperage() {
-        var recipeLogic = getMachine().getTrait(RecipeLogic.TYPE);
+        var recipeLogic = getMachine().getTrait(RecipeLogic.class);
         if (recipeLogic == null) return 1L;
         var lastRecipe = recipeLogic.getLastRecipe();
         long amperage;
@@ -39,7 +39,7 @@ public class RecipeAmperageEnergyContainer extends NotifiableEnergyContainer {
 
     @Override
     public long getOutputAmperage() {
-        var recipeLogic = getMachine().getTrait(RecipeLogic.TYPE);
+        var recipeLogic = getMachine().getTrait(RecipeLogic.class);
         if (recipeLogic == null) return 1L;
         var lastRecipe = recipeLogic.getLastRecipe();
         if (lastRecipe != null) {

@@ -126,7 +126,6 @@ public class GTValues {
             MODID_XAEROS_MINIMAP = "xaerominimap",
             MODID_XAEROS_WORLDMAP = "xaeroworldmap",
             MODID_FTB_CHUNKS = "ftbchunks",
-            MODID_JAVD = "javd",
             MODID_FTB_TEAMS = "ftbteams",
             MODID_ARGONAUTS = "argonauts",
             MODID_HERACLES = "heracles",
@@ -294,6 +293,11 @@ public class GTValues {
             "High Voltage", "Extreme Voltage", "Insane Voltage", "Ludicrous Voltage", "ZPM Voltage", "Ultimate Voltage",
             "Ultra High Voltage", "Ultra Excessive Voltage", "Ultra Immense Voltage", "Ultra Extreme Voltage",
             "Overpowered Voltage", "Maximum Voltage" };
+
+    public static final String[] COLORS = new String[] {
+            "white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan",
+            "purple", "blue", "brown", "green", "red", "black"
+    };
 
     /**
      * Used to tell if any high-tier machine (UHV+) was registered.
