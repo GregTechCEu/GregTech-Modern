@@ -45,7 +45,7 @@ public class MaterialProperties {
         if (!key.getType().isInstance(value))
             throw new IllegalArgumentException("Material Property must be of the same type as the property key!");
         if (hasProperty(key))
-            throw new IllegalArgumentException("Material Property " + key.toString() + " already registered!");
+            throw new IllegalArgumentException("Material Property " + key + " already registered!");
         propertyMap.put(key, value);
         propertyMap.remove(PropertyKey.EMPTY);
     }

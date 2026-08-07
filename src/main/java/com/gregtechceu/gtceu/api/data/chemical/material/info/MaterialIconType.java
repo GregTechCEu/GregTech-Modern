@@ -195,7 +195,7 @@ public record MaterialIconType(String name) {
     public ResourceLocation getBlockModelPath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (BLOCK_MODEL_CACHE.contains(this, materialIconSet)) {
-                return BLOCK_MODEL_CACHE.get(this, materialIconSet);
+                return Objects.requireNonNull(BLOCK_MODEL_CACHE.get(this, materialIconSet));
             }
         }
 
@@ -225,7 +225,7 @@ public record MaterialIconType(String name) {
     public ResourceLocation getItemModelPath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
-                return ITEM_MODEL_CACHE.get(this, materialIconSet);
+                return Objects.requireNonNull(ITEM_MODEL_CACHE.get(this, materialIconSet));
             }
         }
 
