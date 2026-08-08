@@ -154,7 +154,7 @@ Most modifiers want `textComponents`.
 
 ### Conditional lines
 
-To show a line only for some recipes, add the widget unconditionally and disable it.
+To show a line only for some recipes, add the widget unconditionally and add a condition to only show it with `.setEnabledIf`.
 `textComponents` is set to `collapseDisabledChildren`, so a disabled line takes up no space:
 
 ```java
