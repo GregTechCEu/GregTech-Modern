@@ -40,7 +40,7 @@ public class XorPredicate extends MultiPredicate {
         for (BasePredicate predicate : predicates()) {
             if (predicate.test(context)) {
                 if (this.passedPredicate != null && !this.passedPredicate.is(predicate)) {
-                    xorError(context, predicate);
+                    xorError(context, predicate, this.passedPredicate);
                     // error
                     return null;
                 }
@@ -54,7 +54,7 @@ public class XorPredicate extends MultiPredicate {
             BasePredicate p = child.getPredicateAtPos(context);
             if (p != null) {
                 if (this.passedPredicate != null && !this.passedPredicate.is(child)) {
-                    xorError(context, p);
+                    xorError(context, p, this.passedPredicate);
                     // error
                     return null;
                 }
@@ -68,15 +68,6 @@ public class XorPredicate extends MultiPredicate {
             onError(context);
         }
         return null;
-    }
-
-    private void xorError(PredicateContext context, BasePredicate predicate) {
-        MutableComponent found = Component.literal(predicate + " present in multiblock");
-        MutableComponent expected = Component
-                .literal("expected only: " + Objects.requireNonNull(passedPredicate).predicate());
-        context.appendError(
-                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
-        context.skipFlipCheck();
     }
 
     @Override
@@ -104,6 +95,16 @@ public class XorPredicate extends MultiPredicate {
     public void resetLogic() {
         super.resetLogic();
         this.passedPredicate = null;
+    }
+
+    private static void xorError(PredicateContext context, BasePredicate predicate, PassedPredicate passedPredicate) {
+        MutableComponent found = Component.literal(predicate + " present in multiblock");
+        Component passed = passedPredicate.toComponent();
+        MutableComponent expected = Component
+                .literal("expected only: " + passed.getString());
+        context.appendError(
+                PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
+        context.skipFlipCheck();
     }
 
     private static PassedPredicate ofPredicate(BasePredicate predicate) {
@@ -141,6 +142,15 @@ public class XorPredicate extends MultiPredicate {
 
         public boolean is(MultiPredicate multiPredicate) {
             return this.multiPredicate == null || this.multiPredicate == multiPredicate;
+        }
+
+        public Component toComponent() {
+            if (this.predicate != null) {
+                return Component.literal(this.predicate.toString());
+            } else if (this.multiPredicate != null) {
+                return Component.literal(this.multiPredicate.toString());
+            }
+            return Component.empty();
         }
     }
 }
