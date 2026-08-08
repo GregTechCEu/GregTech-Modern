@@ -238,7 +238,7 @@ handle a capability that is not slot-shaped: instead of slots they attach an emp
 
 ### 3. Recipe contents, `setCapabilityContentBuilder`
 
-A `CapabilityContentBuilder` maps one `Content` of a recipe onto the widget that step 2 created:
+A `CapabilityContentBuilder` takes in one `Content` and the widget that step 2 created and then builds the content into it:
 
 ```java
 void buildWidgetContent(IWidget widget, Content content, IO io, boolean perTick,
