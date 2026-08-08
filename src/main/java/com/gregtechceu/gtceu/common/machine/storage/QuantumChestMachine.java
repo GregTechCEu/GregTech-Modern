@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -313,13 +312,6 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     }
 
     protected class ItemCache extends MachineTrait implements IItemHandlerModifiable {
-
-        public static final MachineTraitType<ItemCache> TYPE = new MachineTraitType<>(ItemCache.class);
-
-        @Override
-        public MachineTraitType<ItemCache> getTraitType() {
-            return TYPE;
-        }
 
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
                 ItemStack.isSameItemSameComponents(i, getLockedItem());

@@ -197,9 +197,9 @@ public class GTRecipeModifiers {
     /**
      * Recipe Modifier for <b>Pyrolyse Oven Multiblocks</b> - can be used as a valid {@link RecipeModifier}
      * <p>
-     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.<br>
-     * Then, duration is multiplied by {@code 1.333×} for Cupronickel Coils
-     * or {@code 2 / (tier + 1)} for higher tiercoils.
+     * Recipe duration is multiplied by {@code 1.333×} for Cupronickel Coils
+     * or {@code 2 / (tier + 1)} for higher tiercoils.<br>
+     * Then, Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.
      * </p>
      *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Pyrolysis
@@ -220,7 +220,7 @@ public class GTRecipeModifiers {
                 .build();
 
         var oc = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
-        return oc.andThen(durationModifier);
+        return durationModifier.andThen(oc);
     }
 
     /**
