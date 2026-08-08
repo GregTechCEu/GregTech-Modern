@@ -71,7 +71,7 @@ public class GTRecipes {
         MetaTileEntityMachineRecipeLoader.init(consumer);
         MiscRecipeLoader.init(consumer);
         VanillaStandardRecipes.init(consumer);
-        WoodMachineRecipes.init(consumer);
+
         StoneMachineRecipes.init(consumer);
         CraftingRecipeLoader.init(consumer);
         FuelRecipes.init(consumer);

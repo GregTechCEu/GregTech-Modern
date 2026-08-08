@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe.configurable;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -15,7 +14,6 @@ public class RecipeRemoval {
 
     public static void init(Consumer<ResourceLocation> registry) {
         generalRemovals(registry);
-        WoodMachineRecipes.hardWoodRecipes(registry);
         if (ConfigHolder.INSTANCE.recipes.disableManualCompression) disableManualCompression(registry);
         if (ConfigHolder.INSTANCE.recipes.harderBrickRecipes) harderBrickRecipes(registry);
         if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) hardWoodRecipes(registry);
