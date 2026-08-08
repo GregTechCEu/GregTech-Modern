@@ -120,7 +120,7 @@ public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager s
 what `SteamBoilerMachine` uses.
 
 !!! note
-    The configurator columns are *panels of their own*, drawn to the left and right of the machine
+    The configurator columns are drawn to the left and right of the machine
     panel. They hide themselves when they have no children, so a machine that adds no configurators
     shows neither column.
 
