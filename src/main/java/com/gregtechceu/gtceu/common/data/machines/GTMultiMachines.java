@@ -132,7 +132,7 @@ public class GTMultiMachines {
                             .or(builder("SnowPredicate")
                                     .predicate(ctx -> GTUtil.isBlockSnow(ctx.state()))
                                     // todo lang
-                                    .onError(ctx -> ctx.appendError(PatternStringError.literal("Can be snow")))
+                                    .errorFunction(ctx -> PatternStringError.literal("Can be snow"))
                                     .toMultiPredicate()))
                     .where('Y', controller(blocks(definition.getBlock())))
                     .build())

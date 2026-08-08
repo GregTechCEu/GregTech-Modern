@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.tags.TagKey;
@@ -11,10 +12,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -28,11 +34,24 @@ public class PredicateBuilder {
     private Stream<BlockInfo> candidates = Stream.empty();
     @Setter
     private @Nullable Consumer<StringBuilder> contents;
-    @Setter
-    private @Nullable Consumer<PredicateContext> onError;
+    private final List<ErrorHandler> errorHandlers = new ArrayList<>();
 
     public PredicateBuilder(String debugName) {
         this.name = debugName;
+    }
+
+    /// @param function Function that takes a {@link PredicateContext} and returns a {@link PatternError}.
+    /// <br/>
+    /// The returned error is automatically appended.
+    public PredicateBuilder errorFunction(Function<PredicateContext, PatternError> function) {
+        return errorHandler((context, failingPredicate) -> function.apply(context));
+    }
+
+    /// @param onError functional interface whose parameters are a
+    /// {@code (PredicateContext, BasePredicate)}
+    public PredicateBuilder errorHandler(ErrorHandler onError) {
+        this.errorHandlers.add(onError);
+        return this;
     }
 
     /// fills candidates and sets string contents with this block tag
@@ -60,6 +79,17 @@ public class PredicateBuilder {
                 Objects.requireNonNull(predicate, "predicate == null"),
                 candidates,
                 contents,
-                onError);
+                composeErrorHandlers());
+    }
+
+    private @Nullable ErrorHandler composeErrorHandlers() {
+        if (errorHandlers.isEmpty()) return null;
+        Validate.noNullElements(errorHandlers);
+        List<ErrorHandler> errorHandlers = Collections.unmodifiableList(this.errorHandlers);
+        return (context, failingPredicate) -> {
+            for (ErrorHandler handler : errorHandlers) {
+                handler.appendError(context, failingPredicate);
+            }
+        };
     }
 }

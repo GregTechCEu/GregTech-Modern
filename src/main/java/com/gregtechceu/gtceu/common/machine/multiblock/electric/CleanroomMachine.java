@@ -472,7 +472,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected static MultiPredicate doorPredicate() {
         return builder("DoorPredicate")
                 .predicate(ctx -> ctx.state().getBlock() instanceof DoorBlock)
-                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                // .errorFunction(ctx -> PLACEHOLDER)
                 // spotless:off
                 .candidates(Stream.of(
                         new BlockInfo(Blocks.IRON_DOOR),
@@ -496,7 +496,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                     }
                     return true;
                 })
-                .onError(ctx -> ctx.appendError(PLACEHOLDER))
+                // .errorFunction(ctx -> PLACEHOLDER)
                 .toMultiPredicate();
     }
 

@@ -748,7 +748,7 @@ public class GTMachineUtils {
                     }
                     return false;
                 })
-                .onError(ctx -> ctx.appendError(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER)))
+                .errorFunction(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
                 .candidates(PartAbility.ROTOR_HOLDER.getAllBlocks()
                         .stream().map(BlockInfo::fromBlock))
                 .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))

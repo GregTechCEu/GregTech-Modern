@@ -152,10 +152,10 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static MultiPredicate wallPredicate() {
         return Predicates.builder("WallPredicate")
                 .predicate(ctx -> ctx.state().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS))
-                .onError(ctx -> {
+                .errorFunction(ctx -> {
                     BlockPos p = ctx.pos();
-                    ctx.appendError(PatternStringError.translatable(
-                            "gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ()));
+                    return PatternStringError.translatable(
+                            "gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ());
                 })
                 .blockTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
                 .toMultiPredicate();
@@ -164,8 +164,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static MultiPredicate logPredicate() {
         return Predicates.builder("LogPredicate")
                 .predicate(ctx -> ctx.state().is(BlockTags.LOGS_THAT_BURN))
-                .onError(ctx -> ctx.appendError(PatternStringError.translatable(
-                        "gtceu.predicate_error.charcoal.logs")))
+                .errorFunction(ctx -> PatternStringError.translatable(
+                        "gtceu.predicate_error.charcoal.logs"))
                 .blockTag(BlockTags.LOGS_THAT_BURN)
                 .toMultiPredicate();
     }

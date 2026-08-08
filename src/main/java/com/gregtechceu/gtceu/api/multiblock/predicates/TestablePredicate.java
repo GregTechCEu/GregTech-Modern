@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 class TestablePredicate extends BasePredicate {
 
-    private final Consumer<PredicateContext> onError;
+    private final ErrorHandler onError;
     private final Stream<BlockInfo> candidates;
     private final @Nullable Consumer<StringBuilder> contents;
     private final String name;
@@ -50,17 +50,18 @@ class TestablePredicate extends BasePredicate {
     TestablePredicate(String name, Predicate<PredicateContext> predicate,
                       Stream<BlockInfo> candidates,
                       @Nullable Consumer<StringBuilder> contents,
-                      @Nullable Consumer<PredicateContext> onError) {
+                      @Nullable ErrorHandler onError) {
         this.name = name;
         this.predicate = predicate;
         this.candidates = candidates;
         this.contents = contents;
-        this.onError = Objects.requireNonNullElse(onError, this::placeholderError);
+        this.onError = Objects.requireNonNullElse(onError,
+                (context, failingPredicate) -> this.placeholderError(context));
     }
 
     @Override
     public void onError(PredicateContext ctx) {
-        this.onError.accept(ctx);
+        this.onError.appendError(ctx, this);
         List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
         if (minCount == maxCount && maxCount != -1) {
             tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.exact", minCount));

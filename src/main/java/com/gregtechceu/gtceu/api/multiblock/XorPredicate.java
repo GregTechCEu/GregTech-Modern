@@ -9,7 +9,6 @@ import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class XorPredicate extends MultiPredicate {
 
