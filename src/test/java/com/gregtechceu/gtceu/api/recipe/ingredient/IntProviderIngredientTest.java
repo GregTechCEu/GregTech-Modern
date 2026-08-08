@@ -24,6 +24,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
@@ -219,7 +220,11 @@ public class IntProviderIngredientTest {
         helper.assertTrue(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
                 "IntProviderIngredient.getItems shouldn't change between getStacks calls");
         ingredient.reset();
-        helper.assertFalse(TestUtils.areItemStacksEqual(stacks, ingredient.getItems()),
+        helper.assertFalse(ingredient.isRolled(),
+                "IntProviderIngredient shouldn't be rolled after being reset");
+        int forcedCount = stacks[0].getCount() == 1 ? 2 : 1;
+        ingredient.setSampledCount(forcedCount);
+        helper.assertTrue(ingredient.getItems()[0].getCount() == forcedCount,
                 "IntProviderIngredient.getItems should have changed after rerolling");
         helper.succeed();
     }
@@ -231,14 +236,20 @@ public class IntProviderIngredientTest {
 
         // serialize/deserialize before rolling count
         var jsonPreRoll = ingredient.toJson();
-        var ingredientDeserializedPreRoll = IntProviderIngredient.fromJson(jsonPreRoll);
+        var ingredientDeserializedPreRoll = (IntProviderIngredient) Ingredient.fromJson(jsonPreRoll);
+        helper.assertFalse(ingredientDeserializedPreRoll.isRolled(),
+                "IntProviderIngredient shouldn't be rolled if it wasn't rolled before serializing");
 
         var stacks = ingredient.getItems();
         var stacksDeserializedPreRoll = ingredientDeserializedPreRoll.getItems();
 
         // serialize/deserialize after rolling count
         var jsonPostRoll = ingredient.toJson();
-        var ingredientDeserializedPostRoll = IntProviderIngredient.fromJson(jsonPostRoll);
+        var ingredientDeserializedPostRoll = (IntProviderIngredient) Ingredient.fromJson(jsonPostRoll);
+        helper.assertTrue(ingredientDeserializedPostRoll.getSampledCount() == ingredient.getSampledCount(),
+                "IntProviderIngredient should keep its roll if it was rolled before serializing, got [" +
+                        ingredientDeserializedPostRoll.getSampledCount() + "] not [" + ingredient.getSampledCount() +
+                        "]");
         var stacksDeserializedPostRoll = ingredientDeserializedPostRoll.getItems();
 
         helper.assertTrue(
@@ -248,8 +259,9 @@ public class IntProviderIngredientTest {
                 "IntProviderIngredient should have item equal to what it was made with after serializing");
         helper.assertTrue(stacksDeserializedPostRoll[0].is(new ItemStack(Items.BRICK, 1).getItem()),
                 "IntProviderIngredient should have item equal to what it was made with after serializing");
-        helper.assertFalse(TestUtils.areItemStacksEqual(stacksDeserializedPreRoll, ingredient.getItems()),
-                "IntProviderIngredient.getItems should be different if it wasn't rolled before serializing");
+        helper.assertTrue(TestUtils.isItemWithinRange(stacksDeserializedPreRoll[0], 1, 5000),
+                "IntProviderIngredient.getItems should roll within its own range if it wasn't rolled before " +
+                        "serializing, rolled [" + stacksDeserializedPreRoll[0].getCount() + "] not [1-5000]");
         helper.assertTrue(TestUtils.areItemStacksEqual(stacksDeserializedPostRoll, ingredient.getItems()),
                 "IntProviderIngredient.getItems shouldn't change between getItems calls if it was rolled before serializing");
         helper.succeed();

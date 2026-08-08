@@ -225,7 +225,11 @@ public class IntProviderFluidIngredientTest {
         helper.assertTrue(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
                 "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
         ingredient.reset();
-        helper.assertFalse(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
+        helper.assertFalse(ingredient.isRolled(),
+                "IntProviderFluidIngredient shouldn't be rolled after being reset");
+        int forcedAmount = stacks[0].getAmount() == 1 ? 2 : 1;
+        ingredient.setSampledCount(forcedAmount);
+        helper.assertTrue(ingredient.getStacks()[0].getAmount() == forcedAmount,
                 "IntProviderFluidIngredient.getStacks should have changed after rerolling");
         helper.succeed();
     }
@@ -238,6 +242,8 @@ public class IntProviderFluidIngredientTest {
         // serialize/deserialize before rolling count
         var jsonPreRoll = ingredient.toJson();
         var ingredientDeserializedPreRoll = IntProviderFluidIngredient.fromJson(jsonPreRoll);
+        helper.assertFalse(ingredientDeserializedPreRoll.isRolled(),
+                "IntProviderFluidIngredient shouldn't be rolled if it wasn't rolled before serializing");
 
         var stacks = ingredient.getStacks();
         var stacksDeserializedPreRoll = ingredientDeserializedPreRoll.getStacks();
@@ -245,6 +251,10 @@ public class IntProviderFluidIngredientTest {
         // serialize/deserialize after rolling count
         var jsonPostRoll = ingredient.toJson();
         var ingredientDeserializedPostRoll = IntProviderFluidIngredient.fromJson(jsonPostRoll);
+        helper.assertTrue(ingredientDeserializedPostRoll.getSampledCount() == ingredient.getSampledCount(),
+                "IntProviderFluidIngredient should keep its roll if it was rolled before serializing, got [" +
+                        ingredientDeserializedPostRoll.getSampledCount() + "] not [" + ingredient.getSampledCount() +
+                        "]");
         var stacksDeserializedPostRoll = ingredientDeserializedPostRoll.getStacks();
 
         helper.assertTrue(
@@ -254,8 +264,9 @@ public class IntProviderFluidIngredientTest {
                 "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
         helper.assertTrue(stacksDeserializedPostRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
                 "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
-        helper.assertFalse(TestUtils.areFluidStacksEqual(stacksDeserializedPreRoll, ingredient.getStacks()),
-                "IntProviderFluidIngredient.getStacks should be different if it wasn't rolled before serializing");
+        helper.assertTrue(TestUtils.isFluidWithinRange(stacksDeserializedPreRoll[0], 1, 500000),
+                "IntProviderFluidIngredient.getStacks should roll within its own range if it wasn't rolled before " +
+                        "serializing, rolled [" + stacksDeserializedPreRoll[0].getAmount() + "] not [1-500000]");
         helper.assertTrue(TestUtils.areFluidStacksEqual(stacksDeserializedPostRoll, ingredient.getStacks()),
                 "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls if it was rolled before serializing");
         helper.succeed();
