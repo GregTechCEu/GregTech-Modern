@@ -4475,6 +4475,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -4745,6 +4749,62 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Machine-UI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine UIs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Recipe-Type-UI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Type UIs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -5071,36 +5131,33 @@
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;example_smelting&#39;</span><span class="p">)</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="p">.</span><span class="nx">category</span><span class="p">(</span><span class="s1">&#39;multiblock&#39;</span><span class="p">)</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">        </span><span class="p">.</span><span class="nx">setMaxIOSize</span><span class="p">(</span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="p">.</span><span class="nx">setProgressBar</span><span class="p">(</span><span class="nx">GuiTextures</span><span class="p">.</span><span class="nx">PROGRESS_BAR_FUSION</span><span class="p">,</span><span class="w"> </span><span class="nx">FillDirection</span><span class="p">.</span><span class="nx">LEFT_TO_RIGHT</span><span class="p">)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="p">.</span><span class="nx">setSound</span><span class="p">(</span><span class="nx">GTSoundEntries</span><span class="p">.</span><span class="nx">BATH</span><span class="p">);</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">});</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="nx">GTCEuStartupEvents</span><span class="p">.</span><span class="nx">registry</span><span class="p">(</span><span class="s1">&#39;gtceu:machine&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nx">GTRecipeTypes</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;example_smelting&quot;</span><span class="p">).</span><span class="nx">addDataInfo</span><span class="p">((</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">        </span><span class="sb">`Temperature: </span><span class="si">${</span><span class="nx">data</span><span class="p">.</span><span class="nx">getInt</span><span class="p">(</span><span class="s2">&quot;RequiredTemp&quot;</span><span class="p">)</span><span class="si">}</span><span class="sb">K`</span><span class="w"> </span><span class="c1">// (4)</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="p">))</span><span class="w"> </span><span class="c1">// (3)</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;example_smelter&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;multiblock&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="p">.</span><span class="nx">rotationState</span><span class="p">(</span><span class="nx">RotationState</span><span class="p">.</span><span class="nx">NON_Y_AXIS</span><span class="p">)</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="p">.</span><span class="nx">machine</span><span class="p">((</span><span class="nx">holder</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">$CoilWorkableElectricMultiblockMachine</span><span class="p">(</span><span class="nx">holder</span><span class="p">))</span><span class="w"> </span><span class="c1">// (1)</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">        </span><span class="p">.</span><span class="nx">recipeType</span><span class="p">(</span><span class="s1">&#39;alchemy&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">        </span><span class="p">.</span><span class="nx">recipeModifiers</span><span class="p">([(</span><span class="nx">machine</span><span class="p">,</span><span class="w"> </span><span class="nx">recipe</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">TemperatureModifier</span><span class="p">(</span><span class="nx">machine</span><span class="p">,</span><span class="w"> </span><span class="nx">recipe</span><span class="p">)])</span><span class="w"> </span><span class="c1">// (2)</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">        </span><span class="p">.</span><span class="nx">appearanceBlock</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">Block</span><span class="p">.</span><span class="nx">getBlock</span><span class="p">(</span><span class="s2">&quot;gtceu:solid_machine_casing&quot;</span><span class="p">))</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">        </span><span class="p">.</span><span class="nx">pattern</span><span class="p">(</span><span class="nx">definition</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">FactoryBlockPattern</span><span class="p">.</span><span class="nx">start</span><span class="p">()</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">            </span><span class="p">.</span><span class="nx">aisle</span><span class="p">(</span><span class="s1">&#39;###&#39;</span><span class="p">,</span><span class="s1">&#39;HHH&#39;</span><span class="p">,</span><span class="s1">&#39;###&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">            </span><span class="p">.</span><span class="nx">aisle</span><span class="p">(</span><span class="s1">&#39;###&#39;</span><span class="p">,</span><span class="s1">&#39;H H&#39;</span><span class="p">,</span><span class="s1">&#39;###&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">            </span><span class="p">.</span><span class="nx">aisle</span><span class="p">(</span><span class="s1">&#39;#C#&#39;</span><span class="p">,</span><span class="s1">&#39;HHH&#39;</span><span class="p">,</span><span class="s1">&#39;###&#39;</span><span class="p">)</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">blocks</span><span class="p">(</span><span class="nx">definition</span><span class="p">.</span><span class="nx">get</span><span class="p">())))</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">blocks</span><span class="p">(</span><span class="s2">&quot;gtceu:solid_machine_casing&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">                </span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">abilities</span><span class="p">(</span><span class="nx">PartAbility</span><span class="p">.</span><span class="nx">IMPORT_ITEMS</span><span class="p">).</span><span class="nx">setPreviewCount</span><span class="p">(</span><span class="mf">1</span><span class="p">))</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">                </span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">abilities</span><span class="p">(</span><span class="nx">PartAbility</span><span class="p">.</span><span class="nx">EXPORT_ITEMS</span><span class="p">).</span><span class="nx">setPreviewCount</span><span class="p">(</span><span class="mf">1</span><span class="p">))</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">                </span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">abilities</span><span class="p">(</span><span class="nx">PartAbility</span><span class="p">.</span><span class="nx">INPUT_ENERGY</span><span class="p">).</span><span class="nx">setMaxGlobalLimited</span><span class="p">(</span><span class="mf">1</span><span class="p">).</span><span class="nx">setPreviewCount</span><span class="p">(</span><span class="mf">1</span><span class="p">)))</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">heatingCoils</span><span class="p">())</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">any</span><span class="p">())</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">            </span><span class="p">.</span><span class="nx">build</span><span class="p">())</span>
-<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">        </span><span class="p">.</span><span class="nx">workableCasingModel</span><span class="p">(</span><span class="s2">&quot;gtceu:block/casings/solid/machine_casing_solid_steel&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;gtceu:block/multiblock/blast_furnace&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="p">})</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">        </span><span class="p">.</span><span class="nx">setProgressBar</span><span class="p">(</span><span class="nx">GTGuiTextures</span><span class="p">.</span><span class="nx">PROGRESS_FUSION</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="p">.</span><span class="nx">addRecipeInfo</span><span class="p">(</span><span class="nx">recipe</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">Text</span><span class="p">.</span><span class="nx">literal</span><span class="p">(</span><span class="sb">`Temperature: </span><span class="si">${</span><span class="nx">recipe</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">getInt</span><span class="p">(</span><span class="s2">&quot;RequiredTemp&quot;</span><span class="p">)</span><span class="si">}</span><span class="sb">K`</span><span class="p">))</span><span class="w"> </span><span class="c1">// (3) (4)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="p">.</span><span class="nx">setSound</span><span class="p">(</span><span class="nx">GTSoundEntries</span><span class="p">.</span><span class="nx">BATH</span><span class="p">);</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">});</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="nx">GTCEuStartupEvents</span><span class="p">.</span><span class="nx">registry</span><span class="p">(</span><span class="s1">&#39;gtceu:machine&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;example_smelter&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;multiblock&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="p">.</span><span class="nx">rotationState</span><span class="p">(</span><span class="nx">RotationState</span><span class="p">.</span><span class="nx">NON_Y_AXIS</span><span class="p">)</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">        </span><span class="p">.</span><span class="nx">machine</span><span class="p">((</span><span class="nx">holder</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">$CoilWorkableElectricMultiblockMachine</span><span class="p">(</span><span class="nx">holder</span><span class="p">))</span><span class="w"> </span><span class="c1">// (1)</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">        </span><span class="p">.</span><span class="nx">recipeType</span><span class="p">(</span><span class="s1">&#39;alchemy&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="p">.</span><span class="nx">recipeModifiers</span><span class="p">([(</span><span class="nx">machine</span><span class="p">,</span><span class="w"> </span><span class="nx">recipe</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">TemperatureModifier</span><span class="p">(</span><span class="nx">machine</span><span class="p">,</span><span class="w"> </span><span class="nx">recipe</span><span class="p">)])</span><span class="w"> </span><span class="c1">// (2)</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="p">.</span><span class="nx">appearanceBlock</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">Block</span><span class="p">.</span><span class="nx">getBlock</span><span class="p">(</span><span class="s2">&quot;gtceu:solid_machine_casing&quot;</span><span class="p">))</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">        </span><span class="p">.</span><span class="nx">pattern</span><span class="p">(</span><span class="nx">definition</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">FactoryBlockPattern</span><span class="p">.</span><span class="nx">start</span><span class="p">()</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">            </span><span class="p">.</span><span class="nx">aisle</span><span class="p">(</span><span class="s1">&#39;###&#39;</span><span class="p">,</span><span class="s1">&#39;HHH&#39;</span><span class="p">,</span><span class="s1">&#39;###&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">            </span><span class="p">.</span><span class="nx">aisle</span><span class="p">(</span><span class="s1">&#39;###&#39;</span><span class="p">,</span><span class="s1">&#39;H H&#39;</span><span class="p">,</span><span class="s1">&#39;###&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">            </span><span class="p">.</span><span class="nx">aisle</span><span class="p">(</span><span class="s1">&#39;#C#&#39;</span><span class="p">,</span><span class="s1">&#39;HHH&#39;</span><span class="p">,</span><span class="s1">&#39;###&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">blocks</span><span class="p">(</span><span class="nx">definition</span><span class="p">.</span><span class="nx">get</span><span class="p">())))</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">blocks</span><span class="p">(</span><span class="s2">&quot;gtceu:solid_machine_casing&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">                </span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">abilities</span><span class="p">(</span><span class="nx">PartAbility</span><span class="p">.</span><span class="nx">IMPORT_ITEMS</span><span class="p">).</span><span class="nx">setPreviewCount</span><span class="p">(</span><span class="mf">1</span><span class="p">))</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">                </span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">abilities</span><span class="p">(</span><span class="nx">PartAbility</span><span class="p">.</span><span class="nx">EXPORT_ITEMS</span><span class="p">).</span><span class="nx">setPreviewCount</span><span class="p">(</span><span class="mf">1</span><span class="p">))</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">                </span><span class="p">.</span><span class="nx">or</span><span class="p">(</span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">abilities</span><span class="p">(</span><span class="nx">PartAbility</span><span class="p">.</span><span class="nx">INPUT_ENERGY</span><span class="p">).</span><span class="nx">setMaxGlobalLimited</span><span class="p">(</span><span class="mf">1</span><span class="p">).</span><span class="nx">setPreviewCount</span><span class="p">(</span><span class="mf">1</span><span class="p">)))</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">heatingCoils</span><span class="p">())</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">            </span><span class="p">.</span><span class="nx">where</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">Predicates</span><span class="p">.</span><span class="nx">any</span><span class="p">())</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">            </span><span class="p">.</span><span class="nx">build</span><span class="p">())</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">        </span><span class="p">.</span><span class="nx">workableCasingModel</span><span class="p">(</span><span class="s2">&quot;gtceu:block/casings/solid/machine_casing_solid_steel&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;gtceu:block/multiblock/blast_furnace&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="p">})</span>
 </code></pre></div>
 <ol>
 <li>Making multiblock <strong>coilMachine</strong>, without it our modifier won't work.</li>

@@ -2731,6 +2731,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#recipe-info-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe info lines
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4449,6 +4460,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -4724,6 +4739,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Machine-UI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine UIs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Recipe-Type-UI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recipe Type UIs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -4956,6 +5027,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#recipe-info-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recipe info lines
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4995,15 +5077,25 @@
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="p">.</span><span class="nx">category</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="p">.</span><span class="nx">setEUIO</span><span class="p">(</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">        </span><span class="p">.</span><span class="nx">setMaxIOSize</span><span class="p">(</span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">,</span><span class="w"> </span><span class="mf">3</span><span class="p">)</span><span class="w"> </span><span class="c1">// (1)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="p">.</span><span class="nx">setSlotOverlay</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="nx">GuiTextures</span><span class="p">.</span><span class="nx">SOLIDIFIER_OVERLAY</span><span class="p">)</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="p">.</span><span class="nx">setProgressBar</span><span class="p">(</span><span class="nx">GuiTextures</span><span class="p">.</span><span class="nx">PROGRESS_BAR_ARROW</span><span class="p">,</span><span class="w"> </span><span class="nx">FillDirection</span><span class="p">.</span><span class="nx">LEFT_TO_RIGHT</span><span class="p">)</span><span class="w"> </span><span class="c1">// (2)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">        </span><span class="p">.</span><span class="nx">setItemSlotOverlay</span><span class="p">(</span><span class="nx">IO</span><span class="p">.</span><span class="nx">IN</span><span class="p">,</span><span class="w"> </span><span class="mf">0</span><span class="p">,</span><span class="w"> </span><span class="nx">GTGuiTextures</span><span class="p">.</span><span class="nx">SOLIDIFIER_OVERLAY</span><span class="p">)</span><span class="w"> </span><span class="c1">// (2)</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">        </span><span class="p">.</span><span class="nx">setProgressBar</span><span class="p">(</span><span class="nx">GTGuiTextures</span><span class="p">.</span><span class="nx">PROGRESS_ARROW</span><span class="p">)</span><span class="w"> </span><span class="c1">// (3)</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="p">.</span><span class="nx">setSound</span><span class="p">(</span><span class="nx">GTSoundEntries</span><span class="p">.</span><span class="nx">COOLING</span><span class="p">)</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">})</span>
 </code></pre></div>
 <ol>
 <li>Max Item Inputs, Max Item Outputs, Max Fluid Inputs, Max Fluid Outputs</li>
-<li>A list of available <code>GuiTextures</code> and <code>FillDirection</code>s can be found in the GTCEu Modern Github, or in the .jar file.</li>
+<li>Slot overlays are set per slot. <code>setItemSlotOverlay(io, index, overlay)</code> and <code>setFluidSlotOverlay(io, index, overlay)</code> set one slot; <code>setItemSlotsOverlay(io, startIndex, endIndex, overlay)</code> and <code>setFluidSlotsOverlay(io, startIndex, endIndex, overlay)</code> set an inclusive range, both ends included.</li>
+<li>A list of available textures can be found in <a href="https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/mui/GTGuiTextures.java">GTGuiTextures.java</a>. Progress bar textures already carry their size and fill direction.</li>
 </ol>
+<h2 id="recipe-info-lines">Recipe info lines</h2>
+<p><code>addRecipeInfo</code> adds a line of text below recipes of this type in the recipe viewer. It is given the recipe being displayed and returns the component to show for it, built with <code>Text.literal</code> or <code>Text.translate</code>. Return <code>Text.empty()</code> to show nothing for that recipe. Call it several times for several lines.</p>
+<div class="highlight"><span class="filename">test_recipe_type.js</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">GTCEuStartupEvents</span><span class="p">.</span><span class="nx">registry</span><span class="p">(</span><span class="s1">&#39;gtceu:recipe_type&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;test_recipe_type&#39;</span><span class="p">)</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="p">.</span><span class="nx">addRecipeInfo</span><span class="p">(</span><span class="nx">recipe</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">Text</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="s1">&#39;test_recipe_type.info&#39;</span><span class="p">))</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="p">.</span><span class="nx">addRecipeInfo</span><span class="p">(</span><span class="nx">recipe</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">recipe</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="s1">&#39;RequiredTemp&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">?</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">            </span><span class="nx">Text</span><span class="p">.</span><span class="nx">literal</span><span class="p">(</span><span class="sb">`Temperature: </span><span class="si">${</span><span class="nx">recipe</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">getInt</span><span class="p">(</span><span class="s1">&#39;RequiredTemp&#39;</span><span class="p">)</span><span class="si">}</span><span class="sb">K`</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="nx">Text</span><span class="p">.</span><span class="nx">empty</span><span class="p">())</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">})</span>
+</code></pre></div>
 
 
 
