@@ -47,8 +47,13 @@ import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -161,16 +166,23 @@ public class GTMultiMachines {
             .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.1"),
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.2"))
-            .additionalDisplay((controller, components) -> {
-                // spotless:off
-                if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
-                    components.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
-                            Component.translatable(
-                                    FormattingUtil.formatNumbers(coilMachine.getCoilType().getCoilTemperature() +
-                                            100L * Math.max(0, coilMachine.getTier() - GTValues.MV)) + "K")
-                                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
-                }
-                // spotless:on
+            .additionalDisplay((controller, syncManager) -> {
+                if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
+                    return Collections.emptyList();
+                BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                        () -> new BooleanSyncValue(controller::isFormed));
+                IntSyncValue coilTemperature = syncManager.getOrCreateSyncHandler("coilTemperature", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getCoilType().getCoilTemperature()));
+                IntSyncValue machineTier = syncManager.getOrCreateSyncHandler("machineTier", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getTier()));
+
+                return Collections.singletonList(Text
+                        .dynamic(() -> Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
+                                Component.literal(
+                                        FormattingUtil.formatNumbers(coilTemperature.getIntValue() +
+                                                100L * Math.max(0, machineTier.getIntValue() - GTValues.MV)) + "K")
+                                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))))
+                        .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
             .register();
 
@@ -244,11 +256,18 @@ public class GTMultiMachines {
             .workableCasingModel(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"))
             .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
-            .additionalDisplay((controller, components) -> {
-                if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
-                    components.add(Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",
-                            coilMachine.getCoilTier() == 0 ? 75 : 50 * (coilMachine.getCoilTier() + 1)));
-                }
+            .additionalDisplay((controller, syncManager) -> {
+                if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
+                    return Collections.emptyList();
+                BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                        () -> new BooleanSyncValue(controller::isFormed));
+                IntSyncValue coilTier = syncManager.getOrCreateSyncHandler("coilTier", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getCoilTier()));
+
+                return Collections.singletonList(Text
+                        .dynamic(() -> Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",
+                                coilTier.getIntValue() == 0 ? 75 : 50 * (coilTier.getIntValue() + 1)))
+                        .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
             .register();
 
@@ -277,13 +296,23 @@ public class GTMultiMachines {
                             GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/multi_furnace"))
-            .additionalDisplay((controller, components) -> {
-                if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
-                    components.add(Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_level",
-                            coilMachine.getCoilType().getLevel()));
-                    components.add(Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_discount",
-                            coilMachine.getCoilType().getEnergyDiscount()));
-                }
+            .additionalDisplay((controller, syncManager) -> {
+                if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
+                    return Collections.emptyList();
+                BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                        () -> new BooleanSyncValue(controller::isFormed));
+                IntSyncValue coilLevel = syncManager.getOrCreateSyncHandler("coilLevel", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getCoilType().getLevel()));
+                IntSyncValue energyDiscount = syncManager.getOrCreateSyncHandler("energyDiscount", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getCoilType().getEnergyDiscount()));
+
+                return List.of(
+                        Text.dynamic(() -> Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_level",
+                                coilLevel.getIntValue())).asWidget().setEnabledIf(w -> isFormed.getBoolValue()),
+                        Text.dynamic(
+                                () -> Component.translatable("gtceu.multiblock.multi_furnace.heating_coil_discount",
+                                        energyDiscount.getIntValue()))
+                                .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
             .register();
 
@@ -307,11 +336,18 @@ public class GTMultiMachines {
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/cracking_unit"))
             .tooltips(Component.translatable("gtceu.machine.cracker.tooltip.1"))
-            .additionalDisplay((controller, components) -> {
-                if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
-                    components.add(Component.translatable("gtceu.multiblock.cracking_unit.energy",
-                            100 - 10 * coilMachine.getCoilTier()));
-                }
+            .additionalDisplay((controller, syncManager) -> {
+                if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
+                    return Collections.emptyList();
+                BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                        () -> new BooleanSyncValue(controller::isFormed));
+                IntSyncValue coilTier = syncManager.getOrCreateSyncHandler("coilTier", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getCoilTier()));
+
+                return Collections.singletonList(Text
+                        .dynamic(() -> Component.translatable("gtceu.multiblock.cracking_unit.energy",
+                                100 - 10 * coilTier.getIntValue()))
+                        .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
             .register();
 

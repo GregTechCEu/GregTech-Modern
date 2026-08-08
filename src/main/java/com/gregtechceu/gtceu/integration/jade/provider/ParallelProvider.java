@@ -29,7 +29,7 @@ public class ParallelProvider extends MachineInfoProvider<MetaMachine, CompoundT
         if (machine instanceof ParallelHatchPartMachine parallelHatch) {
             compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
         } else if (machine instanceof MultiblockControllerMachine controller) {
-            var recipeLogic = controller.getTrait(RecipeLogic.TYPE);
+            var recipeLogic = controller.getTrait(RecipeLogic.class);
             if (recipeLogic != null && recipeLogic.isActive() && recipeLogic.getLastUnrolledRecipe() != null) {
                 compoundTag.putInt("parallel", recipeLogic.getLastUnrolledRecipe().parallels);
                 compoundTag.putInt("batch", recipeLogic.getLastUnrolledRecipe().batchParallels);

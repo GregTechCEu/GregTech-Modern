@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRedstoneSignalTrait;
@@ -391,45 +390,49 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type.
+     * Gets the first trait (trait with highest priority) with the specified class.
+     * Also includes traits that are a subtype of the specified class.
      *
-     * @param type The trait type to get.
+     * @param type The trait class to get
      * @return The trait, or null if no traits of the given type are present.
      */
-    public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
+    public <T extends MachineTrait> @Nullable T getTrait(Class<T> type) {
         return traitHolder.getTrait(type);
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
+     * Gets the first trait (trait with highest priority) with the specified class.
+     * Also includes traits that are a subtype of the specified class.
      *
-     * @param type The trait type to get
+     * @param type The trait class to get
      * @return An optional result containing the trait if present.
      */
-    public <T extends MachineTrait> Optional<T> getTraitOptional(MachineTraitType<T> type) {
+    public <T extends MachineTrait> Optional<T> getTraitOptional(Class<T> type) {
         return Optional.ofNullable(getTrait(type));
     }
 
     /**
-     * Gets the first trait (trait with the highest priority) of a specified type.<br>
+     * Gets the first trait (trait with the highest priority) with the specified class.<br>
+     * Also includes traits that are a subtype of the specified class.<br>
      * Throws if no trait is present.
-     *
-     * @param type The trait type to get
+     * 
+     * @param type The trait class to get
      * @return The trait
      */
-    public <T extends MachineTrait> T getTraitOrThrow(MachineTraitType<T> type) {
+    public <T extends MachineTrait> T getTraitOrThrow(Class<T> type) {
         T trait = getTrait(type);
         if (trait == null) throw new NoSuchElementException("No trait present");
         return trait;
     }
 
     /**
-     * Get all traits with the specified type.
+     * Get all traits with the specified class.<br>
+     * Also includes traits that are a subtype of the specified class.
      *
-     * @param type The trait type to get
-     * @return An unmodifiable list containing all traits of the specified type.
+     * @param type The trait class to get
+     * @return An unmodifiable list containing all traits of the specified class.
      */
-    public <T extends MachineTrait> @Unmodifiable List<T> getTraits(MachineTraitType<T> type) {
+    public <T extends MachineTrait> @Unmodifiable List<T> getTraits(Class<T> type) {
         return traitHolder.getTraits(type);
     }
 
@@ -970,7 +973,15 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return Direct output signal
      */
     public int getOutputDirectSignal(@Nullable Direction side) {
+        if (side == null) return 0;
+
+        // For some reason, Minecraft requests the output signal from the opposite side...
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(side.getOpposite());
+
+        if (cover != null) return cover.getRedstoneSignalOutput();
+
         var signal = 0;
+
         for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
             signal = Math.max(signal, trait.getOutputDirectSignal(side));
         }
@@ -1098,7 +1109,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        var autoOutputTrait = getTrait(AutoOutputTrait.TYPE);
+        var autoOutputTrait = getTrait(AutoOutputTrait.class);
         if (side != null && autoOutputTrait != null && autoOutputTrait.getItemOutputDirection() == side &&
                 !autoOutputTrait.allowsItemInputFromOutputSide()) {
             io = IO.OUT;
@@ -1130,7 +1141,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        var autoOutputTrait = getTrait(AutoOutputTrait.TYPE);
+        var autoOutputTrait = getTrait(AutoOutputTrait.class);
         if (side != null && autoOutputTrait != null && autoOutputTrait.getFluidOutputDirection() == side &&
                 !autoOutputTrait.allowsFluidInputFromOutputSide()) {
             io = IO.OUT;
@@ -1163,7 +1174,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public void copyConfig(CompoundTag tag) {
         tag.putString(FACING_DIR, MachineConfigCopyBehaviour.directionToString(getFrontFacing()));
 
-        var outputTrait = getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = getTrait(AutoOutputTrait.class);
         if (outputTrait != null && outputTrait.supportsAutoOutputItems() &&
                 outputTrait.getItemOutputDirection() != null) {
             tag.putString(ITEM_OUTPUT_SIDE,
@@ -1184,7 +1195,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             tag.putBoolean(MUFFLED, mufflableMachine.isMuffled());
         }
 
-        var circuit = getTrait(ProgrammableCircuitSlotTrait.TYPE);
+        var circuit = getTrait(ProgrammableCircuitSlotTrait.class);
 
         if (circuit != null && circuit.isEnabled() && circuit.getCurrentCircuit() != 0) {
             tag.putInt(CIRCUIT, circuit.getCurrentCircuit());
@@ -1197,7 +1208,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        var outputTrait = getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = getTrait(AutoOutputTrait.class);
         if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
                 outputTrait.setItemOutputDirection(
@@ -1222,7 +1233,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
 
         if (tag.contains(CIRCUIT)) {
-            getTraitOptional(ProgrammableCircuitSlotTrait.TYPE)
+            getTraitOptional(ProgrammableCircuitSlotTrait.class)
                     .ifPresent(t -> t.setCurrentCircuit(tag.getInt(CIRCUIT)));
         }
 

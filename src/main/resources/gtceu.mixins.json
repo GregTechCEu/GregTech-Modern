@@ -38,7 +38,8 @@
         "client.bloom.QuadLighterMixin",
         "client.bloom.SectionCompilerMixin",
         "client.bloom.normal.RenderTypeMixin",
-        "dev.client.KeyboardHandlerMixin"
+        "dev.client.KeyboardHandlerMixin",
+        "jei.RecipesGuiAccessor",
     ],
     "mixins": [
         "BlockBehaviourAccessor",
@@ -53,6 +54,7 @@
         "InventoryMixin",
         "LevelMixin",
         "LootPoolAccessor",
+        "LootTableAccessor",
         "MapColorAccessor",
         "MappedRegistryAccessor",
         "OreConfigurationMixin",
