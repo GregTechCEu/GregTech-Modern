@@ -90,7 +90,7 @@ public final class IntCircuitIngredient extends ItemIngredient {
     }
 
     @Override
-    public IntCircuitIngredient copyWithMultiplier(int multiplier) {
+    public IntCircuitIngredient copyWithMultiplier(float multiplier) {
         return copy();
     }
 

@@ -84,8 +84,8 @@ public final class ChancedItemIngredient extends ItemIngredient implements IChan
     }
 
     @Override
-    public ChancedItemIngredient copyWithMultiplier(int multiplier) {
-        return new ChancedItemIngredient(inner.copy(), chance, this.multiplier * multiplier);
+    public ChancedItemIngredient copyWithMultiplier(float multiplier) {
+        return new ChancedItemIngredient(inner.copy(), chance, (int) (this.multiplier * multiplier));
     }
 
     @Override

@@ -105,7 +105,7 @@ public abstract class ItemIngredient {
 
     public abstract ItemIngredient copyWithCount(int count);
 
-    public abstract ItemIngredient copyWithMultiplier(int multiplier);
+    public abstract ItemIngredient copyWithMultiplier(float multiplier);
 
     public abstract ItemIngredient copyWithChance(int chance);
 

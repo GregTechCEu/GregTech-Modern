@@ -85,8 +85,8 @@ public final class ChancedFluidIngredient extends FluidIngredient implements ICh
     }
 
     @Override
-    public ChancedFluidIngredient copyWithMultiplier(int multiplier) {
-        return new ChancedFluidIngredient(inner.copy(), chance, this.multiplier * multiplier);
+    public ChancedFluidIngredient copyWithMultiplier(float multiplier) {
+        return new ChancedFluidIngredient(inner.copy(), chance, (int) (this.multiplier * multiplier));
     }
 
     @Override

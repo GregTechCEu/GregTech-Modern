@@ -68,8 +68,8 @@ public final class RangedItemIngredient extends ItemIngredient {
     }
 
     @Override
-    public RangedItemIngredient copyWithMultiplier(int multiplier) {
-        return new RangedItemIngredient(inner.copy(), minCount * multiplier, count * multiplier);
+    public RangedItemIngredient copyWithMultiplier(float multiplier) {
+        return new RangedItemIngredient(inner.copy(), (int) (minCount * multiplier), (int) (count * multiplier));
     }
 
     @Override

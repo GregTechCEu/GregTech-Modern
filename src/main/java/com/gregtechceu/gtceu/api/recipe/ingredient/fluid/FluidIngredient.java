@@ -130,8 +130,8 @@ public class FluidIngredient {
         return new FluidIngredient(amount, value.copy());
     }
 
-    public FluidIngredient copyWithMultiplier(int multiplier) {
-        return new FluidIngredient(amount * multiplier, value.copy());
+    public FluidIngredient copyWithMultiplier(float multiplier) {
+        return new FluidIngredient((int) (amount * multiplier), value.copy());
     }
 
     public FluidIngredient copyWithChance(int chance) {

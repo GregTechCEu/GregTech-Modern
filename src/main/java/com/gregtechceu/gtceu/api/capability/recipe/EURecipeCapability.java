@@ -43,8 +43,8 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     }
 
     @Override
-    public Long copyInner(Long content, int multiplier) {
-        return content * multiplier;
+    public Long copyWithMultiplier(Long content, float multiplier) {
+        return (long) (content * multiplier);
     }
 
     @Override

@@ -71,8 +71,8 @@ public final class RangedFluidIngredient extends FluidIngredient {
     }
 
     @Override
-    public RangedFluidIngredient copyWithMultiplier(int multiplier) {
-        return new RangedFluidIngredient(inner.copy(), minAmount * multiplier, amount * multiplier);
+    public RangedFluidIngredient copyWithMultiplier(float multiplier) {
+        return new RangedFluidIngredient(inner.copy(), (int) (minAmount * multiplier), (int) (amount * multiplier));
     }
 
     @Override

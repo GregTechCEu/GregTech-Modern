@@ -59,20 +59,13 @@ public abstract class RecipeCapability<T> {
     public abstract void toNetwork(T ingredient, FriendlyByteBuf friendlyByteBuf);
 
     public T copyInner(T content) {
-        return copyInner(content, 1);
+        return copyWithMultiplier(content, 1);
     };
-
-    /**
-     * deep copy of this content. recipe need it for searching and such things
-     */
-    public abstract T copyInner(T content, int multiplier);
 
     /**
      * deep copy and modify the size attribute for contents that have the size attribute.
      */
-    public T copyWithMultiplier(T content, int multiplier) {
-        return copyInner(content, multiplier);
-    }
+    public abstract T copyWithMultiplier(T content, float multiplier);
 
     public boolean isChanced(T content) {
         return false;

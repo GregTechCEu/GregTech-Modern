@@ -198,21 +198,21 @@ public class ContentListMap {
     }
 
     public void multiply(int multiplier) {
-        replaceContents(multiplier);
+        multiply((float) multiplier);
     }
 
-    public void multiply(double multiplier) {
-        replaceContents(multiplier);
-    }
-
-    private <N extends Number> void replaceContents(N multiplier) {
+    public void multiply(float multiplier) {
         forEachEntry(new EntryConsumer() {
 
             @Override
             public <T> void accept(RecipeCapability<T> cap, List<T> list) {
-                list.replaceAll(content -> cap.copyWithMultiplier(content, multiplier.intValue()));
+                list.replaceAll(content -> cap.copyWithMultiplier(content, multiplier));
             }
         });
+    }
+
+    public void multiply(double multiplier) {
+        multiply((float) multiplier);
     }
 
     public void forEachEntry(EntryConsumer consumer) {

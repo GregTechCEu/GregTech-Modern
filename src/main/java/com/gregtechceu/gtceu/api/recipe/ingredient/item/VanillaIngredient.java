@@ -82,8 +82,8 @@ public class VanillaIngredient extends ItemIngredient {
     }
 
     @Override
-    public VanillaIngredient copyWithMultiplier(int multiplier) {
-        return new VanillaIngredient(inner, count * multiplier);
+    public VanillaIngredient copyWithMultiplier(float multiplier) {
+        return new VanillaIngredient(inner, (int) (count * multiplier));
     }
 
     @Override

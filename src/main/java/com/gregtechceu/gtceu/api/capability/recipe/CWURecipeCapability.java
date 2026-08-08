@@ -60,8 +60,8 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public Integer copyInner(Integer content, int multiplier) {
-        return content * multiplier;
+    public Integer copyWithMultiplier(Integer content, float multiplier) {
+        return (int) (content * multiplier);
     }
 
     @Override

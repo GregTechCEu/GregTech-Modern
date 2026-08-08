@@ -64,7 +64,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public FluidIngredient copyInner(FluidIngredient content, int multiplier) {
+    public FluidIngredient copyWithMultiplier(FluidIngredient content, float multiplier) {
         return content.copyWithMultiplier(multiplier);
     }
 
