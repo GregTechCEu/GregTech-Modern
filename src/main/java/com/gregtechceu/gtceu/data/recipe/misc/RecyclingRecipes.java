@@ -449,8 +449,9 @@ public class RecyclingRecipes {
             ms = new MaterialStack(ms.material().hasFlag(IS_MAGNETIC) ?
                     ms.material().getProperty(PropertyKey.INGOT).getMacerateInto() : ms.material(), ms.amount());
             ItemStack stack = toItemStackMapper.apply(ms.multiply(yield));
-            if (stack == ItemStack.EMPTY) continue;
-            if (stack.getCount() > 64) {
+            if (stack.isEmpty()) continue;
+
+            if (stack.getCount() > stack.getMaxStackSize()) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
                 if (!entry.isEmpty()) { // should always be true
                     TagPrefix prefix = entry.tagPrefix();
@@ -523,11 +524,13 @@ public class RecyclingRecipes {
 
     private static void splitStacks(List<Pair<ItemStack, MaterialStack>> list, ItemStack originalStack,
                                     MaterialEntry entry) {
+        int maxStackSize = originalStack.getMaxStackSize();
         int amount = originalStack.getCount();
-        while (amount > 64) {
-            list.add(new Pair<>(originalStack.copyWithCount(64),
-                    new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * 64)));
-            amount -= 64;
+
+        while (amount > maxStackSize) {
+            list.add(new Pair<>(originalStack.copyWithCount(maxStackSize),
+                    new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * maxStackSize)));
+            amount -= maxStackSize;
         }
         list.add(new Pair<>(originalStack.copyWithCount(amount),
                 new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * amount)));
@@ -577,10 +580,10 @@ public class RecyclingRecipes {
         // Try to compact the two "lower form" prefixes into one stack, if it doesn't exceed stack size
         if (mediumMS != null && smallestMS != null) {
             long singleStackAmount = mediumMS.amount() + smallestMS.amount();
-            if (singleStackAmount / smallestPrefix.getMaterialAmount(material) <= 64) {
+            long itemAmount = singleStackAmount / smallestPrefix.getMaterialAmount(material);
+            if (itemAmount <= smallestPrefix.maxStackSize()) {
                 list.add(new Pair<>(
-                        ChemicalHelper.get(smallestPrefix, material,
-                                (int) (singleStackAmount / smallestPrefix.getMaterialAmount(material))),
+                        ChemicalHelper.get(smallestPrefix, material, (int) itemAmount),
                         new MaterialStack(material, singleStackAmount)));
                 return;
             }
