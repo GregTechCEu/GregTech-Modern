@@ -63,7 +63,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     @Override
     public Block createObject() {
         SimpleCoilType coilType = new SimpleCoilType(this.id.getPath(), temperature, level, energyDiscount, tier,
-                material, new ResourceLocation(texture));
+                material, ResourceLocation.parse(texture));
         CoilBlock result = new CoilBlock(this.createProperties(), coilType);
         GTCEuAPI.HEATING_COILS.put(coilType, () -> result);
         return result;

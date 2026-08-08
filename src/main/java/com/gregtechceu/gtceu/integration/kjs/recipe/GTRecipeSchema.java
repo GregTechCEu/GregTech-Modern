@@ -111,7 +111,7 @@ public interface GTRecipeSchema {
         @HideFromJS
         @Override
         public GTRecipeJS id(ResourceLocation _id) {
-            this.idWithoutType = new ResourceLocation(
+            this.idWithoutType = ResourceLocation.fromNamespaceAndPath(
                     _id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(),
                     _id.getPath());
             this.id = idWithoutType.withPrefix(this.type.id.getPath() + "/");

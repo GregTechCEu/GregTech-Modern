@@ -46,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 public class JourneymapRenderer extends GenericMapRenderer {
 
-    protected static final ResourceLocation STONE = new ResourceLocation("block/stone");
+    protected static final ResourceLocation STONE = ResourceLocation.withDefaultNamespace("block/stone");
     protected static final Map<Material, NativeImage> MATERIAL_ICONS = new HashMap<>();
 
     @Getter

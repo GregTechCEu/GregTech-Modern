@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
 import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
@@ -600,7 +601,7 @@ public class GTUtil {
 
     public static ItemStack loadItemStack(CompoundTag compoundTag) {
         try {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(compoundTag.getString("id")));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(compoundTag.getString("id")));
             int count = compoundTag.getInt("Count");
             ItemStack stack = new ItemStack(item, count);
             if (compoundTag.contains("tag", Tag.TAG_COMPOUND)) {
@@ -751,15 +752,11 @@ public class GTUtil {
     }
 
     public static boolean textureResourceExists(@NotNull ResourceLocation location) {
-        var textureLocation = new ResourceLocation(location.getNamespace(),
-                "textures/%s.png".formatted(location.getPath()));
-        return resourceExists(textureLocation);
+        return resourceExists(GTDynamicResourcePack.TEXTURE_ID_CONVERTER.idToFile(location));
     }
 
     public static boolean modelResourceExists(@NotNull ResourceLocation location) {
-        var modelLocation = new ResourceLocation(location.getNamespace(),
-                "models/%s.json".formatted(location.getPath()));
-        return resourceExists(modelLocation);
+        return resourceExists(GTDynamicResourcePack.MODEL_ID_CONVERTER.idToFile(location));
     }
 
     public static void openRecipeViewerCategory(GTRecipeCategory category) {

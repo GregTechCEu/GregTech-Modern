@@ -28,7 +28,7 @@ import java.nio.file.Path;
 public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
-    private static final ResourceLocation TEMPLATE_LOCATION = new ResourceLocation(MOD_ID, "");
+    private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -51,7 +51,7 @@ public class GTCEu {
 
         int i = path.indexOf(':');
         if (i > 0) {
-            return new ResourceLocation(path);
+            return ResourceLocation.parse(path);
         } else if (i == 0) {
             path = path.substring(i + 1);
         }
