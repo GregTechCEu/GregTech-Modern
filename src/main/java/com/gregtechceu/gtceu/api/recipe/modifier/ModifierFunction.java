@@ -204,7 +204,7 @@ public interface ModifierFunction {
 
         private static Map<RecipeCapability<?>, List<Content>> applyAllButEU(ContentModifier cm,
                                                                              Map<RecipeCapability<?>, List<Content>> contents) {
-            if (cm == ContentModifier.IDENTITY) return new HashMap<>(contents);
+            // Prerolls require copying, even on IDENTITY
             Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
             for (var entry : contents.entrySet()) {
                 var cap = entry.getKey();
