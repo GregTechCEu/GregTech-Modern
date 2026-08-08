@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextEditorWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +56,6 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.PhantomItemSlot;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -176,10 +176,11 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                         .coverChildren()
                         .childPadding(2)
                         .left(7)
-                        .top(19)
-                        .child(new TextFieldWidget()
+                        .top(2)
+                        .child(new TextEditorWidget<>()
                                 .width(117)
-                                .height(18)
+                                .height(50)
+                                .padding(4)
                                 .value(filterString))
                         .child(GTGuiTextures.INFO.asWidget()
                                 .size(16)

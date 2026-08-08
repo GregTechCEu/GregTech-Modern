@@ -209,8 +209,8 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(coverUIRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true))
-                                                .allowC2S())
+                                        .value(new BooleanSyncValue(this::isInverted,
+                                                this::setInverted).allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
                                 .child(Text.comp(Component.translatable("cover.enable_with_redstone")).asWidget()
                                         .heightRel(1.0f).left(20)))
@@ -218,7 +218,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                 .child(new ToggleButton()
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> !this.isInverted(),
-                                                ($) -> this.setInverted(false)).allowC2S())
+                                                ($) -> this.setInverted(!$)).allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_OFF))
                                 .child(Text.lang("cover.disable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
@@ -227,7 +227,10 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> preventPowerFail,
                                                 bool -> preventPowerFail = bool).allowC2S())
-                                        .overlay(GTGuiTextures.CIRCUIT_OVERLAY))
+                                        .background(true,
+                                                GTGuiTextures.BUTTON_POWER[0])
+                                        .background(
+                                                GTGuiTextures.BUTTON_POWER[1]))
                                 .child(Text.lang("cover.machine_controller.suspend_powerfail").asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
