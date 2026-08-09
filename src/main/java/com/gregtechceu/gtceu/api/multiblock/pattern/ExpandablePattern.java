@@ -173,17 +173,28 @@ public class ExpandablePattern implements IBlockPattern {
             // all predicates failed
             // max count checks
             if (innerPredicate == null || !innerPredicate.checkMaxCount(context)) {
+                context.commitSliceErrors(); // this is actually global errors, not slice
                 return false;
             }
 
             visited.add(multiPredicate);
         }
 
-        context.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
+        boolean passed = true;
+
         for (MultiPredicate multiPredicate : visited) {
-            if (!multiPredicate.testGlobalMin(context)) {
-                return false;
+            if (!multiPredicate.postGlobalTest(context)) {
+                passed = false;
+                break;
             }
+        }
+
+        // have to reset logic after the fact because expandable patterns
+        // don't have a list of predicates i can iterate
+        visited.forEach(MultiPredicate::resetLogic);
+        if (!passed) {
+            context.commitSliceErrors();
+            return false;
         }
 
         patternState.clearErrors();

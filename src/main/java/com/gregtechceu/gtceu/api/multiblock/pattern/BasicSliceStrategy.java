@@ -61,8 +61,12 @@ public class BasicSliceStrategy extends SliceStrategy {
             for (int j = multiblockSlice.startInclusive; j < multiblockSlice.endExclusive; j++) {
                 int res = checkRepeatSlice(state, j, offset + temp, flip);
                 if (res == -1) {
-                    context.commitSliceErrors();
-                    if (i <= multiblockSlice.minRepeats) return -1;
+                    if (i <= multiblockSlice.minRepeats) {
+                        context.commitSliceErrors();
+                        return -1;
+                    }
+                    // invalid, but within min/max repeats so may be valid overall
+                    context.popSlice();
                     multiblockSlice.actualRepeats = i - 1;
                     return sliceOffset;
                 }
@@ -84,7 +88,7 @@ public class BasicSliceStrategy extends SliceStrategy {
             if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
-                // invalid, but within max repeats so may be valid overall
+                // invalid, but within min/max repeats so may be valid overall
                 context.popSlice();
                 return slices.get(index).actualRepeats = i - 1;
             }

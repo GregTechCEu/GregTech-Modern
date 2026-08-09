@@ -166,6 +166,7 @@ public class BlockPattern implements IBlockPattern {
         // global min check
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.postGlobalTest(context)) {
+                context.commitSliceErrors();
                 return false;
             }
         }
