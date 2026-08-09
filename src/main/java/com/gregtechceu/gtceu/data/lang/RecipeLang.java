@@ -100,7 +100,7 @@ public class RecipeLang {
         provider.add("recipe_condition.gtceu.steam_vent.tooltip", "Clean steam vent");
         provider.add("recipe_condition.gtceu.adjacent_fluid.tooltip", "Fluid blocks around");
         provider.add("recipe_condition.gtceu.adjacent_block.tooltip", "Blocks around");
-        provider.add("recipe_condition.gtceu.eu_to_start.tooltip", "EU to Start: %d%s");
+        provider.add("recipe_condition.gtceu.eu_to_start", "EU to Start: %d%s");
 
         provider.add("recipe_condition.gtceu.daytime.day.tooltip", "Requires day time to work");
         provider.add("recipe_condition.gtceu.daytime.night.tooltip", "Requires night time to work");
@@ -139,7 +139,6 @@ public class RecipeLang {
 
         provider.add("recipe.gtceu.byproduct_tier", "Byproducts from %s§r+");
 
-        provider.add("recipe_condition.gtceu.eu_to_start", "EU To Start: %sEU%s");
         provider.add("recipe.gtceu.temperature", "Temp: %s");
         provider.add("recipe.gtceu.coil.tier", "Coil: %s");
     }
