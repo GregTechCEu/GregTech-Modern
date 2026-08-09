@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -218,7 +219,12 @@ public class BlockPattern implements IBlockPattern {
 
                 // all predicates failed
                 // max count checks
-                if (innerPredicate == null || !innerPredicate.checkMaxCount(context)) {
+                if (innerPredicate == null) {
+                    // todo better error
+                    context.appendError(Predicates.PLACEHOLDER);
+                    return false;
+                }
+                if (!innerPredicate.checkMaxCount(context)) {
                     return false;
                 }
 

@@ -24,6 +24,12 @@ public class XorPredicate extends MultiPredicate {
         this.noneValid = isNoneValid();
     }
 
+    @Override
+    public MultiPredicate setMinCount(int min) {
+        this.noneValid = min < 1;
+        return super.setMinCount(min);
+    }
+
     private boolean isNoneValid() {
         boolean noneValid = false;
         for (BasePredicate predicate : expand()) {
