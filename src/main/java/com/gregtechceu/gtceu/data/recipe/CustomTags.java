@@ -208,7 +208,7 @@ public class CustomTags {
     public static final TagKey<Block> CHARCOAL_PILE_IGNITER_WALLS = TagUtil.createModBlockTag(
             "charcoal_pile_igniter_walls");
     public static final TagKey<Block> CREATE_WRENCH_PICKUP = TagUtil.optionalTag(BuiltInRegistries.BLOCK,
-            new ResourceLocation("create", "wrench_pickup"));
+            ResourceLocation.fromNamespaceAndPath("create", "wrench_pickup"));
 
     public static final TagKey<Block> TALL_PLANTS = TagUtil.createModBlockTag("tall_plants");
 

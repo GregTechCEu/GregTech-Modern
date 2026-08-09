@@ -368,7 +368,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF defaultModel() {
-        return simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
+        return simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
     }
 
     public SELF tieredHullModel(ResourceLocation model) {
@@ -377,7 +377,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF overlayTieredHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        return overlayTieredHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
+        return overlayTieredHullModel(registrate.makeResourceLocation("block/machine/part/" + name));
     }
 
     public SELF overlayTieredHullModel(ResourceLocation overlayModel) {
@@ -392,11 +392,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                             @Nullable String pipeOverlay,
                                             @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation overlayTex = registrate.makeResourceLocation("block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
+                registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
+                registrate.makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
         return colorOverlayTieredHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -414,7 +414,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF overlaySteamHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        return overlaySteamHullModel(new ResourceLocation(registrate.getModid(), "block/machine/part/" + name));
+        return overlaySteamHullModel(registrate.makeResourceLocation("block/machine/part/" + name));
     }
 
     public SELF overlaySteamHullModel(ResourceLocation overlayModel) {
@@ -430,11 +430,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                            @Nullable String pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation overlayTex = registrate.makeResourceLocation("block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
+                registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
+                registrate.makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -442,11 +442,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                            @Nullable ResourceLocation pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + overlay);
+        ResourceLocation overlayTex = registrate.makeResourceLocation("block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
+                registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                new ResourceLocation(registrate.getModid(), "block/overlay/machine/" + emissiveOverlay);
+                registrate.makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -626,7 +626,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     protected DEFINITION createDefinition() {
-        return definition.apply(new ResourceLocation(registrate.getModid(), name));
+        return definition.apply(registrate.makeResourceLocation(name));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -653,7 +653,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setRotationState(rotationState);
         setupStateDefinition(definition);
         if (model == null && blockModel == null) {
-            simpleModel(new ResourceLocation(registrate.getModid(), "block/machine/template/" + name));
+            simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
         }
         var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(getThis(), definition);
         if (this.langValue != null) {
@@ -793,8 +793,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                     .item(properties -> builder.itemFactory.apply((MetaMachineBlock) block.get(), properties))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                     // copied from BlockBuilder#item
-                    .model((ctx, prov) -> prov.withExistingParent(ctx.getName(), new ResourceLocation(builder.registrate.getModid(),
-                            "block/machine/" + ctx.getName())))
+                    .model((ctx, prov) -> prov.withExistingParent(ctx.getName(), builder.registrate.makeResourceLocation("block/machine/" + ctx.getName())))
                     .color(() -> () -> builder.itemColor::apply)
                     .properties(builder.itemProp);
         }
