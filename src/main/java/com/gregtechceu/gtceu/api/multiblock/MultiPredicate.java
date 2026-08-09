@@ -61,6 +61,7 @@ public abstract class MultiPredicate {
 
     /// @return innermost base predicate that passes state check at given pos
     public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
+        context.setStage(PredicateContext.PredicateStage.INTERNAL);
         for (BasePredicate predicate : predicates()) {
             if (predicate.test(context)) {
                 return predicate;
@@ -82,21 +83,42 @@ public abstract class MultiPredicate {
         this.forEachChild(mp -> mp.onError(ctx));
     }
 
-    /// test against global min count
-    public abstract boolean testGlobalMin(PredicateContext ctx);
+    /// Called after all blocks are iterated <br/>
+    /// Usually used for testing the global min of predicates
+    public final boolean postGlobalTest(PredicateContext ctx) {
+        ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
+        return testGlobalMin(ctx);
+    }
 
-    /// test against slice min count
-    public abstract boolean testSliceMin(PredicateContext ctx);
+    protected abstract boolean testGlobalMin(PredicateContext ctx);
+
+    /// Called after iterating all blocks in a given slice <br/>
+    /// Usually used for testing the slice min of predicates
+    public final boolean postSliceTest(PredicateContext ctx) {
+        ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
+        return testSliceMin(ctx);
+    }
+
+    protected abstract boolean testSliceMin(PredicateContext ctx);
 
     /// test against global/slice max counts
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
-        return passedPredicate.testGlobalMax(context) && passedPredicate.testSliceMax(context);
+        context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
+        if (!passedPredicate.testGlobalMax(context))
+            return false;
+        context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
+        return passedPredicate.testSliceMax(context);
     }
 
     public List<List<BlockInfo>> getCandidates() {
-        return this.predicates.stream()
-                .map(BasePredicate::getCandidates)
-                .toList();
+        List<List<BlockInfo>> result = new ArrayList<>();
+        for (BasePredicate predicate : predicates()) {
+            result.add(predicate.getCandidates());
+        }
+        for (MultiPredicate child : children()) {
+            result.addAll(child.getCandidates());
+        }
+        return Collections.unmodifiableList(result);
     }
 
     public void resetLogic() {

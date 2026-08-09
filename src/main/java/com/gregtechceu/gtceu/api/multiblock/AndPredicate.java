@@ -11,7 +11,7 @@ public class AndPredicate extends MultiPredicate {
     }
 
     @Override
-    public boolean testGlobalMin(PredicateContext ctx) {
+    protected boolean testGlobalMin(PredicateContext ctx) {
         for (BasePredicate predicate : predicates()) {
             if (!predicate.testGlobalMin(ctx)) {
                 return false;
@@ -26,7 +26,7 @@ public class AndPredicate extends MultiPredicate {
     }
 
     @Override
-    public boolean testSliceMin(PredicateContext ctx) {
+    protected boolean testSliceMin(PredicateContext ctx) {
         for (BasePredicate predicate : predicates()) {
             if (!predicate.testSliceMin(ctx)) {
                 return false;

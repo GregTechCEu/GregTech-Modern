@@ -70,7 +70,7 @@ public class XorPredicate extends MultiPredicate {
     }
 
     @Override
-    public boolean testGlobalMin(PredicateContext ctx) {
+    protected boolean testGlobalMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testGlobalMin(ctx)) {
             ctx.appendError(PatternStringError.literal("need one of: " + this));
@@ -80,7 +80,7 @@ public class XorPredicate extends MultiPredicate {
     }
 
     @Override
-    public boolean testSliceMin(PredicateContext ctx) {
+    protected boolean testSliceMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testSliceMin(ctx)) {
             ctx.appendError(PatternStringError.literal("need one of: " + this));

@@ -78,8 +78,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
-        if (getMaxCount() == -1) return true;
-        ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
         int count = ctx.incrementGlobalCount(this);
         if (testGlobalMax(count)) return true;
         ctx.appendError(SinglePredicateError.maxCount(this, count));
@@ -89,9 +87,8 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     /// test against slice max count
     public boolean testSliceMax(PredicateContext ctx) {
         if (!ctx.isCheckLayer()) return true;
-        ctx.setStage(PredicateContext.PredicateStage.SLICE_MAX);
         int count = ctx.incrementSliceCount(this);
-        if (getMaxSliceCount() == -1 || testSliceMax(count)) return true;
+        if (testSliceMax(count)) return true;
         ctx.appendError(SinglePredicateError.maxLayerCount(this, count));
         return false;
     }
@@ -107,7 +104,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
-        if (getMinSliceCount() == -1 || !ctx.isCheckLayer()) return true;
+        if (!ctx.isCheckLayer()) return true;
         int count = ctx.getSliceCount(this);
         if (testSliceMin(count)) return true;
         ctx.appendError(SinglePredicateError.minLayerCount(this, count));

@@ -167,7 +167,6 @@ public class ExpandablePattern implements IBlockPattern {
 
             if (!multiPredicate.isAny()) patternState.updateCache();
 
-            context.setStage(PredicateContext.PredicateStage.INTERNAL);
             // state check
             BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
 

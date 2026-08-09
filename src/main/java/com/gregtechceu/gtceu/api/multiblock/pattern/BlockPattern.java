@@ -164,9 +164,8 @@ public class BlockPattern implements IBlockPattern {
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
         // global min check
-        context.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testGlobalMin(context)) {
+            if (!predicate.postGlobalTest(context)) {
                 return false;
             }
         }
@@ -213,7 +212,6 @@ public class BlockPattern implements IBlockPattern {
 
                 if (!multiPredicate.isAny()) patternState.updateCache();
 
-                context.setStage(PredicateContext.PredicateStage.INTERNAL);
                 // state check
                 BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
 
@@ -233,9 +231,8 @@ public class BlockPattern implements IBlockPattern {
         }
 
         // slice min check
-        context.setStage(PredicateContext.PredicateStage.SLICE_MIN);
         for (MultiPredicate predicate : visitedPredicates) {
-            if (!predicate.testSliceMin(context)) {
+            if (!predicate.postSliceTest(context)) {
                 return false;
             }
         }
