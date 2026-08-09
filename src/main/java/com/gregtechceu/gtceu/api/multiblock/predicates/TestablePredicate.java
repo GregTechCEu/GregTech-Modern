@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
-import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.client.Camera;
@@ -22,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
