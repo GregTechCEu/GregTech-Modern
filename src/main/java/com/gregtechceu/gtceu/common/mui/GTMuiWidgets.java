@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -390,11 +389,11 @@ public class GTMuiWidgets {
         return cycleButton;
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(Flow existingRow,
-                                                                              FilterHandler<T, S> filterHandler,
-                                                                              SidedPosGuiData data,
-                                                                              PanelSyncManager syncManager,
-                                                                              UISettings settings) {
+    public static <T> ParentWidget<?> createFilterRow(Flow existingRow,
+                                                      FilterHandler<T> filterHandler,
+                                                      SidedPosGuiData data,
+                                                      PanelSyncManager syncManager,
+                                                      UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
 
         ModularSlot modSlot = new ModularSlot(filterSlot, 0)
@@ -423,10 +422,10 @@ public class GTMuiWidgets {
                         .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
-                                                                              SidedPosGuiData data,
-                                                                              PanelSyncManager syncManager,
-                                                                              UISettings settings) {
+    public static <T> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
+                                                      SidedPosGuiData data,
+                                                      PanelSyncManager syncManager,
+                                                      UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
         return createFilterRow(row, filterHandler, data, syncManager, settings);
     }

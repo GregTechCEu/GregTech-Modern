@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.RichTooltip;
@@ -13,40 +16,54 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.StringSyncValue;
 import brachy.modularui.widgets.layout.Flow;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, S> {
+public class TagFilter<T, S> extends Filter<T> {
 
     @Getter
-    protected String filterString = "";
+    protected String filterString;
 
-    protected Consumer<S> itemWriter = filter -> {};
-    protected Consumer<S> onUpdated = filter -> itemWriter.accept(filter);
+    private final Object2BooleanMap<S> matchResultCache = new Object2BooleanOpenHashMap<>();
 
-    protected TagExprFilter.TagExprParser.MatchExpr matchExpr = null;
+    protected @Nullable TagExprFilter.TagExprParser.MatchExpr matchExpr;
+    private final Function<T, S> tagHolderObject;
+    private final Function<T, Stream<TagKey<S>>> tagsSupplier;
 
-    protected TagFilter() {}
+    public TagFilter(ItemStack stack, Function<T, S> tagHolderObjectSupplier,
+                     Function<T, Stream<TagKey<S>>> tagsSupplier) {
+        super(stack);
+        this.tagHolderObject = tagHolderObjectSupplier;
+        this.tagsSupplier = tagsSupplier;
 
-    @Override
-    public boolean isBlank() {
-        return filterString.isBlank();
+        var tag = stack.getOrCreateTag();
+
+        // oreDict is backwards compat
+        filterString = tag.contains("filter_string") ? tag.getString("filter_string") : tag.getString("oreDict");
+        matchExpr = TagExprFilter.parseExpression(filterString);
     }
 
-    public CompoundTag saveFilter() {
-        if (isBlank()) {
+    public @Nullable CompoundTag writeFilterNBT() {
+        if (filterString.isBlank()) {
             return null;
         }
         var tag = new CompoundTag();
-        tag.putString("oreDict", filterString);
+        tag.putString("filter_string", filterString);
         return tag;
     }
 
     public void setFilterString(String filterString) {
+        matchResultCache.clear();
         this.filterString = filterString;
         matchExpr = TagExprFilter.parseExpression(filterString);
-        onUpdated.accept((S) this);
+        updateAndSaveFilter();
     }
 
     @Override
@@ -61,11 +78,24 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
                 .child(GTGuiTextures.INFO.asWidget().tooltip(infoTooltip));
     }
 
+    private boolean testTagExpr(T t) {
+        Set<String> tags = tagsSupplier.apply(t)
+                .map(TagKey::location)
+                .map(ResourceLocation::toString)
+                .collect(Collectors.toSet());
+
+        return matchExpr != null && matchExpr.matches(tags);
+    }
+
     @Override
-    public void setOnUpdated(Consumer<S> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
+    public boolean test(T t) {
+        var tagHolder = tagHolderObject.apply(t);
+
+        if (filterString.isEmpty()) return false;
+        if (matchResultCache.containsKey(tagHolder)) return matchResultCache.getOrDefault(tagHolder, false);
+
+        var result = testTagExpr(t);
+        matchResultCache.put(tagHolder, result);
+        return result;
     }
 }
