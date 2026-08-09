@@ -32,6 +32,10 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
     @Getter
     private int coilTier = 1;
 
+    public CoilWorkableElectricMultiblockMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic) {
+        super(info, recipeLogic);
+    }
+
     public CoilWorkableElectricMultiblockMachine(BlockEntityCreationInfo info) {
         super(info);
     }
