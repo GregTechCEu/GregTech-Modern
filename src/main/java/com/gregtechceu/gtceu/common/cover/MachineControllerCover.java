@@ -227,7 +227,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> preventPowerFail,
                                                 bool -> preventPowerFail = bool).allowC2S())
-                                        .background(
+                                        .background(false,
                                                 GTGuiTextures.BUTTON_POWER[0])
                                         .background(true,
                                                 GTGuiTextures.BUTTON_POWER[1]))
