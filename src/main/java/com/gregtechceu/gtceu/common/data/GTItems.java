@@ -85,6 +85,7 @@ import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
+@SuppressWarnings("unused")
 public class GTItems {
 
     //////////////////////////////////////
@@ -124,6 +125,7 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
             .register();
 
+    @SuppressWarnings("unchecked")
     public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[18];
     public static final ItemEntry<Item> SHAPE_MOLD_PLATE;
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR;
@@ -1769,7 +1771,7 @@ public class GTItems {
     /////////////////////////////////////////
 
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::create)
-            .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter),
+            .onRegister(attach(new FilterBehaviour<>(ItemStack.class, SimpleItemFilter::new),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2),
                     new MaterialStack(GTMaterials.Steel, GTValues.M))))
@@ -1777,28 +1779,49 @@ public class GTItems {
     public static ItemEntry<ComponentItem> TAG_FILTER = REGISTRATE
             .item("item_tag_filter", ComponentItem::create)
             .lang("Item Tag Filter")
-            .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter),
+            .onRegister(attach(
+                    new FilterBehaviour<>(ItemStack.class,
+                            stack -> new TagFilter<>(stack, ItemStack::getItem, ItemStack::getTags)),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
     public static ItemEntry<ComponentItem> SMART_ITEM_FILTER = REGISTRATE
             .item("item_smart_filter", ComponentItem::create)
             .lang("Smart Item Filter")
-            .onRegister(attach(new ItemFilterBehaviour(SmartItemFilter::loadFilter),
+            .onRegister(attach(new FilterBehaviour<>(ItemStack.class, SmartItemFilter::new),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::create)
-            .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter),
+            .onRegister(attach(new FilterBehaviour<>(FluidStack.class, SimpleFluidFilter::new),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
     public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::create)
             .lang("Fluid Tag Filter")
-            .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter),
+            .onRegister(attach(
+                    new FilterBehaviour<>(FluidStack.class, stack -> new TagFilter<>(stack, FluidStack::getFluid,
+                            f -> f.getFluid().defaultFluidState().getTags())),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
+
+    public static ItemEntry<ComponentItem> COMPOSITE_ITEM_FILTER = REGISTRATE
+            .item("composite_item_filter", ComponentItem::create)
+            .lang("Composite Item Filter")
+            .onRegister(attach(
+                    new FilterBehaviour<>(ItemStack.class, stack -> new CompositeFilter<>(stack, ItemStack.class)),
+                    new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .register();
+
+    public static ItemEntry<ComponentItem> COMPOSITE_FLUID_FILTER = REGISTRATE
+            .item("composite_fluid_filter", ComponentItem::create)
+            .lang("Composite Fluid Filter")
+            .onRegister(attach(
+                    new FilterBehaviour<>(FluidStack.class, stack -> new CompositeFilter<>(stack, FluidStack.class)),
+                    new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .register();
+
     public static ItemEntry<ComponentItem> COVER_WIRELESS_TRANSMITTER = REGISTRATE
             .item("wireless_transmitter_cover", ComponentItem::create)
             .lang("Wireless Transmitter")
@@ -2624,6 +2647,7 @@ public class GTItems {
         };
     }
 
+    @SuppressWarnings("RedundantCast")
     public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before,
                                         Collection<ResourceLocation> after) {
         TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)),
