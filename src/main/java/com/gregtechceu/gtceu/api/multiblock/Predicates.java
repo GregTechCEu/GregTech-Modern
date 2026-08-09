@@ -227,10 +227,6 @@ public class Predicates {
                 .toMultiPredicate();
     }
 
-    public static MultiPredicate autoAbilities(MultiblockMachineDefinition definition) {
-        return autoAbilities(definition.getRecipeTypes());
-    }
-
     public static MultiPredicate autoAbilities(GTRecipeType... recipeType) {
         return autoAbilities(recipeType, true, true, true, true, true, true);
     }

@@ -59,9 +59,8 @@ class TestablePredicate extends BasePredicate {
                 (context, failingPredicate) -> this.placeholderError(context));
     }
 
-    @Override
-    public void onError(PredicateContext ctx) {
-        this.onError.appendError(ctx, this);
+    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
+    public List<Component> getRecipeViewerTooltips() {
         List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
         if (minCount == maxCount && maxCount != -1) {
             tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.exact", minCount));
@@ -69,7 +68,7 @@ class TestablePredicate extends BasePredicate {
             tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.range", minCount, maxCount));
         } else {
             // todo actual lang
-            if (minCount != -1) {
+            if (minCount > 0) {
                 tooltips.add(Component.literal(Text.RED + "At least: " + Text.RESET + minCount));
                 // tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count", minCount,
                 // ctx.getGlobalCount(this)));
@@ -80,7 +79,12 @@ class TestablePredicate extends BasePredicate {
                 // ctx.getGlobalCount(this)));
             }
         }
-        tooltips.forEach(c -> ctx.appendError(PatternStringError.component(c)));
+        return tooltips;
+    }
+
+    @Override
+    public void onError(PredicateContext ctx) {
+        this.onError.appendError(ctx, this);
     }
 
     private void placeholderError(PredicateContext ctx) {
