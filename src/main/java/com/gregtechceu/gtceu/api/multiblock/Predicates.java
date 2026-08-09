@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -319,7 +320,12 @@ public class Predicates {
     }
 
     public static MultiPredicate heatingCoils() {
-        return blocks("HeatingCoils", GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
+        return blocks("HeatingCoils",
+                GTCEuAPI.HEATING_COILS.values().stream()
+                        .<Block>map(Supplier::get).toList(),
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
+                        .map(e -> e.getValue().get()))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
                 .setPriority(0);
     }
@@ -330,7 +336,7 @@ public class Predicates {
                 GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
                         .map(entry -> entry.getValue().get()))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
     }
 
     public static MultiPredicate powerSubstationBatteries() {
@@ -349,8 +355,7 @@ public class Predicates {
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
             return abilities(PartAbility.DATA_ACCESS)
                     .xor(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
-                    // todo is this a required thing?
-                    .setGlobalMinMax(0, 1)
+                    .setExactLimit(1)
                     .setPriority(1);
         }
         return null;

@@ -136,9 +136,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            boolean globalMinUnmet = basePredicate.testGlobalMin(totalAlreadyPopulated);
-            boolean layerMinUnmet = basePredicate.testSliceMin(layerAlreadyPopulated);
-            if (!globalMinUnmet && !layerMinUnmet) continue;
+            if (!basePredicate.testGlobalMin(totalAlreadyPopulated)) continue;
+            if (!basePredicate.testSliceMin(layerAlreadyPopulated)) continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {

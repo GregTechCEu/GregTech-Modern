@@ -9,6 +9,7 @@ import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public class XorPredicate extends MultiPredicate {
 
@@ -136,11 +137,13 @@ public class XorPredicate extends MultiPredicate {
         }
 
         public boolean is(BasePredicate predicate) {
-            return this.predicate == null || this.predicate == predicate;
+            if (this.multiPredicate != null) return false;
+            return Objects.requireNonNull(this.predicate) == predicate;
         }
 
         public boolean is(MultiPredicate multiPredicate) {
-            return this.multiPredicate == null || this.multiPredicate == multiPredicate;
+            if (this.predicate != null) return false;
+            return Objects.requireNonNull(this.multiPredicate) == multiPredicate;
         }
 
         public Component toComponent() {
