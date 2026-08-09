@@ -15,7 +15,8 @@ public final class FluidStorageKeys {
     public static final FluidStorageKey LIQUID = new FluidStorageKey(GTCEu.id("liquid"),
             MaterialIconType.liquid,
             m -> prefixedRegisteredName("liquid_", FluidStorageKeys.LIQUID, m),
-            m -> m.hasProperty(PropertyKey.DUST) ? "fluid.gtceu.liquid_generic" : "fluid.gtceu.generic",
+            m -> m.hasProperty(PropertyKey.DUST) ? "material.gtceu.fluid_type.liquid_generic" :
+                    "material.gtceu.fluid_type.generic",
             FluidState.LIQUID, 0);
 
     public static final FluidStorageKey GAS = new FluidStorageKey(GTCEu.id("gas"),
@@ -23,28 +24,28 @@ public final class FluidStorageKeys {
             m -> postfixedRegisteredName("_gas", FluidStorageKeys.GAS, m),
             m -> {
                 if (m.hasProperty(PropertyKey.DUST)) {
-                    return "fluid.gtceu.gas_vapor";
+                    return "material.gtceu.fluid_type.gas_vapor";
                 }
                 if (m.isElement()) {
                     FluidProperty property = m.getProperty(PropertyKey.FLUID);
                     if (m.isElement() || (property != null && property.getPrimaryKey() != FluidStorageKeys.LIQUID)) {
-                        return "fluid.gtceu.gas_generic";
+                        return "material.gtceu.fluid_type.gas_generic";
                     }
                 }
-                return "fluid.gtceu.generic";
+                return "material.gtceu.fluid_type.generic";
             },
             FluidState.GAS, 0);
 
     public static final FluidStorageKey PLASMA = new FluidStorageKey(GTCEu.id("plasma"),
             MaterialIconType.plasma,
             m -> m.getName() + "_plasma",
-            m -> "fluid.gtceu.plasma",
+            m -> "material.gtceu.fluid_type.plasma",
             FluidState.PLASMA, -1);
 
     public static final FluidStorageKey MOLTEN = new FluidStorageKey(GTCEu.id("molten"), CustomTags.MOLTEN_FLUIDS,
             MaterialIconType.molten,
             m -> "molten_" + m.getName(),
-            m -> "fluid.gtceu.molten",
+            m -> "material.gtceu.fluid_type.molten",
             FluidState.LIQUID, -1);
 
     private FluidStorageKeys() {}

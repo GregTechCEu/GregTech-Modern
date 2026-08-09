@@ -75,7 +75,7 @@ public class HazardProperty implements IMaterialProperty {
         }
 
         public Component getTranslatableName() {
-            return Component.translatable("tooltip.gtceu.hazard_trigger." + this.name);
+            return Component.translatable("hazard_trigger.gtceu." + this.name);
         }
 
         @Override

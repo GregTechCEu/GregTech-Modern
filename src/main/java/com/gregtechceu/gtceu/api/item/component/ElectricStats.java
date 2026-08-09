@@ -86,7 +86,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
                 String locale = "item.electric.discharge_mode." + (isInDischargeMode ? "disabled" : "enabled");
-                player.displayClientMessage(Component.translatable(locale), true);
+                player.displayClientMessage(Component.translatable(locale).withStyle(ChatFormatting.YELLOW), true);
                 setInDischargeMode(itemStack, !isInDischargeMode);
             }
             return InteractionResultHolder.success(itemStack);
@@ -211,7 +211,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             if (durationCurrent.getSeconds() <= 60) {
                 maxChargeTime = durationMax.getSeconds();
                 currentChargeTime = durationCurrent.toSeconds();
-                unitKey = "gtceu.gui.seconds";
+                unitKey = "common.gtceu.seconds";
             } else if (durationCurrent.toMinutes() <= 60) {
                 maxChargeTime = durationMax.toMinutes();
                 currentChargeTime = durationCurrent.toMinutes();

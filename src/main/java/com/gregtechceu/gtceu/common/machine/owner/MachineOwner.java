@@ -54,7 +54,8 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
     }
 
     public void displayInfo(List<Component> compList) {
-        compList.add(Component.translatable("item.gtceu.behavior.portable_scanner.machine_ownership", getTypeDisplayName()));
+        compList.add(
+                Component.translatable("item.gtceu.behavior.portable_scanner.machine_ownership", getTypeDisplayName()));
     }
 
     @UnmodifiableView
@@ -104,7 +105,7 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, Argonau
 
     public static void displayPlayerInfo(List<Component> compList, UUID playerUUID) {
         final var playerName = UsernameCache.getLastKnownUsername(playerUUID);
-        var online = "gtceu.tooltip.status.trinary.";
+        var online = "common.gtceu.";
         if (GTCEu.isClientThread()) {
             var connection = Minecraft.getInstance().getConnection();
             if (connection != null) {

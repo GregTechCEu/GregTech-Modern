@@ -53,7 +53,8 @@ public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMa
 
             if (compoundTag.getBoolean("needsVenting")) {
                 iTooltip.append(Component.literal(" ("));
-                iTooltip.append(Component.translatable("integration.gtceu.jade.exhaust_vent_blocked").withStyle(ChatFormatting.RED)
+                iTooltip.append(Component.translatable("integration.gtceu.jade.exhaust_vent_blocked")
+                        .withStyle(ChatFormatting.RED)
                         .append(Component.literal(")").withStyle(ChatFormatting.GRAY)));
             }
         }

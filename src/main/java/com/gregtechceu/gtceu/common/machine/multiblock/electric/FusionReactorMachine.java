@@ -177,7 +177,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
+                    .cancel(Component.translatable("recipe_modifier.gtceu.insufficient_eu_to_start_fusion"));
         }
 
         long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
@@ -189,7 +189,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         // if the remaining energy needed is more than stored, do not run
         if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
             return ModifierFunction
-                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
+                    .cancel(Component.translatable("recipe_modifier.gtceu.insufficient_eu_to_start_fusion"));
 
         // remove the energy needed
         fusionReactorMachine.energyContainer.removeEnergy(heatDiff);
@@ -207,7 +207,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;
             // if the remaining energy needed is more than stored, do not run
             if (heatDiff > 0) {
-                recipeLogic.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
+                recipeLogic.setWaiting(Component.translatable("recipe_logic.gtceu.insufficient_fuel"));
 
                 // if the remaining energy needed is more than stored, do not run
                 if (this.energyContainer.getEnergyStored() < heatDiff)
@@ -283,7 +283,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
         widget.textComponents.child(new TextWidget<>(
-                Text.lang("gtceu.recipe.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
+                Text.lang("recipe_condition.gtceu.eu_to_start", FormattingUtil.formatNumberReadable2F(euToStart, false),
                         FUSION_NAMES.get(tier))));
     }
 

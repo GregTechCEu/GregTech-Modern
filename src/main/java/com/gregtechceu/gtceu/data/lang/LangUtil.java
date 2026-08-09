@@ -113,6 +113,16 @@ public class LangUtil {
     }
 
     /**
+     * Returns if the given key exists, or has multi lang
+     * 
+     * @param key Translation key
+     * @return If the given key exists or has multi lang
+     */
+    public static boolean hasSingleOrMultiLang(String key) {
+        return Language.getInstance().has(key) || Language.getInstance().has(key + ".0");
+    }
+
+    /**
      * Returns a multi lang if one is available, and if it isn't, gets a singular value instead.
      *
      * @param key Base key of the multi lang. E.g. {@code "terminal.fluid_prospector.tier"}.

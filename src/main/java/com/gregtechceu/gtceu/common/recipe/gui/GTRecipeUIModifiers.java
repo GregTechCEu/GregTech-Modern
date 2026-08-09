@@ -26,14 +26,14 @@ public class GTRecipeUIModifiers {
             int temp = recipe.data.getInt("ebf_temp");
 
             widget.textComponents.child(new TextWidget<>(
-                    Text.lang("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp))));
+                    Text.lang("recipe.gtceu.temperature", FormattingUtil.formatTemperature(temp))));
 
             Flow coilRow = Flow.row().coverChildrenHeight();
 
             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
             if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                coilRow.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
+                coilRow.child(new TextWidget<>(Text.lang("recipe.gtceu.coil.tier",
                         Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
                                 .getString())));
             }

@@ -69,7 +69,7 @@ public class GCYMMachines {
                                 model.addReplaceableTextures("bottom", "top", "side");
                             }))
                     .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"),
-                            Component.translatable("gtceu.part_sharing.disabled"))
+                            Component.translatable("multiblock.gtceu.part_sharing.disabled"))
                     .register(),
             IV, LuV, ZPM, UV);
 

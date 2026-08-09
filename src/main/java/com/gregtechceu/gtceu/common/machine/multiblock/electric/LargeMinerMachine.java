@@ -191,23 +191,23 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // getRecipeLogic().getY() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getY()));
     // textList.add(Component.translatable("gtceu.machine.miner.startz",
     // getRecipeLogic().getZ() == Integer.MAX_VALUE ? 0 : getRecipeLogic().getZ()));
-    // textList.add(Component.translatable("gtceu.universal.tooltip.silk_touch")
+    // textList.add(Component.translatable("machine.gtceu.miner.silk_touch")
     // .append(ComponentPanelWidget.withButton(Component.literal("[")
     // .append(getRecipeLogic().isSilkTouchMode() ?
     // Component.translatable("gtceu.creative.activity.on") :
     // Component.translatable("gtceu.creative.activity.off"))
     // .append(Component.literal("]")), "silk_touch")));
-    // textList.add(Component.translatable("gtceu.universal.tooltip.chunk_mode")
+    // textList.add(Component.translatable("machine.gtceu.miner.chunk_mode")
     // .append(ComponentPanelWidget.withButton(Component.literal("[")
     // .append(getRecipeLogic().isChunkMode() ?
     // Component.translatable("gtceu.creative.activity.on") :
     // Component.translatable("gtceu.creative.activity.off"))
     // .append(Component.literal("]")), "chunk_mode")));
     // if (getRecipeLogic().isChunkMode()) {
-    // textList.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks", workingAreaChunks,
+    // textList.add(Component.translatable("machine.gtceu.miner.working_area_chunks", workingAreaChunks,
     // workingAreaChunks));
     // } else {
-    // textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+    // textList.add(Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
     // }
     // if (getRecipeLogic().isDone()) {
     // textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
@@ -246,7 +246,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
                 context.getPlayer()
-                        .sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                        .sendSystemMessage(Component.translatable("machine.gtceu.miner.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
@@ -256,7 +256,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 }
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
                 context.getPlayer().sendSystemMessage(
-                        Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                        Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
             }
             getRecipeLogic().resetArea(true);
         } else {
@@ -271,7 +271,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             return Collections.singletonList(
-                    Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                    Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
         }
         return new ArrayList<>();
     }

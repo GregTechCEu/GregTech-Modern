@@ -83,17 +83,18 @@ public record Content(Object content, int chance, int maxChance) {
     public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic) {
         if (content.chance() < ChanceLogic.getMaxChancedValue()) {
             if (content.chance() == 0) {
-                tooltip.addLine(Component.translatable("gtceu.gui.content.chance_nc"));
+                tooltip.addLine(Component.translatable("recipe_content.gtceu.chance_nc").withStyle(ChatFormatting.RED));
             } else {
                 float baseChanceFloat = 100f * content.chance() / content.maxChance();
 
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                    tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
-                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                    tooltip.addLine(Component.translatable("recipe_content.gtceu.chance_no_boost_logic",
+                            FormattingUtil.formatNumber2Places(baseChanceFloat),
+                            Component.translatable(logic.id.toLanguageKey("chance_logic")))
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltip.addLine(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
+                            FormattingUtil.formatPercentage2Places("recipe_content.gtceu.chance_no_boost",
                                     baseChanceFloat));
                 }
             }

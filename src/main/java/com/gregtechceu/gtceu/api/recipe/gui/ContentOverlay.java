@@ -92,7 +92,8 @@ public record ContentOverlay(Content content, boolean perTick)
         float chanceFloat = 1f * content.chance() / content.maxChance();
         String percent = FormattingUtil.formatNumber2Places(100 * chanceFloat);
 
-        Component s = content.chance() == 0 ? Component.translatable("gtceu.gui.content.chance_nc_short") :
+        Component s = content.chance() == 0 ?
+                Component.translatable("recipe_content.gtceu.chance_nc_short").withStyle(ChatFormatting.RED) :
                 Component.literal(percent + "%");
 
         int color = content.chance() == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
@@ -108,7 +109,8 @@ public record ContentOverlay(Content content, boolean perTick)
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
 
-        Component s = Component.translatable("gtceu.gui.content.tips.per_tick_short");
+        Component s = Component.translatable("recipe_content.gtceu.tips.per_tick_short")
+                .withStyle(ChatFormatting.GREEN);
 
         int color = 0xFFFF00;
         Font fontRenderer = Minecraft.getInstance().font;

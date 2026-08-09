@@ -407,7 +407,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(String.valueOf(fluidPercent))
                                         .withStyle(ChatFormatting.YELLOW)));
                     } else {
-                        list.add(Component.translatable("item.gtceu.behavior.portable_scanner.bedrock_fluid.amount_unknown",
+                        list.add(Component.translatable(
+                                "item.gtceu.behavior.portable_scanner.bedrock_fluid.amount_unknown",
                                 Component.translatable(String.valueOf(fluidPercent))
                                         .withStyle(ChatFormatting.YELLOW)));
                     }
@@ -423,7 +424,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                             environmentHazardZone.condition().getTranslatableName(),
                             Component.literal(FormattingUtil.formatNumbers(environmentHazardZone.strength()))));
                 } else {
-                    list.add(Component.translatable("item.gtceu.behavior.portable_scanner.environmental_hazard.nothing"));
+                    list.add(Component
+                            .translatable("item.gtceu.behavior.portable_scanner.environmental_hazard.nothing"));
                 }
 
                 var local = LocalizedHazardSavedData.getOrCreate(serverLevel);

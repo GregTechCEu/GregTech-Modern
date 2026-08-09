@@ -52,12 +52,14 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
                 Direction.from3DDataValue(data.getInt("side"))) {
             tooltip.add(
                     Component.translatable(
-                            (transformUp ? "integration.gtceu.jade.transform_output" : "integration.gtceu.jade.transform_input"),
+                            (transformUp ? "integration.gtceu.jade.transform_output" :
+                                    "integration.gtceu.jade.transform_input"),
                             (GTValues.VNF[voltage + 1] + " §r(" + amp + "A)")));
         } else {
             tooltip.add(
                     Component.translatable(
-                            (transformUp ? "integration.gtceu.jade.transform_input" : "integration.gtceu.jade.transform_output"),
+                            (transformUp ? "integration.gtceu.jade.transform_input" :
+                                    "integration.gtceu.jade.transform_output"),
                             (GTValues.VNF[voltage] + " §r(" + amp * 4 + "A)")));
         }
     }

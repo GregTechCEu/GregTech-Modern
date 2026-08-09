@@ -247,7 +247,8 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     public void appendHoverText(ItemStack stack, @Nullable Level level,
                                 List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(Component
-                .translatable(usesFluid ? "item.gtceu.behavior.lighter.fluid.tooltip" : "item.gtceu.behavior.lighter.tooltip.description"));
+                .translatable(usesFluid ? "item.gtceu.behavior.lighter.fluid.tooltip" :
+                        "item.gtceu.behavior.lighter.tooltip.description"));
         tooltipComponents.add(Component.translatable("item.gtceu.behavior.lighter.tooltip.usage"));
         if (hasMultipleUses && !usesFluid) {
             tooltipComponents.add(Component.translatable("item.gtceu.behavior.lighter.uses", getUsesLeft(stack)));

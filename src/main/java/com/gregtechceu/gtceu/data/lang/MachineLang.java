@@ -2,61 +2,18 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 
-import net.minecraft.ChatFormatting;
-
 public class MachineLang {
 
     public static void init(GTLangProvider provider) {
-        generateSteamMachines(provider);
-
         generateGeneralMachineTooltips(provider);
-        generateGeneralMultiblockTooltips(provider);
 
-        generateCustomPerTierMachineTooltips(provider);
         generateCustomMachineTooltips(provider);
 
         generateCustomMultiblockTooltips(provider);
         generateCustomMultiblockPartTooltips(provider);
 
         generateMultiblockKeys(provider);
-    }
-
-    public static void standardTooltips(GTLangProvider provider, String root, String machine,
-                                        String lowTier, String midTier, String highTier) {
-        makeElectricMachineTooltipULVtoMAX(provider, root, machine,
-                lowTier, lowTier, lowTier, lowTier,
-                lowTier, midTier, midTier, midTier,
-                highTier, highTier, highTier, highTier,
-                highTier, highTier, highTier);
-    }
-
-    private static void generateSteamMachines(GTLangProvider provider) {
-        makeSteamMachineTooltip(provider, "gtceu", "steam_solid_boiler",
-                "An early way to get Steam Power", "Faster than the Small Steam Solid Fuel Boiler");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_solar_boiler",
-                "Steam Power by Sun", "Steam Power by Sun");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_liquid_boiler",
-                "A Boiler running off Liquids", "Faster than Small Steam Liquid Boiler");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_extractor",
-                "Extracting your first Rubber", "Extracting your first Rubber");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_macerator",
-                "Macerating your Ores", "Macerating your Ores without Byproducts");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_compressor",
-                "Compressing Items", "Compressing Items");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_forge_hammer",
-                "Forge Hammer", "Forge Hammer");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_furnace",
-                "Smelting things with compressed Steam", "Smelting things with compressed Steam");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_alloy_smelter",
-                "Combination Smelter", "Combination Smelter");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_rock_crusher",
-                "Place Water and Lava horizontally adjacent", "Place Water and Lava horizontally adjacent");
-        makeSteamMachineTooltip(provider, "gtceu", "steam_miner",
-                "Mines ores below the Miner!", "Mines ores below the Miner!");
-
-        // unused
-        provider.add("block.gtceu.steam_solid_boiler.bronze", "Small Steam Solid Boiler");
-        provider.add("block.gtceu.steam_liquid_boiler.bronze", "Small Steam Liquid Boiler");
+        generateCentralMonitorGuiLang(provider);
     }
 
     private static void generateGeneralMachineTooltips(GTLangProvider provider) {
@@ -67,6 +24,81 @@ public class MachineLang {
         provider.add("machine.gtceu.muffle.on", "Sound Muffling: Enabled");
         provider.add("machine.gtceu.muffle.off", "Sound Muffling: Disabled");
         provider.add("machine.gtceu.perfect_oc", "Does not lose energy efficiency when overclocked.");
+
+        provider.add("gtceu.gui.fluid_auto_output.tooltip.enabled", "Fluid Auto-Output Enabled");
+        provider.add("gtceu.gui.fluid_auto_output.tooltip.disabled", "Fluid Auto-Output Disabled");
+        provider.add("gtceu.gui.fluid_auto_input.tooltip.enabled", "Fluid Auto-Input Enabled");
+        provider.add("gtceu.gui.fluid_auto_input.tooltip.disabled", "Fluid Auto-Input Disabled");
+
+        provider.add("gtceu.gui.item_auto_output.tooltip.enabled", "Item Auto-Output Enabled");
+        provider.add("gtceu.gui.item_auto_output.tooltip.disabled", "Item Auto-Output Disabled");
+        provider.add("gtceu.gui.item_auto_input.tooltip.enabled", "Item Auto-Input Enabled");
+        provider.add("gtceu.gui.item_auto_input.tooltip.disabled", "Item Auto-Input Disabled");
+
+        provider.addMultiline("gtceu.gui.charger_slot.tooltip",
+                "§fCharger Slot§r\n§7Draws power from %s batteries§r\n§7Charges %s tools and batteries");
+        provider.addMultiline("gtceu.gui.configurator_slot.tooltip",
+                "§fConfigurator Slot§r\n§7Place a §6Programmed Circuit§7 in this slot to\n§7change its configured value.\n§7Hold §6Shift§7 when clicking buttons to change by §65.\n§aA Programmed Circuit in this slot is also valid for recipe inputs.§r");
+
+        provider.add("gtceu.gui.fluid_lock.tooltip.enabled", "Fluid Locking Enabled");
+        provider.add("gtceu.gui.fluid_lock.tooltip.disabled", "Fluid Locking Disabled");
+
+        provider.add("gtceu.gui.fluid_voiding_partial.tooltip.enabled", "Fluid Voiding Enabled");
+        provider.add("gtceu.gui.fluid_voiding_partial.tooltip.disabled", "Fluid Voiding Disabled");
+
+        provider.add("gtceu.gui.item_lock.tooltip.enabled", "Item Locking Enabled");
+        provider.add("gtceu.gui.item_lock.tooltip.disabled", "Item Locking Disabled");
+
+        provider.add("gtceu.gui.item_voiding_partial.tooltip.enabled", "Item Voiding Enabled");
+        provider.add("gtceu.gui.item_voiding_partial.tooltip.disabled", "Item Voiding Disabled");
+
+        // EIO style gui
+        provider.add("gtceu.gui.cover_setting.title", "Cover Settings");
+        provider.add("gtceu.gui.output_setting.title", "Output Settings");
+        provider.add("gtceu.gui.circuit.title", "Circuit Settings");
+        provider.addMultiLang("gtceu.gui.output_setting.tooltips", "left-click to tune the item auto output",
+                "right-click to tune the fluid auto output.");
+        provider.add("gtceu.gui.item_auto_output.allow_input.enabled",
+                "allow items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
+                "disable items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.enabled", "Item Auto Output: §aEnabled");
+        provider.add("gtceu.gui.item_auto_output.disabled", "Item Auto Output: §cDisabled");
+        provider.addMultiLang("gtceu.gui.item_auto_output.unselected",
+                """
+                        Item Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        provider.addMultiLang("gtceu.gui.item_auto_output.other_direction",
+                """
+                        Item Auto Output: §6Other Direction
+                        §7The machine's item output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
+                "allow fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
+                "disable fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gtceu.gui.fluid_auto_output.disabled", "Fluid Auto Output: §cDisabled");
+        provider.addMultiLang("gtceu.gui.fluid_auto_output.unselected",
+                """
+                        Fluid Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        provider.addMultiLang("gtceu.gui.fluid_auto_output.other_direction",
+                """
+                        Fluid Auto Output: §6Other Direction
+                        §7The machine's fluid output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
+        provider.add("gtceu.gui.auto_output.name", "auto");
+        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
+        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
+
+        // Overclocking Widget
+        provider.add("gtceu.gui.overclock.title", "Overclock Tier");
+        provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
     }
 
     /**
@@ -78,11 +110,6 @@ public class MachineLang {
         provider.add("machine.gtceu.boiler.info.cooling.down", "§9Cooling down§r%s");
         provider.add("machine.gtceu.boiler.info.production.data", "§aProducing %s§a mB/t");
         provider.add("machine.gtceu.boiler.heat_info", "Heat Capacity: %s %%");
-
-        // Generators
-        provider.add("recipe_type.gtceu.combustion_generator.tooltip", "§7Requires flammable Liquids");
-        provider.add("recipe_type.gtceu.steam_turbine.tooltip", "§7Converts Steam into EU");
-        provider.add("recipe_type.gtceu.gas_turbine.tooltip", "§7Requires flammable Gases");
 
         // Machine Hull
         provider.add("machine.gtceu.hull.tooltip",
@@ -162,6 +189,21 @@ public class MachineLang {
         provider.add("gtceu.scanner.copy_stick_to", "§oCopy of Stick");
 
         // Miner
+
+        provider.addMultiline("gtceu.gui.silktouch.enabled",
+                "Silk Touch Enabled: Click to Disable.\n§7Switching requires an idle machine.");
+        provider.addMultiline("gtceu.gui.silktouch.disabled",
+                "Silk Touch Disabled: Click to Enable.\n§7Switching requires an idle machine.");
+        provider.addMultiline("gtceu.gui.chunkmode.enabled",
+                "Chunk Mode Enabled: Click to Disable.\n§7Switching requires an idle machine.");
+        provider.addMultiline("gtceu.gui.chunkmode.disabled",
+                "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
+        provider.add("machine.gtceu.miner.working_area", "§bWorking Area: §f%dx%d");
+        provider.add("machine.gtceu.miner.chunk_mode", "Chunk Mode: ");
+        provider.add("machine.gtceu.miner.silk_touch", "Silk Touch: ");
+        provider.add("machine.gtceu.miner.working_area_chunks", "§bWorking Area: §f%dx%d Chunks");
+        provider.add("machine.gtceu.miner.working_area_max", "§bMax Working Area: §f%dx%d");
+        provider.add("machine.gtceu.miner.working_area_chunks_max", "§bMax Working Area: §f%dx%d Chunks");
         provider.add("machine.gtceu.miner.tooltip", "§7Mines ores below the Miner! Starts as §f%sx%s §7area");
         provider.add("machine.gtceu.miner.per_block", "§7takes §f%ds §7per Block");
 
@@ -192,22 +234,9 @@ public class MachineLang {
         provider.add("gtceu.creative.activity.on", "Active");
         provider.add("gtceu.creative.activity.off", "Not active");
 
-        // Workbench
-        provider.addMultiline("gtceu.machine.workbench.tooltip",
-                "Better than Forestry\nHas Item Storage, Tool Storage, pulls from adjacent Inventories, and saves Recipes.");
-        provider.add("gtceu.machine.workbench.tab.workbench", "Crafting");
-        provider.add("gtceu.machine.workbench.tab.item_list", "Storage");
-        provider.addMultiline("gtceu.machine.workbench.storage_note",
-                "(Available items from connected\ninventories usable for crafting)");
-        provider.add("gtceu.item_list.item_stored", "§7Stored: %d");
-        provider.add("gtceu.machine.workbench.tab.crafting", "Crafting");
-        provider.add("gtceu.machine.workbench.tab.container", "Container");
-        provider.addMultiline("gtceu.recipe_memory_widget.tooltip",
-                "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
-
-        // Safe
-        provider.add("gtceu.machine.locked_safe.malfunctioning", "§cMalfunctioning!");
-        provider.add("gtceu.machine.locked_safe.requirements", "§7Replacements required:");
+        // Fisher
+        provider.addMultiline("gtceu.gui.fisher_mode.tooltip",
+                "Toggle junk items\nOff costs 2 string per operation");
 
         // Drums
         provider.add("machine.gtceu.drum.enable_output", "Will drain Fluid to downward adjacent Tanks");
@@ -228,372 +257,6 @@ public class MachineLang {
         provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
     }
 
-    private static void generateCustomPerTierMachineTooltips(GTLangProvider provider) {
-        // Macerator
-        provider.add("machine.gtceu.lv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
-        provider.add("machine.gtceu.mv_macerator.tooltip", "§7Shredding your Ores without Byproducts");
-        provider.add("machine.gtceu.hv_macerator.tooltip", "§7Shredding your Ores with Byproducts");
-        provider.add("machine.gtceu.ev_macerator.tooltip", "§7Shredding your Ores with Byproducts");
-        provider.add("machine.gtceu.iv_macerator.tooltip", "§7Blend-O-Matic 9001");
-        provider.add("machine.gtceu.luv_macerator.tooltip", "§7Blend-O-Matic 9002");
-        provider.add("machine.gtceu.zpm_macerator.tooltip", "§7Blend-O-Matic 9003");
-        provider.add("machine.gtceu.uv_macerator.tooltip", "§7Shape Eliminator");
-        provider.add("machine.gtceu.uhv_macerator.tooltip", "§7Shape Eliminator");
-        provider.add("machine.gtceu.uev_macerator.tooltip", "§7Shape Eliminator");
-        provider.add("machine.gtceu.uiv_macerator.tooltip", "§7Shape Eliminator");
-        provider.add("machine.gtceu.uxv_macerator.tooltip", "§7Shape Eliminator");
-        provider.add("machine.gtceu.opv_macerator.tooltip", "§7Shape Eliminator");
-
-        // Centrifuge
-        provider.add("machine.gtceu.lv_centrifuge.tooltip", "§7Separating Molecules");
-        provider.add("machine.gtceu.mv_centrifuge.tooltip", "§7Separating Molecules");
-        provider.add("machine.gtceu.hv_centrifuge.tooltip", "§7Separating Molecules");
-        provider.add("machine.gtceu.ev_centrifuge.tooltip", "§7Molecular Separator");
-        provider.add("machine.gtceu.iv_centrifuge.tooltip", "§7Molecular Cyclone");
-        provider.add("machine.gtceu.luv_centrifuge.tooltip", "§7Molecular Cyclone");
-        provider.add("machine.gtceu.zpm_centrifuge.tooltip", "§7Molecular Cyclone");
-        provider.add("machine.gtceu.uv_centrifuge.tooltip", "§7Molecular Tornado");
-        provider.add("machine.gtceu.uhv_centrifuge.tooltip", "§7Molecular Tornado");
-        provider.add("machine.gtceu.uev_centrifuge.tooltip", "§7Molecular Tornado");
-        provider.add("machine.gtceu.uiv_centrifuge.tooltip", "§7Molecular Tornado");
-        provider.add("machine.gtceu.uxv_centrifuge.tooltip", "§7Molecular Tornado");
-        provider.add("machine.gtceu.opv_centrifuge.tooltip", "§7Molecular Tornado");
-
-        // Laser Engraver
-        provider.add("machine.gtceu.lv_laser_engraver.tooltip", "§7Don't look directly at the Laser");
-        provider.add("machine.gtceu.mv_laser_engraver.tooltip", "§7Don't look directly at the Laser");
-        provider.add("machine.gtceu.hv_laser_engraver.tooltip", "§7Don't look directly at the Laser");
-        provider.add("machine.gtceu.ev_laser_engraver.tooltip", "§7Don't look directly at the Laser");
-        provider.add("machine.gtceu.iv_laser_engraver.tooltip", "§7With the Power of 2.04 MW");
-        provider.add("machine.gtceu.luv_laser_engraver.tooltip", "§7With the Power of 8.16 MW");
-        provider.add("machine.gtceu.zpm_laser_engraver.tooltip", "§7With the Power of 32.64 MW");
-        provider.add("machine.gtceu.uv_laser_engraver.tooltip", "§7Exact Photon Cannon");
-        provider.add("machine.gtceu.uhv_laser_engraver.tooltip", "§7Exact Photon Cannon");
-        provider.add("machine.gtceu.uev_laser_engraver.tooltip", "§7Exact Photon Cannon");
-        provider.add("machine.gtceu.uiv_laser_engraver.tooltip", "§7Exact Photon Cannon");
-        provider.add("machine.gtceu.uxv_laser_engraver.tooltip", "§7Exact Photon Cannon");
-        provider.add("machine.gtceu.opv_laser_engraver.tooltip", "§7Exact Photon Cannon");
-
-        // Thermal Centrifuge
-        provider.add("machine.gtceu.lv_thermal_centrifuge.tooltip", "§7Separating Ores more precisely");
-        provider.add("machine.gtceu.mv_thermal_centrifuge.tooltip", "§7Separating Ores more precisely");
-        provider.add("machine.gtceu.hv_thermal_centrifuge.tooltip", "§7Separating Ores more precisely");
-        provider.add("machine.gtceu.ev_thermal_centrifuge.tooltip", "§7Separating Ores more precisely");
-        provider.add("machine.gtceu.iv_thermal_centrifuge.tooltip", "§7Blaze Sweatshop T-6350");
-        provider.add("machine.gtceu.luv_thermal_centrifuge.tooltip", "§7Blaze Sweatshop T-6351");
-        provider.add("machine.gtceu.zpm_thermal_centrifuge.tooltip", "§7Blaze Sweatshop T-6352");
-        provider.add("machine.gtceu.uv_thermal_centrifuge.tooltip", "§7Fire Cyclone");
-        provider.add("machine.gtceu.uhv_thermal_centrifuge.tooltip", "§7Fire Cyclone");
-        provider.add("machine.gtceu.uev_thermal_centrifuge.tooltip", "§7Fire Cyclone");
-        provider.add("machine.gtceu.uiv_thermal_centrifuge.tooltip", "§7Fire Cyclone");
-        provider.add("machine.gtceu.uxv_thermal_centrifuge.tooltip", "§7Fire Cyclone");
-        provider.add("machine.gtceu.opv_thermal_centrifuge.tooltip", "§7Fire Cyclone");
-
-        // Electrolyzer
-        provider.add("machine.gtceu.lv_electrolyzer.tooltip", "§7Electrolyzing Molecules");
-        provider.add("machine.gtceu.mv_electrolyzer.tooltip", "§7Electrolyzing Molecules");
-        provider.add("machine.gtceu.hv_electrolyzer.tooltip", "§7Electrolyzing Molecules");
-        provider.add("machine.gtceu.ev_electrolyzer.tooltip", "§7Electrolyzing Molecules");
-        provider.add("machine.gtceu.iv_electrolyzer.tooltip", "§7Molecular Disintegrator E-4906");
-        provider.add("machine.gtceu.luv_electrolyzer.tooltip", "§7Molecular Disintegrator E-4907");
-        provider.add("machine.gtceu.zpm_electrolyzer.tooltip", "§7Molecular Disintegrator E-4908");
-        provider.add("machine.gtceu.uv_electrolyzer.tooltip", "§7Atomic Ionizer");
-        provider.add("machine.gtceu.uhv_electrolyzer.tooltip", "§7Atomic Ionizer");
-        provider.add("machine.gtceu.uev_electrolyzer.tooltip", "§7Atomic Ionizer");
-        provider.add("machine.gtceu.uiv_electrolyzer.tooltip", "§7Atomic Ionizer");
-        provider.add("machine.gtceu.uxv_electrolyzer.tooltip", "§7Atomic Ionizer");
-        provider.add("machine.gtceu.opv_electrolyzer.tooltip", "§7Atomic Ionizer");
-
-        // Lathe
-        provider.add("machine.gtceu.lv_lathe.tooltip", "§7Produces Rods more efficiently");
-        provider.add("machine.gtceu.mv_lathe.tooltip", "§7Produces Rods more efficiently");
-        provider.add("machine.gtceu.hv_lathe.tooltip", "§7Produces Rods more efficiently");
-        provider.add("machine.gtceu.ev_lathe.tooltip", "§7Produces Rods more efficiently");
-        provider.add("machine.gtceu.iv_lathe.tooltip", "§7Turn-O-Matic L-5906");
-        provider.add("machine.gtceu.luv_lathe.tooltip", "§7Turn-O-Matic L-5907");
-        provider.add("machine.gtceu.zpm_lathe.tooltip", "§7Turn-O-Matic L-5908");
-        provider.add("machine.gtceu.uv_lathe.tooltip", "§7Rotation Grinder");
-        provider.add("machine.gtceu.uhv_lathe.tooltip", "§7Rotation Grinder");
-        provider.add("machine.gtceu.uev_lathe.tooltip", "§7Rotation Grinder");
-        provider.add("machine.gtceu.uiv_lathe.tooltip", "§7Rotation Grinder");
-        provider.add("machine.gtceu.uxv_lathe.tooltip", "§7Rotation Grinder");
-        provider.add("machine.gtceu.opv_lathe.tooltip", "§7Rotation Grinder");
-
-        // Ore Washer
-        provider.add("machine.gtceu.lv_ore_washer.tooltip", "§7Getting more Byproducts from your Ores");
-        provider.add("machine.gtceu.mv_ore_washer.tooltip", "§7Getting more Byproducts from your Ores");
-        provider.add("machine.gtceu.hv_ore_washer.tooltip", "§7Getting more Byproducts from your Ores");
-        provider.add("machine.gtceu.ev_ore_washer.tooltip", "§7Getting more Byproducts from your Ores");
-        provider.add("machine.gtceu.iv_ore_washer.tooltip", "§7Repurposed Laundry-Washer I-360");
-        provider.add("machine.gtceu.luv_ore_washer.tooltip", "§7Repurposed Laundry-Washer I-361");
-        provider.add("machine.gtceu.zpm_ore_washer.tooltip", "§7Repurposed Laundry-Washer I-362");
-        provider.add("machine.gtceu.uv_ore_washer.tooltip", "§7Miniature Car Wash");
-        provider.add("machine.gtceu.uhv_ore_washer.tooltip", "§7Miniature Car Wash");
-        provider.add("machine.gtceu.uev_ore_washer.tooltip", "§7Miniature Car Wash");
-        provider.add("machine.gtceu.uiv_ore_washer.tooltip", "§7Miniature Car Wash");
-        provider.add("machine.gtceu.uxv_ore_washer.tooltip", "§7Miniature Car Wash");
-        provider.add("machine.gtceu.opv_ore_washer.tooltip", "§7Miniature Car Wash");
-
-        // Electric Furnace
-        standardTooltips(provider, "gtceu",
-                "electric_furnace",
-                "Not like using a Commodore 64",
-                "Electron Excitement Processor",
-                "Atom Stimulator");
-
-        // Alloy Smelter
-        standardTooltips(provider, "gtceu",
-                "alloy_smelter",
-                "HighTech combination Smelter",
-                "Alloy Integrator",
-                "Metal Amalgamator");
-
-        // Arc Furnace
-        standardTooltips(provider, "gtceu",
-                "arc_furnace",
-                "Who needs a Blast Furnace?",
-                "Discharge Heater",
-                "Short Circuit Heater");
-
-        // Assembler
-        standardTooltips(provider, "gtceu",
-                "assembler",
-                "Avengers, Assemble!",
-                "NOT a Crafting Table",
-                "Assembly Constructor");
-
-        // Autoclave
-        standardTooltips(provider, "gtceu",
-                "autoclave",
-                "Crystallizing your Dusts",
-                "Pressure Cooker",
-                "Encumbrance Unit");
-
-        // Bender
-        standardTooltips(provider, "gtceu",
-                "bender",
-                "Boo, he's bad! We want BENDER!!!",
-                "Shape Distorter",
-                "Matter Deformer");
-
-        // Brewery
-        standardTooltips(provider, "gtceu",
-                "brewery",
-                "Compact and efficient potion brewing",
-                "Brewing your Drinks",
-                "Brew Rusher");
-
-        // Canner
-        standardTooltips(provider, "gtceu",
-                "canner",
-                "Puts things into and out of Containers",
-                "Can Operator",
-                "Can Actuator");
-
-        // Chemical Bath
-        standardTooltips(provider, "gtceu",
-                "chemical_bath",
-                "Bathing Ores in Chemicals to separate them",
-                "Chemical Soaker",
-                "Chemical Dunktron");
-
-        // Chemical Reactor
-        standardTooltips(provider, "gtceu",
-                "chemical_reactor",
-                "Letting Chemicals react with each other",
-                "Chemical Performer",
-                "Reaction Catalyzer");
-
-        // Compressor
-        standardTooltips(provider, "gtceu",
-                "compressor",
-                "Compress-O-Matic C77",
-                "Singularity Condenser",
-                "Matter Constrictor");
-
-        // Cutter
-        standardTooltips(provider, "gtceu",
-                "cutter",
-                "Slice'N Dice",
-                "Matter Cleaver",
-                "Object Divider");
-
-        // Distillery
-        standardTooltips(provider, "gtceu",
-                "distillery",
-                "Extracting most relevant Parts of Fluids",
-                "Condensation Separator",
-                "Fraction Splitter");
-
-        // Electromagnetic Separator
-        standardTooltips(provider, "gtceu",
-                "electromagnetic_separator",
-                "Separating the magnetic Ores from the rest",
-                "EM Categorizer",
-                "EMF Dispeller");
-
-        // Extractor
-        standardTooltips(provider, "gtceu",
-                "extractor",
-                "Dejuicer-Device of Doom - D123",
-                "Vacuum Extractinator",
-                "Liquefying Sucker");
-
-        // Extruder
-        standardTooltips(provider, "gtceu",
-                "extruder",
-                "Universal Machine for Metal Working",
-                "Material Displacer",
-                "Shape Driver");
-
-        // Fermenter
-        standardTooltips(provider, "gtceu",
-                "fermenter",
-                "Fermenting Fluids",
-                "Fermentation Hastener",
-                "Respiration Controller");
-
-        // Fluid Heater
-        standardTooltips(provider, "gtceu",
-                "fluid_heater",
-                "Heating up your Fluids",
-                "Heat Infuser",
-                "Thermal Imbuer");
-
-        // Fluid Solidifier
-        standardTooltips(provider, "gtceu",
-                "fluid_solidifier",
-                "Cools Fluids down to form Solids",
-                "Not an Ice Machine",
-                "Fluid Petrificator");
-
-        // Forge Hammer
-        standardTooltips(provider, "gtceu",
-                "forge_hammer",
-                "Stop, Hammertime!",
-                "Plate Forger",
-                "Impact Modulator");
-
-        // Forming Press
-        standardTooltips(provider, "gtceu",
-                "forming_press",
-                "Imprinting Images into things",
-                "Object Layerer",
-                "Surface Shifter");
-
-        // Mixer
-        standardTooltips(provider, "gtceu",
-                "mixer",
-                "Will it Blend?",
-                "Matter Organizer",
-                "Material Homogenizer");
-
-        // Packer
-        standardTooltips(provider, "gtceu",
-                "packer",
-                "Puts things into and Grabs things out of Boxes",
-                "Boxinator",
-                "Amazon Warehouse");
-
-        // Polarizer
-        standardTooltips(provider, "gtceu",
-                "polarizer",
-                "Bipolarising your Magnets",
-                "Magnetism Inducer",
-                "Magnetic Field Rearranger");
-
-        // Sifter
-        standardTooltips(provider, "gtceu",
-                "sifter",
-                "Stay calm and keep sifting",
-                "Sponsored by TFC",
-                "Pulsation Filter");
-
-        // Wiremill
-        standardTooltips(provider, "gtceu",
-                "wiremill",
-                "Produces Wires more efficiently",
-                "Ingot Elongator",
-                "Wire Transfigurator");
-
-        // Circuit Assembler
-        standardTooltips(provider, "gtceu",
-                "circuit_assembler",
-                "Pick-n-Place all over the place",
-                "Electronics Manufacturer",
-                "Computation Factory");
-
-        // Mass Fabricator
-        standardTooltips(provider, "gtceu",
-                "mass_fabricator",
-                "UUM Matter * Fabrication Squared",
-                "Genesis Factory",
-                "Existence Initiator");
-
-        // Replicator
-        standardTooltips(provider, "gtceu",
-                "replicator",
-                "Producing the Purest of Elements",
-                "Matter Paster",
-                "Elemental Composer");
-
-        // Scanner
-        standardTooltips(provider, "gtceu",
-                "scanner",
-                "Scans Materials and other things",
-                "Anomaly Detector",
-                "Electron Microscope");
-
-        // Gas Collector
-        provider.add("machine.gtceu.lv_gas_collector.tooltip",
-                "§7Collects Gas from the air depending on the dimension");
-        provider.add("machine.gtceu.mv_gas_collector.tooltip",
-                "§7Collects Gas from the air depending on the dimension");
-        provider.add("machine.gtceu.hv_gas_collector.tooltip",
-                "§7Collects Gas from the air depending on the dimension");
-        provider.add("machine.gtceu.ev_gas_collector.tooltip",
-                "§7Collects Gas from the air depending on the dimension");
-        provider.add("machine.gtceu.iv_gas_collector.tooltip",
-                "§7Collects Gas from the atmosphere depending on the dimension");
-        provider.add("machine.gtceu.luv_gas_collector.tooltip",
-                "§7Collects Gas from the atmosphere depending on the dimension");
-        provider.add("machine.gtceu.zpm_gas_collector.tooltip",
-                "§7Collects Gas from the atmosphere depending on the dimension");
-        provider.add("machine.gtceu.uv_gas_collector.tooltip",
-                "§7Collects Gas from the solar system depending on the dimension");
-        provider.add("machine.gtceu.uhv_gas_collector.tooltip",
-                "§7Collects Gas from the solar system depending on the dimension");
-        provider.add("machine.gtceu.uev_gas_collector.tooltip",
-                "§7Collects Gas from the solar system depending on the dimension");
-        provider.add("machine.gtceu.uiv_gas_collector.tooltip",
-                "§7Collects Gas from the solar system depending on the dimension");
-        provider.add("machine.gtceu.uxv_gas_collector.tooltip",
-                "§7Collects Gas from the solar system depending on the dimension");
-        provider.add("machine.gtceu.opv_gas_collector.tooltip",
-                "§7Collects Gas from the universe depending on the dimension");
-
-        // Rock Breaker
-        provider.add("machine.gtceu.lv_rock_crusher.tooltip", "§7Place Water and Lava horizontally adjacent");
-        provider.add("machine.gtceu.mv_rock_crusher.tooltip", "§7Place Water and Lava horizontally adjacent");
-        provider.add("machine.gtceu.hv_rock_crusher.tooltip", "§7Place Water and Lava horizontally adjacent");
-        provider.add("machine.gtceu.ev_rock_crusher.tooltip", "§7Place Water and Lava horizontally adjacent");
-        provider.add("machine.gtceu.iv_rock_crusher.tooltip", "§7Cryogenic Magma Solidifier R-8200");
-        provider.add("machine.gtceu.luv_rock_crusher.tooltip", "§7Cryogenic Magma Solidifier R-9200");
-        provider.add("machine.gtceu.zpm_rock_crusher.tooltip", "§7Cryogenic Magma Solidifier R-10200");
-        provider.add("machine.gtceu.uv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
-        provider.add("machine.gtceu.uhv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
-        provider.add("machine.gtceu.uev_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
-        provider.add("machine.gtceu.uiv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
-        provider.add("machine.gtceu.uxv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
-        provider.add("machine.gtceu.opv_rock_crusher.tooltip", "§7Volcanic Formation Chamber");
-    }
-
-    private static void generateGeneralMultiblockTooltips(GTLangProvider provider) {
-        provider.add("gtceu.multiblock.dimension", "§eDimensions: §r%sx%sx%s");
-
-        provider.add("gtceu.machine.parallel_limit", "Can run up to §b%d§r§7 Recipes at once.");
-    }
-
     private static void generateCustomMultiblockTooltips(GTLangProvider provider) {
         // Primitive Water Pump
         provider.add("machine.gtceu.primitive_pump.tooltip", "Endervoir at Home");
@@ -604,35 +267,8 @@ public class MachineLang {
         provider.addMultiline("gtceu.multiblock.primitive_water_pump.extra2",
                 "Hatch Multipliers:\n  Pump Hatch: 1x\n  ULV Output Hatch: 2x\n  LV Output Hatch: 4x\n\nWhile raining in the Pump's Biome, the total water production will be increased by 50%%.");
 
-        // Primitive Blast Furnace
-        provider.add("machine.gtceu.primitive_blast_furnace.tooltip", "Making your first Steel");
-        provider.add("gtceu.multiblock.primitive_blast_furnace.bronze.description",
-                "The Primitive Blast Furnace (PBF) is a multiblock structure used for cooking steel in the early game. Although not very fast, it will provide you with steel for your first setups.");
-
         // Electric Blast Furnace
-        provider.add("machine.gtceu.electric_blast_furnace.tooltip", "Where's the electric smoker?");
         provider.add("gtceu.multiblock.blast_furnace.max_temperature", "Heat Capacity: %s");
-        provider.addMultiLang("machine.gtceu.electric_blast_furnace.tooltip",
-                "For every §f900K§7 above the recipe temperature, a multiplicative §f95%%§7 energy multiplier is applied pre-overclocking.",
-                "For every §f1800K§7 above the recipe temperature, one overclock becomes §f100%% efficient§7 (perfect overclock).",
-                "For every voltage tier above §bMV§7, temperature is increased by §f100K§7.");
-        provider.add("gtceu.multiblock.electric_blast_furnace.description",
-                "The Electric Blast Furnace (EBF) is a multiblock structure used for smelting alloys, cooking metals and refining ores. It is required for obtaining high-tier alloys and metals, such as aluminium, stainless steel, titanium, and naquadah alloy.");
-
-        // Coke Oven
-        provider.add("machine.gtceu.coke_oven.tooltip", "Making better fuels for Steel and Power");
-        provider.add("gtceu.multiblock.coke_oven.description",
-                "The Coke Oven is a multiblock structure used for getting coke and creosote in the early game. It doesn't require fuel and has an internal tank of 32 buckets for creosote. Its inventory can be accessed via its Coke Oven Hatch.");
-
-        // Steam Grinder
-        provider.add("machine.gtceu.steam_grinder.tooltip", "A multiblock Macerator without the Byproducts");
-        provider.add("gtceu.multiblock.steam_grinder.description",
-                "A Multiblock Macerator at the Steam Age. Requires at least 14 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch.");
-
-        // Steam Oven
-        provider.add("machine.gtceu.steam_oven.tooltip", "Not to be confused with Multi-Smelter");
-        provider.add("gtceu.multiblock.steam_oven.description",
-                "A Multi Smelter at the Steam Age. Requires at least 6 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch. Steam Hatch must be on the bottom layer, no more than one.");
 
         // General Steam Multiblocks
         provider.add("gtceu.multiblock.steam.low_steam", "Not enough Steam to run!");
@@ -644,12 +280,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.require_steam_parts", "Requires Steam Hatches and Buses!");
 
         // Large Boiler
-        provider.add("machine.gtceu.bronze_large_boiler.tooltip", "We need more Steam!");
-        provider.add("machine.gtceu.steel_large_boiler.tooltip", "Charcoal Incinerator");
-        provider.add("machine.gtceu.titanium_large_boiler.tooltip", "Where's the Magic Super Fuel?");
-        provider.add("machine.gtceu.tungstensteel_large_boiler.tooltip", "How do you even fuel this thing?");
-        provider.add("gtceu.multiblock.large_boiler.description",
-                "Large Boilers are multiblocks that generate steam from an energy source and water. Said energy source is either any Solid Fuel with a Burn Time, or a Diesel/Semi-Fluid Fuel. Can be throttled back in increments of 5%% to reduce Steam output and Fuel consumption.");
         provider.add("gtceu.multiblock.large_boiler.max_temperature",
                 "Max Temperature: %dK, Steam Production: %dmB/t");
         provider.add("gtceu.multiblock.large_boiler.efficiency", "Efficiency: %s");
@@ -673,46 +303,18 @@ public class MachineLang {
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_discount", "Heating Coil EU Boost: %sx");
 
         // Large Chemical Reactor
-        provider.add("machine.gtceu.large_chemical_reactor.tooltip", "Black Box Reactor");
         provider.add("gtceu.multiblock.large_chemical_reactor.description",
                 "The Large Chemical Reactor performs chemical reactions at 100%% energy efficiency. Overclocks multiply both speed and energy by 4. The multiblock requires exactly 1 Cupronickel Coil Block, which must be placed adjacent to the PTFE Pipe casing located in the center.");
 
         // Vacuum Freezer
-        provider.add("machine.gtceu.vacuum_freezer.tooltip", "Aluminium Ice Box");
         provider.add("gtceu.multiblock.vacuum_freezer.description",
                 "The Vacuum Freezer is a multiblock structure mainly used for freezing Hot Ingots into regular Ingots. However, it can also freeze other substances, such as Water.");
 
         // Pyrolyse Oven
-        provider.add("gtceu.multiblock.pyrolyse_oven.description",
-                "The Pyrolyse Oven is a multiblock structure used for turning Logs into Charcoal and Creosote Oil, or Ash and Heavy Oil.");
-        provider.add("machine.gtceu.pyrolyse_oven.tooltip", "Electric Coke Oven");
-        provider.add("machine.gtceu.pyrolyse_oven.coil_tooltip",
-                "§6Cupronickel §7coils are §f25%%§7 slower. Every coil after §bKanthal§7 increases speed by §f50%%§7.");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
 
-        // Implosion Compressor
-        provider.add("machine.gtceu.implosion_compressor.tooltip", "The only Machine you want to go Boom");
-        provider.add("gtceu.multiblock.implosion_compressor.description",
-                "The Implosion Compressor is a multiblock structure that uses explosives to turn gem dusts into their corresponding gems.");
-
         // Cracker
-        provider.add("machine.gtceu.cracker.tooltip", "Makes Oil useful");
-        provider.add("machine.gtceu.cracker.coil_tooltip",
-                "Every coil after §6Cupronickel§7 reduces energy usage by §f10%%§7.");
-        provider.add("gtceu.multiblock.cracker.description",
-                "The Oil Cracking Unit is a multiblock structure used for turning Light and Heavy Fuel into their Cracked variants.");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
-
-        // Distillation Tower
-        provider.add("machine.gtceu.distillation_tower.tooltip", "Fluid Refinery");
-        provider.add("gtceu.multiblock.distillation_tower.description",
-                "The Distillation Tower is a multiblock structure used for distilling the various types of Oil and some of their byproducts. Each layer must have exactly one output hatch, starting from the second one. The bottom layer can output items and insert fluids in any position.");
-        provider.add("gtceu.multiblock.distillation_tower.distilling_fluid", "Distilling %s");
-
-        // Assembly Line
-        provider.add("machine.gtceu.assembly_line.tooltip", "Not a multiblock Assembling Machine!");
-        provider.add("gtceu.multiblock.assembly_line.description",
-                "The Assembly Line is a large multiblock structure consisting of 5 to 16 \"slices\". In theory, it's large Assembling Machine, used for creating advanced crafting components.");
 
         // Combustion Engine
         provider.add("machine.gtceu.large_combustion_engine.tooltip", "Fuel Ignition Chamber");
@@ -732,12 +334,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted",
                 "§bLiquid Oxygen boosted.");
-        provider.add("gtceu.multiblock.large_combustion_engine.boost_disallowed",
-                "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
-        provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost",
-                "Supply Oxygen to boost.");
-        provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
-                "Supply Liquid Oxygen to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
 
         // Turbines
@@ -761,20 +357,17 @@ public class MachineLang {
                 "Large Turbines are multiblocks that generate power from steam, gases, and plasma by having them spin the turbine's rotor. Energy output is based on rotor efficiency and current speed of turbine. Gearbox casings are used in the center of the structure.");
 
         // Fusion Reactor
-        provider.add("machine.gtceu.luv_fusion_reactor.tooltip", "Atomic Alloy Smelter");
-        provider.add("machine.gtceu.zpm_fusion_reactor.tooltip", "A SUN DOWN ON EARTH");
-        provider.add("machine.gtceu.uv_fusion_reactor.tooltip", "A WHITE DWARF DOWN ON YOUR BASE");
         provider.add("gtceu.machine.fusion_reactor.capacity", "§7Maximum Energy Storage: §e%sM EU");
         provider.add("gtceu.machine.fusion_reactor.overclocking",
                 "Overclocks double energy and halve duration.");
-        provider.add("gtceu.multiblock.luv_fusion_reactor.description",
+        provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
+        provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
+        provider.add("gtceu.machine.luv_fusion_reactor.description",
                 "The Fusion Reactor MK 1 is a large multiblock structure used for fusing elements into heavier ones. It can only use LuV, ZPM, and UV Energy Hatches. For every Hatch it has, its buffer increases by 10M EU, and has a maximum of 160M.");
-        provider.add("gtceu.multiblock.zpm_fusion_reactor.description",
+        provider.add("gtceu.machine.zpm_fusion_reactor.description",
                 "The Fusion Reactor MK 2 is a large multiblock structure used for fusing elements into heavier ones. It can only use ZPM and UV Energy Hatches. For every Hatch it has, its buffer increases by 20M EU, and has a maximum of 320M.");
         provider.add("gtceu.multiblock.uv_fusion_reactor.description",
                 "The Fusion Reactor MK 3 is a large multiblock structure used for fusing elements into heavier ones. It can only use UV Energy Hatches. For every Hatch it has, its buffer increases by 40M EU, and has a maximum of 640M.");
-        provider.add("gtceu.multiblock.fusion_reactor.energy", "EU: %d / %d");
-        provider.add("gtceu.multiblock.fusion_reactor.heat", "Heat: %d");
 
         // Large Miner
         provider.add("machine.gtceu.ev_large_miner.tooltip", "Digging Ore instead of You");
@@ -846,8 +439,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.cleanroom.clean_state", "Status: §aCLEAN");
         provider.add("gtceu.multiblock.cleanroom.dirty_state", "Status: §4CONTAMINATED");
         provider.add("gtceu.multiblock.cleanroom.clean_amount", "Cleanliness: §a%s%%");
-        provider.addMultiline("gtceu.multiblock.dimensions", "Dimensions: \n" +
-                "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s ");
 
         // Power Substation
         provider.addMultiLang("gtceu.machine.power_substation.tooltip",
@@ -870,8 +461,6 @@ public class MachineLang {
         provider.add("gtceu.multiblock.power_substation.time_to_fill", "§7Time to fill: %s");
         provider.add("gtceu.multiblock.power_substation.time_to_drain", "§7Time to drain: %s");
         provider.add("gtceu.multiblock.power_substation.time_forever", "Forever");
-        provider.add("gtceu.multiblock.power_substation.under_one_hour_left",
-                "Less than 1 hour until fully drained!");
 
         // Active Transformer
         provider.addMultiLang("gtceu.machine.active_transformer.tooltip",
@@ -885,41 +474,12 @@ public class MachineLang {
         provider.add("gtceu.multiblock.active_transformer.max_output", "§cMax Output: §f%s EU/t");
         provider.add("gtceu.multiblock.active_transformer.danger_enabled", "§c§bDANGER: Explosive");
 
-        // Charcoal Pile Ignitor
-        provider.add("machine.gtceu.charcoal_pile_igniter.tooltip", "Underground fuel bakery");
-        provider.addMultiLang("gtceu.machine.charcoal_pile.tooltip",
-                "Turns Logs into §aCharcoal§7 when §cignited§7.",
-                "Right Click with fire-starting items to start.",
-                "Pyrolysis occurs in up to a §b9x4x9§7 space beneath.",
-                "Logs must be not be exposed to §eAir§7!");
-        provider.addMultiline("gtceu.multiblock.charcoal_pile.description",
-                """
-                        Converts logs into Brittle Charcoal in a 9x4x9 area beneath it.
-
-                        The floor of the pit must be made from bricks, and any ground-related block can be used for the walls and roof.
-                        No air can be inside the pit.
-
-                        Larger pits take more time to process logs, but are more efficient.""");
-
         // Central Monitor
         provider.add("gtceu.multiblock.central_monitor.low_power", "Low Power");
         provider.add("gtceu.multiblock.central_monitor.height", "Screen Height:");
         provider.add("gtceu.multiblock.central_monitor.width", "Screen Width: %d");
         provider.add("gtceu.multiblock.central_monitor.height_modify", "Modify Height: %d");
-        provider.addMultiLang("gtceu.multiblock.central_monitor.tooltip",
-                "This is a machine that monitors machines proxied by the Digital Interface Cover. You can easily monitor the Fluids, Items, Energy, and States of machines proxied in Energy Network.",
-                "You can build the central monitor screen from 3X2 to %dX%d (width X height).",
-                "The default height is 3. You can adjust the screen height in the GUI before the structure is formed.",
-                "Energy consumption: %d EU/s for each screen.");
-        provider.addMultiLang("gtceu.multiblock.monitor_screen.tooltip",
-                "The GUI can be opened with a right-click of a screwdriver.",
-                "The proxy mode of Digital Interface Cover can delegate machines' capabilities and GUI. (Yes, you can connect pipes directly on the screen.)",
-                "The screen also supports plugins.");
         provider.add("gtceu.machine.central_monitor.tooltip", "But can it run Doom?");
-
-        // Processing Array
-        provider.add("gtceu.machine.processing_array.tooltip", "When a few Machines just doesn't cut it");
-        provider.add("gtceu.machine.advanced_processing_array.tooltip", "Parallelize the World");
 
         // Research Station
         provider.addMultiLang("gtceu.machine.research_station.tooltip",
@@ -992,12 +552,6 @@ public class MachineLang {
     }
 
     private static void generateCustomMultiblockPartTooltips(GTLangProvider provider) {
-        // Primitive Pump Hatch
-        provider.add("gtceu.machine.pump_hatch.tooltip", "Primitive Fluid Output for Water Pump");
-
-        // Coke Oven Hatch
-        provider.add("gtceu.machine.coke_oven_hatch.tooltip", "§7Allows automation access for the Coke Oven.");
-
         // Maintenance Hatch
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
         provider.addMultiline("gtceu.machine.maintenance_hatch_configurable.tooltip",
@@ -1041,19 +595,20 @@ public class MachineLang {
         provider.add("gtceu.machine.fluid_hatch.import.tooltip", "Fluid Input for Multiblocks");
         provider.add("gtceu.machine.fluid_hatch.export.tooltip", "Fluid Output for Multiblocks");
 
+        // ME linked machines
+
+        provider.add("gtceu.gui.me_network.online", "Network Status: §2Online§r");
+        provider.add("gtceu.gui.me_network.offline", "Network Status: §4Offline§r");
+        provider.add("gtceu.gui.waiting_list", "Sending Queue:");
+        provider.add("gtceu.gui.config_slot", "§fConfig Slot§r");
+        provider.add("gtceu.gui.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
+        provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.set_only", "§7Click to §bset§7 config slot.§r");
+        provider.add("gtceu.gui.config_slot.auto_pull_managed", "§4Disabled:§7 Managed by Auto-Pull");
+        provider.add("gtceu.gui.me_bus.auto_pull_button", "Click to toggle automatic item pulling from ME");
+
         // Pattern Buffer/Proxy
-        provider.add("block.gtceu.pattern_buffer.desc.0",
-                "§fAllows direct §6AE2 pattern storage §ffor GregTech Multiblocks.");
-        provider.add("block.gtceu.pattern_buffer.desc.1",
-                "§fAE2 Patterns can utilize anything stored in the §6shared inventory §fwidget.");
-        provider.add("block.gtceu.pattern_buffer.desc.2",
-                "§fLink §6Pattern Buffer Proxies §fwith a §bdatastick §fto link machines together!");
-        provider.add("block.gtceu.pattern_buffer_proxy.desc.0",
-                "§fAllows linking many machines to a singular §6ME Pattern Buffer§f.");
-        provider.add("block.gtceu.pattern_buffer_proxy.desc.1",
-                "§fAll connected proxies will share the patterns held within the §6original buffer§f.");
-        provider.add("block.gtceu.pattern_buffer_proxy.desc.2",
-                "§fLet the factory grow!");
         provider.add("gtceu.tooltip.proxy_bind",
                 "§fBinding to a Pattern Buffer at %s %s %s");
 
@@ -1178,9 +733,6 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.advanced_computation_component.damaged.tooltip",
                 "It only cost an arm and a leg");
 
-        // Object Holder
-        provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
-
         // Passthrough Hatch
         provider.add("gtceu.machine.passthrough_hatch_item.tooltip", "Sends Items from one Side to the other");
         provider.add("gtceu.machine.passthrough_hatch_fluid.tooltip",
@@ -1197,13 +749,6 @@ public class MachineLang {
         provider.addMultiLang("gtceu.machine.laser_target_hatch.tooltip",
                 "Receiving power from distance",
                 "§cLaser cables must be in a straight line!§7");
-
-        // Processing Array Machine Hatch
-        provider.add("gtceu.machine.machine_hatch.locked", "Machine Interface Locked");
-        provider.add("gtceu.machine.machine_hatch.tooltip",
-                "Specialized Access Bus that only holds valid items");
-        provider.add("gtceu.machine.machine_hatch.processing_array",
-                "When in the §eProcessing Array§7, only holds machines that work in the §eProcessing Array");
     }
 
     private static void generateCentralMonitorGuiLang(GTLangProvider provider) {
@@ -1528,7 +1073,7 @@ public class MachineLang {
                 "Slot number: %d");
         provider.addMultiLang("gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
                 "Input placeholder to be used in place of %s '{}' here.",
-                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");;
+                "For example, you can have a string 'Energy: {}/{} EU' and 'energy' and 'energyCapacity' in these text boxes.");
         provider.add("gtceu.computer_monitor_cover.error.no_placeholder", "No such placeholder: '%s'!");
         provider.add("gtceu.computer_monitor_cover.error.unclosed_bracket", "Unclosed bracket!");
         provider.add("gtceu.computer_monitor_cover.error.unexpected_bracket", "Unexpected closing bracket!");
@@ -1550,98 +1095,6 @@ public class MachineLang {
                 "Place the cover on the target block, right-click it with a data stick and put that data stick into a data access hatch in the multiblock.",
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
-    }
-
-    /**
-     * Generates tooltips for both variants of steam machine
-     */
-    private static void makeSteamMachineTooltip(GTLangProvider provider, String modId, String machineName,
-                                                String lpTooltip, String hpTooltip) {
-        provider.add("machine.%s.lp_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + lpTooltip);
-        provider.add("machine.%s.hp_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + hpTooltip);
-    }
-
-    /**
-     * Generates tooltips for LV-HV machines
-     */
-    private static void makeElectricMachineTooltipLVtoHV(GTLangProvider provider, String modId, String machineName,
-                                                         String lvTooltip, String mvTooltip, String hvTooltip) {
-        makeElectricMachineTooltipULVtoMAX(provider, modId, machineName,
-                null, lvTooltip, mvTooltip, hvTooltip,
-                null, null, null, null,
-                null, null, null, null,
-                null, null, null);
-    }
-
-    /**
-     * Generates tooltips for LV-UV machines
-     */
-    private static void makeElectricMachineTooltipLVtoUV(GTLangProvider provider, String modId, String machineName,
-                                                         String lvTooltip, String mvTooltip, String hvTooltip,
-                                                         String evTooltip, String ivTooltip, String luvTooltip,
-                                                         String zpmTooltip, String uvTooltip) {
-        makeElectricMachineTooltipULVtoMAX(provider, modId, machineName,
-                null, lvTooltip, mvTooltip, hvTooltip,
-                evTooltip, ivTooltip, luvTooltip, zpmTooltip,
-                uvTooltip, null, null, null,
-                null, null, null);
-    }
-
-    /**
-     * Generates tooltips for ULV-MAX Machines <br>
-     * If a parameter is {@code null}, it won't be added.
-     */
-    private static void makeElectricMachineTooltipULVtoMAX(GTLangProvider provider, String modId, String machineName,
-                                                           String ulvTooltip, String lvTooltip, String mvTooltip,
-                                                           String hvTooltip, String evTooltip, String ivTooltip,
-                                                           String luvTooltip, String zpmTooltip, String uvTooltip,
-                                                           String uhvTooltip, String uevTooltip, String uivTooltip,
-                                                           String uxvTooltip, String opvTooltip, String maxTooltip) {
-        if (ulvTooltip != null) {
-            provider.add("machine.%s.ulv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + ulvTooltip);
-        }
-        if (lvTooltip != null) {
-            provider.add("machine.%s.lv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + lvTooltip);
-        }
-        if (mvTooltip != null) {
-            provider.add("machine.%s.mv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + mvTooltip);
-        }
-        if (hvTooltip != null) {
-            provider.add("machine.%s.hv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + hvTooltip);
-        }
-        if (evTooltip != null) {
-            provider.add("machine.%s.ev_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + evTooltip);
-        }
-        if (ivTooltip != null) {
-            provider.add("machine.%s.iv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + ivTooltip);
-        }
-        if (luvTooltip != null) {
-            provider.add("machine.%s.luv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + luvTooltip);
-        }
-        if (zpmTooltip != null) {
-            provider.add("machine.%s.zpm_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + zpmTooltip);
-        }
-        if (uvTooltip != null) {
-            provider.add("machine.%s.uv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + uvTooltip);
-        }
-        if (uhvTooltip != null) {
-            provider.add("machine.%s.uhv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + uhvTooltip);
-        }
-        if (uevTooltip != null) {
-            provider.add("machine.%s.uev_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + uevTooltip);
-        }
-        if (uivTooltip != null) {
-            provider.add("machine.%s.uiv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + uivTooltip);
-        }
-        if (uxvTooltip != null) {
-            provider.add("machine.%s.uxv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + uxvTooltip);
-        }
-        if (opvTooltip != null) {
-            provider.add("machine.%s.opv_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + opvTooltip);
-        }
-        if (maxTooltip != null) {
-            provider.add("machine.%s.max_%s.tooltip".formatted(modId, machineName), ChatFormatting.GRAY + maxTooltip);
-        }
     }
 
     public static void generateMultiblockKeys(GTLangProvider provider) {
@@ -1732,8 +1185,8 @@ public class MachineLang {
         provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
 
         // Batching
-        provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
-        provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
+        provider.add("gtceu.machine.batching.enabled", "Batching Enabled");
+        provider.add("gtceu.machine.batching.disabled", "Batching Disabled");
 
         // Active RecipeMap
         provider.add("gtceu.multiblock.multiple_recipemaps.header", "Machine Mode:");
@@ -1750,24 +1203,6 @@ public class MachineLang {
         provider.add("machine.gtceu.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
         provider.add("machine.gtceu.available_recipe_map_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
 
-        // Multiblock Preview
-        provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
-        provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
-        provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
-        provider.add("gtceu.multiblock.pattern.error", "Expected components (%s) at (%s).");
-        provider.add("gtceu.multiblock.pattern.error.limited_exact", "§cExactly: %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited_within", "§cBetween %d and %d§r");
-        provider.addMultiLang("gtceu.multiblock.pattern.error.limited", "§cMaximum: %d§r", "§cMinimum: %d§r",
-                "§cMaximum: %d per layer§r", "§cMinimum: %d per layer§r");
-        provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
-        provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
-        provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");
-        provider.add("gtceu.multiblock.pattern.clear_amount_1", "§6Must have a clear 1x1x1 space in front§r");
-        provider.add("gtceu.multiblock.pattern.clear_amount_3", "§6Must have a clear 3x3x1 space in front§r");
-        provider.add("gtceu.multiblock.pattern.single", "§6Only this block can be used§r");
-        provider.add("gtceu.multiblock.pattern.location_end", "§cVery End§r");
-        provider.add("gtceu.multiblock.pattern.replaceable_air", "Replaceable by Air");
-
         // Computation
         provider.add("gtceu.multiblock.computation.max", "Max CWU/t: %s");
         provider.add("gtceu.multiblock.computation.usage", "Using: %s");
@@ -1776,16 +1211,8 @@ public class MachineLang {
                 "A Reception Hatch is linked to a machine which cannot bridge");
         provider.add("gtceu.multiblock.computation.not_enough_computation", "Machine needs more computation!");
 
-        // Hatch Collapsing
-        provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");
-        provider.add("gtceu.bus.collapse_false", "Bus will not collapse Items");
-        provider.add("gtceu.bus.collapse.error", "Bus must be attached to multiblock first");
-
         // XEI Categories
         provider.add("gtceu.auto_decomp.rotor", "Turbine Rotor");
         provider.add("gtceu.auto_decomp.tool", "Non-electric tool");
-
-        provider.add("gtceu.machine.canner.jei_description",
-                "You can fill and empty any fluid containers with the Fluid Canner (e.g. Buckets or Fluid Cells)");
     }
 }

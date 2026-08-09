@@ -101,7 +101,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 } else {
                     BlockPos p = part.getBlockPos();
                     pState.setError(new PatternStringError(Component.translatable(
-                            "gtceu.predicate_error.distillery.unexpected_hatch", p.getX(), p.getY(), p.getZ())));
+                            "multiblock.gtceu.pattern_error.distillery.unexpected_hatch", p.getX(), p.getY(),
+                            p.getZ())));
                     // GTCEu.LOGGER.error(
                     // "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
                     // getBlockPos());
@@ -111,7 +112,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             }
         } else {
             pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.missing_outputs")));
+                    new PatternStringError(
+                            Component.translatable("multiblock.gtceu.pattern_error.distillery.missing_outputs")));
             invalidateStructure(substructureName);
         }
     }
@@ -219,7 +221,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             }
 
             if (!applyFluidOutputs(recipe, FluidAction.SIMULATE, getMachine().getVoidingMode())) {
-                return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
+                return ActionResult.fail(Component.translatable("recipe_logic.gtceu.insufficient_out")
                         .append(": ")
                         .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
             }
@@ -268,7 +270,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 return ActionResult.SUCCESS;
             }
 
-            return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
+            return ActionResult.fail(Component.translatable("recipe_logic.gtceu.insufficient_out")
                     .append(": ")
                     .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
         }

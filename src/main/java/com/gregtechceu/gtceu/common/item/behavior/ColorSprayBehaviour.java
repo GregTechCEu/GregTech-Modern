@@ -161,7 +161,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         int remainingUses = getUsesLeft(stack);
         if (color != null) {
             tooltipComponents
-                    .add(Component.translatable("item.gtceu.behavior.spray_paint." + this.color.getSerializedName() + ".tooltip"));
+                    .add(Component.translatable(
+                            "item.gtceu.behavior.spray_paint." + this.color.getSerializedName() + ".tooltip"));
         } else {
             tooltipComponents.add(Component.translatable("item.gtceu.behavior.spray_paint.solvent.tooltip"));
         }

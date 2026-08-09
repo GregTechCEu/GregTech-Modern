@@ -87,7 +87,8 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = Component.translatable("integration.gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                        text = Component
+                                .translatable("integration.gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
@@ -98,7 +99,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                                 .translatable("integration.gtceu.jade.amperage_use",
                                         FormattingUtil.formatNumber2Places(minAmperage))
                                 .withStyle(ChatFormatting.RED)
-                                .append(Component.translatable("integration.gtceu.jade.at").withStyle(ChatFormatting.GREEN));
+                                .append(Component.literal(" @ ").withStyle(ChatFormatting.GREEN));
                         if (tier < GTValues.TIER_COUNT) {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
@@ -111,16 +112,19 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                                             .append(FormattingUtil.formatNumbers(speed))));
 
                         }
-                        text.append(Component.translatable("gtceu.universal.padded_parentheses",
-                                (Component.translatable("gtceu.recipe.eu.total",
-                                        FormattingUtil.formatNumbers(EUt))))
+                        text.append(Component.literal(" ("));
+                        text.append(Component.translatable("recipe.gtceu.eu.total",
+                                FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.WHITE));
+                        text.append(Component.literal(") "));
                     }
 
                     if (isInput) {
-                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ")
+                                .append(text));
                     } else {
-                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ")
+                                .append(text));
                         long generatorPower = recipeInfo.getLong("generatorPower");
                         if (generatorPower > 0 && generatorPower < EUt) {
                             tooltip.add(Component.translatable("integration.gtceu.jade.generator.output_too_small")
@@ -135,9 +139,9 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
 
                 if (!logic.getWaitingReasons().isEmpty() && logic.isWorkingEnabled()) {
                     Component status = logic.isWaiting() ?
-                            Component.translatable("gtceu.recipe_logic.recipe_waiting")
+                            Component.translatable("recipe_logic.gtceu.recipe_waiting")
                                     .withStyle(ChatFormatting.YELLOW) :
-                            Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
+                            Component.translatable("recipe_logic.gtceu.setup_fail").withStyle(ChatFormatting.RED);
                     tooltip.add(status);
                     logic.getWaitingReasons().forEach(tooltip::add);
                 }

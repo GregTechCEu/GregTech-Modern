@@ -46,8 +46,9 @@ public class MEPatternBufferProvider extends MachineInfoProvider<MEPatternBuffer
                               BlockEntity blockEntity, IPluginConfig config) {
         if (!data.getBoolean("formed")) return;
 
-        tooltip.add(Component.translatable("integration.gtceu.jade.pattern_buffer.proxies_bound", data.getInt("proxies"))
-                .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
+        tooltip.add(
+                Component.translatable("integration.gtceu.jade.pattern_buffer.proxies_bound", data.getInt("proxies"))
+                        .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
         readBufferTag(tooltip, data);
     }
 

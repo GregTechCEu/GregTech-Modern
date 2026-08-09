@@ -183,7 +183,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
                                 .withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(Text
-                        .dynamic(() -> Component.translatable("gtceu.universal.tooltip.working_area",
+                        .dynamic(() -> Component.translatable("machine.gtceu.miner.working_area",
                                 workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
@@ -237,7 +237,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
             return Collections.singletonList(
-                    Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+                    Component.translatable("machine.gtceu.miner.working_area", workingArea, workingArea));
         }
         return new ArrayList<>();
     }

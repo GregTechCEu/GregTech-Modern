@@ -45,8 +45,8 @@ public class GameStageCondition extends RecipeCondition<GameStageCondition> {
 
     @Override
     public Component getTooltips() {
-        if (isReverse) return Component.translatable("recipe.condition.gamestage.locked_stage", stageName);
-        return Component.translatable("recipe.condition.gamestage.unlocked_stage", stageName);
+        if (isReverse) return Component.translatable("recipe_condition.gtceu.gamestage.locked_stage", stageName);
+        return Component.translatable("recipe_condition.gtceu.gamestage.unlocked_stage", stageName);
     }
 
     @Override

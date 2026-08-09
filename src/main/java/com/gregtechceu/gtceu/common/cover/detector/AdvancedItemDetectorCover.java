@@ -129,19 +129,19 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
                         .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                         .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
-                        .tooltip(false, t -> t.add("cover.advanced_item_detector.invert.disabled"))
-                        .tooltip(true, t -> t.add("cover.advanced_item_detector.invert.disabled")))
+                        .tooltip(false, t -> t.add("cover.gtceu.advanced_item_detector.invert.disabled"))
+                        .tooltip(true, t -> t.add("cover.gtceu.advanced_item_detector.invert.disabled")))
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
                         .overlay(false, GTGuiTextures.BUTTON_LOCK)
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)
-                        .tooltip(false, t -> t.add("cover.advanced_detector.latch.disabled"))
-                        .tooltip(true, t -> t.add("cover.advanced_detector.latch.enabled")));
+                        .tooltip(false, t -> t.add("cover.gtceu.advanced_detector.latch.disabled"))
+                        .tooltip(true, t -> t.add("cover.gtceu.advanced_detector.latch.enabled")));
 
         GTMuiWidgets.createFilterRow(buttonRow, filterHandler, data, syncManager, settings);
 
-        column.child(coverUIRow().child(Text.lang("cover.advanced_item_detector.min").asWidget().width(50))
+        column.child(coverUIRow().child(Text.lang("cover.gtceu.advanced_item_detector.min").asWidget().width(50))
                 .child(GTMuiWidgets.createIntInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(110)))
-                .child(coverUIRow().child(Text.lang("cover.advanced_item_detector.max").asWidget().width(50))
+                .child(coverUIRow().child(Text.lang("cover.gtceu.advanced_item_detector.max").asWidget().width(50))
                         .child(GTMuiWidgets.createIntInputWithButtons(maxValueSync, () -> 0, () -> Integer.MAX_VALUE)
                                 .width(110)))
                 .child(buttonRow);

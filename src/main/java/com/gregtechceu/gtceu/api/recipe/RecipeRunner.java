@@ -117,7 +117,7 @@ public class RecipeRunner {
         if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
         if (!capabilityProxies.containsKey(io)) {
             return ActionResult.fail(
-                    Component.translatable("gtceu.recipe_logic.no_capabilities")
+                    Component.translatable("recipe_logic.gtceu.no_capabilities")
                             .append(Component.literal(": "))
                             .append(Component.translatable(io.getTooltip())),
                     null, io);

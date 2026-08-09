@@ -111,7 +111,7 @@ public abstract class RecipeCapability<T> {
     }
 
     public MutableComponent getName() {
-        return Component.translatable("recipe.capability.%s.name".formatted(id.getPath()));
+        return Component.translatable(id.toLanguageKey("recipe_capability"));
     }
 
     public MutableComponent getColoredName() {

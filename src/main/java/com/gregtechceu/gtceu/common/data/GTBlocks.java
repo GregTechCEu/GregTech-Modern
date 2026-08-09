@@ -72,7 +72,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -115,6 +117,9 @@ public class GTBlocks {
         var type = LaserPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
+                .setData(ProviderType.LANG,
+                        nameAndTooltipLang("Normal Laser Pipe",
+                                "§7Transmitting power with §fno loss§7 in straight lines"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -144,7 +149,9 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
-                .lang("Optical Fiber Cable")
+                .setData(ProviderType.LANG,
+                        nameAndTooltipLang("Optical Fiber Cable",
+                                "§7Transmitting §fComputation§7 or §fResearch Data§7"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -302,7 +309,8 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_STAINLESS_TURBINE = createCasingBlock("stainless_steel_turbine_casing",
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel"), "Stainless Turbine Casing");
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_TURBINE = createCasingBlock(
-            "tungstensteel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"), "Tungstensteel Turbine Casing");
+            "tungstensteel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"),
+            "Tungstensteel Turbine Casing");
 
     // Pipe casings
     public static final BlockEntry<Block> CASING_BRONZE_PIPE = createCasingBlock("bronze_pipe_casing",
@@ -407,8 +415,8 @@ public class GTBlocks {
 
     // Cleanroom
     public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
-    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
-    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
+    public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING, "Filter Casing", "Creates a §aParticle-Free§7 environment");
+    public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE, "Sterilizing Filter Casing", "Creates a §aSterilized§7 environment");
     public static final BlockEntry<GlassBlock> CLEANROOM_GLASS = createGlassCasingBlock("cleanroom_glass", GTCEu.id("block/casings/transparent/cleanroom_glass"), () -> RenderType::cutoutMipped);
 
     // Fireboxes
@@ -542,7 +550,6 @@ public class GTBlocks {
                 .register();
     }
 
-
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
         var entry = REGISTRATE
@@ -624,7 +631,7 @@ public class GTBlocks {
 
     private static BlockEntry<BatteryBlock> createBatteryBlock(IBatteryData batteryData, String lang) {
         var batteryBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
-                        p -> new BatteryBlock(p, batteryData))
+                p -> new BatteryBlock(p, batteryData))
                 .lang(lang)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, entityType) -> false))
@@ -686,7 +693,7 @@ public class GTBlocks {
         return casingBlock;
     }
 
-    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType) {
+    private static BlockEntry<Block> createCleanroomFilter(IFilterType filterType, String name, String tooltip) {
         var filterBlock = REGISTRATE.block(filterType.getSerializedName(), Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.strength(2.0f, 8.0f).sound(SoundType.METAL)
@@ -746,7 +753,8 @@ public class GTBlocks {
 
     public static final BlockEntry<PowderbarrelBlock> POWDERBARREL = REGISTRATE
             .block("powderbarrel", PowderbarrelBlock::new)
-            .lang("Powderbarrel")
+            .setData(ProviderType.LANG,
+                    nameAndTooltipLang("Powderbarrel", "Slightly larger than TNT, drops all destroyed Blocks as Items"))
             .properties(p -> p.destroyTime(0.5F).sound(SoundType.WOOD).mapColor(MapColor.STONE)
                     .pushReaction(PushReaction.BLOCK))
             .tag(BlockTags.MINEABLE_WITH_AXE)
@@ -755,7 +763,8 @@ public class GTBlocks {
 
     public static final BlockEntry<IndustrialTNTBlock> INDUSTRIAL_TNT = REGISTRATE
             .block("industrial_tnt", IndustrialTNTBlock::new)
-            .lang("Industrial TNT")
+            .setData(ProviderType.LANG,
+                    nameAndTooltipLang("Industrial TNT", "Much larger than TNT, drops all destroyed Blocks as Items"))
             .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
@@ -1268,6 +1277,9 @@ public class GTBlocks {
             .loot((table, block) -> table.add(block,
                     table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
             .lang("Brittle Charcoal")
+            .setData(ProviderType.LANG,
+                    nameAndMultilineTooltipLang("Brittle Charcoal",
+                            "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal."))
             .exBlockstate(GTModels.cubeAllModel(GTCEu.id("block/misc/brittle_charcoal")))
             .tag(BlockTags.MINEABLE_WITH_SHOVEL)
             .item()
@@ -1510,6 +1522,29 @@ public class GTBlocks {
         if (GTCEu.isDev()) {
             GTDevBlocks.init();
         }
+    }
+
+    public static <
+            T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndTooltipLang(String name,
+                                                                                                                    String tooltip) {
+        return (ctx, prov) -> {
+            prov.add(ctx.getEntry().getDescriptionId(), name);
+            prov.add(ctx.getEntry().getDescriptionId() + ".tooltip", tooltip);
+        };
+    }
+
+    public static <
+            T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndMultilineTooltipLang(String name,
+                                                                                                                             String multiline) {
+        return (ctx, prov) -> {
+            prov.add(ctx.getEntry().getDescriptionId(), name);
+
+            var lines = multiline.split("\n");
+
+            for (var i = 0; i < lines.length; i++) {
+                prov.add(ctx.getEntry().getDescriptionId() + ".tooltip." + i, lines[i]);
+            }
+        };
     }
 
     private static void initializeCobbleReplacements() {

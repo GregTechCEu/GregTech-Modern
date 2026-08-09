@@ -121,7 +121,6 @@ public class ToolLang {
     }
 
     public static void generateToolKeys(GTLangProvider provider) {
-
         for (GTToolType toolType : GTToolType.getTypes().values()) {
             provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType.name));
         }

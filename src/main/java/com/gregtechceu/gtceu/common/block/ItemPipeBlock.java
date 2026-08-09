@@ -70,10 +70,10 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
         ItemPipeProperties properties = createProperties(defaultBlockState(), stack);
 
         if (properties.getTransferRate() % 1 != 0) {
-            tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate",
+            tooltip.add(Component.translatable("common.gtceu.tooltip.item_transfer_rate",
                     (int) ((properties.getTransferRate() * 64) + 0.5)));
         } else {
-            tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks",
+            tooltip.add(Component.translatable("common.gtceu.tooltip.item_transfer_rate_stacks",
                     (int) properties.getTransferRate()));
         }
 

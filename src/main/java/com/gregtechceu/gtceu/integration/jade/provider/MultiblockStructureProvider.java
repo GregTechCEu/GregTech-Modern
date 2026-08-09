@@ -27,9 +27,11 @@ public class MultiblockStructureProvider extends MachineInfoProvider<MultiblockC
     protected void addTooltip(ByteTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (data.getAsByte() == 0) {
-            tooltip.add(Component.translatable("integration.gtceu.jade.invalid_structure").withStyle(ChatFormatting.RED));
+            tooltip.add(
+                    Component.translatable("integration.gtceu.jade.invalid_structure").withStyle(ChatFormatting.RED));
         } else {
-            tooltip.add(Component.translatable("integration.gtceu.jade.valid_structure").withStyle(ChatFormatting.GREEN));
+            tooltip.add(
+                    Component.translatable("integration.gtceu.jade.valid_structure").withStyle(ChatFormatting.GREEN));
         }
     }
 }

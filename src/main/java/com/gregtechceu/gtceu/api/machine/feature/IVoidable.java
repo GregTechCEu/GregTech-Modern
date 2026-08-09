@@ -31,10 +31,10 @@ public interface IVoidable extends IMachineFeature {
 
     enum VoidingMode implements StringRepresentable {
 
-        VOID_NONE("gtceu.gui.no_voiding", cap -> false),
-        VOID_ITEMS("gtceu.gui.item_voiding", cap -> cap == ItemRecipeCapability.CAP),
-        VOID_FLUIDS("gtceu.gui.fluid_voiding", cap -> cap == FluidRecipeCapability.CAP),
-        VOID_ITEMS_FLUIDS("gtceu.gui.all_voiding",
+        VOID_NONE("common.gtceu.voiding_mode.none", cap -> false),
+        VOID_ITEMS("common.gtceu.voiding_mode.item", cap -> cap == ItemRecipeCapability.CAP),
+        VOID_FLUIDS("common.gtceu.voiding_mode.fluid", cap -> cap == FluidRecipeCapability.CAP),
+        VOID_ITEMS_FLUIDS("common.gtceu.voiding_mode.all",
                 cap -> cap == ItemRecipeCapability.CAP || cap == FluidRecipeCapability.CAP);
 
         public static final VoidingMode[] VALUES = values();

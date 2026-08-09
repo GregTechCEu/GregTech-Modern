@@ -10,8 +10,8 @@ public class HazardLang {
 
     private static void generateHazardKeys(GTLangProvider provider) {
         // Medical Conditions
-        provider.add("tooltip.gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
-        provider.add("tooltip.gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
+        provider.add("medical_condition.gtceu.tooltip.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("medical_condition.gtceu.tooltip.description_shift", "§l§cHAZARDOUS:");
         provider.add("medical_condition.gtceu.chemical_burns", "§5Chemical burns");
         provider.add("medical_condition.gtceu.poison", "§2Poisonous");
         provider.add("medical_condition.gtceu.poison.affected", "§2Poisoning");
@@ -47,24 +47,24 @@ public class HazardLang {
         provider.add("symptom.gtceu.hunger", "Increased appetite");
 
         // Hazard Triggers
-        provider.add("tooltip.gtceu.hazard_trigger", "Caused by:");
-        provider.add("tooltip.gtceu.hazard_trigger.protection", "Protects from:");
-        provider.add("tooltip.gtceu.hazard_trigger.inhalation", "Inhalation");
-        provider.add("tooltip.gtceu.hazard_trigger.any", "Any contact");
-        provider.add("tooltip.gtceu.hazard_trigger.skin_contact", "Skin contact");
-        provider.add("tooltip.gtceu.hazard_trigger.none", "Nothing");
+        provider.add("hazard_trigger.gtceu.tooltip", "Caused by:");
+        provider.add("hazard_trigger.gtceu.protection", "Protects from:");
+        provider.add("hazard_trigger.gtceu.inhalation", "Inhalation");
+        provider.add("hazard_trigger.gtceu.any", "Any contact");
+        provider.add("hazard_trigger.gtceu.skin_contact", "Skin contact");
+        provider.add("hazard_trigger.gtceu.none", "Nothing");
 
         // Antidote
-        provider.add("tooltip.gtceu.antidote.description", "§aAntidote §7Hold Shift to show details");
-        provider.add("tooltip.gtceu.antidote.description_shift", "§aCures these conditions:");
-        provider.add("tooltip.gtceu.antidote.description.effect_removed",
+        provider.add("antidote.gtceu.description", "§aAntidote §7Hold Shift to show details");
+        provider.add("antidote.gtceu.description_shift", "§aCures these conditions:");
+        provider.add("antidote.gtceu.description.effect_removed",
                 "Removes %s%% of current conditions' effects");
-        provider.add("tooltip.gtceu.antidote.description.effect_removed.all",
+        provider.add("antidote.gtceu.description.effect_removed.all",
                 "Removes all of current conditions' effects");
 
         // Potion
-        provider.add("tooltip.gtceu.potion.header", "§6Contains effects:");
-        provider.add("tooltip.gtceu.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
+        provider.add("potion.gtceu.tooltip.header", "§6Contains effects:");
+        provider.add("potion.gtceu.tooltip.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
 
         // Poison
         provider.add("effect.gtceu.weak_poison", "Weak Poison");

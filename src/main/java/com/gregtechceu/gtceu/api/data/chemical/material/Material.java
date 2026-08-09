@@ -17,14 +17,12 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.tterrag.registrate.providers.ProviderType;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -163,6 +161,11 @@ public class Material implements Comparable<Material> {
     @ApiStatus.Internal
     public String getDefaultTranslation() {
         return materialInfo.overriddenName != null ? materialInfo.overriddenName : toEnglishName(getName());
+    }
+
+    @ApiStatus.Internal
+    public Map<TagPrefix, String> getLangOverrides() {
+        return materialInfo.langOverrides;
     }
 
     public String getModid() {
@@ -585,7 +588,6 @@ public class Material implements Comparable<Material> {
 
         private Set<TagPrefix> ignoredTagPrefixes = null;
         private final List<TagKey<Item>> itemTags = new ArrayList<>();
-        private final Map<TagPrefix, String> langOverrides = new Object2ObjectOpenHashMap<>();
         /*
          * Temporary data used to determine the final material formula tooltip.
          */
@@ -1854,7 +1856,7 @@ public class Material implements Comparable<Material> {
          * Generated during your addon's datagen with key {@code item.<mod_id>.<item_id>}
          */
         public Builder langOverride(TagPrefix prefix, String englishLang) {
-            langOverrides.put(prefix, englishLang);
+            materialInfo.langOverrides.put(prefix, englishLang);
             return this;
         }
 
@@ -1881,18 +1883,6 @@ public class Material implements Comparable<Material> {
             if (properties.hasProperty(HAZARD) &&
                     properties.getProperty(HAZARD).hazardTrigger == HazardProperty.HazardTrigger.NONE) {
                 properties.removeProperty(HAZARD);
-            }
-
-            if (!langOverrides.isEmpty()) {
-                var registrate = GTRegistrate.createIgnoringListenerErrors(id.getNamespace());
-
-                registrate.addDataGenerator(ProviderType.LANG, (provider -> {
-                    for (var entry: langOverrides.entrySet()) {
-                        var key = String.format("item.%s.%s", id.getNamespace(),
-                                entry.getKey().idPattern().formatted(id.getPath()));
-                        provider.add(key, entry.getValue());
-                    }
-                }));
             }
 
             var mat = new Material(materialInfo, properties, flags);
@@ -1934,6 +1924,10 @@ public class Material implements Comparable<Material> {
         @Setter
         @Getter
         private String overriddenName;
+
+        @Setter
+        @Getter
+        private Map<TagPrefix, String> langOverrides = new Object2ObjectOpenHashMap<>();
 
         /**
          * The colors of this Material.
