@@ -102,30 +102,17 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
         ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
-            if (ingredient.ingredient().hasNoItems()) {
+            if (!(ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient) &&
+                    ingredient.ingredient().hasNoItems()) {
                 it.remove();
                 continue;
             }
 
             ItemStack[] items;
             int amount;
-            if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient provider) {
-                provider.setItemStacks(null);
-                provider.setSampledCount(-1);
-
-                ItemStack output;
-                if (simulate) {
-                    output = provider.getMaxSizeStack();
-                    items = new ItemStack[] { output };
-                } else {
-                    items = provider.getItemStacks();
-                    if (items.length == 0 || items[0].isEmpty()) {
-                        it.remove();
-                        continue;
-                    }
-                    output = items[0];
-                }
-                amount = output.getCount();
+            if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient provider && simulate) {
+                items = new ItemStack[] { provider.getMaxSizeStack() };
+                amount = provider.getMaxRoll();
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {
@@ -173,7 +160,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
             }
             // Modify ingredient if we didn't finish it off
             if (amount > 0) {
-                it.set(new SizedIngredient(ingredient.ingredient(), amount));
+                if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient ranged) {
+                    it.set(new SizedIngredient(ranged.getInner(), amount));
+                } else {
+                    it.set(new SizedIngredient(ingredient.ingredient(), amount));
+                }
             }
         }
 
