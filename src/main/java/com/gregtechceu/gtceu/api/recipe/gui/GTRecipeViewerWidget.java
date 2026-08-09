@@ -200,11 +200,11 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 .rightRel(0.0f)
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
                 .tooltipBuilder(tooltip -> {
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
+                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.0", GTValues.VNF[minTier]));
+                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.1"));
+                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.2"));
+                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.3"));
+                    tooltip.addLine(Text.lang("recipe_modifier.gtceu.oc.4"));
                 })
                 .onMousePressed((ctx, b) -> {
                     var mouse = MouseData.create(b);

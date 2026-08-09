@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -101,7 +102,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
                 tagCompound.putByte("Mode",
                         (byte) ((tagCompound.getByte("Mode") + 1) % WrenchModeType.values().length));
                 player.displayClientMessage(Component.translatable("item.gtceu.behavior.tool_mode.mode")
-                        .withStyle(ChatFormatting.GREEN).append(" ")
+                        .withStyle(ChatFormatting.GREEN).append(CommonComponents.SPACE)
                         .append(WrenchModeType.values()[tagCompound.getByte("Mode")].getName()), true);
             }
             return InteractionResultHolder.success(itemStack);
@@ -118,7 +119,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
         var toolTypes = ToolHelper.getToolTypes(stack);
         if (toolTypes.contains(GTToolType.WRENCH)) {
             tooltip.add(Component.translatable("item.gtceu.behavior.tool_mode.mode").withStyle(ChatFormatting.GREEN)
-                    .append(" ")
+                    .append(CommonComponents.SPACE)
                     .append(WrenchModeType.values()[tagCompound.getByte("Mode")].getName()));
         }
     }

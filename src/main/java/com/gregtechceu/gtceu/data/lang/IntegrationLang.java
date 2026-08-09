@@ -167,7 +167,7 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
         provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
-        provider.add("config.jade.plugin_recipe_logic.gtceu_provider", "[GTCEu] Recipe Logic");
+        provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
         provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
         provider.add("config.jade.plugin_gtceu.recipe_output_info", "[GTCEu] Recipe Output Info");
         provider.add("config.jade.plugin_gtceu.auto_output_info", "[GTCEu] Auto Output Info");

@@ -20,7 +20,7 @@ public class RecipeLang {
         provider.add("recipe_capability.gtceu.fluid", "Fluid");
         provider.add("recipe_capability.gtceu.item", "Item");
 
-        provider.add("recipe.gtceu_type.show_recipes", "Show Recipes");
+        provider.add("recipe_type.gtceu.show_recipes", "Show Recipes");
 
         provider.add("recipe_logic.gtceu.condition_fails", "Condition Fails");
         provider.add("recipe_logic.gtceu.no_contents", "Recipe has no Contents");
@@ -36,7 +36,7 @@ public class RecipeLang {
         provider.add("recipe_logic.gtceu.no_contents", "Recipe has no Contents");
         provider.add("recipe_logic.gtceu.no_capabilities", "Machine has no Capabilities");
 
-        provider.addMultiLang("gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
+        provider.addMultiLang("recipe_modifier.gtceu.oc", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");
     }
