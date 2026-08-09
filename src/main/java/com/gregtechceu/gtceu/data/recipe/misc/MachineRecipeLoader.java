@@ -1549,6 +1549,7 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
                 LIQUID_FUEL_JETPACK.asStack());
 
+        // Filters
         VanillaRecipeHelper.addShapelessRecipe(provider, "item_filter_nbt", ITEM_FILTER.asStack(),
                 ITEM_FILTER.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
@@ -1557,6 +1558,11 @@ public class MachineRecipeLoader {
                 TAG_FILTER.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_tag_filter_nbt", TAG_FLUID_FILTER.asStack(),
                 TAG_FLUID_FILTER.asStack());
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "composite_item_filter_nbt", COMPOSITE_ITEM_FILTER.asStack(),
+                COMPOSITE_ITEM_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "composite_fluid_filter_nbt", COMPOSITE_FLUID_FILTER.asStack(),
+                COMPOSITE_FLUID_FILTER.asStack());
     }
 
     private static void registerHatchConversion(RecipeOutput provider) {
