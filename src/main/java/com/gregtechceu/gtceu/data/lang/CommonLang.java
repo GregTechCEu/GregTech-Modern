@@ -12,7 +12,6 @@ public class CommonLang {
     }
 
     public static void generateEnumLang(GTLangProvider provider) {
-
         // Working status
         provider.add("common.gtceu.workable.enabled", "Working Enabled");
         provider.add("common.gtceu.workable.disabled", "Working Disabled");
@@ -33,7 +32,6 @@ public class CommonLang {
     }
 
     public static void generateCommonLang(GTLangProvider provider) {
-
         provider.add("common.gtceu.disabled", "Disabled");
         provider.add("common.gtceu.enabled", "Enabled");
 

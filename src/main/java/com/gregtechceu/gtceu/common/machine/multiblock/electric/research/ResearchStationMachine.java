@@ -101,7 +101,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
         if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
             patternState.setError(
-                    new PatternStringError(Component.translatable("multiblock.gtceu.pattern_error.object_holder.direction")));
+                    new PatternStringError(
+                            Component.translatable("multiblock.gtceu.pattern_error.object_holder.direction")));
             invalidateStructure(name);
         }
         return patternState;

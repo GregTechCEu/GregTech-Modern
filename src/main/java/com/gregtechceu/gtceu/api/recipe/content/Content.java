@@ -89,7 +89,8 @@ public record Content(Object content, int chance, int maxChance) {
 
                 if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
                     tooltip.addLine(Component.translatable("recipe_content.gtceu.chance_no_boost_logic",
-                            FormattingUtil.formatNumber2Places(baseChanceFloat), Component.translatable(logic.id.toLanguageKey("chance_logic")))
+                            FormattingUtil.formatNumber2Places(baseChanceFloat),
+                            Component.translatable(logic.id.toLanguageKey("chance_logic")))
                             .withStyle(ChatFormatting.YELLOW));
                 } else {
                     tooltip.addLine(

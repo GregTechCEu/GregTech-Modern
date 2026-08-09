@@ -60,7 +60,6 @@ public class IntegrationLang {
 
         // Vein Names
 
-
         // TODO This should be replaced with something else
         GTRegistries.ORE_VEINS.unfreeze();
         GTOres.init();

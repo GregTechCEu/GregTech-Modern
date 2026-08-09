@@ -86,7 +86,8 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/coal"))
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
-                    .tooltipLang(pressure ? "Faster than the Small Steam Solid Fuel Boiler" : "An early way to get Steam Power")
+                    .tooltipLang(pressure ? "Faster than the Small Steam Solid Fuel Boiler" :
+                            "An early way to get Steam Power")
                     .tooltips(Component.translatable("common.gtceu.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpSolidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.solidBoilerBaseOutput) *
@@ -102,7 +103,8 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullModel(pressure, GTCEu.id("block/generators/boiler/lava"))
                     .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
-                    .tooltipLang(pressure ? "Faster than the Small Steam Liquid Fuel Boiler" : "A Boiler running off Liquids")
+                    .tooltipLang(pressure ? "Faster than the Small Steam Liquid Fuel Boiler" :
+                            "A Boiler running off Liquids")
                     .tooltips(Component.translatable("common.gtceu.tooltip.produces_fluid",
                             (pressure ? ConfigHolder.INSTANCE.machines.smallBoilers.hpLiquidBoilerBaseOutput :
                                     ConfigHolder.INSTANCE.machines.smallBoilers.liquidBoilerBaseOutput) *
@@ -515,7 +517,8 @@ public class GTMachines {
     // **** Simple Generator ****//
     //////////////////////////////////////
     public static final MachineDefinition[] COMBUSTION = registerSimpleGenerator(REGISTRATE, "combustion",
-            GTRecipeTypes.COMBUSTION_GENERATOR_FUELS, true, genericGeneratorTankSizeFunction, 0.1f, GTValues.LV, GTValues.MV,
+            GTRecipeTypes.COMBUSTION_GENERATOR_FUELS, true, genericGeneratorTankSizeFunction, 0.1f, GTValues.LV,
+            GTValues.MV,
             GTValues.HV);
     public static final MachineDefinition[] STEAM_TURBINE = registerSimpleGenerator(REGISTRATE, "steam_turbine",
             GTRecipeTypes.STEAM_TURBINE_FUELS, true, steamGeneratorTankSizeFunction, 0.0f, GTValues.LV, GTValues.MV,

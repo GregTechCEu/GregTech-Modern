@@ -212,7 +212,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 stepAssist = !stepAssist;
                 toggleBootsTimer = 5;
                 if (world.isClientSide()) player.displayClientMessage(Component
-                        .translatable("armor.gtceu.quark_tech_suite.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
+                        .translatable(
+                                "armor.gtceu.quark_tech_suite.step_assist." + (stepAssist ? "enabled" : "disabled")),
+                        true);
                 data.putBoolean("stepAssist", stepAssist);
             }
 

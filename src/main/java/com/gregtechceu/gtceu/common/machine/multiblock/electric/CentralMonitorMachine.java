@@ -26,10 +26,6 @@ import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.data.lang.LangUtil;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;

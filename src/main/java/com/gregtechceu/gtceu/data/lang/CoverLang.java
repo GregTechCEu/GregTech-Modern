@@ -60,14 +60,14 @@ public class CoverLang {
                 "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         provider.addMultiline("cover.gtceu.conveyor.distribution_mode.round_robin_prio",
                 """
-                    Distribution Mode: §bRound Robin with Restriction
-                    §7Tries to split items equally across connected inventories.
-                    §7Will not send items down Restrictive item pipes unless no other paths are available.""");
+                        Distribution Mode: §bRound Robin with Restriction
+                        §7Tries to split items equally across connected inventories.
+                        §7Will not send items down Restrictive item pipes unless no other paths are available.""");
         provider.addMultiline("cover.gtceu.conveyor.distribution_mode.insert_first", """
-                    Distribution Mode: §bPriority
-                    §7Will insert into the first inventory with the highest priority it can find.
-                    §7Restrictive item pipes lower the priority of a path.
-                    """);
+                Distribution Mode: §bPriority
+                §7Will insert into the first inventory with the highest priority it can find.
+                §7Restrictive item pipes lower the priority of a path.
+                """);
 
         // Common cover key entries
         provider.add("cover.gtceu.manual_io_mode.disabled",
@@ -76,7 +76,8 @@ public class CoverLang {
                 "Manual I/O: §bFiltered\n§7Items / Fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any)");
         provider.add("cover.gtceu.manual_io_mode.unfiltered",
                 "Manual I/O: §bUnfiltered\n§7Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
-        provider.addMultiline("cover.gtceu.manual_io_mode.description", """
+        provider.addMultiline("cover.gtceu.manual_io_mode.description",
+                """
                         §eDisabled§r - Items/fluids will only move as specified by the cover and its filter.
                         §eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any).
                         §eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover
@@ -86,7 +87,8 @@ public class CoverLang {
         provider.add("cover.gtceu.robot_arm_transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.gtceu.robot_arm_transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.gtceu.robot_arm_transfer_mode.keep_exact", "Keep Exact");
-        provider.addMultiline("cover.gtceu.robot_arm_transfer_mode.description", """
+        provider.addMultiline("cover.gtceu.robot_arm_transfer_mode.description",
+                """
                         §eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.
                         §eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.
                         §eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.
@@ -94,7 +96,8 @@ public class CoverLang {
                         """);
 
         // Fluid regulator
-        provider.addMultiline("cover.gtceu.fluid_regulator.transfer_mode.description", """
+        provider.addMultiline("cover.gtceu.fluid_regulator.transfer_mode.description",
+                """
                         §eTransfer Any§r - in this mode, cover will transfer as many fluids matching its filter as possible.
                         §eSupply Exact§r - in this mode, cover will supply fluids in portions specified in the window underneath this button. If amount of fluids is less than portion size, fluids won't be moved.
                         §eKeep Exact§r - in this mode, cover will keep specified amount of fluids in the destination inventory, supplying additional amount of fluids if required.
@@ -147,15 +150,15 @@ public class CoverLang {
                 "Behavior: Latched\n\n" + detectorLatchDescription);
         provider.addMultiline("cover.gtceu.advanced_detector.latch.disabled",
                 "Behavior: Continuous\n\n" + detectorLatchDescription);
-        
+
         // Advanced energy detector
         provider.add("cover.gtceu.advanced_energy_detector.min", "Min");
         provider.add("cover.gtceu.advanced_energy_detector.max", "Max");
 
         var advancedEnergyDetectorInvertDescription = """
-                Toggle to invert the redstone logic
-                By default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU
-        """;
+                        Toggle to invert the redstone logic
+                        By default, redstone is emitted when less than the minimum EU, and stops emitting when greater than the max EU
+                """;
 
         provider.addMultiline("cover.gtceu.advanced_energy_detector.invert.enabled",
                 "Output: Inverted\n\n" + advancedEnergyDetectorInvertDescription);

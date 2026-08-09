@@ -9,10 +9,11 @@ import java.util.stream.Collectors;
 public class MaterialLang {
 
     public static void generateMaterialLang(GTLangProvider provider, String namespace) {
-        for (Material material : GTRegistries.MATERIALS.values().stream().filter(v -> v.getModid().equals(namespace)).collect(Collectors.toSet())) {
+        for (Material material : GTRegistries.MATERIALS.values().stream().filter(v -> v.getModid().equals(namespace))
+                .collect(Collectors.toSet())) {
             provider.add(material.getUnlocalizedName(), material.getDefaultTranslation());
 
-            for (var entry: material.getLangOverrides().entrySet()) {
+            for (var entry : material.getLangOverrides().entrySet()) {
                 var key = String.format("item.%s.%s", material.getResourceLocation().getNamespace(),
                         entry.getKey().idPattern().formatted(material.getResourceLocation().getPath()));
                 provider.add(key, entry.getValue());
@@ -43,7 +44,7 @@ public class MaterialLang {
         provider.add("material.gtceu.fluid_type.gas_vapor", "%s Vapor");
         provider.add("material.gtceu.fluid_type.plasma", "%s Plasma");
         provider.add("material.gtceu.fluid_type.molten", "Molten %s");
-        
+
         // Fluid Tooltips
         provider.add("material.gtceu.fluid_state.gas", "State: Gaseous");
         provider.add("material.gtceu.fluid_state.liquid", "State: Liquid");

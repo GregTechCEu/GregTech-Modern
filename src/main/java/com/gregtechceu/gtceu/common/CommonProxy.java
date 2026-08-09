@@ -206,7 +206,7 @@ public class CommonProxy {
         GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
             var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor)registrate;
+            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
             if (accessor.getDoDatagen().get()) {
                 // noinspection UnstableApiUsage
                 List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())

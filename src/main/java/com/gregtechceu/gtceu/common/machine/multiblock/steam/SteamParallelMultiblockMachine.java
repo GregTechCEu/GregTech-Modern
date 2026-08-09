@@ -89,7 +89,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
         if (steamEnergy == null) { // No steam hatch found
             pState.setError(
-                    new PatternStringError(Component.translatable("multiblock.gtceu.pattern_error.steam.missing_steam_hatch")));
+                    new PatternStringError(
+                            Component.translatable("multiblock.gtceu.pattern_error.steam.missing_steam_hatch")));
             invalidateStructure(substructureName);
         }
     }

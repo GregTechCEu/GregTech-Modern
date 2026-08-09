@@ -41,7 +41,8 @@ public class ControllableBlockProvider extends CapabilityBlockProvider<IControll
                               BlockEntity blockEntity, IPluginConfig config) {
         if (capData.contains("SuspendAfter") && capData.getBoolean("SuspendAfter")) {
             tooltip.add(
-                    Component.translatable("common.gtceu.workable.disabled_next_cycle").withStyle(ChatFormatting.YELLOW));
+                    Component.translatable("common.gtceu.workable.disabled_next_cycle")
+                            .withStyle(ChatFormatting.YELLOW));
         } else if (capData.contains("WorkingEnabled") && !capData.getBoolean("WorkingEnabled")) {
             tooltip.add(Component.translatable("common.gtceu.workable.disabled").withStyle(ChatFormatting.YELLOW));
         }

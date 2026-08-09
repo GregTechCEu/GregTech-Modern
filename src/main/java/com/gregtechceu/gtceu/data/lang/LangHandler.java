@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
 public class LangHandler {
 
     /**
-     * MC language formatting is moving towards using {@link MutableComponent#withStyle(Style)} instead of § codes, so {@link MutableComponent#withStyle(Style)} should be used where possible.<br>
+     * MC language formatting is moving towards using {@link MutableComponent#withStyle(Style)} instead of § codes, so
+     * {@link MutableComponent#withStyle(Style)} should be used where possible.<br>
      * Unformatted text must be in light gray - §7
      * Items must be in gold - §6
      * Fluids must be in blue - §9
@@ -22,7 +24,6 @@ public class LangHandler {
      */
 
     public static void init(GTLangProvider provider) {
-
         CommonLang.init(provider);
         AdvancementLang.init(provider);
         ArmorLang.init(provider);

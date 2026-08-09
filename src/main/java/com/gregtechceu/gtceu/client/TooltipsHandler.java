@@ -125,7 +125,8 @@ public class TooltipsHandler {
         tooltips.accept(Component.translatable("material.gtceu.fluid_property.temperature",
                 FormattingUtil.formatTemperature(fluidType.getTemperature())).withStyle(ChatFormatting.RED));
         if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
-            tooltips.accept(Component.translatable("material.gtceu.fluid_property.cryogenic").withStyle(ChatFormatting.AQUA));
+            tooltips.accept(
+                    Component.translatable("material.gtceu.fluid_property.cryogenic").withStyle(ChatFormatting.AQUA));
         }
     }
 }

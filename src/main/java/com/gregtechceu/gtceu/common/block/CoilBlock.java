@@ -40,18 +40,22 @@ public class CoilBlock extends ActiveBlock {
         if (GTUtil.isShiftDown()) {
             int coilTier = coilType.getTier();
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.heat", coilType.getCoilTemperature()));
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.smelter").withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.smelter")
+                    .withStyle(ChatFormatting.DARK_GRAY));
             tooltip.add(
                     Component.translatable("block.gtceu.wire_coil.tooltip.parallel_smelter", coilType.getLevel() * 32));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.energy_smelter",
                     Math.max(1, (4 * coilType.getLevel() * 32 / (8 * coilType.getEnergyDiscount())))));
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.pyro").withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(
+                    Component.translatable("block.gtceu.wire_coil.tooltip.pyro").withStyle(ChatFormatting.DARK_GRAY));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.speed_pyro",
                     coilTier == 0 ? 75 : 50 * (coilTier + 1)));
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.cracking").withStyle(ChatFormatting.DARK_GRAY));
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.cracking")
+                    .withStyle(ChatFormatting.DARK_GRAY));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.energy_cracking", 100 - 10 * coilTier));
         } else {
-            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.extended_info").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.extended_info")
+                    .withStyle(ChatFormatting.GRAY));
         }
     }
 

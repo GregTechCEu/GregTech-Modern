@@ -30,9 +30,6 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
@@ -55,9 +52,12 @@ import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -266,7 +266,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.gtceu.crushed_ore.purify_tooltip")));
+            .tooltip((mat, tooltips) -> tooltips
+                    .add(Component.translatable("tagprefix.gtceu.crushed_ore.purify_tooltip")));
 
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
     public static final TagPrefix ingotHot = new TagPrefix(GTCEu.id("hotIngot"))
@@ -396,7 +397,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.gtceu.impure_dust.purify_tooltip")));
+            .tooltip((mat, tooltips) -> tooltips
+                    .add(Component.translatable("tagprefix.gtceu.impure_dust.purify_tooltip")));
 
     // Pure Dust worth of one Ingot or Gem.
     public static final TagPrefix dustPure = new TagPrefix(GTCEu.id("pureDust"))
@@ -409,7 +411,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("tagprefix.gtceu.impure_dust.purify_tooltip")));
+            .tooltip((mat, tooltips) -> tooltips
+                    .add(Component.translatable("tagprefix.gtceu.impure_dust.purify_tooltip")));
 
     public static final TagPrefix dust = new TagPrefix(GTCEu.id("dust"))
             .defaultTagPath("dusts/%s")
@@ -1018,14 +1021,16 @@ public class TagPrefix {
     protected final List<TagType> tags = new ArrayList<>();
 
     /**
-     * The English lang value for material items with this tag prefix. Should have a single '%s' to denote the material name.<br>
+     * The English lang value for material items with this tag prefix. Should have a single '%s' to denote the material
+     * name.<br>
      * Generated during your addon's datagen with key {@code tagprefix.<mod_id>.<tag_prefix_name>}
      */
     @Setter
     @Getter
     public String langValue;
     /**
-     * An optional English lang value used instead of {@link #langValue} if the material has {@link PropertyKey#POLYMER}<br>
+     * An optional English lang value used instead of {@link #langValue} if the material has
+     * {@link PropertyKey#POLYMER}<br>
      * Generated during your addon's datagen with key {@code tagprefix.<mod_id>.polymer.<tag_prefix_name>}
      */
     @Setter
@@ -1122,7 +1127,8 @@ public class TagPrefix {
 
         if (!namespaces.contains(this.id.getNamespace())) {
             GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(id.getNamespace());
-            registrate.addDataGenerator(ProviderType.LANG, (provider -> generateTagPrefixLang(provider, this.id.getNamespace())));
+            registrate.addDataGenerator(ProviderType.LANG,
+                    (provider -> generateTagPrefixLang(provider, this.id.getNamespace())));
             namespaces.add(this.id.getNamespace());
         }
     }
@@ -1466,10 +1472,13 @@ public class TagPrefix {
     }
 
     private static void generateTagPrefixLang(RegistrateLangProvider provider, String namespace) {
-        var tagPrefixes = GTRegistries.TAG_PREFIXES.values().stream().filter(f -> f.id.getNamespace().equals(namespace)).collect(Collectors.toSet());
-        for (TagPrefix prefix: tagPrefixes) {
+        var tagPrefixes = GTRegistries.TAG_PREFIXES.values().stream().filter(f -> f.id.getNamespace().equals(namespace))
+                .collect(Collectors.toSet());
+        for (TagPrefix prefix : tagPrefixes) {
             provider.add(prefix.getUnlocalizedName(), prefix.langValue);
-            if (prefix.polymerLangValue != null) provider.add(("tagprefix.%s.polymer.%s").formatted(prefix.id.getNamespace(), prefix.id.getPath()), prefix.polymerLangValue);
+            if (prefix.polymerLangValue != null)
+                provider.add(("tagprefix.%s.polymer.%s").formatted(prefix.id.getNamespace(), prefix.id.getPath()),
+                        prefix.polymerLangValue);
         }
     }
 }

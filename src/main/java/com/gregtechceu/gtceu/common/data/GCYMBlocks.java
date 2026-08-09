@@ -27,7 +27,8 @@ public class GCYMBlocks {
     public static final BlockEntry<Block> CASING_LASER_SAFE_ENGRAVING = createCasingBlock("laser_safe_engraving_casing",
             GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"), "Laser-Safe Engraving Casing");
     public static final BlockEntry<Block> CASING_LARGE_SCALE_ASSEMBLING = createCasingBlock(
-            "large_scale_assembler_casing", GTCEu.id("block/casings/gcym/large_scale_assembling_casing"), "Large-Scale Assembler Casing");
+            "large_scale_assembler_casing", GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
+            "Large-Scale Assembler Casing");
     public static final BlockEntry<Block> CASING_SHOCK_PROOF = createCasingBlock("shock_proof_cutting_casing",
             GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"));
     public static final BlockEntry<Block> CASING_STRESS_PROOF = createCasingBlock("stress_proof_casing",

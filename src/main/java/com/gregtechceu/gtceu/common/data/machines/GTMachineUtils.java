@@ -56,7 +56,6 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -70,6 +69,7 @@ import net.minecraftforge.fluids.FluidType;
 import com.google.common.collect.Streams;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Setter;
@@ -200,7 +200,8 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static <MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate,
+    public static <
+            MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate,
                                                                                                           String name,
                                                                                                           MachineInstanceFactory.Steam<MACHINE> factory,
                                                                                                           BiFunction<Boolean, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder) {
@@ -335,7 +336,8 @@ public class GTMachineUtils {
 
     public static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(GTRegistrate registrate,
                                                                                          String name,
-                                                                                         GTRecipeType recipeType, String descTooltip) {
+                                                                                         GTRecipeType recipeType,
+                                                                                         String descTooltip) {
         return registerSteamMachines(registrate, "steam_" + name, SimpleSteamMachine::new,
                 (pressure, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -796,7 +798,8 @@ public class GTMachineUtils {
     }
 
     public static Component environmentRequirement(MedicalCondition condition) {
-        return Component.translatable("recipe_condition.gtceu.environmental_hazard.reverse", condition.getTranslatableName());
+        return Component.translatable("recipe_condition.gtceu.environmental_hazard.reverse",
+                condition.getTranslatableName());
     }
 
     public static Component defaultEnvironmentRequirement() {
@@ -881,7 +884,9 @@ public class GTMachineUtils {
         }
 
         /**
-         * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
+         * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during
+         * your addon's datagen.
+         * 
          * @param lang The English language string to add.
          */
         public SimpleMachineBuilder tooltipLang(String lang) {
@@ -890,12 +895,14 @@ public class GTMachineUtils {
         }
 
         /**
-         * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
-         * @param lang The English language string to add.
+         * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during
+         * your addon's datagen.
+         * 
+         * @param lang  The English language string to add.
          * @param tiers The machine tiers which this language string should be applied to
          */
         public SimpleMachineBuilder tooltipLang(String lang, int... tiers) {
-            for (int tier: tiers) {
+            for (int tier : tiers) {
                 tieredTooltipLang.put(tier, lang);
             }
             return this;

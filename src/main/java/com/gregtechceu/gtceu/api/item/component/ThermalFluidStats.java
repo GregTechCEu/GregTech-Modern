@@ -88,11 +88,16 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.max_temperature",
                     FormattingUtil.formatTemperature(maxFluidTemperature)));
-            if (gasProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof").withStyle(ChatFormatting.GOLD));
-            else tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof").withStyle(ChatFormatting.DARK_RED));
-            if (plasmaProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof").withStyle(ChatFormatting.GOLD));
-            if (cryoProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof").withStyle(ChatFormatting.GOLD));
-            if (acidProof) tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
+            if (gasProof) tooltipComponents
+                    .add(Component.translatable("tooltip.gtceu.fluid_pipe.gas_proof").withStyle(ChatFormatting.GOLD));
+            else tooltipComponents.add(Component.translatable("tooltip.gtceu.fluid_pipe.not_gas_proof")
+                    .withStyle(ChatFormatting.DARK_RED));
+            if (plasmaProof) tooltipComponents.add(
+                    Component.translatable("tooltip.gtceu.fluid_pipe.plasma_proof").withStyle(ChatFormatting.GOLD));
+            if (cryoProof) tooltipComponents
+                    .add(Component.translatable("tooltip.gtceu.fluid_pipe.cryo_proof").withStyle(ChatFormatting.GOLD));
+            if (acidProof) tooltipComponents
+                    .add(Component.translatable("tooltip.gtceu.fluid_pipe.acid_proof").withStyle(ChatFormatting.GOLD));
         } else if (gasProof || cryoProof || plasmaProof || acidProof) {
             tooltipComponents.add(Component.translatable("common.gtceu.tooltip.fluid_pipe_hold_shift"));
         }

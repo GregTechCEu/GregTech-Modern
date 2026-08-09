@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class RecipeLang {
@@ -15,7 +16,6 @@ public class RecipeLang {
     }
 
     private static void generateCapabilityLang(GTLangProvider provider) {
-
         provider.add("recipe_capability.gtceu.eu", "GTCEu Energy");
         provider.add("recipe_capability.gtceu.fluid", "Fluid");
         provider.add("recipe_capability.gtceu.item", "Item");
@@ -77,7 +77,6 @@ public class RecipeLang {
     }
 
     private static void generateRecipeTypes(GTLangProvider provider) {
-
         // Recipe Categories
         provider.add("recipe_type.gtceu.category.arc_furnace_recycling", "Plasma Scrapping");
         provider.add("recipe_type.gtceu.category.macerator_recycling", "Part Grinding");
@@ -114,7 +113,7 @@ public class RecipeLang {
 
         provider.add("recipe_condition.gtceu.environmental_hazard.reverse", "§cArea must be free of %s");
         provider.add("recipe_condition.gtceu.environmental_hazard", "§cArea must have %s");
-        
+
         provider.add("recipe_condition.gtceu.cleanroom", "Requires %s");
         provider.add("recipe_condition.gtceu.cleanroom.normal", "Cleanroom");
         provider.add("recipe_condition.gtceu.cleanroom.sterile", "Sterile Cleanroom");
@@ -133,7 +132,7 @@ public class RecipeLang {
         provider.add("recipe.gtceu.scan_for_research", "Scan for Assembly Line");
         provider.add("recipe.gtceu.computation_per_tick", "Min. Computation: %s CWU/t");
         provider.add("recipe.gtceu.total_computation", "Computation: %s CWU");
-        
+
         provider.add("recipe.gtceu.duration", "Duration: %s secs");
         provider.add("recipe.gtceu.voltage", "Usage: %s A @ %s");
         provider.add("recipe.gtceu.total_eu", "Total Usage: %s EU/t");
@@ -143,6 +142,5 @@ public class RecipeLang {
         provider.add("recipe_condition.gtceu.eu_to_start", "EU To Start: %sEU%s");
         provider.add("recipe.gtceu.temperature", "Temp: %s");
         provider.add("recipe.gtceu.coil.tier", "Coil: %s");
-
     }
 }

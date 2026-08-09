@@ -46,7 +46,8 @@ public class MEPatternBufferProxyProvider extends MachineInfoProvider<MEPatternB
                               BlockEntity blockEntity, IPluginConfig config) {
         if (!data.getBoolean("formed")) return;
         if (!data.getBoolean("bound")) {
-            tooltip.add(Component.translatable("integration.gtceu.jade.pattern_buffer.not_bound").withStyle(ChatFormatting.RED));
+            tooltip.add(Component.translatable("integration.gtceu.jade.pattern_buffer.not_bound")
+                    .withStyle(ChatFormatting.RED));
             return;
         }
 

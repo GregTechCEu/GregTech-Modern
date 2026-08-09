@@ -351,7 +351,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines,
                                 TooltipFlag isAdvanced) {
         lines.add(Component
-                .translatable(isActive(itemStack) ? "item.gtceu.behavior.item_magnet.enabled" : "item.gtceu.behavior.item_magnet.disabled")
+                .translatable(isActive(itemStack) ? "item.gtceu.behavior.item_magnet.enabled" :
+                        "item.gtceu.behavior.item_magnet.disabled")
                 .withStyle(isActive(itemStack) ? ChatFormatting.GREEN : ChatFormatting.RED));
     }
 

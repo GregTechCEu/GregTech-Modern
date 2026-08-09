@@ -15,7 +15,6 @@ public class ArmorLang {
         provider.add("item.gtceu.armor.boots", "%s Boots");
     }
 
-
     private static void generateArmorMessageKeys(GTLangProvider provider) {
         // NanoMuscle Suit
         provider.add("armor.gtceu.nano_muscle_suite.night_vision.enabled", "NanoMuscle™ Suite: §aNightVision Enabled");

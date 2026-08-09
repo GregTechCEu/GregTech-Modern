@@ -87,7 +87,8 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = Component.translatable("integration.gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                        text = Component
+                                .translatable("integration.gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.GREEN);
                     } else {
                         var voltage = recipeInfo.getLong("voltage");
@@ -113,15 +114,17 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                         }
                         text.append(Component.literal(" ("));
                         text.append(Component.translatable("recipe.gtceu.eu.total",
-                                        FormattingUtil.formatNumbers(EUt))
+                                FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.WHITE));
                         text.append(Component.literal(") "));
                     }
 
                     if (isInput) {
-                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ")
+                                .append(text));
                     } else {
-                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ").append(text));
+                        tooltip.add(Component.translatable("integration.gtceu.jade.energy_consumption").append(" ")
+                                .append(text));
                         long generatorPower = recipeInfo.getLong("generatorPower");
                         if (generatorPower > 0 && generatorPower < EUt) {
                             tooltip.add(Component.translatable("integration.gtceu.jade.generator.output_too_small")

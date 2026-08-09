@@ -67,10 +67,12 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<Maintenanc
                         }
                     }
                 } else {
-                    iTooltip.add(Component.translatable("integration.gtceu.jade.maintenance_broken").withStyle(ChatFormatting.RED));
+                    iTooltip.add(Component.translatable("integration.gtceu.jade.maintenance_broken")
+                            .withStyle(ChatFormatting.RED));
                 }
             } else {
-                iTooltip.add(Component.translatable("integration.gtceu.jade.maintenance_fixed").withStyle(ChatFormatting.GREEN));
+                iTooltip.add(Component.translatable("integration.gtceu.jade.maintenance_fixed")
+                        .withStyle(ChatFormatting.GREEN));
             }
         }
     }

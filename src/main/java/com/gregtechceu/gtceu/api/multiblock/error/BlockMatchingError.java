@@ -43,7 +43,8 @@ public class BlockMatchingError extends PatternError {
                 comps.add(block.getName());
             }
             Objects.requireNonNull(pos);
-            comps.add(Component.translatable("multiblock.gtceu.pattern_error.block_match_error", pos.getX(), pos.getY(), pos.getZ()));
+            comps.add(Component.translatable("multiblock.gtceu.pattern_error.block_match_error", pos.getX(), pos.getY(),
+                    pos.getZ()));
             comps.forEach(comp -> parent.child(Text.of(comp).asWidget()));
         };
     }

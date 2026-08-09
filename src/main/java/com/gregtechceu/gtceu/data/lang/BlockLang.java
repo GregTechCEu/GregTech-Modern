@@ -12,7 +12,6 @@ public class BlockLang {
     }
 
     private static void generateBlockTooltips(GTLangProvider provider) {
-
         provider.add("block.gtceu.explosive.breaking_tooltip",
                 "Primes explosion when mined, sneak mine to pick back up");
         provider.add("block.gtceu.explosive.lighting_tooltip", "Cannot be lit with Redstone");

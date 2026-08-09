@@ -32,8 +32,6 @@ import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -74,7 +72,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -117,7 +117,9 @@ public class GTBlocks {
         var type = LaserPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
-                .setData(ProviderType.LANG, nameAndTooltipLang("Normal Laser Pipe", "§7Transmitting power with §fno loss§7 in straight lines"))
+                .setData(ProviderType.LANG,
+                        nameAndTooltipLang("Normal Laser Pipe",
+                                "§7Transmitting power with §fno loss§7 in straight lines"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -147,7 +149,9 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE
                 .block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
-                .setData(ProviderType.LANG, nameAndTooltipLang("Optical Fiber Cable", "§7Transmitting §fComputation§7 or §fResearch Data§7"))
+                .setData(ProviderType.LANG,
+                        nameAndTooltipLang("Optical Fiber Cable",
+                                "§7Transmitting §fComputation§7 or §fResearch Data§7"))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .gtBlockstate(GTModels::createPipeBlockModel)
@@ -305,7 +309,8 @@ public class GTBlocks {
     public static final BlockEntry<Block> CASING_STAINLESS_TURBINE = createCasingBlock("stainless_steel_turbine_casing",
             GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel"), "Stainless Turbine Casing");
     public static final BlockEntry<Block> CASING_TUNGSTENSTEEL_TURBINE = createCasingBlock(
-            "tungstensteel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"), "Tungstensteel Turbine Casing");
+            "tungstensteel_turbine_casing", GTCEu.id("block/casings/mechanic/machine_casing_turbine_tungstensteel"),
+            "Tungstensteel Turbine Casing");
 
     // Pipe casings
     public static final BlockEntry<Block> CASING_BRONZE_PIPE = createCasingBlock("bronze_pipe_casing",
@@ -545,7 +550,6 @@ public class GTBlocks {
                 .register();
     }
 
-
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
         String tierName = GTValues.VN[tier].toLowerCase(Locale.ROOT);
         var entry = REGISTRATE
@@ -627,7 +631,7 @@ public class GTBlocks {
 
     private static BlockEntry<BatteryBlock> createBatteryBlock(IBatteryData batteryData, String lang) {
         var batteryBlock = REGISTRATE.block("%s_battery".formatted(batteryData.getBatteryName()),
-                        p -> new BatteryBlock(p, batteryData))
+                p -> new BatteryBlock(p, batteryData))
                 .lang(lang)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, entityType) -> false))
@@ -749,7 +753,8 @@ public class GTBlocks {
 
     public static final BlockEntry<PowderbarrelBlock> POWDERBARREL = REGISTRATE
             .block("powderbarrel", PowderbarrelBlock::new)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Powderbarrel", "Slightly larger than TNT, drops all destroyed Blocks as Items"))
+            .setData(ProviderType.LANG,
+                    nameAndTooltipLang("Powderbarrel", "Slightly larger than TNT, drops all destroyed Blocks as Items"))
             .properties(p -> p.destroyTime(0.5F).sound(SoundType.WOOD).mapColor(MapColor.STONE)
                     .pushReaction(PushReaction.BLOCK))
             .tag(BlockTags.MINEABLE_WITH_AXE)
@@ -758,7 +763,8 @@ public class GTBlocks {
 
     public static final BlockEntry<IndustrialTNTBlock> INDUSTRIAL_TNT = REGISTRATE
             .block("industrial_tnt", IndustrialTNTBlock::new)
-            .setData(ProviderType.LANG, nameAndTooltipLang("Industrial TNT", "Much larger than TNT, drops all destroyed Blocks as Items"))
+            .setData(ProviderType.LANG,
+                    nameAndTooltipLang("Industrial TNT", "Much larger than TNT, drops all destroyed Blocks as Items"))
             .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
@@ -1271,7 +1277,9 @@ public class GTBlocks {
             .loot((table, block) -> table.add(block,
                     table.createSingleItemTable(Items.CHARCOAL, UniformGenerator.between(1.0F, 3.0F))))
             .lang("Brittle Charcoal")
-            .setData(ProviderType.LANG, nameAndMultilineTooltipLang("Brittle Charcoal", "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal."))
+            .setData(ProviderType.LANG,
+                    nameAndMultilineTooltipLang("Brittle Charcoal",
+                            "Produced by the Charcoal Pile Igniter.\nMine this to get Charcoal."))
             .exBlockstate(GTModels.cubeAllModel(GTCEu.id("block/misc/brittle_charcoal")))
             .tag(BlockTags.MINEABLE_WITH_SHOVEL)
             .item()
@@ -1516,14 +1524,18 @@ public class GTBlocks {
         }
     }
 
-    public static <T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndTooltipLang(String name, String tooltip) {
+    public static <
+            T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndTooltipLang(String name,
+                                                                                                                    String tooltip) {
         return (ctx, prov) -> {
             prov.add(ctx.getEntry().getDescriptionId(), name);
             prov.add(ctx.getEntry().getDescriptionId() + ".tooltip", tooltip);
         };
     }
 
-    public static <T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndMultilineTooltipLang(String name, String multiline) {
+    public static <
+            T extends Block> NonNullBiConsumer<DataGenContext<Block, T>, RegistrateLangProvider> nameAndMultilineTooltipLang(String name,
+                                                                                                                             String multiline) {
         return (ctx, prov) -> {
             prov.add(ctx.getEntry().getDescriptionId(), name);
 

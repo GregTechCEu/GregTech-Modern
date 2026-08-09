@@ -114,6 +114,7 @@ public class LangUtil {
 
     /**
      * Returns if the given key exists, or has multi lang
+     * 
      * @param key Translation key
      * @return If the given key exists or has multi lang
      */

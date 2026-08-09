@@ -496,7 +496,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     /**
-     * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
+     * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your
+     * addon's datagen.
+     * 
      * @param langs The English language strings to add.
      */
     public SELF tooltipLang(String... langs) {
@@ -504,7 +506,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     /**
-     * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your addon's datagen.
+     * Adds English language tooltips to this machine item. Lang keys for these tooltips will be generated during your
+     * addon's datagen.
+     * 
      * @param langs The English language strings to add.
      */
     public SELF tooltipLang(List<String> langs) {
@@ -514,6 +518,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     /**
      * Adds extra tooltips to this machine item
+     * 
      * @param components The tooltip components to add.
      */
     public SELF tooltips(@Nullable Component... components) {
@@ -522,6 +527,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     /**
      * Adds extra tooltips to this machine item
+     * 
      * @param components The tooltip components to add.
      */
     public SELF tooltips(List<? extends @Nullable Component> components) {
@@ -727,7 +733,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
         if (!langTooltips.isEmpty()) {
             registrate.addDataGenerator(ProviderType.LANG, p -> {
-                GTLangProvider provider = (GTLangProvider)p;
+                GTLangProvider provider = (GTLangProvider) p;
                 if (langTooltips.size() == 1) provider.add(id.toLanguageKey("machine", "tooltip"), langTooltips.get(0));
                 else provider.addMultiLang(id.toLanguageKey("machine", "tooltip"), langTooltips.toArray(String[]::new));
             });

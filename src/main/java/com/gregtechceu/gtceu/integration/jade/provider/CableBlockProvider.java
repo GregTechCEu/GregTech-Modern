@@ -49,7 +49,8 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
 
                 if (temperature != CableBlockEntity.getDefaultTemp()) {
                     iTooltip.add(Component.translatable("integration.gtceu.jade.cable.overloaded", progressToFailure(
-                            CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature)).withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
+                            CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature))
+                            .withStyle(ChatFormatting.RED, ChatFormatting.BOLD));
                 }
             }
         }

@@ -32,7 +32,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -408,7 +407,8 @@ public class GTUtil {
                     s = Component.translatable("integration.gtceu.jade.days", time % 24).getString() + " " + s;
                     time /= 24;
                     if (time > 0) {
-                        s = Component.translatable("integration.gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
+                        s = Component.translatable("integration.gtceu.jade.years", formatLongNumber(time, threshold))
+                                .getString() +
                                 " " + s;
                     }
                 }

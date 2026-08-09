@@ -708,10 +708,11 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
                 tooltip.add(Component.translatable("tool.gtceu.tooltip.crafting_uses", FormattingUtil
                         .formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)))));
             }
-            //tooltip.add(Component.translatable("tool.gtceu.tooltip.max_uses",
-            //        FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack))));
+            // tooltip.add(Component.translatable("tool.gtceu.tooltip.max_uses",
+            // FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack))));
             tooltip.add(Component.translatable("tool.gtceu.tooltip.general_uses",
-                    FormattingUtil.formatNumbers(damageRemaining), FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack) + 1)));
+                    FormattingUtil.formatNumbers(damageRemaining),
+                    FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack) + 1)));
 
         }
 
@@ -764,9 +765,6 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
         // unique tooltip
 
-
-
-
         var defaultEnchants = getDefaultEnchantments(stack);
         if (!defaultEnchants.isEmpty()) {
             tooltip.add(Component.translatable("item.gtceu.tool.tooltip.default_enchantments"));
@@ -778,8 +776,6 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
             }
             tooltip.add(CommonComponents.EMPTY);
         }
-
-
 
         // valid tools
         tooltip.add(Component.translatable("tool.gtceu.tooltip.usable_as",

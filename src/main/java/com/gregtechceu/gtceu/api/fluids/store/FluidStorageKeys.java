@@ -15,7 +15,8 @@ public final class FluidStorageKeys {
     public static final FluidStorageKey LIQUID = new FluidStorageKey(GTCEu.id("liquid"),
             MaterialIconType.liquid,
             m -> prefixedRegisteredName("liquid_", FluidStorageKeys.LIQUID, m),
-            m -> m.hasProperty(PropertyKey.DUST) ? "material.gtceu.fluid_type.liquid_generic" : "material.gtceu.fluid_type.generic",
+            m -> m.hasProperty(PropertyKey.DUST) ? "material.gtceu.fluid_type.liquid_generic" :
+                    "material.gtceu.fluid_type.generic",
             FluidState.LIQUID, 0);
 
     public static final FluidStorageKey GAS = new FluidStorageKey(GTCEu.id("gas"),

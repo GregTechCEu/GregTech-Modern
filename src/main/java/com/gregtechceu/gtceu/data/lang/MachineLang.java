@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 
 public class MachineLang {
 
     public static void init(GTLangProvider provider) {
-
         generateGeneralMachineTooltips(provider);
 
         generateCustomMachineTooltips(provider);
@@ -26,7 +24,6 @@ public class MachineLang {
         provider.add("machine.gtceu.muffle.on", "Sound Muffling: Enabled");
         provider.add("machine.gtceu.muffle.off", "Sound Muffling: Disabled");
         provider.add("machine.gtceu.perfect_oc", "Does not lose energy efficiency when overclocked.");
-
 
         provider.add("gtceu.gui.fluid_auto_output.tooltip.enabled", "Fluid Auto-Output Enabled");
         provider.add("gtceu.gui.fluid_auto_output.tooltip.disabled", "Fluid Auto-Output Disabled");
@@ -108,7 +105,6 @@ public class MachineLang {
      * For Tooltips that are NOT in the form {@code mod.machine.tier_name.tooltip}
      */
     private static void generateCustomMachineTooltips(GTLangProvider provider) {
-
         // Steam Boilers
         provider.add("machine.gtceu.boiler.info.heating.up", "§cHeating up§r%s");
         provider.add("machine.gtceu.boiler.info.cooling.down", "§9Cooling down§r%s");
@@ -556,7 +552,6 @@ public class MachineLang {
     }
 
     private static void generateCustomMultiblockPartTooltips(GTLangProvider provider) {
-
         // Maintenance Hatch
         provider.add("gtceu.machine.maintenance_hatch.tooltip", "For maintaining Multiblocks");
         provider.addMultiline("gtceu.machine.maintenance_hatch_configurable.tooltip",
@@ -1219,6 +1214,5 @@ public class MachineLang {
         // XEI Categories
         provider.add("gtceu.auto_decomp.rotor", "Turbine Rotor");
         provider.add("gtceu.auto_decomp.tool", "Non-electric tool");
-
     }
 }

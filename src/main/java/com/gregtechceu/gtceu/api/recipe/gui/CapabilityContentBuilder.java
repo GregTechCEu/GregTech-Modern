@@ -112,7 +112,8 @@ public interface CapabilityContentBuilder {
                         .withStyle(ChatFormatting.GOLD));
             }
             if (perTick) {
-                tooltip.addLine(Component.translatable("recipe_content.gtceu.per_tick").withStyle(ChatFormatting.GREEN));
+                tooltip.addLine(
+                        Component.translatable("recipe_content.gtceu.per_tick").withStyle(ChatFormatting.GREEN));
             }
         });
 

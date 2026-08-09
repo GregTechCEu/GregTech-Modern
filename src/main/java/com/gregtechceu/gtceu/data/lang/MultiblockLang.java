@@ -1,18 +1,16 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class MultiblockLang {
 
     public static void init(GTLangProvider provider) {
-
         provider.addMultiline("multiblock.gtceu.dimensions", "Dimensions: \n" +
                 "  §c§lWidth§r: %s, §a§lHeight§r: %s, §9§lDepth§r: %s ");
-        
+
         provider.add("multiblock.gtceu.part_sharing.disabled", "Multiblock Sharing §4Disabled");
         provider.add("multiblock.gtceu.part_sharing.enabled", "Multiblock Sharing §aEnabled");
-        
+
         // Pattern/Predicate Info
 
         provider.add("multiblock.gtceu.predicate.count.exact", "§cExactly: %d§r");
@@ -32,8 +30,8 @@ public class MultiblockLang {
         provider.add("multiblock.gtceu.pattern_error.mismatch_coils", "Mismatched coils: %s vs %s at (%d, %d, %d)");
         provider.add("multiblock.gtceu.pattern_error.mismatch_filters", "Mismatched filters: %s vs %s at (%d, %d, %d)");
 
-        
-        provider.add("multiblock.gtceu.pattern_error.active_transformer.missing_io", "Missing hatches: IN - %s | OUT - %s");
+        provider.add("multiblock.gtceu.pattern_error.active_transformer.missing_io",
+                "Missing hatches: IN - %s | OUT - %s");
         provider.add("multiblock.gtceu.pattern_error.cleanroom.too_small", "Cleanroom must be at least 5x5x4.");
         provider.add("multiblock.gtceu.pattern_error.cleanroom.not_centered", "Cleanroom controller must be centered.");
         provider.add("multiblock.gtceu.pattern_error.distillery.unexpected_hatch",

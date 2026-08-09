@@ -35,7 +35,6 @@ public class ItemLang {
         provider.add("item.electric.discharge_mode.enabled", "Discharge Mode Enabled");
         provider.add("item.electric.discharge_mode.disabled", "Discharge Mode Disabled");
         provider.add("item.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
-
     }
 
     public static void generateBehaviorKeys(GTLangProvider provider) {
@@ -50,7 +49,7 @@ public class ItemLang {
 
         provider.add("item.gtceu.behavior.toggle_energy.tooltip", "Use to toggle mode");
         provider.add("item.gtceu.behavior.hammer", "Turns on and off Muffling for Machines (by hitting them)");
-        
+
         // Magnet
         provider.add("item.gtceu.behavior.item_magnet.enabled", "Magnetic Field Enabled");
         provider.add("item.gtceu.behavior.item_magnet.disabled", "Magnetic Field Disabled");
@@ -89,7 +88,8 @@ public class ItemLang {
         provider.add("item.gtceu.behavior.memory_card.client_msg.cleared", "Stored configuration cleared");
         provider.add("item.gtceu.behavior.memory_card.client_msg.copied", "Copied machine configuration");
         provider.add("item.gtceu.behavior.memory_card.client_msg.pasted", "Applied machine configuration");
-        provider.add("item.gtceu.behavior.memory_card.client_msg.missing_items", "Missing items required to paste configuration");
+        provider.add("item.gtceu.behavior.memory_card.client_msg.missing_items",
+                "Missing items required to paste configuration");
         provider.add("item.gtceu.behavior.memory_card.tooltip.items_to_paste",
                 "The following items are needed to paste this configuration:");
         provider.add("item.gtceu.behavior.memory_card.enabled", "§aEnabled§r");
@@ -99,9 +99,11 @@ public class ItemLang {
         provider.add("item.gtceu.behavior.memory_card.setting.tooltip.fluid_io", "Fluid Output: %s (%s)");
         provider.add("item.gtceu.behavior.memory_card.setting.tooltip.auto_output", "§2Auto Output§r");
         provider.add("item.gtceu.behavior.memory_card.setting.tooltip.allow_input", "§2Allow Input§r");
-        provider.add("item.gtceu.behavior.memory_card.setting.tooltip.auto_output_allow_input", "§2Auto Output/Allow Input§r");
+        provider.add("item.gtceu.behavior.memory_card.setting.tooltip.auto_output_allow_input",
+                "§2Auto Output/Allow Input§r");
         provider.add("item.gtceu.behavior.memory_card.setting.tooltip.pipe_connections", "Pipe connections: %s");
-        provider.add("item.gtceu.behavior.memory_card.setting.tooltip.pipe_blocked_connections", "Pipe shuttered sides: %s");
+        provider.add("item.gtceu.behavior.memory_card.setting.tooltip.pipe_blocked_connections",
+                "Pipe shuttered sides: %s");
         provider.add("item.gtceu.behavior.memory_card.setting.tooltip.muffled", "Muffling %s");
         provider.add("item.gtceu.behavior.memory_card.setting.tooltip.circuit_config", "Programmed Circuit: ");
 
@@ -113,12 +115,13 @@ public class ItemLang {
         provider.add("item.prospector.tooltip.modes", "Available Modes:");
         provider.add("item.gtceu.behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("item.gtceu.behavior.prospector.added_waypoint", "Created waypoint named %s!");
-        
+
         provider.add("item.gtceu.behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
         provider.add("item.gtceu.behavior.portable_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: %s%%");
         provider.add("item.gtceu.behavior.portable_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");
 
-        provider.add("item.gtceu.behavior.portable_scanner.environmental_hazard", "Environmental Hazard In Chunk: %s§r - %s ppm");
+        provider.add("item.gtceu.behavior.portable_scanner.environmental_hazard",
+                "Environmental Hazard In Chunk: %s§r - %s ppm");
         provider.add("item.gtceu.behavior.portable_scanner.environmental_hazard.nothing",
                 "Environmental Hazard In Chunk: §6Nothing§r");
 
@@ -178,7 +181,8 @@ public class ItemLang {
         provider.add("item.gtceu.behavior.portable_scanner.workable_stored_energy", "Stored Energy: %s EU / %s EU");
 
         provider.add("item.gtceu.behavior.portable_scanner.mode.caption", "Display mode: %s");
-        provider.add("item.gtceu.behavior.portable_scanner.mode.show_all_info", "Show all info (excluding internal info)");
+        provider.add("item.gtceu.behavior.portable_scanner.mode.show_all_info",
+                "Show all info (excluding internal info)");
         provider.add("item.gtceu.behavior.portable_scanner.mode.show_block_info", "Show block info");
         provider.add("item.gtceu.behavior.portable_scanner.mode.show_machine_info", "Show machine info");
         provider.add("item.gtceu.behavior.portable_scanner.mode.show_electrical_info", "Show electrical info");
@@ -189,6 +193,5 @@ public class ItemLang {
         // Data Stick
         provider.add("item.gtceu.behavior.data_item.title", "§n%s Construction Data:");
         provider.add("item.gtceu.behavior.data_item.data", "- §a%s");
-
     }
 }
