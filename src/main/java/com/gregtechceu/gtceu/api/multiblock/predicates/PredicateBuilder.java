@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.tags.TagKey;
@@ -40,9 +41,9 @@ public class PredicateBuilder {
         this.name = debugName;
     }
 
+    /// Optional method, defaults to {@link #placeholderError(PredicateContext, BasePredicate)} if no custom
+    /// error handler is given
     /// @param function Function that takes a {@link PredicateContext} and returns a {@link PatternError}.
-    /// <br/>
-    /// The returned error is automatically appended.
     public PredicateBuilder errorFunction(Function<PredicateContext, PatternError> function) {
         return errorHandler((context, failingPredicate) -> function.apply(context));
     }
@@ -82,8 +83,8 @@ public class PredicateBuilder {
                 composeErrorHandlers());
     }
 
-    private @Nullable ErrorHandler composeErrorHandlers() {
-        if (errorHandlers.isEmpty()) return null;
+    private ErrorHandler composeErrorHandlers() {
+        if (errorHandlers.isEmpty()) return this::placeholderError;
         Validate.noNullElements(errorHandlers);
         List<ErrorHandler> errorHandlers = Collections.unmodifiableList(this.errorHandlers);
         return (context, failingPredicate) -> {
@@ -91,5 +92,9 @@ public class PredicateBuilder {
                 handler.appendError(context, failingPredicate);
             }
         };
+    }
+
+    private void placeholderError(PredicateContext ctx, BasePredicate failingPredicate) {
+        ctx.appendError(new SimplePatternError(ctx.pos(), List.of(failingPredicate.getCandidates())));
     }
 }

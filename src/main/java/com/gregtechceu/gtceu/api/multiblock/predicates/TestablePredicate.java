@@ -50,13 +50,12 @@ class TestablePredicate extends BasePredicate {
     TestablePredicate(String name, Predicate<PredicateContext> predicate,
                       Stream<BlockInfo> candidates,
                       @Nullable Consumer<StringBuilder> contents,
-                      @Nullable ErrorHandler onError) {
+                      ErrorHandler onError) {
         this.name = name;
         this.predicate = predicate;
         this.candidates = candidates;
         this.contents = contents;
-        this.onError = Objects.requireNonNullElse(onError,
-                (context, failingPredicate) -> this.placeholderError(context));
+        this.onError = onError;
     }
 
     /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
@@ -85,10 +84,6 @@ class TestablePredicate extends BasePredicate {
     @Override
     public void onError(PredicateContext ctx) {
         this.onError.appendError(ctx, this);
-    }
-
-    private void placeholderError(PredicateContext ctx) {
-        ctx.appendError(new SimplePatternError(ctx.pos(), List.of(getCandidates())));
     }
 
     @Override
