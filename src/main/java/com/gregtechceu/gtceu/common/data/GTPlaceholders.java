@@ -4,14 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer
 import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
@@ -93,7 +94,7 @@ public class GTPlaceholders {
         return cnt;
     }
 
-    public static int countItems(@Nullable ItemFilter filter, @Nullable IItemHandler itemHandler) {
+    public static int countItems(@Nullable Filter<ItemStack> filter, @Nullable IItemHandler itemHandler) {
         if (itemHandler == null)
             return -1;
         int cnt = 0;
@@ -167,9 +168,13 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 if (ctx.pos() == null) throw new NoTargetException();
                 IItemHandler itemHandler = GTCapabilityHelper.getItemHandler(ctx.level(), ctx.pos(), ctx.side());
-                if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, itemHandler));
-                if (args.size() == 1) return MultiLineComponent
-                        .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
+                if (args.isEmpty()) {
+                    return MultiLineComponent.literal(countItems((Filter<ItemStack>) null, itemHandler));
+                }
+                if (args.size() == 1) {
+                    return MultiLineComponent
+                            .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
+                }
                 if (GTStringUtils.equals(args.get(0), "filter")) {
                     int slot = PlaceholderUtils.toInt(args.get(1));
                     if (ctx.itemStackHandler() == null)
@@ -177,7 +182,7 @@ public class GTPlaceholders {
                     PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     try {
                         return MultiLineComponent.literal(countItems(
-                                ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
+                                Filters.loadItemFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
                     } catch (NullPointerException e) {
                         throw new MissingItemException("filter", slot);
                     }
@@ -434,10 +439,10 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
                 if (ctx.pos() == null) throw new NoTargetException();
-                IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(ctx.level(),
-                        ctx.pos(), ctx.side());
-                if (maintenance == null) throw new NotSupportedException();
-                return MultiLineComponent.literal(maintenance.hasMaintenanceProblems() ? 1 : 0);
+                MetaMachine machine = MetaMachine.getMachine(ctx.level(), ctx.pos());
+                if (machine instanceof MaintenanceHatchPartMachine maint)
+                    return MultiLineComponent.literal(maint.hasMaintenanceProblems() ? 1 : 0);
+                throw new NotSupportedException();
             }
 
             @Override

@@ -24,7 +24,6 @@ public class MultiblockStructureProvider extends MachineInfoProvider<MultiblockC
         return ByteTag.valueOf(machine.isFormed());
     }
 
-    @Override
     protected void addTooltip(ByteTag data, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (data.getAsByte() == 0) {

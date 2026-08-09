@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import com.gregtechceu.gtceu.common.data.blocks.GTDevBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.data.worldgen.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
@@ -675,8 +676,8 @@ public class GTBlocks {
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
                     GTCEu.id("block/misc/industrial_tnt_side"),
-                    new ResourceLocation("minecraft", "block/tnt_bottom"),
-                    new ResourceLocation("minecraft", "block/tnt_top"))))
+                    ResourceLocation.withDefaultNamespace("block/tnt_bottom"),
+                    ResourceLocation.withDefaultNamespace("block/tnt_top"))))
             .simpleItem()
             .register();
 
@@ -1205,7 +1206,7 @@ public class GTBlocks {
             if (!strata.generateBlocks) continue;
             for (StoneBlockType type : StoneBlockType.values()) {
                 String blockId = type.blockId.formatted(strata.getSerializedName());
-                if (BuiltInRegistries.BLOCK.containsKey(new ResourceLocation(blockId))) continue;
+                if (BuiltInRegistries.BLOCK.containsKey(ResourceLocation.parse(blockId))) continue;
                 var entry = REGISTRATE.block(blockId, Block::new)
                         .initialProperties(() -> Blocks.STONE)
                         .properties(p -> p.strength(type.hardness, type.resistance).mapColor(strata.mapColor))
@@ -1301,6 +1302,7 @@ public class GTBlocks {
                             .initialProperties(() -> Blocks.GLASS)
                             .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                             .addLayer(() -> RenderType::cutout)
+                            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                             .blockstate(GTModels.lampModel(dyeColor, true))
                             .item(LampBlockItem::new)
                             .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
@@ -1315,6 +1317,7 @@ public class GTBlocks {
                     .block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor, false))
                     .initialProperties(() -> Blocks.GLASS)
                     .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                     .blockstate(GTModels.lampModel(dyeColor, false))
                     .item(LampBlockItem::new)
                     .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
@@ -173,11 +173,11 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
         if (recipe != null && recipe.data.contains("fluidA") && recipe.data.contains("fluidB")) {
             this.resolvedFluids.clear();
 
-            Fluid fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
+            Fluid fluidA = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidA")));
             if (!fluidA.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
             }
-            Fluid fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
+            Fluid fluidB = BuiltInRegistries.FLUID.get(ResourceLocation.parse(recipe.data.getString("fluidB")));
             if (!fluidB.defaultFluidState().isEmpty()) {
                 this.resolvedFluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
             }

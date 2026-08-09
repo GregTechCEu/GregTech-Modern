@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
@@ -10,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -42,9 +42,9 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -69,6 +69,7 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveWorkableMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
@@ -308,10 +309,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GCYMMachines", GCYMMachines.class);
         // Multiblock related
         event.add("RotationState", RotationState.class);
-        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
-        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
+        event.add("FactoryBlockPattern", MultiblockPatternBuilder.class);
+        event.add("MultiblockPatternBuilder", MultiblockPatternBuilder.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
+        event.add("RelativeDirection", RelativeDirection.class);
         // Recipe related
         event.add("GTRecipeTypes", GTRecipeTypes.class);
         event.add("GTRecipeCategories", GTRecipeCategories.class);
@@ -337,6 +339,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTMachineModels", GTMachineModels.class);
         event.add("GTModelProperties", GTMachineModelProperties.class);
         event.add("GTDynamicRenders", DynamicRenderHelper.class);
+        event.add("GTGuiTextures", GTGuiTextures.class);
+        event.add("IO", IO.class);
 
         // Hazard Related
         event.add("HazardProperty", HazardProperty.class);
@@ -375,7 +379,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(Element.class, o -> {
             if (o instanceof Element element) return element;
-            if (o instanceof CharSequence chars) return GTElements.get(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.ELEMENTS.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(Material.class, o -> {
@@ -391,18 +395,20 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(TagPrefix.class, o -> {
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
-            if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.TAG_PREFIXES.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
         typeWrappers.registerSimple(RecipeCapability.class, o -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
+            if (o instanceof ResourceLocation loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
+            if (o instanceof CharSequence chars)
+                return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(ChanceLogic.class, o -> {
             if (o instanceof ChanceLogic capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
@@ -429,7 +435,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(IWorldGenLayer.class, o -> {
             if (o instanceof IWorldGenLayer layer) return layer;
-            if (o instanceof CharSequence chars) return WorldGenLayers.getByName(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.WORLD_GEN_LAYERS
+                    .get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(HeightRangePlacement.class, o -> {
@@ -666,7 +673,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             var info = ItemMaterialData.getMaterialInfo(item);
             if (info != null) {
                 for (var ms : info.getMaterials()) {
-                    if (ms.material() instanceof MarkerMaterial) continue;
                     materials.addTo(ms.material(), (ms.amount() * inCount) / outCount);
                 }
                 continue;
@@ -676,7 +682,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
 
             var matStack = ChemicalHelper.getMaterialStack(item);
-            if (!matStack.isEmpty() && !(matStack.material() instanceof MarkerMaterial)) {
+            if (!matStack.isEmpty()) {
                 materials.addTo(matStack.material(), (matStack.amount() * inCount) / outCount);
             }
 

@@ -26,6 +26,7 @@ public class LangHandler {
         IntegrationLang.init(provider);
         ItemLang.init(provider);
         MachineLang.init(provider);
+        MultiblockLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
         RecipeLogicLang.init(provider);
@@ -465,6 +466,7 @@ public class LangHandler {
         provider.add("cover.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.voiding.message.enabled", "Voiding Cover Enabled");
         provider.add("cover.item_smart_filter.title", "Smart Item Filter");
+        provider.add("cover.item_smart_filter.recipe_type", "Recipe Type");
         provider.add("cover.item_smart_filter.filtering_mode.electrolyzer", "Electrolyzer");
         provider.add("cover.item_smart_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.item_smart_filter.filtering_mode.sifter", "Sifter");
@@ -1183,8 +1185,8 @@ public class LangHandler {
         provider.add("gtceu.multiblock.total_runs", "Performing %d Recipes at once");
         provider.add("gtceu.multiblock.batch_enabled", "- %dx from Batching");
         provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
-        provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
-        provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
+        provider.add("gtceu.machine.batching.enabled", "Batching Enabled");
+        provider.add("gtceu.machine.batching.disabled", "Batching Disabled");
         provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
         provider.add("gtceu.multiblock.progress", "Progress: %ss / %ss (%s%%)");
         provider.add("gtceu.multiblock.output_line.0", "%s x §e%s§r (%ss/ea)");
@@ -1235,11 +1237,13 @@ public class LangHandler {
         provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
         provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
         provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
-        provider.add("gtceu.multiblock.pattern.error", "Expected components (%s) at (%s).");
-        provider.add("gtceu.multiblock.pattern.error.limited_exact", "§cExactly: %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited_within", "§cBetween %d and %d§r");
-        multiLang(provider, "gtceu.multiblock.pattern.error.limited", "§cMaximum: %d§r", "§cMinimum: %d§r",
-                "§cMaximum: %d per layer§r", "§cMinimum: %d per layer§r");
+        multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components at:\n  %s, %s, %s.");
+        provider.add("gtceu.multiblock.pattern.error.limited.exact", "§cExactly: %d§r");
+        provider.add("gtceu.multiblock.pattern.error.limited.range", "§cBetween %d and %d§r");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count", "§cMaximum:§r %d per layer, has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count", "§cMinimum:§r %d per layer, has %d");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");
@@ -1323,9 +1327,12 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.data_bank", "[GTCEu] Data Bank Info");
         provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
+        provider.add("config.jade.plugin_gtceu.me_grid_connected", "[GTCEu] Grid Connected Machine Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
+        provider.add("config.jade.plugin_gtceu.diode_provider", "[GTCEu] Diode Info");
+
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
         // gui

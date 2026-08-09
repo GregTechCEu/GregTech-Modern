@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.trait;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -15,10 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
 
+/**
+ * Machine trait that makes a machine explode when exposed to weather.
+ */
 public class EnvironmentalExplosionTrait extends MachineTrait {
-
-    public static final MachineTraitType<EnvironmentalExplosionTrait> TYPE = new MachineTraitType<>(
-            EnvironmentalExplosionTrait.class);
 
     private @Nullable TickableSubscription explosionSub = null;
 
@@ -40,11 +39,6 @@ public class EnvironmentalExplosionTrait extends MachineTrait {
 
     public EnvironmentalExplosionTrait(float explosionPower, float fireChance) {
         this(explosionPower, fireChance, () -> true);
-    }
-
-    @Override
-    public MachineTraitType<EnvironmentalExplosionTrait> getTraitType() {
-        return TYPE;
     }
 
     public boolean enableEnvironmentalExplosions() {

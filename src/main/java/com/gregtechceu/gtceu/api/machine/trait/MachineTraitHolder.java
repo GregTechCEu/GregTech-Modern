@@ -19,15 +19,21 @@ import java.util.*;
 public final class MachineTraitHolder {
 
     private final MetaMachine machine;
+
+    private boolean allowTraitAttachment = true;
+
     private final List<MachineTrait> traits;
-    private final Map<MachineTraitType<?>, List<MachineTrait>> traitsByType;
 
     private final Map<String, MachineTrait> traitsToSave;
+
+    private @Nullable List<MachineTrait> allTraits = null;
+
+    private final Map<Class<?>, List<MachineTrait>> traitsByClass;
 
     public MachineTraitHolder(MetaMachine machine) {
         this.machine = machine;
         this.traits = new ObjectArrayList<>();
-        this.traitsByType = new Object2ObjectOpenHashMap<>();
+        this.traitsByClass = new Object2ObjectOpenHashMap<>();
         this.traitsToSave = new Object2ObjectOpenHashMap<>();
     }
 
@@ -35,7 +41,24 @@ public final class MachineTraitHolder {
      * @return An unmodifiable list of all traits attached to this machine.
      */
     public @Unmodifiable List<MachineTrait> getAllTraits() {
-        return Collections.unmodifiableList(traits);
+        return allTraits != null ? allTraits : Collections.unmodifiableList(traits);
+    }
+
+    /**
+     * Gets all traits implementing a specific interface/class
+     */
+    @SuppressWarnings("unchecked")
+    public <T> @Unmodifiable List<T> getTraitsByInterface(Class<T> clazz) {
+        if (traitsByClass.containsKey(clazz)) return (List<T>) traitsByClass.get(clazz);
+
+        List<T> list = new ObjectArrayList<>();
+
+        for (var t : getAllTraits()) {
+            if (clazz.isAssignableFrom(t.getClass())) list.add(clazz.cast(t));
+        }
+
+        if (!allowTraitAttachment) traitsByClass.put(clazz, (List<MachineTrait>) Collections.unmodifiableList(list));
+        return list;
     }
 
     /**
@@ -49,7 +72,7 @@ public final class MachineTraitHolder {
     }
 
     /**
-     * Attaches a trait to this machine.
+     * Attaches a trait to this machine. Traits must be attached before {@link MetaMachine#onLoad()}.
      * 
      * @param trait            The trait to attach
      * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
@@ -57,22 +80,59 @@ public final class MachineTraitHolder {
      * @return The attached trait
      */
     public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
+        if (!allowTraitAttachment)
+            throw new IllegalStateException("Cannot add traits to machine after machine has been loaded.");
+
         trait.setTraitPriority(callbackPriority);
 
-        var traitType = trait.getTraitType();
-
-        var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
-        if (!traitType.allowsMultipleInstances() && !list.isEmpty()) {
-            throw new IllegalArgumentException("Attempted to add multiple traits of type: " + trait.getClass());
-        }
-
-        list.add(trait);
-        list.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
+        addTraitToClassMap(trait.getClass(), trait);
         traits.add(trait);
         traits.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
 
         trait.setMachine(machine);
+        trait.onTraitAttached();
         return trait;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addTraitToClassMap(Class<? extends MachineTrait> clazz, MachineTrait trait) {
+        var list = traitsByClass.computeIfAbsent(clazz, $ -> new ObjectArrayList<>(1));
+
+        list.add(trait);
+        list.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
+
+        if (!clazz.getSuperclass().equals(MachineTrait.class))
+            addTraitToClassMap((Class<? extends MachineTrait>) clazz.getSuperclass(), trait);
+    }
+
+    /**
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
+     * data will be duplicated. Use only one sync method.<br>
+     * Note: Persistent traits must be attached before data load, or they will not be loaded correctly.
+     *
+     * @param traitName Unique identifier for this trait.
+     * @param trait     The trait to register
+     */
+    public void attachPersistentTrait(String traitName, MachineTrait trait) {
+        attachTrait(trait);
+        registerPersistentTrait(traitName, trait);
+    }
+
+    /**
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
+     * data will be duplicated. Use only one sync method.<br>
+     * Note: Persistent traits must be attached before data load, or they will not be loaded correctly.
+     *
+     * @param traitName        Unique identifier for this trait.
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
+     *                         first, which may prevent traits with a lower priority from handling some events.
+     * @param trait            The trait to register
+     */
+    public void attachPersistentTrait(String traitName, MachineTrait trait, int callbackPriority) {
+        attachTrait(trait, callbackPriority);
+        registerPersistentTrait(traitName, trait);
     }
 
     /**
@@ -87,6 +147,7 @@ public final class MachineTraitHolder {
         if (trait.getMachine() != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
         if (traitsToSave.containsKey(traitName))
             throw new IllegalArgumentException("Attempted to register duplicate trait save key \"" + traitName + "\"");
+        trait.setTraitName(traitName);
         traitsToSave.put(traitName, trait);
         return this;
     }
@@ -104,37 +165,48 @@ public final class MachineTraitHolder {
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
-     * 
-     * @param type The trait type to get
+     * Gets the first trait (trait with highest priority) with the specified class.
+     * Also includes traits that are a subtype of the specified class.
+     *
+     * @param type The trait class to get
      * @return The trait, or null if no traits of the given type are present.
      */
-    public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
-        List<MachineTrait> traitList = traitsByType.get(type);
+    public <T extends MachineTrait> @Nullable T getTrait(Class<T> type) {
+        List<MachineTrait> traitList = traitsByClass.get(type);
         if (traitList == null || traitList.isEmpty()) return null;
-        return type.castTrait(traitList.get(0));
+        return type.cast(traitList.get(0));
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
-     * 
-     * @param type The trait type to get
+     * Gets the first trait (trait with highest priority) with the specified class.
+     * Also includes traits that are a subtype of the specified class.
+     *
+     * @param type The trait class to get
      * @return An optional result containing the trait if present.
      */
-    public <T extends MachineTrait> Optional<T> getTraitOptional(MachineTraitType<T> type) {
+    public <T extends MachineTrait> Optional<T> getTraitOptional(Class<T> type) {
         return Optional.ofNullable(getTrait(type));
     }
 
     /**
-     * Get all traits with the specified type.
+     * Get all traits with the specified class.
+     * Also includes traits that are a subtype of the specified class.
      * 
-     * @return An unmodifiable list containing all traits of the specified type.
+     * @return An unmodifiable list containing all traits of the specified class.
      */
     @SuppressWarnings("unchecked")
-    public <T extends MachineTrait> @UnmodifiableView List<T> getTraits(MachineTraitType<T> type) {
-        List<T> traitList = (List<T>) traitsByType.get(type);
+    public <T extends MachineTrait> @UnmodifiableView List<T> getTraits(Class<T> type) {
+        List<T> traitList = (List<T>) traitsByClass.get(type);
         if (traitList == null) return List.of();
         return Collections.unmodifiableList(traitList);
+    }
+
+    public void machineLoaded() {
+        allowTraitAttachment = false;
+
+        // Cache traits so that repeated unmodifiableList calls aren't required.
+
+        allTraits = Collections.unmodifiableList(traits);
     }
 
     private static class MachineTraitHolderTransformer implements ValueTransformer<MachineTraitHolder> {
@@ -164,7 +236,7 @@ public final class MachineTraitHolder {
                 trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound(key), context.isClientSync());
             }
 
-            return null;
+            return traitHolder;
         }
     }
 

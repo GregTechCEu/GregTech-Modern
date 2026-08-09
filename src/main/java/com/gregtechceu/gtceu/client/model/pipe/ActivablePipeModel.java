@@ -12,7 +12,6 @@ import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 
-import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -136,8 +135,6 @@ public class ActivablePipeModel extends PipeModel {
     protected BlockModelBuilder makeActiveElementModel(ResourceLocation name, @Nullable Direction endFace,
                                                        final float x1, final float y1, final float z1,
                                                        final float x2, final float y2, final float z2) {
-        Reference2FloatMap<Direction> faceEndpoints = makeFaceEndpointMap(x1, y1, z1, x2, y2, z2);
-
         BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
                 .parent(new ModelFile.UncheckedModelFile("block/block"))
                 .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY))

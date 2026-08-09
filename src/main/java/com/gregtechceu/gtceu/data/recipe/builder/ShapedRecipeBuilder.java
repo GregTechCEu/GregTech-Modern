@@ -42,7 +42,7 @@ public class ShapedRecipeBuilder {
         this(null);
     }
 
-    public ShapedRecipeBuilder aisle(String... data) {
+    public ShapedRecipeBuilder slice(String... data) {
         this.shape.add(data);
         return this;
     }
@@ -53,7 +53,7 @@ public class ShapedRecipeBuilder {
     }
 
     public ShapedRecipeBuilder pattern(String slice) {
-        return aisle(slice);
+        return slice(slice);
     }
 
     public ShapedRecipeBuilder define(char cha, TagKey<Item> itemStack) {
@@ -96,7 +96,7 @@ public class ShapedRecipeBuilder {
     }
 
     public ShapedRecipeBuilder id(String id) {
-        this.id = new ResourceLocation(id);
+        this.id = ResourceLocation.parse(id);
         return this;
     }
 
@@ -178,7 +178,7 @@ public class ShapedRecipeBuilder {
             @Override
             public ResourceLocation getId() {
                 var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "shaped" + "/" + ID.getPath());
+                return ID.withPath("shaped/" + ID.getPath());
             }
 
             @Override

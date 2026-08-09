@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
@@ -78,7 +78,7 @@ public class BlockHighlightRenderer {
                             public @Nullable UITexture sideTips(@NotNull Player player, @NotNull BlockPos pos,
                                                                 @NotNull BlockState state,
                                                                 @NotNull Set<GTToolType> toolTypes,
-                                                                @NotNull Direction side) {
+                                                                ItemStack held, @NotNull Direction side) {
                                 return behavior.showSideTip(state, side) ? GTGuiTextures.TOOL_FRONT_FACING_ROTATION :
                                         null;
                             }
@@ -93,10 +93,10 @@ public class BlockHighlightRenderer {
                 if (gridHighlight.shouldRenderGrid(player, blockPos, state, held, toolType)) {
                     final IToolGridHighlight finalGridHighlight = gridHighlight;
                     drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
-                            side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, side));
+                            side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, held, side));
                 } else {
                     Direction facing = target.getDirection();
-                    var texture = gridHighlight.sideTips(player, blockPos, state, toolType, facing);
+                    var texture = gridHighlight.sideTips(player, blockPos, state, toolType, held, facing);
                     if (texture != null) {
                         RenderSystem.disableDepthTest();
                         RenderSystem.enableBlend();
@@ -185,10 +185,15 @@ public class BlockHighlightRenderer {
 
         Direction front = blockHitResult.getDirection();
         Direction back = front.getOpposite();
-        Direction left = RelativeDirection.LEFT.getActualDirection(front);
-        Direction right = RelativeDirection.RIGHT.getActualDirection(front);
-        Direction top = RelativeDirection.UP.getActualDirection(front);
-        Direction bottom = RelativeDirection.DOWN.getActualDirection(front);
+        Direction left = RelativeDirection.LEFT.applyDirection(front);
+        Direction right = RelativeDirection.RIGHT.applyDirection(front);
+        Direction top = RelativeDirection.UP.applyDirection(front);
+        Direction bottom = RelativeDirection.DOWN.applyDirection(front);
+        if (front.getAxis() == Direction.Axis.Y) {
+            Direction tmp = left;
+            left = right;
+            right = tmp;
+        }
 
         Quaternionfc rotation = getRotation(Direction.SOUTH, front);
         topRight.rotate(rotation);

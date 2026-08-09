@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -67,7 +67,7 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
     }
 
     void voidAny(IItemHandler handler) {
-        ItemFilter filter = filterHandler.getFilter();
+        Filter<ItemStack> filter = filterHandler.getFilter();
 
         for (int slot = 0; slot < handler.getSlots(); slot++) {
             ItemStack sourceStack = handler.extractItem(slot, Integer.MAX_VALUE, true);
@@ -104,8 +104,8 @@ public class ItemVoidingCover extends ConveyorCover implements IControllable {
 
     @Override
     public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                        Direction side) {
-        var superTips = super.sideTips(player, pos, state, toolTypes, side);
+                                        ItemStack held, Direction side) {
+        var superTips = super.sideTips(player, pos, state, toolTypes, held, side);
         if (superTips != null) return superTips;
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return isWorkingEnabled() ? GTGuiTextures.TOOL_START : GTGuiTextures.TOOL_PAUSE;

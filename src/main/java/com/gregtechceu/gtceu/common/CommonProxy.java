@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.*;
@@ -25,22 +26,19 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.common.data.GTPlaceholders;
+import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
-import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
-import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -54,7 +52,6 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.ItemStack;
@@ -72,7 +69,6 @@ import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -93,11 +89,10 @@ public class CommonProxy {
         GTCEuAPI.initializeHighTier();
 
         // MUI stuff
-        GTGuiTextures.init();
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
 
-        GTGuiTheme.registerThemes();
+        // GTGuiTheme.registerThemes();
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
@@ -105,7 +100,10 @@ public class CommonProxy {
         }
 
         GTValueProviderTypes.init(eventBus);
-        GTRegistries.init(eventBus);
+        GTPlacementModifiers.init(eventBus);
+        GTGlobalLootModifiers.init(eventBus);
+        GTLootConditions.init(eventBus);
+        GTLootFunctions.init(eventBus);
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
@@ -150,6 +148,7 @@ public class CommonProxy {
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
+        GTPatternErrors.init();
         GTMachineUtils.init();
         GTMachines.init();
 
@@ -161,31 +160,11 @@ public class CommonProxy {
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         GregTechDatagen.initPost();
-        // Register all material manager registries, for materials with mod ids.
-        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
-            // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
-            if (accessor.getDoDatagen().get()) {
-                // noinspection UnstableApiUsage
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
-                NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
-                        .generate((RegistrateLangProvider) provider, namespace);
-                if (providers == null) {
-                    accessor.getDatagens().put(ProviderType.LANG, generator);
-                } else {
-                    providers.add(0, generator);
-                }
-            }
-        });
 
-        WorldGenLayers.registerAll();
+        WorldGenLayers.init();
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
 
-        GTFeatures.init();
-        GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
         SyncedKeyMappings.init();
@@ -221,15 +200,28 @@ public class CommonProxy {
             KJSEventWrapper.materialModification();
         }
 
+        // Register all material manager registries, for materials with mod ids.
+        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
+            // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
+            var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
+            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
+            if (accessor.getDoDatagen().get()) {
+                // noinspection UnstableApiUsage
+                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
+                        .get(ProviderType.LANG);
+                NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
+                        .generate((RegistrateLangProvider) provider, namespace);
+                if (providers == null) {
+                    accessor.getDatagens().put(ProviderType.LANG, generator);
+                } else {
+                    providers.add(0, generator);
+                }
+            }
+        });
+
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         GTRegistries.MATERIALS.freeze();
         /* End Material Registration */
-    }
-
-    @SubscribeEvent
-    public void register(RegisterEvent event) {
-        if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
-            ChestGenHooks.RandomWeightLootFunction.init();
     }
 
     @SubscribeEvent
@@ -306,8 +298,6 @@ public class CommonProxy {
             GTCraftingComponents.init();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-            // Initialize dungeon loot additions
-            DungeonLootLoader.init();
             GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",

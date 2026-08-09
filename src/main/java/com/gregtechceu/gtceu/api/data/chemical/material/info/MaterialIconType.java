@@ -307,7 +307,7 @@ public record MaterialIconType(String name) {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return this.name;
     }
 }

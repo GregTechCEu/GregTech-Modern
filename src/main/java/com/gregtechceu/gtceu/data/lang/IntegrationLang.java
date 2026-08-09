@@ -105,12 +105,13 @@ public class IntegrationLang {
         provider.add("gtceu.jade.at", " @ ");
         provider.add("gtceu.jade.remaining_charge_time", "Until charged: %s");
         provider.add("gtceu.jade.remaining_discharge_time", "Until empty: %s");
-        provider.add("gtceu.jade.changes_eu_sec", "%s EU/s");
+        provider.add("gtceu.jade.changes_eu_tick", "%s EU/t");
         provider.add("gtceu.jade.seconds", "%s seconds");
         provider.add("gtceu.jade.minutes", "%s minutes");
         provider.add("gtceu.jade.hours", "%s hours");
         provider.add("gtceu.jade.days", "%s days");
         provider.add("gtceu.jade.years", "%s years");
+        provider.add("gtceu.jade.generator.too_small", "Energy Output too small!");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

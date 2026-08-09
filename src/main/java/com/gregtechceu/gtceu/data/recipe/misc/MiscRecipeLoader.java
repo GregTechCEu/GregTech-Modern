@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -71,11 +70,11 @@ public class MiscRecipeLoader {
         SIFTER_RECIPES.recipeBuilder("gravel_sifting").duration(100).EUt(16)
                 .inputItems(new ItemStack(Blocks.GRAVEL))
                 .outputItems(gem, Flint)
-                .chancedOutput(gem, Flint, 9000, 0)
-                .chancedOutput(gem, Flint, 8000, 0)
-                .chancedOutput(gem, Flint, 6000, 0)
-                .chancedOutput(gem, Flint, "1/3", 0)
-                .chancedOutput(gem, Flint, 2500, 0)
+                .chancedOutput(gem, Flint, 9000)
+                .chancedOutput(gem, Flint, 8000)
+                .chancedOutput(gem, Flint, 6000)
+                .chancedOutput(gem, Flint, "1/3")
+                .chancedOutput(gem, Flint, 2500)
                 .save(provider);
 
         PACKER_RECIPES.recipeBuilder("matchbox")
@@ -412,7 +411,7 @@ public class MiscRecipeLoader {
         // skip white lens
         for (int i = 1; i < CHEMICAL_DYES.length; i++) {
             builder.copy(CHEMICAL_DYES[i].getName() + "_lens").inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
-                    .outputItems(GLASS_LENSES.get(Color.VALUES[i]))
+                    .outputItems(GLASS_LENSES.get(COLORS[i]))
                     .save(provider);
         }
 

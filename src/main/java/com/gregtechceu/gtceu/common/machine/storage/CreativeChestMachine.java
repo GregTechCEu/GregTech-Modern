@@ -68,7 +68,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
         tag.putInt("itemsPerCycle", itemsPerCycle);
         tag.putInt("ticksPerCycle", ticksPerCycle);
     }
@@ -115,9 +115,9 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
         syncManager.syncValue("stored", storedSlot);
 
-        IntSyncValue itemsPerCycle = new IntSyncValue(this::getItemsPerCycle, this::setItemsPerCycle);
+        IntSyncValue itemsPerCycle = new IntSyncValue(this::getItemsPerCycle, this::setItemsPerCycle).allowC2S();;
         syncManager.syncValue("itemsPerCycle", itemsPerCycle);
-        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle);
+        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle).allowC2S();;
         syncManager.syncValue("ticksPerCycle", ticksPerCycle);
 
         mainWidget

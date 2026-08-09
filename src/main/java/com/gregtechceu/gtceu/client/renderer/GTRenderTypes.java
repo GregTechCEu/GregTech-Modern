@@ -11,6 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -71,6 +73,25 @@ public class GTRenderTypes extends RenderType {
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
 
+    private static final RenderType BLOCK_HIGHLIGHT_QUADS = RenderType.create("gt_block_highlight_quads",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false,
+            false, CompositeState.builder()
+                    .setTransparencyState(new TransparencyStateShard("sto", () -> {
+                        RenderSystem.enableBlend();
+                        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,
+                                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    }, () -> {
+                        RenderSystem.disableBlend();
+                        RenderSystem.defaultBlendFunc();
+                    }))
+                    .setDepthTestState(NO_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setLightmapState(NO_LIGHTMAP)
+                    .setWriteMaskState(COLOR_DEPTH_WRITE)
+                    .setTextureState(NO_TEXTURE)
+                    .createCompositeState(true));
+
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
         return create("gui_texture", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, false, true,
@@ -116,6 +137,17 @@ public class GTRenderTypes extends RenderType {
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false));
 
+    private static final Function<ResourceLocation, RenderType> GUI_TEXTURE_TRIANGLE_STRIP = Util.memoize((texture) -> {
+        return create("gui_texture_triangle_strip", DefaultVertexFormat.POSITION_COLOR_TEX,
+                VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                        .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                        .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                        .createCompositeState(false));
+    });
+
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                           boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
@@ -138,6 +170,10 @@ public class GTRenderTypes extends RenderType {
         return entityBloom(TextureAtlas.LOCATION_BLOCKS);
     }
 
+    public static RenderType blockHighlightQuads() {
+        return BLOCK_HIGHLIGHT_QUADS;
+    }
+
     public static RenderType getMonitor() {
         return MONITOR;
     }
@@ -152,6 +188,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType guiTriangleStrip() {
         return GUI_TRIANGLE_STRIP;
+    }
+
+    public static RenderType guiTriangleStrip(ResourceLocation texture) {
+        return GUI_TEXTURE_TRIANGLE_STRIP.apply(texture);
     }
 
     public static RenderType guiTriangleFan() {

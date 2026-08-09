@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -53,6 +53,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The base class for steam boilers
+ */
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
                                          implements IMuiMachine, IDataInfoProvider {
 
@@ -292,10 +295,14 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (!isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), waterTank)) {
+        if (FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
                 return InteractionResult.SUCCESS;
             }
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), waterTank)) {
+                return InteractionResult.CONSUME;
+            }
+            return InteractionResult.PASS;
         }
         return super.onUseWithItem(context);
     }

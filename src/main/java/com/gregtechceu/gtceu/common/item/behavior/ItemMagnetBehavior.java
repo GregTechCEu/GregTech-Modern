@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
@@ -15,6 +13,8 @@ import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextEditorWidget;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -54,7 +54,6 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.PhantomItemSlot;
-import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,27 +82,29 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         ItemStack held = data.getUsedItemStack();
         CompoundTag heldTag = held.getOrCreateTag();
 
-        Filter selectedFilter = Filter.get(heldTag.getInt(FILTER_ORDINAL_TAG));
-        Map<Filter, ItemStack> stacks = new EnumMap<>(Filter.class);
+        FilterMode selectedFilterMode = FilterMode.get(heldTag.getInt(FILTER_ORDINAL_TAG));
+        Map<FilterMode, ItemStack> stacks = new EnumMap<>(FilterMode.class);
         CompoundTag startFilterTag = heldTag.getCompound(FILTER_TAG).copy();
-        for (Filter filter : Filter.values()) {
-            ItemStack stack = filter.getFilter(held);
+        for (FilterMode filterMode : FilterMode.values()) {
+            ItemStack stack = filterMode.getFilter(held);
             stack.setTag(startFilterTag.copy());
-            stacks.put(filter, stack);
+            stacks.put(filterMode, stack);
         }
 
-        EnumSyncValue<Filter> filterSync = new EnumSyncValue<>(Filter.class,
-                () -> Filter.get(data.getUsedItemStack().getOrCreateTag().getInt(FILTER_ORDINAL_TAG)),
-                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal()))
+        EnumSyncValue<FilterMode> filterSync = new EnumSyncValue<>(FilterMode.class,
+                () -> FilterMode.get(data.getUsedItemStack().getOrCreateTag().getInt(FILTER_ORDINAL_TAG)),
+                filterMode -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filterMode.ordinal()))
                 .allowC2S();
 
         PagedWidget<?> pages = new PagedWidget<>()
-                .left((176 - 80) / 2)
+                .left((176 - 150) / 2)
                 .top((60 - 55) / 2 + 15)
-                .size(80, 55)
-                .initialPage(selectedFilter.ordinal())
-                .addPage(createSimpleFilterPage((SimpleItemFilter) ItemFilter.loadFilter(stacks.get(Filter.SIMPLE))))
-                .addPage(createTagFilterPage((TagItemFilter) ItemFilter.loadFilter(stacks.get(Filter.TAG))));
+                .size(150, 55)
+                .initialPage(selectedFilterMode.ordinal())
+                .addPage(createSimpleFilterPage(
+                        (SimpleItemFilter) Filters.loadItemFilter(stacks.get(FilterMode.SIMPLE))))
+                .addPage(createTagFilterPage(
+                        (TagFilter<ItemStack, Item>) Filters.loadItemFilter(stacks.get(FilterMode.TAG))));
         pages.onUpdateListener(widget -> {
             int selected = filterSync.getIntValue();
             if (selected != widget.getCurrentPageIndex()) {
@@ -114,7 +115,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         syncManager.addCloseListener(player -> {
             ItemStack stack = data.getUsedItemStack();
             CompoundTag tag = stack.getOrCreateTag();
-            Filter selected = Filter.get(tag.getInt(FILTER_ORDINAL_TAG));
+            FilterMode selected = FilterMode.get(tag.getInt(FILTER_ORDINAL_TAG));
             tag.put(FILTER_TAG, stacks.get(selected).getOrCreateTag().copy());
         });
 
@@ -130,9 +131,10 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                         .top(5)
                         .size(20)
                         .value(filterSync)
-                        .stateCount(Filter.values().length)
-                        .stateOverlay(Filter.SIMPLE, new ItemDrawable(GTItems.ITEM_FILTER.asItem()).asIcon().size(16))
-                        .stateOverlay(Filter.TAG, new ItemDrawable(GTItems.TAG_FILTER.asItem()).asIcon().size(16))
+                        .stateCount(FilterMode.values().length)
+                        .stateOverlay(FilterMode.SIMPLE,
+                                new ItemDrawable(GTItems.ITEM_FILTER.asItem()).asIcon().size(16))
+                        .stateOverlay(FilterMode.TAG, new ItemDrawable(GTItems.TAG_FILTER.asItem()).asIcon().size(16))
                         .tooltipBuilder(r -> r.addLine(Text.dynamic(
                                 () -> Component.translatable(filterSync.getValue().getTooltip())))))
                 .child(pages)
@@ -147,7 +149,6 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
                         .size(16)
                         .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
-                                .changeListener((stack, amount, client, init) -> handler.setStackInSlot(i, stack))
                                 .ignoreMaxStackSize(true).accessibility(true, false))));
 
         BooleanSyncValue blacklist = new BooleanSyncValue(filter::isBlackList, filter::setBlackList).allowC2S();
@@ -160,23 +161,27 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).value(ignoreNBT));
 
         return new ParentWidget<>()
-                .size(80, 55)
-                .child(filterGrid.left(0).top(0))
-                .child(filterButtons.left(58).top(0));
+                .size(150, 55)
+                .child(filterGrid.left(38).top(0))
+                .child(filterButtons.left(96).top(0));
     }
 
-    private ParentWidget<?> createTagFilterPage(TagItemFilter filter) {
+    private ParentWidget<?> createTagFilterPage(TagFilter<ItemStack, Item> filter) {
         StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString).allowC2S();
-        RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");
+        RichTooltip infoTooltip = new RichTooltip();
+        LangHandler.getMultiLang("cover.tag_filter.info").forEach(infoTooltip::addLine);
 
         return new ParentWidget<>()
-                .size(80, 55)
+                .size(150, 55)
                 .child(Flow.row()
                         .coverChildren()
-                        .left(0)
-                        .top(18)
-                        .child(new TextFieldWidget()
-                                .width(62)
+                        .childPadding(2)
+                        .left(7)
+                        .top(2)
+                        .child(new TextEditorWidget<>()
+                                .width(117)
+                                .height(50)
+                                .padding(4)
                                 .value(filterString))
                         .child(GTGuiTextures.INFO.asWidget()
                                 .size(16)
@@ -233,7 +238,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                     new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ())
                             .inflate(range, range, range));
 
-            ItemFilter filter = null;
+            Filter<ItemStack> filter = null;
             boolean didMoveEntity = false;
             for (ItemEntity itemEntity : items) {
                 if (itemEntity.isRemoved()) {
@@ -257,7 +262,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
                 if (!world.isClientSide) {
                     if (filter == null) {
-                        filter = Filter.get(stack.getOrCreateTag().getInt(FILTER_ORDINAL_TAG)).loadFilter(stack);
+                        filter = FilterMode.get(stack.getOrCreateTag().getInt(FILTER_ORDINAL_TAG)).loadFilter(stack);
                     }
 
                     if (!filter.test(itemEntity.getItem())) {
@@ -363,7 +368,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         }
     }
 
-    public enum Filter {
+    public enum FilterMode {
 
         SIMPLE(GTItems.ITEM_FILTER, "item_filter"),
         TAG(GTItems.TAG_FILTER, "item_tag_filter");
@@ -371,7 +376,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         public final ItemEntry<ComponentItem> item;
         public final String texture;
 
-        Filter(ItemEntry<ComponentItem> item, String texture) {
+        FilterMode(ItemEntry<ComponentItem> item, String texture) {
             this.item = item;
             this.texture = texture;
         }
@@ -383,13 +388,13 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             return mockStack;
         }
 
-        public ItemFilter loadFilter(ItemStack magnet) {
+        public Filter<ItemStack> loadFilter(ItemStack magnet) {
             var stack = getFilter(magnet);
-            return ItemFilter.loadFilter(stack);
+            return Filters.loadItemFilter(stack);
         }
 
-        public static Filter get(int ordinal) {
-            return Filter.values()[ordinal];
+        public static FilterMode get(int ordinal) {
+            return FilterMode.values()[ordinal];
         }
 
         public @NotNull String getTooltip() {
