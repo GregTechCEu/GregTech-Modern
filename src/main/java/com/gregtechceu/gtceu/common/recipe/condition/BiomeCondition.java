@@ -53,7 +53,7 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe_condition.gtceu.biome.tooltip",
+        return Component.translatable("recipe_condition.gtceu.biome",
                 Component.translatableWithFallback(biome.location().toLanguageKey("biome"),
                         biome.location().toString()));
     }

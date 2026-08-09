@@ -100,7 +100,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
 
     @Override
     public Component getTooltips() {
-        var tooltips = Component.translatable("recipe_condition.gtceu.adjacent_fluid.tooltip");
+        var tooltips = Component.translatable("recipe_condition.gtceu.adjacent_fluid");
         fluids.forEach(set -> {
             var id = set.get().get(0).get().getFluidType().getDescription();
             tooltips.append(" ").append(id);
@@ -114,7 +114,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
             var row = Flow.row().coverChildrenHeight().widthRel(1);
             var fluids = getOrInitFluids(recipe);
 
-            row.child(Text.lang("recipe_condition.gtceu.adjacent_fluid.tooltip").asWidget());
+            row.child(Text.lang("recipe_condition.gtceu.adjacent_fluid").asWidget());
 
             for (HolderSet<Fluid> set : fluids) {
                 if (set.size() == 0) {

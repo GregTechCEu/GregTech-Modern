@@ -96,7 +96,7 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe_condition.gtceu.adjacent_block.tooltip");
+        return Component.translatable("recipe_condition.gtceu.adjacent_block");
     }
 
     @Override
@@ -104,7 +104,7 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
         return (recipe, widget) -> {
             var row = Flow.row().coverChildrenHeight().widthRel(1);
 
-            row.child(Text.lang("recipe_condition.gtceu.adjacent_block.tooltip").asWidget());
+            row.child(Text.lang("recipe_condition.gtceu.adjacent_block").asWidget());
 
             List<ItemStack> stacksToDisplay = new ArrayList<>();
             for (HolderSet<Block> set : resolvedBlocks) {

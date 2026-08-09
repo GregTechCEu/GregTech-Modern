@@ -41,7 +41,7 @@ public class RainingCondition extends RecipeCondition<RainingCondition> {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe_condition.gtceu.rain.tooltip", level);
+        return Component.translatable("recipe_condition.gtceu.rain", level);
     }
 
     public float getLevel() {

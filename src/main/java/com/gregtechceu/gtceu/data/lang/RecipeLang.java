@@ -90,26 +90,26 @@ public class RecipeLang {
 
     private static void generateRecipeConditions(GTLangProvider provider) {
         // Recipe Conditions
-        provider.add("recipe_condition.gtceu.thunder.tooltip", "Thunder Level: %d");
-        provider.add("recipe_condition.gtceu.rain.tooltip", "Rain Level: %d");
-        provider.add("recipe_condition.gtceu.dimension.tooltip", "Dimension: %s");
-        provider.add("recipe_condition.gtceu.dimension_marker.tooltip", "Dimension:");
-        provider.add("recipe_condition.gtceu.biome.tooltip", "Biome: %s");
-        provider.add("recipe_condition.gtceu.pos_y.tooltip", "Y Level: %d <= Y <= %d");
+        provider.add("recipe_condition.gtceu.thunder", "Thunder Level: %d");
+        provider.add("recipe_condition.gtceu.rain", "Rain Level: %d");
+        provider.add("recipe_condition.gtceu.dimension", "Dimension: %s");
+        provider.add("recipe_condition.gtceu.dimension_marker", "Dimension:");
+        provider.add("recipe_condition.gtceu.biome", "Biome: %s");
+        provider.add("recipe_condition.gtceu.pos_y", "Y Level: %d <= Y <= %d");
 
-        provider.add("recipe_condition.gtceu.steam_vent.tooltip", "Clean steam vent");
-        provider.add("recipe_condition.gtceu.adjacent_fluid.tooltip", "Fluid blocks around");
-        provider.add("recipe_condition.gtceu.adjacent_block.tooltip", "Blocks around");
+        provider.add("recipe_condition.gtceu.steam_vent", "Clean steam vent");
+        provider.add("recipe_condition.gtceu.adjacent_fluid", "Fluid blocks around");
+        provider.add("recipe_condition.gtceu.adjacent_block", "Blocks around");
         provider.add("recipe_condition.gtceu.eu_to_start", "EU to Start: %d%s");
 
-        provider.add("recipe_condition.gtceu.daytime.day.tooltip", "Requires day time to work");
-        provider.add("recipe_condition.gtceu.daytime.night.tooltip", "Requires night time to work");
+        provider.add("recipe_condition.gtceu.daytime.day", "Requires day time to work");
+        provider.add("recipe_condition.gtceu.daytime.night", "Requires night time to work");
 
         provider.add("recipe_condition.gtceu.gamestage.unlocked_stage", "Unlocked at stage: %s");
         provider.add("recipe_condition.gtceu.gamestage.locked_stage", "Locked at stage: %s");
 
-        provider.add("recipe_condition.gtceu.quest.completed.tooltip", "Requires %s completed");
-        provider.add("recipe_condition.gtceu.quest.not_completed.tooltip", "Requires %s not completed");
+        provider.add("recipe_condition.gtceu.quest.completed", "Requires %s completed");
+        provider.add("recipe_condition.gtceu.quest.not_completed", "Requires %s not completed");
 
         provider.add("recipe_condition.gtceu.environmental_hazard.reverse", "§cArea must be free of %s");
         provider.add("recipe_condition.gtceu.environmental_hazard", "§cArea must have %s");
