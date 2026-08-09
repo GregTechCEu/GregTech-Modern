@@ -87,7 +87,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
         long capacity = tag.getLong("capacity");
         if (capacity <= 0) return null;
 
-        Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
+        Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluid")));
         CompoundTag nbt = tag.contains("tag") ? tag.getCompound("tag") : null;
         long amount = tag.getLong("amount");
         JadeFluidObject fluidObject = JadeFluidObject.of(fluid, 1000, nbt);

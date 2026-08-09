@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -27,6 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -294,16 +293,16 @@ public class MachineRecipeLoader {
         registerCobbleRecipe(provider, stones, cobbles);
         registerMossRecipe(provider, cobbles, mossCobbles);
         registerSmoothRecipe(provider, stones, polisheds);
-        registerBricksRecipe(provider, polisheds, bricks, MarkerMaterials.Color.LightBlue);
+        registerBricksRecipe(provider, polisheds, bricks, CustomTags.LIGHT_BLUE_LENS);
         registerCobbleRecipe(provider, bricks, crackedBricks);
         registerMossRecipe(provider, bricks, mossBricks);
-        registerBricksRecipe(provider, polisheds, chiseledBricks, MarkerMaterials.Color.White);
-        registerBricksRecipe(provider, polisheds, tiledBricks, MarkerMaterials.Color.Red);
-        registerBricksRecipe(provider, tiledBricks, smallTiledBricks, MarkerMaterials.Color.Red);
-        registerBricksRecipe(provider, polisheds, windmillA, MarkerMaterials.Color.Blue);
-        registerBricksRecipe(provider, polisheds, windmillB, MarkerMaterials.Color.Yellow);
-        registerBricksRecipe(provider, polisheds, squareBricks, MarkerMaterials.Color.Green);
-        registerBricksRecipe(provider, polisheds, smallBricks, MarkerMaterials.Color.Pink);
+        registerBricksRecipe(provider, polisheds, chiseledBricks, CustomTags.WHITE_LENS);
+        registerBricksRecipe(provider, polisheds, tiledBricks, CustomTags.RED_LENS);
+        registerBricksRecipe(provider, tiledBricks, smallTiledBricks, CustomTags.RED_LENS);
+        registerBricksRecipe(provider, polisheds, windmillA, CustomTags.BLUE_LENS);
+        registerBricksRecipe(provider, polisheds, windmillB, CustomTags.YELLOW_LENS);
+        registerBricksRecipe(provider, polisheds, squareBricks, CustomTags.GREEN_LENS);
+        registerBricksRecipe(provider, polisheds, smallBricks, CustomTags.PINK_LENS);
 
         for (int i = 0; i < stones.size(); i++) {
             ResourceLocation bricksId = BuiltInRegistries.ITEM.getKey(bricks.get(i).getItem());
@@ -1443,12 +1442,12 @@ public class MachineRecipeLoader {
     }
 
     private static void registerBricksRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> polishedStack,
-                                             List<ItemStack> brickStack, MarkerMaterial color) {
+                                             List<ItemStack> brickStack, TagKey<Item> lensTag) {
         for (int i = 0; i < polishedStack.size(); i++) {
             ResourceLocation brickId = BuiltInRegistries.ITEM.getKey(brickStack.get(i).getItem());
             LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_" + brickId.getPath())
                     .inputItems(polishedStack.get(i))
-                    .notConsumable(lens, color)
+                    .notConsumable(lensTag)
                     .outputItems(brickStack.get(i))
                     .duration(50).EUt(16).save(provider);
         }
@@ -1551,6 +1550,7 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
                 LIQUID_FUEL_JETPACK.asStack());
 
+        // Filters
         VanillaRecipeHelper.addShapelessRecipe(provider, "item_filter_nbt", ITEM_FILTER.asStack(),
                 ITEM_FILTER.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_filter_nbt", FLUID_FILTER.asStack(),
@@ -1559,6 +1559,11 @@ public class MachineRecipeLoader {
                 TAG_FILTER.asStack());
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_tag_filter_nbt", TAG_FLUID_FILTER.asStack(),
                 TAG_FLUID_FILTER.asStack());
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "composite_item_filter_nbt", COMPOSITE_ITEM_FILTER.asStack(),
+                COMPOSITE_ITEM_FILTER.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "composite_fluid_filter_nbt", COMPOSITE_FLUID_FILTER.asStack(),
+                COMPOSITE_FLUID_FILTER.asStack());
     }
 
     private static void registerHatchConversion(Consumer<FinishedRecipe> provider) {

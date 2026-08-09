@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -21,15 +20,16 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleFluidFilter implements FluidFilter {
+public class SimpleFluidFilter extends Filter<FluidStack> {
 
     @Getter
     protected boolean isBlackList;
@@ -38,58 +38,38 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
 
-    protected Consumer<FluidFilter> itemWriter = filter -> {};
-    protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
-
     @Getter
     protected int maxStackSize = 1;
 
     private final CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
-    protected SimpleFluidFilter() {
+    public SimpleFluidFilter(ItemStack stack) {
+        super(stack);
+        var tag = stack.getOrCreateTag();
+
         for (int i = 0; i < 9; i++) {
             int finalI = i;
             fluidStorageSlots[i] = new CustomFluidTank(64000);
             fluidStorageSlots[i].setOnContentsChanged(() -> {
                 matches[finalI] = fluidStorageSlots[finalI].getFluid();
-                onUpdated.accept(this);
+                updateAndSaveFilter();
             });
         }
         Arrays.fill(matches, FluidStack.EMPTY);
-    }
 
-    public static SimpleFluidFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
-    }
+        if (tag.isEmpty()) return;
 
-    private static SimpleFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
-        var handler = new SimpleFluidFilter();
-        handler.itemWriter = itemWriter;
-        handler.isBlackList = tag.getBoolean("isBlackList");
-        handler.ignoreNbt = tag.getBoolean("matchNbt");
+        isBlackList = tag.getBoolean("isBlackList");
+        ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
-            handler.matches[i] = FluidStack.loadFluidStackFromNBT((CompoundTag) list.get(i));
-            handler.fluidStorageSlots[i].setFluid(handler.matches[i]);
+            matches[i] = FluidStack.loadFluidStackFromNBT((CompoundTag) list.get(i));
+            fluidStorageSlots[i].setFluid(matches[i]);
         }
-        return handler;
     }
 
-    @Override
-    public void setOnUpdated(Consumer<FluidFilter> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
-    }
-
-    @Override
-    public boolean isBlank() {
-        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty);
-    }
-
-    public CompoundTag saveFilter() {
-        if (isBlank()) {
+    public @Nullable CompoundTag writeFilterNBT() {
+        if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty)) {
             return null;
         }
         var tag = new CompoundTag();
@@ -103,19 +83,19 @@ public class SimpleFluidFilter implements FluidFilter {
         return tag;
     }
 
+    @Override
+    public boolean supportsAmounts() {
+        return !isBlackList();
+    }
+
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
-        onUpdated.accept(this);
-    }
-
-    @Override
-    public ItemStack getFilterItem() {
-        return GTItems.FLUID_FILTER.asStack();
+        updateAndSaveFilter();
     }
 
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
@@ -146,11 +126,12 @@ public class SimpleFluidFilter implements FluidFilter {
 
     @Override
     public boolean test(FluidStack other) {
-        return testFluidAmount(other) > 0L;
+        return testAmount(other) > 0;
     }
 
     @Override
-    public int testFluidAmount(FluidStack fluidStack) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int testAmount(FluidStack fluidStack) {
         int totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
 
         if (isBlackList) {
@@ -179,8 +160,7 @@ public class SimpleFluidFilter implements FluidFilter {
         this.maxStackSize = maxStackSize;
 
         for (CustomFluidTank slot : fluidStorageSlots) {
-            if (slot != null)
-                slot.setCapacity(maxStackSize);
+            slot.setCapacity(maxStackSize);
         }
 
         for (FluidStack match : matches) {

@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
@@ -364,16 +363,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Getter
     class AggregateItemHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
 
-        static final MachineTraitType<AggregateItemHandler> TYPE = new MachineTraitType<>(AggregateItemHandler.class);
-
         private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
-
-        @Override
-        public MachineTraitType<AggregateItemHandler> getTraitType() {
-            return TYPE;
-        }
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
@@ -407,16 +399,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @Getter
     class AggregateFluidHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
 
-        static final MachineTraitType<AggregateFluidHandler> TYPE = new MachineTraitType<>(AggregateFluidHandler.class);
-
         private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
-
-        @Override
-        public MachineTraitType<AggregateFluidHandler> getTraitType() {
-            return TYPE;
-        }
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
@@ -644,7 +629,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                 .child(Text.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(90, 20)
-                                        .value(SyncHandlers.string(() -> this.customName, this::setCustomName)))
+                                        .value(SyncHandlers.string(() -> this.customName, this::setCustomName)
+                                                .allowC2S()))
                                 .margin(5))));
 
         IPanelHandler sharedItemsPanelHandler = syncManager.syncedPanel("shared_items", true,
@@ -661,7 +647,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                     .minColWidth(18).minRowHeight(18)
                                     .leftRel(0.5f)
                                     .gridOfSizeWidth(9, 3, (x, y, index) -> new ItemSlot()
-                                            .slot(SyncHandlers.itemSlot(shareInventory, index)
+                                            .slot(SyncHandlers.itemSlot(shareInventory.storage, index)
                                                     .slotGroup(sharedItemSlotGroup)
                                                     .accessibility(true, true))));
                 });

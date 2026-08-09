@@ -544,6 +544,7 @@ public class LangHandler {
         provider.add("cover.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.voiding.message.enabled", "Voiding Cover Enabled");
         provider.add("cover.item_smart_filter.title", "Smart Item Filter");
+        provider.add("cover.item_smart_filter.recipe_type", "Recipe Type");
         provider.add("cover.item_smart_filter.filtering_mode.electrolyzer", "Electrolyzer");
         provider.add("cover.item_smart_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.item_smart_filter.filtering_mode.sifter", "Sifter");
@@ -1256,8 +1257,8 @@ public class LangHandler {
         provider.add("gtceu.multiblock.total_runs", "Performing %d Recipes at once");
         provider.add("gtceu.multiblock.batch_enabled", "- %dx from Batching");
         provider.add("gtceu.multiblock.subtick_parallels", "- %dx from Overclocking");
-        provider.add("gtceu.machine.batch_enabled", "Batching Enabled");
-        provider.add("gtceu.machine.batch_disabled", "Batching Disabled");
+        provider.add("gtceu.machine.batching.enabled", "Batching Enabled");
+        provider.add("gtceu.machine.batching.disabled", "Batching Disabled");
         provider.add("gtceu.multiblock.progress_percent", "Progress: %s%%");
         provider.add("gtceu.multiblock.progress", "Progress: %ss / %ss (%s%%)");
         provider.add("gtceu.multiblock.output_line.0", "%s x §e%s§r (%ss/ea)");
@@ -1402,6 +1403,8 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
+        provider.add("config.jade.plugin_gtceu.diode_provider", "[GTCEu] Diode Info");
+
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
         // gui

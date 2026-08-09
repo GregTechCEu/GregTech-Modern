@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -173,9 +174,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     public void moveItemsInRange() {
-        ItemFilter filter = null;
+        Filter<ItemStack> filter = null;
         if (!filterInventory.getStackInSlot(0).isEmpty())
-            filter = ItemFilter.loadFilter(filterInventory.getStackInSlot(0));
+            filter = Filters.loadItemFilter(filterInventory.getStackInSlot(0));
         BlockPos centerPos = getBlockPos().above();
 
         List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, Objects.requireNonNull(aabb));
@@ -289,8 +290,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                                 .child(new ItemSlot()
                                         .slot(filterInventory, 0)
                                         .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
-                                .child(GTMuiMachineUtil.createSlotGroupFromInventory(output,
-                                        "output_item_inv", output.getSize(), 'i',
+                                .child(GTMuiMachineUtil.createSlotGroupFromInventory(output.storage,
+                                        "output_item_inv", output.getSize(), 'i', slot -> {
+                                            slot.getSlot().accessibility(false, true);
+                                            return slot;
+                                        },
                                         syncManager, outputItemGrid))
                                 .padding(4, 0)));
     }

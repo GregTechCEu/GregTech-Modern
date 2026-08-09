@@ -209,7 +209,7 @@ public class CustomTags {
     public static final TagKey<Block> CHARCOAL_PILE_IGNITER_WALLS = TagUtil.createModBlockTag(
             "charcoal_pile_igniter_walls");
     public static final TagKey<Block> CREATE_WRENCH_PICKUP = TagUtil.optionalTag(BuiltInRegistries.BLOCK,
-            new ResourceLocation("create", "wrench_pickup"));
+            ResourceLocation.fromNamespaceAndPath("create", "wrench_pickup"));
 
     public static final TagKey<Block> TALL_PLANTS = TagUtil.createModBlockTag("tall_plants");
 
@@ -229,4 +229,78 @@ public class CustomTags {
     public static final TagKey<Fluid> PLASMA_FLUIDS = TagUtil.createFluidTag("plasmatic");
 
     public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
+
+    public static final TagKey<Item> WHITE_LENS = TagUtil.createItemTag("lenses/white");
+    public static final TagKey<Item> ORANGE_LENS = TagUtil.createItemTag("lenses/orange");
+    public static final TagKey<Item> MAGENTA_LENS = TagUtil.createItemTag("lenses/magenta");
+    public static final TagKey<Item> LIGHT_BLUE_LENS = TagUtil.createItemTag("lenses/light_blue");
+    public static final TagKey<Item> YELLOW_LENS = TagUtil.createItemTag("lenses/yellow");
+    public static final TagKey<Item> LIME_LENS = TagUtil.createItemTag("lenses/lime");
+    public static final TagKey<Item> PINK_LENS = TagUtil.createItemTag("lenses/pink");
+    public static final TagKey<Item> GRAY_LENS = TagUtil.createItemTag("lenses/gray");
+    public static final TagKey<Item> LIGHT_GRAY_LENS = TagUtil.createItemTag("lenses/light_gray");
+    public static final TagKey<Item> CYAN_LENS = TagUtil.createItemTag("lenses/cyan");
+    public static final TagKey<Item> PURPLE_LENS = TagUtil.createItemTag("lenses/purple");
+    public static final TagKey<Item> BLUE_LENS = TagUtil.createItemTag("lenses/blue");
+    public static final TagKey<Item> BROWN_LENS = TagUtil.createItemTag("lenses/brown");
+    public static final TagKey<Item> GREEN_LENS = TagUtil.createItemTag("lenses/green");
+    public static final TagKey<Item> RED_LENS = TagUtil.createItemTag("lenses/red");
+    public static final TagKey<Item> BLACK_LENS = TagUtil.createItemTag("lenses/black");
+
+    @SuppressWarnings("unchecked")
+    public static final TagKey<Item>[] LENSES = new TagKey[] {
+            WHITE_LENS,
+            ORANGE_LENS,
+            MAGENTA_LENS,
+            LIGHT_BLUE_LENS,
+            YELLOW_LENS,
+            LIME_LENS,
+            PINK_LENS,
+            GRAY_LENS,
+            LIGHT_GRAY_LENS,
+            CYAN_LENS,
+            PURPLE_LENS,
+            BLUE_LENS,
+            BROWN_LENS,
+            GREEN_LENS,
+            RED_LENS,
+            BLACK_LENS
+    };
+
+    public static final TagKey<Item> WHITE_DYE = TagUtil.createItemTag("dyes/white");
+    public static final TagKey<Item> ORANGE_DYE = TagUtil.createItemTag("dyes/orange");
+    public static final TagKey<Item> MAGENTA_DYE = TagUtil.createItemTag("dyes/magenta");
+    public static final TagKey<Item> LIGHT_BLUE_DYE = TagUtil.createItemTag("dyes/light_blue");
+    public static final TagKey<Item> YELLOW_DYE = TagUtil.createItemTag("dyes/yellow");
+    public static final TagKey<Item> LIME_DYE = TagUtil.createItemTag("dyes/lime");
+    public static final TagKey<Item> PINK_DYE = TagUtil.createItemTag("dyes/pink");
+    public static final TagKey<Item> GRAY_DYE = TagUtil.createItemTag("dyes/gray");
+    public static final TagKey<Item> LIGHT_GRAY_DYE = TagUtil.createItemTag("dyes/light_gray");
+    public static final TagKey<Item> CYAN_DYE = TagUtil.createItemTag("dyes/cyan");
+    public static final TagKey<Item> PURPLE_DYE = TagUtil.createItemTag("dyes/purple");
+    public static final TagKey<Item> BLUE_DYE = TagUtil.createItemTag("dyes/blue");
+    public static final TagKey<Item> BROWN_DYE = TagUtil.createItemTag("dyes/brown");
+    public static final TagKey<Item> GREEN_DYE = TagUtil.createItemTag("dyes/green");
+    public static final TagKey<Item> RED_DYE = TagUtil.createItemTag("dyes/red");
+    public static final TagKey<Item> BLACK_DYE = TagUtil.createItemTag("dyes/black");
+
+    @SuppressWarnings("unchecked")
+    public static final TagKey<Item>[] DYES = new TagKey[] {
+            WHITE_DYE,
+            ORANGE_DYE,
+            MAGENTA_DYE,
+            LIGHT_BLUE_DYE,
+            YELLOW_DYE,
+            LIME_DYE,
+            PINK_DYE,
+            GRAY_DYE,
+            LIGHT_GRAY_DYE,
+            CYAN_DYE,
+            PURPLE_DYE,
+            BLUE_DYE,
+            BROWN_DYE,
+            GREEN_DYE,
+            RED_DYE,
+            BLACK_DYE
+    };
 }

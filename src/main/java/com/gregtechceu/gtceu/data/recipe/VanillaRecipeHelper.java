@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
@@ -763,16 +762,14 @@ public class VanillaRecipeHelper {
             ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(itemLike);
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
-                    if (!(ms.material() instanceof MarkerMaterial)) {
-                        addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
-                    }
+                    addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                 }
                 continue;
             }
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
             MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
-            if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
+            if (!materialStack.isEmpty()) {
                 addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, materialStack);
             }
 

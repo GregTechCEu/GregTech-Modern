@@ -621,7 +621,7 @@ public final class PartsRecipeHandler {
         }
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_nugget_to_round")
-                .EUt(VA[ULV]).duration(100)
+                .EUt(VA[ULV]).duration((int) material.getMass() + 80)
                 .inputItems(nugget, material)
                 .outputItems(round, outputMaterial)
                 .save(provider);

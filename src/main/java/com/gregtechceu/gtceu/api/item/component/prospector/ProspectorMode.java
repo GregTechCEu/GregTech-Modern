@@ -199,7 +199,7 @@ public abstract class ProspectorMode<T> {
         }
 
         public static FluidInfo fromNbt(CompoundTag tag) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(tag.getString("fluid")));
+            Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluid")));
             int left = tag.getInt("left");
             int yield = tag.getInt("yield");
             return new FluidInfo(fluid, yield, left);
@@ -264,14 +264,14 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public void serialize(FluidInfo item, FriendlyByteBuf buf) {
-            buf.writeUtf(BuiltInRegistries.FLUID.getKey(item.fluid).toString());
+            buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(item.fluid));
             buf.writeVarInt(item.yield);
             buf.writeVarInt(item.left);
         }
 
         @Override
         public FluidInfo deserialize(FriendlyByteBuf buf) {
-            return new FluidInfo(BuiltInRegistries.FLUID.get(new ResourceLocation(buf.readUtf())), buf.readVarInt(),
+            return new FluidInfo(BuiltInRegistries.FLUID.get(buf.readResourceLocation()), buf.readVarInt(),
                     buf.readVarInt());
         }
 
