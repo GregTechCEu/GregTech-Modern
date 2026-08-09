@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2;
 
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -65,7 +66,7 @@ public class GTAEPlaceholders {
         return grid.getStorageService().getInventory().getAvailableStacks().get(stack.what());
     }
 
-    private static long countItems(@Nullable ItemFilter filter, IGrid grid) {
+    private static long countItems(@Nullable Filter<ItemStack> filter, IGrid grid) {
         KeyCounter stacks = grid.getStorageService().getCachedInventory();
         long count = 0;
         for (var stack : stacks) {
@@ -106,7 +107,7 @@ public class GTAEPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 IGrid grid = getGrid(ctx);
-                if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, grid));
+                if (args.isEmpty()) return MultiLineComponent.literal(countItems((Filter<ItemStack>) null, grid));
                 if (args.size() == 1)
                     return MultiLineComponent.literal(countItems(GTStringUtils.componentsToString(args.get(0)), grid));
                 if (GTStringUtils.equals(args.get(0), "filter")) {
@@ -115,7 +116,7 @@ public class GTAEPlaceholders {
                         PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                         if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                         return MultiLineComponent.literal(countItems(
-                                ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), grid));
+                                Filters.loadItemFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), grid));
                     } catch (NullPointerException e) {
                         throw new MissingItemException("filter", slot);
                     }

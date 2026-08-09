@@ -97,7 +97,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     @SaveField
     @SyncToClient
     protected GTRecipe lastRecipe;
-
+    @Nullable
+    @Getter
+    @SaveField
+    @SyncToClient
+    protected GTRecipe lastUnrolledRecipe;
     /**
      * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}'
      * which can be found
@@ -188,6 +192,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     public void resetRecipeLogic() {
         recipeDirty = false;
         lastRecipe = null;
+        lastUnrolledRecipe = null;
         lastOriginRecipe = null;
         consecutiveRecipes = 0;
         progress = 0;
@@ -381,11 +386,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         clearFailureReason();
 
         // try to execute last recipe if possible
-        GTRecipe last = lastRecipe;
+        GTRecipe last = lastUnrolledRecipe;
         if (!recipeDirty && last != null) {
             var lastCheck = checkRecipe(last);
             if (lastCheck.isSuccess()) {
                 lastRecipe = null;
+                lastUnrolledRecipe = null;
                 lastOriginRecipe = null;
                 setupRecipe(last);
                 recipeDirty = false;
@@ -396,9 +402,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
         // try to find and handle a new recipe
         lastRecipe = null;
+        lastUnrolledRecipe = null;
         lastOriginRecipe = null;
         handleSearchingRecipes(searchRecipe());
         syncDataHolder.markClientSyncFieldDirty("lastRecipe");
+        syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
         recipeDirty = false;
     }
 
@@ -428,10 +436,18 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe);
         if (!result.isSuccess()) return result;
 
-        result = handleTickRecipeIO(recipe, IO.IN);
+        if (lastUnrolledRecipe == null) {
+            GTCEu.LOGGER.warn("Last Displayed Recipe is null! Ingredients may roll incorrectly.");
+            this.lastUnrolledRecipe = lastRecipe.copy();
+            syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+            markLastRecipeDirty();
+        }
+        GTRecipe runningRecipe = RecipeHelper.doTickPrerolls(recipe, chanceCaches, lastUnrolledRecipe);
+
+        result = handleTickRecipeIO(runningRecipe, IO.IN);
         if (!result.isSuccess()) return result;
 
-        result = handleTickRecipeIO(recipe, IO.OUT);
+        result = handleTickRecipeIO(runningRecipe, IO.OUT);
         return result;
     }
 
@@ -445,19 +461,29 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             syncDataHolder.resyncAllFields();
             return;
         }
-        var handledIO = handleRecipeIO(recipe, IO.IN);
+        if (lastRecipe != null && !recipe.equals(lastRecipe)) {
+            chanceCaches.clear();
+        }
+        lastUnrolledRecipe = recipe.copy();
+        syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+        GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
+        var handledIO = handleRecipeIO(runningRecipe, IO.IN);
         if (handledIO.isSuccess()) {
-            if (lastRecipe != null && !recipe.equals(lastRecipe)) {
+            if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
                 chanceCaches.clear();
             }
             clearFailureReason();
             recipeDirty = false;
-            lastRecipe = recipe;
+            lastRecipe = runningRecipe;
             setStatus(Status.WORKING);
             progress = 0;
-            duration = recipe.duration;
+            duration = runningRecipe.duration;
             isActive = true;
             syncDataHolder.resyncAllFields();
+        } else {
+            lastRecipe = null;
+            lastUnrolledRecipe = null;
+            syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
         }
     }
 
@@ -576,6 +602,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 isActive = false;
                 // Force a recipe recheck.
                 lastRecipe = null;
+                lastUnrolledRecipe = null;
                 syncDataHolder.resyncAllFields();
                 return;
             }
@@ -586,7 +613,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                         markLastRecipeDirty();
                     } else {
                         lastRecipe = modified;
-                        syncDataHolder.markClientSyncFieldDirty("lastRecipe");
                     }
                 } else {
                     markLastRecipeDirty();
