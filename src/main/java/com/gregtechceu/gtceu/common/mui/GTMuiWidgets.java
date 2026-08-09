@@ -157,7 +157,7 @@ public class GTMuiWidgets {
 
     public static ItemSlot createBatterySlot(BatterySlotTrait batterySlot, PanelSyncManager syncManager) {
         ItemSlotSyncHandler battery = new ItemSlotSyncHandler(
-                new ModularSlot(batterySlot.getStorage(), 0).singletonSlotGroup(-10));
+                new ModularSlot(batterySlot.getStorage(), 0).singletonSlotGroup(10));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
@@ -244,6 +244,7 @@ public class GTMuiWidgets {
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);
+                                    else circuitSyncValue.setValue(-1);
                                 })));
 
         return new Dialog<>("circuit_panel")

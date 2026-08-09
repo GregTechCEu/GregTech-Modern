@@ -688,7 +688,7 @@ public final class WoodTypeEntry {
             // add default tag if logTag is null
             if (logTag == null)
                 logTag = TagUtil.optionalTag(BuiltInRegistries.ITEM,
-                        new ResourceLocation(modid, woodName + "_logs"));
+                        ResourceLocation.fromNamespaceAndPath(modid, woodName + "_logs"));
 
             return new WoodTypeEntry(modid, woodName, logTag, log, strippedLog, wood, strippedWood,
                     removeCharcoalRecipe, addCharcoalRecipe,

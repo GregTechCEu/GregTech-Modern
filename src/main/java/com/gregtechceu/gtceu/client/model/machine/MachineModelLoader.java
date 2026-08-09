@@ -70,7 +70,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
     @Override
     public @Nullable UnbakedMachineModel read(JsonObject json,
                                               JsonDeserializationContext context) throws JsonParseException {
-        ResourceLocation machineId = new ResourceLocation(GsonHelper.getAsString(json, "machine"));
+        ResourceLocation machineId = ResourceLocation.parse(GsonHelper.getAsString(json, "machine"));
         MachineDefinition definition = GTRegistries.MACHINES.get(machineId);
         if (definition == null) return null;
 
@@ -162,7 +162,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         if (overrideJson != null) {
             for (var entry : overrideJson.asMap().entrySet()) {
                 String value = GsonHelper.convertToString(entry.getValue(), entry.getKey());
-                textureOverrides.put(entry.getKey(), new ResourceLocation(value));
+                textureOverrides.put(entry.getKey(), ResourceLocation.parse(value));
             }
         }
 
@@ -241,7 +241,7 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
                                                                       JsonDeserializationContext context) throws JsonParseException {
         if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
             String modelName = value.getAsString();
-            return Either.left(new ResourceLocation(modelName));
+            return Either.left(ResourceLocation.parse(modelName));
         } else {
             return Either.right(context.deserialize(value, BlockModel.class));
         }

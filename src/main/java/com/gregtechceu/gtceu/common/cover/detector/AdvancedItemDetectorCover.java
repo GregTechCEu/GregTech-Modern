@@ -129,7 +129,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
                         .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                         .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
                         .tooltip(false, t -> t.add("cover.advanced_item_detector.invert.disabled"))
-                        .tooltip(true, t -> t.add("cover.advanced_item_detector.invert.disabled")))
+                        .tooltip(true, t -> t.add("cover.advanced_item_detector.invert.enabled")))
                 .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
                         .overlay(false, GTGuiTextures.BUTTON_LOCK)
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)

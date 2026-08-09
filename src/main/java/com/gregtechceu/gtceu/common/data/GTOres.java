@@ -718,11 +718,11 @@ public class GTOres {
         if (block == null) {
             ResourceLocation oreKey;
             if (oreTag == ore) {
-                oreKey = new ResourceLocation("%s_ore".formatted(material.getName()));
+                oreKey = ResourceLocation.tryParse("%s_ore".formatted(material.getName()));
             } else if (oreTag == oreNetherrack) {
-                oreKey = new ResourceLocation("nether_%s_ore".formatted(material.getName()));
+                oreKey = ResourceLocation.tryParse("nether_%s_ore".formatted(material.getName()));
             } else {
-                oreKey = new ResourceLocation("%s_%s_ore".formatted(oreTag.name, material.getName()));
+                oreKey = ResourceLocation.tryParse("%s_%s_ore".formatted(oreTag.name, material.getName()));
             }
             return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) :
                     () -> Blocks.AIR;

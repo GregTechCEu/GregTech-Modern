@@ -28,7 +28,7 @@ public class ShapedFluidContainerRecipeBuilder extends ShapedRecipeBuilder {
             @Override
             public ResourceLocation getId() {
                 var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "shaped_fluid_container/" + ID.getPath());
+                return ID.withPath("shaped_fluid_container/" + ID.getPath());
             }
 
             @Override
