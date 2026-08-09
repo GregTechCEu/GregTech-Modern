@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -1926,7 +1927,7 @@ public class Material implements Comparable<Material> {
 
         @Setter
         @Getter
-        private Map<TagPrefix, String> langOverrides;
+        private Map<TagPrefix, String> langOverrides = new Object2ObjectOpenHashMap<>();
 
         /**
          * The colors of this Material.
