@@ -139,9 +139,17 @@ public class Predicates {
                 .orElse("unknown block");
     }
 
-    public static MultiPredicate machines(MachineDefinition... definitions) {
-        Validate.noNullElements(definitions, "MachineDefinition array has null element at index %s");
-        return blocks(Arrays.stream(definitions).map(MachineDefinition::get).toArray(MetaMachineBlock[]::new));
+    public static MultiPredicate machines(@Nullable MachineDefinition... definitions) {
+        List<Block> blocks = new ArrayList<>();
+        for (MachineDefinition definition : definitions) {
+            if (definition != null) {
+                blocks.add(definition.get());
+            }
+        }
+        if (blocks.isEmpty()) {
+            throw new IllegalStateException("All machine definitions are null!");
+        }
+        return blocks("MachineDefinitions", blocks, blocks.stream());
     }
 
     public static MultiPredicate blockTag(TagKey<Block> tag) {
