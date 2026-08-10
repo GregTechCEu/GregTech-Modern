@@ -53,10 +53,10 @@ public class BlockTagLoader {
                 .add(Blocks.PITCHER_CROP)
                 .addTag(BlockTags.CAVE_VINES)
                 .addTag(BlockTags.TALL_FLOWERS)
-                .addOptionalTag(new ResourceLocation("forge:cacti"))
-                .addOptionalTag(new ResourceLocation("forge:crops/cactus"))
-                .addOptionalTag(new ResourceLocation("forge:crops/sugar_cane"))
-                .addOptionalTag(new ResourceLocation("forge:reeds"));
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "cacti"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "crops/cactus"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "crops/sugar_cane"))
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "reeds"));
 
         provider.addTag(BlockTags.REPLACEABLE)
                 .add(GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
@@ -89,12 +89,12 @@ public class BlockTagLoader {
                         Blocks.WEEPING_VINES);
 
         provider.addTag(GTTags.Blocks.CLEANROOM_FLOORS)
-                .addOptionalTag(new ResourceLocation("elevatorid:elevators"))
-                .addOptional(new ResourceLocation("enderio:travel_anchor"))
-                .addOptional(new ResourceLocation("rftoolsutility:matter_transmitter"))
-                .addOptional(new ResourceLocation("rftoolsutility:matter_receiver"))
-                .addOptional(new ResourceLocation("rftoolsutility:dialing_device"))
-                .addOptional(new ResourceLocation("travelanchors:travel_anchor"));
+                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("elevatorid", "elevators"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("enderio", "travel_anchor"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("rftoolsutility", "matter_transmitter"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("rftoolsutility", "matter_receiver"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("rftoolsutility", "dialing_device"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("travelanchors", "travel_anchor"));
 
         provider.addTag(GTTags.Blocks.CHARCOAL_PILE_IGNITER_WALLS)
                 .addTag(BlockTags.DIRT) // any dirt blocks

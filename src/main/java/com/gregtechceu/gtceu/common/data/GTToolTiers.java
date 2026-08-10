@@ -20,7 +20,7 @@ public class GTToolTiers {
     private static Tier NEUTRONIUM;
 
     public static void init() {
-        var netherite = new ResourceLocation("netherite");
+        var netherite = ResourceLocation.withDefaultNamespace("netherite");
         var duranium = GTCEu.id("duranium");
         var neutronium = GTCEu.id("neutronium");
         DURANIUM = TierSortingRegistry.registerTier(

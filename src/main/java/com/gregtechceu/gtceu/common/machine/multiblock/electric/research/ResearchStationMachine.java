@@ -27,6 +27,7 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,9 +41,9 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                                     implements IOpticalComputationReceiver {
 
     @Getter
-    private IOpticalComputationProvider computationProvider;
+    private @Nullable IOpticalComputationProvider computationProvider;
     @Getter
-    private ObjectHolderMachine objectHolder;
+    private @Nullable ObjectHolderMachine objectHolder;
 
     public ResearchStationMachine(BlockEntityCreationInfo info) {
         super(info, new ResearchStationRecipeLogic());

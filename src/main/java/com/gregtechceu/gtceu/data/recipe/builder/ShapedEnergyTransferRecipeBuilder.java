@@ -112,7 +112,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     }
 
     public ShapedEnergyTransferRecipeBuilder id(String id) {
-        this.id = new ResourceLocation(id);
+        this.id = ResourceLocation.parse(id);
         return this;
     }
 
@@ -189,7 +189,7 @@ public class ShapedEnergyTransferRecipeBuilder {
             @Override
             public ResourceLocation getId() {
                 var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "shaped" + "/" + ID.getPath());
+                return ID.withPath("shaped/" + ID.getPath());
             }
 
             @Override

@@ -1105,10 +1105,18 @@ public class GTRecipeBuilder {
         return addCondition(new CleanroomCondition(cleanroomType));
     }
 
+    /**
+     * @deprecated Use {@link #dimension(ResourceKey)} instead
+     */
+    @Deprecated
     public GTRecipeBuilder dimension(ResourceLocation dimension, boolean reverse) {
         return dimension(ResourceKey.create(Registries.DIMENSION, dimension), reverse);
     }
 
+    /**
+     * @deprecated Use {@link #dimension(ResourceKey, boolean)} instead
+     */
+    @Deprecated
     public GTRecipeBuilder dimension(ResourceLocation dimension) {
         return dimension(dimension, false);
     }
@@ -1623,7 +1631,7 @@ public class GTRecipeBuilder {
 
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath());
+                return id.withPath(recipeType.registryName.getPath() + "/" + id.getPath());
             }
 
             @Override
@@ -1712,7 +1720,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.isEmpty()) {
                 ItemStack[] items = currOutput.getItems();
@@ -1763,7 +1771,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.isEmpty()) {
                 ItemStack[] items = currOutput.getItems();

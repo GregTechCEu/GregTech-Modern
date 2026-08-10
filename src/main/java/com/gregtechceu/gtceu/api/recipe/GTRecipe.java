@@ -85,29 +85,25 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     /**
-     * Accepts Parallels, Batches, and BatchParallels as a single List
+     * Accepts Parallels, Batches, and BatchParallels as a single List,
+     * as well as combining all I/O data into a {@link GTRecipeSerializer.RecipeIO} record.
      * Necessary for {@link GTRecipeSerializer}
      */
     public GTRecipe(GTRecipeType recipeType,
-                    Map<RecipeCapability<?>, List<Content>> inputs,
-                    Map<RecipeCapability<?>, List<Content>> outputs,
-                    Map<RecipeCapability<?>, List<Content>> tickInputs,
-                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
-                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    GTRecipeSerializer.RecipeIO recipeIO,
                     List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
-                    @NotNull CompoundTag data,
+                    CompoundTag data,
                     int duration,
-                    List<Integer> allParallels,
-                    @NotNull GTRecipeCategory recipeCategory,
+                    GTRecipeSerializer.RecipeParallels allParallels,
+                    GTRecipeCategory recipeCategory,
                     int groupColor) {
-        this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
-                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, allParallels.get(0), allParallels.get(1),
-                allParallels.get(2), recipeCategory, groupColor);
+        this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
+                recipeIO.inputChanceLogics(), recipeIO.outputChanceLogics(), recipeIO.tickInputChanceLogics(),
+                recipeIO.tickOutputChanceLogics(),
+                conditions, ingredientActions, data, duration, allParallels.parallels(),
+                allParallels.subtickParallels(),
+                allParallels.batchParallels(), recipeCategory, groupColor);
     }
 
     /**
@@ -197,6 +193,21 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return copied;
     }
 
+    public GTRecipe copyWithoutTicks() {
+        var copied = new GTRecipe(recipeType, id,
+                new HashMap<>(inputs), new HashMap<>(outputs),
+                new HashMap<>(), new HashMap<>(),
+                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
+                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
+                new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
+        copied.ocLevel = ocLevel;
+        copied.parallels = parallels;
+        copied.batchParallels = batchParallels;
+        copied.subtickParallels = subtickParallels;
+        return copied;
+    }
+
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         return GTRecipeSerializer.SERIALIZER;
@@ -269,6 +280,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             }
         }
         return ChanceLogic.OR;
+    }
+
+    public GTRecipeSerializer.RecipeIO getRecipeIO() {
+        return new GTRecipeSerializer.RecipeIO(inputs, outputs,
+                tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics,
+                tickInputChanceLogics, tickOutputChanceLogics);
     }
 
     // Technically should account for overflow but realistically not an issue.
