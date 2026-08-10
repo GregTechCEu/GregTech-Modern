@@ -17,6 +17,11 @@ public class OrPredicate extends MultiPredicate {
                 return true;
             }
         }
+        for (MultiPredicate child : children()) {
+            if (child.testGlobalMin(ctx)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -24,6 +29,11 @@ public class OrPredicate extends MultiPredicate {
     protected boolean testSliceMin(PredicateContext ctx) {
         for (BasePredicate predicate : predicates()) {
             if (predicate.testSliceMin(ctx)) {
+                return true;
+            }
+        }
+        for (MultiPredicate child : children()) {
+            if (child.testSliceMin(ctx)) {
                 return true;
             }
         }
