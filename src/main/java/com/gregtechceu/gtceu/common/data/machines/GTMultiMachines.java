@@ -131,9 +131,9 @@ public class GTMultiMachines {
                     .where('&', air()
                             .or(builder("SnowPredicate")
                                     .predicate(ctx -> GTUtil.isBlockSnow(ctx.state()))
+                                    .toMultiPredicate()
                                     // todo lang
-                                    .errorFunction(ctx -> PatternStringError.literal("Can be snow"))
-                                    .toMultiPredicate()))
+                                    .addTooltips(Component.literal("Can be snow"))))
                     .where('Y', controller(blocks(definition.getBlock())))
                     .build())
             .themeId((i) -> GTGuiTheme.PRIMITIVE.getId())
