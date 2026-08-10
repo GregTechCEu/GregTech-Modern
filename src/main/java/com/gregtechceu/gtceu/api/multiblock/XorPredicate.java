@@ -30,6 +30,12 @@ public class XorPredicate extends MultiPredicate {
         return super.setMinCount(min);
     }
 
+    @Override
+    public MultiPredicate setMinSliceCount(int min) {
+        this.noneValid = min < 1;
+        return super.setMinSliceCount(min);
+    }
+
     private boolean isNoneValid() {
         boolean noneValid = false;
         for (BasePredicate predicate : expand()) {
