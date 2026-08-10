@@ -104,6 +104,5 @@ public class AssemblyLineRender extends DynamicRender<AssemblyLineMachine, Assem
                 .expandTowards(Vec3.atLowerCornerOf(back.getNormal().multiply(2)))
                 .expandTowards(Vec3.atLowerCornerOf(right.getNormal().multiply(slices)));
         return aabb;
-        // return machine.getRenderBoundingBox();
     }
 }
