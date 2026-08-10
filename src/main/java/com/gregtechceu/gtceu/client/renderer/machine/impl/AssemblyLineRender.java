@@ -92,7 +92,6 @@ public class AssemblyLineRender extends DynamicRender<AssemblyLineMachine, Assem
 
     @Override
     public AABB getRenderBoundingBox(AssemblyLineMachine machine) {
-        int slices = ((BlockPattern) machine.getDefaultStructurePattern()).getDimensions()[1];
         Direction down = RelativeDirection.DOWN.getRelativeFacing(machine.getFrontFacing(), machine.getUpwardsFacing(),
                 machine.isFlipped());
         Direction back = RelativeDirection.BACK.getRelativeFacing(machine.getFrontFacing(), machine.getUpwardsFacing(),
@@ -102,7 +101,7 @@ public class AssemblyLineRender extends DynamicRender<AssemblyLineMachine, Assem
         AABB aabb = new AABB(machine.getBlockPos()).expandTowards(Vec3.atLowerCornerOf(down.getNormal().multiply(2)))
                 .expandTowards(Vec3.atLowerCornerOf(down.getOpposite().getNormal()))
                 .expandTowards(Vec3.atLowerCornerOf(back.getNormal().multiply(2)))
-                .expandTowards(Vec3.atLowerCornerOf(right.getNormal().multiply(slices)));
+                .expandTowards(Vec3.atLowerCornerOf(right.getNormal().multiply(17)));
         return aabb;
     }
 }
