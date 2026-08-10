@@ -438,8 +438,11 @@ public class GTMultiMachines {
                     .where('#', Predicates.any())
                     .build())
             .partSorter(AssemblyLineMachine::partSorter)
-            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+            .model(createWorkableCasingMachineModel(
+                    GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/assembly_line"))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createAssemblyLineRender)))
+            .hasBER(true)
             .register();
 
     public static final MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE
