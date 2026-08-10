@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -134,8 +135,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
+            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset) + 1;
             boolean globalMinMet = minCount <= 0 || totalAlreadyPopulated >= minCount;
             boolean sliceMinMet = basePredicate.testSliceMin(layerAlreadyPopulated);
 
@@ -143,7 +144,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
-                toInsert = basePredicate.getFirstCandidate().orElse(BlockInfo.EMPTY);
+                toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
+                    GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
+                    return BlockInfo.EMPTY;
+                });
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
@@ -166,14 +170,17 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
+            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset) + 1;
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
             if (!basePredicate.testSliceMax(layerAlreadyPopulated)) continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
-                toInsert = basePredicate.getFirstCandidate().orElse(BlockInfo.EMPTY);
+                toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
+                    GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
+                    return BlockInfo.EMPTY;
+                });
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {

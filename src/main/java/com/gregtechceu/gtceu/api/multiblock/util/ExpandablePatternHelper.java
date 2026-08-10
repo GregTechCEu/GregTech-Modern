@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -114,8 +115,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (!basePredicate.testGlobalMin(totalAlreadyPopulated)) continue;
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
+            if (minCount == -1 || totalAlreadyPopulated > minCount) continue;
 
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {
@@ -138,8 +139,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (!basePredicate.testGlobalMax(totalAlreadyPopulated)) continue;
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
+            if (maxCount == -1 || totalAlreadyPopulated > maxCount) continue;
 
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {
