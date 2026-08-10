@@ -227,9 +227,9 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> preventPowerFail,
                                                 bool -> preventPowerFail = bool).allowC2S())
-                                        .background(true,
+                                        .background(false,
                                                 GTGuiTextures.BUTTON_POWER[0])
-                                        .background(
+                                        .background(true,
                                                 GTGuiTextures.BUTTON_POWER[1]))
                                 .child(Text.lang("cover.machine_controller.suspend_powerfail").asWidget()
                                         .heightRel(1.0f).left(20)))

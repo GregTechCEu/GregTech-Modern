@@ -9,7 +9,8 @@ import net.minecraftforge.registries.RegistryObject;
 import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
 
-public abstract class HolderBuilder<R, T extends R, P, S extends HolderBuilder<R, T, P, S>> extends AbstractBuilder<R, T, P, S> {
+public abstract class HolderBuilder<R, T extends R, P, S extends HolderBuilder<R, T, P, S>>
+                                   extends AbstractBuilder<R, T, P, S> {
 
     public HolderBuilder(GTRegistrate owner, P parent, String name, BuilderCallback callback,
                          ResourceKey<Registry<R>> registryKey) {

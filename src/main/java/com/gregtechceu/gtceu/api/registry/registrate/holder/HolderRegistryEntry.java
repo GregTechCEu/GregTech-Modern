@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate.holder;
 
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
@@ -15,6 +14,7 @@ import net.minecraftforge.registries.RegistryObject;
 import com.mojang.datafixers.util.Either;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 /**
  * A registrate registry entry that is also a holder.<br>
  * Partial backport of neoforge's DeferredHolder class.
+ * 
  * @param <T>
  */
 public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T> {
@@ -52,7 +53,8 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
      * Gets the object stored by this DeferredHolder, if this holder {@linkplain #isBound() is bound}.
      *
      * @throws IllegalStateException If the backing registry is unavailable.
-     * @throws NullPointerException  If the underlying Holder has not been populated (the target object is not registered).
+     * @throws NullPointerException  If the underlying Holder has not been populated (the target object is not
+     *                               registered).
      */
     @SuppressWarnings("NullableProblems")
     @Override
@@ -61,7 +63,8 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
     }
 
     /**
-     * Add a callback to be invoked when this entry is registered. Can be called multiple times to add multiple callbacks.
+     * Add a callback to be invoked when this entry is registered. Can be called multiple times to add multiple
+     * callbacks.
      *
      * @param callback the callback to invoke
      * @return this
@@ -72,7 +75,8 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
     }
 
     /**
-     * {@return an optional containing the target object, if {@link #isBound() bound}; otherwise {@linkplain Optional#empty() an empty optional}}
+     * {@return an optional containing the target object, if {@link #isBound() bound}; otherwise
+     * {@linkplain Optional#empty() an empty optional}}
      */
     public Optional<T> asOptional() {
         return isBound() ? Optional.of(get()) : Optional.empty();
@@ -90,7 +94,8 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
     /**
      * Binds this DeferredHolder to the underlying registry and target object.
      *
-     * <p>Has no effect if already bound.
+     * <p>
+     * Has no effect if already bound.
      *
      * @param throwOnMissingRegistry If true, an exception will be thrown if the registry is absent.
      * @throws IllegalStateException If throwOnMissingRegistry is true and the backing registry is unavailable.
@@ -175,7 +180,8 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
     /**
      * {@return all tags present on the underlying object}
      *
-     * <p>If the underlying object is not {@linkplain #isBound() bound} yet, and empty stream is returned.
+     * <p>
+     * If the underlying object is not {@linkplain #isBound() bound} yet, and empty stream is returned.
      */
     @Override
     public Stream<TagKey<T>> tags() {
@@ -231,14 +237,16 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
     static {
         MethodHandle ret;
         try {
-            ret = MethodHandles.lookup().unreflect(ObfuscationReflectionHelper.findMethod(RegistryObject.class, "updateReference", Registry.class));
+            ret = MethodHandles.lookup().unreflect(
+                    ObfuscationReflectionHelper.findMethod(RegistryObject.class, "updateReference", Registry.class));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
         _updateReference_VanillaRegistry = ret;
 
         try {
-            ret = MethodHandles.lookup().unreflectGetter(ObfuscationReflectionHelper.findField(RegistryObject.class, "holder"));
+            ret = MethodHandles.lookup()
+                    .unreflectGetter(ObfuscationReflectionHelper.findField(RegistryObject.class, "holder"));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -254,7 +262,8 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
     protected void updateReference(Registry<? super T> registry) {
         RegistryObject<T> delegate = this.delegate;
         try {
-            _updateReference_VanillaRegistry.invoke(Objects.requireNonNull(delegate, "Registry entry is empty"), registry);
+            _updateReference_VanillaRegistry.invoke(Objects.requireNonNull(delegate, "Registry entry is empty"),
+                    registry);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
