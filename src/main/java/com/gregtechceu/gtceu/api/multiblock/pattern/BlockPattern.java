@@ -218,19 +218,21 @@ public class BlockPattern implements IBlockPattern {
                 BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
 
                 // all predicates failed
-                // max count checks
                 if (innerPredicate == null) {
                     // todo better error
                     context.appendError(Predicates.PLACEHOLDER);
+                    // errors get committed in BasicSliceStrategy
                     return false;
                 }
+
+                // max count checks
                 if (!innerPredicate.checkMaxCount(context)) {
+                    // errors get committed in BasicSliceStrategy
                     return false;
                 }
 
                 visitedPredicates.add(multiPredicate);
                 charPos.move(absoluteChar);
-                // continue...
             }
 
             stringStart.move(absoluteString);

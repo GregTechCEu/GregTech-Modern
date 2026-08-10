@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -158,6 +159,10 @@ public class ExpandablePattern implements IBlockPattern {
             BlockPos.MutableBlockPos mPos = pos.mutable();
             MultiPredicate multiPredicate = predicateProvider.apply(mPos, bounds);
 
+            if (visited.add(multiPredicate)) {
+                multiPredicate.resetLogic();
+            }
+
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
                     pos.getZ());
@@ -171,30 +176,24 @@ public class ExpandablePattern implements IBlockPattern {
             BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
 
             // all predicates failed
-            // max count checks
-            if (innerPredicate == null || !innerPredicate.checkMaxCount(context)) {
+            if (innerPredicate == null) {
+                context.appendError(Predicates.PLACEHOLDER);
                 context.commitSliceErrors(); // this is actually global errors, not slice
                 return false;
             }
 
-            visited.add(multiPredicate);
-        }
-
-        boolean passed = true;
-
-        for (MultiPredicate multiPredicate : visited) {
-            if (!multiPredicate.postGlobalTest(context)) {
-                passed = false;
-                break;
+            // max count checks
+            if (!innerPredicate.checkMaxCount(context)) {
+                context.commitSliceErrors(); // this is actually global errors, not slice
+                return false;
             }
         }
 
-        // have to reset logic after the fact because expandable patterns
-        // don't have a list of predicates i can iterate
-        visited.forEach(MultiPredicate::resetLogic);
-        if (!passed) {
-            context.commitSliceErrors();
-            return false;
+        for (MultiPredicate multiPredicate : visited) {
+            if (!multiPredicate.postGlobalTest(context)) {
+                context.commitSliceErrors();
+                return false;
+            }
         }
 
         patternState.clearErrors();
