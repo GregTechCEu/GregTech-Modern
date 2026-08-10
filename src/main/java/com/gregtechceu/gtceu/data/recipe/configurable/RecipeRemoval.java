@@ -402,7 +402,8 @@ public class RecipeRemoval {
 
         // Carpet replacement
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_carpet", color.getSerializedName())));
+            registry.accept(
+                    ResourceLocation.withDefaultNamespace(String.format("%s_carpet", color.getSerializedName())));
         }
 
         // Slab replacement

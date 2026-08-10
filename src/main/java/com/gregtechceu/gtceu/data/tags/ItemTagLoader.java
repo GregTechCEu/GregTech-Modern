@@ -193,10 +193,12 @@ public class ItemTagLoader {
         provider.addTag(GTTags.Items.TOOLS_WRENCH).addTag(GTTags.Items.TOOLS_WRENCHES);
         provider.addTag(Tags.Items.TOOLS)
                 .addTags(GTTags.Items.TOOLS_BUTCHERY_KNIVES, GTTags.Items.TOOLS_BUZZSAWS, GTTags.Items.TOOLS_CHAINSAWS,
-                        GTTags.Items.TOOLS_CROWBARS, GTTags.Items.TOOLS_DRILLS, GTTags.Items.TOOLS_FILES, GTTags.Items.TOOLS_HAMMERS,
-                        GTTags.Items.TOOLS_KNIVES, GTTags.Items.TOOLS_MALLETS, GTTags.Items.TOOLS_MINING_HAMMERS, GTTags.Items.TOOLS_MORTARS,
-                        GTTags.Items.TOOLS_PLUNGERS, GTTags.Items.TOOLS_SAWS, GTTags.Items.TOOLS_SCREWDRIVERS, GTTags.Items.TOOLS_SCYTHES,
-                        GTTags.Items.TOOLS_SHEARS, GTTags.Items.TOOLS_SPADES, GTTags.Items.TOOLS_WIRE_CUTTERS, GTTags.Items.TOOLS_WRENCHES);
+                        GTTags.Items.TOOLS_CROWBARS, GTTags.Items.TOOLS_DRILLS, GTTags.Items.TOOLS_FILES,
+                        GTTags.Items.TOOLS_HAMMERS, GTTags.Items.TOOLS_KNIVES, GTTags.Items.TOOLS_MALLETS,
+                        GTTags.Items.TOOLS_MINING_HAMMERS, GTTags.Items.TOOLS_MORTARS, GTTags.Items.TOOLS_PLUNGERS,
+                        GTTags.Items.TOOLS_SAWS, GTTags.Items.TOOLS_SCREWDRIVERS, GTTags.Items.TOOLS_SCYTHES,
+                        GTTags.Items.TOOLS_SHEARS, GTTags.Items.TOOLS_SPADES, GTTags.Items.TOOLS_WIRE_CUTTERS,
+                        GTTags.Items.TOOLS_WRENCHES);
 
         // Add sodalite and lazurite as enchanting fuels
         provider.addTag(Tags.Items.ENCHANTING_FUELS)
