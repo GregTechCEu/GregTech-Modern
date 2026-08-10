@@ -48,7 +48,7 @@ public class FluidEmiStackMixin {
                 text -> list.add(EmiTooltipComponents.of(text)),
                 TooltipFlag.NORMAL);
 
-        if(Minecraft.getInstance().options.advancedItemTooltips) {
+        if (Minecraft.getInstance().options.advancedItemTooltips) {
             ResourceLocation id = ((EmiStack) (Object) this).getId();
             list.add(EmiTooltipComponents.of(Component.literal(id.toString()).withStyle(ChatFormatting.DARK_GRAY)));
         }
