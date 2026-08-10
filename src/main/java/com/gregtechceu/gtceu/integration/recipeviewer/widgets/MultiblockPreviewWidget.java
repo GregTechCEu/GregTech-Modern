@@ -307,7 +307,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 continue;
             }
             IDrawable overlay;
-            if (predicate.getCandidates().size() == 1) {
+            if (predicate.getCandidates().size() == 1 && predicate.getCandidates().get(0).size() == 1) {
                 continue;
             } else {
                 overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
