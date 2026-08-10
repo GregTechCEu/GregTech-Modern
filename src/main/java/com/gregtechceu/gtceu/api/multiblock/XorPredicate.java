@@ -70,7 +70,7 @@ public class XorPredicate extends MultiPredicate {
                 return p;
             }
         }
-        if (!hasChildren()) {
+        if (isRoot()) {
             onError(context);
         }
         return null;
@@ -79,22 +79,13 @@ public class XorPredicate extends MultiPredicate {
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
-        if (passedPredicate == null || !passedPredicate.testGlobalMin(ctx)) {
-            ctx.appendError(PatternStringError.literal("need one of: " + this));
-            return false;
-        }
-        return true;
+        return passedPredicate != null && passedPredicate.testGlobalMin(ctx);
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
-        if (passedPredicate == null || !passedPredicate.testSliceMin(ctx)) {
-            ctx.appendError(PatternStringError.literal("need one of: " + this));
-            return false;
-        }
-        if (!global) resetLogic();
-        return true;
+        return passedPredicate != null && passedPredicate.testSliceMin(ctx);
     }
 
     @Override

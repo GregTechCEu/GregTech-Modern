@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
@@ -36,7 +37,6 @@ public abstract class MultiPredicate {
     @Getter
     @Setter
     private MultiPredicate parent;
-    protected boolean global = true;
 
     public static MultiPredicate of(BasePredicate predicate) {
         return Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
@@ -71,7 +71,7 @@ public abstract class MultiPredicate {
             BasePredicate p = predicates.getPredicateAtPos(context);
             if (p != null) return p;
         }
-        if (!hasChildren()) {
+        if (isRoot()) {
             onError(context);
         }
         return null;
@@ -87,7 +87,11 @@ public abstract class MultiPredicate {
     /// Usually used for testing the global min of predicates
     public final boolean postGlobalTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
-        return testGlobalMin(ctx);
+        if (testGlobalMin(ctx)) return true;
+        for (Component content : getDescriptiveContents()) {
+            ctx.appendError(PatternStringError.component(content));
+        }
+        return false;
     }
 
     protected abstract boolean testGlobalMin(PredicateContext ctx);
@@ -96,7 +100,11 @@ public abstract class MultiPredicate {
     /// Usually used for testing the slice min of predicates
     public final boolean postSliceTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
-        return testSliceMin(ctx);
+        if (testSliceMin(ctx)) return true;
+        for (Component content : getDescriptiveContents()) {
+            ctx.appendError(PatternStringError.component(content));
+        }
+        return false;
     }
 
     protected abstract boolean testSliceMin(PredicateContext ctx);
@@ -251,18 +259,6 @@ public abstract class MultiPredicate {
         return this;
     }
 
-    /// Setting this to {@code true} means that this multi predicate will
-    /// only consider the final global state of the multiblock.
-    /// <br/>
-    /// If {@code false}, the multi predicate logic will only consider
-    /// each slice separately. Only noticable for XOR logic type multi predicates
-    /// <br/><br/>
-    /// Defaults to {@code true}
-    public MultiPredicate setGlobal(boolean global) {
-        this.global = global;
-        return this;
-    }
-
     /// @return a new multi predicate where any predicate may pass or be present in the multiblock
     public MultiPredicate or(@Nullable MultiPredicate other) {
         return combine(this, Logic.OR, other);
@@ -295,26 +291,59 @@ public abstract class MultiPredicate {
         return of(Logic.XOR, predicates);
     }
 
+    /// @return {@code true} if this multi predicate has only one predicate and has no children
     public boolean isSingle() {
-        return predicates.size() == 1 && !hasChildren();
+        return predicates.size() == 1 && isLeaf();
     }
 
-    protected boolean hasChildren() {
-        return !this.children.isEmpty();
+    /// @return {@code true} if this multi predicate has no parent
+    public boolean isRoot() {
+        return getParent() == null;
     }
 
-    public void appendContents(StringBuilder builder) {
-        StringJoiner joiner = new StringJoiner(", ");
-        this.forEach(p -> joiner.add(p.toString()));
-        builder.append(joiner);
+    /// @return {@code true} if this multi predicate has children and is not a root predicate
+    public boolean isBranch() {
+        return !isLeaf() && !isRoot();
+    }
+
+    /// @return {@code true} if this multi predicate has no children multi predicates
+    public boolean isLeaf() {
+        return this.children.isEmpty();
+    }
+
+    public List<Component> getDescriptiveContents() {
+        List<Component> list = new ArrayList<>();
+        Component logicLine = switch (this.type) {
+            case OR -> Component.literal("any of:");
+            case AND -> Component.literal("all of:");
+            case XOR -> Component.literal("one of:");
+        };
+        list.add(logicLine);
+        for (BasePredicate predicate : this.predicates) {
+            // todo prettier string?
+            list.add(Component.literal(predicate.toString()));
+        }
+        for (MultiPredicate child : children()) {
+            list.addAll(child.getDescriptiveContents());
+        }
+        return list;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("MultiPredicate");
-        if (isController()) builder.append("[Controller]");
+        builder.append('[');
+        if (isController()) builder.append("Controller=true, ");
+        switch (this.type) {
+            case OR -> builder.append("Logic=OR");
+            case AND -> builder.append("Logic=AND");
+            case XOR -> builder.append("Logic=XOR");
+        }
+        builder.append(']');
         builder.append('{');
-        appendContents(builder);
+        StringJoiner joiner = new StringJoiner(", ");
+        this.forEach(p -> joiner.add(p.toString()));
+        builder.append(joiner);
         builder.append('}');
         return builder.toString();
     }
@@ -337,7 +366,7 @@ public abstract class MultiPredicate {
 
     /// @return a flattened list of all base predicates
     public List<BasePredicate> expand() {
-        if (!hasChildren()) return this.predicates;
+        if (isLeaf()) return this.predicates;
         List<BasePredicate> expanded = new ArrayList<>(this.predicates);
         forEachChild(mp -> expanded.addAll(mp.expand()));
         return expanded;
