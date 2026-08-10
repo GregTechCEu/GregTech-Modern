@@ -99,6 +99,8 @@ public class GTNetwork {
         register(SPacketImageResponse.class, SPacketImageResponse::new, NetworkDirection.PLAY_TO_CLIENT);
 
         register(CPacketKeyDown.class, CPacketKeyDown::new, NetworkDirection.PLAY_TO_SERVER);
+        register(CPacketEmiSetCircuit.class, CPacketEmiSetCircuit::new, NetworkDirection.PLAY_TO_SERVER);
+        register(CPacketEmiFluidTransfer.class, CPacketEmiFluidTransfer::new, NetworkDirection.PLAY_TO_SERVER);
 
         register(SPacketSyncOreVeins.class, SPacketSyncOreVeins::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SPacketSyncFluidVeins.class, SPacketSyncFluidVeins::new, NetworkDirection.PLAY_TO_CLIENT);
