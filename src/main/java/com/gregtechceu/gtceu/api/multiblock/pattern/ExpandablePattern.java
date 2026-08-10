@@ -126,6 +126,10 @@ public class ExpandablePattern implements IBlockPattern {
 
         PredicateContext context = patternState.resetContext(false);
 
+        if (!isFlipped) {
+            patternState.clearErrors();
+        }
+
         BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
 
@@ -177,7 +181,6 @@ public class ExpandablePattern implements IBlockPattern {
 
             // all predicates failed
             if (innerPredicate == null) {
-                context.appendError(Predicates.PLACEHOLDER);
                 context.commitSliceErrors(); // this is actually global errors, not slice
                 return false;
             }

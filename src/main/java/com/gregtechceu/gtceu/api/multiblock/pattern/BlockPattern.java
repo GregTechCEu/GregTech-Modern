@@ -219,8 +219,6 @@ public class BlockPattern implements IBlockPattern {
 
                 // all predicates failed
                 if (innerPredicate == null) {
-                    // todo better error
-                    context.appendError(Predicates.PLACEHOLDER);
                     // errors get committed in BasicSliceStrategy
                     return false;
                 }

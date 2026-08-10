@@ -45,7 +45,7 @@ public class PredicateBuilder {
     /// error handler is given
     /// @param function Function that takes a {@link PredicateContext} and returns a {@link PatternError}.
     public PredicateBuilder errorFunction(Function<PredicateContext, PatternError> function) {
-        return errorHandler((context, failingPredicate) -> function.apply(context));
+        return errorHandler((context, failingPredicate) -> context.appendError(function.apply(context)));
     }
 
     /// @param onError functional interface whose parameters are a
@@ -86,6 +86,7 @@ public class PredicateBuilder {
     private ErrorHandler composeErrorHandlers() {
         if (errorHandlers.isEmpty()) return this::placeholderError;
         Validate.noNullElements(errorHandlers);
+        if (errorHandlers.size() == 1) return errorHandlers.get(0);
         List<ErrorHandler> errorHandlers = Collections.unmodifiableList(this.errorHandlers);
         return (context, failingPredicate) -> {
             for (ErrorHandler handler : errorHandlers) {
