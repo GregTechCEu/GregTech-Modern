@@ -3,8 +3,12 @@ package com.gregtechceu.gtceu.core.mixins.emi;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -43,5 +47,10 @@ public class FluidEmiStackMixin {
                 nbt),
                 text -> list.add(EmiTooltipComponents.of(text)),
                 TooltipFlag.NORMAL);
+
+        if(Minecraft.getInstance().options.advancedItemTooltips) {
+            ResourceLocation id = ((EmiStack) (Object) this).getId();
+            list.add(EmiTooltipComponents.of(Component.literal(id.toString()).withStyle(ChatFormatting.DARK_GRAY)));
+        }
     }
 }
