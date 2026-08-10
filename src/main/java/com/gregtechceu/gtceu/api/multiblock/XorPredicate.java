@@ -49,6 +49,7 @@ public class XorPredicate extends MultiPredicate {
 
     @Override
     public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
+        context.setStage(PredicateContext.PredicateStage.INTERNAL);
         for (BasePredicate predicate : predicates()) {
             if (predicate.test(context)) {
                 if (this.passedPredicate != null && !this.passedPredicate.is(predicate)) {
