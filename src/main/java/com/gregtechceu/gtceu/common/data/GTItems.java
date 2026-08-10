@@ -1451,6 +1451,7 @@ public class GTItems {
             if (color == DyeColor.WHITE) continue;
             GLASS_LENSES.put(color.getName(), REGISTRATE.item(String.format("%s_glass_lens", color.getName()), Item::new)
                     .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
+                            .tag(TagUtil.createModItemTag("lense"))
                     .tag(TagUtil.createModItemTag("lenses/" + color.getName()))
                     .register());
         }
