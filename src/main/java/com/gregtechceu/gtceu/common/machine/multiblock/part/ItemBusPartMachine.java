@@ -74,6 +74,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     private boolean circuitSlotEnabled = true;
     @Getter
     @Persisted
+    @DescSynced
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
     @Persisted

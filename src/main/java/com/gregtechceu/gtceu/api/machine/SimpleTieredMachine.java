@@ -99,6 +99,7 @@ public class SimpleTieredMachine extends RecipeTieredMachine
     protected final CustomItemStackHandler chargerInventory;
     @Getter
     @Persisted
+    @DescSynced
     protected final NotifiableItemStackHandler circuitInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;

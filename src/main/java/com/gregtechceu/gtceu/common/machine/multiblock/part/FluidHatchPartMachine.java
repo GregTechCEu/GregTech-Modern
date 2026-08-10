@@ -83,6 +83,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine
 
     @Getter
     @Persisted
+    @DescSynced
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
     @Persisted
