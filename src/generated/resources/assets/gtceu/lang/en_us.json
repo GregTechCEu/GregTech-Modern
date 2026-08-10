@@ -1770,6 +1770,7 @@
   "config.gtceu.option.animationTime": "animationTime",
   "config.gtceu.option.arcRecyclingYield": "arcRecyclingYield",
   "config.gtceu.option.armorHud": "armorHud",
+  "config.gtceu.option.assemblyLineLaser": "assemblyLineLaser",
   "config.gtceu.option.autoRebuildResources": "autoRebuildResources",
   "config.gtceu.option.baseBrightness": "baseBrightness",
   "config.gtceu.option.batchDuration": "batchDuration",

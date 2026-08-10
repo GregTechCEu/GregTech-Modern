@@ -180,6 +180,7 @@ public class ClientProxy extends CommonProxy {
 
         DynamicRenderManager.register(GTCEu.id("fusion_ring"), FusionRingRender.TYPE);
         DynamicRenderManager.register(GTCEu.id("boiler_multi_parts"), BoilerMultiPartRender.TYPE);
+        DynamicRenderManager.register(GTCEu.id("assembly_line"), AssemblyLineRender.TYPE);
 
         DynamicRenderManager.register(GTCEu.id("fluid_area"), FluidAreaRender.TYPE);
         DynamicRenderManager.register(GTCEu.id("growing_plant"), GrowingPlantRender.TYPE);
