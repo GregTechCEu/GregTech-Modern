@@ -66,6 +66,20 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     public abstract void onError(PredicateContext ctx);
 
+    public abstract BasePredicate copy();
+
+    protected void copyTo(BasePredicate other) {
+        other.priority = this.priority;
+        other.minCount = this.minCount;
+        other.maxCount = this.maxCount;
+        other.minSliceCount = this.minSliceCount;
+        other.maxSliceCount = this.maxSliceCount;
+        other.previewCount = this.previewCount;
+        other.disableRenderFormed = this.disableRenderFormed;
+        other.nbtParser = this.nbtParser;
+        other.additionalTooltips.addAll(this.additionalTooltips);
+    }
+
     public void addTooltips(Component tooltip) {
         this.additionalTooltips.add(tooltip);
     }

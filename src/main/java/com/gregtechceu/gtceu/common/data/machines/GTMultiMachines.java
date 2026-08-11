@@ -360,7 +360,7 @@ public class GTMultiMachines {
                 if (GTCEu.Mods.isAE2Loaded()) {
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 }
-                exportPredicate.setMaxLayerLimited(1);
+                exportPredicate = exportPredicate.setMaxLayerLimited(1);
                 MultiPredicate maint = autoAbilities(true, false, false)
                         .setMaxGlobalLimited(1);
                 return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
