@@ -32,7 +32,7 @@ public class PredicateBuilder {
     private final String name;
     @Setter
     private Predicate<PredicateContext> predicate;
-    private Supplier<Stream<BlockInfo>> candidates = Stream::empty;
+    private Supplier<List<BlockInfo>> candidates = List::of;
     @Setter
     private @Nullable Consumer<StringBuilder> contents;
     private final List<ErrorHandler> errorHandlers = new ArrayList<>();
@@ -56,11 +56,17 @@ public class PredicateBuilder {
     }
 
     public PredicateBuilder candidates(Stream<BlockInfo> candidates) {
+        List<BlockInfo> snapshot = candidates.toList();
+        this.candidates = () -> snapshot;
+        return this;
+    }
+
+    public PredicateBuilder candidates(List<BlockInfo> candidates) {
         this.candidates = () -> candidates;
         return this;
     }
 
-    public PredicateBuilder candidatesSupplier(Supplier<Stream<BlockInfo>> candidates) {
+    public PredicateBuilder candidatesSupplier(Supplier<List<BlockInfo>> candidates) {
         this.candidates = candidates;
         return this;
     }
@@ -68,7 +74,7 @@ public class PredicateBuilder {
     /// fills candidates and sets string contents with this block tag
     public PredicateBuilder blockTag(TagKey<Block> tag) {
         this.candidates = () -> Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
-                .getTag(tag).stream().map(BlockInfo::fromBlock);
+                .getTag(tag).stream().map(BlockInfo::fromBlock).toList();
         this.contents = builder -> builder.append(tag.location());
         return this;
     }
@@ -76,7 +82,7 @@ public class PredicateBuilder {
     /// fills candidates and sets string contents with this fluid tag
     public PredicateBuilder fluidTag(TagKey<Fluid> tag) {
         this.candidates = () -> Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
-                .getTag(tag).stream().map(BlockInfo::fromFluid);
+                .getTag(tag).stream().map(BlockInfo::fromFluid).toList();
         this.contents = builder -> builder.append(tag.location());
         return this;
     }
@@ -88,7 +94,7 @@ public class PredicateBuilder {
     public BasePredicate build() {
         return new TestablePredicate(name,
                 Objects.requireNonNull(predicate, "predicate == null"),
-                candidates.get(),
+                candidates,
                 contents,
                 composeErrorHandlers());
     }
