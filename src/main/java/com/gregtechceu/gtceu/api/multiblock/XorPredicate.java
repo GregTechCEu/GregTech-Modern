@@ -21,30 +21,22 @@ public class XorPredicate extends MultiPredicate {
 
     public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
         super(Logic.XOR, children, predicates, hasAir);
-        this.noneValid = isNoneValid();
+        this.noneValid = expand().stream()
+                .anyMatch(p -> p.getMinCount() <= 0 && p.getMinSliceCount() <= 0);
     }
 
     @Override
     public MultiPredicate setMinCount(int min) {
-        this.noneValid = min < 1;
+        this.noneValid = min < 1 && expand().stream()
+                .anyMatch(p -> p.getMinSliceCount() <= 0);
         return super.setMinCount(min);
     }
 
     @Override
     public MultiPredicate setMinSliceCount(int min) {
-        this.noneValid = min < 1;
+        this.noneValid = min < 1 && expand().stream()
+                .anyMatch(p -> p.getMinCount() <= 0);
         return super.setMinSliceCount(min);
-    }
-
-    private boolean isNoneValid() {
-        boolean noneValid = false;
-        for (BasePredicate predicate : expand()) {
-            if (predicate.getMinCount() <= 0 && predicate.getMinSliceCount() <= 0) {
-                noneValid = true;
-                break;
-            }
-        }
-        return noneValid;
     }
 
     @Override
