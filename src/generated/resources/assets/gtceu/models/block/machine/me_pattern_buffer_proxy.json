@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:me_pattern_buffer_proxy",
+  "parent": "minecraft:block/block",
   "replaceable_textures": [
     "bottom",
     "top",

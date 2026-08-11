@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:lp_steam_rock_crusher",
   "multipart": [
@@ -108,5 +107,6 @@
         "steam_vent": "back"
       }
     }
-  ]
+  ],
+  "parent": "minecraft:block/block"
 }

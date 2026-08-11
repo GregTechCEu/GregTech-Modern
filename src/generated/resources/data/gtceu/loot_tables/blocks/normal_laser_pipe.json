@@ -1,5 +1,4 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "gtceu:normal_laser_pipe"
+          "name": "gtceu:normal_laser_pipe",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/normal_laser_pipe"
+  "random_sequence": "gtceu:blocks/normal_laser_pipe",
+  "type": "minecraft:block"
 }

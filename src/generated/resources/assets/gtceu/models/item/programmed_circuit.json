@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:item/generated",
   "overrides": [
     {
       "model": "gtceu:item/programmed_circuit/0",
@@ -200,6 +199,7 @@
       }
     }
   ],
+  "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "gtceu:item/programmed_circuit/1"
   }

@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:ev_energy_input_hatch_16a",
+  "parent": "minecraft:block/block",
   "replaceable_textures": [
     "bottom",
     "top",

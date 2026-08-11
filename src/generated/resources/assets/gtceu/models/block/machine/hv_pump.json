@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:hv_pump",
+  "parent": "minecraft:block/block",
   "variants": {
     "": {
       "model": {

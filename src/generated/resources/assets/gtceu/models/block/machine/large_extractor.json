@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:large_extractor",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/gcym/watertight_casing"
   },

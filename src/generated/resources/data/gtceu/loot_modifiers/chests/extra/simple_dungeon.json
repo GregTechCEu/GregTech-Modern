@@ -1,5 +1,4 @@
 {
-  "type": "gtceu:add_table",
   "conditions": [
     {
       "condition": "gtceu:config_value",
@@ -10,5 +9,6 @@
       "loot_table_id": "minecraft:chests/simple_dungeon"
     }
   ],
-  "table": "gtceu:chests/extra/simple_dungeon"
+  "table": "gtceu:chests/extra/simple_dungeon",
+  "type": "gtceu:add_table"
 }

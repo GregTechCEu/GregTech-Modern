@@ -1,5 +1,4 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "gtceu:chiseled_dark_concrete"
+          "name": "gtceu:chiseled_dark_concrete",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/chiseled_dark_concrete"
+  "random_sequence": "gtceu:blocks/chiseled_dark_concrete",
+  "type": "minecraft:block"
 }

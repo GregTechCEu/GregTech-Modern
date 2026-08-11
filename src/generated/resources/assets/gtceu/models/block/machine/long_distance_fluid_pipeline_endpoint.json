@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:long_distance_fluid_pipeline_endpoint",
+  "parent": "minecraft:block/block",
   "replaceable_textures": [
     "bottom",
     "top",

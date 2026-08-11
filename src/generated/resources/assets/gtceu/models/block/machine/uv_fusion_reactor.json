@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/block",
   "dynamic_renders": [
     {
       "type": "gtceu:fusion_ring"
@@ -7,6 +6,7 @@
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:uv_fusion_reactor",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/fusion/fusion_casing_mk3"
   },

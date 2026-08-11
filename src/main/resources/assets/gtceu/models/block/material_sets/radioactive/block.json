@@ -1,6 +1,4 @@
 {
-  "parent": "gtceu:block/material_sets/dull/block",
-  "loader": "forge:composite",
   "children": {
     "base": {
       "parent": "gtceu:block/cube/tinted/all_0",
@@ -20,5 +18,7 @@
   "item_render_order": [
     "base",
     "secondary"
-  ]
+  ],
+  "loader": "forge:composite",
+  "parent": "gtceu:block/material_sets/dull/block"
 }

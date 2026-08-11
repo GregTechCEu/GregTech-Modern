@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:hpca_advanced_computation_component",
+  "parent": "minecraft:block/block",
   "variants": {
     "active=false,hpca_part_damaged=false": {
       "model": {

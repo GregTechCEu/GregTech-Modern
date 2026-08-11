@@ -1,18 +1,16 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:item",
           "functions": [
             {
               "add": false,
               "count": {
-                "type": "minecraft:uniform",
                 "max": 3.0,
-                "min": 1.0
+                "min": 1.0,
+                "type": "minecraft:uniform"
               },
               "function": "minecraft:set_count"
             },
@@ -20,11 +18,13 @@
               "function": "minecraft:explosion_decay"
             }
           ],
-          "name": "minecraft:charcoal"
+          "name": "minecraft:charcoal",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/brittle_charcoal"
+  "random_sequence": "gtceu:blocks/brittle_charcoal",
+  "type": "minecraft:block"
 }

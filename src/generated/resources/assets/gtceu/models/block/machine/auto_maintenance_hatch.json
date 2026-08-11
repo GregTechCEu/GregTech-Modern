@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:auto_maintenance_hatch",
+  "parent": "minecraft:block/block",
   "replaceable_textures": [
     "bottom",
     "top",

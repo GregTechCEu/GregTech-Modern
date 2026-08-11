@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:zpm_battery_buffer_8x",
+  "parent": "minecraft:block/block",
   "variants": {
     "": {
       "model": {

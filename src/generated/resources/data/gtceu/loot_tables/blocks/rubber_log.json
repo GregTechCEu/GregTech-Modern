@@ -1,5 +1,4 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -10,8 +9,8 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "gtceu:rubber_log"
+          "name": "gtceu:rubber_log",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
@@ -25,7 +24,6 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
           "conditions": [
             {
               "block": "gtceu:rubber_log",
@@ -39,11 +37,13 @@
               "condition": "minecraft:random_chance"
             }
           ],
-          "name": "gtceu:sticky_resin"
+          "name": "gtceu:sticky_resin",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/rubber_log"
+  "random_sequence": "gtceu:blocks/rubber_log",
+  "type": "minecraft:block"
 }

@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:item/generated",
   "overrides": [
     {
       "model": "gtceu:item/luv_vanadium_battery/0",
@@ -50,6 +49,7 @@
       }
     }
   ],
+  "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "gtceu:item/luv_vanadium_battery/1"
   }

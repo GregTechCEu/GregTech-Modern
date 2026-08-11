@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:large_circuit_assembler",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/gcym/large_scale_assembling_casing"
   },

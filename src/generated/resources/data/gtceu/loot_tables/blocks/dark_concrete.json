@@ -1,14 +1,11 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:alternatives",
           "children": [
             {
-              "type": "minecraft:item",
               "conditions": [
                 {
                   "condition": "minecraft:match_tool",
@@ -24,22 +21,25 @@
                   }
                 }
               ],
-              "name": "gtceu:dark_concrete"
+              "name": "gtceu:dark_concrete",
+              "type": "minecraft:item"
             },
             {
-              "type": "minecraft:item",
               "conditions": [
                 {
                   "condition": "minecraft:survives_explosion"
                 }
               ],
-              "name": "gtceu:dark_concrete_cobblestone"
+              "name": "gtceu:dark_concrete_cobblestone",
+              "type": "minecraft:item"
             }
-          ]
+          ],
+          "type": "minecraft:alternatives"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/dark_concrete"
+  "random_sequence": "gtceu:blocks/dark_concrete",
+  "type": "minecraft:block"
 }

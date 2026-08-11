@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:uhv_input_hatch_4x",
+  "parent": "minecraft:block/block",
   "replaceable_textures": [
     "bottom",
     "top",

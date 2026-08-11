@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:ev_item_collector",
+  "parent": "minecraft:block/block",
   "variants": {
     "active=false,working_enabled=false": {
       "model": {

@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/block",
   "elements": [
     {
       "faces": {
@@ -87,6 +86,7 @@
       ]
     }
   ],
+  "parent": "minecraft:block/block",
   "render_type": "minecraft:cutout_mipped",
   "textures": {
     "end": "gtceu:block/pipe/pipe_laser_in",

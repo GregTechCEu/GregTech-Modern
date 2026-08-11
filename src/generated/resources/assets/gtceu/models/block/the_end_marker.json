@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube",
   "gui_light": "front",
+  "parent": "minecraft:block/cube",
   "textures": {
     "down": "gtceu:block/dim_markers/the_end/down",
     "east": "gtceu:block/dim_markers/the_end/east",

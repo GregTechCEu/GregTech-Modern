@@ -1,5 +1,4 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "gtceu:light_concrete_tile"
+          "name": "gtceu:light_concrete_tile",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/light_concrete_tile"
+  "random_sequence": "gtceu:blocks/light_concrete_tile",
+  "type": "minecraft:block"
 }

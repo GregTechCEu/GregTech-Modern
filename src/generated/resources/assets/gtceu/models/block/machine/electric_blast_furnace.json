@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:electric_blast_furnace",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/solid/machine_casing_heatproof"
   },

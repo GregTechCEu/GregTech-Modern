@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:hv_electromagnetic_separator",
+  "parent": "minecraft:block/block",
   "variants": {
     "recipe_logic_status=idle": {
       "model": {

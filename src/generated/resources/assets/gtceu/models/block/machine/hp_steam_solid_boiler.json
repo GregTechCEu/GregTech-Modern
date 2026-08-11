@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:hp_steam_solid_boiler",
   "multipart": [
@@ -59,5 +58,6 @@
         "recipe_logic_status": "suspend"
       }
     }
-  ]
+  ],
+  "parent": "minecraft:block/block"
 }

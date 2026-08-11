@@ -1,29 +1,28 @@
 {
-  "type": "minecraft:chest",
   "pools": [
     {
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:item",
           "functions": [
             {
               "add": false,
               "count": {
-                "type": "minecraft:uniform",
                 "max": 16.0,
-                "min": 8.0
+                "min": 8.0,
+                "type": "minecraft:uniform"
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "gtceu:purple_drink"
+          "name": "gtceu:purple_drink",
+          "type": "minecraft:item"
         }
       ],
       "rolls": {
-        "type": "minecraft:uniform",
         "max": 1.0,
-        "min": 0.0
+        "min": 0.0,
+        "type": "minecraft:uniform"
       }
     },
     {
@@ -36,27 +35,28 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
           "functions": [
             {
               "add": false,
               "count": {
-                "type": "minecraft:uniform",
                 "max": 16.0,
-                "min": 8.0
+                "min": 8.0,
+                "type": "minecraft:uniform"
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "gtceu:purple_drink"
+          "name": "gtceu:purple_drink",
+          "type": "minecraft:item"
         }
       ],
       "rolls": {
-        "type": "minecraft:uniform",
         "max": 2.0,
-        "min": 1.0
+        "min": 1.0,
+        "type": "minecraft:uniform"
       }
     }
   ],
-  "random_sequence": "gtceu:chests/extra/spawn_bonus_chest"
+  "random_sequence": "gtceu:chests/extra/spawn_bonus_chest",
+  "type": "minecraft:chest"
 }

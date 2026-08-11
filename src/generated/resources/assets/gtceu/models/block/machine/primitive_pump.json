@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:primitive_pump",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "bottom": "gtceu:block/casings/pump_deck/bottom",
     "side": "gtceu:block/casings/pump_deck/side",

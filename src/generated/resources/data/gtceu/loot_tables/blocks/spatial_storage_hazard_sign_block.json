@@ -1,5 +1,4 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "gtceu:spatial_storage_hazard_sign_block"
+          "name": "gtceu:spatial_storage_hazard_sign_block",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/spatial_storage_hazard_sign_block"
+  "random_sequence": "gtceu:blocks/spatial_storage_hazard_sign_block",
+  "type": "minecraft:block"
 }

@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:mv_bedrock_ore_miner",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/solid/machine_casing_solid_steel"
   },

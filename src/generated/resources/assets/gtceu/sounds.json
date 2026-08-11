@@ -2,8 +2,8 @@
   "arc": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:arc"
+        "name": "gtceu:arc",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.arc"
@@ -11,8 +11,8 @@
   "assembler": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:assembler"
+        "name": "gtceu:assembler",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.assembler"
@@ -20,8 +20,8 @@
   "bath": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:bath"
+        "name": "gtceu:bath",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.bath"
@@ -29,8 +29,8 @@
   "boiler": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:boiler"
+        "name": "gtceu:boiler",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.boiler"
@@ -38,8 +38,8 @@
   "centrifuge": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:centrifuge"
+        "name": "gtceu:centrifuge",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.centrifuge"
@@ -47,8 +47,8 @@
   "chainsaw": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:chainsaw"
+        "name": "gtceu:chainsaw",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.chainsaw"
@@ -56,8 +56,8 @@
   "chemical": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:chemical"
+        "name": "gtceu:chemical",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.chemical"
@@ -65,8 +65,8 @@
   "combustion": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:combustion"
+        "name": "gtceu:combustion",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.combustion"
@@ -74,8 +74,8 @@
   "compressor": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:compressor"
+        "name": "gtceu:compressor",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.compressor"
@@ -83,8 +83,8 @@
   "computation": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:computation"
+        "name": "gtceu:computation",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.computation"
@@ -92,8 +92,8 @@
   "cooling": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:cooling"
+        "name": "gtceu:cooling",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.cooling"
@@ -101,8 +101,8 @@
   "cut": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:cut"
+        "name": "gtceu:cut",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.cut"
@@ -110,8 +110,8 @@
   "drill": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:drill"
+        "name": "gtceu:drill",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.drill"
@@ -119,8 +119,8 @@
   "electrolyzer": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:electrolyzer"
+        "name": "gtceu:electrolyzer",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.electrolyzer"
@@ -128,8 +128,8 @@
   "file": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:file"
+        "name": "gtceu:file",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.file"
@@ -137,8 +137,8 @@
   "fire": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:fire"
+        "name": "gtceu:fire",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.fire"
@@ -146,8 +146,8 @@
   "forge_hammer": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:forge_hammer"
+        "name": "gtceu:forge_hammer",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.forge_hammer"
@@ -155,8 +155,8 @@
   "furnace": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:furnace"
+        "name": "gtceu:furnace",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.furnace"
@@ -164,8 +164,8 @@
   "jet_engine": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:jet_engine"
+        "name": "gtceu:jet_engine",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.jet_engine"
@@ -173,8 +173,8 @@
   "macerator": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:macerator"
+        "name": "gtceu:macerator",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.macerator"
@@ -182,8 +182,8 @@
   "metal_pipe": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:metal_pipe"
+        "name": "gtceu:metal_pipe",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.metal_pipe"
@@ -191,8 +191,8 @@
   "miner": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:miner"
+        "name": "gtceu:miner",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.miner"
@@ -200,8 +200,8 @@
   "mixer": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:mixer"
+        "name": "gtceu:mixer",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.mixer"
@@ -209,8 +209,8 @@
   "mortar": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:mortar"
+        "name": "gtceu:mortar",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.mortar"
@@ -218,8 +218,8 @@
   "motor": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:motor"
+        "name": "gtceu:motor",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.motor"
@@ -227,8 +227,8 @@
   "plunger": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:plunger"
+        "name": "gtceu:plunger",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.plunger"
@@ -236,8 +236,8 @@
   "portable_scanner": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:portable_scanner"
+        "name": "gtceu:portable_scanner",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.portable_scanner"
@@ -245,8 +245,8 @@
   "portal_closing": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:portal_closing"
+        "name": "gtceu:portal_closing",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.portal_closing"
@@ -254,8 +254,8 @@
   "portal_opening": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:portal_opening"
+        "name": "gtceu:portal_opening",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.portal_opening"
@@ -263,8 +263,8 @@
   "replicator": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:replicator"
+        "name": "gtceu:replicator",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.replicator"
@@ -272,8 +272,8 @@
   "saw": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:saw"
+        "name": "gtceu:saw",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.saw"
@@ -281,8 +281,8 @@
   "science": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:science"
+        "name": "gtceu:science",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.science"
@@ -290,8 +290,8 @@
   "screwdriver": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:screwdriver"
+        "name": "gtceu:screwdriver",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.screwdriver"
@@ -299,8 +299,8 @@
   "soft_hammer": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:soft_hammer"
+        "name": "gtceu:soft_hammer",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.soft_hammer"
@@ -308,8 +308,8 @@
   "spray_can": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:spray_can"
+        "name": "gtceu:spray_can",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.spray_can"
@@ -317,8 +317,8 @@
   "sus": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:sus"
+        "name": "gtceu:sus",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.sus"
@@ -326,8 +326,8 @@
   "turbine": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:turbine"
+        "name": "gtceu:turbine",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.turbine"
@@ -335,8 +335,8 @@
   "wirecutter": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:wirecutter"
+        "name": "gtceu:wirecutter",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.wirecutter"
@@ -344,8 +344,8 @@
   "wrench": {
     "sounds": [
       {
-        "type": "file",
-        "name": "gtceu:wrench"
+        "name": "gtceu:wrench",
+        "type": "file"
       }
     ],
     "subtitle": "gtceu.subtitle.wrench"

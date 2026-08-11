@@ -1,5 +1,4 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "gtceu:fusion_casing_mk2"
+          "name": "gtceu:fusion_casing_mk2",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/fusion_casing_mk2"
+  "random_sequence": "gtceu:blocks/fusion_casing_mk2",
+  "type": "minecraft:block"
 }

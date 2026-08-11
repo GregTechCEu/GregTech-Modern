@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:zpm_4096a_laser_source_hatch",
+  "parent": "minecraft:block/block",
   "replaceable_textures": [
     "bottom",
     "top",

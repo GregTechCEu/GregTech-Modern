@@ -1,9 +1,4 @@
 {
-  "parent": "block/block",
-  "loader": "forge:composite",
-  "textures": {
-    "particle": "gtceu:block/material_sets/quartz/block"
-  },
   "children": {
     "base": {
       "parent": "gtceu:block/cube/tinted/all_0",
@@ -23,5 +18,10 @@
   "item_render_order": [
     "base",
     "secondary"
-  ]
+  ],
+  "loader": "forge:composite",
+  "parent": "block/block",
+  "textures": {
+    "particle": "gtceu:block/material_sets/quartz/block"
+  }
 }

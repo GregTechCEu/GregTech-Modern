@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:opv_transformer_1a",
+  "parent": "minecraft:block/block",
   "variants": {
     "transform_up=false": {
       "model": {

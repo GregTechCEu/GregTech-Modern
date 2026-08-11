@@ -1,5 +1,4 @@
 {
-  "parent": "gtceu:block/pipe/normal_optical_pipe/center",
   "elements": [
     {
       "faces": {
@@ -75,6 +74,7 @@
       ]
     }
   ],
+  "parent": "gtceu:block/pipe/normal_optical_pipe/center",
   "textures": {
     "end": "gtceu:block/pipe/pipe_optical_in",
     "side": "gtceu:block/pipe/pipe_optical_side",

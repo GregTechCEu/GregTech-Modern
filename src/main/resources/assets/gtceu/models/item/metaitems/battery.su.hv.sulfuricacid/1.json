@@ -2,6 +2,6 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "gtceu:item/battery.hull.hv.su",
-	"layer1": "gtceu:item/battery.su.hv.sulfuricacid/1"
+    "layer1": "gtceu:item/battery.su.hv.sulfuricacid/1"
   }
 }

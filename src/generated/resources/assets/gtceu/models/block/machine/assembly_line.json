@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/block",
   "dynamic_renders": [
     {
       "type": "gtceu:assembly_line"
@@ -7,6 +6,7 @@
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:assembly_line",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/solid/machine_casing_solid_steel"
   },

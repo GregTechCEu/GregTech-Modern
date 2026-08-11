@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:block/block",
   "dynamic_renders": [
     {
       "type": "gtceu:central_monitor"
@@ -7,6 +6,7 @@
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:central_monitor",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/solid/machine_casing_frost_proof"
   },

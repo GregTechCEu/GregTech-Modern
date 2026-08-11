@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube",
   "gui_light": "front",
+  "parent": "minecraft:block/cube",
   "textures": {
     "down": "gtceu:block/dim_markers/overworld/down",
     "east": "gtceu:block/dim_markers/overworld/east",

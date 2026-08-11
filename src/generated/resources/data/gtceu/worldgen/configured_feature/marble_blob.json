@@ -1,5 +1,4 @@
 {
-  "type": "gtceu:stone_blob",
   "config": {
     "size": {
       "type": "minecraft:uniform",
@@ -17,5 +16,6 @@
         "tag": "minecraft:stone_ore_replaceables"
       }
     }
-  }
+  },
+  "type": "gtceu:stone_blob"
 }

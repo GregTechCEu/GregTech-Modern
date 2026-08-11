@@ -1,5 +1,4 @@
 {
-  "type": "minecraft:block",
   "pools": [
     {
       "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "gtceu:large_scale_assembler_casing"
+          "name": "gtceu:large_scale_assembler_casing",
+          "type": "minecraft:item"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/large_scale_assembler_casing"
+  "random_sequence": "gtceu:blocks/large_scale_assembler_casing",
+  "type": "minecraft:block"
 }

@@ -1,7 +1,7 @@
 {
-  "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
   "machine": "gtceu:network_switch",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "bottom": "gtceu:block/casings/hpca/computer_casing/bottom",
     "side": "gtceu:block/casings/hpca/computer_casing/side",

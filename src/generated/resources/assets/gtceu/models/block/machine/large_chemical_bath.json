@@ -1,16 +1,16 @@
 {
-  "parent": "minecraft:block/block",
   "dynamic_renders": [
     {
-      "type": "gtceu:fluid_area",
       "block_light": 15,
       "offset_face": -0.125,
       "overwrite_light": true,
-      "sky_light": 15
+      "sky_light": 15,
+      "type": "gtceu:fluid_area"
     }
   ],
   "loader": "gtceu:machine",
   "machine": "gtceu:large_chemical_bath",
+  "parent": "minecraft:block/block",
   "texture_overrides": {
     "all": "gtceu:block/casings/gcym/watertight_casing"
   },
