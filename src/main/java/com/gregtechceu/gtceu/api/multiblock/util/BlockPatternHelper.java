@@ -135,12 +135,12 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset) + 1;
-            boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
-            boolean sliceMinMet = basePredicate.testSliceMin(layerAlreadyPopulated);
-
-            if (globalMinMet && sliceMinMet) continue;
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
+            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
+            boolean globalMinUnmet = minCount > 0 && totalAlreadyPopulated < minCount;
+            boolean layerMinUnmet = basePredicate.getMinSliceCount() > 0 &&
+                    layerAlreadyPopulated < basePredicate.getMinSliceCount();
+            if (!globalMinUnmet && !layerMinUnmet) continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
@@ -170,11 +170,12 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
-            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset) + 1;
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
+            int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if (basePredicate.getMaxSliceCount() == -1 || layerAlreadyPopulated < basePredicate.getMaxSliceCount())
+            if (basePredicate.getMaxSliceCount() != -1 && layerAlreadyPopulated >= basePredicate.getMaxSliceCount()) {
                 continue;
+            }
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
@@ -200,12 +201,19 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                      BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
+        if (newInfo == BlockInfo.EMPTY) return true;
         // The slice (layer) this position belongs to.
         int sliceCoord = getCoordFromDir(pos, sliceDir);
 
         // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
         // (this slice) wouldn't be exceeded by placing it here.
         for (BasePredicate basePredicate : predicate.predicates()) {
+            /*
+             * PROBLEM:
+             * certain predicates (like air/any) do not have any candidates
+             * so they fail with BlockInfo.EMPTY
+             * there's also no way to "test" the block info since you need a PredicateContext
+             */
             if (!basePredicate.getCandidates().contains(newInfo)) continue;
 
             int maxCount = getMaxCount(predicate, basePredicate);
