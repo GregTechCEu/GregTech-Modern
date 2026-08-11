@@ -201,6 +201,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                      BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
+        // force true because idk what to do with this
         if (newInfo == BlockInfo.EMPTY) return true;
         // The slice (layer) this position belongs to.
         int sliceCoord = getCoordFromDir(pos, sliceDir);
