@@ -54,6 +54,7 @@ public class Predicates {
         return blocks(def.getBlock()).setController(true);
     }
 
+    /// @deprecated use {@link #controller(MultiblockMachineDefinition)} instead
     @Deprecated
     public static MultiPredicate controller(MultiPredicate predicate) {
         return predicate.setController(true);
