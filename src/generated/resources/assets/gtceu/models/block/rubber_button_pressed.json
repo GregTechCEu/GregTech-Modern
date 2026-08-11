@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/button_pressed",
-  "textures": {
-    "texture": "gtceu:block/rubber_planks"
-  }
+    "parent": "minecraft:block/button_pressed",
+    "textures": {
+        "texture": "gtceu:block/rubber_planks"
+    }
 }

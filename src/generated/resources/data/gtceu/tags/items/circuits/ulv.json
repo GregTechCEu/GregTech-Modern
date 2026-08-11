@@ -1,6 +1,6 @@
 {
-  "values": [
-    "gtceu:vacuum_tube",
-    "gtceu:nand_chip"
-  ]
+    "values": [
+        "gtceu:vacuum_tube",
+        "gtceu:nand_chip"
+    ]
 }

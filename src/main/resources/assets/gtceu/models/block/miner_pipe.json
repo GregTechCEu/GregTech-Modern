@@ -1,44 +1,44 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#end"
-        },
-        "east": {
-          "texture": "#side"
-        },
-        "north": {
-          "texture": "#side"
-        },
-        "south": {
-          "texture": "#side"
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#end"
-        },
-        "west": {
-          "texture": "#side"
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#end"
+                },
+                "east": {
+                    "texture": "#side"
+                },
+                "north": {
+                    "texture": "#side"
+                },
+                "south": {
+                    "texture": "#side"
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#end"
+                },
+                "west": {
+                    "texture": "#side"
+                }
+            },
+            "from": [
+                4,
+                0,
+                4
+            ],
+            "to": [
+                12,
+                16,
+                12
+            ]
         }
-      },
-      "from": [
-        4,
-        0,
-        4
-      ],
-      "to": [
-        12,
-        16,
-        12
-      ]
+    ],
+    "parent": "block/block",
+    "textures": {
+        "end": "gtceu:block/pipe/pipe_normal_in",
+        "particle": "#side",
+        "side": "gtceu:block/pipe/miner_pipe"
     }
-  ],
-  "parent": "block/block",
-  "textures": {
-    "end": "gtceu:block/pipe/pipe_normal_in",
-    "particle": "#side",
-    "side": "gtceu:block/pipe/miner_pipe"
-  }
 }

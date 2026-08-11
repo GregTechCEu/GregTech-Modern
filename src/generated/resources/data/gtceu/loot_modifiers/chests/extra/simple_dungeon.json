@@ -1,14 +1,14 @@
 {
-  "conditions": [
-    {
-      "condition": "gtceu:config_value",
-      "config_field": "worldgen.addLoot"
-    },
-    {
-      "condition": "forge:loot_table_id",
-      "loot_table_id": "minecraft:chests/simple_dungeon"
-    }
-  ],
-  "table": "gtceu:chests/extra/simple_dungeon",
-  "type": "gtceu:add_table"
+    "conditions": [
+        {
+            "condition": "gtceu:config_value",
+            "config_field": "worldgen.addLoot"
+        },
+        {
+            "condition": "forge:loot_table_id",
+            "loot_table_id": "minecraft:chests/simple_dungeon"
+        }
+    ],
+    "table": "gtceu:chests/extra/simple_dungeon",
+    "type": "gtceu:add_table"
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "gtceu:block/lamps/orange_off"
-  }
+    "parent": "minecraft:block/cube_all",
+    "textures": {
+        "all": "gtceu:block/lamps/orange_off"
+    }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/sterilizing_filter_casing"
+    "variants": {
+        "": {
+            "model": "gtceu:block/sterilizing_filter_casing"
+        }
     }
-  }
 }

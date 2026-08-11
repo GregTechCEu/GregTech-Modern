@@ -1,288 +1,288 @@
 {
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
+    "pools": [
         {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 16.0,
-                "min": 4.0,
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 16.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:silver_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:platinum_ingot",
+                    "type": "minecraft:item",
+                    "weight": 4
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:ruby_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:sapphire_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:green_sapphire_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:olivine_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:red_garnet_gem",
+                    "type": "minecraft:item",
+                    "weight": 4
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:yellow_garnet_gem",
+                    "type": "minecraft:item",
+                    "weight": 4
+                }
+            ],
+            "rolls": {
+                "max": 3.0,
+                "min": -1.0,
                 "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
             }
-          ],
-          "name": "gtceu:silver_ingot",
-          "type": "minecraft:item",
-          "weight": 12
         },
         {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
+            "bonus_rolls": 0.0,
+            "conditions": [
+                {
+                    "condition": "gtceu:config_value",
+                    "config_field": "worldgen.increaseDungeonLoot"
+                }
+            ],
+            "entries": [
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 16.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:silver_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:platinum_ingot",
+                    "type": "minecraft:item",
+                    "weight": 4
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:ruby_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:sapphire_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:green_sapphire_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:olivine_gem",
+                    "type": "minecraft:item",
+                    "weight": 2
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:red_garnet_gem",
+                    "type": "minecraft:item",
+                    "weight": 4
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:yellow_garnet_gem",
+                    "type": "minecraft:item",
+                    "weight": 4
+                }
+            ],
+            "rolls": {
+                "max": 3.0,
+                "min": -1.0,
                 "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
             }
-          ],
-          "name": "gtceu:platinum_ingot",
-          "type": "minecraft:item",
-          "weight": 4
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:ruby_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:sapphire_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:green_sapphire_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:olivine_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:red_garnet_gem",
-          "type": "minecraft:item",
-          "weight": 4
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:yellow_garnet_gem",
-          "type": "minecraft:item",
-          "weight": 4
         }
-      ],
-      "rolls": {
-        "max": 3.0,
-        "min": -1.0,
-        "type": "minecraft:uniform"
-      }
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "gtceu:config_value",
-          "config_field": "worldgen.increaseDungeonLoot"
-        }
-      ],
-      "entries": [
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 16.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:silver_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:platinum_ingot",
-          "type": "minecraft:item",
-          "weight": 4
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:ruby_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:sapphire_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:green_sapphire_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:olivine_gem",
-          "type": "minecraft:item",
-          "weight": 2
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:red_garnet_gem",
-          "type": "minecraft:item",
-          "weight": 4
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:yellow_garnet_gem",
-          "type": "minecraft:item",
-          "weight": 4
-        }
-      ],
-      "rolls": {
-        "max": 3.0,
-        "min": -1.0,
-        "type": "minecraft:uniform"
-      }
-    }
-  ],
-  "random_sequence": "gtceu:chests/extra/desert_pyramid",
-  "type": "minecraft:chest"
+    ],
+    "random_sequence": "gtceu:chests/extra/desert_pyramid",
+    "type": "minecraft:chest"
 }

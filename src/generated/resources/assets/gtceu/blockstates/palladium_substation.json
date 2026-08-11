@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/palladium_substation"
+    "variants": {
+        "": {
+            "model": "gtceu:block/palladium_substation"
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/reinforced_stone"
+    "variants": {
+        "": {
+            "model": "gtceu:block/reinforced_stone"
+        }
     }
-  }
 }

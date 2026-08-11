@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/chiseled_red_granite"
+    "variants": {
+        "": {
+            "model": "gtceu:block/chiseled_red_granite"
+        }
     }
-  }
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "gtceu:block/casings/unique/heat_vent"
-  }
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "gtceu:block/casings/unique/heat_vent"
+    }
 }

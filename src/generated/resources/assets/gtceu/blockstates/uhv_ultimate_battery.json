@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/uhv_ultimate_battery"
+    "variants": {
+        "": {
+            "model": "gtceu:block/uhv_ultimate_battery"
+        }
     }
-  }
 }

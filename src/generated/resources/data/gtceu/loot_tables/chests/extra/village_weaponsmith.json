@@ -1,254 +1,254 @@
 {
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
+    "pools": [
         {
-          "functions": [
-            {
-              "add": false,
-              "count": {
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 4.0,
+                                "min": 1.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:chromium_dust",
+                    "type": "minecraft:item",
+                    "weight": 6
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:neodymium_dust",
+                    "type": "minecraft:item",
+                    "weight": 6
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:manganese_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:steel_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:bronze_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:brass_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:damascus_steel_ingot",
+                    "type": "minecraft:item"
+                }
+            ],
+            "rolls": {
                 "max": 4.0,
-                "min": 1.0,
+                "min": -1.0,
                 "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
             }
-          ],
-          "name": "gtceu:chromium_dust",
-          "type": "minecraft:item",
-          "weight": 6
         },
         {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:neodymium_dust",
-          "type": "minecraft:item",
-          "weight": 6
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:manganese_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:steel_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:bronze_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:brass_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:damascus_steel_ingot",
-          "type": "minecraft:item"
-        }
-      ],
-      "rolls": {
-        "max": 4.0,
-        "min": -1.0,
-        "type": "minecraft:uniform"
-      }
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "gtceu:config_value",
-          "config_field": "worldgen.increaseDungeonLoot"
-        }
-      ],
-      "entries": [
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
+            "bonus_rolls": 0.0,
+            "conditions": [
+                {
+                    "condition": "gtceu:config_value",
+                    "config_field": "worldgen.increaseDungeonLoot"
+                }
+            ],
+            "entries": [
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 4.0,
+                                "min": 1.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:chromium_dust",
+                    "type": "minecraft:item",
+                    "weight": 6
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:neodymium_dust",
+                    "type": "minecraft:item",
+                    "weight": 6
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:manganese_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:steel_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:bronze_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:brass_ingot",
+                    "type": "minecraft:item",
+                    "weight": 12
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 4.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:damascus_steel_ingot",
+                    "type": "minecraft:item"
+                }
+            ],
+            "rolls": {
                 "max": 4.0,
-                "min": 1.0,
+                "min": -1.0,
                 "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
             }
-          ],
-          "name": "gtceu:chromium_dust",
-          "type": "minecraft:item",
-          "weight": 6
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:neodymium_dust",
-          "type": "minecraft:item",
-          "weight": 6
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:manganese_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:steel_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:bronze_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:brass_ingot",
-          "type": "minecraft:item",
-          "weight": 12
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 4.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:damascus_steel_ingot",
-          "type": "minecraft:item"
         }
-      ],
-      "rolls": {
-        "max": 4.0,
-        "min": -1.0,
-        "type": "minecraft:uniform"
-      }
-    }
-  ],
-  "random_sequence": "gtceu:chests/extra/village_weaponsmith",
-  "type": "minecraft:chest"
+    ],
+    "random_sequence": "gtceu:chests/extra/village_weaponsmith",
+    "type": "minecraft:chest"
 }

@@ -1,27 +1,27 @@
 {
-  "feature": "gtceu:red_granite_blob",
-  "placement": [
-    {
-      "chance": 10,
-      "type": "minecraft:rarity_filter"
-    },
-    {
-      "type": "minecraft:in_square"
-    },
-    {
-      "type": "minecraft:biome"
-    },
-    {
-      "height": {
-        "max_inclusive": {
-          "below_top": 0
+    "feature": "gtceu:red_granite_blob",
+    "placement": [
+        {
+            "chance": 10,
+            "type": "minecraft:rarity_filter"
         },
-        "min_inclusive": {
-          "absolute": -8
+        {
+            "type": "minecraft:in_square"
         },
-        "type": "minecraft:uniform"
-      },
-      "type": "minecraft:height_range"
-    }
-  ]
+        {
+            "type": "minecraft:biome"
+        },
+        {
+            "height": {
+                "max_inclusive": {
+                    "below_top": 0
+                },
+                "min_inclusive": {
+                    "absolute": -8
+                },
+                "type": "minecraft:uniform"
+            },
+            "type": "minecraft:height_range"
+        }
+    ]
 }

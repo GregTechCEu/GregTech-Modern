@@ -1,7 +1,7 @@
 {
-  "apply_fluid_luminosity": false,
-  "flip_gas": false,
-  "fluid": "minecraft:water",
-  "loader": "forge:fluid_container",
-  "parent": "forge:item/bucket_drip"
+    "apply_fluid_luminosity": false,
+    "flip_gas": false,
+    "fluid": "minecraft:water",
+    "loader": "forge:fluid_container",
+    "parent": "forge:item/bucket_drip"
 }

@@ -1,59 +1,59 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+    "elements": [
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.01
+            ],
+            "to": [
+                16,
+                16,
+                -0.01
+            ]
+        },
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_emissive",
+                    "tintindex": -101,
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "forge_data": {
+                "block_light": 15,
+                "sky_light": 15
+            },
+            "from": [
+                0,
+                0,
+                -0.02
+            ],
+            "shade": false,
+            "to": [
+                16,
+                16,
+                -0.02
+            ]
         }
-      },
-      "from": [
-        0,
-        0,
-        -0.01
-      ],
-      "to": [
-        16,
-        16,
-        -0.01
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay_emissive",
-          "tintindex": -101,
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "forge_data": {
-        "block_light": 15,
-        "sky_light": 15
-      },
-      "from": [
-        0,
-        0,
-        -0.02
-      ],
-      "shade": false,
-      "to": [
-        16,
-        16,
-        -0.02
-      ]
-    }
-  ],
-  "parent": "gtceu:block/overlay/only/front_emissive"
+    ],
+    "parent": "gtceu:block/overlay/only/front_emissive"
 }

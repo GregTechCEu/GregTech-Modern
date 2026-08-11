@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/zpm_lapotronic_battery"
+    "variants": {
+        "": {
+            "model": "gtceu:block/zpm_lapotronic_battery"
+        }
     }
-  }
 }

@@ -1,92 +1,92 @@
 {
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
+    "pools": [
         {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:damascus_steel_ingot",
+                    "type": "minecraft:item"
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 3.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:damascus_steel_ingot",
+                    "type": "minecraft:item"
+                }
+            ],
+            "rolls": {
+                "max": 2.0,
+                "min": -2.0,
                 "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
             }
-          ],
-          "name": "gtceu:damascus_steel_ingot",
-          "type": "minecraft:item"
         },
         {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 3.0,
+            "bonus_rolls": 0.0,
+            "conditions": [
+                {
+                    "condition": "gtceu:config_value",
+                    "config_field": "worldgen.increaseDungeonLoot"
+                }
+            ],
+            "entries": [
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 8.0,
+                                "min": 2.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:damascus_steel_ingot",
+                    "type": "minecraft:item"
+                },
+                {
+                    "functions": [
+                        {
+                            "add": false,
+                            "count": {
+                                "max": 12.0,
+                                "min": 3.0,
+                                "type": "minecraft:uniform"
+                            },
+                            "function": "minecraft:set_count"
+                        }
+                    ],
+                    "name": "gtceu:damascus_steel_ingot",
+                    "type": "minecraft:item"
+                }
+            ],
+            "rolls": {
+                "max": 2.0,
+                "min": -2.0,
                 "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
             }
-          ],
-          "name": "gtceu:damascus_steel_ingot",
-          "type": "minecraft:item"
         }
-      ],
-      "rolls": {
-        "max": 2.0,
-        "min": -2.0,
-        "type": "minecraft:uniform"
-      }
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "gtceu:config_value",
-          "config_field": "worldgen.increaseDungeonLoot"
-        }
-      ],
-      "entries": [
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 8.0,
-                "min": 2.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:damascus_steel_ingot",
-          "type": "minecraft:item"
-        },
-        {
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "max": 12.0,
-                "min": 3.0,
-                "type": "minecraft:uniform"
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "gtceu:damascus_steel_ingot",
-          "type": "minecraft:item"
-        }
-      ],
-      "rolls": {
-        "max": 2.0,
-        "min": -2.0,
-        "type": "minecraft:uniform"
-      }
-    }
-  ],
-  "random_sequence": "gtceu:chests/extra/stronghold_corridor",
-  "type": "minecraft:chest"
+    ],
+    "random_sequence": "gtceu:chests/extra/stronghold_corridor",
+    "type": "minecraft:chest"
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/laser_hazard_sign_block"
+    "variants": {
+        "": {
+            "model": "gtceu:block/laser_hazard_sign_block"
+        }
     }
-  }
 }

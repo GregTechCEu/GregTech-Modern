@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/cleanroom"
+    "variants": {
+        "": {
+            "model": "gtceu:block/machine/cleanroom"
+        }
     }
-  }
 }

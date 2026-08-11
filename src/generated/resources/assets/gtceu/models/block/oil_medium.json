@@ -1,5 +1,5 @@
 {
-  "textures": {
-    "particle": "gtceu:block/fluids/fluid.oil_medium"
-  }
+    "textures": {
+        "particle": "gtceu:block/fluids/fluid.oil_medium"
+    }
 }

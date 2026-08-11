@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/yellow_studs"
+    "variants": {
+        "": {
+            "model": "gtceu:block/yellow_studs"
+        }
     }
-  }
 }

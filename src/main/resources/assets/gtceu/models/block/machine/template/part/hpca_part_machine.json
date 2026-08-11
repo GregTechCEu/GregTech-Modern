@@ -1,97 +1,97 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#bottom"
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#bottom"
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#side"
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#front"
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#back"
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#top"
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#side"
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
         },
-        "east": {
-          "cullface": "east",
-          "texture": "#side"
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                -0.002,
+                -0.002,
+                -0.002
+            ],
+            "to": [
+                16.002,
+                16.002,
+                -0.002
+            ]
         },
-        "north": {
-          "cullface": "north",
-          "texture": "#front"
-        },
-        "south": {
-          "cullface": "south",
-          "texture": "#back"
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#top"
-        },
-        "west": {
-          "cullface": "west",
-          "texture": "#side"
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_emissive",
+                    "tintindex": -101,
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "forge_data": {
+                "block_light": 15,
+                "sky_light": 15
+            },
+            "from": [
+                -0.004,
+                -0.004,
+                -0.004
+            ],
+            "shade": false,
+            "to": [
+                16.004,
+                16.004,
+                -0.004
+            ]
         }
-      },
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "from": [
-        -0.002,
-        -0.002,
-        -0.002
-      ],
-      "to": [
-        16.002,
-        16.002,
-        -0.002
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay_emissive",
-          "tintindex": -101,
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "forge_data": {
-        "block_light": 15,
-        "sky_light": 15
-      },
-      "from": [
-        -0.004,
-        -0.004,
-        -0.004
-      ],
-      "shade": false,
-      "to": [
-        16.004,
-        16.004,
-        -0.004
-      ]
-    }
-  ],
-  "parent": "gtceu:block/overlay/2_layer/front_emissive"
+    ],
+    "parent": "gtceu:block/overlay/2_layer/front_emissive"
 }

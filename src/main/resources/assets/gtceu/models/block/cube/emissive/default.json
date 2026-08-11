@@ -1,48 +1,48 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#down"
-        },
-        "east": {
-          "cullface": "east",
-          "texture": "#east"
-        },
-        "north": {
-          "cullface": "north",
-          "texture": "#north"
-        },
-        "south": {
-          "cullface": "south",
-          "texture": "#south"
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#up"
-        },
-        "west": {
-          "cullface": "west",
-          "texture": "#west"
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#down"
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#east"
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#north"
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#south"
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#up"
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#west"
+                }
+            },
+            "forge_data": {
+                "block_light": 15,
+                "sky_light": 15
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "shade": false,
+            "to": [
+                16,
+                16,
+                16
+            ]
         }
-      },
-      "forge_data": {
-        "block_light": 15,
-        "sky_light": 15
-      },
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "shade": false,
-      "to": [
-        16,
-        16,
-        16
-      ]
-    }
-  ],
-  "parent": "block/block"
+    ],
+    "parent": "block/block"
 }

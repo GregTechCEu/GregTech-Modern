@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/magenta_metal_sheet"
+    "variants": {
+        "": {
+            "model": "gtceu:block/magenta_metal_sheet"
+        }
     }
-  }
 }

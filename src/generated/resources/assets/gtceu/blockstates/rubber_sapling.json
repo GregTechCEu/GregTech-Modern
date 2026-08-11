@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/rubber_sapling"
+    "variants": {
+        "": {
+            "model": "gtceu:block/rubber_sapling"
+        }
     }
-  }
 }

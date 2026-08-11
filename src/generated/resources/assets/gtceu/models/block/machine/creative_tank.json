@@ -1,15 +1,15 @@
 {
-  "dynamic_renders": [
-    {
-      "type": "gtceu:quantum_tank_fluid"
+    "dynamic_renders": [
+        {
+            "type": "gtceu:quantum_tank_fluid"
+        }
+    ],
+    "loader": "gtceu:machine",
+    "machine": "gtceu:creative_tank",
+    "parent": "minecraft:block/block",
+    "variants": {
+        "": {
+            "model": "gtceu:block/machine/template/quantum/creative_container"
+        }
     }
-  ],
-  "loader": "gtceu:machine",
-  "machine": "gtceu:creative_tank",
-  "parent": "minecraft:block/block",
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/template/quantum/creative_container"
-    }
-  }
 }
