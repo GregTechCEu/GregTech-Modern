@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/aluminium_crate"
+    "variants": {
+        "": {
+            "model": "gtceu:block/machine/aluminium_crate"
+        }
     }
-  }
 }

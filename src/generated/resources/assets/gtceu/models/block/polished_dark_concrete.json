@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "gtceu:block/stones/dark_concrete/polished"
-  }
+    "parent": "minecraft:block/cube_all",
+    "textures": {
+        "all": "gtceu:block/stones/dark_concrete/polished"
+    }
 }

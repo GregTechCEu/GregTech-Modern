@@ -1,13 +1,13 @@
 {
-  "values": {
-    "gtceu:bio_chaff": {
-      "burn_time": 200
-    },
-    "gtceu:plant_ball": {
-      "burn_time": 75
-    },
-    "gtceu:sticky_resin": {
-      "burn_time": 200
+    "values": {
+        "gtceu:bio_chaff": {
+            "burn_time": 200
+        },
+        "gtceu:plant_ball": {
+            "burn_time": 75
+        },
+        "gtceu:sticky_resin": {
+            "burn_time": 200
+        }
     }
-  }
 }

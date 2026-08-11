@@ -1,24 +1,24 @@
 {
-  "depleted_yield": 25,
-  "depletion_amount": 1,
-  "depletion_chance": 100,
-  "dimension_filter": [
-    "minecraft:overworld"
-  ],
-  "fluid": "gtceu:oil",
-  "weight": 20,
-  "weight_modifier": [
-    {
-      "added_weight": 5,
-      "biomes": "#minecraft:is_ocean"
-    },
-    {
-      "added_weight": 5,
-      "biomes": "#c:is_sandy"
+    "depleted_yield": 25,
+    "depletion_amount": 1,
+    "depletion_chance": 100,
+    "dimension_filter": [
+        "minecraft:overworld"
+    ],
+    "fluid": "gtceu:oil",
+    "weight": 20,
+    "weight_modifier": [
+        {
+            "added_weight": 5,
+            "biomes": "#minecraft:is_ocean"
+        },
+        {
+            "added_weight": 5,
+            "biomes": "#c:is_sandy"
+        }
+    ],
+    "yield": {
+        "max": 300,
+        "min": 175
     }
-  ],
-  "yield": {
-    "max": 300,
-    "min": 175
-  }
 }

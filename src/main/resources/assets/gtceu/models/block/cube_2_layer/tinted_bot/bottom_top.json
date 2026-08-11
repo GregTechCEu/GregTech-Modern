@@ -1,18 +1,18 @@
 {
-  "parent": "gtceu:block/cube_2_layer/tinted_bot/default",
-  "textures": {
-    "bot_down": "#bot_bottom",
-    "bot_east": "#bot_side",
-    "bot_north": "#bot_side",
-    "bot_south": "#bot_side",
-    "bot_up": "#bot_top",
-    "bot_west": "#bot_side",
-    "particle": "#bot_side",
-    "top_down": "#top_bottom",
-    "top_east": "#top_side",
-    "top_north": "#top_side",
-    "top_south": "#top_side",
-    "top_up": "#top_top",
-    "top_west": "#top_side"
-  }
+    "parent": "gtceu:block/cube_2_layer/tinted_bot/default",
+    "textures": {
+        "bot_down": "#bot_bottom",
+        "bot_east": "#bot_side",
+        "bot_north": "#bot_side",
+        "bot_south": "#bot_side",
+        "bot_up": "#bot_top",
+        "bot_west": "#bot_side",
+        "particle": "#bot_side",
+        "top_down": "#top_bottom",
+        "top_east": "#top_side",
+        "top_north": "#top_side",
+        "top_south": "#top_side",
+        "top_up": "#top_top",
+        "top_west": "#top_side"
+    }
 }

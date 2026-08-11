@@ -1,66 +1,66 @@
 {
-  "biomes": "#minecraft:is_overworld",
-  "cluster_size": {
-    "max_inclusive": 64,
-    "min_inclusive": 50,
-    "type": "minecraft:uniform"
-  },
-  "density": 0.75,
-  "dimension_filter": [
-    "minecraft:overworld"
-  ],
-  "discard_chance_on_air_exposure": 0.0,
-  "generator": {
-    "blocks": [
-      {
-        "block": "gtceu:grossular",
-        "max_y": -5,
-        "min_y": -50,
-        "weight": 3
-      },
-      {
-        "block": "gtceu:spessartine",
-        "max_y": -15,
-        "min_y": -40,
-        "weight": 2
-      },
-      {
-        "block": "gtceu:pyrolusite",
-        "max_y": -15,
-        "min_y": -40,
-        "weight": 2
-      },
-      {
-        "block": "gtceu:tantalite",
-        "max_y": -5,
-        "min_y": -30,
-        "weight": 1
-      }
+    "biomes": "#minecraft:is_overworld",
+    "cluster_size": {
+        "max_inclusive": 64,
+        "min_inclusive": 50,
+        "type": "minecraft:uniform"
+    },
+    "density": 0.75,
+    "dimension_filter": [
+        "minecraft:overworld"
     ],
-    "max_y": 0,
-    "min_y": -30,
-    "type": "gtceu:dike"
-  },
-  "height_range": {
-    "height": {
-      "max_inclusive": {
-        "absolute": 0
-      },
-      "min_inclusive": {
-        "absolute": -30
-      },
-      "type": "minecraft:uniform"
-    }
-  },
-  "indicators": [
-    {
-      "block": "gtceu:grossular",
-      "density": 0.15,
-      "placement": "surface",
-      "radius": 3,
-      "type": "gtceu:surface"
-    }
-  ],
-  "layer": "gtceu:deepslate",
-  "weight": 20
+    "discard_chance_on_air_exposure": 0.0,
+    "generator": {
+        "blocks": [
+            {
+                "block": "gtceu:grossular",
+                "max_y": -5,
+                "min_y": -50,
+                "weight": 3
+            },
+            {
+                "block": "gtceu:spessartine",
+                "max_y": -15,
+                "min_y": -40,
+                "weight": 2
+            },
+            {
+                "block": "gtceu:pyrolusite",
+                "max_y": -15,
+                "min_y": -40,
+                "weight": 2
+            },
+            {
+                "block": "gtceu:tantalite",
+                "max_y": -5,
+                "min_y": -30,
+                "weight": 1
+            }
+        ],
+        "max_y": 0,
+        "min_y": -30,
+        "type": "gtceu:dike"
+    },
+    "height_range": {
+        "height": {
+            "max_inclusive": {
+                "absolute": 0
+            },
+            "min_inclusive": {
+                "absolute": -30
+            },
+            "type": "minecraft:uniform"
+        }
+    },
+    "indicators": [
+        {
+            "block": "gtceu:grossular",
+            "density": 0.15,
+            "placement": "surface",
+            "radius": 3,
+            "type": "gtceu:surface"
+        }
+    ],
+    "layer": "gtceu:deepslate",
+    "weight": 20
 }

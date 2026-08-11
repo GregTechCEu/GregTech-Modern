@@ -1,74 +1,74 @@
 {
-  "biomes": "#minecraft:is_overworld",
-  "cluster_size": {
-    "max_inclusive": 40,
-    "min_inclusive": 32,
-    "type": "minecraft:uniform"
-  },
-  "density": 0.2,
-  "dimension_filter": [
-    "minecraft:overworld"
-  ],
-  "discard_chance_on_air_exposure": 0.0,
-  "generator": {
-    "layer_patterns": [
-      [
-        {
-          "max_size": 4,
-          "min_size": 2,
-          "targets": [
-            "gtceu:basaltic_mineral_sand"
-          ],
-          "weight": 3
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:granitic_mineral_sand"
-          ],
-          "weight": 2
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:fullers_earth"
-          ],
-          "weight": 2
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:gypsum"
-          ],
-          "weight": 1
-        }
-      ]
+    "biomes": "#minecraft:is_overworld",
+    "cluster_size": {
+        "max_inclusive": 40,
+        "min_inclusive": 32,
+        "type": "minecraft:uniform"
+    },
+    "density": 0.2,
+    "dimension_filter": [
+        "minecraft:overworld"
     ],
-    "type": "gtceu:layer"
-  },
-  "height_range": {
-    "height": {
-      "max_inclusive": {
-        "absolute": 60
-      },
-      "min_inclusive": {
-        "absolute": 15
-      },
-      "type": "minecraft:uniform"
-    }
-  },
-  "indicators": [
-    {
-      "block": "gtceu:basaltic_mineral_sand",
-      "density": 0.2,
-      "placement": "surface",
-      "radius": 5,
-      "type": "gtceu:surface"
-    }
-  ],
-  "layer": "gtceu:stone",
-  "weight": 80
+    "discard_chance_on_air_exposure": 0.0,
+    "generator": {
+        "layer_patterns": [
+            [
+                {
+                    "max_size": 4,
+                    "min_size": 2,
+                    "targets": [
+                        "gtceu:basaltic_mineral_sand"
+                    ],
+                    "weight": 3
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:granitic_mineral_sand"
+                    ],
+                    "weight": 2
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:fullers_earth"
+                    ],
+                    "weight": 2
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:gypsum"
+                    ],
+                    "weight": 1
+                }
+            ]
+        ],
+        "type": "gtceu:layer"
+    },
+    "height_range": {
+        "height": {
+            "max_inclusive": {
+                "absolute": 60
+            },
+            "min_inclusive": {
+                "absolute": 15
+            },
+            "type": "minecraft:uniform"
+        }
+    },
+    "indicators": [
+        {
+            "block": "gtceu:basaltic_mineral_sand",
+            "density": 0.2,
+            "placement": "surface",
+            "radius": 5,
+            "type": "gtceu:surface"
+        }
+    ],
+    "layer": "gtceu:stone",
+    "weight": 80
 }

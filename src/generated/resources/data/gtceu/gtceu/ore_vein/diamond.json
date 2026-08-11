@@ -1,54 +1,54 @@
 {
-  "biomes": "#minecraft:is_overworld",
-  "cluster_size": {
-    "max_inclusive": 40,
-    "min_inclusive": 32,
-    "type": "minecraft:uniform"
-  },
-  "density": 0.25,
-  "dimension_filter": [
-    "minecraft:overworld"
-  ],
-  "discard_chance_on_air_exposure": 0.0,
-  "generator": {
-    "between": {
-      "layers": 3,
-      "targets": "gtceu:diamond"
+    "biomes": "#minecraft:is_overworld",
+    "cluster_size": {
+        "max_inclusive": 40,
+        "min_inclusive": 32,
+        "type": "minecraft:uniform"
     },
-    "primary": {
-      "layers": 4,
-      "targets": "gtceu:graphite"
+    "density": 0.25,
+    "dimension_filter": [
+        "minecraft:overworld"
+    ],
+    "discard_chance_on_air_exposure": 0.0,
+    "generator": {
+        "between": {
+            "layers": 3,
+            "targets": "gtceu:diamond"
+        },
+        "primary": {
+            "layers": 4,
+            "targets": "gtceu:graphite"
+        },
+        "secondary": {
+            "layers": 3,
+            "targets": "gtceu:graphite"
+        },
+        "sporadic": {
+            "targets": "gtceu:coal"
+        },
+        "type": "gtceu:classic",
+        "y_radius": 6
     },
-    "secondary": {
-      "layers": 3,
-      "targets": "gtceu:graphite"
+    "height_range": {
+        "height": {
+            "max_inclusive": {
+                "absolute": -30
+            },
+            "min_inclusive": {
+                "absolute": -55
+            },
+            "type": "minecraft:uniform"
+        }
     },
-    "sporadic": {
-      "targets": "gtceu:coal"
-    },
-    "type": "gtceu:classic",
-    "y_radius": 6
-  },
-  "height_range": {
-    "height": {
-      "max_inclusive": {
-        "absolute": -30
-      },
-      "min_inclusive": {
-        "absolute": -55
-      },
-      "type": "minecraft:uniform"
-    }
-  },
-  "indicators": [
-    {
-      "block": "gtceu:diamond",
-      "density": 0.1,
-      "placement": "above",
-      "radius": 2,
-      "type": "gtceu:surface"
-    }
-  ],
-  "layer": "gtceu:deepslate",
-  "weight": 40
+    "indicators": [
+        {
+            "block": "gtceu:diamond",
+            "density": 0.1,
+            "placement": "above",
+            "radius": 2,
+            "type": "gtceu:surface"
+        }
+    ],
+    "layer": "gtceu:deepslate",
+    "weight": 40
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/computer_heat_vent"
+    "variants": {
+        "": {
+            "model": "gtceu:block/computer_heat_vent"
+        }
     }
-  }
 }

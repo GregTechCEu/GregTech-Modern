@@ -1,18 +1,18 @@
 {
-  "loader": "gtceu:machine",
-  "machine": "gtceu:test_mui",
-  "parent": "minecraft:block/block",
-  "replaceable_textures": [
-    "all"
-  ],
-  "variants": {
-    "": {
-      "model": {
-        "parent": "gtceu:block/machine/part/computer_monitor",
-        "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_clean_stainless_steel"
+    "loader": "gtceu:machine",
+    "machine": "gtceu:test_mui",
+    "parent": "minecraft:block/block",
+    "replaceable_textures": [
+        "all"
+    ],
+    "variants": {
+        "": {
+            "model": {
+                "parent": "gtceu:block/machine/part/computer_monitor",
+                "textures": {
+                    "all": "gtceu:block/casings/solid/machine_casing_clean_stainless_steel"
+                }
+            }
         }
-      }
     }
-  }
 }

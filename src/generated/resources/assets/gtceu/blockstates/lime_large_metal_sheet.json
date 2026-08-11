@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/lime_large_metal_sheet"
+    "variants": {
+        "": {
+            "model": "gtceu:block/lime_large_metal_sheet"
+        }
     }
-  }
 }

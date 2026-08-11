@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/assembly_line_casing"
+    "variants": {
+        "": {
+            "model": "gtceu:block/assembly_line_casing"
+        }
     }
-  }
 }

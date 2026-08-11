@@ -1,21 +1,21 @@
 {
-  "client": [
-    "ftbchunks.FTBChunksClientMixin",
-    "ftbchunks.LargeMapScreenMixin",
-    "ftbchunks.RegionMapPanelMixin"
-  ],
-  "compatibilityLevel": "JAVA_21",
-  "injectors": {
-    "defaultRequire": 1,
-    "maxShiftBy": 5
-  },
-  "minVersion": "0.8",
-  "mixinextras": {
-    "minVersion": "0.5.0-rc.3"
-  },
-  "mixins": [],
-  "package": "com.gregtechceu.gtceu.core.mixins",
-  "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
-  "refmap": "gtceu.refmap.json",
-  "required": true
+    "client": [
+        "ftbchunks.FTBChunksClientMixin",
+        "ftbchunks.LargeMapScreenMixin",
+        "ftbchunks.RegionMapPanelMixin"
+    ],
+    "compatibilityLevel": "JAVA_21",
+    "injectors": {
+        "defaultRequire": 1,
+        "maxShiftBy": 5
+    },
+    "minVersion": "0.8",
+    "mixinextras": {
+        "minVersion": "0.5.0-rc.3"
+    },
+    "mixins": [],
+    "package": "com.gregtechceu.gtceu.core.mixins",
+    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
+    "refmap": "gtceu.refmap.json",
+    "required": true
 }

@@ -1,86 +1,86 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#bot_down"
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#bot_down"
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#bot_east"
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#bot_north"
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#bot_south"
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#bot_up"
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#bot_west"
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
         },
-        "east": {
-          "cullface": "east",
-          "texture": "#bot_east"
-        },
-        "north": {
-          "cullface": "north",
-          "texture": "#bot_north"
-        },
-        "south": {
-          "cullface": "south",
-          "texture": "#bot_south"
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#bot_up"
-        },
-        "west": {
-          "cullface": "west",
-          "texture": "#bot_west"
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#top_down"
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#top_east"
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#top_north"
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#top_south"
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#top_up"
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#top_west"
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "neoforge_data": {
+                "block_light": 15,
+                "sky_light": 15
+            },
+            "shade": false,
+            "to": [
+                16,
+                16,
+                16
+            ]
         }
-      },
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ]
-    },
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#top_down"
-        },
-        "east": {
-          "cullface": "east",
-          "texture": "#top_east"
-        },
-        "north": {
-          "cullface": "north",
-          "texture": "#top_north"
-        },
-        "south": {
-          "cullface": "south",
-          "texture": "#top_south"
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#top_up"
-        },
-        "west": {
-          "cullface": "west",
-          "texture": "#top_west"
-        }
-      },
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "neoforge_data": {
-        "block_light": 15,
-        "sky_light": 15
-      },
-      "shade": false,
-      "to": [
-        16,
-        16,
-        16
-      ]
-    }
-  ],
-  "parent": "block/block"
+    ],
+    "parent": "block/block"
 }

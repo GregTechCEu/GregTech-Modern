@@ -1,29 +1,29 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
+    "elements": [
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.096
+            ],
+            "to": [
+                16,
+                16,
+                -0.096
+            ]
         }
-      },
-      "from": [
-        0,
-        0,
-        -0.096
-      ],
-      "to": [
-        16,
-        16,
-        -0.096
-      ]
-    }
-  ],
-  "parent": "block/block"
+    ],
+    "parent": "block/block"
 }

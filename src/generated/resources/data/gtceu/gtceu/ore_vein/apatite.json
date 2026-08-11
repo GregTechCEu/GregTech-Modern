@@ -1,66 +1,66 @@
 {
-  "biomes": "#minecraft:is_overworld",
-  "cluster_size": {
-    "max_inclusive": 40,
-    "min_inclusive": 32,
-    "type": "minecraft:uniform"
-  },
-  "density": 0.25,
-  "dimension_filter": [
-    "minecraft:overworld"
-  ],
-  "discard_chance_on_air_exposure": 0.0,
-  "generator": {
-    "layer_patterns": [
-      [
-        {
-          "max_size": 4,
-          "min_size": 2,
-          "targets": [
-            "gtceu:apatite"
-          ],
-          "weight": 3
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:tricalcium_phosphate"
-          ],
-          "weight": 2
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:pyrochlore"
-          ],
-          "weight": 1
-        }
-      ]
+    "biomes": "#minecraft:is_overworld",
+    "cluster_size": {
+        "max_inclusive": 40,
+        "min_inclusive": 32,
+        "type": "minecraft:uniform"
+    },
+    "density": 0.25,
+    "dimension_filter": [
+        "minecraft:overworld"
     ],
-    "type": "gtceu:layer"
-  },
-  "height_range": {
-    "height": {
-      "max_inclusive": {
-        "absolute": 80
-      },
-      "min_inclusive": {
-        "absolute": 10
-      },
-      "type": "minecraft:uniform"
-    }
-  },
-  "indicators": [
-    {
-      "block": "gtceu:apatite",
-      "density": 0.2,
-      "placement": "above",
-      "radius": 5,
-      "type": "gtceu:surface"
-    }
-  ],
-  "layer": "gtceu:stone",
-  "weight": 40
+    "discard_chance_on_air_exposure": 0.0,
+    "generator": {
+        "layer_patterns": [
+            [
+                {
+                    "max_size": 4,
+                    "min_size": 2,
+                    "targets": [
+                        "gtceu:apatite"
+                    ],
+                    "weight": 3
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:tricalcium_phosphate"
+                    ],
+                    "weight": 2
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:pyrochlore"
+                    ],
+                    "weight": 1
+                }
+            ]
+        ],
+        "type": "gtceu:layer"
+    },
+    "height_range": {
+        "height": {
+            "max_inclusive": {
+                "absolute": 80
+            },
+            "min_inclusive": {
+                "absolute": 10
+            },
+            "type": "minecraft:uniform"
+        }
+    },
+    "indicators": [
+        {
+            "block": "gtceu:apatite",
+            "density": 0.2,
+            "placement": "above",
+            "radius": 5,
+            "type": "gtceu:surface"
+        }
+    ],
+    "layer": "gtceu:stone",
+    "weight": 40
 }

@@ -1,74 +1,74 @@
 {
-  "biomes": "#minecraft:is_overworld",
-  "cluster_size": {
-    "max_inclusive": 40,
-    "min_inclusive": 32,
-    "type": "minecraft:uniform"
-  },
-  "density": 0.2,
-  "dimension_filter": [
-    "minecraft:overworld"
-  ],
-  "discard_chance_on_air_exposure": 0.0,
-  "generator": {
-    "layer_patterns": [
-      [
-        {
-          "max_size": 4,
-          "min_size": 2,
-          "targets": [
-            "gtceu:rock_salt"
-          ],
-          "weight": 3
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:salt"
-          ],
-          "weight": 2
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:lepidolite"
-          ],
-          "weight": 1
-        },
-        {
-          "max_size": 1,
-          "min_size": 1,
-          "targets": [
-            "gtceu:spodumene"
-          ],
-          "weight": 1
-        }
-      ]
+    "biomes": "#minecraft:is_overworld",
+    "cluster_size": {
+        "max_inclusive": 40,
+        "min_inclusive": 32,
+        "type": "minecraft:uniform"
+    },
+    "density": 0.2,
+    "dimension_filter": [
+        "minecraft:overworld"
     ],
-    "type": "gtceu:layer"
-  },
-  "height_range": {
-    "height": {
-      "max_inclusive": {
-        "absolute": 70
-      },
-      "min_inclusive": {
-        "absolute": 30
-      },
-      "type": "minecraft:uniform"
-    }
-  },
-  "indicators": [
-    {
-      "block": "gtceu:salt",
-      "density": 0.2,
-      "placement": "surface",
-      "radius": 5,
-      "type": "gtceu:surface"
-    }
-  ],
-  "layer": "gtceu:stone",
-  "weight": 50
+    "discard_chance_on_air_exposure": 0.0,
+    "generator": {
+        "layer_patterns": [
+            [
+                {
+                    "max_size": 4,
+                    "min_size": 2,
+                    "targets": [
+                        "gtceu:rock_salt"
+                    ],
+                    "weight": 3
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:salt"
+                    ],
+                    "weight": 2
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:lepidolite"
+                    ],
+                    "weight": 1
+                },
+                {
+                    "max_size": 1,
+                    "min_size": 1,
+                    "targets": [
+                        "gtceu:spodumene"
+                    ],
+                    "weight": 1
+                }
+            ]
+        ],
+        "type": "gtceu:layer"
+    },
+    "height_range": {
+        "height": {
+            "max_inclusive": {
+                "absolute": 70
+            },
+            "min_inclusive": {
+                "absolute": 30
+            },
+            "type": "minecraft:uniform"
+        }
+    },
+    "indicators": [
+        {
+            "block": "gtceu:salt",
+            "density": 0.2,
+            "placement": "surface",
+            "radius": 5,
+            "type": "gtceu:surface"
+        }
+    ],
+    "layer": "gtceu:stone",
+    "weight": 50
 }

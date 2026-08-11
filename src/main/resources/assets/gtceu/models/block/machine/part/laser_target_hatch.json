@@ -1,133 +1,133 @@
 {
-  "credit": "Made with Blockbench",
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#bottom",
-          "tintindex": 1
+    "credit": "Made with Blockbench",
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#bottom",
+                    "tintindex": 1
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#side",
+                    "tintindex": 1
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#side",
+                    "tintindex": 1
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#side",
+                    "tintindex": 1
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#top",
+                    "tintindex": 1
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#side",
+                    "tintindex": 1
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
         },
-        "east": {
-          "cullface": "east",
-          "texture": "#side",
-          "tintindex": 1
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_laser",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.096
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
         },
-        "north": {
-          "cullface": "north",
-          "texture": "#side",
-          "tintindex": 1
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_laser_target",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.128
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
         },
-        "south": {
-          "cullface": "south",
-          "texture": "#side",
-          "tintindex": 1
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#top",
-          "tintindex": 1
-        },
-        "west": {
-          "cullface": "west",
-          "texture": "#side",
-          "tintindex": 1
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_laser_target_emissive",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.128
+            ],
+            "neoforge_data": {
+                "block_light": 15,
+                "sky_light": 15
+            },
+            "shade": false,
+            "to": [
+                16,
+                16,
+                16
+            ]
         }
-      },
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay_laser",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "from": [
-        0,
-        0,
-        -0.096
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay_laser_target",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "from": [
-        0,
-        0,
-        -0.128
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay_laser_target_emissive",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "from": [
-        0,
-        0,
-        -0.128
-      ],
-      "neoforge_data": {
-        "block_light": 15,
-        "sky_light": 15
-      },
-      "shade": false,
-      "to": [
-        16,
-        16,
-        16
-      ]
+    ],
+    "parent": "block/block",
+    "textures": {
+        "overlay_laser": "gtceu:block/overlay/machine/overlay_laser_base",
+        "overlay_laser_target": "gtceu:block/overlay/machine/overlay_laser_target",
+        "overlay_laser_target_emissive": "gtceu:block/overlay/machine/overlay_laser_target_emissive",
+        "particle": "#side"
     }
-  ],
-  "parent": "block/block",
-  "textures": {
-    "overlay_laser": "gtceu:block/overlay/machine/overlay_laser_base",
-    "overlay_laser_target": "gtceu:block/overlay/machine/overlay_laser_target",
-    "overlay_laser_target_emissive": "gtceu:block/overlay/machine/overlay_laser_target_emissive",
-    "particle": "#side"
-  }
 }

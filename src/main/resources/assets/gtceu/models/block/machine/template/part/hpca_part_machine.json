@@ -1,97 +1,97 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "cullface": "down",
-          "texture": "#bottom"
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#bottom"
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#side"
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#front"
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#back"
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#top"
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#side"
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
         },
-        "east": {
-          "cullface": "east",
-          "texture": "#side"
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.032
+            ],
+            "to": [
+                16,
+                16,
+                -0.032
+            ]
         },
-        "north": {
-          "cullface": "north",
-          "texture": "#front"
-        },
-        "south": {
-          "cullface": "south",
-          "texture": "#back"
-        },
-        "up": {
-          "cullface": "up",
-          "texture": "#top"
-        },
-        "west": {
-          "cullface": "west",
-          "texture": "#side"
+        {
+            "faces": {
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_emissive",
+                    "tintindex": -101,
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.064
+            ],
+            "neoforge_data": {
+                "block_light": 15,
+                "sky_light": 15
+            },
+            "shade": false,
+            "to": [
+                16,
+                16,
+                -0.064
+            ]
         }
-      },
-      "from": [
-        0,
-        0,
-        0
-      ],
-      "to": [
-        16,
-        16,
-        16
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay",
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "from": [
-        0,
-        0,
-        -0.032
-      ],
-      "to": [
-        16,
-        16,
-        -0.032
-      ]
-    },
-    {
-      "faces": {
-        "north": {
-          "cullface": "north",
-          "texture": "#overlay_emissive",
-          "tintindex": -101,
-          "uv": [
-            0,
-            0,
-            16,
-            16
-          ]
-        }
-      },
-      "from": [
-        0,
-        0,
-        -0.064
-      ],
-      "neoforge_data": {
-        "block_light": 15,
-        "sky_light": 15
-      },
-      "shade": false,
-      "to": [
-        16,
-        16,
-        -0.064
-      ]
-    }
-  ],
-  "parent": "gtceu:block/overlay/2_layer/front_emissive"
+    ],
+    "parent": "gtceu:block/overlay/2_layer/front_emissive"
 }

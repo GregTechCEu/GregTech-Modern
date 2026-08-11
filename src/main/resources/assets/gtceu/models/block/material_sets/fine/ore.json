@@ -1,115 +1,115 @@
 {
-  "children": {
-    "base_stone": {
-      "render_type": "solid"
-    },
-    "ore_texture": {
-      "elements": [
-        {
-          "faces": {
-            "down": {
-              "cullface": "down",
-              "texture": "#layer0",
-              "tintindex": 0
-            },
-            "east": {
-              "cullface": "east",
-              "texture": "#layer0",
-              "tintindex": 0
-            },
-            "north": {
-              "cullface": "north",
-              "texture": "#layer0",
-              "tintindex": 0
-            },
-            "south": {
-              "cullface": "south",
-              "texture": "#layer0",
-              "tintindex": 0
-            },
-            "up": {
-              "cullface": "up",
-              "texture": "#layer0",
-              "tintindex": 0
-            },
-            "west": {
-              "cullface": "west",
-              "texture": "#layer0",
-              "tintindex": 0
-            }
-          },
-          "from": [
-            0,
-            0,
-            0
-          ],
-          "to": [
-            16,
-            16,
-            16
-          ]
+    "children": {
+        "base_stone": {
+            "render_type": "solid"
         },
-        {
-          "faces": {
-            "down": {
-              "cullface": "down",
-              "texture": "#layer1",
-              "tintindex": 1
-            },
-            "east": {
-              "cullface": "east",
-              "texture": "#layer1",
-              "tintindex": 1
-            },
-            "north": {
-              "cullface": "north",
-              "texture": "#layer1",
-              "tintindex": 1
-            },
-            "south": {
-              "cullface": "south",
-              "texture": "#layer1",
-              "tintindex": 1
-            },
-            "up": {
-              "cullface": "up",
-              "texture": "#layer1",
-              "tintindex": 1
-            },
-            "west": {
-              "cullface": "west",
-              "texture": "#layer1",
-              "tintindex": 1
+        "ore_texture": {
+            "elements": [
+                {
+                    "faces": {
+                        "down": {
+                            "cullface": "down",
+                            "texture": "#layer0",
+                            "tintindex": 0
+                        },
+                        "east": {
+                            "cullface": "east",
+                            "texture": "#layer0",
+                            "tintindex": 0
+                        },
+                        "north": {
+                            "cullface": "north",
+                            "texture": "#layer0",
+                            "tintindex": 0
+                        },
+                        "south": {
+                            "cullface": "south",
+                            "texture": "#layer0",
+                            "tintindex": 0
+                        },
+                        "up": {
+                            "cullface": "up",
+                            "texture": "#layer0",
+                            "tintindex": 0
+                        },
+                        "west": {
+                            "cullface": "west",
+                            "texture": "#layer0",
+                            "tintindex": 0
+                        }
+                    },
+                    "from": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "to": [
+                        16,
+                        16,
+                        16
+                    ]
+                },
+                {
+                    "faces": {
+                        "down": {
+                            "cullface": "down",
+                            "texture": "#layer1",
+                            "tintindex": 1
+                        },
+                        "east": {
+                            "cullface": "east",
+                            "texture": "#layer1",
+                            "tintindex": 1
+                        },
+                        "north": {
+                            "cullface": "north",
+                            "texture": "#layer1",
+                            "tintindex": 1
+                        },
+                        "south": {
+                            "cullface": "south",
+                            "texture": "#layer1",
+                            "tintindex": 1
+                        },
+                        "up": {
+                            "cullface": "up",
+                            "texture": "#layer1",
+                            "tintindex": 1
+                        },
+                        "west": {
+                            "cullface": "west",
+                            "texture": "#layer1",
+                            "tintindex": 1
+                        }
+                    },
+                    "from": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "to": [
+                        16,
+                        16,
+                        16
+                    ]
+                }
+            ],
+            "parent": "block/block",
+            "render_type": "translucent",
+            "textures": {
+                "layer0": "gtceu:block/material_sets/fine/ore",
+                "layer1": "gtceu:block/material_sets/fine/ore_layer2",
+                "particle": "#layer0"
             }
-          },
-          "from": [
-            0,
-            0,
-            0
-          ],
-          "to": [
-            16,
-            16,
-            16
-          ]
         }
-      ],
-      "parent": "block/block",
-      "render_type": "translucent",
-      "textures": {
-        "layer0": "gtceu:block/material_sets/fine/ore",
-        "layer1": "gtceu:block/material_sets/fine/ore_layer2",
-        "particle": "#layer0"
-      }
+    },
+    "item_render_order": [
+        "base_stone",
+        "ore_texture"
+    ],
+    "loader": "neoforge:composite",
+    "parent": "block/block",
+    "textures": {
+        "particle": "gtceu:block/material_sets/fine/ore"
     }
-  },
-  "item_render_order": [
-    "base_stone",
-    "ore_texture"
-  ],
-  "loader": "neoforge:composite",
-  "parent": "block/block",
-  "textures": {
-    "particle": "gtceu:block/material_sets/fine/ore"
-  }
 }

@@ -1,15 +1,15 @@
 {
-  "parent": "gtceu:block/machine/template/cube_all/sided",
-  "textures": {
-    "overlay_back": "#overlay",
-    "overlay_back_emissive": "#overlay_emissive",
-    "overlay_bottom": "#overlay",
-    "overlay_bottom_emissive": "#overlay_emissive",
-    "overlay_front": "#overlay",
-    "overlay_front_emissive": "#overlay_emissive",
-    "overlay_side": "#overlay",
-    "overlay_side_emissive": "#overlay_emissive",
-    "overlay_top": "#overlay",
-    "overlay_top_emissive": "#overlay_emissive"
-  }
+    "parent": "gtceu:block/machine/template/cube_all/sided",
+    "textures": {
+        "overlay_back": "#overlay",
+        "overlay_back_emissive": "#overlay_emissive",
+        "overlay_bottom": "#overlay",
+        "overlay_bottom_emissive": "#overlay_emissive",
+        "overlay_front": "#overlay",
+        "overlay_front_emissive": "#overlay_emissive",
+        "overlay_side": "#overlay",
+        "overlay_side_emissive": "#overlay_emissive",
+        "overlay_top": "#overlay",
+        "overlay_top_emissive": "#overlay_emissive"
+    }
 }

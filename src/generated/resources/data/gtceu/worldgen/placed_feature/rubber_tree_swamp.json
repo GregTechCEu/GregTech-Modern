@@ -1,42 +1,42 @@
 {
-  "feature": "gtceu:rubber_tree",
-  "placement": [
-    {
-      "type": "gtceu:rubber_tree_chance"
-    },
-    {
-      "count": {
-        "max_inclusive": 4,
-        "min_inclusive": 0,
-        "type": "minecraft:biased_to_bottom"
-      },
-      "type": "minecraft:count"
-    },
-    {
-      "type": "minecraft:in_square"
-    },
-    {
-      "max_water_depth": 0,
-      "type": "minecraft:surface_water_depth_filter"
-    },
-    {
-      "heightmap": "OCEAN_FLOOR_WG",
-      "type": "minecraft:heightmap"
-    },
-    {
-      "type": "minecraft:biome"
-    },
-    {
-      "predicate": {
-        "state": {
-          "Name": "gtceu:rubber_sapling",
-          "Properties": {
-            "stage": "0"
-          }
+    "feature": "gtceu:rubber_tree",
+    "placement": [
+        {
+            "type": "gtceu:rubber_tree_chance"
         },
-        "type": "minecraft:would_survive"
-      },
-      "type": "minecraft:block_predicate_filter"
-    }
-  ]
+        {
+            "count": {
+                "max_inclusive": 4,
+                "min_inclusive": 0,
+                "type": "minecraft:biased_to_bottom"
+            },
+            "type": "minecraft:count"
+        },
+        {
+            "type": "minecraft:in_square"
+        },
+        {
+            "max_water_depth": 0,
+            "type": "minecraft:surface_water_depth_filter"
+        },
+        {
+            "heightmap": "OCEAN_FLOOR_WG",
+            "type": "minecraft:heightmap"
+        },
+        {
+            "type": "minecraft:biome"
+        },
+        {
+            "predicate": {
+                "state": {
+                    "Name": "gtceu:rubber_sapling",
+                    "Properties": {
+                        "stage": "0"
+                    }
+                },
+                "type": "minecraft:would_survive"
+            },
+            "type": "minecraft:block_predicate_filter"
+        }
+    ]
 }

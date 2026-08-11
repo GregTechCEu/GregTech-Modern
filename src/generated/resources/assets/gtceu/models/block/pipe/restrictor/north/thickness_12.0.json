@@ -1,33 +1,33 @@
 {
-  "elements": [
-    {
-      "faces": {
-        "down": {
-          "texture": "#restrictor"
-        },
-        "east": {
-          "texture": "#restrictor"
-        },
-        "up": {
-          "texture": "#restrictor"
-        },
-        "west": {
-          "texture": "#restrictor"
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "texture": "#restrictor"
+                },
+                "east": {
+                    "texture": "#restrictor"
+                },
+                "up": {
+                    "texture": "#restrictor"
+                },
+                "west": {
+                    "texture": "#restrictor"
+                }
+            },
+            "from": [
+                1.952,
+                1.952,
+                0
+            ],
+            "to": [
+                14.047999,
+                14.047999,
+                1.952
+            ]
         }
-      },
-      "from": [
-        1.952,
-        1.952,
-        0
-      ],
-      "to": [
-        14.047999,
-        14.047999,
-        1.952
-      ]
+    ],
+    "textures": {
+        "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
     }
-  ],
-  "textures": {
-    "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
-  }
 }

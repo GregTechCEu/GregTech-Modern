@@ -1,11 +1,11 @@
 {
-  "parent": "gtceu:block/cube_2_layer/tinted_bot/bottom_top",
-  "textures": {
-    "bot_bottom": "gtceu:block/storage/drums/drum/bottom",
-    "bot_side": "gtceu:block/storage/drums/drum/side",
-    "bot_top": "gtceu:block/storage/drums/drum/top",
-    "top_bottom": "gtceu:block/storage/drums/drum_top/bottom",
-    "top_side": "gtceu:block/storage/drums/drum_top/side",
-    "top_top": "gtceu:block/storage/drums/drum_top/top"
-  }
+    "parent": "gtceu:block/cube_2_layer/tinted_bot/bottom_top",
+    "textures": {
+        "bot_bottom": "gtceu:block/storage/drums/drum/bottom",
+        "bot_side": "gtceu:block/storage/drums/drum/side",
+        "bot_top": "gtceu:block/storage/drums/drum/top",
+        "top_bottom": "gtceu:block/storage/drums/drum_top/bottom",
+        "top_side": "gtceu:block/storage/drums/drum_top/side",
+        "top_top": "gtceu:block/storage/drums/drum_top/top"
+    }
 }

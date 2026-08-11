@@ -1,91 +1,91 @@
 {
-  "attributes": [
-    "Position"
-  ],
-  "blend": {
-    "dstalpha": "one",
-    "dstrgb": "1-srcalpha",
-    "func": "add",
-    "srcalpha": "zero",
-    "srcrgb": "srcalpha"
-  },
-  "fragment": "gtceu:unity_composite",
-  "samplers": [
-    {
-      "name": "DiffuseSampler"
+    "attributes": [
+        "Position"
+    ],
+    "blend": {
+        "dstalpha": "one",
+        "dstrgb": "1-srcalpha",
+        "func": "add",
+        "srcalpha": "zero",
+        "srcrgb": "srcalpha"
     },
-    {
-      "name": "HighlightSampler"
-    },
-    {
-      "name": "MainSampler"
-    }
-  ],
-  "uniforms": [
-    {
-      "count": 16,
-      "name": "ProjMat",
-      "type": "matrix4x4",
-      "values": [
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ]
-    },
-    {
-      "count": 2,
-      "name": "OutSize",
-      "type": "float",
-      "values": [
-        1.0,
-        1.0
-      ]
-    },
-    {
-      "count": 1,
-      "name": "BloomStrength",
-      "type": "float",
-      "values": [
-        1.7
-      ]
-    },
-    {
-      "count": 1,
-      "name": "BaseBrightness",
-      "type": "float",
-      "values": [
-        0.1
-      ]
-    },
-    {
-      "count": 1,
-      "name": "MaxBrightness",
-      "type": "float",
-      "values": [
-        0.5
-      ]
-    },
-    {
-      "count": 1,
-      "name": "MinBrightness",
-      "type": "float",
-      "values": [
-        0.2
-      ]
-    }
-  ],
-  "vertex": "blit"
+    "fragment": "gtceu:unity_composite",
+    "samplers": [
+        {
+            "name": "DiffuseSampler"
+        },
+        {
+            "name": "HighlightSampler"
+        },
+        {
+            "name": "MainSampler"
+        }
+    ],
+    "uniforms": [
+        {
+            "count": 16,
+            "name": "ProjMat",
+            "type": "matrix4x4",
+            "values": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "count": 2,
+            "name": "OutSize",
+            "type": "float",
+            "values": [
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "count": 1,
+            "name": "BloomStrength",
+            "type": "float",
+            "values": [
+                1.7
+            ]
+        },
+        {
+            "count": 1,
+            "name": "BaseBrightness",
+            "type": "float",
+            "values": [
+                0.1
+            ]
+        },
+        {
+            "count": 1,
+            "name": "MaxBrightness",
+            "type": "float",
+            "values": [
+                0.5
+            ]
+        },
+        {
+            "count": 1,
+            "name": "MinBrightness",
+            "type": "float",
+            "values": [
+                0.2
+            ]
+        }
+    ],
+    "vertex": "blit"
 }

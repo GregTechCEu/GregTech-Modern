@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/plascrete"
+    "variants": {
+        "": {
+            "model": "gtceu:block/plascrete"
+        }
     }
-  }
 }

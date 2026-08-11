@@ -1,47 +1,47 @@
 {
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
+    "pools": [
         {
-          "children": [
-            {
-              "conditions": [
+            "bonus_rolls": 0.0,
+            "entries": [
                 {
-                  "condition": "minecraft:match_tool",
-                  "predicate": {
-                    "predicates": {
-                      "minecraft:enchantments": [
+                    "children": [
                         {
-                          "enchantments": "minecraft:silk_touch",
-                          "levels": {
-                            "min": 1
-                          }
+                            "conditions": [
+                                {
+                                    "condition": "minecraft:match_tool",
+                                    "predicate": {
+                                        "predicates": {
+                                            "minecraft:enchantments": [
+                                                {
+                                                    "enchantments": "minecraft:silk_touch",
+                                                    "levels": {
+                                                        "min": 1
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            "name": "gtceu:light_concrete",
+                            "type": "minecraft:item"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "condition": "minecraft:survives_explosion"
+                                }
+                            ],
+                            "name": "gtceu:light_concrete_cobblestone",
+                            "type": "minecraft:item"
                         }
-                      ]
-                    }
-                  }
+                    ],
+                    "type": "minecraft:alternatives"
                 }
-              ],
-              "name": "gtceu:light_concrete",
-              "type": "minecraft:item"
-            },
-            {
-              "conditions": [
-                {
-                  "condition": "minecraft:survives_explosion"
-                }
-              ],
-              "name": "gtceu:light_concrete_cobblestone",
-              "type": "minecraft:item"
-            }
-          ],
-          "type": "minecraft:alternatives"
+            ],
+            "rolls": 1.0
         }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "gtceu:blocks/light_concrete",
-  "type": "minecraft:block"
+    ],
+    "random_sequence": "gtceu:blocks/light_concrete",
+    "type": "minecraft:block"
 }

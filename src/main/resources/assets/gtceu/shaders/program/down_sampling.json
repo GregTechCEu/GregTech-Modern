@@ -1,39 +1,39 @@
 {
-  "attributes": [
-    "Position"
-  ],
-  "blend": {
-    "dstalpha": "one",
-    "dstrgb": "1-srcalpha",
-    "func": "add",
-    "srcalpha": "zero",
-    "srcrgb": "srcalpha"
-  },
-  "fragment": "gtceu:down_sampling",
-  "samplers": [
-    {
-      "name": "DiffuseSampler"
-    }
-  ],
-  "uniforms": [
-    {
-      "count": 2,
-      "name": "InSize",
-      "type": "float",
-      "values": [
-        1.0,
-        1.0
-      ]
+    "attributes": [
+        "Position"
+    ],
+    "blend": {
+        "dstalpha": "one",
+        "dstrgb": "1-srcalpha",
+        "func": "add",
+        "srcalpha": "zero",
+        "srcrgb": "srcalpha"
     },
-    {
-      "count": 2,
-      "name": "OutSize",
-      "type": "float",
-      "values": [
-        1.0,
-        1.0
-      ]
-    }
-  ],
-  "vertex": "blit"
+    "fragment": "gtceu:down_sampling",
+    "samplers": [
+        {
+            "name": "DiffuseSampler"
+        }
+    ],
+    "uniforms": [
+        {
+            "count": 2,
+            "name": "InSize",
+            "type": "float",
+            "values": [
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "count": 2,
+            "name": "OutSize",
+            "type": "float",
+            "values": [
+                1.0,
+                1.0
+            ]
+        }
+    ],
+    "vertex": "blit"
 }

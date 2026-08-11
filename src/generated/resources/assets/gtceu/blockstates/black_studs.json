@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/black_studs"
+    "variants": {
+        "": {
+            "model": "gtceu:block/black_studs"
+        }
     }
-  }
 }

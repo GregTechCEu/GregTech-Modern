@@ -1,7 +1,7 @@
 {
-  "parent": "gtceu:block/cube_2_layer/tinted_both/all_translucent",
-  "textures": {
-    "bot_all": "gtceu:block/material_sets/shiny/raw_ore_block",
-    "top_all": "gtceu:block/material_sets/shiny/raw_ore_block_secondary"
-  }
+    "parent": "gtceu:block/cube_2_layer/tinted_both/all_translucent",
+    "textures": {
+        "bot_all": "gtceu:block/material_sets/shiny/raw_ore_block",
+        "top_all": "gtceu:block/material_sets/shiny/raw_ore_block_secondary"
+    }
 }

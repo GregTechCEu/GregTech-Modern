@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/tungsten_steel_crate"
+    "variants": {
+        "": {
+            "model": "gtceu:block/machine/tungsten_steel_crate"
+        }
     }
-  }
 }

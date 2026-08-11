@@ -1,55 +1,55 @@
 {
-  "biomes": "#minecraft:is_end",
-  "cluster_size": {
-    "max_inclusive": 80,
-    "min_inclusive": 48,
-    "type": "minecraft:uniform"
-  },
-  "density": 0.25,
-  "dimension_filter": [
-    "minecraft:the_end"
-  ],
-  "discard_chance_on_air_exposure": 0.0,
-  "generator": {
-    "bottom": {
-      "layers": 2,
-      "targets": "gtceu:naquadah"
+    "biomes": "#minecraft:is_end",
+    "cluster_size": {
+        "max_inclusive": 80,
+        "min_inclusive": 48,
+        "type": "minecraft:uniform"
     },
-    "max_y": 90,
-    "middle": {
-      "layers": 3,
-      "targets": "gtceu:naquadah"
+    "density": 0.25,
+    "dimension_filter": [
+        "minecraft:the_end"
+    ],
+    "discard_chance_on_air_exposure": 0.0,
+    "generator": {
+        "bottom": {
+            "layers": 2,
+            "targets": "gtceu:naquadah"
+        },
+        "max_y": 90,
+        "middle": {
+            "layers": 3,
+            "targets": "gtceu:naquadah"
+        },
+        "min_y": 10,
+        "spread": {
+            "targets": "gtceu:plutonium_239"
+        },
+        "top": {
+            "layers": 2,
+            "targets": "gtceu:naquadah"
+        },
+        "type": "gtceu:cuboid"
     },
-    "min_y": 10,
-    "spread": {
-      "targets": "gtceu:plutonium_239"
+    "height_range": {
+        "height": {
+            "max_inclusive": {
+                "absolute": 90
+            },
+            "min_inclusive": {
+                "absolute": 10
+            },
+            "type": "minecraft:uniform"
+        }
     },
-    "top": {
-      "layers": 2,
-      "targets": "gtceu:naquadah"
-    },
-    "type": "gtceu:cuboid"
-  },
-  "height_range": {
-    "height": {
-      "max_inclusive": {
-        "absolute": 90
-      },
-      "min_inclusive": {
-        "absolute": 10
-      },
-      "type": "minecraft:uniform"
-    }
-  },
-  "indicators": [
-    {
-      "block": "gtceu:naquadah",
-      "density": 0.2,
-      "placement": "above",
-      "radius": 5,
-      "type": "gtceu:surface"
-    }
-  ],
-  "layer": "gtceu:endstone",
-  "weight": 30
+    "indicators": [
+        {
+            "block": "gtceu:naquadah",
+            "density": 0.2,
+            "placement": "above",
+            "radius": 5,
+            "type": "gtceu:surface"
+        }
+    ],
+    "layer": "gtceu:endstone",
+    "weight": 30
 }

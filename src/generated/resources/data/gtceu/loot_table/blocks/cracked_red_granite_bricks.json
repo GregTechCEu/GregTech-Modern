@@ -1,21 +1,21 @@
 {
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
+    "pools": [
         {
-          "condition": "minecraft:survives_explosion"
+            "bonus_rolls": 0.0,
+            "conditions": [
+                {
+                    "condition": "minecraft:survives_explosion"
+                }
+            ],
+            "entries": [
+                {
+                    "name": "gtceu:cracked_red_granite_bricks",
+                    "type": "minecraft:item"
+                }
+            ],
+            "rolls": 1.0
         }
-      ],
-      "entries": [
-        {
-          "name": "gtceu:cracked_red_granite_bricks",
-          "type": "minecraft:item"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "gtceu:blocks/cracked_red_granite_bricks",
-  "type": "minecraft:block"
+    ],
+    "random_sequence": "gtceu:blocks/cracked_red_granite_bricks",
+    "type": "minecraft:block"
 }

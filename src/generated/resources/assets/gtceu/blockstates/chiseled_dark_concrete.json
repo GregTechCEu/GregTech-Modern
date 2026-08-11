@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/chiseled_dark_concrete"
+    "variants": {
+        "": {
+            "model": "gtceu:block/chiseled_dark_concrete"
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/yellow_stripes_block_a"
+    "variants": {
+        "": {
+            "model": "gtceu:block/yellow_stripes_block_a"
+        }
     }
-  }
 }

@@ -1,11 +1,11 @@
 {
-  "providers": [
-    {
-      "advances": {
-        " ": 6,
-        "‌": 0
-      },
-      "type": "space"
-    }
-  ]
+    "providers": [
+        {
+            "advances": {
+                " ": 6,
+                "‌": 0
+            },
+            "type": "space"
+        }
+    ]
 }

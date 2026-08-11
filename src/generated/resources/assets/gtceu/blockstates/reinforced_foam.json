@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/reinforced_foam"
+    "variants": {
+        "": {
+            "model": "gtceu:block/reinforced_foam"
+        }
     }
-  }
 }

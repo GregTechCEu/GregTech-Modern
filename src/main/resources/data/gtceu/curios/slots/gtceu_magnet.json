@@ -1,10 +1,10 @@
 {
-  "add_cosmetic": false,
-  "icon": "gtceu:item/gtmag",
-  "operation": "SET",
-  "order": 420,
-  "render_toggle": false,
-  "replace": false,
-  "size": 1,
-  "use_native_gui": true
+    "add_cosmetic": false,
+    "icon": "gtceu:item/gtmag",
+    "operation": "SET",
+    "order": 420,
+    "render_toggle": false,
+    "replace": false,
+    "size": 1,
+    "use_native_gui": true
 }

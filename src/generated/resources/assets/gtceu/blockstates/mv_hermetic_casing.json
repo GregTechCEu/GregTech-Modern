@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/mv_hermetic_casing"
+    "variants": {
+        "": {
+            "model": "gtceu:block/mv_hermetic_casing"
+        }
     }
-  }
 }
