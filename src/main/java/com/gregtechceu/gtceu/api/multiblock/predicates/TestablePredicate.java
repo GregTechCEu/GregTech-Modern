@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.function.Supplier;
 
 class TestablePredicate extends BasePredicate {
 
     private final ErrorHandler onError;
-    private final Stream<BlockInfo> candidates;
+    private final Supplier<List<BlockInfo>> candidates;
     private final @Nullable Consumer<StringBuilder> contents;
     private final String name;
     private final Predicate<PredicateContext> predicate;
@@ -45,7 +45,7 @@ class TestablePredicate extends BasePredicate {
      *                   XEI Preview}
      */
     TestablePredicate(String name, Predicate<PredicateContext> predicate,
-                      Stream<BlockInfo> candidates,
+                      Supplier<List<BlockInfo>> candidates,
                       @Nullable Consumer<StringBuilder> contents,
                       ErrorHandler onError) {
         this.name = name;
@@ -90,7 +90,7 @@ class TestablePredicate extends BasePredicate {
 
     @Override
     public List<BlockInfo> computeCandidates() {
-        return this.candidates.toList();
+        return this.candidates.get();
     }
 
     @Override
