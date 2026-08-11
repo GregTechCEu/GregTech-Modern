@@ -1453,13 +1453,16 @@ public class GTItems {
     public static final Map<String, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
 
     static {
-        for (int i = 0; i < GTValues.COLORS.length; i++) {
-            String color = GTValues.COLORS[i];
-            if (color.equals("white")) continue;
-            GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
-                    .lang("Glass Lens (%s)".formatted(toEnglishName(color)))
-                    .tag(TagUtil.createItemTag("lenses/" + color))
-                    .register());
+
+        for (DyeColor color : DyeColor.values()) {
+            if (color == DyeColor.WHITE) continue;
+            GLASS_LENSES.put(color.getName(),
+                    REGISTRATE.item(String.format("%s_glass_lens", color.getName()), Item::new)
+                            .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
+                            .tag(TagUtil.createModItemTag("lenses"))
+                            .tag(TagUtil.createModItemTag("lenses/glass"))
+                            .tag(TagUtil.createModItemTag("lenses/" + color.getName()))
+                            .register());
         }
     }
 
@@ -2190,7 +2193,8 @@ public class GTItems {
             DYE_ONLY_ITEMS[i] = REGISTRATE
                     .item("chemical_%s_dye".formatted(dyeColor.getName()), (props) -> new DyeItem(dyeColor, props))
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
-                    .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
+                    .tag(Tags.Items.DYES)
+                    .tag(dyeColor.getTag())
                     .register();
         }
     }

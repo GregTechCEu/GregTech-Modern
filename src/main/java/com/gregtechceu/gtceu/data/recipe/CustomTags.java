@@ -274,41 +274,4 @@ public class CustomTags {
             RED_LENS,
             BLACK_LENS
     };
-
-    public static final TagKey<Item> WHITE_DYE = TagUtil.createItemTag("dyes/white");
-    public static final TagKey<Item> ORANGE_DYE = TagUtil.createItemTag("dyes/orange");
-    public static final TagKey<Item> MAGENTA_DYE = TagUtil.createItemTag("dyes/magenta");
-    public static final TagKey<Item> LIGHT_BLUE_DYE = TagUtil.createItemTag("dyes/light_blue");
-    public static final TagKey<Item> YELLOW_DYE = TagUtil.createItemTag("dyes/yellow");
-    public static final TagKey<Item> LIME_DYE = TagUtil.createItemTag("dyes/lime");
-    public static final TagKey<Item> PINK_DYE = TagUtil.createItemTag("dyes/pink");
-    public static final TagKey<Item> GRAY_DYE = TagUtil.createItemTag("dyes/gray");
-    public static final TagKey<Item> LIGHT_GRAY_DYE = TagUtil.createItemTag("dyes/light_gray");
-    public static final TagKey<Item> CYAN_DYE = TagUtil.createItemTag("dyes/cyan");
-    public static final TagKey<Item> PURPLE_DYE = TagUtil.createItemTag("dyes/purple");
-    public static final TagKey<Item> BLUE_DYE = TagUtil.createItemTag("dyes/blue");
-    public static final TagKey<Item> BROWN_DYE = TagUtil.createItemTag("dyes/brown");
-    public static final TagKey<Item> GREEN_DYE = TagUtil.createItemTag("dyes/green");
-    public static final TagKey<Item> RED_DYE = TagUtil.createItemTag("dyes/red");
-    public static final TagKey<Item> BLACK_DYE = TagUtil.createItemTag("dyes/black");
-
-    @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] DYES = new TagKey[] {
-            WHITE_DYE,
-            ORANGE_DYE,
-            MAGENTA_DYE,
-            LIGHT_BLUE_DYE,
-            YELLOW_DYE,
-            LIME_DYE,
-            PINK_DYE,
-            GRAY_DYE,
-            LIGHT_GRAY_DYE,
-            CYAN_DYE,
-            PURPLE_DYE,
-            BLUE_DYE,
-            BROWN_DYE,
-            GREEN_DYE,
-            RED_DYE,
-            BLACK_DYE
-    };
 }

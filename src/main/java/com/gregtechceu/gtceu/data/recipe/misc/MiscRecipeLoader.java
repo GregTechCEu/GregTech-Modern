@@ -409,7 +409,7 @@ public class MiscRecipeLoader {
         // skip white lens
         for (int i = 1; i < CHEMICAL_DYES.length; i++) {
             builder.copy(CHEMICAL_DYES[i].getName() + "_lens").inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
-                    .outputItems(GLASS_LENSES.get(COLORS[i]))
+                    .outputItems(GLASS_LENSES.get(CHEMICAL_DYES[i].getName()))
                     .save(provider);
         }
 
