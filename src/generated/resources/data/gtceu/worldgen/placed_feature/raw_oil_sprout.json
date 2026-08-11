@@ -1,27 +1,27 @@
 {
-    "feature": "gtceu:raw_oil_sprout",
-    "placement": [
-        {
-            "type": "minecraft:rarity_filter",
-            "chance": 128
+  "feature": "gtceu:raw_oil_sprout",
+  "placement": [
+    {
+      "chance": 128,
+      "type": "minecraft:rarity_filter"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:biome"
+    },
+    {
+      "height": {
+        "max_inclusive": {
+          "absolute": 40
         },
-        {
-            "type": "minecraft:in_square"
+        "min_inclusive": {
+          "absolute": 10
         },
-        {
-            "type": "minecraft:biome"
-        },
-        {
-            "type": "minecraft:height_range",
-            "height": {
-                "type": "minecraft:uniform",
-                "max_inclusive": {
-                    "absolute": 40
-                },
-                "min_inclusive": {
-                    "absolute": 10
-                }
-            }
-        }
-    ]
+        "type": "minecraft:uniform"
+      },
+      "type": "minecraft:height_range"
+    }
+  ]
 }

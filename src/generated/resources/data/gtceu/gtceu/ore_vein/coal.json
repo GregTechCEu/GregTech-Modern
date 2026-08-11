@@ -1,50 +1,50 @@
 {
-    "biomes": "#minecraft:is_overworld",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 44,
-        "min_inclusive": 38
-    },
-    "density": 0.25,
-    "dimension_filter": [
-        "minecraft:overworld"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:layer",
-        "layer_patterns": [
-            [
-                {
-                    "max_size": 4,
-                    "min_size": 2,
-                    "targets": [
-                        "gtceu:coal"
-                    ],
-                    "weight": 3
-                }
-            ]
-        ]
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 140
-            },
-            "min_inclusive": {
-                "absolute": 10
-            }
-        }
-    },
-    "indicators": [
+  "biomes": "#minecraft:is_overworld",
+  "cluster_size": {
+    "max_inclusive": 44,
+    "min_inclusive": 38,
+    "type": "minecraft:uniform"
+  },
+  "density": 0.25,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "layer_patterns": [
+      [
         {
-            "type": "gtceu:surface",
-            "block": "gtceu:coal",
-            "density": 0.2,
-            "placement": "surface",
-            "radius": 5
+          "max_size": 4,
+          "min_size": 2,
+          "targets": [
+            "gtceu:coal"
+          ],
+          "weight": 3
         }
+      ]
     ],
-    "layer": "gtceu:stone",
-    "weight": 80
+    "type": "gtceu:layer"
+  },
+  "height_range": {
+    "height": {
+      "max_inclusive": {
+        "absolute": 140
+      },
+      "min_inclusive": {
+        "absolute": 10
+      },
+      "type": "minecraft:uniform"
+    }
+  },
+  "indicators": [
+    {
+      "block": "gtceu:coal",
+      "density": 0.2,
+      "placement": "surface",
+      "radius": 5,
+      "type": "gtceu:surface"
+    }
+  ],
+  "layer": "gtceu:stone",
+  "weight": 80
 }

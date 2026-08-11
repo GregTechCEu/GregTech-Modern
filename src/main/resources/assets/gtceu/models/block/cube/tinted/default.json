@@ -1,17 +1,49 @@
 {
-  "parent": "block/cube",
   "elements": [
     {
-      "from": [  0,  0,  0 ],
-      "to":   [ 16, 16, 16 ],
       "faces": {
-        "down":  { "texture": "#down",  "cullface": "down",  "tintindex": 1 },
-        "up":    { "texture": "#up",    "cullface": "up",    "tintindex": 1 },
-        "north": { "texture": "#north", "cullface": "north", "tintindex": 1 },
-        "south": { "texture": "#south", "cullface": "south", "tintindex": 1 },
-        "west":  { "texture": "#west",  "cullface": "west",  "tintindex": 1 },
-        "east":  { "texture": "#east",  "cullface": "east",  "tintindex": 1 }
-      }
+        "down": {
+          "cullface": "down",
+          "texture": "#down",
+          "tintindex": 1
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#east",
+          "tintindex": 1
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#north",
+          "tintindex": 1
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#south",
+          "tintindex": 1
+        },
+        "up": {
+          "cullface": "up",
+          "texture": "#up",
+          "tintindex": 1
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#west",
+          "tintindex": 1
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ]
     }
-  ]
+  ],
+  "parent": "block/cube"
 }

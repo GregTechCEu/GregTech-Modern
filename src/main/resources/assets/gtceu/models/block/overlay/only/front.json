@@ -1,12 +1,29 @@
 {
-    "parent": "block/block",
-    "elements": [
-        {
-            "from": [  0,  0, -0.096 ],
-            "to":   [ 16, 16, -0.096 ],
-            "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
-            }
+  "elements": [
+    {
+      "faces": {
+        "north": {
+          "cullface": "north",
+          "texture": "#overlay",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
         }
-    ]
+      },
+      "from": [
+        0,
+        0,
+        -0.096
+      ],
+      "to": [
+        16,
+        16,
+        -0.096
+      ]
+    }
+  ],
+  "parent": "block/block"
 }

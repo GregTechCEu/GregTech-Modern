@@ -1,74 +1,74 @@
 {
-    "biomes": "#minecraft:is_overworld",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 29,
-        "min_inclusive": 25
-    },
-    "density": 0.25,
-    "dimension_filter": [
-        "minecraft:overworld"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:layer",
-        "layer_patterns": [
-            [
-                {
-                    "max_size": 4,
-                    "min_size": 2,
-                    "targets": [
-                        "gtceu:almandine"
-                    ],
-                    "weight": 3
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:pyrope"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:sapphire"
-                    ],
-                    "weight": 1
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:green_sapphire"
-                    ],
-                    "weight": 1
-                }
-            ]
-        ]
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 0
-            },
-            "min_inclusive": {
-                "absolute": -40
-            }
-        }
-    },
-    "indicators": [
+  "biomes": "#minecraft:is_overworld",
+  "cluster_size": {
+    "max_inclusive": 29,
+    "min_inclusive": 25,
+    "type": "minecraft:uniform"
+  },
+  "density": 0.25,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "layer_patterns": [
+      [
         {
-            "type": "gtceu:surface",
-            "block": "gtceu:sapphire",
-            "density": 0.15,
-            "placement": "above",
-            "radius": 3
+          "max_size": 4,
+          "min_size": 2,
+          "targets": [
+            "gtceu:almandine"
+          ],
+          "weight": 3
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:pyrope"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:sapphire"
+          ],
+          "weight": 1
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:green_sapphire"
+          ],
+          "weight": 1
         }
+      ]
     ],
-    "layer": "gtceu:deepslate",
-    "weight": 60
+    "type": "gtceu:layer"
+  },
+  "height_range": {
+    "height": {
+      "max_inclusive": {
+        "absolute": 0
+      },
+      "min_inclusive": {
+        "absolute": -40
+      },
+      "type": "minecraft:uniform"
+    }
+  },
+  "indicators": [
+    {
+      "block": "gtceu:sapphire",
+      "density": 0.15,
+      "placement": "above",
+      "radius": 3,
+      "type": "gtceu:surface"
+    }
+  ],
+  "layer": "gtceu:deepslate",
+  "weight": 60
 }

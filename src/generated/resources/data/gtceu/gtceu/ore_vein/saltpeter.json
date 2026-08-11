@@ -1,74 +1,74 @@
 {
-    "biomes": "#minecraft:is_nether",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 40,
-        "min_inclusive": 32
-    },
-    "density": 0.25,
-    "dimension_filter": [
-        "minecraft:the_nether"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:layer",
-        "layer_patterns": [
-            [
-                {
-                    "max_size": 4,
-                    "min_size": 2,
-                    "targets": [
-                        "gtceu:saltpeter"
-                    ],
-                    "weight": 3
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:diatomite"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:electrotine"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:alunite"
-                    ],
-                    "weight": 1
-                }
-            ]
-        ]
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 45
-            },
-            "min_inclusive": {
-                "absolute": 5
-            }
-        }
-    },
-    "indicators": [
+  "biomes": "#minecraft:is_nether",
+  "cluster_size": {
+    "max_inclusive": 40,
+    "min_inclusive": 32,
+    "type": "minecraft:uniform"
+  },
+  "density": 0.25,
+  "dimension_filter": [
+    "minecraft:the_nether"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "layer_patterns": [
+      [
         {
-            "type": "gtceu:surface",
-            "block": "gtceu:saltpeter",
-            "density": 0.2,
-            "placement": "above",
-            "radius": 5
+          "max_size": 4,
+          "min_size": 2,
+          "targets": [
+            "gtceu:saltpeter"
+          ],
+          "weight": 3
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:diatomite"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:electrotine"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:alunite"
+          ],
+          "weight": 1
         }
+      ]
     ],
-    "layer": "gtceu:netherrack",
-    "weight": 40
+    "type": "gtceu:layer"
+  },
+  "height_range": {
+    "height": {
+      "max_inclusive": {
+        "absolute": 45
+      },
+      "min_inclusive": {
+        "absolute": 5
+      },
+      "type": "minecraft:uniform"
+    }
+  },
+  "indicators": [
+    {
+      "block": "gtceu:saltpeter",
+      "density": 0.2,
+      "placement": "above",
+      "radius": 5,
+      "type": "gtceu:surface"
+    }
+  ],
+  "layer": "gtceu:netherrack",
+  "weight": 40
 }

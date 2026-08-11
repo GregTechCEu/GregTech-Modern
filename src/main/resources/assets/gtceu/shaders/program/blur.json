@@ -1,21 +1,70 @@
 {
-    "blend": {
-        "func": "add",
-        "srcrgb": "srcalpha",
-        "dstrgb": "1-srcalpha",
-        "srcalpha": "zero",
-        "dstalpha": "one"
+  "attributes": [
+    "Position"
+  ],
+  "blend": {
+    "dstalpha": "one",
+    "dstrgb": "1-srcalpha",
+    "func": "add",
+    "srcalpha": "zero",
+    "srcrgb": "srcalpha"
+  },
+  "fragment": "gtceu:blur",
+  "samplers": [
+    {
+      "name": "DiffuseSampler"
+    }
+  ],
+  "uniforms": [
+    {
+      "count": 16,
+      "name": "ProjMat",
+      "type": "matrix4x4",
+      "values": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
     },
-    "vertex": "blit",
-    "fragment": "gtceu:blur",
-    "attributes": [ "Position" ],
-    "samplers": [
-        { "name": "DiffuseSampler" }
-    ],
-    "uniforms": [
-        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-        { "name": "OutSize", "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-        { "name": "BlurDir", "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-        { "name": "Radius",  "type": "float",     "count": 1,  "values": [ 5 ] }
-    ]
+    {
+      "count": 2,
+      "name": "OutSize",
+      "type": "float",
+      "values": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "count": 2,
+      "name": "BlurDir",
+      "type": "float",
+      "values": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "count": 1,
+      "name": "Radius",
+      "type": "float",
+      "values": [
+        5
+      ]
+    }
+  ],
+  "vertex": "blit"
 }

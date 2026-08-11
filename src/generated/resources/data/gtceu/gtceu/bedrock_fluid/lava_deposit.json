@@ -1,14 +1,14 @@
 {
-    "depleted_yield": 30,
-    "depletion_amount": 1,
-    "depletion_chance": 100,
-    "dimension_filter": [
-        "minecraft:the_nether"
-    ],
-    "fluid": "minecraft:lava",
-    "weight": 65,
-    "yield": {
-        "max": 250,
-        "min": 125
-    }
+  "depleted_yield": 30,
+  "depletion_amount": 1,
+  "depletion_chance": 100,
+  "dimension_filter": [
+    "minecraft:the_nether"
+  ],
+  "fluid": "minecraft:lava",
+  "weight": 65,
+  "yield": {
+    "max": 250,
+    "min": 125
+  }
 }

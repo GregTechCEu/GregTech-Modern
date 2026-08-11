@@ -1,6 +1,6 @@
 {
-    "values": [
-        "#c:coral_blocks/alive",
-        "#c:coral_blocks/dead"
-    ]
+  "values": [
+    "#c:coral_blocks/alive",
+    "#c:coral_blocks/dead"
+  ]
 }

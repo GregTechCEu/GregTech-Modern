@@ -1,33 +1,33 @@
 {
-    "elements": [
-        {
-            "faces": {
-                "east": {
-                    "texture": "#restrictor"
-                },
-                "north": {
-                    "texture": "#restrictor"
-                },
-                "south": {
-                    "texture": "#restrictor"
-                },
-                "west": {
-                    "texture": "#restrictor"
-                }
-            },
-            "from": [
-                0.952,
-                15.047999,
-                0.952
-            ],
-            "to": [
-                15.047999,
-                16,
-                15.047999
-            ]
+  "elements": [
+    {
+      "faces": {
+        "east": {
+          "texture": "#restrictor"
+        },
+        "north": {
+          "texture": "#restrictor"
+        },
+        "south": {
+          "texture": "#restrictor"
+        },
+        "west": {
+          "texture": "#restrictor"
         }
-    ],
-    "textures": {
-        "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
+      },
+      "from": [
+        0.952,
+        15.047999,
+        0.952
+      ],
+      "to": [
+        15.047999,
+        16,
+        15.047999
+      ]
     }
+  ],
+  "textures": {
+    "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
+  }
 }

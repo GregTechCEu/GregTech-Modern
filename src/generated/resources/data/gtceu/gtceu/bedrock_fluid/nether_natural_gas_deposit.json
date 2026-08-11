@@ -1,14 +1,14 @@
 {
-    "depleted_yield": 40,
-    "depletion_amount": 1,
-    "depletion_chance": 100,
-    "dimension_filter": [
-        "minecraft:the_nether"
-    ],
-    "fluid": "gtceu:natural_gas",
-    "weight": 35,
-    "yield": {
-        "max": 300,
-        "min": 150
-    }
+  "depleted_yield": 40,
+  "depletion_amount": 1,
+  "depletion_chance": 100,
+  "dimension_filter": [
+    "minecraft:the_nether"
+  ],
+  "fluid": "gtceu:natural_gas",
+  "weight": 35,
+  "yield": {
+    "max": 300,
+    "min": 150
+  }
 }

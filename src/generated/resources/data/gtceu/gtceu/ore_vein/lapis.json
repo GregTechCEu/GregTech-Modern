@@ -1,66 +1,66 @@
 {
-    "biomes": "#minecraft:is_overworld",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 52,
-        "min_inclusive": 40
-    },
-    "density": 0.75,
-    "dimension_filter": [
-        "minecraft:overworld"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:dike",
-        "blocks": [
-            {
-                "block": "gtceu:lazurite",
-                "max_y": 10,
-                "min_y": -60,
-                "weight": 3
-            },
-            {
-                "block": "gtceu:sodalite",
-                "max_y": 0,
-                "min_y": -50,
-                "weight": 2
-            },
-            {
-                "block": "gtceu:lapis",
-                "max_y": 0,
-                "min_y": -50,
-                "weight": 2
-            },
-            {
-                "block": "gtceu:calcite",
-                "max_y": 10,
-                "min_y": -40,
-                "weight": 1
-            }
-        ],
+  "biomes": "#minecraft:is_overworld",
+  "cluster_size": {
+    "max_inclusive": 52,
+    "min_inclusive": 40,
+    "type": "minecraft:uniform"
+  },
+  "density": 0.75,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "blocks": [
+      {
+        "block": "gtceu:lazurite",
         "max_y": 10,
-        "min_y": -60
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 10
-            },
-            "min_inclusive": {
-                "absolute": -60
-            }
-        }
-    },
-    "indicators": [
-        {
-            "type": "gtceu:surface",
-            "block": "gtceu:lapis",
-            "density": 0.15,
-            "placement": "above",
-            "radius": 3
-        }
+        "min_y": -60,
+        "weight": 3
+      },
+      {
+        "block": "gtceu:sodalite",
+        "max_y": 0,
+        "min_y": -50,
+        "weight": 2
+      },
+      {
+        "block": "gtceu:lapis",
+        "max_y": 0,
+        "min_y": -50,
+        "weight": 2
+      },
+      {
+        "block": "gtceu:calcite",
+        "max_y": 10,
+        "min_y": -40,
+        "weight": 1
+      }
     ],
-    "layer": "gtceu:deepslate",
-    "weight": 40
+    "max_y": 10,
+    "min_y": -60,
+    "type": "gtceu:dike"
+  },
+  "height_range": {
+    "height": {
+      "max_inclusive": {
+        "absolute": 10
+      },
+      "min_inclusive": {
+        "absolute": -60
+      },
+      "type": "minecraft:uniform"
+    }
+  },
+  "indicators": [
+    {
+      "block": "gtceu:lapis",
+      "density": 0.15,
+      "placement": "above",
+      "radius": 3,
+      "type": "gtceu:surface"
+    }
+  ],
+  "layer": "gtceu:deepslate",
+  "weight": 40
 }

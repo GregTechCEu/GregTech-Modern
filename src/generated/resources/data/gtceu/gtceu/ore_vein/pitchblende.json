@@ -1,55 +1,55 @@
 {
-    "biomes": "#minecraft:is_end",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 64,
-        "min_inclusive": 32
+  "biomes": "#minecraft:is_end",
+  "cluster_size": {
+    "max_inclusive": 64,
+    "min_inclusive": 32,
+    "type": "minecraft:uniform"
+  },
+  "density": 0.25,
+  "dimension_filter": [
+    "minecraft:the_end"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "bottom": {
+      "layers": 2,
+      "targets": "gtceu:pitchblende"
     },
-    "density": 0.25,
-    "dimension_filter": [
-        "minecraft:the_end"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:cuboid",
-        "bottom": {
-            "layers": 2,
-            "targets": "gtceu:pitchblende"
-        },
-        "max_y": 60,
-        "middle": {
-            "layers": 3,
-            "targets": "gtceu:pitchblende"
-        },
-        "min_y": 30,
-        "spread": {
-            "targets": "gtceu:uraninite"
-        },
-        "top": {
-            "layers": 2,
-            "targets": "gtceu:pitchblende"
-        }
+    "max_y": 60,
+    "middle": {
+      "layers": 3,
+      "targets": "gtceu:pitchblende"
     },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 60
-            },
-            "min_inclusive": {
-                "absolute": 30
-            }
-        }
+    "min_y": 30,
+    "spread": {
+      "targets": "gtceu:uraninite"
     },
-    "indicators": [
-        {
-            "type": "gtceu:surface",
-            "block": "gtceu:pitchblende",
-            "density": 0.2,
-            "placement": "above",
-            "radius": 5
-        }
-    ],
-    "layer": "gtceu:endstone",
-    "weight": 30
+    "top": {
+      "layers": 2,
+      "targets": "gtceu:pitchblende"
+    },
+    "type": "gtceu:cuboid"
+  },
+  "height_range": {
+    "height": {
+      "max_inclusive": {
+        "absolute": 60
+      },
+      "min_inclusive": {
+        "absolute": 30
+      },
+      "type": "minecraft:uniform"
+    }
+  },
+  "indicators": [
+    {
+      "block": "gtceu:pitchblende",
+      "density": 0.2,
+      "placement": "above",
+      "radius": 5,
+      "type": "gtceu:surface"
+    }
+  ],
+  "layer": "gtceu:endstone",
+  "weight": 30
 }

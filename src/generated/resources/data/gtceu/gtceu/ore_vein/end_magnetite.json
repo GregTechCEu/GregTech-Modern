@@ -1,74 +1,74 @@
 {
-    "biomes": "#minecraft:is_end",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 44,
-        "min_inclusive": 38
-    },
-    "density": 0.15,
-    "dimension_filter": [
-        "minecraft:the_end"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:layer",
-        "layer_patterns": [
-            [
-                {
-                    "max_size": 4,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:magnetite"
-                    ],
-                    "weight": 3
-                },
-                {
-                    "max_size": 2,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:vanadium_magnetite"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:chromite"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:gold"
-                    ],
-                    "weight": 1
-                }
-            ]
-        ]
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 80
-            },
-            "min_inclusive": {
-                "absolute": 20
-            }
-        }
-    },
-    "indicators": [
+  "biomes": "#minecraft:is_end",
+  "cluster_size": {
+    "max_inclusive": 44,
+    "min_inclusive": 38,
+    "type": "minecraft:uniform"
+  },
+  "density": 0.15,
+  "dimension_filter": [
+    "minecraft:the_end"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "layer_patterns": [
+      [
         {
-            "type": "gtceu:surface",
-            "block": "gtceu:magnetite",
-            "density": 0.2,
-            "placement": "above",
-            "radius": 5
+          "max_size": 4,
+          "min_size": 1,
+          "targets": [
+            "gtceu:magnetite"
+          ],
+          "weight": 3
+        },
+        {
+          "max_size": 2,
+          "min_size": 1,
+          "targets": [
+            "gtceu:vanadium_magnetite"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:chromite"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:gold"
+          ],
+          "weight": 1
         }
+      ]
     ],
-    "layer": "gtceu:endstone",
-    "weight": 30
+    "type": "gtceu:layer"
+  },
+  "height_range": {
+    "height": {
+      "max_inclusive": {
+        "absolute": 80
+      },
+      "min_inclusive": {
+        "absolute": 20
+      },
+      "type": "minecraft:uniform"
+    }
+  },
+  "indicators": [
+    {
+      "block": "gtceu:magnetite",
+      "density": 0.2,
+      "placement": "above",
+      "radius": 5,
+      "type": "gtceu:surface"
+    }
+  ],
+  "layer": "gtceu:endstone",
+  "weight": 30
 }

@@ -1,14 +1,14 @@
 {
-    "depleted_yield": 20,
-    "depletion_amount": 1,
-    "depletion_chance": 100,
-    "dimension_filter": [
-        "minecraft:overworld"
-    ],
-    "fluid": "gtceu:natural_gas",
-    "weight": 15,
-    "yield": {
-        "max": 175,
-        "min": 100
-    }
+  "depleted_yield": 20,
+  "depletion_amount": 1,
+  "depletion_chance": 100,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "fluid": "gtceu:natural_gas",
+  "weight": 15,
+  "yield": {
+    "max": 175,
+    "min": 100
+  }
 }

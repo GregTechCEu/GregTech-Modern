@@ -1,21 +1,21 @@
 {
-    "type": "minecraft:block",
-    "pools": [
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
         {
-            "bonus_rolls": 0.0,
-            "conditions": [
-                {
-                    "condition": "minecraft:survives_explosion"
-                }
-            ],
-            "entries": [
-                {
-                    "type": "minecraft:item",
-                    "name": "gtceu:computer_heat_vent"
-                }
-            ],
-            "rolls": 1.0
+          "condition": "minecraft:survives_explosion"
         }
-    ],
-    "random_sequence": "gtceu:blocks/computer_heat_vent"
+      ],
+      "entries": [
+        {
+          "name": "gtceu:computer_heat_vent",
+          "type": "minecraft:item"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "gtceu:blocks/computer_heat_vent",
+  "type": "minecraft:block"
 }

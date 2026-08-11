@@ -1,5 +1,4 @@
 {
-  "parent": "minecraft:item/generated",
   "overrides": [
     {
       "model": "gtceu:item/armor/trimmed/helmet_quartz_trim",
@@ -62,6 +61,7 @@
       }
     }
   ],
+  "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "gtceu:item/armor/helmet"
   }

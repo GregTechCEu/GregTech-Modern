@@ -1,9 +1,9 @@
 {
-    "type": "neoforge:add_features",
-    "biomes": "#minecraft:is_overworld",
-    "features": [
-        "gtceu:red_granite_blob",
-        "gtceu:marble_blob"
-    ],
-    "step": "underground_ores"
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "gtceu:red_granite_blob",
+    "gtceu:marble_blob"
+  ],
+  "step": "underground_ores",
+  "type": "neoforge:add_features"
 }

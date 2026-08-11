@@ -1,6 +1,6 @@
 {
-    "type": "neoforge:add_features",
-    "biomes": "#minecraft:is_overworld",
-    "features": "gtceu:raw_oil_sprout",
-    "step": "fluid_springs"
+  "biomes": "#minecraft:is_overworld",
+  "features": "gtceu:raw_oil_sprout",
+  "step": "fluid_springs",
+  "type": "neoforge:add_features"
 }

@@ -1,6 +1,6 @@
 {
-    "values": [
-        "#c:corals/alive",
-        "#c:corals/dead"
-    ]
+  "values": [
+    "#c:corals/alive",
+    "#c:corals/dead"
+  ]
 }

@@ -1,61 +1,61 @@
 {
-    "parent": "gtceu:block/pipe/small_duct_pipe/center",
-    "loader": "gtceu:pipe",
-    "parts": {
-        "center": {
-            "model": "gtceu:block/pipe/small_duct_pipe/center"
-        },
-        "down": {
-            "model": "gtceu:block/pipe/small_duct_pipe/connection",
-            "uvlock": true
-        },
-        "east": {
-            "model": "gtceu:block/pipe/small_duct_pipe/connection",
-            "uvlock": true,
-            "x": 90,
-            "y": 270
-        },
-        "north": {
-            "model": "gtceu:block/pipe/small_duct_pipe/connection",
-            "uvlock": true,
-            "x": 90,
-            "y": 180
-        },
-        "south": {
-            "model": "gtceu:block/pipe/small_duct_pipe/connection",
-            "uvlock": true,
-            "x": 90
-        },
-        "up": {
-            "model": "gtceu:block/pipe/small_duct_pipe/connection",
-            "uvlock": true,
-            "x": 180
-        },
-        "west": {
-            "model": "gtceu:block/pipe/small_duct_pipe/connection",
-            "uvlock": true,
-            "x": 90,
-            "y": 90
-        }
+  "loader": "gtceu:pipe",
+  "parent": "gtceu:block/pipe/small_duct_pipe/center",
+  "parts": {
+    "center": {
+      "model": "gtceu:block/pipe/small_duct_pipe/center"
     },
-    "restrictors": {
-        "down": {
-            "model": "gtceu:block/pipe/restrictor/down/thickness_6.0"
-        },
-        "east": {
-            "model": "gtceu:block/pipe/restrictor/east/thickness_6.0"
-        },
-        "north": {
-            "model": "gtceu:block/pipe/restrictor/north/thickness_6.0"
-        },
-        "south": {
-            "model": "gtceu:block/pipe/restrictor/south/thickness_6.0"
-        },
-        "up": {
-            "model": "gtceu:block/pipe/restrictor/up/thickness_6.0"
-        },
-        "west": {
-            "model": "gtceu:block/pipe/restrictor/west/thickness_6.0"
-        }
+    "down": {
+      "model": "gtceu:block/pipe/small_duct_pipe/connection",
+      "uvlock": true
+    },
+    "east": {
+      "model": "gtceu:block/pipe/small_duct_pipe/connection",
+      "uvlock": true,
+      "x": 90,
+      "y": 270
+    },
+    "north": {
+      "model": "gtceu:block/pipe/small_duct_pipe/connection",
+      "uvlock": true,
+      "x": 90,
+      "y": 180
+    },
+    "south": {
+      "model": "gtceu:block/pipe/small_duct_pipe/connection",
+      "uvlock": true,
+      "x": 90
+    },
+    "up": {
+      "model": "gtceu:block/pipe/small_duct_pipe/connection",
+      "uvlock": true,
+      "x": 180
+    },
+    "west": {
+      "model": "gtceu:block/pipe/small_duct_pipe/connection",
+      "uvlock": true,
+      "x": 90,
+      "y": 90
     }
+  },
+  "restrictors": {
+    "down": {
+      "model": "gtceu:block/pipe/restrictor/down/thickness_6.0"
+    },
+    "east": {
+      "model": "gtceu:block/pipe/restrictor/east/thickness_6.0"
+    },
+    "north": {
+      "model": "gtceu:block/pipe/restrictor/north/thickness_6.0"
+    },
+    "south": {
+      "model": "gtceu:block/pipe/restrictor/south/thickness_6.0"
+    },
+    "up": {
+      "model": "gtceu:block/pipe/restrictor/up/thickness_6.0"
+    },
+    "west": {
+      "model": "gtceu:block/pipe/restrictor/west/thickness_6.0"
+    }
+  }
 }

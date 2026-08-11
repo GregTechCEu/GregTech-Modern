@@ -1,13 +1,13 @@
 {
-    "parent": "minecraft:block/block",
-    "loader": "gtceu:machine",
-    "machine": "gtceu:steel_crate",
-    "variants": {
-        "taped=false": {
-            "model": "gtceu:block/machine/template/crate/metal_crate"
-        },
-        "taped=true": {
-            "model": "gtceu:block/machine/template/crate/metal_crate_taped"
-        }
+  "loader": "gtceu:machine",
+  "machine": "gtceu:steel_crate",
+  "parent": "minecraft:block/block",
+  "variants": {
+    "taped=false": {
+      "model": "gtceu:block/machine/template/crate/metal_crate"
+    },
+    "taped=true": {
+      "model": "gtceu:block/machine/template/crate/metal_crate_taped"
     }
+  }
 }

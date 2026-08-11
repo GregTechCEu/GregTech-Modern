@@ -1,21 +1,21 @@
 {
-    "type": "minecraft:block",
-    "pools": [
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
         {
-            "bonus_rolls": 0.0,
-            "conditions": [
-                {
-                    "condition": "minecraft:survives_explosion"
-                }
-            ],
-            "entries": [
-                {
-                    "type": "minecraft:item",
-                    "name": "gtceu:cyan_large_metal_sheet"
-                }
-            ],
-            "rolls": 1.0
+          "condition": "minecraft:survives_explosion"
         }
-    ],
-    "random_sequence": "gtceu:blocks/cyan_large_metal_sheet"
+      ],
+      "entries": [
+        {
+          "name": "gtceu:cyan_large_metal_sheet",
+          "type": "minecraft:item"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "gtceu:blocks/cyan_large_metal_sheet",
+  "type": "minecraft:block"
 }

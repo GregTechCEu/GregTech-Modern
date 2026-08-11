@@ -1,74 +1,74 @@
 {
-    "biomes": "#minecraft:is_end",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 29,
-        "min_inclusive": 25
-    },
-    "density": 0.2,
-    "dimension_filter": [
-        "minecraft:the_end"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:layer",
-        "layer_patterns": [
-            [
-                {
-                    "max_size": 4,
-                    "min_size": 2,
-                    "targets": [
-                        "gtceu:bornite"
-                    ],
-                    "weight": 3
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:cooperite"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:platinum"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:palladium"
-                    ],
-                    "weight": 1
-                }
-            ]
-        ]
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 50
-            },
-            "min_inclusive": {
-                "absolute": 5
-            }
-        }
-    },
-    "indicators": [
+  "biomes": "#minecraft:is_end",
+  "cluster_size": {
+    "max_inclusive": 29,
+    "min_inclusive": 25,
+    "type": "minecraft:uniform"
+  },
+  "density": 0.2,
+  "dimension_filter": [
+    "minecraft:the_end"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "layer_patterns": [
+      [
         {
-            "type": "gtceu:surface",
-            "block": "gtceu:platinum",
-            "density": 0.2,
-            "placement": "above",
-            "radius": 5
+          "max_size": 4,
+          "min_size": 2,
+          "targets": [
+            "gtceu:bornite"
+          ],
+          "weight": 3
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:cooperite"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:platinum"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:palladium"
+          ],
+          "weight": 1
         }
+      ]
     ],
-    "layer": "gtceu:endstone",
-    "weight": 10
+    "type": "gtceu:layer"
+  },
+  "height_range": {
+    "height": {
+      "max_inclusive": {
+        "absolute": 50
+      },
+      "min_inclusive": {
+        "absolute": 5
+      },
+      "type": "minecraft:uniform"
+    }
+  },
+  "indicators": [
+    {
+      "block": "gtceu:platinum",
+      "density": 0.2,
+      "placement": "above",
+      "radius": 5,
+      "type": "gtceu:surface"
+    }
+  ],
+  "layer": "gtceu:endstone",
+  "weight": 10
 }
