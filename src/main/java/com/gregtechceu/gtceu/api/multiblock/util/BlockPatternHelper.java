@@ -173,7 +173,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
             int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset) + 1;
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if (basePredicate.getMaxSliceCount() == -1 || layerAlreadyPopulated < basePredicate.getMaxSliceCount()) continue;
+            if (basePredicate.getMaxSliceCount() == -1 || layerAlreadyPopulated < basePredicate.getMaxSliceCount())
+                continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
