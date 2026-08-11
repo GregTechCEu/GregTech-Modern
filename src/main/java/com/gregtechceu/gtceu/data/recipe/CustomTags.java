@@ -238,6 +238,9 @@ public class CustomTags {
 
     public static final TagKey<Fluid> HPCA_COOLANTS = TagUtil.createModFluidTag("hpca_coolants");
 
+    public static final TagKey<Item> LENSES = TagUtil.createItemTag("lenses");
+    public static final TagKey<Item> GLASS_LENS = TagUtil.createItemTag("lenses/glass");
+
     public static final TagKey<Item> WHITE_LENS = TagUtil.createItemTag("lenses/white");
     public static final TagKey<Item> ORANGE_LENS = TagUtil.createItemTag("lenses/orange");
     public static final TagKey<Item> MAGENTA_LENS = TagUtil.createItemTag("lenses/magenta");
@@ -256,7 +259,7 @@ public class CustomTags {
     public static final TagKey<Item> BLACK_LENS = TagUtil.createItemTag("lenses/black");
 
     @SuppressWarnings("unchecked")
-    public static final TagKey<Item>[] LENSES = new TagKey[] {
+    public static final TagKey<Item>[] ALL_LENSES = new TagKey[] {
             WHITE_LENS,
             ORANGE_LENS,
             MAGENTA_LENS,
