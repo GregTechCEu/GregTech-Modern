@@ -82,7 +82,7 @@ public class BlockInfo {
     }
 
     public ItemStack getItemStackForm() {
-        if (GTCEu.isClientSide()) {
+        if (GTCEu.isClientThread()) {
             Level level = Objects.requireNonNull(Minecraft.getInstance().level);
             return getItemStackForm(level, BlockPos.ZERO);
         }

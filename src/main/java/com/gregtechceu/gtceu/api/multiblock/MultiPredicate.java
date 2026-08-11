@@ -383,7 +383,7 @@ public abstract class MultiPredicate {
     /// If {@code a == EMPTY}, returns {@code b}. <br />
     /// Otherwise, returns a new MultiPredicate that combines {@code a} and {@code b}
     private static MultiPredicate combine(MultiPredicate a, Logic type, @Nullable MultiPredicate b) {
-        if (b == null) return a; // no op
+        if (b == null || b.isEmpty()) return a; // no op
         if (a.isEmpty()) return b;
         List<BasePredicate> predicates = new ArrayList<>();
         List<MultiPredicate> children = new ArrayList<>();
@@ -397,6 +397,7 @@ public abstract class MultiPredicate {
                                          List<BasePredicate> predicates, List<MultiPredicate> children) {
         if (multiPredicate.isSingle() || multiPredicate.isType(type)) {
             predicates.addAll(multiPredicate.predicates());
+            children.addAll(multiPredicate.children());
         } else {
             children.add(multiPredicate);
         }
