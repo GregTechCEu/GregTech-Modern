@@ -610,7 +610,7 @@ public class GCYMMachines {
                 MultiPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded())
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
-                exportPredicate.setMaxLayerLimited(1);
+                exportPredicate = exportPredicate.setMaxLayerLimited(1);
                 return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                         .slice("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .slice("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")

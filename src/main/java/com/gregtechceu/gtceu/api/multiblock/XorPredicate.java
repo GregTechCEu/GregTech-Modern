@@ -26,20 +26,6 @@ public class XorPredicate extends MultiPredicate {
     }
 
     @Override
-    public MultiPredicate setMinCount(int min) {
-        this.noneValid = min < 1 && expand().stream()
-                .anyMatch(p -> p.getMinSliceCount() <= 0);
-        return super.setMinCount(min);
-    }
-
-    @Override
-    public MultiPredicate setMinSliceCount(int min) {
-        this.noneValid = min < 1 && expand().stream()
-                .anyMatch(p -> p.getMinCount() <= 0);
-        return super.setMinSliceCount(min);
-    }
-
-    @Override
     public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
         context.setStage(PredicateContext.PredicateStage.INTERNAL);
         for (BasePredicate predicate : predicates()) {

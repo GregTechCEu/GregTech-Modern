@@ -89,6 +89,14 @@ class TestablePredicate extends BasePredicate {
     }
 
     @Override
+    public BasePredicate copy() {
+        TestablePredicate copy = new TestablePredicate(this.name, this.predicate, this.candidates, this.contents,
+                this.onError);
+        copyTo(copy);
+        return copy;
+    }
+
+    @Override
     public List<BlockInfo> computeCandidates() {
         return this.candidates.get();
     }

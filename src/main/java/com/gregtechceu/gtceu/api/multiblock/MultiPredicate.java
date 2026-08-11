@@ -166,14 +166,28 @@ public abstract class MultiPredicate {
         return this.hasAir;
     }
 
+    private MultiPredicate mutatedCopy(Consumer<BasePredicate> mutation) {
+        List<BasePredicate> copiedPredicates = new ArrayList<>(this.predicates.size());
+        for (BasePredicate predicate : this.predicates) {
+            BasePredicate copy = predicate.copy();
+            mutation.accept(copy);
+            copiedPredicates.add(copy);
+        }
+        List<MultiPredicate> copiedChildren = new ArrayList<>(this.children.size());
+        for (MultiPredicate child : this.children) {
+            copiedChildren.add(child.mutatedCopy(mutation));
+        }
+        MultiPredicate copy = this.type.makePredicate(copiedChildren, copiedPredicates, this.hasAir);
+        copy.setController(this.controller);
+        return copy;
+    }
+
     public MultiPredicate addTooltips(Component tooltip) {
-        this.forEach(p -> p.addTooltips(tooltip));
-        return this;
+        return mutatedCopy(p -> p.addTooltips(tooltip));
     }
 
     public MultiPredicate setPriority(int priority) {
-        this.forEach(p -> p.setPriority(priority));
-        return this;
+        return mutatedCopy(p -> p.setPriority(priority));
     }
 
     public MultiPredicate setMinGlobalLimited(int min) {
@@ -185,8 +199,7 @@ public abstract class MultiPredicate {
     }
 
     public MultiPredicate setMinCount(int min) {
-        this.forEach(p -> p.setMinCount(min));
-        return this;
+        return mutatedCopy(p -> p.setMinCount(min));
     }
 
     public MultiPredicate setMaxGlobalLimited(int max) {
@@ -198,8 +211,7 @@ public abstract class MultiPredicate {
     }
 
     public MultiPredicate setMaxCount(int max) {
-        this.forEach(p -> p.setMaxCount(max));
-        return this;
+        return mutatedCopy(p -> p.setMaxCount(max));
     }
 
     public MultiPredicate setGlobalMinMax(int min, int max) {
@@ -215,8 +227,7 @@ public abstract class MultiPredicate {
     }
 
     public MultiPredicate setMinSliceCount(int min) {
-        this.forEach(p -> p.setMinSliceCount(min));
-        return this;
+        return mutatedCopy(p -> p.setMinSliceCount(min));
     }
 
     public MultiPredicate setMaxLayerLimited(int max) {
@@ -228,13 +239,11 @@ public abstract class MultiPredicate {
     }
 
     public MultiPredicate setMaxSliceCount(int max) {
-        this.forEach(p -> p.setMaxSliceCount(max));
-        return this;
+        return mutatedCopy(p -> p.setMaxSliceCount(max));
     }
 
     public MultiPredicate setPreviewCount(int previewCount) {
-        this.forEach(p -> p.setPreviewCount(previewCount));
-        return this;
+        return mutatedCopy(p -> p.setPreviewCount(previewCount));
     }
 
     public MultiPredicate setLayerMinMax(int min, int max) {
@@ -255,8 +264,7 @@ public abstract class MultiPredicate {
     }
 
     public MultiPredicate setDisableRenderFormed(boolean disable) {
-        this.forEach(p -> p.setDisableRenderFormed(disable));
-        return this;
+        return mutatedCopy(p -> p.setDisableRenderFormed(disable));
     }
 
     /// @return a new multi predicate where any predicate may pass or be present in the multiblock
