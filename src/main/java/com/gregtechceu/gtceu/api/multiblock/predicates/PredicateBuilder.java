@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Accessors(fluent = true)
@@ -31,8 +32,7 @@ public class PredicateBuilder {
     private final String name;
     @Setter
     private Predicate<PredicateContext> predicate;
-    @Setter
-    private Stream<BlockInfo> candidates = Stream.empty();
+    private Supplier<Stream<BlockInfo>> candidates = Stream::empty;
     @Setter
     private @Nullable Consumer<StringBuilder> contents;
     private final List<ErrorHandler> errorHandlers = new ArrayList<>();
@@ -55,9 +55,19 @@ public class PredicateBuilder {
         return this;
     }
 
+    public PredicateBuilder candidates(Stream<BlockInfo> candidates) {
+        this.candidates = () -> candidates;
+        return this;
+    }
+
+    public PredicateBuilder candidatesSupplier(Supplier<Stream<BlockInfo>> candidates) {
+        this.candidates = candidates;
+        return this;
+    }
+
     /// fills candidates and sets string contents with this block tag
     public PredicateBuilder blockTag(TagKey<Block> tag) {
-        this.candidates = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
+        this.candidates = () -> Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
                 .getTag(tag).stream().map(BlockInfo::fromBlock);
         this.contents = builder -> builder.append(tag.location());
         return this;
@@ -65,7 +75,7 @@ public class PredicateBuilder {
 
     /// fills candidates and sets string contents with this fluid tag
     public PredicateBuilder fluidTag(TagKey<Fluid> tag) {
-        this.candidates = Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
+        this.candidates = () -> Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
                 .getTag(tag).stream().map(BlockInfo::fromFluid);
         this.contents = builder -> builder.append(tag.location());
         return this;
@@ -78,7 +88,7 @@ public class PredicateBuilder {
     public BasePredicate build() {
         return new TestablePredicate(name,
                 Objects.requireNonNull(predicate, "predicate == null"),
-                candidates,
+                candidates.get(),
                 contents,
                 composeErrorHandlers());
     }
