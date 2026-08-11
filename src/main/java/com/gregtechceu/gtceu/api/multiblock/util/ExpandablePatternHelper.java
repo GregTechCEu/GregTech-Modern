@@ -115,7 +115,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             if (minCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (minCount <= 0 || totalAlreadyPopulated >= minCount) continue;
+            if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {

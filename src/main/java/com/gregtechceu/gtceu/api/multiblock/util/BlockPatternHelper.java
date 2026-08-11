@@ -137,10 +137,10 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            boolean globalMinUnmet = minCount > 0 && totalAlreadyPopulated < minCount;
-            boolean layerMinUnmet = basePredicate.getMinSliceCount() > 0 &&
-                    layerAlreadyPopulated < basePredicate.getMinSliceCount();
-            if (!globalMinUnmet && !layerMinUnmet) continue;
+            boolean globalMinMet = minCount == -1 || totalAlreadyPopulated >= minCount;
+            boolean sliceMinMet = basePredicate.testSliceMin(layerAlreadyPopulated);
+
+            if (globalMinMet && sliceMinMet) continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
@@ -173,9 +173,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if (basePredicate.getMaxSliceCount() != -1 && layerAlreadyPopulated >= basePredicate.getMaxSliceCount()) {
-                continue;
-            }
+            if (!basePredicate.testSliceMax(layerAlreadyPopulated + 1)) continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
