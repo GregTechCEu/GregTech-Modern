@@ -114,7 +114,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
             BlockInfo toInsert = null;
@@ -138,7 +138,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
-            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate) + 1;
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
             BlockInfo toInsert = null;
