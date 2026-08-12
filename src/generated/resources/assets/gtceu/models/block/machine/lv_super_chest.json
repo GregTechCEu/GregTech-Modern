@@ -1,5 +1,4 @@
 {
-    "parent": "minecraft:block/block",
     "dynamic_renders": [
         {
             "type": "gtceu:quantum_chest_item"
@@ -7,6 +6,7 @@
     ],
     "loader": "gtceu:machine",
     "machine": "gtceu:lv_super_chest",
+    "parent": "minecraft:block/block",
     "variants": {
         "": {
             "model": {

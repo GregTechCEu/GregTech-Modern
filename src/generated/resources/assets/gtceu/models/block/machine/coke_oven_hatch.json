@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:coke_oven_hatch",
+    "parent": "minecraft:block/block",
     "variants": {
         "": {
             "model": "gtceu:block/machine/part/coke_oven_hatch"

@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:advanced_monitor",
+    "parent": "minecraft:block/block",
     "replaceable_textures": [
         "all"
     ],

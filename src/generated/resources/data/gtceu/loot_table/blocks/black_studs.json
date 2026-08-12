@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:black_studs"
+                    "name": "gtceu:black_studs",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/black_studs"
+    "random_sequence": "gtceu:blocks/black_studs",
+    "type": "minecraft:block"
 }

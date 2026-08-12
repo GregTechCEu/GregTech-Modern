@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:gas_large_turbine",
+    "parent": "minecraft:block/block",
     "texture_overrides": {
         "all": "gtceu:block/casings/mechanic/machine_casing_turbine_stainless_steel"
     },

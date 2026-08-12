@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:max_input_bus",
+    "parent": "minecraft:block/block",
     "replaceable_textures": [
         "bottom",
         "top",

@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:hv_machine_casing"
+                    "name": "gtceu:hv_machine_casing",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/hv_machine_casing"
+    "random_sequence": "gtceu:blocks/hv_machine_casing",
+    "type": "minecraft:block"
 }

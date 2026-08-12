@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:light_blue_lamp"
+                    "name": "gtceu:light_blue_lamp",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/light_blue_lamp"
+    "random_sequence": "gtceu:blocks/light_blue_lamp",
+    "type": "minecraft:block"
 }

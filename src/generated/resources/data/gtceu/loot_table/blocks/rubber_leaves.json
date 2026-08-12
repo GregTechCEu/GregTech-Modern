@@ -1,14 +1,11 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
             "entries": [
                 {
-                    "type": "minecraft:alternatives",
                     "children": [
                         {
-                            "type": "minecraft:item",
                             "conditions": [
                                 {
                                     "condition": "minecraft:any_of",
@@ -37,10 +34,10 @@
                                     ]
                                 }
                             ],
-                            "name": "gtceu:rubber_leaves"
+                            "name": "gtceu:rubber_leaves",
+                            "type": "minecraft:item"
                         },
                         {
-                            "type": "minecraft:item",
                             "conditions": [
                                 {
                                     "condition": "minecraft:survives_explosion"
@@ -56,9 +53,11 @@
                                     "enchantment": "minecraft:fortune"
                                 }
                             ],
-                            "name": "gtceu:rubber_sapling"
+                            "name": "gtceu:rubber_sapling",
+                            "type": "minecraft:item"
                         }
-                    ]
+                    ],
+                    "type": "minecraft:alternatives"
                 }
             ],
             "rolls": 1.0
@@ -98,7 +97,6 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
                     "conditions": [
                         {
                             "chances": [
@@ -116,9 +114,9 @@
                         {
                             "add": false,
                             "count": {
-                                "type": "minecraft:uniform",
                                 "max": 2.0,
-                                "min": 1.0
+                                "min": 1.0,
+                                "type": "minecraft:uniform"
                             },
                             "function": "minecraft:set_count"
                         },
@@ -126,11 +124,13 @@
                             "function": "minecraft:explosion_decay"
                         }
                     ],
-                    "name": "minecraft:stick"
+                    "name": "minecraft:stick",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/rubber_leaves"
+    "random_sequence": "gtceu:blocks/rubber_leaves",
+    "type": "minecraft:block"
 }

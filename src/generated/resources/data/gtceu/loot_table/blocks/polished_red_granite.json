@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:polished_red_granite"
+                    "name": "gtceu:polished_red_granite",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/polished_red_granite"
+    "random_sequence": "gtceu:blocks/polished_red_granite",
+    "type": "minecraft:block"
 }

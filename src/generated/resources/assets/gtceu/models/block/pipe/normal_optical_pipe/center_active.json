@@ -1,5 +1,4 @@
 {
-    "parent": "minecraft:block/block",
     "elements": [
         {
             "faces": {
@@ -108,6 +107,7 @@
             ]
         }
     ],
+    "parent": "minecraft:block/block",
     "render_type": "minecraft:cutout_mipped",
     "textures": {
         "particle": "#side",

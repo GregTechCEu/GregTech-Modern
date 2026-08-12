@@ -1,8 +1,6 @@
 {
-    "parent": "minecraft:block/block",
     "dynamic_renders": [
         {
-            "type": "gtceu:boiler_multi_parts",
             "casing_block": {
                 "Name": "gtceu:solid_machine_casing"
             },
@@ -17,11 +15,13 @@
                 "Properties": {
                     "active": "false"
                 }
-            }
+            },
+            "type": "gtceu:boiler_multi_parts"
         }
     ],
     "loader": "gtceu:machine",
     "machine": "gtceu:steel_large_boiler",
+    "parent": "minecraft:block/block",
     "texture_overrides": {
         "all": "gtceu:block/casings/solid/machine_casing_solid_steel"
     },

@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:mossy_dark_concrete_bricks"
+                    "name": "gtceu:mossy_dark_concrete_bricks",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/mossy_dark_concrete_bricks"
+    "random_sequence": "gtceu:blocks/mossy_dark_concrete_bricks",
+    "type": "minecraft:block"
 }

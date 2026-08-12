@@ -1,13 +1,4 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "mixinextras": {
-        "minVersion": "0.5.0-rc.3"
-    },
-    "refmap": "gtceu.refmap.json",
-    "package": "com.gregtechceu.gtceu.core.mixins",
-    "compatibilityLevel": "JAVA_21",
-    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
         "client.AbstractClientPlayerAccessor",
         "client.BakedQuadMixin",
@@ -40,7 +31,17 @@
         "client.bloom.normal.RenderTypeMixin",
         "dev.client.KeyboardHandlerMixin",
         "jei.RecipesGuiAccessor",
+        null
     ],
+    "compatibilityLevel": "JAVA_21",
+    "injectors": {
+        "defaultRequire": 1,
+        "maxShiftBy": 5
+    },
+    "minVersion": "0.8",
+    "mixinextras": {
+        "minVersion": "0.5.0-rc.3"
+    },
     "mixins": [
         "BlockBehaviourAccessor",
         "BlockMixin",
@@ -82,8 +83,8 @@
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor"
     ],
-    "injectors": {
-        "defaultRequire": 1,
-        "maxShiftBy": 5
-    }
+    "package": "com.gregtechceu.gtceu.core.mixins",
+    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
+    "refmap": "gtceu.refmap.json",
+    "required": true
 }

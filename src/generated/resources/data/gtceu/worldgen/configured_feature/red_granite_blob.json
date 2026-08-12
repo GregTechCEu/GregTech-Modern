@@ -1,10 +1,9 @@
 {
-    "type": "gtceu:stone_blob",
     "config": {
         "size": {
-            "type": "minecraft:uniform",
             "max_inclusive": 30,
-            "min_inclusive": 20
+            "min_inclusive": 20,
+            "type": "minecraft:uniform"
         },
         "state": {
             "state": {
@@ -15,5 +14,6 @@
                 "tag": "minecraft:stone_ore_replaceables"
             }
         }
-    }
+    },
+    "type": "gtceu:stone_blob"
 }

@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:overworld_marker"
+                    "name": "gtceu:overworld_marker",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/overworld_marker"
+    "random_sequence": "gtceu:blocks/overworld_marker",
+    "type": "minecraft:block"
 }

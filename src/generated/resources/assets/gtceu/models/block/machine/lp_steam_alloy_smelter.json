@@ -1,5 +1,4 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:lp_steam_alloy_smelter",
     "multipart": [
@@ -112,5 +111,6 @@
                 "steam_vent": "back"
             }
         }
-    ]
+    ],
+    "parent": "minecraft:block/block"
 }

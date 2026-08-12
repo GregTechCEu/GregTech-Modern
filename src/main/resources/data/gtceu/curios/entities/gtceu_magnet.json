@@ -1,4 +1,8 @@
 {
-  "entities": ["player"],
-  "slots": ["gtceu_magnet"]
+    "entities": [
+        "player"
+    ],
+    "slots": [
+        "gtceu_magnet"
+    ]
 }

@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:wood_drum",
+    "parent": "minecraft:block/block",
     "variants": {
         "": {
             "model": "gtceu:block/machine/template/drum/wooden_drum"

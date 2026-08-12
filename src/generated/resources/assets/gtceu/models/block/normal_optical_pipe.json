@@ -1,6 +1,6 @@
 {
-    "parent": "gtceu:block/pipe/normal_optical_pipe/center",
     "loader": "gtceu:pipe",
+    "parent": "gtceu:block/pipe/normal_optical_pipe/center",
     "parts": {
         "center": {
             "model": "gtceu:block/pipe/normal_optical_pipe/center"

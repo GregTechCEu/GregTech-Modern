@@ -1,9 +1,9 @@
 {
-    "type": "minecraft:interpolated",
     "argument": {
-        "type": "minecraft:noise",
         "noise": "minecraft:ore_veininess",
+        "type": "minecraft:noise",
         "xz_scale": 1.5,
         "y_scale": 1.5
-    }
+    },
+    "type": "minecraft:interpolated"
 }

@@ -1,5 +1,4 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:lp_steam_solar_boiler",
     "multipart": [
@@ -55,5 +54,6 @@
                 "recipe_logic_status": "suspend"
             }
         }
-    ]
+    ],
+    "parent": "minecraft:block/block"
 }

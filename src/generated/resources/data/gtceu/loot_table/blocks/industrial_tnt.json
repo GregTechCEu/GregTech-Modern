@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:industrial_tnt"
+                    "name": "gtceu:industrial_tnt",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/industrial_tnt"
+    "random_sequence": "gtceu:blocks/industrial_tnt",
+    "type": "minecraft:block"
 }

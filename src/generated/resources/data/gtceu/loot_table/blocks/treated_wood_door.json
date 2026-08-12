@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,7 +9,6 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
                     "conditions": [
                         {
                             "block": "gtceu:treated_wood_door",
@@ -20,11 +18,13 @@
                             }
                         }
                     ],
-                    "name": "gtceu:treated_wood_door"
+                    "name": "gtceu:treated_wood_door",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/treated_wood_door"
+    "random_sequence": "gtceu:blocks/treated_wood_door",
+    "type": "minecraft:block"
 }

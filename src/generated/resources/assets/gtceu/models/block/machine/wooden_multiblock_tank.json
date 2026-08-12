@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:wooden_multiblock_tank",
+    "parent": "minecraft:block/block",
     "texture_overrides": {
         "bottom": "gtceu:block/casings/wood_wall/bottom",
         "side": "gtceu:block/casings/wood_wall/side",

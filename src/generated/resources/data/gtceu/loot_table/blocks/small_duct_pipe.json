@@ -1,5 +1,4 @@
 {
-    "type": "minecraft:block",
     "pools": [
         {
             "bonus_rolls": 0.0,
@@ -10,12 +9,13 @@
             ],
             "entries": [
                 {
-                    "type": "minecraft:item",
-                    "name": "gtceu:small_duct_pipe"
+                    "name": "gtceu:small_duct_pipe",
+                    "type": "minecraft:item"
                 }
             ],
             "rolls": 1.0
         }
     ],
-    "random_sequence": "gtceu:blocks/small_duct_pipe"
+    "random_sequence": "gtceu:blocks/small_duct_pipe",
+    "type": "minecraft:block"
 }

@@ -1,9 +1,9 @@
 {
     "biomes": "#minecraft:is_end",
     "cluster_size": {
-        "type": "minecraft:uniform",
         "max_inclusive": 64,
-        "min_inclusive": 50
+        "min_inclusive": 50,
+        "type": "minecraft:uniform"
     },
     "density": 0.7,
     "dimension_filter": [
@@ -11,7 +11,6 @@
     ],
     "discard_chance_on_air_exposure": 0.0,
     "generator": {
-        "type": "gtceu:dike",
         "blocks": [
             {
                 "block": "gtceu:scheelite",
@@ -33,26 +32,27 @@
             }
         ],
         "max_y": 60,
-        "min_y": 20
+        "min_y": 20,
+        "type": "gtceu:dike"
     },
     "height_range": {
         "height": {
-            "type": "minecraft:uniform",
             "max_inclusive": {
                 "absolute": 60
             },
             "min_inclusive": {
                 "absolute": 20
-            }
+            },
+            "type": "minecraft:uniform"
         }
     },
     "indicators": [
         {
-            "type": "gtceu:surface",
             "block": "gtceu:scheelite",
             "density": 0.2,
             "placement": "above",
-            "radius": 5
+            "radius": 5,
+            "type": "gtceu:surface"
         }
     ],
     "layer": "gtceu:endstone",

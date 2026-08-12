@@ -1,74 +1,107 @@
 {
-    "targets": [
-        "final",
-        "filter",
-        { "name": "swap_a2", "bilinear": true },
-        { "name": "swap_a4", "bilinear": true },
-        { "name": "swap_1",  "bilinear": true },
-        { "name": "swap_2",  "bilinear": true }
-    ],
     "passes": [
         {
-            "name": "gtceu:filter_bloom_color",
-            "intarget": "final",
-            "outtarget": "filter",
             "auxtargets": [
-                { "id": "final:depth",          "name": "DiffuseDepthSampler" },
-                { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
-            ]
+                {
+                    "id": "final:depth",
+                    "name": "DiffuseDepthSampler"
+                },
+                {
+                    "id": "minecraft:main:depth",
+                    "name": "MainDepthSampler"
+                }
+            ],
+            "intarget": "final",
+            "name": "gtceu:filter_bloom_color",
+            "outtarget": "filter"
         },
         {
-            "name": "blit",
             "intarget": "filter",
+            "name": "blit",
             "outtarget": "swap_a2"
         },
         {
-            "name": "gtceu:down_sampling",
             "intarget": "swap_a2",
+            "name": "gtceu:down_sampling",
             "outtarget": "swap_a4"
         },
         {
-            "name": "gtceu:down_sampling",
             "intarget": "swap_a4",
+            "name": "gtceu:down_sampling",
             "outtarget": "swap_1"
         },
         {
-            "name": "gtceu:down_sampling",
             "intarget": "swap_1",
+            "name": "gtceu:down_sampling",
             "outtarget": "swap_2"
         },
         {
-            "name": "gtceu:up_sampling",
-            "intarget": "swap_2",
-            "outtarget": "swap_1",
             "auxtargets": [
-                { "id": "swap_a4", "name": "DownTexture" }
-            ]
+                {
+                    "id": "swap_a4",
+                    "name": "DownTexture"
+                }
+            ],
+            "intarget": "swap_2",
+            "name": "gtceu:up_sampling",
+            "outtarget": "swap_1"
         },
         {
-            "name": "gtceu:up_sampling",
+            "auxtargets": [
+                {
+                    "id": "swap_a2",
+                    "name": "DownTexture"
+                }
+            ],
             "intarget": "swap_1",
-            "outtarget": "swap_2",
-            "auxtargets": [
-                { "id": "swap_a2", "name": "DownTexture" }
-            ]
-        },
-        {
             "name": "gtceu:up_sampling",
-            "intarget": "swap_2",
-            "outtarget": "swap_1",
-            "auxtargets": [
-                { "id": "filter", "name": "DownTexture" }
-            ]
+            "outtarget": "swap_2"
         },
         {
+            "auxtargets": [
+                {
+                    "id": "filter",
+                    "name": "DownTexture"
+                }
+            ],
+            "intarget": "swap_2",
+            "name": "gtceu:up_sampling",
+            "outtarget": "swap_1"
+        },
+        {
+            "auxtargets": [
+                {
+                    "id": "filter",
+                    "name": "HighlightSampler"
+                },
+                {
+                    "id": "minecraft:main",
+                    "name": "MainSampler"
+                }
+            ],
+            "intarget": "swap_1",
             "name": "gtceu:unity_composite",
-            "intarget": "swap_1",
-            "outtarget": "final",
-            "auxtargets": [
-                { "id": "filter",         "name": "HighlightSampler" },
-                { "id": "minecraft:main", "name": "MainSampler" }
-            ]
+            "outtarget": "final"
+        }
+    ],
+    "targets": [
+        "final",
+        "filter",
+        {
+            "bilinear": true,
+            "name": "swap_a2"
+        },
+        {
+            "bilinear": true,
+            "name": "swap_a4"
+        },
+        {
+            "bilinear": true,
+            "name": "swap_1"
+        },
+        {
+            "bilinear": true,
+            "name": "swap_2"
         }
     ]
 }

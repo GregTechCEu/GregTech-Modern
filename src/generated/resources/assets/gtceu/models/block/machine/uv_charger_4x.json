@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:uv_charger_4x",
+    "parent": "minecraft:block/block",
     "variants": {
         "charger_state=finished": {
             "model": {

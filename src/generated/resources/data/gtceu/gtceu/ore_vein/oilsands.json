@@ -1,9 +1,9 @@
 {
     "biomes": "#minecraft:is_overworld",
     "cluster_size": {
-        "type": "minecraft:uniform",
         "max_inclusive": 29,
-        "min_inclusive": 25
+        "min_inclusive": 25,
+        "type": "minecraft:uniform"
     },
     "density": 0.3,
     "dimension_filter": [
@@ -11,7 +11,6 @@
     ],
     "discard_chance_on_air_exposure": 0.0,
     "generator": {
-        "type": "gtceu:layer",
         "layer_patterns": [
             [
                 {
@@ -47,26 +46,27 @@
                     "weight": 1
                 }
             ]
-        ]
+        ],
+        "type": "gtceu:layer"
     },
     "height_range": {
         "height": {
-            "type": "minecraft:uniform",
             "max_inclusive": {
                 "absolute": 80
             },
             "min_inclusive": {
                 "absolute": 30
-            }
+            },
+            "type": "minecraft:uniform"
         }
     },
     "indicators": [
         {
-            "type": "gtceu:surface",
             "block": "gtceu:oilsands",
             "density": 0.2,
             "placement": "surface",
-            "radius": 5
+            "radius": 5,
+            "type": "gtceu:surface"
         }
     ],
     "layer": "gtceu:stone",

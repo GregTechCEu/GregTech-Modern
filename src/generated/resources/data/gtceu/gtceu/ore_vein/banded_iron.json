@@ -1,9 +1,9 @@
 {
     "biomes": "#minecraft:is_nether",
     "cluster_size": {
-        "type": "minecraft:uniform",
         "max_inclusive": 52,
-        "min_inclusive": 40
+        "min_inclusive": 40,
+        "type": "minecraft:uniform"
     },
     "density": 1.0,
     "dimension_filter": [
@@ -11,7 +11,6 @@
     ],
     "discard_chance_on_air_exposure": 0.0,
     "generator": {
-        "type": "gtceu:veined",
         "edge_roundoff_begin": 3,
         "filler_block": {
             "Name": "minecraft:air"
@@ -43,26 +42,27 @@
                 "weight": 1
             }
         ],
+        "type": "gtceu:veined",
         "veininess_threshold": 0.01
     },
     "height_range": {
         "height": {
-            "type": "minecraft:uniform",
             "max_inclusive": {
                 "absolute": 40
             },
             "min_inclusive": {
                 "absolute": 20
-            }
+            },
+            "type": "minecraft:uniform"
         }
     },
     "indicators": [
         {
-            "type": "gtceu:surface",
             "block": "gtceu:goethite",
             "density": 0.2,
             "placement": "above",
-            "radius": 5
+            "radius": 5,
+            "type": "gtceu:surface"
         }
     ],
     "layer": "gtceu:netherrack",

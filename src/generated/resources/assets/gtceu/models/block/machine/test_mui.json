@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:test_mui",
+    "parent": "minecraft:block/block",
     "replaceable_textures": [
         "all"
     ],

@@ -1,5 +1,4 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:uev_rotor_holder",
     "multipart": [
@@ -24,6 +23,7 @@
             }
         }
     ],
+    "parent": "minecraft:block/block",
     "replaceable_textures": [
         "bottom",
         "top",

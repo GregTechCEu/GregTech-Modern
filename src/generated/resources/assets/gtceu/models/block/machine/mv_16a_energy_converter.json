@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:mv_16a_energy_converter",
+    "parent": "minecraft:block/block",
     "variants": {
         "fe_to_eu=false": {
             "model": {

@@ -1,5 +1,4 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:hp_steam_extractor",
     "multipart": [
@@ -128,5 +127,6 @@
                 "steam_vent": "back"
             }
         }
-    ]
+    ],
+    "parent": "minecraft:block/block"
 }

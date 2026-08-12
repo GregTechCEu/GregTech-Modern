@@ -1,17 +1,17 @@
 {
-    "parent": "minecraft:block/block",
     "dynamic_renders": [
         {
-            "type": "gtceu:fluid_area",
             "block_light": 15,
             "fixed_fluid": "minecraft:lava",
             "offset_face": -0.125,
             "overwrite_light": true,
-            "sky_light": 15
+            "sky_light": 15,
+            "type": "gtceu:fluid_area"
         }
     ],
     "loader": "gtceu:machine",
     "machine": "gtceu:primitive_blast_furnace",
+    "parent": "minecraft:block/block",
     "texture_overrides": {
         "all": "gtceu:block/casings/solid/machine_primitive_bricks"
     },

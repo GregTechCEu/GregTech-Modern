@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:item/material_sets/shiny/rod_long",
-  "textures": {
-    "layer2": "gtceu:item/material_sets/bright/rod_long_overlay"
-  }
+    "parent": "gtceu:item/material_sets/shiny/rod_long",
+    "textures": {
+        "layer2": "gtceu:item/material_sets/bright/rod_long_overlay"
+    }
 }

@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:mv_machine_hull",
+    "parent": "minecraft:block/block",
     "replaceable_textures": [
         "bottom",
         "top",

@@ -1,9 +1,9 @@
 {
     "biomes": "#minecraft:is_overworld",
     "cluster_size": {
-        "type": "minecraft:uniform",
         "max_inclusive": 64,
-        "min_inclusive": 50
+        "min_inclusive": 50,
+        "type": "minecraft:uniform"
     },
     "density": 0.75,
     "dimension_filter": [
@@ -11,7 +11,6 @@
     ],
     "discard_chance_on_air_exposure": 0.0,
     "generator": {
-        "type": "gtceu:dike",
         "blocks": [
             {
                 "block": "gtceu:red_garnet",
@@ -39,26 +38,27 @@
             }
         ],
         "max_y": 50,
-        "min_y": -10
+        "min_y": -10,
+        "type": "gtceu:dike"
     },
     "height_range": {
         "height": {
-            "type": "minecraft:uniform",
             "max_inclusive": {
                 "absolute": 50
             },
             "min_inclusive": {
                 "absolute": -10
-            }
+            },
+            "type": "minecraft:uniform"
         }
     },
     "indicators": [
         {
-            "type": "gtceu:surface",
             "block": "gtceu:red_garnet",
             "density": 0.2,
             "placement": "above",
-            "radius": 5
+            "radius": 5,
+            "type": "gtceu:surface"
         }
     ],
     "layer": "gtceu:stone",

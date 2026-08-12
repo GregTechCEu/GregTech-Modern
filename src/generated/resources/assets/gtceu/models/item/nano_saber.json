@@ -1,5 +1,4 @@
 {
-    "parent": "minecraft:item/generated",
     "overrides": [
         {
             "model": "gtceu:item/nano_saber/active",
@@ -8,6 +7,7 @@
             }
         }
     ],
+    "parent": "minecraft:item/generated",
     "textures": {
         "layer0": "gtceu:item/nano_saber/normal"
     }

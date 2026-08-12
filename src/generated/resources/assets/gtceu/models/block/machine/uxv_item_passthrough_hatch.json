@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:uxv_item_passthrough_hatch",
+    "parent": "minecraft:block/block",
     "replaceable_textures": [
         "bottom",
         "top",

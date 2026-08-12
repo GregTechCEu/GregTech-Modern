@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:block/block",
     "loader": "gtceu:machine",
     "machine": "gtceu:mv_world_accelerator",
+    "parent": "minecraft:block/block",
     "variants": {
         "active=false,random_tick_mode=false,working_enabled=false": {
             "model": {

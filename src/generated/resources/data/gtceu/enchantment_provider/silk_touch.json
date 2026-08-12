@@ -1,5 +1,5 @@
 {
-    "type": "minecraft:single",
     "enchantment": "minecraft:silk_touch",
-    "level": 1
+    "level": 1,
+    "type": "minecraft:single"
 }
