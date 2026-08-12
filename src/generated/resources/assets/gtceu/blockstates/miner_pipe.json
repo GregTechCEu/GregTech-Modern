@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/miner_pipe"
+    "variants": {
+        "": {
+            "model": "gtceu:block/miner_pipe"
+        }
     }
-  }
 }

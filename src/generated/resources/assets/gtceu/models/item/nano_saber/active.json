@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "gtceu:item/nano_saber/active"
-  }
+    "parent": "minecraft:item/handheld",
+    "textures": {
+        "layer0": "gtceu:item/nano_saber/active"
+    }
 }

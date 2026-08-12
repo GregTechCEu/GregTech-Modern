@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/firebricks"
+    "variants": {
+        "": {
+            "model": "gtceu:block/firebricks"
+        }
     }
-  }
 }

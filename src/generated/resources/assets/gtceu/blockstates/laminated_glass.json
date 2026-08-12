@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/laminated_glass"
+    "variants": {
+        "": {
+            "model": "gtceu:block/laminated_glass"
+        }
     }
-  }
 }

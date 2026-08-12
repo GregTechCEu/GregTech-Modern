@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/polished_marble"
+    "variants": {
+        "": {
+            "model": "gtceu:block/polished_marble"
+        }
     }
-  }
 }

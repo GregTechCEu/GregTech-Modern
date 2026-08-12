@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/pump_deck"
+    "variants": {
+        "": {
+            "model": "gtceu:block/pump_deck"
+        }
     }
-  }
 }

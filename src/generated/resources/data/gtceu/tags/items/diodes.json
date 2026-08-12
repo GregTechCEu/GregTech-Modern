@@ -1,6 +1,6 @@
 {
-  "values": [
-    "gtceu:diode",
-    "gtceu:smd_diode"
-  ]
+    "values": [
+        "gtceu:diode",
+        "gtceu:smd_diode"
+    ]
 }

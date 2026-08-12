@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/small_light_concrete_bricks"
+    "variants": {
+        "": {
+            "model": "gtceu:block/small_light_concrete_bricks"
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/uiv_machine_casing"
+    "variants": {
+        "": {
+            "model": "gtceu:block/uiv_machine_casing"
+        }
     }
-  }
 }

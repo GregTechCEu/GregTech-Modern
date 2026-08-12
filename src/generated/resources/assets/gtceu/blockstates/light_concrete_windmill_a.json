@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/light_concrete_windmill_a"
+    "variants": {
+        "": {
+            "model": "gtceu:block/light_concrete_windmill_a"
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/creosote"
+    "variants": {
+        "": {
+            "model": "gtceu:block/creosote"
+        }
     }
-  }
 }

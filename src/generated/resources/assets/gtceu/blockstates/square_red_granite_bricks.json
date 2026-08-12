@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/square_red_granite_bricks"
+    "variants": {
+        "": {
+            "model": "gtceu:block/square_red_granite_bricks"
+        }
     }
-  }
 }

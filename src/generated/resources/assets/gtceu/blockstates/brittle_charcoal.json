@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/brittle_charcoal"
+    "variants": {
+        "": {
+            "model": "gtceu:block/brittle_charcoal"
+        }
     }
-  }
 }

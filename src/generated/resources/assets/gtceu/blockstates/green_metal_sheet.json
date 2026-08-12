@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/green_metal_sheet"
+    "variants": {
+        "": {
+            "model": "gtceu:block/green_metal_sheet"
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/dark_concrete_tile"
+    "variants": {
+        "": {
+            "model": "gtceu:block/dark_concrete_tile"
+        }
     }
-  }
 }

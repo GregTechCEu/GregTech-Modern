@@ -1,5 +1,5 @@
 {
-  "textures": {
-    "particle": "gtceu:block/fluids/fluid.natural_gas"
-  }
+    "textures": {
+        "particle": "gtceu:block/fluids/fluid.natural_gas"
+    }
 }

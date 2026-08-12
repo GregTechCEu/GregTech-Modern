@@ -1,21 +1,21 @@
 {
-  "type": "minecraft:block",
-  "pools": [
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
+    "pools": [
         {
-          "condition": "minecraft:survives_explosion"
+            "bonus_rolls": 0.0,
+            "conditions": [
+                {
+                    "condition": "minecraft:survives_explosion"
+                }
+            ],
+            "entries": [
+                {
+                    "name": "gtceu:palladium_substation",
+                    "type": "minecraft:item"
+                }
+            ],
+            "rolls": 1.0
         }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "gtceu:palladium_substation"
-        }
-      ],
-      "rolls": 1.0
-    }
-  ],
-  "random_sequence": "gtceu:blocks/palladium_substation"
+    ],
+    "random_sequence": "gtceu:blocks/palladium_substation",
+    "type": "minecraft:block"
 }

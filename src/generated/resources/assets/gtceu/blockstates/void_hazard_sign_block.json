@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/void_hazard_sign_block"
+    "variants": {
+        "": {
+            "model": "gtceu:block/void_hazard_sign_block"
+        }
     }
-  }
 }

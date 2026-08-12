@@ -61,7 +61,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private final int maximumRadius;
     @Getter
     public ItemStack pickaxeTool;
+    @SaveField
     private final LinkedList<BlockPos> blocksToMine = new LinkedList<>();
+    @SaveField
     private int blocksToMineOriginalCount = 0;
     @Getter
     @SaveField

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/natural_gas"
+    "variants": {
+        "": {
+            "model": "gtceu:block/natural_gas"
+        }
     }
-  }
 }

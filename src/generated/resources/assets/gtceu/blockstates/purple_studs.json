@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/purple_studs"
+    "variants": {
+        "": {
+            "model": "gtceu:block/purple_studs"
+        }
     }
-  }
 }

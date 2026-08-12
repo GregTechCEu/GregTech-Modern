@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "gtceu:item/platinum_lighter"
-  }
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "gtceu:item/platinum_lighter"
+    }
 }

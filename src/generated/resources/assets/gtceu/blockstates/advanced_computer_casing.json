@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/advanced_computer_casing"
+    "variants": {
+        "": {
+            "model": "gtceu:block/advanced_computer_casing"
+        }
     }
-  }
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:block/fence_post",
-  "textures": {
-    "texture": "gtceu:block/treated_wood_planks"
-  }
+    "parent": "minecraft:block/fence_post",
+    "textures": {
+        "texture": "gtceu:block/treated_wood_planks"
+    }
 }

@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/hv_sensor"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "gtceu:item/hv_sensor"
+    }
 }

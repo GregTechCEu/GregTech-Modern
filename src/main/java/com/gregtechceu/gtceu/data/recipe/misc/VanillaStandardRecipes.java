@@ -531,7 +531,7 @@ public class VanillaStandardRecipes {
             MIXER_RECIPES.recipeBuilder(dyeName + "_concrete_powder").duration(200).EUt(VA[ULV])
                     .inputItems(Tags.Items.SAND, 4)
                     .inputItems(Tags.Items.GRAVEL, 4)
-                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(L))
                     .outputItems(new ItemStack(
                             BuiltInRegistries.ITEM
                                     .get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete_powder")),
@@ -551,7 +551,7 @@ public class VanillaStandardRecipes {
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_concrete_to_" + dyeName).duration(20).EUt(VA[ULV])
                         .inputItems(CustomTags.CONCRETE_ITEM)
-                        .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                        .inputFluids(DYE_MATERIALS.get(color).getFluid(L / 8))
                         .outputItems(
                                 new ItemStack(BuiltInRegistries.ITEM
                                         .get(ResourceLocation.withDefaultNamespace(dyeName + "_concrete"))))
@@ -561,7 +561,7 @@ public class VanillaStandardRecipes {
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_terracotta_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Blocks.TERRACOTTA))
-                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(L / 8))
                     .outputItems(
                             new ItemStack(BuiltInRegistries.ITEM
                                     .get(ResourceLocation.withDefaultNamespace(dyeName + "_terracotta"))))
@@ -570,7 +570,7 @@ public class VanillaStandardRecipes {
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_glass_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Blocks.GLASS))
-                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(L / 8))
                     .outputItems(
                             new ItemStack(BuiltInRegistries.ITEM
                                     .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass"))))
@@ -579,7 +579,7 @@ public class VanillaStandardRecipes {
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_glass_pane_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Blocks.GLASS_PANE))
-                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(L / 8))
                     .outputItems(new ItemStack(
                             BuiltInRegistries.ITEM
                                     .get(ResourceLocation.withDefaultNamespace(dyeName + "_stained_glass_pane"))))
@@ -595,7 +595,7 @@ public class VanillaStandardRecipes {
 
             CHEMICAL_BATH_RECIPES.recipeBuilder("dye_candle_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Items.CANDLE))
-                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(L / 8))
                     .outputItems(new ItemStack(
                             BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_candle"))))
                     .category(GTRecipeCategories.CHEM_DYES)
@@ -604,7 +604,7 @@ public class VanillaStandardRecipes {
             if (color != DyeColor.WHITE) {
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_wool_to_" + dyeName).duration(20).EUt(VA[ULV])
                         .inputItems(new ItemStack(Blocks.WHITE_WOOL))
-                        .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                        .inputFluids(DYE_MATERIALS.get(color).getFluid(L))
                         .outputItems(new ItemStack(
                                 BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_wool"))))
                         .category(GTRecipeCategories.CHEM_DYES)
@@ -612,7 +612,7 @@ public class VanillaStandardRecipes {
 
                 CHEMICAL_BATH_RECIPES.recipeBuilder("dye_bed_to_" + dyeName).duration(20).EUt(VA[ULV])
                         .inputItems(new ItemStack(Blocks.WHITE_BED))
-                        .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                        .inputFluids(DYE_MATERIALS.get(color).getFluid(L))
                         .outputItems(new ItemStack(
                                 BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(dyeName + "_bed"))))
                         .category(GTRecipeCategories.CHEM_DYES)
