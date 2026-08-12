@@ -146,10 +146,12 @@ public record MaterialIconType(String name) {
         if (doReadCache) {
             if (suffix == null || suffix.isBlank()) {
                 if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet))
-                    return Objects.requireNonNullElse(BLOCK_TEXTURE_CACHE.get(this, materialIconSet), GTModels.BLANK_TEXTURE);
+                    return Objects.requireNonNullElse(BLOCK_TEXTURE_CACHE.get(this, materialIconSet),
+                            GTModels.BLANK_TEXTURE);
             } else {
                 if (BLOCK_TEXTURE_CACHE_SECONDARY.contains(this, materialIconSet))
-                    return Objects.requireNonNullElse(BLOCK_TEXTURE_CACHE_SECONDARY.get(this, materialIconSet), GTModels.BLANK_TEXTURE);
+                    return Objects.requireNonNullElse(BLOCK_TEXTURE_CACHE_SECONDARY.get(this, materialIconSet),
+                            GTModels.BLANK_TEXTURE);
             }
         }
 

@@ -146,7 +146,7 @@ public final class Material implements Comparable<Material> {
     }
 
     public ResourceLocation getID() {
-        return  materialInfo.resourceLocation;
+        return materialInfo.resourceLocation;
     }
 
     public String getName() {

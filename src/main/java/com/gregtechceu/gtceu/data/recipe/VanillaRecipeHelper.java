@@ -24,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharArraySet;
 import it.unimi.dsi.fastutil.chars.CharSet;
@@ -35,7 +34,8 @@ import java.util.function.Consumer;
 
 public class VanillaRecipeHelper {
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, @NotNull TagKey<Item> input,
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         @NotNull TagKey<Item> input,
                                          @NotNull ItemStack output) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output);
     }
@@ -45,12 +45,14 @@ public class VanillaRecipeHelper {
         addSmeltingRecipe(provider, regName, input, output, 0.0f);
     }
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, @NotNull TagKey<Item> input,
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         @NotNull TagKey<Item> input,
                                          @NotNull ItemStack output, float experience) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
-    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, @NotNull Ingredient input,
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                         @NotNull Ingredient input,
                                          @NotNull ItemStack output, float experience) {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }

@@ -75,7 +75,8 @@ public class ChemicalHelper {
         var entry = getMaterialEntry(itemLike);
         if (entry != null) {
             Material entryMaterial = entry.material();
-            return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(Objects.requireNonNull(entryMaterial)));
+            return new MaterialStack(entryMaterial,
+                    entry.tagPrefix().getMaterialAmount(Objects.requireNonNull(entryMaterial)));
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike.asItem());
         if (info == null) return MaterialStack.EMPTY;
@@ -297,7 +298,8 @@ public class ChemicalHelper {
     }
 
     public static Block getBlockOrThrow(TagPrefix tagPrefix, Material material) {
-        return Objects.requireNonNull(getBlock(tagPrefix, material), "Block for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
+        return Objects.requireNonNull(getBlock(tagPrefix, material),
+                "Block for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
     }
 
     @Nullable
@@ -310,7 +312,8 @@ public class ChemicalHelper {
     }
 
     public static TagKey<Block> getBlockTagOrThrow(TagPrefix tagPrefix, Material material) {
-        return Objects.requireNonNull(getBlockTag(tagPrefix, material), "Block tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
+        return Objects.requireNonNull(getBlockTag(tagPrefix, material),
+                "Block tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
     }
 
     @Nullable
@@ -323,7 +326,8 @@ public class ChemicalHelper {
     }
 
     public static TagKey<Item> getTagOrThrow(TagPrefix tagPrefix, Material material) {
-        return Objects.requireNonNull(getTag(tagPrefix, material), "Item tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
+        return Objects.requireNonNull(getTag(tagPrefix, material),
+                "Item tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

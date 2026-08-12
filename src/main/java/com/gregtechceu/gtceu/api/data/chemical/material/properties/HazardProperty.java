@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +20,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.datafixers.util.Either;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -200,7 +199,7 @@ public class HazardProperty implements IMaterialProperty {
             prefix = entry.tagPrefix();
         }
 
-        HazardProperty property = (material == null)  ? null : material.getProperty(PropertyKey.HAZARD);
+        HazardProperty property = (material == null) ? null : material.getProperty(PropertyKey.HAZARD);
         if (property == null || prefix != null && !property.hazardTrigger.isAffected(prefix)) {
             return null;
         }
