@@ -83,6 +83,7 @@ public class GTJadePlugin implements IWailaPlugin {
                 new BatteryStorageInfoProvider(),
                 new CableBlockProvider(),
                 new ProgrammableCircuitProvider());
+
         if (GTCEu.Mods.isAE2Loaded()) {
             register(registration, new MEGridConnectedProvider(), new MEPatternBufferProvider(),
                     new MEPatternBufferProxyProvider());
