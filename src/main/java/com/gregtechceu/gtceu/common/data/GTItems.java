@@ -2192,7 +2192,6 @@ public class GTItems {
 
     public static final Map<DyeColor, ItemEntry<DyeItem>> CHEMICAL_DYES = new Object2ObjectOpenHashMap<>();
     static {
-        DyeColor[] colors = DyeColor.values();
         for (DyeColor color : DyeColor.values()) {
             CHEMICAL_DYES.put(color, REGISTRATE
                     .item("chemical_%s_dye".formatted(color.getName()), (props) -> new DyeItem(color, props))
