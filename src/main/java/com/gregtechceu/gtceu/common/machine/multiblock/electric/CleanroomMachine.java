@@ -315,16 +315,16 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
             MultiPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
-            MultiPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
+            MultiPredicate energyPredicate = autoAbilities(true, false, false).and(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
-            MultiPredicate edgePredicate = wallPredicate.or(energyPredicate);
-            MultiPredicate facePredicate = wallPredicate.or(energyPredicate)
-                    .or(doorPredicate().setMaxGlobalLimited(8))
-                    .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+            MultiPredicate edgePredicate = wallPredicate.and(energyPredicate);
+            MultiPredicate facePredicate = wallPredicate.and(energyPredicate)
+                    .and(doorPredicate().setMaxGlobalLimited(8))
+                    .and(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
             MultiPredicate filterPredicate = cleanroomFilters();
             MultiPredicate innerPredicate = innerPredicate();
-            MultiPredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
+            MultiPredicate verticalEdgePredicate = edgePredicate.and(blocks(getGlassState().getBlock()));
 
             return ExpandableMultiblockPatternBuilder
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
