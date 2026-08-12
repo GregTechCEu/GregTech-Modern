@@ -20,7 +20,7 @@ import snownee.jade.api.ui.IElementHelper;
 public class ProgrammableCircuitProvider extends MachineTraitProvider<ProgrammableCircuitSlotTrait, CompoundTag> {
 
     public ProgrammableCircuitProvider() {
-        super(GTCEu.id("recipe_output_info"), ProgrammableCircuitSlotTrait.class);
+        super(GTCEu.id("programmed_circuit_info"), ProgrammableCircuitSlotTrait.class);
     }
 
     @Override
