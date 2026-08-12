@@ -3,41 +3,7 @@ title: Predicates
 ---
 `MultiPredicate`s are the main system of turning some potential block in a multiblock `IBlockPattern` into a valid or invalid state.
 
-`MultiPredicate` can be composed of one or more `BasePredicate`s which means any of those `BasePredicate`s can succeed for the `MultiPredicate` to succeed (returning no `PatternError`).
-
-```java title="CustomPredicate.java"
-public static MultiPredicate customPredicate() {
-    return new MultiPredicate("MyDebugName", // (1)
-            (blockInfo) -> { // (2)
-        BlockState state = blockInfo.getBlockState();
-        if (state.getBlock() == Blocks.OAK_WOOD) {
-            return null; // (3)
-        }
-        return new BlockMatchingError(blockInfo.getBlockPos(), Blocks.OAK_WOOD); // (4)
-    }, new BlockInfo(Blocks.OAK_WOOD)); // (5)
-}
-```
-
-1. Debug name of the predicate (used in the terminal preview), optional.
-
-2. The condition for if the MultiPredicate matches.
-
-3. If the predicate succeeds it MUST return null;
-
-4. If the predicate fails it will return some `PatternError` (see [Pattern Errors](./PatternError.md))
-
-5. The list of all valid candidates for this predicate (used for terminal previewing and autobuilding).
-
-
-
-`BasePredicate`s are composed of two values, 
-
-1. The `Predicate<BlockInfo, PatternError> predicateError` which runs for each block state this predicate is assigned to and returns that specific error.
-
-2. The `List<BlockInfo> candidates` which are all the valid blocks for that predicate.
-
-3. `BasePredicate`s can also have a global min and max value, which causes specific `PatternError`s if there are too much or not enough of that predicate match succeeding. 
-
+## Predicate Helpers  
 There are several helper methods to make various MultiPredicates:
 
 ```java title="PredicateShortcuts.java"
@@ -114,18 +80,72 @@ MultiPredicate frames(Material... frameMaterials); // (20)
 
 20. Fills predicate with any GT frame matching those materials or any pipe with one of those frame box materials.
 
+## Combining Predicates
+
+Predicates can be joined in different ways. There's 3 main ways to join predicates:  
+
+- `predicate1.or(predicate2)`  - Multiblock forms if the minimum and maximum limits for <u>**any**</u> of the predicates are satisfied.  
+- `predicate1.and(predicate2)` - Multiblock forms if the minimum and maximum limits for <u>**all**</u> the predicates are satisfied.  
+- `predicate1.xor(predicate2)` - Multiblock forms if the minimum and maximum limits for <u>**exactly one of**</u> the predicates are satisfied.  
+
+Generally speaking, you want `.and(...)` so that all limits that you set are respected.  
+
+Do note that this only affects the limits. For example, `dirtPred.and(stonePred)` does not require a block to be both dirt and stone.  
+
 ```java title="ComplexPredicate.java"
 
-MultiPredicate myCustomPredicate = Predicates.heatingCoils()
-        .or(Predicates.blocks(Blocks.DIRT)) // (1)
-        .or(Predicates.frames(GTMaterials.Steel).setExactLimit(20)) // (2)
-        .or(Predicates.autoAbilities(true, false, true))
-        .setMinGlobalLimited(40); // (3)
+MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASCRETE)
+        .and(Predicates.blocks(Blocks.DIRT))
+        .and(Predicates.frames(GTMaterials.Steel).setExactLimit(20))
+        .and(Predicates.autoAbilities(true, false, true));
 
 ```
 
-1. To join multiple valid predicates, use `.or(MultiPredicate)` to chain them.
+!!! Note
+    Mutations on predicates return the edited copy, so you can't do `a = Predicates.blocks(Blocks.DIRT); a.setMinLimit(2);`, 
+    since the predicate with the limit would be the return value of the .setMinLimit call. 
+    Instead, do e.g. `a = Predicates.blocks(Blocks.DIRT); a = a.setMinLimit(2);` or
+    `a = Predicates.blocks(Blocks.DIRT).setMinLimit(2);`
 
-2. A `BasePredicate` can have its own min and max counts separate to the rest of the `BasePredicates`.
 
-3. Sets the min count to 40 for the whole `Predicate`.
+!!! Note
+    Setting a limit on a predicate sets the limit on all its children and predicates. It is currently not possible to do e.g.
+    `dirtPred.or(stonePred).setMinLimit(4)` to mean "4 of combined dirt and stone", this instead means "either 4 dirt or 4 stone".
+
+
+## Predicate Internals
+`MultiPredicate`s can be composed of one or more `BasePredicate`s and other `MultiPredicates` which means any, all or one of those predicates can succeed for the `MultiPredicate` to succeed (returning no `PatternError`).
+
+`BasePredicate`s are composed of a few values,
+
+1. The `Predicate<BlockInfo, PatternError> predicateError` which runs for each block state this predicate is assigned to and returns that specific error.
+
+2. The `List<BlockInfo> candidates` which are all the valid blocks for that predicate.
+
+3. Optionally, a global min and max value, which causes specific `PatternError`s if there are too much or not enough of that predicate match succeeding.
+
+
+## Custom Predicates
+
+```java title="CustomPredicate.java"
+public static MultiPredicate customPredicate() {
+    return new MultiPredicate("MyDebugName", // (1)
+            (blockInfo) -> { // (2)
+        BlockState state = blockInfo.getBlockState();
+        if (state.getBlock() == Blocks.OAK_WOOD) {
+            return null; // (3)
+        }
+        return new BlockMatchingError(blockInfo.getBlockPos(), Blocks.OAK_WOOD); // (4)
+    }, new BlockInfo(Blocks.OAK_WOOD)); // (5)
+}
+```
+
+1. Debug name of the predicate (used in the terminal preview), optional.
+
+2. The condition for if the MultiPredicate matches.
+
+3. If the predicate succeeds it MUST return null;
+
+4. If the predicate fails it will return some `PatternError` (see [Pattern Errors](./PatternError.md))
+
+5. The list of all valid candidates for this predicate (used for terminal previewing and autobuilding).
