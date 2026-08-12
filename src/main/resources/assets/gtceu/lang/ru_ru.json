@@ -1630,7 +1630,7 @@
     "block.gtceu.white_metal_sheet": "Белый лист металла",
     "block.gtceu.white_studs": "Белая перегородка",
     "block.gtceu.wire_coil.tooltip_cracking": "§8Крекинг:",
-    "block.gtceu.wire_coil.tooltip_energy_cracking": "  §§aЭнергопотребление: §f%s%%",
+    "block.gtceu.wire_coil.tooltip_energy_cracking": "  §aЭнергопотребление: §f%s%%",
     "block.gtceu.wire_coil.tooltip_energy_smelter": "  §aЭнергопотребление: §f%s EU/т",
     "block.gtceu.wire_coil.tooltip_extended_info": "§7Зажмите SHIFT для просмотра Бонуса Катушек",
     "block.gtceu.wire_coil.tooltip_heat": "§cТеплоемкость: §f%d K",
