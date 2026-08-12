@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/the_nether_marker"
+    "variants": {
+        "": {
+            "model": "gtceu:block/the_nether_marker"
+        }
     }
-  }
 }

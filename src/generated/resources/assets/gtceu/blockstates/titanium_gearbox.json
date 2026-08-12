@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/titanium_gearbox"
+    "variants": {
+        "": {
+            "model": "gtceu:block/titanium_gearbox"
+        }
     }
-  }
 }

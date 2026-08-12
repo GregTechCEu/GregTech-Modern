@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/red_granite_cobblestone"
+    "variants": {
+        "": {
+            "model": "gtceu:block/red_granite_cobblestone"
+        }
     }
-  }
 }

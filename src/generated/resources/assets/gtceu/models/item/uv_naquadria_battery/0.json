@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/uv_naquadria_battery/1"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "gtceu:item/uv_naquadria_battery/1"
+    }
 }

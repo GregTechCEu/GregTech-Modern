@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/zpm_electric_piston"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "gtceu:item/zpm_electric_piston"
+    }
 }

@@ -1,6 +1,6 @@
 {
-  "values": [
-    "minecraft:iron_door",
-    "#minecraft:wooden_doors"
-  ]
+    "values": [
+        "minecraft:iron_door",
+        "#minecraft:wooden_doors"
+    ]
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/marble_small_tile"
+    "variants": {
+        "": {
+            "model": "gtceu:block/marble_small_tile"
+        }
     }
-  }
 }

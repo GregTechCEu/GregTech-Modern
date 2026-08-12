@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/ev_item_collector"
+    "variants": {
+        "": {
+            "model": "gtceu:block/machine/ev_item_collector"
+        }
     }
-  }
 }

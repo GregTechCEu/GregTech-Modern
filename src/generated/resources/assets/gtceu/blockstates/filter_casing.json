@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/filter_casing"
+    "variants": {
+        "": {
+            "model": "gtceu:block/filter_casing"
+        }
     }
-  }
 }

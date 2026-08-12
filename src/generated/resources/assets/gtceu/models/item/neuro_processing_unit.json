@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/neuro_processing_unit"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "gtceu:item/neuro_processing_unit"
+    }
 }

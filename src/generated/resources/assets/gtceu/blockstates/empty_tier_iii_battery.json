@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/empty_tier_iii_battery"
+    "variants": {
+        "": {
+            "model": "gtceu:block/empty_tier_iii_battery"
+        }
     }
-  }
 }

@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/petrified_foam"
+    "variants": {
+        "": {
+            "model": "gtceu:block/petrified_foam"
+        }
     }
-  }
 }

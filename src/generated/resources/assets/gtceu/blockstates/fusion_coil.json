@@ -1,10 +1,10 @@
 {
-  "variants": {
-    "active=false": {
-      "model": "gtceu:block/fusion_coil"
-    },
-    "active=true": {
-      "model": "gtceu:block/fusion_coil_active"
+    "variants": {
+        "active=false": {
+            "model": "gtceu:block/fusion_coil"
+        },
+        "active=true": {
+            "model": "gtceu:block/fusion_coil_active"
+        }
     }
-  }
 }

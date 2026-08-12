@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/machine/mv_world_accelerator"
+    "variants": {
+        "": {
+            "model": "gtceu:block/machine/mv_world_accelerator"
+        }
     }
-  }
 }

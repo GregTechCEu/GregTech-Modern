@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/cracked_marble_bricks"
+    "variants": {
+        "": {
+            "model": "gtceu:block/cracked_marble_bricks"
+        }
     }
-  }
 }

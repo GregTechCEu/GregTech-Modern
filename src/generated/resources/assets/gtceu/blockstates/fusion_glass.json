@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/fusion_glass"
+    "variants": {
+        "": {
+            "model": "gtceu:block/fusion_glass"
+        }
     }
-  }
 }

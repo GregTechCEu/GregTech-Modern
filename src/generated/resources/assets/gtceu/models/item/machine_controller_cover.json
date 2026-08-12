@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/machine_controller_cover"
-  }
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "gtceu:item/machine_controller_cover"
+    }
 }
