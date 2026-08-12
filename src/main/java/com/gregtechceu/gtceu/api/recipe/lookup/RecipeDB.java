@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.datafixers.util.Either;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.*;
 
@@ -146,7 +147,23 @@ public final class RecipeDB {
         if (list.isEmpty()) {
             return null;
         }
-        return list;
+
+        List<AbstractMapIngredient> uniqueIngredients = new ArrayList<>();
+        var ingredientHashes = new IntOpenHashSet();
+        Set<AbstractMapIngredient> specialIngredients = new LinkedHashSet<>();
+        for (List<AbstractMapIngredient> ingredientGroup : list) {
+            for (AbstractMapIngredient ingredient : ingredientGroup) {
+                if (ingredient.isSpecialIngredient()) {
+                    if (specialIngredients.add(ingredient)) {
+                        uniqueIngredients.add(ingredient);
+                    }
+                } else if (ingredientHashes.add(ingredient.hashCode())) {
+                    uniqueIngredients.add(ingredient);
+                }
+            }
+        }
+
+        return List.of(uniqueIngredients);
     }
 
     /**

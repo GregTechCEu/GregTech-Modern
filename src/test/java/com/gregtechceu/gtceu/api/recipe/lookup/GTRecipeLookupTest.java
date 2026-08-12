@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -10,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIng
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemStackMapIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
+import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
@@ -22,6 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -142,6 +146,21 @@ public class GTRecipeLookupTest {
         GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
         helper.assertTrue(SMELT_STONE.equals(resultRecipe),
                 "GT Recipe should be smelt_stone, instead was " + resultRecipe);
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty", batch = "GTRecipeLookup")
+    public static void recipeLookupDuplicatePathsTest(GameTestHelper helper) {
+        var itemHandler = new DummyRecipeUtils.DummyItemHandler(IO.IN, 1);
+        itemHandler.getStorage().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
+        var holder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
+                RecipeHandlerList.of(IO.IN, itemHandler, itemHandler));
+        var recipes = new ArrayList<GTRecipe>();
+        var iterator = DB.iterator(holder, ALWAYS_TRUE);
+        helper.assertTrue(iterator != null, "Recipe iterator should not be null");
+        iterator.forEachRemaining(recipes::add);
+        helper.assertTrue(recipes.equals(List.of(SMELT_STONE)),
+                "Duplicate handlers should return smelt_stone once, instead returned " + recipes);
         helper.succeed();
     }
 
