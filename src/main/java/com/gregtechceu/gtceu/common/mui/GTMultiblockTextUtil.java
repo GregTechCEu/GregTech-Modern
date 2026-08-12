@@ -62,9 +62,8 @@ public class GTMultiblockTextUtil {
                         .getter(() -> {
                             var list = new ArrayList<PatternError>();
                             for (String structureName : controller.getStructurePatterns().keySet()) {
-                                var errors = controller.getPatternState(structureName)
-                                        .getErrors();
-                                if (errors != null && !errors.isEmpty()) {
+                                var errors = controller.getPatternState(structureName).getErrors();
+                                if (!errors.isEmpty()) {
                                     list.addAll(errors);
                                 }
                             }
