@@ -101,17 +101,17 @@ MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASCRETE)
 
 ```
 
-!!! Note
-    Mutations on predicates return the edited copy, so you can't do `a = Predicates.blocks(Blocks.DIRT); a.setMinLimit(2);`, 
-    since the predicate with the limit would be the return value of the .setMinLimit call. 
-    Instead, do e.g. `a = Predicates.blocks(Blocks.DIRT); a = a.setMinLimit(2);` or
-    `a = Predicates.blocks(Blocks.DIRT).setMinLimit(2);`
+!!! Note "Mutations return the mutated predicate"
+    Mutations on predicates return the edited copy, so you can't do `a = Predicates.blocks(Blocks.DIRT); a.setMinLimit(2);`, since the predicate with the limit would be the return value of the .setMinLimit call.   
+    Instead, do e.g. `a = Predicates.blocks(Blocks.DIRT); a = a.setMinLimit(2);` or  
+    `a = Predicates.blocks(Blocks.DIRT).setMinLimit(2);`  
 
 
-!!! Note
-    Setting a limit on a predicate sets the limit on all its children and predicates. It is currently not possible to do e.g.
-    `dirtPred.or(stonePred).setMinLimit(4)` to mean "4 of combined dirt and stone", this instead means "either 4 dirt or 4 stone".
-
+!!! Note "Setting limits on composite predicates"
+    Setting a limit on a predicate sets the limit on all its children and predicates. It is currently not possible to do e.g.  
+    `existingPredicate1.or(existingPredicate2).setMinLimit(4)` to mean "4 of combined either predicate",   
+    this instead means "either 4 of predicate 1 or 4 of predicate 2".  
+    This is possible with e.g. simple blocks by creating one predicate with the blocks like `Predicate.blocks(List.of(Blocks.Dirt, Blocks.Stone)).setMinLimit(4)`  
 
 ## Predicate Internals
 `MultiPredicate`s can be composed of one or more `BasePredicate`s and other `MultiPredicates` which means any, all or one of those predicates can succeed for the `MultiPredicate` to succeed (returning no `PatternError`).
