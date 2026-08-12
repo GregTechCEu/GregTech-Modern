@@ -1,13 +1,13 @@
 ---
 title: Predicates
 ---
-`PatternPredicate`s are the main system of turning some potential block in a multiblock `IBlockPattern` into a valid or invalid state.
+`MultiPredicate`s are the main system of turning some potential block in a multiblock `IBlockPattern` into a valid or invalid state.
 
-`PatternPredicate` can be composed of one or more `BasePredicate`s which means any of those `BasePredicate`s can succeed for the `PatternPredicate` to succeed (returning no `PatternError`).
+`MultiPredicate` can be composed of one or more `BasePredicate`s which means any of those `BasePredicate`s can succeed for the `MultiPredicate` to succeed (returning no `PatternError`).
 
 ```java title="CustomPredicate.java"
-public static PatternPredicate customPredicate() {
-    return new PatternPredicate("MyDebugName", // (1)
+public static MultiPredicate customPredicate() {
+    return new MultiPredicate("MyDebugName", // (1)
             (blockInfo) -> { // (2)
         BlockState state = blockInfo.getBlockState();
         if (state.getBlock() == Blocks.OAK_WOOD) {
@@ -20,7 +20,7 @@ public static PatternPredicate customPredicate() {
 
 1. Debug name of the predicate (used in the terminal preview), optional.
 
-2. The condition for if the PatternPredicate matches.
+2. The condition for if the MultiPredicate matches.
 
 3. If the predicate succeeds it MUST return null;
 
@@ -38,40 +38,40 @@ public static PatternPredicate customPredicate() {
 
 3. `BasePredicate`s can also have a global min and max value, which causes specific `PatternError`s if there are too much or not enough of that predicate match succeeding. 
 
-There are several helper methods to make various PatternPredicates:
+There are several helper methods to make various MultiPredicates:
 
 ```java title="PredicateShortcuts.java"
 
-PatternPredicate any(); // (1)
-PatternPredicate air(); // (2)
+MultiPredicate any(); // (1)
+MultiPredicate air(); // (2)
 
-PatternPredicate controller(MultiblockMachineDefinition def); // (3)
-PatternPredicate machines(MachineDefinition... definitions); // (4)
+MultiPredicate controller(MultiblockMachineDefinition def); // (3)
+MultiPredicate machines(MachineDefinition... definitions); // (4)
 
-PatternPredicate blocks(String debugName, Block... blocks); // (5)
-PatternPredicate blocks(Block... blocks); // (6)
-PatternPredicate states(BlockState... allowedStates); // (7)
-PatternPredicate fluids(Fluid... fluids); // (8)
+MultiPredicate blocks(String debugName, Block... blocks); // (5)
+MultiPredicate blocks(Block... blocks); // (6)
+MultiPredicate states(BlockState... allowedStates); // (7)
+MultiPredicate fluids(Fluid... fluids); // (8)
 
-PatternPredicate blockTag(TagKey<Block> tag); // (9)
-PatternPredicate fluidTag(TagKey<Fluid> tag); // (10)
+MultiPredicate blockTag(TagKey<Block> tag); // (9)
+MultiPredicate fluidTag(TagKey<Fluid> tag); // (10)
 
-PatternPredicate abilities(PartAbility... abilities); // (11)
-PatternPredicate ability(PartAbility ability, int... tiers); // (12)
-PatternPredicate autoAbilities(GTRecipeType[] recipeType,
+MultiPredicate abilities(PartAbility... abilities); // (11)
+MultiPredicate ability(PartAbility ability, int... tiers); // (12)
+MultiPredicate autoAbilities(GTRecipeType[] recipeType,
                                boolean checkEnergyIn, boolean checkEnergyOut,
                                boolean checkItemIn, boolean checkItemOut,
                                boolean checkFluidIn, boolean checkFluidOut); // (13)
-PatternPredicate autoAbilities(GTRecipeType... recipeType); // (14)
+MultiPredicate autoAbilities(GTRecipeType... recipeType); // (14)
 
-PatternPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
+MultiPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
                                boolean checkParallel); // (15)
 
-PatternPredicate heatingCoils(); // (16)
-PatternPredicate cleanroomFilters(); // (17)
-PatternPredicate powerSubstationBatteries(); // (18)
-PatternPredicate dataHatchPredicate(); // (19)
-PatternPredicate frames(Material... frameMaterials); // (20)
+MultiPredicate heatingCoils(); // (16)
+MultiPredicate cleanroomFilters(); // (17)
+MultiPredicate powerSubstationBatteries(); // (18)
+MultiPredicate dataHatchPredicate(); // (19)
+MultiPredicate frames(Material... frameMaterials); // (20)
 ```
 
 1. Any block matches, returns no error.
@@ -116,7 +116,7 @@ PatternPredicate frames(Material... frameMaterials); // (20)
 
 ```java title="ComplexPredicate.java"
 
-PatternPredicate myCustomPredicate = Predicates.heatingCoils()
+MultiPredicate myCustomPredicate = Predicates.heatingCoils()
         .or(Predicates.blocks(Blocks.DIRT)) // (1)
         .or(Predicates.frames(GTMaterials.Steel).setExactLimit(20)) // (2)
         .or(Predicates.autoAbilities(true, false, true))
@@ -124,7 +124,7 @@ PatternPredicate myCustomPredicate = Predicates.heatingCoils()
 
 ```
 
-1. To join multiple valid predicates, use `.or(PatternPredicate)` to chain them.
+1. To join multiple valid predicates, use `.or(MultiPredicate)` to chain them.
 
 2. A `BasePredicate` can have its own min and max counts separate to the rest of the `BasePredicates`.
 
