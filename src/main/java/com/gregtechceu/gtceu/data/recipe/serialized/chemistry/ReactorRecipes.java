@@ -2,10 +2,9 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -638,12 +637,13 @@ public class ReactorRecipes {
                 .duration(200).EUt(VA[HV]).save(provider);
 
         // Dyes
-        for (int i = 0; i < GTMaterials.CHEMICAL_DYES.length; i++) {
-            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + CHEMICAL_DYES[i].getName())
-                    .inputItems(TagUtil.createItemTag("dyes/" + CHEMICAL_DYES[i].getName()))
+
+        for (DyeColor color : DyeColor.values()) {
+            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + color.getName())
+                    .inputItems(color.getTag())
                     .inputItems(dust, Salt, 2)
                     .inputFluids(SulfuricAcid.getFluid(250))
-                    .outputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(288))
+                    .outputFluids(DYE_MATERIALS.get(color).getFluid(288))
                     .duration(600).EUt(24).save(provider);
         }
 

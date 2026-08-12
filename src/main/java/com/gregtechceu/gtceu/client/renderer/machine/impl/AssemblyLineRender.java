@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.AssemblyLineMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,6 +20,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.serialization.MapCodec;
 
 public class AssemblyLineRender extends DynamicRender<AssemblyLineMachine, AssemblyLineRender> {
 
