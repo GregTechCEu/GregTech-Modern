@@ -22,11 +22,10 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -603,7 +602,7 @@ public class GTMachineUtils {
                         controller.getBlockPos().below().getY() == part.getBlockPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
-                    PatternPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
+                    MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
                             .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
                                     .setPreviewCount(1))
                             .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
@@ -672,8 +671,8 @@ public class GTMachineUtils {
                                         IntStream.of(ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV)
                                                 .filter(t -> t >= tier)
                                                 .toArray())
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
-                                                GTValues.VN[tier])))
+                                        .addTooltips(Component.translatable(
+                                                "gtceu.multiblock.pattern.error.limited.1", GTValues.VN[tier])))
                         .where('A',
                                 blocks(intake.get())
                                         .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
@@ -741,23 +740,22 @@ public class GTMachineUtils {
                 .register();
     }
 
-    private static PatternPredicate rotorHolder(int tier) {
-        return new PatternPredicate(new BasePredicate((worldState) -> {
-            if (MetaMachine.getMachine(worldState.getLevel(),
-                    worldState.getPos().immutable()) instanceof RotorHolderPartMachine rotorHolder &&
-                    worldState.getLevel()
-                            .getBlockState(worldState.getPos().immutable()
-                                    .relative(rotorHolder.getFrontFacing()))
-                            .isAir()) {
-                return null;
-            }
-            return new PartAbilityError(worldState.getBlockPos(), PartAbility.ROTOR_HOLDER);
-        }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
-                .map(BlockInfo::fromBlock)
-                .toList()))
+    private static MultiPredicate rotorHolder(int tier) {
+        return builder("RotorHolder")
+                .predicate(ctx -> {
+                    if (MetaMachine.getMachine(ctx.level(), ctx.pos()) instanceof RotorHolderPartMachine rotorHolder) {
+                        return ctx.level().getBlockState(ctx.pos().relative(rotorHolder.getFrontFacing())).isAir();
+                    }
+                    return false;
+                })
+                .errorFunction(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
+                .candidates(PartAbility.ROTOR_HOLDER.getAllBlocks()
+                        .stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
+                .toMultiPredicate()
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
-                        VN[tier]));
+                // todo lang: must be of tier %s
+                .addTooltips(Component.literal("Can only be of tier: %s".formatted(VN[tier])));
     }
 
     // Tooltips

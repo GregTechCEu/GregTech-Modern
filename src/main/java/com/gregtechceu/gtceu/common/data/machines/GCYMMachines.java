@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
@@ -606,11 +606,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
-                PatternPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
-                PatternPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                MultiPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
+                MultiPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded())
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
-                exportPredicate.setMaxLayerLimited(1);
+                exportPredicate = exportPredicate.setMaxLayerLimited(1);
                 return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                         .slice("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .slice("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
@@ -757,7 +757,7 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock, BATCH_MODE)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
-                PatternPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
+                MultiPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
                 return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         // spotless:off
                         .slice("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")

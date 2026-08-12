@@ -11,9 +11,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.*;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.pattern.*;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -38,7 +41,6 @@ import net.minecraft.world.level.Level;
 import brachy.modularui.api.drawable.IDrawable;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,13 +64,14 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Getter
     private List<MonitorGroup> monitorGroups = new ArrayList<>();
 
-    private static @Nullable PatternPredicate MULTI_PREDICATE = null;
+    private static @Nullable MultiPredicate MULTI_PREDICATE = null;
+    private static final PredicateContext CONTEXT = new PredicateContext(null);
 
     public CentralMonitorMachine(BlockEntityCreationInfo info) {
         super(info, new CentralMonitorLogic());
     }
 
-    public static PatternPredicate getMultiPredicate() {
+    public static MultiPredicate getMultiPredicate() {
         if (MULTI_PREDICATE == null) {
             MULTI_PREDICATE = Predicates.machines(GTMachines.MONITOR)
                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY)
@@ -132,10 +135,11 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public static boolean isValidMonitorBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return false;
-        CurrentBlockInfo info = new CurrentBlockInfo();
-        info.setLevel(level);
-        info.setCurrentPos(pos);
-        return getMultiPredicate().test(info, new Object2IntOpenHashMap<>(), null).isEmpty();
+        CONTEXT.reset();
+        CONTEXT.setCheckLayer(false);
+        CONTEXT.updateLevel(level);
+        CONTEXT.updatePos(pos);
+        return getMultiPredicate().getPredicateAtPos(CONTEXT) != null;
     }
 
     public void updateStructureDimensions() {
@@ -220,7 +224,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     public static IBlockPattern getPattern(MultiblockMachineDefinition definition) {
-        PatternPredicate predicate = getMultiPredicate();
+        MultiPredicate predicate = getMultiPredicate();
         return ExpandableMultiblockPatternBuilder
                 .start()
                 .boundsProvider(CentralMonitorMachine::getBounds)
