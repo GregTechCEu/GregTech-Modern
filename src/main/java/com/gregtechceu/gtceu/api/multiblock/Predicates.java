@@ -247,7 +247,7 @@ public class Predicates {
         if (checkEnergyIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY)
+                    predicate = predicate.and(abilities(PartAbility.INPUT_ENERGY)
                             .setMinCount(1).setMaxCount(2)
                             .setPreviewCount(1).setPriority(1));
                     break;
@@ -257,7 +257,7 @@ public class Predicates {
         if (checkEnergyOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY)
+                    predicate = predicate.and(abilities(PartAbility.OUTPUT_ENERGY)
                             .setMinCount(1).setMaxCount(2)
                             .setPreviewCount(1).setPriority(1));
                     break;
@@ -267,7 +267,7 @@ public class Predicates {
         if (checkItemIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.IMPORT_ITEMS)
+                    predicate = predicate.and(abilities(PartAbility.IMPORT_ITEMS)
                             .setPreviewCount(1).setPriority(2));
                     break;
                 }
@@ -276,7 +276,7 @@ public class Predicates {
         if (checkItemOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.EXPORT_ITEMS)
+                    predicate = predicate.and(abilities(PartAbility.EXPORT_ITEMS)
                             .setPreviewCount(1).setPriority(2));
                     break;
                 }
@@ -285,7 +285,7 @@ public class Predicates {
         if (checkFluidIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.IMPORT_FLUIDS)
+                    predicate = predicate.and(abilities(PartAbility.IMPORT_FLUIDS)
                             .setPreviewCount(1).setPriority(3));
                     break;
                 }
@@ -294,7 +294,7 @@ public class Predicates {
         if (checkFluidOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS)
+                    predicate = predicate.and(abilities(PartAbility.EXPORT_FLUIDS)
                             .setPreviewCount(1).setPriority(3));
                     break;
                 }
@@ -307,18 +307,18 @@ public class Predicates {
                                                boolean checkParallel) {
         MultiPredicate predicate = MultiPredicate.empty();
         if (checkMaintenance) {
-            predicate = predicate.or(abilities(PartAbility.MAINTENANCE)
+            predicate = predicate.and(abilities(PartAbility.MAINTENANCE)
                     .setMinCount(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
                     .setMaxCount(1)
                     .setPriority(1));
         }
         if (checkMuffler) {
-            predicate = predicate.or(abilities(PartAbility.MUFFLER)
+            predicate = predicate.and(abilities(PartAbility.MUFFLER)
                     .setExactLimit(1)
                     .setPriority(2));
         }
         if (checkParallel) {
-            predicate = predicate.or(abilities(PartAbility.PARALLEL_HATCH)
+            predicate = predicate.and(abilities(PartAbility.PARALLEL_HATCH)
                     .setMaxCount(1)
                     .setPreviewCount(1)
                     .setPriority(3));
