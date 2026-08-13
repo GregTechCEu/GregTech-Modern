@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
@@ -14,7 +15,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
-import java.util.Collections;
 import java.util.List;
 
 public class SinglePredicateError extends PatternError {
@@ -27,7 +27,7 @@ public class SinglePredicateError extends PatternError {
             Codec.INT.fieldOf("pred_min_layer_count").forGetter(e -> e.predMinLayerCount),
             Codec.INT.fieldOf("pred_max_layer_count").forGetter(e -> e.predMaxLayerCount),
             Codec.STRING.fieldOf("name").forGetter(e -> e.debugName),
-            Codec.list(BlockInfo.CODEC).fieldOf("candidates").forGetter(e -> e.candidates))
+            BlockInfo.CODEC.listOf().fieldOf("candidates").forGetter(e -> e.candidates))
             .apply(instance, SinglePredicateError::new));
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("single_predicate_error"), CODEC);
@@ -55,7 +55,7 @@ public class SinglePredicateError extends PatternError {
 
     public SinglePredicateError(ErrorType type, int actualCount, int minCount, int maxCount, int minLayerCount,
                                 int maxLayerCount, String name, List<BlockInfo> candidates) {
-        super(null, Collections.singletonList(candidates));
+        super(BlockPos.ZERO);
         this.type = type;
         this.actualCount = actualCount;
         this.candidates = candidates;

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 
@@ -9,8 +10,6 @@ import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-
-import java.util.Collections;
 
 public class PatternStringError extends PatternError {
 
@@ -24,11 +23,11 @@ public class PatternStringError extends PatternError {
     public final Component component;
 
     public PatternStringError(Component component) {
-        super(null, Collections.emptyList());
+        super(BlockPos.ZERO);
         this.component = component;
     }
 
-    public static PatternStringError component(Component component) {
+    public static PatternStringError of(Component component) {
         return new PatternStringError(component);
     }
 
@@ -50,9 +49,7 @@ public class PatternStringError extends PatternError {
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
-        return (parent) -> {
-            parent.child(Text.of(component).asWidget());
-        };
+        return (parent) -> parent.child(Text.of(component).asWidget());
     }
 
     @Override

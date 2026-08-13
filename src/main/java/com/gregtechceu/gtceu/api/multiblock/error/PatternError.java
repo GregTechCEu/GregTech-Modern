@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
@@ -10,10 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
 
 public abstract class PatternError {
 
@@ -21,21 +14,10 @@ public abstract class PatternError {
             .dispatch(PatternError::type, PatternErrorType::codec);
 
     @Getter
-    protected @Nullable BlockPos pos;
-    @Getter
-    protected List<List<BlockInfo>> candidates;
+    protected BlockPos pos;
 
-    public PatternError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
+    public PatternError(BlockPos pos) {
         this.pos = pos;
-        this.candidates = candidates;
-    }
-
-    public PatternError(@Nullable BlockPos pos, MultiPredicate predicate) {
-        this(pos, predicate.getCandidates());
-    }
-
-    public PatternError(@Nullable BlockPos pos, BasePredicate failingPredicate) {
-        this(pos, Collections.singletonList(failingPredicate.getCandidates()));
     }
 
     public abstract PatternErrorType type();
