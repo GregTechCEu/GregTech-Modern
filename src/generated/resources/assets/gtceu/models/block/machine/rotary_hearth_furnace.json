@@ -1,42 +1,42 @@
 {
-    "loader": "gtceu:machine",
-    "machine": "gtceu:rotary_hearth_furnace",
-    "parent": "minecraft:block/block",
-    "texture_overrides": {
-        "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
-    },
-    "variants": {
-        "recipe_logic_status=idle": {
-            "model": {
-                "parent": "gtceu:block/machine/template/cube_all/sided",
-                "textures": {
-                    "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
-                }
-            }
-        },
-        "recipe_logic_status=suspend": {
-            "model": {
-                "parent": "gtceu:block/machine/template/cube_all/sided",
-                "textures": {
-                    "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
-                }
-            }
-        },
-        "recipe_logic_status=waiting": {
-            "model": {
-                "parent": "gtceu:block/machine/template/cube_all/sided",
-                "textures": {
-                    "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
-                }
-            }
-        },
-        "recipe_logic_status=working": {
-            "model": {
-                "parent": "gtceu:block/machine/template/cube_all/sided",
-                "textures": {
-                    "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
-                }
-            }
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:rotary_hearth_furnace",
+  "texture_overrides": {
+    "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
+  },
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
         }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/machine/template/cube_all/sided",
+        "textures": {
+          "all": "gtceu:block/casings/gcym/high_temperature_smelting_casing"
+        }
+      }
     }
+  }
 }
