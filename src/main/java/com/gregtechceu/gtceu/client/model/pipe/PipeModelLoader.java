@@ -56,7 +56,19 @@ public class PipeModelLoader implements IGeometryLoader<UnbakedPipeModel> {
                 restrictors.put(direction, MachineModelLoader.GSON.fromJson(entry.getValue(), MultiVariantModel.class));
             }
         }
+        // and the insulation
+        final Map<Direction, UnbakedModel> insulation = new HashMap<>();
+        if (json.has("insulation")) {
+            JsonObject variantsJson = GsonHelper.getAsJsonObject(json, "insulation");
+            for (Map.Entry<String, JsonElement> entry : variantsJson.entrySet()) {
+                Direction direction = Direction.byName(entry.getKey());
+                if (direction == null && !CENTER_KEYS.contains(entry.getKey().toLowerCase(Locale.ROOT))) {
+                    throw new JsonParseException("Invalid pipe model insulation specifier " + entry.getKey());
+                }
+                insulation.put(direction, MachineModelLoader.GSON.fromJson(entry.getValue(), MultiVariantModel.class));
+            }
+        }
 
-        return new UnbakedPipeModel(parts, restrictors);
+        return new UnbakedPipeModel(parts, restrictors, insulation);
     }
 }

@@ -44,6 +44,7 @@ public class GTJadePlugin implements IWailaPlugin {
                 new DataBankBlockProvider(),
                 new EnergyConverterModeProvider(),
                 new BatteryStorageInfoProvider(),
+                new FluidPipeInfoProvider(),
                 new LDPEndpointProvider());
 
         if (GTCEu.Mods.isAE2Loaded()) {
@@ -80,6 +81,7 @@ public class GTJadePlugin implements IWailaPlugin {
                 new LDPEndpointProvider(),
                 new EnergyConverterModeProvider(),
                 new BatteryStorageInfoProvider(),
+                new FluidPipeInfoProvider(),
                 new CableBlockProvider());
 
         if (GTCEu.Mods.isAE2Loaded()) {

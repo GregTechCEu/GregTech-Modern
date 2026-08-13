@@ -121,6 +121,8 @@ public class PipeModel {
     public @Nullable ResourceLocation sideSecondary, endSecondary;
     @Setter
     public @Nullable ResourceLocation sideOverlay, endOverlay;
+    @Setter
+    public @Nullable ResourceLocation sideInsulation;
 
     /// Use {@link #getOrCreateBlockModel()} instead of referencing this field directly.
     private BlockModelBuilder blockModel;
@@ -180,13 +182,16 @@ public class PipeModel {
     protected BlockModelBuilder getOrCreateBlockModel() {
         if (this.blockModel == null) {
             // spotless:off
-            this.blockModel = this.provider.models().getBuilder(this.blockId.toString())
+            var loader = this.provider.models().getBuilder(this.blockId.toString())
                     // make the "default" model be based on the center part's model
                     .parent(this.getOrCreateCenterElement())
                     .customLoader(PipeModelBuilder.begin(this.thickness, this.provider))
-                        .centerModels(this.getOrCreateCenterElement().getLocation())
-                        .connectionModels(this.getOrCreateConnectionElement().getLocation())
-                    .end();
+                    .centerModels(this.getOrCreateCenterElement().getLocation())
+                    .connectionModels(this.getOrCreateConnectionElement().getLocation());
+            if (this.sideInsulation != null) {
+                loader.insulationTextures(this.sideInsulation);
+            }
+            this.blockModel = loader.end();
             // spotless:on
         }
         return this.blockModel;
@@ -390,12 +395,13 @@ public class PipeModel {
                 Objects.equals(sideSecondary, pipeModel.sideSecondary) &&
                 Objects.equals(endSecondary, pipeModel.endSecondary) &&
                 Objects.equals(sideOverlay, pipeModel.sideOverlay) &&
-                Objects.equals(endOverlay, pipeModel.endOverlay);
+                Objects.equals(endOverlay, pipeModel.endOverlay) &&
+                Objects.equals(sideInsulation, pipeModel.sideInsulation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(block, side, end, sideSecondary, endSecondary, sideOverlay, endOverlay);
+        return Objects.hash(block, side, end, sideSecondary, endSecondary, sideOverlay, endOverlay, sideInsulation);
     }
 
     @FunctionalInterface

@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
+import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -42,10 +42,13 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
     private final Map<Direction, BakedModel> parts;
     private final Map<Direction, BakedModel> restrictors;
+    private final Map<Direction, BakedModel> insulation;
 
-    public BakedPipeModel(Map<Direction, BakedModel> parts, Map<Direction, BakedModel> restrictors) {
+    public BakedPipeModel(Map<Direction, BakedModel> parts, Map<Direction, BakedModel> restrictors,
+                          Map<Direction, BakedModel> insulation) {
         this.parts = parts;
         this.restrictors = restrictors;
+        this.insulation = insulation;
     }
 
     @Override
@@ -95,6 +98,12 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
                 modelData, renderType);
 
+        // render insulation overlay if the pipe is insulated and insulation map is not empty
+        Boolean insulated = modelData.get(GTModelProperties.PIPE_INSULATED);
+        if (insulated != null && insulated && !insulation.isEmpty()) {
+            renderInsulationOverlay(quads, connectionMask, state, side, rand, modelData, renderType);
+        }
+
         if (pipeNode.getFrameMaterial().isNull()) {
             return quads;
         }
@@ -103,7 +112,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
             return quads;
         }
         BlockState frameState = frameBlockEntry.getDefaultState();
-        BakedModel frameModel = RenderUtil.getModelForState(frameState);
+        BakedModel frameModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(frameState);
 
         modelData = frameModel.getModelData(level, pos, frameState, modelData);
 
@@ -144,6 +153,10 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
         var builder = modelData.derive();
 
+        if (level.getBlockEntity(pos) instanceof FluidPipeBlockEntity pipe) {
+            builder.with(GTModelProperties.PIPE_INSULATED, pipe.isInsulated());
+        }
+
         if (level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode) {
             Map<Direction, ModelData> coverModelData = new EnumMap<>(Direction.class);
             for (Direction side : GTUtil.DIRECTIONS) {
@@ -177,6 +190,27 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         ChunkRenderTypeSet coverRenderTypes = ICoverableRenderer.super.getCoverRenderTypes(pipeNode.getCoverContainer(),
                 pos, level, rand, modelData);
         return ChunkRenderTypeSet.union(renderTypes, coverRenderTypes);
+    }
+
+    private void renderInsulationOverlay(List<BakedQuad> quads, @Nullable Integer connectionMask,
+                                         @Nullable BlockState state,
+                                         @Nullable Direction side, RandomSource rand, ModelData modelData,
+                                         @Nullable RenderType renderType) {
+        BakedModel overlayCenter = insulation.get(null);
+        if (overlayCenter != null && (renderType == null ||
+                (state != null && overlayCenter.getRenderTypes(state, rand, modelData).contains(renderType)))) {
+            quads.addAll(overlayCenter.getQuads(state, side, rand, modelData, renderType));
+        }
+        if (connectionMask == null) return;
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            if (PipeBlockEntity.isConnected(connectionMask, dir)) {
+                BakedModel overlayArm = insulation.get(dir);
+                if (overlayArm != null && (renderType == null ||
+                        (state != null && overlayArm.getRenderTypes(state, rand, modelData).contains(renderType)))) {
+                    quads.addAll(overlayArm.getQuads(state, side, rand, modelData, renderType));
+                }
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")

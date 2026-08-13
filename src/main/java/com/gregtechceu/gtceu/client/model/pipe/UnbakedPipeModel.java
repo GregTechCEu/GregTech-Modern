@@ -21,11 +21,14 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
 
     private final Map<@Nullable Direction, UnbakedModel> parts;
     private final Map<@NotNull Direction, UnbakedModel> restrictors;
+    private final Map<@Nullable Direction, UnbakedModel> insulation;
 
     public UnbakedPipeModel(Map<@Nullable Direction, UnbakedModel> parts,
-                            Map<@NotNull Direction, UnbakedModel> restrictors) {
+                            Map<@NotNull Direction, UnbakedModel> restrictors,
+                            Map<@Nullable Direction, UnbakedModel> insulation) {
         this.parts = parts;
         this.restrictors = restrictors;
+        this.insulation = insulation;
     }
 
     @Override
@@ -40,7 +43,11 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
         this.restrictors.forEach((direction, unbaked) -> {
             bakedRestrictors.put(direction, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
         });
-        return new BakedPipeModel(bakedParts, bakedRestrictors);
+        Map<Direction, BakedModel> bakedInsulation = new IdentityHashMap<>();
+        this.insulation.forEach((direction, unbaked) -> {
+            bakedInsulation.put(direction, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
+        });
+        return new BakedPipeModel(bakedParts, bakedRestrictors, bakedInsulation);
     }
 
     @Override
@@ -65,6 +72,16 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
             } else {
                 variant.resolveParents(resolver);
                 this.restrictors.put(side, variant);
+            }
+        });
+        copy = new IdentityHashMap<>(this.insulation);
+        copy.forEach((side, variant) -> {
+            if (variant == null || variant == MISSING_MARKER) {
+                // replace null & markers with the actual missing model
+                this.insulation.put(side, missingModel);
+            } else {
+                variant.resolveParents(resolver);
+                this.insulation.put(side, variant);
             }
         });
     }

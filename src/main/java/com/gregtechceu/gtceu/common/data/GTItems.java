@@ -2565,6 +2565,16 @@ public class GTItems {
             .onRegister(attach(new GuiModuleBehaviour()))
             .register();
 
+    public static ItemEntry<ComponentItem> INSULATION_WRAPPER = REGISTRATE
+            .item("insulation_wrapper", ComponentItem::create)
+            .lang("Insulation Wrapper")
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.insulation_wrapper.desc"));
+                lines.add(Component.translatable("item.gtceu.insulation_wrapper.usage"));
+            })))
+            .onRegister(attach(new InsulationWrapperBehaviour()))
+            .register();
+
     public static void init() {
         GTMaterialItems.generateMaterialItems();
         GTMaterialItems.generateTools();

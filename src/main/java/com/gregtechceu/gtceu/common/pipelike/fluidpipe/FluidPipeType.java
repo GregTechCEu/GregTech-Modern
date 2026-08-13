@@ -61,6 +61,7 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
                 fluidPipeData.isAcidProof(),
                 fluidPipeData.isCryoProof(),
                 fluidPipeData.isPlasmaProof(),
+                fluidPipeData.isInsulatedByDefault(),
                 channels);
     }
 
@@ -88,6 +89,19 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
         } else {
             side = side.formatted("");
         }
-        return new PipeModel(block, provider, thickness, GTCEu.id(side), GTCEu.id(end));
+
+        // insulation overlays
+        String insulationSide;
+        if (channels == 9) {
+            insulationSide = "block/pipe/insulation/pipe_insulation_nonuple_side";
+        } else if (channels == 4) {
+            insulationSide = "block/pipe/insulation/pipe_insulation_quadruple_side";
+        } else {
+            insulationSide = "block/pipe/insulation/pipe_insulation_side";
+        }
+
+        PipeModel model = new PipeModel(block, provider, thickness, GTCEu.id(side), GTCEu.id(end));
+        model.setSideInsulation(GTCEu.id(insulationSide));
+        return model;
     }
 }

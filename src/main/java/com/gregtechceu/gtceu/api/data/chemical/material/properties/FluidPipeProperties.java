@@ -40,17 +40,21 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
     @Getter
     @Setter
     private boolean plasmaProof;
+    @Getter
+    @Setter
+    private boolean insulatedByDefault;
 
     private final Object2BooleanMap<FluidAttribute> containmentPredicate = new Object2BooleanOpenHashMap<>();
 
     public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
-                               boolean cryoProof, boolean plasmaProof, int channels) {
+                               boolean cryoProof, boolean plasmaProof, boolean insulatedByDefault, int channels) {
         this.maxFluidTemperature = maxFluidTemperature;
         this.throughput = throughput;
         this.gasProof = gasProof;
         if (acidProof) setCanContain(FluidAttributes.ACID, true);
         this.cryoProof = cryoProof;
         this.plasmaProof = plasmaProof;
+        this.insulatedByDefault = insulatedByDefault;
         this.channels = channels;
     }
 
@@ -59,7 +63,7 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
      */
     public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
                                boolean cryoProof, boolean plasmaProof) {
-        this(maxFluidTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, 1);
+        this(maxFluidTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, false, 1);
     }
 
     @Override
@@ -98,6 +102,7 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
                 ", cryoProof=" + cryoProof +
                 ", plasmaProof=" + plasmaProof +
                 ", channels=" + channels +
+                ", insulatedByDefault=" + insulatedByDefault +
                 '}';
     }
 

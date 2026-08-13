@@ -271,5 +271,13 @@ public class AssemblerRecipeLoader {
                 .inputItems(ring, PolyvinylChloride, 1)
                 .outputItems(HAZMAT_HELMET)
                 .save(provider);
+
+        // insulation wrapper
+        ASSEMBLER_RECIPES.recipeBuilder("insulation_wrapper")
+                .inputItems(dust, Asbestos, 6)
+                .inputItems(Items.WHITE_WOOL, 2)
+                .inputItems(foil, Steel, 1)
+                .outputItems(INSULATION_WRAPPER)
+                .duration(80).EUt(VA[LV]).save(provider);
     }
 }
