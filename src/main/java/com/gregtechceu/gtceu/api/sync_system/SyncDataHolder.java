@@ -60,7 +60,9 @@ public class SyncDataHolder {
         for (var field : fieldsToSerialize) {
             if (shouldSerializeField(field, writeClientFields, fullSync)) {
                 Tag nbtValue = serializeField(registries, holder, field, writeClientFields, fullSync);
-                tag.put(field.nbtSaveKey, nbtValue);
+                if (nbtValue != null) {
+                    tag.put(field.nbtSaveKey, nbtValue);
+                }
             }
         }
         resyncAll = false;
@@ -78,7 +80,6 @@ public class SyncDataHolder {
                 syncData.getServerSaveFields();
 
         for (var field : fieldsToCheck) {
-
             Tag savedValue = tag.get(field.nbtSaveKey);
             deserializeField(registries, holder, field, savedValue, readingClientFields);
 
@@ -102,14 +103,20 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private static Tag serializeField(HolderLookup.Provider registries, Object holder, FieldSyncData field,
-                                      boolean writeClientFields, boolean fullSync) {
+    private static @Nullable Tag serializeField(HolderLookup.Provider registries, Object holder, FieldSyncData field,
+                                                boolean writeClientFields, boolean fullSync) {
         Object currentValue = field.handle.get(holder);
 
         if (currentValue == null) {
-            var nullCompound = new CompoundTag();
-            nullCompound.putBoolean("null", true);
-            return nullCompound;
+            if (writeClientFields) {
+                // only write {null:1b} when sending this block entity's data to a client
+                // so it knows no tag means "no changes" vs. "set the value to null"
+                var nullCompound = new CompoundTag();
+                nullCompound.putBoolean("null", true);
+                return nullCompound;
+            } else {
+                return null;
+            }
         }
 
         if (field.transformer == null) {
@@ -117,7 +124,7 @@ public class SyncDataHolder {
             if (field.transformer == null) {
                 GTCEu.LOGGER.error("Sync: Failed to serialize field {} in class {}: Missing value transformer for {}",
                         field.fieldName, holder.getClass().getName(), field.type);
-                return new CompoundTag();
+                return null;
             }
         }
 
@@ -130,16 +137,19 @@ public class SyncDataHolder {
             GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
         }
 
-        return new CompoundTag();
+        return null;
     }
 
     @SuppressWarnings("unchecked")
     private static void deserializeField(HolderLookup.Provider registries, Object holder, FieldSyncData field,
-                                         @Nullable Tag newValue,
-                                         boolean readingClientFields) {
-        if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) return;
-
-        if (newValue instanceof CompoundTag compound && compound.getBoolean("null")) {
+                                         @Nullable Tag newValue, boolean readingClientFields) {
+        if (readingClientFields && newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) {
+            // only assume null or empty value means skip when reading on a client
+            return;
+        }
+        if (newValue == null ||
+                (newValue instanceof CompoundTag compound && compound.size() == 1 && compound.getBoolean("null"))) {
+            // the {null:1b} check is done client read and backwards compat
             field.handle.set(holder, null);
             return;
         }
@@ -171,7 +181,8 @@ public class SyncDataHolder {
                         field.fieldName);
                 return;
             }
-            GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName, e);
+            GTCEu.LOGGER.error("Sync: Failed to deserialize field {} in class {}",
+                    field.fieldName, holder.getClass().getName(), e);
         }
     }
 
