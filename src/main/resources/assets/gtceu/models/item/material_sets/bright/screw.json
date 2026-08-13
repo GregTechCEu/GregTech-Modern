@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:item/material_sets/shiny/screw",
-  "textures": {
-    "layer2": "gtceu:item/material_sets/bright/screw_overlay"
-  }
+    "parent": "gtceu:item/material_sets/shiny/screw",
+    "textures": {
+        "layer2": "gtceu:item/material_sets/bright/screw_overlay"
+    }
 }

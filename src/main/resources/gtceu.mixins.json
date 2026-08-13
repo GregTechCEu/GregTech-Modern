@@ -1,13 +1,4 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "mixinextras": {
-        "minVersion": "0.5.0-rc.3"
-    },
-    "refmap": "gtceu.refmap.json",
-    "package": "com.gregtechceu.gtceu.core.mixins",
-    "compatibilityLevel": "JAVA_17",
-    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
         "client.AbstractClientPlayerAccessor",
         "client.BakedQuadMixin",
@@ -54,6 +45,15 @@
         "xaeroworldmap.MapElementRenderHandlerBuilderMixin",
         "xaeroworldmap.WorldMapSessionMixin"
     ],
+    "compatibilityLevel": "JAVA_17",
+    "injectors": {
+        "defaultRequire": 1,
+        "maxShiftBy": 5
+    },
+    "minVersion": "0.8",
+    "mixinextras": {
+        "minVersion": "0.5.0-rc.3"
+    },
     "mixins": [
         "AnvilMenuMixin",
         "BeehiveBlockAccessor",
@@ -110,8 +110,8 @@
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin"
     ],
-    "injectors": {
-        "defaultRequire": 1,
-        "maxShiftBy": 5
-    }
+    "package": "com.gregtechceu.gtceu.core.mixins",
+    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
+    "refmap": "gtceu.refmap.json",
+    "required": true
 }

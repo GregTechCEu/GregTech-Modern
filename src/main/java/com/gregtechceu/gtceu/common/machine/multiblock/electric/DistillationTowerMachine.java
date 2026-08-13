@@ -140,7 +140,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 .map(Content::content)
                 .map(FluidRecipeCapability.CAP::of)
                 .filter(i -> !i.isEmpty())
-                .mapToInt((i -> i instanceof IRangedIngredient ? ((IRangedIngredient) i).getMaxRoll() : i.getAmount()))
+                .mapToInt((i -> i instanceof IRangedIngredient ranged ? ranged.getMaxRoll() : i.getAmount()))
                 .max()
                 .orElse(0);
 

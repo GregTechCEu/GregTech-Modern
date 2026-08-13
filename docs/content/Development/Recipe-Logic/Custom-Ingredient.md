@@ -132,7 +132,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
     public final static BonkRecipeCapability CAP = new BonkRecipeCapability();
 
     protected BonkRecipeCapability() {
-        super(new ResourceLocation("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
+        super(ResourceLocation.fromNamespaceAndPath("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
     }
 
     @Override
@@ -298,18 +298,18 @@ public class BonkMachines {
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
-                        .or(Predicates.autoAbilities(true, false, false))
-                        .or(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
+                        .and(Predicates.autoAbilities(true, false, false))
+                        .and(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
                 return FactoryBlockPattern.start()
                         .aisle("XXX", "XCX", "XXX")
                         .aisle("XCX", "CPC", "XCX")
                         .aisle("XXX", "XSX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
-                        .where('X', casing.or(abilities))
+                        .where('X', casing.and(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
                         .where('C', Predicates.heatingCoils().setExactLimit(1)
-                                .or(abilities)
-                                .or(casing))
+                                .and(abilities)
+                                .and(casing))
                         .build();
             })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),

@@ -186,7 +186,7 @@ public class MonitorGroup {
             }
             if (level.getServer() == null) return level;
             return level.getServer()
-                    .getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("dim"))));
+                    .getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString("dim"))));
         }
         return level;
     }

@@ -1,5 +1,10 @@
 {
   "parent": "minecraft:block/block",
+  "dynamic_renders": [
+    {
+      "type": "gtceu:assembly_line"
+    }
+  ],
   "loader": "gtceu:machine",
   "machine": "gtceu:assembly_line",
   "texture_overrides": {
