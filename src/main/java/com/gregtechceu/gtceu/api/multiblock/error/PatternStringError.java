@@ -12,7 +12,7 @@ import lombok.Getter;
 
 public class PatternStringError extends PatternError {
 
-    public static Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ExtraCodecs.COMPONENT.fieldOf("component").forGetter(PatternStringError::getComponent))
             .apply(instance, PatternStringError::new));
 

@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 
 public class PlaceholderError extends PatternError {
 
-    public static Codec<PlaceholderError> CODEC = Codec.unit(PlaceholderError::instance);
+    public static final Codec<PlaceholderError> CODEC = Codec.unit(PlaceholderError::instance);
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("placeholder_error"), CODEC);
 

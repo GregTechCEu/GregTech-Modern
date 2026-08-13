@@ -11,7 +11,7 @@ import com.mojang.serialization.Codec;
 
 public class FilterMatchingError extends MismatchError<CleanroomType> {
 
-    public static Codec<FilterMatchingError> CODEC = makeCodec(CleanroomType.CODEC, FilterMatchingError::new);
+    public static final Codec<FilterMatchingError> CODEC = makeCodec(CleanroomType.CODEC, FilterMatchingError::new);
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("filter_matching_error"), CODEC);
 

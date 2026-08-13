@@ -11,7 +11,7 @@ import com.mojang.serialization.Codec;
 
 public class CoilMatchingError extends MismatchError<ICoilType> {
 
-    public static Codec<CoilMatchingError> CODEC = makeCodec(ICoilType.CODEC, CoilMatchingError::new);
+    public static final Codec<CoilMatchingError> CODEC = makeCodec(ICoilType.CODEC, CoilMatchingError::new);
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("coil_matching_error"), CODEC);
 
