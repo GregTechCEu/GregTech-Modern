@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 
-import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 
 public class CoilMatchingError extends MismatchError<ICoilType> {
@@ -20,13 +18,13 @@ public class CoilMatchingError extends MismatchError<ICoilType> {
     }
 
     @Override
-    public PatternErrorUI getPatternErrorUIModifier() {
-        return (parent) -> {
-            Component comp = Component.translatable("gtceu.pattern_error.mismatch_coils",
-                    getExpected().getMaterial().getName(), getActual().getMaterial().getName(),
-                    pos.getX(), pos.getY(), pos.getZ());
-            parent.child(Text.of(comp).asWidget());
-        };
+    protected String stringify(ICoilType value) {
+        return value.getMaterial().getName();
+    }
+
+    @Override
+    protected String lang() {
+        return "gtceu.pattern_error.mismatch_coils";
     }
 
     @Override

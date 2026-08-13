@@ -4,9 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 
-import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 
 public class FilterMatchingError extends MismatchError<CleanroomType> {
@@ -20,13 +18,13 @@ public class FilterMatchingError extends MismatchError<CleanroomType> {
     }
 
     @Override
-    public PatternErrorUI getPatternErrorUIModifier() {
-        return (parent) -> {
-            Component comp = Component.translatable("gtceu.pattern_error.mismatch_filters",
-                    getExpected().getName(), getActual().getName(),
-                    pos.getX(), pos.getY(), pos.getZ());
-            parent.child(Text.of(comp).asWidget());
-        };
+    protected String stringify(CleanroomType value) {
+        return value.getName();
+    }
+
+    @Override
+    protected String lang() {
+        return "gtceu.pattern_error.mismatch_filters";
     }
 
     @Override
