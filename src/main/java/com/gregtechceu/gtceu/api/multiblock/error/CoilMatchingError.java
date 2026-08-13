@@ -9,32 +9,26 @@ import net.minecraft.network.chat.Component;
 import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
 
-public class CoilMatchingError extends PatternError {
+public class CoilMatchingError extends MismatchError<ICoilType> {
 
     public static Codec<CoilMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            ICoilType.CODEC.fieldOf("coil_type_1").forGetter(CoilMatchingError::getCoilType1),
-            ICoilType.CODEC.fieldOf("coil_type_2").forGetter(CoilMatchingError::getCoilType2))
+            ICoilType.CODEC.fieldOf("coil_type_1").forGetter(CoilMatchingError::getActual),
+            ICoilType.CODEC.fieldOf("coil_type_2").forGetter(CoilMatchingError::getExpected))
             .apply(instance, CoilMatchingError::new));
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("coil_matching_error"), CODEC);
 
-    @Getter
-    ICoilType coilType1, coilType2;
-
-    public CoilMatchingError(BlockPos pos, ICoilType type1, ICoilType type2) {
-        super(pos);
-        coilType1 = type1;
-        coilType2 = type2;
+    public CoilMatchingError(BlockPos pos, ICoilType expected, ICoilType actual) {
+        super(pos, expected, actual);
     }
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             Component comp = Component.translatable("gtceu.pattern_error.mismatch_coils",
-                    coilType1.getMaterial().getName(), coilType2.getMaterial().getName(),
+                    getExpected().getMaterial().getName(), getActual().getMaterial().getName(),
                     pos.getX(), pos.getY(), pos.getZ());
             parent.child(Text.of(comp).asWidget());
         };

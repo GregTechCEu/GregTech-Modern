@@ -9,32 +9,26 @@ import net.minecraft.network.chat.Component;
 import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
 
-public class FilterMatchingError extends PatternError {
+public class FilterMatchingError extends MismatchError<CleanroomType> {
 
     public static Codec<FilterMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            CleanroomType.CODEC.fieldOf("filter_type_1").forGetter(FilterMatchingError::getFilterType1),
-            CleanroomType.CODEC.fieldOf("filter_type_2").forGetter(FilterMatchingError::getFilterType2))
+            CleanroomType.CODEC.fieldOf("filter_type_1").forGetter(FilterMatchingError::getExpected),
+            CleanroomType.CODEC.fieldOf("filter_type_2").forGetter(FilterMatchingError::getActual))
             .apply(instance, FilterMatchingError::new));
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("filter_matching_error"), CODEC);
 
-    @Getter
-    CleanroomType filterType1, filterType2;
-
-    public FilterMatchingError(BlockPos pos, CleanroomType type1, CleanroomType type2) {
-        super(pos);
-        this.filterType1 = type1;
-        this.filterType2 = type2;
+    public FilterMatchingError(BlockPos pos, CleanroomType expected, CleanroomType actual) {
+        super(pos, expected, actual);
     }
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             Component comp = Component.translatable("gtceu.pattern_error.mismatch_filters",
-                    filterType1.getName(), filterType2.getName(),
+                    getExpected().getName(), getActual().getName(),
                     pos.getX(), pos.getY(), pos.getZ());
             parent.child(Text.of(comp).asWidget());
         };
