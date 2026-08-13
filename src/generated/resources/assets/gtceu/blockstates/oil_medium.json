@@ -1,7 +1,7 @@
 {
-    "variants": {
-        "": {
-            "model": "gtceu:block/oil_medium"
-        }
+  "variants": {
+    "": {
+      "model": "gtceu:block/oil_medium"
     }
+  }
 }
