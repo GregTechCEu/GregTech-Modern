@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
 
@@ -23,7 +22,6 @@ public class PatternStringError extends PatternError {
     public final Component component;
 
     public PatternStringError(Component component) {
-        super(BlockPos.ZERO);
         this.component = component;
     }
 

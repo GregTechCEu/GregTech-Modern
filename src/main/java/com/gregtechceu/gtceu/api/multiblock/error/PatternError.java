@@ -20,6 +20,10 @@ public abstract class PatternError {
         this.pos = pos;
     }
 
+    protected PatternError() {
+        this.pos = BlockPos.ZERO;
+    }
+
     public abstract PatternErrorType type();
 
     public abstract PatternErrorUI getPatternErrorUIModifier();

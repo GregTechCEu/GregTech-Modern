@@ -21,10 +21,10 @@ public abstract class MismatchError<T> extends PatternError {
     }
 
     protected static <T, R extends MismatchError<T>> Codec<R> makeCodec(Codec<T> typeCodec,
-                                                                        Function3<BlockPos, T, T, R> function3) {
+                                                                        Function3<BlockPos, T, T, R> constructor) {
         return RecordCodecBuilder.create(instance -> instance.group(
                 BlockPos.CODEC.fieldOf("pos").forGetter(MismatchError::getPos),
                 typeCodec.fieldOf("expected").forGetter(MismatchError::getExpected),
-                typeCodec.fieldOf("actual").forGetter(MismatchError::getActual)).apply(instance, function3));
+                typeCodec.fieldOf("actual").forGetter(MismatchError::getActual)).apply(instance, constructor));
     }
 }

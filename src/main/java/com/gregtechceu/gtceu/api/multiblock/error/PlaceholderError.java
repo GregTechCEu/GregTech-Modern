@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.core.BlockPos;
-
 import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 
@@ -19,9 +17,7 @@ public class PlaceholderError extends PatternError {
         return INSTANCE;
     }
 
-    private PlaceholderError() {
-        super(BlockPos.ZERO);
-    }
+    private PlaceholderError() {}
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
