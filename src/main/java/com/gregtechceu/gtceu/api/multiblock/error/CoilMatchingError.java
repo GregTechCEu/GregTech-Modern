@@ -8,15 +8,10 @@ import net.minecraft.network.chat.Component;
 
 import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class CoilMatchingError extends MismatchError<ICoilType> {
 
-    public static Codec<CoilMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            ICoilType.CODEC.fieldOf("coil_type_1").forGetter(CoilMatchingError::getActual),
-            ICoilType.CODEC.fieldOf("coil_type_2").forGetter(CoilMatchingError::getExpected))
-            .apply(instance, CoilMatchingError::new));
+    public static Codec<CoilMatchingError> CODEC = makeCodec(ICoilType.CODEC, CoilMatchingError::new);
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("coil_matching_error"), CODEC);
 
