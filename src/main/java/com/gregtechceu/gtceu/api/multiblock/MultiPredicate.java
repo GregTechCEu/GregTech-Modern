@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -166,6 +167,7 @@ public abstract class MultiPredicate {
         return this.hasAir;
     }
 
+    @CheckReturnValue
     private MultiPredicate mutatedCopy(Consumer<BasePredicate> mutation) {
         List<BasePredicate> copiedPredicates = new ArrayList<>(this.predicates.size());
         for (BasePredicate predicate : this.predicates) {
@@ -182,70 +184,87 @@ public abstract class MultiPredicate {
         return copy;
     }
 
+    @CheckReturnValue
     public MultiPredicate addTooltips(Component tooltip) {
         return mutatedCopy(p -> p.addTooltips(tooltip));
     }
 
+    @CheckReturnValue
     public MultiPredicate setPriority(int priority) {
         return mutatedCopy(p -> p.setPriority(priority));
     }
 
+    @CheckReturnValue
     public MultiPredicate setMinGlobalLimited(int min) {
         return this.setMinCount(min);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMinGlobalLimited(int min, int previewCount) {
         return this.setMinCount(min).setPreviewCount(previewCount);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMinCount(int min) {
         return mutatedCopy(p -> p.setMinCount(min));
     }
 
+    @CheckReturnValue
     public MultiPredicate setMaxGlobalLimited(int max) {
         return this.setMaxCount(max);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMaxGlobalLimited(int max, int previewCount) {
         return this.setMaxCount(max).setPreviewCount(previewCount);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMaxCount(int max) {
         return mutatedCopy(p -> p.setMaxCount(max));
     }
 
+    @CheckReturnValue
     public MultiPredicate setGlobalMinMax(int min, int max) {
         return this.setMinCount(min).setMaxCount(max);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMinLayerLimited(int min) {
         return this.setMinSliceCount(min);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMinLayerLimited(int min, int previewCount) {
         return this.setMinSliceCount(min).setPreviewCount(previewCount);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMinSliceCount(int min) {
         return mutatedCopy(p -> p.setMinSliceCount(min));
     }
 
+    @CheckReturnValue
     public MultiPredicate setMaxLayerLimited(int max) {
         return this.setMaxSliceCount(max);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMaxLayerLimited(int max, int previewCount) {
         return this.setMaxSliceCount(max).setPreviewCount(previewCount);
     }
 
+    @CheckReturnValue
     public MultiPredicate setMaxSliceCount(int max) {
         return mutatedCopy(p -> p.setMaxSliceCount(max));
     }
 
+    @CheckReturnValue
     public MultiPredicate setPreviewCount(int previewCount) {
         return mutatedCopy(p -> p.setPreviewCount(previewCount));
     }
 
+    @CheckReturnValue
     public MultiPredicate setLayerMinMax(int min, int max) {
         return this.setMinSliceCount(min).setMaxSliceCount(max);
     }
@@ -255,14 +274,17 @@ public abstract class MultiPredicate {
      *
      * @param limit The Maximum and Minimum limit
      */
+    @CheckReturnValue
     public MultiPredicate setExactLimit(int limit) {
         return this.setGlobalMinMax(limit, limit);
     }
 
+    @CheckReturnValue
     public MultiPredicate disabledRenderFormed() {
         return setDisableRenderFormed(true);
     }
 
+    @CheckReturnValue
     public MultiPredicate setDisableRenderFormed(boolean disable) {
         return mutatedCopy(p -> p.setDisableRenderFormed(disable));
     }
