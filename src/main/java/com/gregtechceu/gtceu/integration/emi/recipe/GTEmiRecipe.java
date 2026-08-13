@@ -42,7 +42,13 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
         super(() -> GTRecipeWidget.getPlaceHolder(recipe));
         this.category = category;
         this.recipe = recipe;
-        this.inputs = getEmiIngredients(IO.IN, recipe.inputs, recipe.tickInputs);
+        for (var ingredient : getEmiIngredients(IO.IN, recipe.inputs, recipe.tickInputs)) {
+            if (ingredient.getChance() == 0) {
+                this.catalysts.add(ingredient);
+            } else {
+                this.inputs.add(ingredient);
+            }
+        }
         this.outputs = getEmiStacks(IO.OUT, recipe.outputs, recipe.tickOutputs);
         for (var condition : recipe.conditions) {
             if (!condition.hasXEICatalysts()) continue;
