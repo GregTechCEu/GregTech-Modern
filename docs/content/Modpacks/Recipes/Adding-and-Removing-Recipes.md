@@ -7,8 +7,24 @@ title: "Adding & Removing Recipes"
 
 ## Removing Recipes
 
+Removing recipes can be done from your java addon:
+
+```java title="CustomGTAddon.java"
+@GTAddon
+public class MyGTAddon implements IGTAddon {
+    
+    @Override
+    public void removeRecipes(Consumer<ResourceLocation> consumer) {
+        // Recipes can be removed by resource location
+        consumer.accept(GTCEu.id("smelting/sticky_resin_from_slime"));
+    }
+
+}
+```
+
 Removing GTCEu Modern recipes with KubeJS works the same as any other recipe, meaning they can be removed by:
 ID, Mod, Input, Output, Type or a Mixture.
+
 
 ```js title="gtceu_removal.js"
 ServerEvents.recipes(event => {
@@ -50,23 +66,44 @@ ServerEvents.recipes(event => {
 
 Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
 
-```js title="gtceu_add.js"
-ServerEvents.recipes(event => {
-    event.recipes.gtceu.assembler('test')
-        .itemInputs(
-            '64x minecraft:dirt',
-            '32x minecraft:diamond'
-        )
-        .inputFluids(
-            Fluid.of('minecraft:lava', 1500)
-        )
-        .itemOutputs(
-            'minecraft:stick'
-        )
-        .duration(100)
-        .EUt(30)
-})
-```
+=== "Java"
+    ```java title="CustomGTAddon.java"
+    @GTAddon
+    public class MyGTAddon implements IGTAddon {
+        
+        @Override
+        public void addRecipes(Consumer<FinishedRecipe> provider) {
+            ASSEMBLER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
+                .inputItems(
+                    new ItemStack(Blocks.DIRT, 64),
+                    new ItemStack(Items.DIAMOND, 32)
+                )
+                .inputFluids(new FluidStack(Fluids.LAVA, 1500)
+                .outputItems(Items.STICK)
+                .duration(100)
+                .EUt(30)
+                .save(provider);
+        }
+    }
+    ```
+=== "JavaScript"
+    ```js title="gtceu_add.js"
+    ServerEvents.recipes(event => {
+        event.recipes.gtceu.assembler('test')
+            .itemInputs(
+                '64x minecraft:dirt',
+                '32x minecraft:diamond'
+            )
+            .inputFluids(
+                Fluid.of('minecraft:lava', 1500)
+            )
+            .itemOutputs(
+                'minecraft:stick'
+            )
+            .duration(100)
+            .EUt(30)
+    })
+    ```
 
 ### Event calls for adding inputs and outputs
 
@@ -148,31 +185,73 @@ to distinguish them from other recipes in the same machine with similar ingredie
 GTCEu has Research System which allows for adding extra requirements to recipes such as:  
 Scanner Research, Station Research and Computation.
 
-```js title="scanner_research.js"
-ServerEvents.recipes(event => {
-    event.recipes.gtceu.assembly_line('scanner_test')
-        .itemInputs('64x minecraft:coal')
-        .itemOutputs('minecraft:diamond')
-        .duration(10000)
-        .EUt(GTValues.VA[GTValues.IV])
-        ["scannerResearch(java.util.function.UnaryOperator)"](b => b.researchStack(Item.of('minecraft:coal_block')).EUt(GTValues.VA[GTValues.IV]).duration(420)) // (1)
-})
-```
+=== "Java"
+    ```java title="CustomGTAddon.java"
+    @GTAddon
+    public class MyGTAddon implements IGTAddon {
+
+        @Override
+        public void addRecipes(Consumer<FinishedRecipe> provider) {
+            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("scanner_test"))
+                .inputItems(new ItemStack(Blocks.COAL_BLOCK, 64))
+                .outputItems(Items.DIAMOND)
+                .duration(10000)
+                .EUt(GTValues.VA[GTValues.IV])
+                .scannerResearch(b -> b
+                    .researchStack(Blocks.COAL_BLOCK)
+                    .duration(420)
+                    .EUt(VA[IV]))
+                .save(provider);
+        }
+    }
+    ```
+=== "JavaScript"
+    ```js title="scanner_research.js"
+    ServerEvents.recipes(event => {
+        event.recipes.gtceu.assembly_line('scanner_test')
+            .itemInputs('64x minecraft:coal')
+            .itemOutputs('minecraft:diamond')
+            .duration(10000)
+            .EUt(GTValues.VA[GTValues.IV])
+            ["scannerResearch(java.util.function.UnaryOperator)"](b => b.researchStack(Item.of('minecraft:coal_block')).EUt(GTValues.VA[GTValues.IV]).duration(420)) // (1)
+    })
+    ```
 
 1. Note that due to the way JS integration works, you have to force `scannerResearch` to be interpreted in a specific way:
    Scanner Research accepts an `ItemStack` input in the `.researchStack()` object, and you can also define the `EUt` and
    `Duration` outside of the `.researchStack()` object.
 
-```js title="station_research"
-ServerEvents.recipes(event => {
-    event.recipes.gtceu.assembly_line('station_test')
-        .itemInputs('64x minecraft:coal')
-        .itemOutputs('minecraft:diamond')
-        .duration(10000)
-        .EUt(GTValues.VA[GTValues.IV])
-        .stationResearch(b => b.researchStack(Item.of('minecraft:coal_block')).EUt(GTValues.VA[GTValues.IV]).CWUt(10)) // (1)
-})
-```
+=== "Java"
+    ```java title="CustomGTAddon.java"
+    @GTAddon
+    public class MyGTAddon implements IGTAddon {
+
+        @Override
+        public void addRecipes(Consumer<FinishedRecipe> provider) {
+            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("scanner_test"))
+                .inputItems(new ItemStack(Blocks.COAL_BLOCK, 64))
+                .outputItems(Items.DIAMOND)
+                .duration(10000)
+                .EUt(GTValues.VA[GTValues.IV])
+                .stationResearch(b -> b
+                    .researchStack(Blocks.COAL_BLOCK)
+                    .CWUt(10)
+                    .EUt(VA[IV]))
+                .save(provider);
+        }
+    }
+    ```
+=== "JavaScript"
+    ```js title="station_research"
+    ServerEvents.recipes(event => {
+        event.recipes.gtceu.assembly_line('station_test')
+            .itemInputs('64x minecraft:coal')
+            .itemOutputs('minecraft:diamond')
+            .duration(10000)
+            .EUt(GTValues.VA[GTValues.IV])
+            .stationResearch(b => b.researchStack(Item.of('minecraft:coal_block')).EUt(GTValues.VA[GTValues.IV]).CWUt(10)) // (1)
+    })
+    ```
 
 1. Just like `Scanner Research` `Station Research` accepts an `ItemStack` input in the `.researchStack()` object,
    however you can only define `EUt` and `CWUt` outside of the `.researchStack()` object. `CWUt` is used to define the
@@ -184,17 +263,35 @@ Rock breaker recipes use AdjacentFluidConditions.
 
 To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
 
-```js title="rock_breaker.js"
-ServerEvents.recipes(event => {
-    event.recipes.gtceu.rock_breaker('rhino_jank')
-        .notConsumable('minecraft:dirt')
-        .itemOutputs('minecraft:dirt')
-        .adjacentFluids('minecraft:water')
-        .adjacentFluids('minecraft:lava')
-        .duration(16)
-        .EUt(30)
-})
-```
+=== "Java"
+    ```java title="CustomGTAddon.java"
+    @GTAddon
+    public class MyGTAddon implements IGTAddon {
+
+        @Override
+        public void addRecipes(Consumer<FinishedRecipe> provider) {
+            ROCK_BREAKER_RECIPES.recipeBuilder(ADDON_MOD.id("test"))
+                .notConsumable(Blocks.DIRT.asItem())
+                .outputItems(Blocks.DIRT.asItem())
+                .adjacentFluids(FluidTags.LAVA, FluidTags.WATER)
+                .duration(16)
+                .EUt(30)
+                .save(provider);
+        }
+    }
+    ```
+=== "JavaScript"
+    ```js title="rock_breaker.js"
+    ServerEvents.recipes(event => {
+        event.recipes.gtceu.rock_breaker('rhino_jank')
+            .notConsumable('minecraft:dirt')
+            .itemOutputs('minecraft:dirt')
+            .adjacentFluids('minecraft:water')
+            .adjacentFluids('minecraft:lava')
+            .duration(16)
+            .EUt(30)
+    })
+    ```
 
 ### More custom ingredients
 For more custom ingredients, see the [Ingredients list in the sidebar](Ingredients/index.md)
