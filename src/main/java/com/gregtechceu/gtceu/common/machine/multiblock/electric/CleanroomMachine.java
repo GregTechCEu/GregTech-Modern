@@ -443,9 +443,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      * .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
      *
      * return FactoryBlockPattern.start(LEFT, FRONT, UP)
-     * .aisle(f)
-     * .aisle(m).setRepeatable(wallLayers.size())
-     * .aisle(c)
+     * .slice(f)
+     * .slice(m).setRepeatable(wallLayers.size())
+     * .slice(c)
      * .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
      * .where('F', Predicates.cleanroomFilters())
      * .where('D', states(getCasingState())) // ceiling edges
