@@ -20,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ingot;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.nugget;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
@@ -32,7 +34,7 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
 
     @Override
     public @Nullable GTRecipeDefinition createCustomRecipe(RecipeHandlerGroup holder) {
-        var recipeHandlers = holder.getInputHandlerMap().get(ItemRecipeCapability.CAP);
+        var recipeHandlers = holder.getInputHandlerMap().getOrDefault(ItemRecipeCapability.CAP, List.of());
         for (var handler : recipeHandlers) {
             for (var content : handler.getContents()) {
                 if (!(content instanceof ItemStack stack)) continue;
