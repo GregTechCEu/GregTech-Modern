@@ -1977,7 +1977,6 @@
   "config.jade.plugin_gtceu.multiblock_structure": "[GTCEu] MultiBlock Structure",
   "config.jade.plugin_gtceu.parallel_info": "[GTCEu] Parallel Info",
   "config.jade.plugin_gtceu.primitive_pump": "[GTCEu] Primitive Pump Info",
-  "config.jade.plugin_gtceu.programmed_circuit_info": "[GTCEu] Programmed Circuit Info",
   "config.jade.plugin_gtceu.recipe_logic_provider": "[GTCEu] Recipe Logic",
   "config.jade.plugin_gtceu.recipe_output_info": "[GTCEu] Recipe Output Info",
   "config.jade.plugin_gtceu.stained_color": "[GTCEu] Stained Block Info",

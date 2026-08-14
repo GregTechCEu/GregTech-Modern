@@ -1,59 +1,21 @@
 {
+    "parent": "gtceu:block/overlay/only/front_emissive",
     "elements": [
         {
+            "from": [  0,  0, -0.01 ],
+            "to":   [ 16, 16, -0.01 ],
             "faces": {
-                "north": {
-                    "cullface": "north",
-                    "texture": "#overlay",
-                    "uv": [
-                        0,
-                        0,
-                        16,
-                        16
-                    ]
-                }
-            },
-            "from": [
-                0,
-                0,
-                -0.01
-            ],
-            "to": [
-                16,
-                16,
-                -0.01
-            ]
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
+            }
         },
         {
-            "faces": {
-                "north": {
-                    "cullface": "north",
-                    "texture": "#overlay_emissive",
-                    "tintindex": -101,
-                    "uv": [
-                        0,
-                        0,
-                        16,
-                        16
-                    ]
-                }
-            },
-            "forge_data": {
-                "block_light": 15,
-                "sky_light": 15
-            },
-            "from": [
-                0,
-                0,
-                -0.02
-            ],
+            "from": [  0,  0, -0.02 ],
+            "to":   [ 16, 16, -0.02 ],
+            "forge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
-            "to": [
-                16,
-                16,
-                -0.02
-            ]
+            "faces": {
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "cullface": "north", "tintindex": -101 }
+            }
         }
-    ],
-    "parent": "gtceu:block/overlay/only/front_emissive"
+    ]
 }
