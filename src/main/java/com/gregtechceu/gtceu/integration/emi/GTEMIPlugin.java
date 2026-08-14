@@ -77,6 +77,9 @@ public class GTEMIPlugin implements EmiPlugin {
 
         // Comparators
         registry.setDefaultComparison(GTItems.TURBINE_ROTOR.asItem(), Comparison.compareNbt());
+        registry.setDefaultComparison(GTItems.TOOL_DATA_STICK.asItem(), Comparison.compareNbt());
+        registry.setDefaultComparison(GTItems.TOOL_DATA_ORB.asItem(), Comparison.compareNbt());
+        registry.setDefaultComparison(GTItems.TOOL_DATA_MODULE.asItem(), Comparison.compareNbt());
 
         registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
         registry.removeEmiStacks(EmiStack.of(GTItems.PROGRAMMED_CIRCUIT.asStack()));

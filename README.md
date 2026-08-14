@@ -56,5 +56,6 @@ Additionally, the [Minecraft Development plugin](https://plugins.jetbrains.com/p
 - Ender Fluid Link Cover, Auto-Maintenance Hatch, Optical Fiber, and Data Bank Textures are from **[TecTech](https://github.com/Technus/TecTech)**.
 - Steam Grinder is from **[GregTech++](https://www.curseforge.com/minecraft/mc-mods/gregtech-gt-gtplusplus)**.
 - Certificate of Not Being a Noob Anymore is from **[Crops++](https://www.curseforge.com/minecraft/mc-mods/berries)**.
+- DataItem Decorator from [GTMQOL](https://www.curseforge.com/minecraft/mc-mods/gregtech-modern-quality-of-life) by @Taskeren
 
 See something we forgot to credit? Reach out to us on Discord, or open an issue and ask for appropriate credit, we will happily mark it here

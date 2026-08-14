@@ -10,12 +10,17 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.emi.emi.api.stack.EmiStack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 public class ResearchCondition extends RecipeCondition<ResearchCondition> {
@@ -67,5 +72,20 @@ public class ResearchCondition extends RecipeCondition<ResearchCondition> {
     @Override
     public ResearchCondition createTemplate() {
         return new ResearchCondition();
+    }
+
+    @Override
+    public boolean hasXEICatalysts() {
+        return true;
+    }
+
+    @Override
+    public List<?> getXEICatalysts() {
+        var list = new ArrayList<EmiStack>();
+        for (ResearchData.ResearchEntry entry : data) {
+            ItemStack dataStick = entry.getDataItem().copy();
+            list.add(EmiStack.of(dataStick));
+        }
+        return list;
     }
 }

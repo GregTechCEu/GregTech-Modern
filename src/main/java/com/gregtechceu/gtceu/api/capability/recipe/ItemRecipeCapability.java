@@ -209,42 +209,6 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
                 .map(ItemRecipeCapability::mapItem)
                 .collect(Collectors.toList());
 
-        if (io == IO.OUT && recipe.recipeType.isScanner()) {
-            List<ItemEntryList> scannerPossibilities = new ArrayList<>();
-            // Scanner Output replacing, used for cycling research outputs
-            ResearchManager.ResearchItem researchData = null;
-            for (var ingredient : recipe.getOutputContents(this)) {
-                ItemStack[] stacks = ingredient.getItems();
-                if (stacks.length == 0 || stacks[0].isEmpty()) continue;
-
-                researchData = ResearchManager.readResearchId(stacks[0]);
-                if (researchData != null) break;
-            }
-            if (researchData != null) {
-                Collection<GTRecipeDefinition> possibleRecipes = researchData.recipeType()
-                        .getDataStickEntry(researchData.researchId());
-                Set<ItemStack> cache = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingItem());
-                if (possibleRecipes != null) {
-                    for (GTRecipeDefinition r : possibleRecipes) {
-                        var outputs = r.getOutputContents(this);
-                        if (outputs.isEmpty()) continue;
-
-                        var outputContent = outputs.get(0);
-                        ItemStack[] stacks = outputContent.getItems();
-                        if (stacks.length == 0) continue;
-
-                        ItemStack researchStack = stacks[0];
-                        if (!researchStack.isEmpty() && !cache.contains(researchStack)) {
-                            cache.add(researchStack);
-                            scannerPossibilities.add(ItemStackList.of(researchStack.copyWithCount(1)));
-                        }
-                    }
-                }
-                scannerPossibilities.add(entryLists.get(0));
-                entryLists = scannerPossibilities;
-            }
-        }
-
         return entryLists;
     }
 

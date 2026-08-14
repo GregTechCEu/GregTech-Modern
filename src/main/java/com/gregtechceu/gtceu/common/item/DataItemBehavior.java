@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
+import com.gregtechceu.gtceu.client.renderer.item.decorator.CornerItemDecoratorBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -37,7 +38,8 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("ClassCanBeRecord")
-public class DataItemBehavior implements IInteractionItem, IAddInformation, IDataItem {
+public class DataItemBehavior extends CornerItemDecoratorBehavior
+                              implements IInteractionItem, IAddInformation, IDataItem {
 
     private final boolean requireDataBank;
     @Getter
@@ -174,5 +176,27 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
             }
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    protected @Nullable ItemStack getItemToRender(ItemStack containerItem) {
+        ResearchManager.ResearchItem researchItem = ResearchManager.readResearchId(containerItem);
+        if (researchItem == null) return null;
+
+        Collection<GTRecipeDefinition> recipes = researchItem.recipeType().getDataStickEntry(researchItem.researchId());
+        if (recipes == null || recipes.isEmpty()) return null;
+
+        var recipe = recipes.iterator().next();
+        var outputs = recipe.outputs.getOrDefault(ItemRecipeCapability.CAP, List.of());
+        if (!outputs.isEmpty() && outputs.get(0).getItems().length != 0) {
+            return outputs.get(0).getItems()[0];
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected boolean shouldRender(boolean shiftKeyPressed) {
+        return !shiftKeyPressed;
     }
 }
