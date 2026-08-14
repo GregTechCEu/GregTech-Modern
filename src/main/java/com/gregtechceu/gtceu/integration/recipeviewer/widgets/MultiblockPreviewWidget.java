@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.widgets.OverlayButton;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -228,6 +229,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 .name("schema_widgets")
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .coverChildren()
+                                .child(new OverlayButton(definition)
+                                        .name("btn_overlay")
+                                        .addTooltipLine("open an overlay"))
                                 .child(new DynamicWidget<>()
                                         .name("selected_block")
                                         .coverChildren(20)
