@@ -10,41 +10,41 @@ Below is an example of a multiblock using the CoilWorkableElectricMultiblockMach
 ### Multiblock
 
 === "Java"
-```java title="MultiMachines.java"
-
-    public static final MultiblockMachineDefinition SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
-            .multiblock("superheated_pyrolyzing_oven", (holder) -> new CoilWorkableElectricMultiblockMachine(holder))
-            .rotationState(RotationState.NON_Y_AXIS)
-            .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                (machine, recipe) -> GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe))
-            .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
-            .pattern(definition -> MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
-                .slice("BBCCCBB", "BBCDCBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
-                .slice("BCCCCCB", "BCAFACB", "BCAFACB", "BCGGGCB", "BEAAAEB", "BEHHHEB")
-                .slice("CCCCCCC", "CAAFAAC", "CAAFAAC", "CGGGGGC", "EAAAAAE", "EHHHHHE")
-                .slice("CCCCCCC", "DFFFFFD", "CFFFFFC", "CGGGGGC", "EAAAAAE", "EHHMHHE")
-                .slice("CCCCCCC", "CAAFAAC", "CAAFAAC", "CGGGGGC", "EAAAAAE", "EHHHHHE")
-                .slice("BCCCCCB", "BCAFACB", "BCAFACB", "BCGGGCB", "BEAAAEB", "BEHHHEB")
-                .slice("BBCCCBB", "BBCICBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
-                .where('A', Predicates.air())
-                .where('B', Predicates.any())
-                .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get()).setMinGlobalLimited(10)
-                    .and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
-                    .and(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
-                    .and(Predicates.autoAbilities(definition.getRecipeTypes())))
-                .where('D', Predicates.blocks(GTBlocks.FIREBOX_STEEL.get()))
-                .where('E', Predicates.blocks(CASING_LAMINATED_GLASS.get()))
-                .where('F', Predicates.blocks(GTBlocks.CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
-                .where('G', Predicates.heatingCoils())
-                .where('H', Predicates.blocks(GCYMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
-                .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
-                .where('I', Predicates.controller(Predicates.blocks(definition.get())))
-                .build())
-            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
-                 GTCEu.id("block/multiblock/pyrolyse_oven"))
-            .register();
-```
+    ```java title="MultiMachines.java"
+    
+        public static final MultiblockMachineDefinition SUPERHEATED_PYROLYZING_OVEN = REGISTRATE
+                .multiblock("superheated_pyrolyzing_oven", (holder) -> new CoilWorkableElectricMultiblockMachine(holder))
+                .rotationState(RotationState.NON_Y_AXIS)
+                .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
+                .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    (machine, recipe) -> GTRecipeModifiers.pyrolyseOvenOverclock(machine, recipe))
+                .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)
+                .pattern(definition -> MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
+                    .slice("BBCCCBB", "BBCDCBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
+                    .slice("BCCCCCB", "BCAFACB", "BCAFACB", "BCGGGCB", "BEAAAEB", "BEHHHEB")
+                    .slice("CCCCCCC", "CAAFAAC", "CAAFAAC", "CGGGGGC", "EAAAAAE", "EHHHHHE")
+                    .slice("CCCCCCC", "DFFFFFD", "CFFFFFC", "CGGGGGC", "EAAAAAE", "EHHMHHE")
+                    .slice("CCCCCCC", "CAAFAAC", "CAAFAAC", "CGGGGGC", "EAAAAAE", "EHHHHHE")
+                    .slice("BCCCCCB", "BCAFACB", "BCAFACB", "BCGGGCB", "BEAAAEB", "BEHHHEB")
+                    .slice("BBCCCBB", "BBCICBB", "BBCCCBB", "BBCCCBB", "BBEEEBB", "BBEEEBB")
+                    .where('A', Predicates.air())
+                    .where('B', Predicates.any())
+                    .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get()).setMinGlobalLimited(10)
+                        .and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                        .and(Predicates.abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1))
+                        .and(Predicates.autoAbilities(definition.getRecipeTypes())))
+                    .where('D', Predicates.blocks(GTBlocks.FIREBOX_STEEL.get()))
+                    .where('E', Predicates.blocks(CASING_LAMINATED_GLASS.get()))
+                    .where('F', Predicates.blocks(GTBlocks.CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
+                    .where('G', Predicates.heatingCoils())
+                    .where('H', Predicates.blocks(GCYMBlocks.CASING_HIGH_TEMPERATURE_SMELTING.get()))
+                    .where('M', Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
+                    .where('I', Predicates.controller(Predicates.blocks(definition.get())))
+                    .build())
+                .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+                     GTCEu.id("block/multiblock/pyrolyse_oven"))
+                .register();
+    ```
 === "JavaScript"
     ```js title="superheated_pyrolyzing_oven_multiblock.js"
     // In order to use multiblock logic extending beyond the normal WorkableElectricMultiblockMachine, (This is the multiblock type used by default for kubejs) you need to load a class. Coil multiblocks such as the Electric Blast Furnace, Pyrolyse Oven, and the Cracker use this class.

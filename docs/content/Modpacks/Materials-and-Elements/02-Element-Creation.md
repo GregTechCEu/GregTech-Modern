@@ -9,17 +9,22 @@ title: Element Creation
     For those elements, see GTElements.
 Elements are the base of GT materials. Registering an element WILL NOT add any items.
 
-```js
-GTCEuStartupEvents.registry('gtceu:element', event => {
-   event.create('test_element')
-        .protons(27)
-        .neutrons(177)
-        .halfLifeSeconds(-1)
-        .decayTo(null)
-        .symbol('test')
-        .isIsotope(false)
-})
-```
+=== "Java"
+    ```java title="AddonElements.java"
+    public static final Element TEST = GTElements.createAndRegister(ADDON_MOD.id("test"), 27, 177, -1, null, 'test', false)
+    ```
+=== "JavaScript"
+    ```js
+    GTCEuStartupEvents.registry('gtceu:element', event => {
+       event.create('test_element')
+            .protons(27)
+            .neutrons(177)
+            .halfLifeSeconds(-1)
+            .decayTo(null)
+            .symbol('test')
+            .isIsotope(false)
+    })
+    ```
 
 1.  `.create(String name)` ->  The element name.
 2.  `.protons(int protons)` -> Proton Count. Use `-1` if it is an element that will not get a material.

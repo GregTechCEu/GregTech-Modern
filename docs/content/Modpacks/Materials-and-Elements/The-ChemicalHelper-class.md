@@ -60,15 +60,15 @@ ItemStack representing that `TagPrefix`-`Material` combination with the specifie
 
 ## Usage Examples
 
-```js title="chemicalhelper_example_script.js"
-var ironMaterial = ChemicalHelper.getMaterial(Item.of("gtceu:double_iron_plate").asItem()) // (1)
-var rawOrePrefix = ChemicalHelper.getPrefix(Item.of("gtceu:raw_platinum").asItem()) // (2)
-var cobaltIngotStack = ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Cobalt, 32) // (3)
+```java title="chemicalhelper_example_script.java"
+Material ironMaterial = ChemicalHelper.getMaterial(Item.of("gtceu:double_iron_plate").asItem()); // (1)
+TagPrefix rawOrePrefix = ChemicalHelper.getPrefix(Item.of("gtceu:raw_platinum").asItem()); // (2)
+ItemStack cobaltIngotStack = ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Cobalt, 32); // (3)
 
-var goldNugget = ChemicalHelper.getIngot(GTMaterials.Gold, GTValues.M / 9) // (4)
-var steelBlock = ChemicalHelper.getIngot(GTMaterials.Steel, GTValues.M * 9)
+ItemStack goldNugget = ChemicalHelper.getIngot(GTMaterials.Gold, GTValues.M / 9); // (4)
+ItemStack steelBlock = ChemicalHelper.getIngot(GTMaterials.Steel, GTValues.M * 9);
 
-var ashSmallDust = ChemicalHelper.getDust(GTMaterials.Ash, GTValues.M / 4) // (5)
+ItemStack ashSmallDust = ChemicalHelper.getDust(GTMaterials.Ash, GTValues.M / 4); // (5)
 ```
 
 1. `ironMaterial` is now a reference to `GTMaterials.Iron`.
