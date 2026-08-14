@@ -37,12 +37,12 @@ public class PatternStringError extends PatternError {
         return new PatternStringError(Component.literal(String.format(s, args)));
     }
 
-    public static PatternStringError translatable(String s) {
-        return new PatternStringError(Component.translatable(s));
+    public static PatternStringError translatable(String langKey) {
+        return new PatternStringError(Component.translatable(langKey));
     }
 
-    public static PatternStringError translatable(String s, Object... args) {
-        return new PatternStringError(Component.translatable(s, args));
+    public static PatternStringError translatable(String langKey, Object... args) {
+        return new PatternStringError(Component.translatable(langKey, args));
     }
 
     @Override

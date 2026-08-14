@@ -9,12 +9,15 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
+import java.util.function.Function;
+
 public abstract class MismatchError<T> extends PatternError {
 
     @Getter
     private final T expected;
     @Getter
     private final T actual;
+    private Function<T, String> stringify = Object::toString;
 
     public MismatchError(BlockPos pos, T expected, T actual) {
         super(pos);
@@ -22,18 +25,26 @@ public abstract class MismatchError<T> extends PatternError {
         this.actual = actual;
     }
 
-    protected abstract String stringify(T value);
+    protected void valueToString(Function<T, String> stringify) {
+        this.stringify = stringify;
+    }
 
-    protected abstract String lang();
+    /// @return the lang key string used in {@link #lang()}
+    protected abstract String langKey();
+
+    /// See {@link #valueToString(Function)} to customize how the values are stringified
+    /// @return a translatable component with
+    /// stringified expected and actual values at a given BlockPos
+    public Component lang() {
+        return Component.translatable(langKey(),
+                stringify.apply(expected),
+                stringify.apply(actual),
+                pos.getX(), pos.getY(), pos.getZ());
+    }
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
-        return parent -> {
-            Component comp = Component.translatable(lang(),
-                    stringify(getExpected()), stringify(getActual()),
-                    pos.getX(), pos.getY(), pos.getZ());
-            parent.child(Text.of(comp).asWidget());
-        };
+        return parent -> parent.child(Text.of(lang()).asWidget());
     }
 
     protected static <T, R extends MismatchError<T>> Codec<R> makeCodec(Codec<T> typeCodec,

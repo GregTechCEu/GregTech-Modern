@@ -15,15 +15,11 @@ public class FilterMatchingError extends MismatchError<CleanroomType> {
 
     public FilterMatchingError(BlockPos pos, CleanroomType expected, CleanroomType actual) {
         super(pos, expected, actual);
+        valueToString(CleanroomType::getName);
     }
 
     @Override
-    protected String stringify(CleanroomType value) {
-        return value.getName();
-    }
-
-    @Override
-    protected String lang() {
+    protected String langKey() {
         return "gtceu.pattern_error.mismatch_filters";
     }
 

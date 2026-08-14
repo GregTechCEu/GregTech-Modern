@@ -15,15 +15,11 @@ public class CoilMatchingError extends MismatchError<ICoilType> {
 
     public CoilMatchingError(BlockPos pos, ICoilType expected, ICoilType actual) {
         super(pos, expected, actual);
+        valueToString(coil -> coil.getMaterial().getName());
     }
 
     @Override
-    protected String stringify(ICoilType value) {
-        return value.getMaterial().getName();
-    }
-
-    @Override
-    protected String lang() {
+    protected String langKey() {
         return "gtceu.pattern_error.mismatch_coils";
     }
 
