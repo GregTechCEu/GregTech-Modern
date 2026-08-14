@@ -107,6 +107,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             map.put(proxyRecipe, new ArrayList<>());
         }
         this.proxyRecipes = map;
+        this.uiLayout = new GTRecipeTypeUILayout.Builder(this).build();
     }
 
     public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
