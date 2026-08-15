@@ -76,7 +76,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
             .where('D', Predicates.blocks(GTBlocks.COIL_CUPRONICKEL.get()))
             .where('G', Predicates.blocks('minecraft:glass'))
             .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
-                .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+                .and(Predicates.autoAbilities(definition.getRecipeTypes())))
         .build())
         .workableCasingModel(
             "gtceu:block/casings/solid/machine_casing_inert_ptfe",
@@ -109,7 +109,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
             .where('D', Predicates.blocks(GTBlocks.COIL_CUPRONICKEL.get()))
             .where('G', Predicates.blocks('minecraft:glass'))
             .where('C', Predicates.blocks(GTBlocks.CASING_STEEL_SOLID.get())
-                .or(Predicates.autoAbilities(definition.getRecipeTypes())))
+                .and(Predicates.autoAbilities(definition.getRecipeTypes())))
         .build())
         .shapeInfo(controller => MultiblockShapeInfo.builder()
             .aisle('eCe', 'GGG', 'CCC')

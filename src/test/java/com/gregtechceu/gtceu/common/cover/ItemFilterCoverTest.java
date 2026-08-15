@@ -23,6 +23,8 @@ import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
 
+import java.util.Objects;
+
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 @ForEachTest(groups = "coverTests")
@@ -30,7 +32,7 @@ public class ItemFilterCoverTest {
 
     private static ItemStack makeDiamondFilter() {
         ItemStack stack = GTItems.ITEM_FILTER.asStack();
-        SimpleItemFilter filter = SimpleItemFilter.loadFilter(stack);
+        SimpleItemFilter filter = new SimpleItemFilter();
         filter.getMatches()[0] = Items.DIAMOND.getDefaultInstance();
         stack.set(GTDataComponents.SIMPLE_ITEM_FILTER, filter);
         return stack;
@@ -50,6 +52,10 @@ public class ItemFilterCoverTest {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
         BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+
+        Objects.requireNonNull(crate1);
+        Objects.requireNonNull(crate2);
+
         crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 8));
         crate1.getInventory().setStackInSlot(1, new ItemStack(Items.DIAMOND, 16));
         // LV Cover

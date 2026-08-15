@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -125,6 +126,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
+            }
+            if (builder.ui() == null) {
+                builder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
             }
 
             this.builders[tier] = builder;

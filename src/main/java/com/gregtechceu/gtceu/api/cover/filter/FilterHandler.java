@@ -1,15 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -17,52 +15,71 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncManaged {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * A filter handler represents a slot that can hold filters for a specific type of stack/object.
+ *
+ * @param <T> The stack/object type this filter handler holds filters for.
+ */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class FilterHandler<T> implements ISyncManaged {
 
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     private final ISyncManaged container;
+    @Getter
+    private final Class<T> filterableType;
 
     @SaveField
     @SyncToClient
     @Getter
     private ItemStack filterItem = ItemStack.EMPTY;
 
-    private @Nullable F filter;
-    private @Nullable CustomItemStackHandler filterSlot;
+    private @Nullable Filter<T> filter;
+    @Getter
+    private CustomItemStackHandler filterSlot;
 
-    private Consumer<F> onFilterLoaded = (filter) -> {};
+    private Consumer<Filter<T>> onFilterLoaded = (filter) -> {};
     private Runnable onFilterRemoved = () -> {};
-    private Consumer<F> onFilterUpdated = (filter) -> {};
+    private Consumer<Filter<T>> onFilterUpdated = (filter) -> {};
 
-    public FilterHandler(ISyncManaged container) {
+    /**
+     * @param container      The machine/pipe/cover/etc this filter handler is attached to.
+     * @param filterableType The stack/object type which this filter handler should hold filters for.
+     */
+    public FilterHandler(ISyncManaged container, Class<T> filterableType) {
         this.container = container;
+        this.filterableType = filterableType;
+
+        this.filterSlot = new CustomItemStackHandler(this.filterItem) {
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+        };
+
+        this.filterSlot.setFilter(this::canInsertFilterItem);
+        this.filterSlot.setOnContentsChanged(this::updateFilter);
     }
-
-    public abstract F loadFilter(ItemStack filterItem);
-
-    protected abstract F getEmptyFilter();
 
     //////////////////////////////////
     // ***** PUBLIC API ******//
     //////////////////////////////////
 
-    public abstract boolean canInsertFilterItem(ItemStack itemStack);
-
-    public boolean isFilterPresent() {
-        return filter != null || !filterItem.isEmpty();
+    public boolean canInsertFilterItem(ItemStack itemStack) {
+        return Filters.isValidFilter(filterableType, itemStack.getItem());
     }
 
-    public F getFilter() {
-        if (this.filter == null) {
-            if (this.filterItem.isEmpty()) {
-                return getEmptyFilter();
-            } else {
-                loadFilterFromItem();
-            }
-        }
+    public boolean isFilterPresent() {
+        return filter != null;
+    }
 
+    public Filter<T> getFilter() {
+        if (this.filter == null) return Filters.getEmptyFilter();
         return this.filter;
     }
 
@@ -70,17 +87,17 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
         return getFilter().test(resource);
     }
 
-    public FilterHandler<T, F> onFilterLoaded(Consumer<F> onFilterLoaded) {
+    public FilterHandler<T> onFilterLoaded(Consumer<Filter<T>> onFilterLoaded) {
         this.onFilterLoaded = onFilterLoaded;
         return this;
     }
 
-    public FilterHandler<T, F> onFilterRemoved(Runnable onFilterRemoved) {
+    public FilterHandler<T> onFilterRemoved(Runnable onFilterRemoved) {
         this.onFilterRemoved = onFilterRemoved;
         return this;
     }
 
-    public FilterHandler<T, F> onFilterUpdated(Consumer<F> onFilterUpdated) {
+    public FilterHandler<T> onFilterUpdated(Consumer<Filter<T>> onFilterUpdated) {
         this.onFilterUpdated = onFilterUpdated;
         return this;
     }
@@ -89,25 +106,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
     // ***** FILTER HANDLING ******//
     ///////////////////////////////////////
 
-    public CustomItemStackHandler getFilterSlot() {
-        if (this.filterSlot == null) {
-            this.filterSlot = new CustomItemStackHandler(this.filterItem) {
-
-                @Override
-                public int getSlotLimit(int slot) {
-                    return 1;
-                }
-            };
-
-            this.filterSlot.setFilter(this::canInsertFilterItem);
-            this.filterSlot.setOnContentsChanged(this::updateFilter);
-        }
-
-        return this.filterSlot;
-    }
-
     public void setFilterItem(ItemStack item) {
-        getFilterSlot().setStackInSlot(0, item);
+        filterSlot.setStackInSlot(0, item);
     }
 
     private void updateFilter() {
@@ -127,21 +127,10 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
             this.onFilterRemoved.run();
         }
 
-        loadFilterFromItem();
-    }
-
-    private void loadFilterFromItem() {
         if (!this.filterItem.isEmpty()) {
-            this.filter = loadFilter(this.filterItem);
+            this.filter = Filters.loadFilter(filterableType, filterItem);
+            filter.onFilterLoaded(this);
             filter.setOnUpdated(this.onFilterUpdated);
-            if (filter instanceof SmartItemFilter smart &&
-                    container instanceof CoverBehavior cover &&
-                    cover.coverHolder instanceof MachineCoverContainer mcc) {
-                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
-                if (machine != null) {
-                    smart.setModeFromMachine(machine.getDefinition().getName());
-                }
-            }
             this.onFilterLoaded.accept(this.filter);
         }
     }

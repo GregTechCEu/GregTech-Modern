@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/cube/tinted/all_0",
-  "textures": {
-    "all": "gtceu:block/material_sets/paper/block"
-  }
+    "parent": "gtceu:block/cube/tinted/all_0",
+    "textures": {
+        "all": "gtceu:block/material_sets/paper/block"
+    }
 }

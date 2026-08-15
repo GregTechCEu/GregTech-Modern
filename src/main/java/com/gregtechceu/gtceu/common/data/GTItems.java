@@ -75,6 +75,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
@@ -1450,16 +1451,18 @@ public class GTItems {
             .properties(p -> p.component(GTDataComponents.DATA_ITEM, new DataItem(true, 256)))
             .register();
 
-    public static final Map<String, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
+    public static final Map<DyeColor, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
 
     static {
-        for (int i = 0; i < GTValues.COLORS.length; i++) {
-            String color = GTValues.COLORS[i];
-            if (color.equals("white")) continue;
-            GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
-                    .lang("Glass Lens (%s)".formatted(toEnglishName(color)))
-                    .tag(TagUtil.createItemTag("lenses/" + color))
-                    .register());
+
+        for (DyeColor color : DyeColor.values()) {
+            if (color == DyeColor.WHITE) continue;
+            GLASS_LENSES.put(color,
+                    REGISTRATE.item(String.format("%s_glass_lens", color.getName()), Item::new)
+                            .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
+                            .tag(CustomTags.LENSES, CustomTags.GLASS_LENS)
+                            .tag(TagUtil.createItemTag("lenses/" + color.getName()))
+                            .register());
         }
     }
 
@@ -1778,7 +1781,9 @@ public class GTItems {
     /////////////////////////////////////////
 
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::new)
-            .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter),
+            .onRegister(attach(
+                    new FilterBehaviour<>(ItemStack.class, SimpleItemFilter::new,
+                            GTDataComponents.SIMPLE_ITEM_FILTER),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2),
                     new MaterialStack(GTMaterials.Steel, GTValues.M))))
@@ -1786,28 +1791,57 @@ public class GTItems {
     public static ItemEntry<ComponentItem> TAG_FILTER = REGISTRATE
             .item("item_tag_filter", ComponentItem::new)
             .lang("Item Tag Filter")
-            .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter),
+            .onRegister(attach(
+                    new FilterBehaviour<>(ItemStack.class,
+                            () -> new TagFilter<>(ItemStack::getItem, ItemStack::getTags),
+                            GTDataComponents.ITEM_TAG_FILTER),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
     public static ItemEntry<ComponentItem> SMART_ITEM_FILTER = REGISTRATE
             .item("smart_item_filter", ComponentItem::new)
             .lang("Smart Item Filter")
-            .onRegister(attach(new ItemFilterBehaviour(SmartItemFilter::loadFilter),
+            .onRegister(attach(
+                    new FilterBehaviour<>(ItemStack.class, SmartItemFilter::new,
+                            GTDataComponents.SMART_ITEM_FILTER),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::new)
-            .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter),
+            .onRegister(attach(
+                    new FilterBehaviour<>(FluidStack.class, SimpleFluidFilter::new,
+                            GTDataComponents.SIMPLE_FLUID_FILTER),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
-    public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::new)
+    public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE
+            .item("fluid_tag_filter", ComponentItem::new)
             .lang("Fluid Tag Filter")
-            .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter),
+            .onRegister(attach(
+                    new FilterBehaviour<>(FluidStack.class, () -> new TagFilter<>(FluidStack::getFluid,
+                            f -> f.getFluid().defaultFluidState().getTags()), GTDataComponents.FLUID_TAG_FILTER),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
+
+    public static ItemEntry<ComponentItem> COMPOSITE_ITEM_FILTER = REGISTRATE
+            .item("composite_item_filter", ComponentItem::new)
+            .lang("Composite Item Filter")
+            .onRegister(attach(
+                    new FilterBehaviour<>(ItemStack.class, () -> new CompositeFilter<>(ItemStack.class),
+                            GTDataComponents.COMPOSITE_ITEM_FILTER),
+                    new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .register();
+
+    public static ItemEntry<ComponentItem> COMPOSITE_FLUID_FILTER = REGISTRATE
+            .item("composite_fluid_filter", ComponentItem::new)
+            .lang("Composite Fluid Filter")
+            .onRegister(attach(
+                    new FilterBehaviour<>(FluidStack.class, () -> new CompositeFilter<>(FluidStack.class),
+                            GTDataComponents.COMPOSITE_FLUID_FILTER),
+                    new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .register();
+
     public static ItemEntry<ComponentItem> COVER_WIRELESS_TRANSMITTER = REGISTRATE
             .item("wireless_transmitter_cover", ComponentItem::new)
             .lang("Wireless Transmitter")
@@ -2152,7 +2186,7 @@ public class GTItems {
             .lang("LV Item Magnet")
             .properties(p -> p.stacksTo(1)
                     .component(GTDataComponents.MAGNET,
-                            new ItemMagnetBehavior.MagnetComponent(true, ItemMagnetBehavior.Filter.SIMPLE))
+                            new ItemMagnetBehavior.MagnetComponent(true, ItemMagnetBehavior.FilterMode.SIMPLE))
                     .component(GTDataComponents.SIMPLE_ITEM_FILTER,
                             new SimpleItemFilter(true, true, Collections.emptyList())))
             .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8)))
@@ -2161,7 +2195,7 @@ public class GTItems {
             .lang("HV Item Magnet")
             .properties(p -> p.stacksTo(1)
                     .component(GTDataComponents.MAGNET,
-                            new ItemMagnetBehavior.MagnetComponent(true, ItemMagnetBehavior.Filter.SIMPLE))
+                            new ItemMagnetBehavior.MagnetComponent(true, ItemMagnetBehavior.FilterMode.SIMPLE))
                     .component(GTDataComponents.SIMPLE_ITEM_FILTER,
                             new SimpleItemFilter(true, true, Collections.emptyList())))
             .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
@@ -2181,17 +2215,15 @@ public class GTItems {
             .onRegister(attach(new MachineConfigCopyBehaviour()))
             .register();
 
-    @SuppressWarnings("unchecked")
-    public static final ItemEntry<DyeItem>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
+    public static final Map<DyeColor, ItemEntry<DyeItem>> CHEMICAL_DYES = new Object2ObjectOpenHashMap<>();
     static {
-        DyeColor[] colors = DyeColor.values();
-        for (int i = 0; i < colors.length; i++) {
-            var dyeColor = colors[i];
-            DYE_ONLY_ITEMS[i] = REGISTRATE
-                    .item("chemical_%s_dye".formatted(dyeColor.getName()), (props) -> new DyeItem(dyeColor, props))
-                    .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
-                    .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
-                    .register();
+        for (DyeColor color : DyeColor.values()) {
+            CHEMICAL_DYES.put(color, REGISTRATE
+                    .item("chemical_%s_dye".formatted(color.getName()), (props) -> new DyeItem(color, props))
+                    .lang("Chemical %s Dye".formatted(toEnglishName(color.getName())))
+                    .tag(Tags.Items.DYES)
+                    .tag(color.getTag())
+                    .register());
         }
     }
     @SuppressWarnings("unchecked")
