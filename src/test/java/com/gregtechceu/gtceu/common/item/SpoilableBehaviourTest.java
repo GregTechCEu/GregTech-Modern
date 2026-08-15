@@ -23,7 +23,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
@@ -271,12 +270,9 @@ public class SpoilableBehaviourTest {
                 GTMachines.STEEL_CRATE);
         ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate1, GTItems.CONVEYOR_MODULE_HV.asStack(),
                 Direction.UP);
-        CompoundTag filterTag = SimpleItemFilter.forItems(true, Items.STRUCTURE_BLOCK.getDefaultInstance())
-                .saveFilter();
-        ItemStack filter = GTItems.ITEM_FILTER.asStack();
-        filter.setTag(filterTag);
-        cover.getFilterHandler().loadFilter(filter);
+        ItemStack filter = SimpleItemFilter.forItems(true, Items.STRUCTURE_BLOCK.getDefaultInstance()).getFilterItemStack();
         cover.setWorkingEnabled(false);
+        cover.getFilterHandler().setFilterItem(filter);
         crate1.inventory.setStackInSlot(0, Items.STRUCTURE_BLOCK.getDefaultInstance());
         helper.runAtTickTime(10, () -> cover.setWorkingEnabled(true));
         helper.runAtTickTime(20, () -> {

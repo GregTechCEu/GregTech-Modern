@@ -202,6 +202,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             copied.duration = modifier.apply(this.duration);
         }
         copied.ocLevel = ocLevel;
+        copied.outputModifier = outputModifier;
         return copied;
     }
 
@@ -212,11 +213,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor, spoilageData);
         copied.ocLevel = ocLevel;
         copied.parallels = parallels;
         copied.batchParallels = batchParallels;
         copied.subtickParallels = subtickParallels;
+        copied.outputModifier = outputModifier;
         return copied;
     }
 
