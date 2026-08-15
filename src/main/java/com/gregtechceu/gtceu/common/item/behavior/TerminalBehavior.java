@@ -6,12 +6,14 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,7 +32,7 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
+import java.util.Optional;
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
@@ -100,14 +102,14 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             return InteractionResult.PASS;
         }
         // always load this data (even if shifting); it's required for #useOn to work
-        //if (controller.getDefinition() != this.multiblockDefinition && this.multiblockSchemaInfo != null) {
-            //this.multiblockSchemaInfo = null;
-        //}
-        //this.multiblockDefinition = controller.getDefinition();
-        //this.controllerPos = controller.getBlockPos();
-        //this.frontFacing = controller.getFrontFacing();
-        //this.upFacing = controller.getUpwardsFacing();
-        //this.isFlipped = controller.isFlipped();
+        // if (controller.getDefinition() != this.multiblockDefinition && this.multiblockSchemaInfo != null) {
+        // this.multiblockSchemaInfo = null;
+        // }
+        // this.multiblockDefinition = controller.getDefinition();
+        // this.controllerPos = controller.getBlockPos();
+        // this.frontFacing = controller.getFrontFacing();
+        // this.upFacing = controller.getUpwardsFacing();
+        // this.isFlipped = controller.isFlipped();
 
         if (player == null || player.isShiftKeyDown()) {
             return InteractionResult.PASS;
@@ -133,40 +135,66 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (level.isClientSide) {
             PlayerInventoryGuiData<?> guiData = PlayerInventoryGuiData.of(player, InventoryTypes.PLAYER, null,
                     usedHand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected);
-            ModularPanel<?> clientPanel = clientPanel(player.getItemInHand(usedHand));
-            ClientGUI.open(createScreen(guiData, clientPanel));
+            Optional<ModularPanel<?>> clientPanel = clientPanel(player.getItemInHand(usedHand));
+            if (clientPanel.isEmpty()) {
+                return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
+            }
+            ClientGUI.open(createScreen(guiData, clientPanel.get()));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
     }
 
-    private ModularPanel<?> clientPanel(ItemStack item) {
-        // item.getTag().controller().definition()
-        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(this.multiblockDefinition,
+    private Optional<ModularPanel<?>> clientPanel(ItemStack item) {
+        CompoundTag tag = item.getOrCreateTag();
+        if (!tag.contains("controller")) {
+            return Optional.empty();
+        }
+        ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
+        var definition = GTRegistries.MACHINES.get(controllerLocation);
+        if (definition == null || !(definition instanceof MultiblockMachineDefinition multiblockDefinition)) {
+            return Optional.empty();
+        }
+        if (!tag.contains("pos")) {
+            return Optional.empty();
+        }
+        BlockPos controllerPos = BlockPos.of(tag.getLong("pos"));
+
+        if (!tag.contains("facing") || !tag.contains("upFacing") || !tag.contains("flipped")) {
+            return Optional.empty();
+        }
+
+        Direction frontFacing = Direction.values()[tag.getByte("facing")];
+        Direction upFacing = Direction.values()[tag.getByte("upFacing")];
+        boolean flipped = tag.getBoolean("flipped");
+
+        MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(multiblockDefinition,
+                // TODO what to do with this
                 this.multiblockSchemaInfo, 200, 200)
-                // item.getTag().controllerPos
-                .setControllerPos(this.controllerPos)
-                // item.getTag().frontFacing...
-                .setFrontFacing(this.frontFacing).setUpFacing(this.upFacing).setFlipped(this.isFlipped);
+                .setControllerPos(controllerPos)
+                .setFrontFacing(frontFacing).setUpFacing(upFacing).setFlipped(flipped);
         previewWidget.refreshSchema();
 
-        return ModularPanel.defaultPanel("terminal")
+        return Optional.of(ModularPanel.defaultPanel("terminal")
                 .coverChildren()
-                /*.onCloseAction(() -> {
-                    this.multiblockSchemaInfo = previewWidget.getMultiblockSchemaInfo();
-                })*/
+                /*
+                 * .onCloseAction(() -> {
+                 * this.multiblockSchemaInfo = previewWidget.getMultiblockSchemaInfo();
+                 * })
+                 */
                 .child(previewWidget)
-                .onCloseAction(() -> writeMultiblockInfo(item, null, previewWidget));
+                .onCloseAction(() -> writeMultiblockInfo(item, null, previewWidget)));
     }
 
-    private void writeMultiblockInfo(ItemStack item, @Nullable MultiblockControllerMachine controller, @Nullable MultiblockPreviewWidget previewWidget) {
+    private void writeMultiblockInfo(ItemStack item, @Nullable MultiblockControllerMachine controller,
+                                     @Nullable MultiblockPreviewWidget previewWidget) {
         // TODO uuid gathering
 
         CompoundTag tag = item.getOrCreateTag();
         if (controller != null) {
-            tag.putString("controller", controller.getDefinition().getName());
+            tag.putString("controller", controller.getDefinition().getId().toString());
             tag.putLong("pos", controller.getBlockPos().asLong());
-            tag.putByte("facing", (byte)controller.getFrontFacing().ordinal());
-            tag.putByte("upFacing", (byte)controller.getUpwardsFacing().ordinal());
+            tag.putByte("facing", (byte) controller.getFrontFacing().ordinal());
+            tag.putByte("upFacing", (byte) controller.getUpwardsFacing().ordinal());
             tag.putBoolean("flipped", controller.isFlipped());
         }
 
