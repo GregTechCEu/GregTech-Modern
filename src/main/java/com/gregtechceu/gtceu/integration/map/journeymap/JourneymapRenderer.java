@@ -170,7 +170,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
     private static NativeImage createOreImage(GeneratedVeinMetadata vein) {
         var material = OreRenderLayer.getMaterial(vein);
-        if (material != null) {
+        if (material == null) {
             // early exit if no materials were found.
             // TODO figure out how to draw a block here instead in this case.
             return null;

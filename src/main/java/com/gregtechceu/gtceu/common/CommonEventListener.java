@@ -183,8 +183,8 @@ public class CommonEventListener {
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, 1));
-            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, 1));
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
         }
     }
 

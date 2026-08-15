@@ -113,10 +113,6 @@ public class RecyclingRecipes {
                 ChemicalHelper::getDust, maceratorYield);
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
-        TagKey<Item> inputTag = null;
-        if (entry != null && entry.tagPrefix().unificationEnabled()) {
-            inputTag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
-        }
 
         // Exit if no valid Materials exist for this recycling Recipe.
         if (outputs.isEmpty()) return;
@@ -128,11 +124,7 @@ public class RecyclingRecipes {
                 .duration(calculateDuration(outputs))
                 .EUt(2L * multiplier);
 
-        if (inputTag == null) {
-            builder.inputItems(input.copy());
-        } else {
-            builder.inputItems(inputTag);
-        }
+        builder.inputItems(input.copy());
 
         boolean recycle = true;
         if (entry != null && entry.tagPrefix() == TagPrefix.ingot) {
