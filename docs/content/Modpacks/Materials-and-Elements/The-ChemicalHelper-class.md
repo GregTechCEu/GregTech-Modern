@@ -7,7 +7,7 @@ title: ChemicalHelper
 
 It may behoove a packmaker working with GTCEu Modern to learn about the ChemicalHelper class.
 
-This class, available for use in server scripts, contains a number of useful methods that can ease working with GTCEu
+This class contains a number of useful methods that can ease working with GTCEu
 Materials in contexts where it might not be possible, or it might be unsafe, to work with item or block tags.
 
 
