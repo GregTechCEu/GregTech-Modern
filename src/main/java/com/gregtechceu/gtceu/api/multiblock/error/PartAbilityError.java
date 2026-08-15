@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.common.mui.widgets.OverlayButton;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
@@ -10,7 +11,6 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public class PartAbilityError extends PatternError {
             Flow row = Flow.row()
                     .coverChildren();
             row.child(Text.str("Missing one " + partAbilityName + ": ").asWidget());
-            row.child(new ContextMenuButton<>(partAbilityName)
+            row.child(new OverlayButton(partAbilityName)
                     .menuList(l -> l
                             .maxSize(40)
                             .coverChildrenWidth()

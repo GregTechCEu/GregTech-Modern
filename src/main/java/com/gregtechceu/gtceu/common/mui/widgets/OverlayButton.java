@@ -3,11 +3,14 @@ package com.gregtechceu.gtceu.common.mui.widgets;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 
+import net.minecraft.client.gui.GuiGraphics;
+
 import brachy.modularui.api.ITheme;
+import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.widget.IPositioned;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.api.widget.Interactable;
-import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.drawable.GuiDraw;
 import brachy.modularui.overlay.OverlayStack;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
@@ -32,8 +35,13 @@ import java.util.function.Consumer;
 
 public class OverlayButton extends Widget<OverlayButton> implements Interactable {
 
-    private static final Map<String, ModularScreen> overlayScreens = new HashMap<>();
+    private static final Map<String, MenuScreen> overlayScreens = new HashMap<>();
     private static final MethodHandle positionerGetter;
+    private static final IDrawable background = (context, x, y, width, height, widgetTheme) -> {
+        GuiGraphics gfx = context.getGraphics();
+        GuiDraw.drawRect(gfx, x, y, width, height, Color.GREY.darker(1));
+        GuiDraw.drawRect(gfx, x + 1, y + 1, width - 2, height - 2, Color.GREY.main);
+    };
 
     static {
         MethodHandle handle = null;
@@ -55,7 +63,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private static void open(String panelName, ModularScreen overlay, ModularScreen parent) {
+    private static void open(String panelName, MenuScreen overlay, ModularScreen parent) {
         if (overlayScreens.containsKey(panelName)) {
             GTCEu.LOGGER.warn("Overlay Screen already exists for panel {}", panelName);
             return;
@@ -69,7 +77,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     @SuppressWarnings("UnstableApiUsage")
     private static void close(String panelName) {
-        ModularScreen overlay = overlayScreens.remove(panelName);
+        MenuScreen overlay = overlayScreens.remove(panelName);
         if (overlay != null) {
             overlay.close();
             OverlayStack.close(overlay);
@@ -90,22 +98,36 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
     public OverlayButton(String panelName) {
         this.panelName = panelName;
         size(16);
+        onUpdateListener(b -> {
+            if (opened && !(isBelowMouse() || overlayScreens.get(this.panelName).areParentsHovered())) {
+                // close(this.panelName);
+                // opened = false;
+            }
+        });
     }
 
-    private ModularScreen constructOverlay() {
-        final String ctx_theme = "modularui.context_menu";
+    private MenuScreen constructOverlay() {
         final ModularPanel<?> panel = ModularPanel.defaultPanel(this.panelName)
-                .themeOverride(ctx_theme)
-                .fullScreenInvisible();
+                .invisible()
+                .size(getArea().w(), getArea().h());
         ListWidget<IWidget, ?> list = new ListWidget<>();
         if (menuList != null) {
             menuList.accept(list);
         }
         applyDirection(this.direction, list);
-        list.background(new Rectangle()
-                .color(Color.GREY.main));
-        panel.child(list.relative(this));
-        return new GTGuiScreen(panel);
+        list.background(background);
+        int x = getArea().x;
+        int y = getArea().y;
+        // get offset
+        int x2 = getContext().unTransformX(x, y);
+        int y2 = getContext().unTransformY(x, y);
+        // apply offset
+        int x3 = getArea().x - x2;
+        int y3 = getArea().y - y2;
+        // use panel as anchor
+        panel.pos(x3, y3).child(list);
+
+        return new MenuScreen(panel);
     }
 
     @Override
@@ -116,7 +138,11 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
     @Override
     public @NotNull Result onMousePressed(int button) {
         if (!opened) {
-            ModularScreen screen = this.constructOverlay();
+            MenuScreen screen = this.constructOverlay();
+            if (getScreen() instanceof MenuScreen menuScreen) {
+                // parent child relation
+                screen.setParent(menuScreen);
+            }
             open(this.panelName, screen, getScreen());
             opened = true;
         } else {
@@ -197,5 +223,34 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      */
     public OverlayButton openCustom() {
         return direction(AbstractMenuButton.Direction.UNDEFINED);
+    }
+
+    private static final class MenuScreen extends GTGuiScreen {
+
+        public String parent;
+
+        public MenuScreen(@NotNull ModularPanel<?> mainPanel) {
+            super(mainPanel);
+        }
+
+        public void setParent(MenuScreen parent) {
+            this.parent = parent.getMainPanel().getName();
+        }
+
+        public boolean areParentsHovered() {
+            if (this.getContext().isHovered()) return true;
+            if (parent != null && overlayScreens.containsKey(parent)) {
+                MenuScreen parent = overlayScreens.get(this.parent);
+                return parent != null && parent.areParentsHovered();
+            }
+            return false;
+        }
+
+        @Override
+        public void onClose() {
+            if (parent != null) {
+                OverlayButton.close(parent);
+            }
+        }
     }
 }
