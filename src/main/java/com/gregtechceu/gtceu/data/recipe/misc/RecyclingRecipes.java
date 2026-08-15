@@ -529,7 +529,8 @@ public class RecyclingRecipes {
 
         while (amount > maxStackSize) {
             list.add(new Pair<>(originalStack.copyWithCount(maxStackSize),
-                    new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * maxStackSize)));
+                    new MaterialStack(entry.material(),
+                            entry.tagPrefix().getMaterialAmount(entry.material()) * maxStackSize)));
             amount -= maxStackSize;
         }
         list.add(new Pair<>(originalStack.copyWithCount(amount),
