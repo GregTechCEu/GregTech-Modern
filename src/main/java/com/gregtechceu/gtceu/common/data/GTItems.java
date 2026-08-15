@@ -73,6 +73,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -1445,18 +1446,18 @@ public class GTItems {
             .lang("Data Module").onRegister(attach(new DataItemBehavior(true, 256)))
             .register();
 
-    @SuppressWarnings("unchecked")
-    public static final ItemEntry<Item>[] GLASS_LENSES = new ItemEntry[DyeColor.values().length];
+    public static final Map<DyeColor, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
 
     static {
+
         for (DyeColor color : DyeColor.values()) {
             if (color == DyeColor.WHITE) continue;
-            int id = color.getId();
-            GLASS_LENSES[id] = REGISTRATE.item(String.format("%s_glass_lens", color), Item::new)
-                    .lang("Glass Lens (%s)".formatted(toEnglishName(color)))
-                    .tag(GTTags.Items.LENSES_ARRAY[id])
-                    .tag(GTTags.Items.LENSES_GLASS)
-                    .register();
+            GLASS_LENSES.put(color,
+                    REGISTRATE.item(String.format("%s_glass_lens", color.getSerializedName()), Item::new)
+                            .lang("Glass Lens (%s)".formatted(toEnglishName(color.getSerializedName())))
+                            .tag(GTTags.Items.LENSES_GLASS)
+                            .tag(GTTags.Items.LENSES_BY_COLOR.get(color))
+                            .register());
         }
     }
 
@@ -2191,16 +2192,15 @@ public class GTItems {
             .onRegister(attach(new MachineConfigCopyBehaviour()))
             .register();
 
-    public static final ItemEntry<DyeItem>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
+    public static final Map<DyeColor, ItemEntry<DyeItem>> CHEMICAL_DYES = new Object2ObjectOpenHashMap<>();
     static {
-        DyeColor[] colors = DyeColor.values();
-        for (int i = 0; i < colors.length; i++) {
-            var dyeColor = colors[i];
-            DYE_ONLY_ITEMS[i] = REGISTRATE
-                    .item("chemical_%s_dye".formatted(dyeColor.getName()), (props) -> new DyeItem(dyeColor, props))
-                    .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
-                    .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
-                    .register();
+        for (DyeColor color : DyeColor.values()) {
+            CHEMICAL_DYES.put(color, REGISTRATE
+                    .item("chemical_%s_dye".formatted(color.getName()), (props) -> new DyeItem(color, props))
+                    .lang("Chemical %s Dye".formatted(toEnglishName(color.getName())))
+                    .tag(Tags.Items.DYES)
+                    .tag(color.getTag())
+                    .register());
         }
     }
 

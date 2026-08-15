@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -412,13 +413,14 @@ public class MiscRecipeLoader {
                     .duration(200).EUt(VA[HV]);
             final int dyeAmount = 288;
 
-            // skip white lens
-            for (int i = 1; i < CHEMICAL_DYES.length; i++) {
-                builder.copy(CHEMICAL_DYES[i].getName() + "_lens")
-                        .inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
-                        .outputItems(GLASS_LENSES[i])
-                        .save(provider);
-            }
+        // skip white lens
+        for (DyeColor color : DyeColor.values()) {
+            if (color == DyeColor.WHITE) continue;
+            builder.copy(color.getName() + "_lens")
+                    .inputFluids(DYE_MATERIALS.get(color).getFluid(dyeAmount))
+                    .outputItems(GLASS_LENSES.get(color))
+                    .save(provider);
+        }
 
             builder.copy("colorless_lens")
                     .inputFluids(DyeWhite.getFluid(dyeAmount))

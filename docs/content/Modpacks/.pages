@@ -2,8 +2,10 @@ nav:
   - index.md
   - Materials-and-Elements
   - Multiblocks
-  - Beyond-The-Docs.md
+  - Recipes
+  - Ore-Generation
   - ...
   - Other-Topics
   - Examples
   - Changes
+  - Beyond-The-Docs.md

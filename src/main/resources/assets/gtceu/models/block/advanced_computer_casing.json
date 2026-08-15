@@ -1,10 +1,10 @@
 {
     "parent": "gtceu:block/computer_casing",
     "textures": {
-        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
-        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top",
-        "front": "gtceu:block/casings/hpca/advanced_computer_casing/front",
         "back": "gtceu:block/casings/hpca/advanced_computer_casing/back",
-        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side"
+        "bottom": "gtceu:block/casings/hpca/advanced_computer_casing/bottom",
+        "front": "gtceu:block/casings/hpca/advanced_computer_casing/front",
+        "side": "gtceu:block/casings/hpca/advanced_computer_casing/side",
+        "top": "gtceu:block/casings/hpca/advanced_computer_casing/top"
     }
 }

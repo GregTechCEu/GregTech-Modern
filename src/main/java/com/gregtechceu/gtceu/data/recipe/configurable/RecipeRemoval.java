@@ -277,15 +277,15 @@ public class RecipeRemoval {
     }
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
-        for (DyeColor color : DyeColor.values()) {
-            String name = color.getSerializedName();
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", name)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", name)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", name)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", name)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", name)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", name)));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", name)));
+        for (DyeColor col : DyeColor.values()) {
+            String color = col.getSerializedName();
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", color)));
         }
 
         registry.accept(ResourceLocation.withDefaultNamespace("white_dye"));

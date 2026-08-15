@@ -1,11 +1,4 @@
 {
-    "blend": {
-        "func": "add",
-        "srcrgb": "srcalpha",
-        "dstrgb": "1-srcalpha"
-    },
-    "vertex": "gtceu:rendertype_entity_bloom",
-    "fragment": "gtceu:rendertype_entity_bloom",
     "attributes": [
         "Position",
         "Color",
@@ -14,21 +7,152 @@
         "UV2",
         "Normal"
     ],
+    "blend": {
+        "dstrgb": "1-srcalpha",
+        "func": "add",
+        "srcrgb": "srcalpha"
+    },
+    "fragment": "gtceu:rendertype_entity_bloom",
     "samplers": [
-        { "name": "Sampler0" },
-        { "name": "Sampler1" },
-        { "name": "Sampler2" }
+        {
+            "name": "Sampler0"
+        },
+        {
+            "name": "Sampler1"
+        },
+        {
+            "name": "Sampler2"
+        }
     ],
     "uniforms": [
-        { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-        { "name": "IViewRotMat", "type": "matrix3x3", "count": 9, "values": [ 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 ] },
-        { "name": "ColorModulator", "type": "float", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
-        { "name": "Light0_Direction", "type": "float", "count": 3, "values": [0.0, 0.0, 0.0] },
-        { "name": "Light1_Direction", "type": "float", "count": 3, "values": [0.0, 0.0, 0.0] },
-        { "name": "FogStart", "type": "float", "count": 1, "values": [ 0.0 ] },
-        { "name": "FogEnd", "type": "float", "count": 1, "values": [ 1.0 ] },
-        { "name": "FogColor", "type": "float", "count": 4, "values": [ 0.0, 0.0, 0.0, 0.0 ] },
-        { "name": "FogShape", "type": "int", "count": 1, "values": [ 0 ] }
-    ]
+        {
+            "count": 16,
+            "name": "ModelViewMat",
+            "type": "matrix4x4",
+            "values": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "count": 16,
+            "name": "ProjMat",
+            "type": "matrix4x4",
+            "values": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "count": 9,
+            "name": "IViewRotMat",
+            "type": "matrix3x3",
+            "values": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "count": 4,
+            "name": "ColorModulator",
+            "type": "float",
+            "values": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "count": 3,
+            "name": "Light0_Direction",
+            "type": "float",
+            "values": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "count": 3,
+            "name": "Light1_Direction",
+            "type": "float",
+            "values": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "count": 1,
+            "name": "FogStart",
+            "type": "float",
+            "values": [
+                0.0
+            ]
+        },
+        {
+            "count": 1,
+            "name": "FogEnd",
+            "type": "float",
+            "values": [
+                1.0
+            ]
+        },
+        {
+            "count": 4,
+            "name": "FogColor",
+            "type": "float",
+            "values": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "count": 1,
+            "name": "FogShape",
+            "type": "int",
+            "values": [
+                0
+            ]
+        }
+    ],
+    "vertex": "gtceu:rendertype_entity_bloom"
 }

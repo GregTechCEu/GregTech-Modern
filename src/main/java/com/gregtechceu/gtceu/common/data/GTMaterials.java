@@ -9,15 +9,18 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -44,7 +47,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
  */
 public class GTMaterials {
 
-    public static Material[] CHEMICAL_DYES;
+    public static Map<DyeColor, Material> DYE_MATERIALS = new Object2ObjectOpenHashMap<>();
     public static Material[] VOLTAGE_COMMON_MATERIALS;
 
     public static void init() {
@@ -63,24 +66,22 @@ public class GTMaterials {
          */
         MaterialFlagAddition.register();
 
-        CHEMICAL_DYES = new Material[] {
-                DyeWhite,
-                DyeOrange,
-                DyeMagenta,
-                DyeLightBlue,
-                DyeYellow,
-                DyeLime,
-                DyePink,
-                DyeGray,
-                DyeLightGray,
-                DyeCyan,
-                DyePurple,
-                DyeBlue,
-                DyeBrown,
-                DyeGreen,
-                DyeRed,
-                DyeBlack
-        };
+        DYE_MATERIALS.put(DyeColor.WHITE, DyeWhite);
+        DYE_MATERIALS.put(DyeColor.ORANGE, DyeOrange);
+        DYE_MATERIALS.put(DyeColor.MAGENTA, DyeMagenta);
+        DYE_MATERIALS.put(DyeColor.LIGHT_BLUE, DyeLightBlue);
+        DYE_MATERIALS.put(DyeColor.YELLOW, DyeYellow);
+        DYE_MATERIALS.put(DyeColor.LIME, DyeLime);
+        DYE_MATERIALS.put(DyeColor.PINK, DyePink);
+        DYE_MATERIALS.put(DyeColor.GRAY, DyeGray);
+        DYE_MATERIALS.put(DyeColor.LIGHT_GRAY, DyeLightGray);
+        DYE_MATERIALS.put(DyeColor.CYAN, DyeCyan);
+        DYE_MATERIALS.put(DyeColor.PURPLE, DyePurple);
+        DYE_MATERIALS.put(DyeColor.BLUE, DyeBlue);
+        DYE_MATERIALS.put(DyeColor.BROWN, DyeBrown);
+        DYE_MATERIALS.put(DyeColor.GREEN, DyeGreen);
+        DYE_MATERIALS.put(DyeColor.RED, DyeRed);
+        DYE_MATERIALS.put(DyeColor.BLACK, DyeBlack);
 
         VOLTAGE_COMMON_MATERIALS = new Material[] {
                 WroughtIron,
