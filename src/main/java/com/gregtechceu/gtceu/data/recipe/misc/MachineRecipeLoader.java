@@ -430,11 +430,10 @@ public class MachineRecipeLoader {
 
     private static void registerAssemblerRecipes(Consumer<FinishedRecipe> provider) {
         for (DyeColor color : DyeColor.values()) {
-
             CANNER_RECIPES.recipeBuilder("spray_can_" + color.getName())
                     .inputItems(SPRAY_EMPTY)
                     .inputFluids(DYE_MATERIALS.get(color).getFluid(L * 4))
-                    .outputItems(SPRAY_CAN_DYES[color.ordinal()])
+                    .outputItems(SPRAY_CANS.get(color))
                     .EUt(VA[ULV]).duration(200)
                     .addMaterialInfo(true)
                     .save(provider);

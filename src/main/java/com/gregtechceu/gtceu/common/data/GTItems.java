@@ -321,7 +321,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE.item("solvent_spray_can", ComponentItem::create)
             .lang("Spray Can (Solvent)")
             .properties(p -> p.stacksTo(1))
-            .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, -1))).register();
+            .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, null))).register();
 
     public static ItemEntry<ComponentItem> PORTABLE_SCANNER = REGISTRATE.item("portable_scanner", ComponentItem::create)
             .lang("Portable Scanner")
@@ -2201,14 +2201,14 @@ public class GTItems {
         }
     }
 
-    public static final ItemEntry<ComponentItem>[] SPRAY_CAN_DYES = new ItemEntry[DyeColor.values().length];
+    public static final Map<DyeColor, ItemEntry<ComponentItem>> SPRAY_CANS = new Reference2ObjectLinkedOpenHashMap<>();
     static {
-        for (int i = 0; i < DyeColor.values().length; i++) {
-            var dyeColor = DyeColor.values()[i];
-            SPRAY_CAN_DYES[i] = REGISTRATE.item("%s_dye_spray_can".formatted(dyeColor.getName()), ComponentItem::create)
-                    .lang("Spray Can (%s)".formatted(toEnglishName(dyeColor.getName())))
-                    .properties(p -> p.stacksTo(1))
-                    .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, i))).register();
+        for (DyeColor color : DyeColor.values()) {
+            SPRAY_CANS.put(color, REGISTRATE.item("%s_dye_spray_can".formatted(color.getSerializedName()), ComponentItem::create)
+                            .lang("Spray Can (%s)".formatted(toEnglishName(color.getSerializedName())))
+                            .properties(p -> p.stacksTo(1))
+                            .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, color)))
+                            .register());
         }
     }
 
