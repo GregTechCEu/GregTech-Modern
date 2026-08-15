@@ -270,7 +270,8 @@ public class SpoilableBehaviourTest {
                 GTMachines.STEEL_CRATE);
         ConveyorCover cover = (ConveyorCover) TestUtils.placeCover(helper, crate1, GTItems.CONVEYOR_MODULE_HV.asStack(),
                 Direction.UP);
-        ItemStack filter = SimpleItemFilter.forItems(true, Items.STRUCTURE_BLOCK.getDefaultInstance()).getFilterItemStack();
+        ItemStack filter = SimpleItemFilter.forItems(true, Items.STRUCTURE_BLOCK.getDefaultInstance())
+                .getFilterItemStack();
         cover.setWorkingEnabled(false);
         cover.getFilterHandler().setFilterItem(filter);
         crate1.inventory.setStackInSlot(0, Items.STRUCTURE_BLOCK.getDefaultInstance());
