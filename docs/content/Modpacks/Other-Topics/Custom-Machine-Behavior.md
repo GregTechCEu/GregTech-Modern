@@ -57,12 +57,12 @@ To use it, you would do:
         .pattern(definition -> {
             var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
             var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
-                    .or(Predicates.autoAbilities(true, false, false));
+                    .and(Predicates.autoAbilities(true, false, false));
             return FactoryBlockPattern.start()
                     .aisle("XSX", "XXX", "XXX")
                     .aisle("XXX", "XXX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
-                    .where('X', casing.or(abilities))
+                    .where('X', casing.and(abilities))
                     .build();
         })
         .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),

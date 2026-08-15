@@ -42,15 +42,12 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 	event.create('example_smelting')
 		.category('multiblock')
 		.setMaxIOSize(1, 1, 0, 0)
-		.setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, FillDirection.LEFT_TO_RIGHT)
+		.setProgressBar(GTGuiTextures.PROGRESS_FUSION)
+		.addRecipeInfo(recipe => Text.literal(`Temperature: ${recipe.data.getInt("RequiredTemp")}K`)) // (3) (4)
 		.setSound(GTSoundEntries.BATH);
 });
 
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-
-	GTRecipeTypes.get("example_smelting").addDataInfo((data) => (
-		`Temperature: ${data.getInt("RequiredTemp")}K` // (4)
-	)) // (3)
 
 	event.create('example_smelter', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
@@ -64,9 +61,9 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 			.aisle('#C#','HHH','###')
 			.where('C', Predicates.controller(Predicates.blocks(definition.get())))
 			.where('#', Predicates.blocks("gtceu:solid_machine_casing")
-				.or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
-				.or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
-				.or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1).setPreviewCount(1)))
+				.and(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
+				.and(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
+				.and(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1).setPreviewCount(1)))
 			.where('H', Predicates.heatingCoils())
 			.where(' ', Predicates.any())
 			.build())

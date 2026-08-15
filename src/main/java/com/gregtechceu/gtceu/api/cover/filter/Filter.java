@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.factory.GuiData;
@@ -12,39 +13,90 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.Dialog;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
+public abstract class Filter<T> implements Predicate<T> {
+
+    @Setter
+    private Consumer<Filter<T>> onUpdated = $ -> {};
+    @Setter
+    private @Nullable Consumer<Filter<T>> itemWriter = null;
+
+    @Getter
+    @Setter
+    protected ItemStack filterItemStack = ItemStack.EMPTY;
+
+    public Filter() {}
 
     /**
      * @return Filter panel when opened by itself (including the player inventory)
      */
-    default ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
-                                     boolean showPlayerInventory) {
-        return new Dialog<>(getFilterItem().getItem().toString())
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
+                                    boolean showPlayerInventory) {
+        return new Dialog<>(Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
+                .getKey(filterItemStack.getItem())).toString())
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .coverChildrenHeight()
-                .child(GTMuiWidgets.createTitleBar(this::getFilterItem, 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBar(this::getFilterItemStack, 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.col().coverChildrenHeight()
                         .child(getFilterUI(data, syncManager, settings).marginTop(10).marginBottom(10))
                         .childIf(showPlayerInventory,
                                 () -> SlotGroupWidget.playerInventory(false).marginLeft(7).marginBottom(7)));
     }
 
-    ItemStack getFilterItem();
+    /**
+     * Writes this filter to the filter item's NBT and calls the {@link #onUpdated} listener.
+     */
+    public void updateAndSaveFilter() {
+        if (itemWriter != null) itemWriter.accept(this);
+        onUpdated.accept(this);
+    }
 
-    Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings);
+    /**
+     * Called when a filter is loaded by a filter handler.
+     *
+     * @param handler The filter handler
+     */
+    public void onFilterLoaded(FilterHandler<T> handler) {}
 
-    void setOnUpdated(Consumer<S> onUpdated);
+    /**
+     * @return The filter UI.
+     */
+    public abstract Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings);
 
-    default boolean isBlackList() {
+    /**
+     * @return Whether this filter supports querying for exact content amounts.
+     */
+    public boolean supportsAmounts() {
         return false;
     }
 
-    default boolean isBlank() {
-        return false;
+    /**
+     * Tests if the given stack matches this filter.
+     *
+     * @return If the given stack matches this filter.
+     */
+    @Override
+    public abstract boolean test(T t);
+
+    /**
+     * Retrieves the given amount that matches the filter for the stack. {@link #supportsAmounts()} should be checked
+     * before calling this.
+     *
+     * @return The exact amount that matches the filter.<br>
+     *         If the stack is not matched by this filter, 0 is returned instead.
+     */
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int testAmount(T stack) {
+        throw new NotImplementedException("This filter does not support testing amounts.");
     }
 }
