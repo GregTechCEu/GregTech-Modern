@@ -413,14 +413,14 @@ public class MiscRecipeLoader {
                     .duration(200).EUt(VA[HV]);
             final int dyeAmount = 288;
 
-        // skip white lens
-        for (DyeColor color : DyeColor.values()) {
-            if (color == DyeColor.WHITE) continue;
-            builder.copy(color.getName() + "_lens")
-                    .inputFluids(DYE_MATERIALS.get(color).getFluid(dyeAmount))
-                    .outputItems(GLASS_LENSES.get(color))
-                    .save(provider);
-        }
+            // skip white lens
+            for (DyeColor color : DyeColor.values()) {
+                if (color == DyeColor.WHITE) continue;
+                builder.copy(color.getName() + "_lens")
+                        .inputFluids(DYE_MATERIALS.get(color).getFluid(dyeAmount))
+                        .outputItems(GLASS_LENSES.get(color))
+                        .save(provider);
+            }
 
             builder.copy("colorless_lens")
                     .inputFluids(DyeWhite.getFluid(dyeAmount))

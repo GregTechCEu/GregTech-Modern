@@ -2204,7 +2204,8 @@ public class GTItems {
     public static final Map<DyeColor, ItemEntry<ComponentItem>> SPRAY_CANS = new Reference2ObjectLinkedOpenHashMap<>();
     static {
         for (DyeColor color : DyeColor.values()) {
-            SPRAY_CANS.put(color, REGISTRATE.item("%s_dye_spray_can".formatted(color.getSerializedName()), ComponentItem::create)
+            SPRAY_CANS.put(color,
+                    REGISTRATE.item("%s_dye_spray_can".formatted(color.getSerializedName()), ComponentItem::create)
                             .lang("Spray Can (%s)".formatted(toEnglishName(color.getSerializedName())))
                             .properties(p -> p.stacksTo(1))
                             .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, color)))
