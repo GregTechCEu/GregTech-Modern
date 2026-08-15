@@ -1,6 +1,6 @@
 {
-    "type": "neoforge:add_features",
-    "biomes": "#c:is_swamp",
-    "features": "gtceu:rubber_tree_swamp",
-    "step": "vegetal_decoration"
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_swamp",
+  "features": "gtceu:rubber_tree_swamp",
+  "step": "vegetal_decoration"
 }

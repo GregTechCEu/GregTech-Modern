@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -97,8 +97,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         if (!filterHandler.isFilterPresent())
             return globalVoidingLimit;
 
-        ItemFilter filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalVoidingLimit : filter.testItemCount(itemStack);
+        Filter<ItemStack> filter = filterHandler.getFilter();
+        return filter.supportsAmounts() ? filter.testAmount(itemStack) : globalVoidingLimit;
     }
 
     public void setVoidingMode(VoidingMode voidingMode) {
@@ -152,7 +152,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         if (!this.filterHandler.isFilterPresent())
             return true;
 
-        return this.filterHandler.getFilter().isBlackList();
+        return filterHandler.getFilter().supportsAmounts();
     }
 
     @Override

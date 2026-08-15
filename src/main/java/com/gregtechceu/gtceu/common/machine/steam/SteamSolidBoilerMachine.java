@@ -71,8 +71,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
     @Override
     public void afterWorking() {
         super.afterWorking();
-        if (recipeLogic.getLastRecipe() != null) {
-            var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
+        if (recipeLogic.getLastUnrolledRecipe() != null) {
+            var inputs = recipeLogic.getLastUnrolledRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
                     Collections.emptyList());
             if (!inputs.isEmpty()) {
                 var input = ItemRecipeCapability.CAP.of(inputs.getFirst().content()).getItems();
@@ -127,7 +127,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 .childPadding(4)
                 .reverseLayout(true)
                 .child(new ItemSlot()
-                        .slot(new ModularSlot(this.fuelHandler.storage, 0).accessibility(true, true)))
+                        .slot(new ModularSlot(this.fuelHandler.storage, 0).accessibility(true, true)
+                                .singletonSlotGroup()))
                 .child(new ProgressWidget()
                         .size(18)
                         .texture(progressTexture, ProgressDrawable.Direction.UP)

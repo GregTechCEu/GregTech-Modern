@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.factory.GuiData;
@@ -20,12 +18,16 @@ import brachy.modularui.widgets.slot.FluidSlot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class SimpleFluidFilter implements FluidFilter {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class SimpleFluidFilter extends Filter<FluidStack> {
 
     public static final Codec<SimpleFluidFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("is_blacklist").forGetter(val -> val.isBlackList),
@@ -39,64 +41,44 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
 
-    protected Consumer<SimpleFluidFilter> itemWriter = filter -> {};
-    protected Consumer<SimpleFluidFilter> onUpdated = filter -> itemWriter.accept(filter);
-
     @Getter
     protected int maxStackSize = 1;
 
     private final CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
-    protected SimpleFluidFilter() {
+    public SimpleFluidFilter() {
+        super();
         for (int i = 0; i < 9; i++) {
             int finalI = i;
             fluidStorageSlots[i] = new CustomFluidTank(64000);
             fluidStorageSlots[i].setOnContentsChanged(() -> {
                 matches[finalI] = fluidStorageSlots[finalI].getFluid();
-                onUpdated.accept(this);
+                updateAndSaveFilter();
             });
         }
         Arrays.fill(matches, FluidStack.EMPTY);
     }
 
     protected SimpleFluidFilter(boolean isBlackList, boolean ignoreNbt, List<FluidStack> matches) {
+        super();
         this.isBlackList = isBlackList;
         this.ignoreNbt = ignoreNbt;
         this.matches = matches.toArray(FluidStack[]::new);
     }
 
-    public static SimpleFluidFilter loadFilter(ItemStack itemStack) {
-        var handler = itemStack.getOrDefault(GTDataComponents.SIMPLE_FLUID_FILTER, new SimpleFluidFilter());
-        handler.itemWriter = filter -> itemStack.set(GTDataComponents.SIMPLE_FLUID_FILTER, filter);
-        return handler;
-    }
-
     @Override
-    public void setOnUpdated(Consumer<FluidFilter> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
-    }
-
-    @Override
-    public boolean isBlank() {
-        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty);
+    public boolean supportsAmounts() {
+        return !isBlackList();
     }
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
-        onUpdated.accept(this);
-    }
-
-    @Override
-    public ItemStack getFilterItem() {
-        return GTItems.FLUID_FILTER.asStack();
+        updateAndSaveFilter();
     }
 
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
@@ -127,11 +109,12 @@ public class SimpleFluidFilter implements FluidFilter {
 
     @Override
     public boolean test(FluidStack other) {
-        return testFluidAmount(other) > 0L;
+        return testAmount(other) > 0;
     }
 
     @Override
-    public int testFluidAmount(FluidStack fluidStack) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int testAmount(FluidStack fluidStack) {
         int totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
 
         if (isBlackList) {

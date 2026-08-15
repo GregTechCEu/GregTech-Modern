@@ -163,7 +163,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 
     @Override
     public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableBonkHandler.TYPE);
+        return machine.getTraits(NotifiableBonkHandler.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -177,8 +177,6 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 ```java title="NotifiableBonkHandler"
 public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngredient>
         implements ICapabilityTrait {
-
-    public static final MachineTraitType<NotifiableBonkHandler> TYPE = new MachineTraitType<>(NotifiableBonkHandler.class);
     
     @Getter
     public final IO handlerIO;
@@ -196,11 +194,6 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
         super();
         this.handlerIO = handlerIO;
         this.capabilityIO = capabilityIO;
-    }
-
-    @Override
-    public MachineTraitType<NotifiableBonkHandler> getTraitType() {
-        return TYPE;
     }
 
     public boolean addBonk(int bonkToAdd, boolean simulate){
@@ -305,18 +298,18 @@ public class BonkMachines {
             .pattern(definition -> {
                 var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
-                        .or(Predicates.autoAbilities(true, false, false))
-                        .or(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
+                        .and(Predicates.autoAbilities(true, false, false))
+                        .and(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
                 return FactoryBlockPattern.start()
                         .aisle("XXX", "XCX", "XXX")
                         .aisle("XCX", "CPC", "XCX")
                         .aisle("XXX", "XSX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
-                        .where('X', casing.or(abilities))
+                        .where('X', casing.and(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
                         .where('C', Predicates.heatingCoils().setExactLimit(1)
-                                .or(abilities)
-                                .or(casing))
+                                .and(abilities)
+                                .and(casing))
                         .build();
             })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),

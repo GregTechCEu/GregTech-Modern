@@ -142,7 +142,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
             int count;
             if (ing.getContainedCustom() instanceof IntProviderIngredient provider) {
-                count = provider.getCountProvider().getMaxValue();
+                count = provider.getMaxRoll();
             } else {
                 count = ing.count();
             }
@@ -197,7 +197,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
             int count;
             if (ing.getContainedCustom() instanceof IntProviderIngredient provider)
-                count = provider.getCountProvider().getMaxValue();
+                count = provider.getMaxRoll();
             else count = ing.count();
 
             if (content.chance() == 0) {
@@ -424,7 +424,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
 
     @Override
     public List<NotifiableItemStackHandler> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableItemStackHandler.TYPE);
+        return machine.getTraits(NotifiableItemStackHandler.class);
     }
 
     public List<NotifiableItemStackHandler> getCapabilityHandlers(MetaMachine machine, IO io) {

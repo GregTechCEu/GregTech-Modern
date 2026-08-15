@@ -53,8 +53,6 @@ import java.util.function.Predicate;
 public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, IInteractionTrait, IFrontFacingTrait,
                              IAttachConfiguratorsTrait {
 
-    public static final MachineTraitType<AutoOutputTrait> TYPE = new MachineTraitType<>(AutoOutputTrait.class);
-
     @Getter
     protected final List<IItemHandler> itemHandlers;
     @Getter
@@ -112,11 +110,6 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     public AutoOutputTrait(List<IItemHandler> itemHandlers, List<IFluidHandler> fluidHandlers) {
         this(itemHandlers, fluidHandlers, true);
-    }
-
-    @Override
-    public MachineTraitType<AutoOutputTrait> getTraitType() {
-        return TYPE;
     }
 
     public static AutoOutputTrait ofItems(IItemHandler... itemHandlers) {

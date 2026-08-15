@@ -1,77 +1,43 @@
 ---
 title: Predicates
 ---
-`PatternPredicate`s are the main system of turning some potential block in a multiblock `IBlockPattern` into a valid or invalid state.
+`MultiPredicate`s are the main system of turning some potential block in a multiblock `IBlockPattern` into a valid or invalid state.
 
-`PatternPredicate` can be composed of one or more `BasePredicate`s which means any of those `BasePredicate`s can succeed for the `PatternPredicate` to succeed (returning no `PatternError`).
-
-```java title="CustomPredicate.java"
-public static PatternPredicate customPredicate() {
-    return new PatternPredicate("MyDebugName", // (1)
-            (blockInfo) -> { // (2)
-        BlockState state = blockInfo.getBlockState();
-        if (state.getBlock() == Blocks.OAK_WOOD) {
-            return null; // (3)
-        }
-        return new BlockMatchingError(blockInfo.getBlockPos(), Blocks.OAK_WOOD); // (4)
-    }, new BlockInfo(Blocks.OAK_WOOD)); // (5)
-}
-```
-
-1. Debug name of the predicate (used in the terminal preview), optional.
-
-2. The condition for if the PatternPredicate matches.
-
-3. If the predicate succeeds it MUST return null;
-
-4. If the predicate fails it will return some `PatternError` (see [Pattern Errors](./PatternError.md))
-
-5. The list of all valid candidates for this predicate (used for terminal previewing and autobuilding).
-
-
-
-`BasePredicate`s are composed of two values, 
-
-1. The `Predicate<BlockInfo, PatternError> predicateError` which runs for each block state this predicate is assigned to and returns that specific error.
-
-2. The `List<BlockInfo> candidates` which are all the valid blocks for that predicate.
-
-3. `BasePredicate`s can also have a global min and max value, which causes specific `PatternError`s if there are too much or not enough of that predicate match succeeding. 
-
-There are several helper methods to make various PatternPredicates:
+## Predicate Helpers  
+There are several helper methods to make various MultiPredicates:
 
 ```java title="PredicateShortcuts.java"
 
-PatternPredicate any(); // (1)
-PatternPredicate air(); // (2)
+MultiPredicate any(); // (1)
+MultiPredicate air(); // (2)
 
-PatternPredicate controller(MultiblockMachineDefinition def); // (3)
-PatternPredicate machines(MachineDefinition... definitions); // (4)
+MultiPredicate controller(MultiblockMachineDefinition def); // (3)
+MultiPredicate machines(MachineDefinition... definitions); // (4)
 
-PatternPredicate blocks(String debugName, Block... blocks); // (5)
-PatternPredicate blocks(Block... blocks); // (6)
-PatternPredicate states(BlockState... allowedStates); // (7)
-PatternPredicate fluids(Fluid... fluids); // (8)
+MultiPredicate blocks(String debugName, Block... blocks); // (5)
+MultiPredicate blocks(Block... blocks); // (6)
+MultiPredicate states(BlockState... allowedStates); // (7)
+MultiPredicate fluids(Fluid... fluids); // (8)
 
-PatternPredicate blockTag(TagKey<Block> tag); // (9)
-PatternPredicate fluidTag(TagKey<Fluid> tag); // (10)
+MultiPredicate blockTag(TagKey<Block> tag); // (9)
+MultiPredicate fluidTag(TagKey<Fluid> tag); // (10)
 
-PatternPredicate abilities(PartAbility... abilities); // (11)
-PatternPredicate ability(PartAbility ability, int... tiers); // (12)
-PatternPredicate autoAbilities(GTRecipeType[] recipeType,
+MultiPredicate abilities(PartAbility... abilities); // (11)
+MultiPredicate ability(PartAbility ability, int... tiers); // (12)
+MultiPredicate autoAbilities(GTRecipeType[] recipeType,
                                boolean checkEnergyIn, boolean checkEnergyOut,
                                boolean checkItemIn, boolean checkItemOut,
                                boolean checkFluidIn, boolean checkFluidOut); // (13)
-PatternPredicate autoAbilities(GTRecipeType... recipeType); // (14)
+MultiPredicate autoAbilities(GTRecipeType... recipeType); // (14)
 
-PatternPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
+MultiPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
                                boolean checkParallel); // (15)
 
-PatternPredicate heatingCoils(); // (16)
-PatternPredicate cleanroomFilters(); // (17)
-PatternPredicate powerSubstationBatteries(); // (18)
-PatternPredicate dataHatchPredicate(); // (19)
-PatternPredicate frames(Material... frameMaterials); // (20)
+MultiPredicate heatingCoils(); // (16)
+MultiPredicate cleanroomFilters(); // (17)
+MultiPredicate powerSubstationBatteries(); // (18)
+MultiPredicate dataHatchPredicate(); // (19)
+MultiPredicate frames(Material... frameMaterials); // (20)
 ```
 
 1. Any block matches, returns no error.
@@ -114,18 +80,72 @@ PatternPredicate frames(Material... frameMaterials); // (20)
 
 20. Fills predicate with any GT frame matching those materials or any pipe with one of those frame box materials.
 
+## Combining Predicates
+
+Predicates can be joined in different ways. There's 3 main ways to join predicates:  
+
+- `predicate1.or(predicate2)`  - Multiblock forms if the minimum and maximum limits for <u>**any**</u> of the predicates are satisfied.  
+- `predicate1.and(predicate2)` - Multiblock forms if the minimum and maximum limits for <u>**all**</u> the predicates are satisfied.  
+- `predicate1.xor(predicate2)` - Multiblock forms if the minimum and maximum limits for <u>**exactly one of**</u> the predicates are satisfied.  
+
+Generally speaking, you want `.and(...)` so that all limits that you set are respected.  
+
+Do note that this only affects the limits. For example, `dirtPred.and(stonePred)` does not require a block to be both dirt and stone.  
+
 ```java title="ComplexPredicate.java"
 
-PatternPredicate myCustomPredicate = Predicates.heatingCoils()
-        .or(Predicates.blocks(Blocks.DIRT)) // (1)
-        .or(Predicates.frames(GTMaterials.Steel).setExactLimit(20)) // (2)
-        .or(Predicates.autoAbilities(true, false, true))
-        .setMinGlobalLimited(40); // (3)
+MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASCRETE)
+        .and(Predicates.blocks(Blocks.DIRT))
+        .and(Predicates.frames(GTMaterials.Steel).setExactLimit(20))
+        .and(Predicates.autoAbilities(true, false, true));
 
 ```
 
-1. To join multiple valid predicates, use `.or(PatternPredicate)` to chain them.
+!!! Note "Mutations return the mutated predicate"
+    Mutations on predicates return the edited copy, so you can't do `a = Predicates.blocks(Blocks.DIRT); a.setMinLimit(2);`, since the predicate with the limit would be the return value of the .setMinLimit call.   
+    Instead, do e.g. `a = Predicates.blocks(Blocks.DIRT); a = a.setMinLimit(2);` or  
+    `a = Predicates.blocks(Blocks.DIRT).setMinLimit(2);`  
 
-2. A `BasePredicate` can have its own min and max counts separate to the rest of the `BasePredicates`.
 
-3. Sets the min count to 40 for the whole `Predicate`.
+!!! Note "Setting limits on composite predicates"
+    Setting a limit on a predicate sets the limit on all its children and predicates. It is currently not possible to do e.g.  
+    `existingPredicate1.or(existingPredicate2).setMinLimit(4)` to mean "4 of combined either predicate",   
+    this instead means "either 4 of predicate 1 or 4 of predicate 2".  
+    This is possible with e.g. simple blocks by creating one predicate with the blocks like `Predicate.blocks(List.of(Blocks.Dirt, Blocks.Stone)).setMinLimit(4)`  
+
+## Predicate Internals
+`MultiPredicate`s can be composed of one or more `BasePredicate`s and other `MultiPredicates` which means any, all or one of those predicates can succeed for the `MultiPredicate` to succeed (returning no `PatternError`).
+
+`BasePredicate`s are composed of a few values,
+
+1. The `Predicate<BlockInfo, PatternError> predicateError` which runs for each block state this predicate is assigned to and returns that specific error.
+
+2. The `List<BlockInfo> candidates` which are all the valid blocks for that predicate.
+
+3. Optionally, a global min and max value, which causes specific `PatternError`s if there are too much or not enough of that predicate match succeeding.
+
+
+## Custom Predicates
+
+```java title="CustomPredicate.java"
+public static MultiPredicate customPredicate() {
+    return new MultiPredicate("MyDebugName", // (1)
+            (blockInfo) -> { // (2)
+        BlockState state = blockInfo.getBlockState();
+        if (state.getBlock() == Blocks.OAK_WOOD) {
+            return null; // (3)
+        }
+        return new BlockMatchingError(blockInfo.getBlockPos(), Blocks.OAK_WOOD); // (4)
+    }, new BlockInfo(Blocks.OAK_WOOD)); // (5)
+}
+```
+
+1. Debug name of the predicate (used in the terminal preview), optional.
+
+2. The condition for if the MultiPredicate matches.
+
+3. If the predicate succeeds it MUST return null;
+
+4. If the predicate fails it will return some `PatternError` (see [Pattern Errors](./PatternError.md))
+
+5. The list of all valid candidates for this predicate (used for terminal previewing and autobuilding).

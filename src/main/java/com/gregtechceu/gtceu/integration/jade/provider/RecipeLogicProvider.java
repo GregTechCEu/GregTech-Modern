@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.class);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
             }
         }
         var recipeInfo = new CompoundTag();
-        var recipe = capability.getLastRecipe();
+        var recipe = capability.getLastUnrolledRecipe();
         if (recipe != null) {
             var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 

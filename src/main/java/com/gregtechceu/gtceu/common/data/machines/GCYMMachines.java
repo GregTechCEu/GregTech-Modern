@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
@@ -28,6 +28,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+
+import java.util.Collections;
 import java.util.Comparator;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -91,8 +96,8 @@ public class GCYMMachines {
                     .slice("XXXXX", "XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_SECURE_MACERATION.get()).setMinGlobalLimited(55)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('G', Predicates.blocks(CRUSHING_WHEELS.get()))
                     .where('A', Predicates.air())
                     .build())
@@ -120,8 +125,8 @@ public class GCYMMachines {
                     .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(55)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where(' ', Predicates.air())
                     .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
@@ -150,8 +155,8 @@ public class GCYMMachines {
                     .slice("#XXX#", "XXSXX", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(40)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('P', Predicates.blocks(CASING_STEEL_PIPE.get()))
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
@@ -178,8 +183,8 @@ public class GCYMMachines {
                     .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_REACTION_SAFE.get()).setMinGlobalLimited(50)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('F', frames(GTMaterials.HastelloyX))
                     .where('G', blocks(CASING_STAINLESS_STEEL_GEARBOX.get()))
                     .where('P', blocks(CASING_TITANIUM_PIPE.get()))
@@ -210,8 +215,8 @@ public class GCYMMachines {
                     .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_NONCONDUCTING.get()).setMinGlobalLimited(30)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/gcym/nonconducting_casing"),
@@ -236,8 +241,8 @@ public class GCYMMachines {
                     .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_NONCONDUCTING.get()).setMinGlobalLimited(35)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/gcym/nonconducting_casing"),
@@ -263,8 +268,8 @@ public class GCYMMachines {
                     .slice("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_TUNGSTENSTEEL_ROBUST.get()).setMinGlobalLimited(30)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('A', Predicates.air())
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
@@ -291,10 +296,10 @@ public class GCYMMachines {
                     .slice("XXXXXXXXX", "XGGGXXSXX", "XGGGX###X")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(40)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
                                     true))
-                            .or(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('G', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
@@ -325,10 +330,10 @@ public class GCYMMachines {
                     .slice("#####XX", "#####SX", "#####XX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(55)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
                                     true))
-                            .or(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('T', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
                     .where('G', Predicates.blocks(CASING_GRATE.get()))
                     .where('P', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))
@@ -357,8 +362,8 @@ public class GCYMMachines {
                     .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(45)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('C', Predicates.blocks(MOLYBDENUM_DISILICIDE_COIL_BLOCK.get()))
                     .where('M', Predicates.abilities(MUFFLER))
                     .where('A', Predicates.air())
@@ -390,8 +395,8 @@ public class GCYMMachines {
                     .where('S', controller(blocks(definition.get())))
                     .where('C', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))
                     .where('X', blocks(CASING_LASER_SAFE_ENGRAVING.get()).setMinGlobalLimited(50)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('G', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('K', blocks(CASING_GRATE.get()))
                     .where('A', Predicates.air())
@@ -418,8 +423,8 @@ public class GCYMMachines {
                     .slice("#X#X#", "#X#X#", "#XSX#", "XXXXX", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(50)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('K', blocks(CASING_GRATE.get()))
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
@@ -448,8 +453,8 @@ public class GCYMMachines {
                     .slice("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(30)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, false)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, false)))
                     .where('C', heatingCoils())
                     .where('M', abilities(PartAbility.MUFFLER))
                     .where('G', blocks(HEAT_VENT.get()))
@@ -458,17 +463,23 @@ public class GCYMMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"))
-            .additionalDisplay((controller, components) -> {
-                if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
-                    components.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
-                            Component
-                                    .translatable(
-                                            FormattingUtil
-                                                    .formatNumbers(coilMachine.getCoilType().getCoilTemperature() +
-                                                            100L * Math.max(0, coilMachine.getTier() - GTValues.MV)) +
-                                                    "K")
-                                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
-                }
+            .additionalDisplay((controller, syncManager) -> {
+                if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
+                    return Collections.emptyList();
+                BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                        () -> new BooleanSyncValue(controller::isFormed));
+                IntSyncValue coilTemperature = syncManager.getOrCreateSyncHandler("coilTemperature", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getCoilType().getCoilTemperature()));
+                IntSyncValue machineTier = syncManager.getOrCreateSyncHandler("machineTier", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getTier()));
+
+                return Collections.singletonList(Text
+                        .dynamic(() -> Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
+                                Component.literal(
+                                        FormattingUtil.formatNumbers(coilTemperature.getIntValue() +
+                                                100L * Math.max(0, machineTier.getIntValue() - GTValues.MV)) + "K")
+                                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))))
+                        .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
             .register();
 
@@ -490,8 +501,8 @@ public class GCYMMachines {
                     .slice("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(30)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('T', blocks(CASING_STEEL_PIPE.get()))
                     .where('#', any())
                     .build())
@@ -516,8 +527,8 @@ public class GCYMMachines {
                     .slice("XXXXXXX", "XSXCCCX", "XXXXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(40)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('G', blocks(CASING_STEEL_GEARBOX.get()))
                     .where('C', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('A', air())
@@ -545,8 +556,8 @@ public class GCYMMachines {
                     .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#####")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_CORROSION_PROOF.get()).setMinGlobalLimited(50)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('P', blocks(CASING_STEEL_PIPE.get()))
                     .where('C', blocks(MOLYBDENUM_DISILICIDE_COIL_BLOCK.get()))
                     .where('A', air())
@@ -573,8 +584,8 @@ public class GCYMMachines {
                     .slice("XXXXXXX", "XSXGGGX", "XXXGGGX", "##XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_SHOCK_PROOF.get()).setMinGlobalLimited(65)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('G', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('C', blocks(SLICING_BLADES.get()))
                     .where('A', air())
@@ -595,23 +606,23 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
-                PatternPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
-                PatternPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                MultiPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
+                MultiPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded())
-                    exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
-                exportPredicate.setMaxLayerLimited(1);
+                    exportPredicate = exportPredicate.xor(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                exportPredicate = exportPredicate.setMaxLayerLimited(1);
                 return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                         .slice("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .slice("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
                         .sliceRepeatable(1, 12, "##X##", "#XAX#", "XAPAX", "#XAX#", "##X##")
                         .slice("#####", "#ZZZ#", "#ZZZ#", "#ZZZ#", "#####")
                         .where('S', controller(blocks(definition.get())))
-                        .where('Y', casingPredicate.or(abilities(IMPORT_ITEMS))
-                                .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2))
-                                .or(abilities(IMPORT_FLUIDS).setMinGlobalLimited(1))
-                                .or(abilities(EXPORT_ITEMS))
-                                .or(autoAbilities(true, false, true)))
-                        .where('X', casingPredicate.or(exportPredicate))
+                        .where('Y', casingPredicate.and(abilities(IMPORT_ITEMS))
+                                .and(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2))
+                                .and(abilities(IMPORT_FLUIDS).setMinGlobalLimited(1))
+                                .and(abilities(EXPORT_ITEMS))
+                                .and(autoAbilities(true, false, true)))
+                        .where('X', casingPredicate.and(exportPredicate))
                         .where('Z', casingPredicate)
                         .where('P', blocks(CASING_STEEL_PIPE.get()))
                         .where('A', air())
@@ -640,8 +651,8 @@ public class GCYMMachines {
                     .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(25)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('C', blocks(CASING_STEEL_PIPE.get()))
                     .where('A', air())
                     .build())
@@ -667,8 +678,8 @@ public class GCYMMachines {
                     .slice("##XXX", "##XXX", "##XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(40)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('P', blocks(CASING_TITANIUM_PIPE.get()))
                     .where('G', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('A', air())
@@ -696,8 +707,8 @@ public class GCYMMachines {
                     .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(45)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('C', blocks(CASING_STEEL_PIPE.get()))
                     .where('A', air())
                     .where('#', any())
@@ -722,8 +733,8 @@ public class GCYMMachines {
                     .slice("XXXXX", "XSXXX", "XXX##")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(25)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(autoAbilities(true, false, true)))
                     .where('C', blocks(CASING_TITANIUM_GEARBOX.get()))
                     .where('#', any())
                     .build())
@@ -746,7 +757,7 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock, BATCH_MODE)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
-                PatternPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
+                MultiPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
                 return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         // spotless:off
                         .slice("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
@@ -764,8 +775,8 @@ public class GCYMMachines {
                         .slice("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
                         // spotless:on
                         .where('S', controller(blocks(definition.get())))
-                        .where('X', casing.or(autoAbilities(definition.getRecipeTypes()))
-                                .or(Predicates.autoAbilities(true, false, true)))
+                        .where('X', casing.and(autoAbilities(definition.getRecipeTypes()))
+                                .and(Predicates.autoAbilities(true, false, true)))
                         .where('C', heatingCoils())
                         .where('M', abilities(PartAbility.MUFFLER))
                         .where('F', frames(NaquadahAlloy))
@@ -780,15 +791,24 @@ public class GCYMMachines {
                         .build();
             })
             .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
-                    GTCEu.id("block/multiblock/gcym/rotary_hearth_furnace"))
-            .additionalDisplay((controller, components) -> {
-                if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
-                    components.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
-                            Component.translatable(
-                                    FormattingUtil.formatNumbers(coilMachine.getCoilType().getCoilTemperature() +
-                                            100L * Math.max(0, coilMachine.getTier() - GTValues.MV)) + "K")
-                                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
-                }
+                    GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))
+            .additionalDisplay((controller, syncManager) -> {
+                if (!(controller instanceof CoilWorkableElectricMultiblockMachine coilMachine))
+                    return Collections.emptyList();
+                BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                        () -> new BooleanSyncValue(controller::isFormed));
+                IntSyncValue coilTemperature = syncManager.getOrCreateSyncHandler("coilTemperature", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getCoilType().getCoilTemperature()));
+                IntSyncValue machineTier = syncManager.getOrCreateSyncHandler("machineTier", IntSyncValue.class,
+                        () -> new IntSyncValue(() -> coilMachine.getTier()));
+
+                return Collections.singletonList(Text
+                        .dynamic(() -> Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
+                                Component.literal(
+                                        FormattingUtil.formatNumbers(coilTemperature.getIntValue() +
+                                                100L * Math.max(0, machineTier.getIntValue() - GTValues.MV)) + "K")
+                                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))))
+                        .asWidget().setEnabledIf(w -> isFormed.getBoolValue()));
             })
             .register();
 
@@ -813,8 +833,8 @@ public class GCYMMachines {
                     // spotless:on
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(140)
-                            .or(autoAbilities(definition.getRecipeTypes()))
-                            .or(Predicates.autoAbilities(true, false, true)))
+                            .and(autoAbilities(definition.getRecipeTypes()))
+                            .and(Predicates.autoAbilities(true, false, true)))
                     .where('G', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('K', blocks(CASING_STAINLESS_CLEAN.get()))
                     .where('P', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))

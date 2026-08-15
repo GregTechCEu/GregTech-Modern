@@ -146,15 +146,15 @@ public class GTElements {
     // spotless:on
     /**
      * @deprecated Use
-     *             {@link GTElements#createAndRegister(ResourceLocation, long, long, long, String, String, String, boolean)}
+     *             {@link GTElements#createAndRegister(ResourceLocation, long, long, double, String, String, String, boolean)}
      */
     @Deprecated
-    public static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo,
+    public static Element createAndRegister(long protons, long neutrons, double halfLifeSeconds, String decayTo,
                                             String name, String symbol, boolean isIsotope) {
         return createAndRegister(GTCEu.id(name), protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
     }
 
-    public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, long halfLifeSeconds,
+    public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, double halfLifeSeconds,
                                             String decayTo,
                                             String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);

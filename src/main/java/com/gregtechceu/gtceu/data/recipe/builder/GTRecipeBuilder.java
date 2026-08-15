@@ -704,6 +704,14 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder notConsumable(TagKey<Item> itemTag) {
+        int lastChance = this.chance;
+        this.chance = 0;
+        inputItems(itemTag);
+        this.chance = lastChance;
+        return this;
+    }
+
     public GTRecipeBuilder notConsumable(TagPrefix orePrefix, Material material) {
         int lastChance = this.chance;
         this.chance = 0;
@@ -1546,7 +1554,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.ingredient().hasNoItems()) {
                 ItemStack[] items = currOutput.getItems();
@@ -1597,7 +1605,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.ingredient().hasNoItems()) {
                 ItemStack[] items = currOutput.getItems();

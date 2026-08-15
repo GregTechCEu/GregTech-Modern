@@ -17,11 +17,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class DefaultMaterialsMixin {
 
     @Inject(method = "forRenderLayer", at = @At(value = "HEAD"), cancellable = true)
-    private static void gtceu$fixBloomLayerError(RenderType renderType,
+    private static void gtceu$fixBloomLayerError(RenderType layer,
                                                  CallbackInfoReturnable<Material> cir) {
         if (!BloomShaderManager.isBloomAvailable()) return;
 
-        if (renderType == GTRenderTypes.bloom()) {
+        if (layer == GTRenderTypes.bloom()) {
             cir.setReturnValue(GTEmbeddiumCompat.BLOOM_MATERIAL);
         }
     }

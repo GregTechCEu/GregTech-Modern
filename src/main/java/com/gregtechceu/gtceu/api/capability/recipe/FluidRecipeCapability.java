@@ -51,12 +51,12 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @Override
     public SizedFluidIngredient copyWithModifier(SizedFluidIngredient content, ContentModifier modifier) {
-        if (content.ingredient().hasNoFluids()) return content.copy();
         if (content.ingredient() instanceof IntProviderFluidIngredient provider) {
             IntProviderFluidIngredient copy = IntProviderFluidIngredient.of(provider.getInner(),
                     ModifiedIntProvider.of(provider.getCountProvider(), modifier));
-            return new SizedFluidIngredient(copy, 1);
+            return new SizedFluidIngredient(copy, copy.getMaxRoll());
         }
+        if (content.ingredient().hasNoFluids()) return content.copy();
         return content.copyWithAmount(modifier.apply(content.amount()));
     }
 
@@ -190,8 +190,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
             SizedFluidIngredient ing = of(content.content());
 
             int amount;
-            if (ing.ingredient() instanceof IRangedIngredient provider) {
-                amount = provider.getMaxRoll();
+            if (ing.ingredient() instanceof IRangedIngredient ranged) {
+                amount = ranged.getMaxRoll();
             } else {
                 amount = ing.amount();
             }
@@ -385,7 +385,7 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
 
     @Override
     public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine) {
-        return machine.getTraits(NotifiableFluidTank.TYPE);
+        return machine.getTraits(NotifiableFluidTank.class);
     }
 
     @SuppressWarnings("unchecked")

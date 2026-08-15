@@ -24,6 +24,9 @@ public abstract class RecipeManagerLateMixin extends SimpleJsonResourceReloadLis
         super(gson, directory);
     }
 
+    @Shadow
+    public abstract void replaceRecipes(Iterable<RecipeHolder<?>> recipes);
+
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
     private void gtceu$handleDynamicRecipesLate(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager,
