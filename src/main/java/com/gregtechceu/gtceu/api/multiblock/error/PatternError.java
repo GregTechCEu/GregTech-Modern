@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public abstract class PatternError {
 
-    public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERRORS.byNameCodec()
+    public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERROR_TYPES.byNameCodec()
             .dispatch(PatternError::type, PatternErrorType::codec);
 
     @Getter
@@ -31,7 +31,7 @@ public abstract class PatternError {
         this.candidates = candidates;
     }
 
-    public PatternError(@Nullable BlockPos pos, PatternPredicate predicate) {
+    public PatternError(@Nullable BlockPos pos, MultiPredicate predicate) {
         this(pos, predicate.getCandidates());
     }
 

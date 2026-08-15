@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingInput;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -32,14 +31,6 @@ import java.util.function.Predicate;
 
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<SizedIngredient>
                                         implements ICapabilityTrait, IItemHandlerModifiable {
-
-    public static final MachineTraitType<NotifiableItemStackHandler> TYPE = new MachineTraitType<>(
-            NotifiableItemStackHandler.class);
-
-    @Override
-    public MachineTraitType<NotifiableItemStackHandler> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     public final IO handlerIO;
@@ -111,30 +102,17 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
         ItemStack[] visited = new ItemStack[storage.getSlots()];
         for (var it = left.listIterator(); it.hasNext();) {
             var ingredient = it.next();
-            if (ingredient.ingredient().hasNoItems()) {
+            if (!(ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient) &&
+                    ingredient.ingredient().hasNoItems()) {
                 it.remove();
                 continue;
             }
 
             ItemStack[] items;
             int amount;
-            if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient provider) {
-                provider.setItemStacks(null);
-                provider.setSampledCount(-1);
-
-                ItemStack output;
-                if (simulate) {
-                    output = provider.getMaxSizeStack();
-                    items = new ItemStack[] { output };
-                } else {
-                    items = provider.getItemStacks();
-                    if (items.length == 0 || items[0].isEmpty()) {
-                        it.remove();
-                        continue;
-                    }
-                    output = items[0];
-                }
-                amount = output.getCount();
+            if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient provider && simulate) {
+                items = new ItemStack[] { provider.getMaxSizeStack() };
+                amount = provider.getMaxRoll();
             } else {
                 items = ingredient.getItems();
                 if (items.length == 0 || items[0].isEmpty()) {
@@ -182,7 +160,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
             }
             // Modify ingredient if we didn't finish it off
             if (amount > 0) {
-                it.set(new SizedIngredient(ingredient.ingredient(), amount));
+                if (ingredient.ingredient().getCustomIngredient() instanceof IntProviderIngredient ranged) {
+                    it.set(new SizedIngredient(ranged.getInner(), amount));
+                } else {
+                    it.set(new SizedIngredient(ingredient.ingredient(), amount));
+                }
             }
         }
 

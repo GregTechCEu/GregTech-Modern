@@ -32,7 +32,7 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
 
     public static void registerDisplays(EmiRegistry registry) {
         var fluids = Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY);
+                .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE);
         fluids.holders()
                 .filter(ore -> ore.value().canGenerate())
                 .forEach(ore -> registry.addRecipe(new GTBedrockOre(ore.value())));
@@ -53,7 +53,7 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
         private final BedrockOreDefinition bedrockOre;
 
         public GTBedrockOre(BedrockOreDefinition bedrockOre) {
-            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)
+            super(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)
                     .getKey(bedrockOre).withPrefix("/bedrock_ore_diagram/"),
                     () -> new OreVeinRecipeWidget(bedrockOre));
             this.bedrockOre = bedrockOre;

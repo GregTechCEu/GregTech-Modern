@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidDefinitionBuilderJS;
 
 import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.WritableRegistry;
@@ -30,8 +30,8 @@ public class GTBedrockFluidVeinEventJS implements KubeEvent {
         this.registry = registry;
     }
 
-    public void add(Context cx, ResourceLocation id, Consumer<BedrockFluidBuilder> consumer) {
-        BedrockFluidBuilder builder = new BedrockFluidBuilder(id);
+    public void add(Context cx, ResourceLocation id, Consumer<BedrockFluidDefinitionBuilderJS> consumer) {
+        BedrockFluidDefinitionBuilderJS builder = new BedrockFluidDefinitionBuilderJS(id);
         consumer.accept(builder);
         register(id, builder.createTransformedObject());
     }
@@ -40,20 +40,20 @@ public class GTBedrockFluidVeinEventJS implements KubeEvent {
         registry.register(createKey(id), def, RegistrationInfo.BUILT_IN);
     }
 
-    public void modify(Context cx, ResourceLocation id, Consumer<BedrockFluidBuilder> consumer) {
+    public void modify(Context cx, ResourceLocation id, Consumer<BedrockFluidDefinitionBuilderJS> consumer) {
         var vein = registry.get(id);
         if (vein == null) throw new IllegalArgumentException("Fluid vein doesn't exist: " + id);
-        var builder = BedrockFluidBuilder.from(vein, id);
+        var builder = BedrockFluidDefinitionBuilderJS.from(vein, id);
         consumer.accept(builder);
         register(id, builder.createTransformedObject());
     }
 
-    public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockFluidBuilder> consumer) {
+    public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockFluidDefinitionBuilderJS> consumer) {
         Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
         keys.forEach(id -> {
             var vein = registry.get(id);
             if (vein == null) throw new IllegalArgumentException("Fluid vein doesn't exist: " + id);
-            var builder = BedrockFluidBuilder.from(vein, id);
+            var builder = BedrockFluidDefinitionBuilderJS.from(vein, id);
             consumer.accept(id, builder);
             register(id, builder.createTransformedObject());
         });
@@ -84,6 +84,6 @@ public class GTBedrockFluidVeinEventJS implements KubeEvent {
     }
 
     public static ResourceKey<BedrockFluidDefinition> createKey(ResourceLocation id) {
-        return ResourceKey.create(GTRegistries.BEDROCK_FLUID_REGISTRY, id);
+        return ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, id);
     }
 }

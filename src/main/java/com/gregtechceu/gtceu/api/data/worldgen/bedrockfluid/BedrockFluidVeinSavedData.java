@@ -82,7 +82,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
      * @param chunkZ Z coordinate of desired chunk
      * @return The FluidVeinWorldInfo corresponding with the given chunk
      */
-    public FluidVeinWorldEntry getFluidVeinWorldEntry(int chunkX, int chunkZ) {
+    public @Nullable FluidVeinWorldEntry getFluidVeinWorldEntry(int chunkX, int chunkZ) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!veinFluids.containsKey(pos)) {
             Holder<BedrockFluidDefinition> definition = null;
@@ -94,7 +94,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 var registry = serverLevel.registryAccess()
-                        .registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID)
                         .asHolderIdMap();
                 for (var holder : registry) {
                     var fluidDefinition = holder.value();
@@ -143,7 +143,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.BEDROCK_FLUID_REGISTRY)) {
+            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID)) {
                 if (!definition.canGenerate()) {
                     continue;
                 }

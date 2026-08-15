@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
@@ -31,13 +30,6 @@ import java.util.function.Predicate;
 @ExtensionMethod(SizedIngredientExtensions.class)
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
-
-    public static final MachineTraitType<NotifiableFluidTank> TYPE = new MachineTraitType<>(NotifiableFluidTank.class);
-
-    @Override
-    public MachineTraitType<NotifiableFluidTank> getTraitType() {
-        return TYPE;
-    }
 
     @Getter
     public final IO handlerIO;
@@ -67,6 +59,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
             this.storages[i] = new CustomFluidTank(capacity);
             this.storages[i].setOnContentsChanged(this::onContentsChanged);
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
@@ -80,6 +73,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         if (io == IO.IN) {
             this.allowSameFluids = true;
         }
+        this.lockedFluid.setOnContentsChanged(this::onLockedFluidChanged);
     }
 
     public NotifiableFluidTank(int slots, int capacity, IO io) {
@@ -94,6 +88,26 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
         isEmpty = null;
         syncDataHolder.markClientSyncFieldDirty("storages");
         notifyListeners();
+    }
+
+    protected void onLockedFluidChanged() {
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
+        var newFluid = this.lockedFluid.getFluid();
+        if (newFluid.isEmpty()) {
+            this.setFilter(stack -> true);
+            this.onContentsChanged();
+            return;
+        }
+        for (int i = 0; i < this.getTanks(); i++) {
+            if (this.getFluidInTank(i).isEmpty()) continue;
+            if (!this.getFluidInTank(i).isFluidEqual(newFluid)) {
+                // Fluid in a tank that doesn't equal the new locked fluid
+                this.lockedFluid.setFluid(FluidStack.EMPTY);
+                return;
+            }
+        }
+        this.setFilter(stack -> stack.isFluidEqual(newFluid));
+        this.onContentsChanged();
     }
 
     @Override
@@ -126,15 +140,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
             FluidStack[] fluids;
 
-            if (ingredient.ingredient() instanceof IntProviderFluidIngredient provider) {
-                provider.setFluidStacks(null);
-                provider.setSampledCount(-1);
-
-                if (simulate) {
-                    fluids = new FluidStack[] { provider.getMaxSizeStack() };
-                } else {
-                    fluids = provider.getFluidStacks();
-                }
+            if (ingredient.ingredient() instanceof IntProviderFluidIngredient provider && simulate) {
+                fluids = new FluidStack[] { provider.getMaxSizeStack() };
             } else {
                 fluids = ingredient.getFluids();
             }

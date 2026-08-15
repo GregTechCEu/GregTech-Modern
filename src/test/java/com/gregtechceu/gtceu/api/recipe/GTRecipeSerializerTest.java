@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentBlockCondition;
 import com.gregtechceu.gtceu.common.recipe.condition.AdjacentFluidCondition;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -50,7 +49,7 @@ public class GTRecipeSerializerTest {
         TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "lava"));
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
+        HolderSet<Fluid> lavaSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.FLUID)
                 .getOrCreateTag(lavaTag);
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
@@ -60,7 +59,7 @@ public class GTRecipeSerializerTest {
         TagKey<Block> oreTag = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores"));
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
-        HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
+        HolderSet<Block> oreSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.BLOCK)
                 .getOrCreateTag(oreTag);
         List<HolderSet<Block>> blockSetIn = List.of(blockSet, oreSet);
@@ -114,7 +113,7 @@ public class GTRecipeSerializerTest {
         TagKey<Fluid> lavaTag = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "lava"));
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
+        HolderSet<Fluid> lavaSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.FLUID)
                 .getOrCreateTag(lavaTag);
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
@@ -123,8 +122,9 @@ public class GTRecipeSerializerTest {
         helper.assertTrue(equalHolderSetLists(condition.getOrInitFluids(null), fluidSetIn),
                 "AdjacentFluidCondition did not deserialize properly");
 
-        JsonObject jsonConfig = condition.serialize();
-        AdjacentFluidCondition newCondition = (AdjacentFluidCondition) AdjacentFluidCondition.deserialize(jsonConfig);
+        JsonObject jsonConfig = condition.serialize(helper.getLevel().registryAccess());
+        AdjacentFluidCondition newCondition = (AdjacentFluidCondition) AdjacentFluidCondition
+                .deserialize(helper.getLevel().registryAccess(), jsonConfig);
 
         helper.assertTrue(equalHolderSetLists(newCondition.getOrInitFluids(null), fluidSetIn),
                 "AdjacentFluidCondition did not deserialize properly");
@@ -140,7 +140,7 @@ public class GTRecipeSerializerTest {
         TagKey<Block> oreTag = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores"));
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
-        HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
+        HolderSet<Block> oreSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.BLOCK)
                 .getOrCreateTag(oreTag);
         List<HolderSet<Block>> blockSetIn = List.of(blockSet, oreSet);
@@ -149,8 +149,9 @@ public class GTRecipeSerializerTest {
         helper.assertTrue(equalHolderSetLists(condition.getOrInitBlocks(null), blockSetIn),
                 "AdjacentBlockCondition did not deserialize properly");
 
-        JsonObject jsonConfig = condition.serialize();
-        AdjacentBlockCondition newCondition = (AdjacentBlockCondition) AdjacentBlockCondition.deserialize(jsonConfig);
+        JsonObject jsonConfig = condition.serialize(helper.getLevel().registryAccess());
+        AdjacentBlockCondition newCondition = (AdjacentBlockCondition) AdjacentBlockCondition
+                .deserialize(helper.getLevel().registryAccess(), jsonConfig);
 
         helper.assertTrue(equalHolderSetLists(newCondition.getOrInitBlocks(null), blockSetIn),
                 "AdjacentBlockCondition did not deserialize properly");

@@ -31,7 +31,6 @@ public class GTDamageTypes {
         ctx.register(ELECTRIC, new DamageType("gtceu.electric", 0));
         ctx.register(RADIATION, new DamageType("gtceu.radiation", 0));
         ctx.register(TURBINE, new DamageType("gtceu.turbine", 0));
-
         for (var entry : GTRegistries.MEDICAL_CONDITIONS.entrySet()) {
             String name = entry.getKey().location().getPath();
             MedicalCondition condition = entry.getValue();

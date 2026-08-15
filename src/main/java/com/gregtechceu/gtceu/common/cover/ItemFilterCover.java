@@ -4,7 +4,8 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -34,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class ItemFilterCover extends CoverBehavior implements IMuiCover {
 
-    protected @Nullable ItemFilter itemFilter;
+    protected @Nullable Filter<ItemStack> itemFilter;
     @Setter
     @SaveField
     @Getter
@@ -49,9 +50,9 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         super(definition, coverHolder, attachedSide);
     }
 
-    public ItemFilter getItemFilter() {
+    public Filter<ItemStack> getItemFilter() {
         if (itemFilter == null) {
-            itemFilter = ItemFilter.loadFilter(attachItem);
+            itemFilter = Filters.loadItemFilter(attachItem);
             if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
@@ -151,7 +152,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
         setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
-        itemFilter = ItemFilter.loadFilter(ItemStack
+        itemFilter = Filters.loadItemFilter(ItemStack
                 .parse(coverHolder.getLevel().registryAccess(), tag.getCompound("filter")).orElse(ItemStack.EMPTY));
         super.pasteConfig(player, tag);
     }

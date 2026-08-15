@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -13,9 +12,9 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.util.Mth;
@@ -442,7 +441,7 @@ public final class MaterialRecipeHandler {
         if (material.hasFlag(MORTAR_GRINDABLE)) {
             VanillaRecipeHelper.addShapedRecipe(provider,
                     String.format("gem_to_dust_%s_%s", material.getName(),
-                            FormattingUtil.toLowerCaseUnderscore(prefix.name)),
+                            prefix.name),
                     crushedStack,
                     "X", "m", 'X', new MaterialEntry(prefix, material));
         }
@@ -457,14 +456,14 @@ public final class MaterialRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
-                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name),
+                String.format("gem_to_gem_%s_%s", lowerPrefix.name,
                         material.getName()),
                 prevStack,
                 'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
-                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                        "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                .recipeBuilder("cut_" + material.getName() + "_" + prefix.name +
+                        "_to_" + prefix.name)
                 .inputItems(prefix, material)
                 .outputItems(prevStack)
                 .duration(20)
@@ -473,10 +472,10 @@ public final class MaterialRecipeHandler {
 
         LASER_ENGRAVER_RECIPES
                 .recipeBuilder(
-                        "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                                "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                        "engrave_" + material.getName() + "_" + prefix.name +
+                                "_to_" + lowerPrefix.name)
                 .inputItems(prevStack)
-                .notConsumable(lens, MarkerMaterials.Color.White)
+                .notConsumable(CustomTags.WHITE_LENS)
                 .outputItems(prefix, material)
                 .duration(300)
                 .EUt(240)
@@ -526,7 +525,7 @@ public final class MaterialRecipeHandler {
                             .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
                             .inputFluids(stack)
                             .outputItems(nugget, material, 9)
-                            .duration((int) material.getMass())
+                            .duration(20)
                             .EUt(VA[ULV])
                             .save(provider);
                 }
@@ -585,7 +584,7 @@ public final class MaterialRecipeHandler {
                         .notConsumable(GTItems.SHAPE_MOLD_BLOCK)
                         .inputFluids(stack)
                         .outputItems(blockStack)
-                        .duration((int) material.getMass()).EUt(VA[ULV])
+                        .duration(180).EUt(VA[ULV])
                         .save(provider);
             }
         }

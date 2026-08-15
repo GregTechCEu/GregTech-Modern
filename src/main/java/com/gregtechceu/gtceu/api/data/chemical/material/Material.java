@@ -47,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-public class Material {
+public final class Material {
 
     /**
      * Basic Info of this Material.
@@ -193,7 +193,7 @@ public class Material {
         return Arrays.stream(flags).anyMatch(this::hasFlag);
     }
 
-    protected void calculateDecompositionType() {
+    private void calculateDecompositionType() {
         if (!materialInfo.componentList.isEmpty() &&
                 !hasFlag(MaterialFlags.DECOMPOSITION_BY_CENTRIFUGING) &&
                 !hasFlag(MaterialFlags.DECOMPOSITION_BY_ELECTROLYZING) &&

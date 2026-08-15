@@ -6,13 +6,15 @@ import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.*;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
@@ -39,6 +41,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import brachy.modularui.api.drawable.IDrawable;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,39 +66,44 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Getter
     private List<MonitorGroup> monitorGroups = new ArrayList<>();
 
-    private @Nullable CurrentBlockInfo patternFindingState;
-
-    private static @Nullable PatternPredicate MULTI_PREDICATE = null;
+    private static @Nullable MultiPredicate MULTI_PREDICATE = null;
+    private static final PredicateContext CONTEXT = new PredicateContext(null);
 
     public CentralMonitorMachine(BlockEntityCreationInfo info) {
         super(info, new CentralMonitorLogic());
     }
 
-    public static PatternPredicate getMultiPredicate() {
+    public static MultiPredicate getMultiPredicate() {
         if (MULTI_PREDICATE == null) {
-            MULTI_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
-                    .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
-                    .or(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
+            MULTI_PREDICATE = Predicates.machines(GTMachines.MONITOR)
+                    .and(Predicates.abilities(PartAbility.INPUT_ENERGY)
+                            .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1))
+                    .and(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
                             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
                             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
                             .setMaxGlobalLimited(4))
-                    .or(Predicates.machines(GTMachines.HULL))
-                    .or(Predicates.machines(GTMachines.MONITOR))
-                    .or(Predicates.machines(GTMachines.ADVANCED_MONITOR))
-                    .or(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
+                    .and(Predicates.machines(GTMachines.HULL).setPreviewCount(0))
+                    .and(Predicates.machines(GTMachines.ADVANCED_MONITOR))
+                    .and(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
         }
         return MULTI_PREDICATE;
     }
 
     @Override
-    public void invalidateStructure(String name) {
-        super.invalidateStructure(name);
-        this.clearPatternFindingState();
+    public CentralMonitorLogic getRecipeLogic() {
+        return (CentralMonitorLogic) super.getRecipeLogic();
     }
 
     @Override
-    public CentralMonitorLogic getRecipeLogic() {
-        return (CentralMonitorLogic) super.getRecipeLogic();
+    public void onLoad() {
+        super.onLoad();
+        updateStructureDimensions();
+    }
+
+    @Override
+    public void formStructure(String substructureName) {
+        super.formStructure(substructureName);
+        updateStructureDimensions();
     }
 
     public @Nullable EnergyContainerList getFormedEnergyContainer() {
@@ -126,42 +135,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         recipeLogic.getSyncDataHolder().markClientSyncFieldDirty("status");
     }
 
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        this.clearPatternFindingState();
-    }
-
-    protected void clearPatternFindingState() {
-        // if (this.patternFindingState != null)
-        // this.patternFindingState.clean();
-        // this.patternFindingState = null;
-    }
-
-    protected CurrentBlockInfo getPatternFindingState() {
-        if (this.patternFindingState == null) {
-            this.patternFindingState = new CurrentBlockInfo();
-            patternFindingState.setLevel(getLevel());
-            patternFindingState.setCurrentPos(getBlockPos());
-            // this.patternFindingState.clean();
-        }
-        return this.patternFindingState;
-    }
-
-    public boolean isValidMonitorBlock(Level level, BlockPos pos) {
+    public static boolean isValidMonitorBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return false;
-
-        CurrentBlockInfo state = getPatternFindingState();
-        /*
-         * if (!state.update(pos, getMultiPredicate())) {
-         * return false;
-         * }
-         * state.io = IO.BOTH;
-         *
-         * return Stream.concat(state.predicate.common.stream(), state.predicate.limited.stream())
-         * .anyMatch(predicate -> predicate.test(state));
-         */
-        return false;
+        CONTEXT.reset();
+        CONTEXT.setCheckLayer(false);
+        CONTEXT.updateLevel(level);
+        CONTEXT.updatePos(pos);
+        return getMultiPredicate().getPredicateAtPos(CONTEXT) != null;
     }
 
     public void updateStructureDimensions() {
@@ -170,19 +150,32 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
         Direction front = getFrontFacing();
         Direction spin = getUpwardsFacing();
+        IntList bounds = getBounds(level, getBlockPos().mutable(), front, spin);
+        this.upDist = bounds.getInt(0);
+        this.downDist = bounds.getInt(1);
+        this.leftDist = bounds.getInt(2);
+        this.rightDist = bounds.getInt(3);
 
-        Direction left = RelativeDirection.LEFT.getRelativeFacing(front, spin, false);
-        Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, spin, false);
-        Direction up = RelativeDirection.UP.getRelativeFacing(front, spin, false);
-        Direction down = RelativeDirection.DOWN.getRelativeFacing(front, spin, false);
-        BlockPos.MutableBlockPos posLeft = getBlockPos().mutable().move(left);
-        BlockPos.MutableBlockPos posRight = getBlockPos().mutable().move(right);
-        BlockPos.MutableBlockPos posUp = getBlockPos().mutable().move(up);
-        BlockPos.MutableBlockPos posDown = getBlockPos().mutable().move(down);
-        this.leftDist = 0;
-        this.rightDist = 0;
-        this.upDist = 0;
-        this.downDist = 0;
+        getSyncDataHolder().markClientSyncFieldDirty("leftDist");
+        getSyncDataHolder().markClientSyncFieldDirty("rightDist");
+        getSyncDataHolder().markClientSyncFieldDirty("upDist");
+        getSyncDataHolder().markClientSyncFieldDirty("downDist");
+    }
+
+    public static IntList getBounds(Level level, BlockPos.MutableBlockPos controllerPos, Direction front,
+                                    Direction upFace) {
+        Direction left = RelativeDirection.LEFT.getRelativeFacing(front, upFace, false);
+        Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, upFace, false);
+        Direction up = RelativeDirection.UP.getRelativeFacing(front, upFace, false);
+        Direction down = RelativeDirection.DOWN.getRelativeFacing(front, upFace, false);
+        BlockPos.MutableBlockPos posLeft = controllerPos.mutable().move(left);
+        BlockPos.MutableBlockPos posRight = controllerPos.mutable().move(right);
+        BlockPos.MutableBlockPos posUp = controllerPos.mutable().move(up);
+        BlockPos.MutableBlockPos posDown = controllerPos.mutable().move(down);
+        int leftDist = 0;
+        int rightDist = 0;
+        int upDist = 0;
+        int downDist = 0;
 
         while (isValidMonitorBlock(level, posLeft)) {
             posLeft.move(left);
@@ -200,14 +193,19 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             posDown.move(down);
             downDist++;
         }
-        getSyncDataHolder().markClientSyncFieldDirty("leftDist");
-        getSyncDataHolder().markClientSyncFieldDirty("rightDist");
-        getSyncDataHolder().markClientSyncFieldDirty("upDist");
-        getSyncDataHolder().markClientSyncFieldDirty("downDist");
+
+        if (leftDist + rightDist + upDist + downDist == 0) {
+            upDist = 1;
+            downDist = 1;
+            leftDist = 3;
+        }
+
+        return IntList.of(upDist, downDist, leftDist, rightDist, 0, 0);
     }
 
-    private boolean isValidMonitorBlockRow(Level level, BlockPos pos, int leftDist, int rightDist, Direction left,
-                                           Direction right) {
+    private static boolean isValidMonitorBlockRow(Level level, BlockPos pos, int leftDist, int rightDist,
+                                                  Direction left,
+                                                  Direction right) {
         BlockPos.MutableBlockPos mutable = pos.mutable();
         mutable.move(left, leftDist);
         for (int i = 0; i < leftDist + rightDist; i++) {
@@ -215,6 +213,30 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             mutable.move(right);
         }
         return isValidMonitorBlock(level, mutable);
+    }
+
+    public static List<IntIntPair> getConstraints() {
+        return List.of(
+                IntIntPair.of(0, 10),
+                IntIntPair.of(0, 10),
+                IntIntPair.of(0, 10),
+                IntIntPair.of(0, 10),
+                IntIntPair.of(0, 0),
+                IntIntPair.of(0, 0));
+    }
+
+    public static IBlockPattern getPattern(MultiblockMachineDefinition definition) {
+        MultiPredicate predicate = getMultiPredicate();
+        return ExpandableMultiblockPatternBuilder
+                .start()
+                .boundsProvider(CentralMonitorMachine::getBounds)
+                .constraintProvider(CentralMonitorMachine::getConstraints)
+                .predicateProvider((pos, bounds) -> {
+                    if (pos.equals(BlockPos.ZERO))
+                        return Predicates.controller(definition);
+                    return predicate;
+                })
+                .build();
     }
 
     @Override

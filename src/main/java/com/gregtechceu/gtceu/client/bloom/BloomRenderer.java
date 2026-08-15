@@ -56,9 +56,9 @@ public class BloomRenderer {
 
     @Accessors(fluent = true)
     @Getter
-    @ApiStatus.Internal
     private static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
+    @ApiStatus.Internal
     static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum,
                             Matrix4f frustumMatrix, Matrix4f projectionMatrix, float partialTicks,
                             LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {

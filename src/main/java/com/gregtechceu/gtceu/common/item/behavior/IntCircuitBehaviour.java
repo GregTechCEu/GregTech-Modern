@@ -30,7 +30,11 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
     public static final int CIRCUIT_MAX = 32;
 
     public static ItemStack stack(int configuration) {
-        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack();
+        return stack(configuration, 1);
+    }
+
+    public static ItemStack stack(int configuration, int count) {
+        var stack = GTItems.PROGRAMMED_CIRCUIT.asStack(count);
         setCircuitConfiguration(stack, configuration);
         return stack;
     }
@@ -70,7 +74,7 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
 
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
                 boolean inserted = false;
-                for (var handler : machine.getTraits(NotifiableItemStackHandler.TYPE)) {
+                for (var handler : machine.getTraits(NotifiableItemStackHandler.class)) {
                     for (int i = 0; i < handler.getSlots(); i++) {
                         if (handler.insertItem(i, stack.copyWithCount(1), false).isEmpty()) {
                             inserted = true;
@@ -82,7 +86,7 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
                 if (inserted) stack.shrink(1);
             }
 
-            machine.getTraitOptional(ProgrammableCircuitSlotTrait.TYPE)
+            machine.getTraitOptional(ProgrammableCircuitSlotTrait.class)
                     .ifPresent(t -> t.setCurrentCircuit(circuitSetting));
             return InteractionResult.SUCCESS;
         }

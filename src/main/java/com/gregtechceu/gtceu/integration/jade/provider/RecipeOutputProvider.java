@@ -46,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, CompoundTag> {
 
     public RecipeOutputProvider() {
-        super(GTCEu.id("recipe_output_info"), RecipeLogic.TYPE);
+        super(GTCEu.id("recipe_output_info"), RecipeLogic.class);
     }
 
     @Override
@@ -57,12 +57,10 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
             return data;
         }
         data.putBoolean("Working", recipeLogic.isWorking());
-        GTRecipe recipe = recipeLogic.getLastRecipe();
+        GTRecipe recipe = recipeLogic.getLastUnrolledRecipe();
         if (recipe == null) {
             return data;
         }
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
         var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
         int runs = recipe.getTotalRuns();
@@ -112,14 +110,14 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
             var fluidTag = new CompoundTag();
             if (ingredient instanceof IntProviderFluidIngredient provider) {
                 // don't bother rolling output for nothing
-                fluidTag = IntProviderFluidIngredient.CODEC.codec().encodeStart(ops, provider)
-                        .map(tag -> (CompoundTag) tag)
-                        .getOrThrow();
                 if (fluid.chance() < fluid.maxChance()) {
                     double countD = ((double) runs * fluid.chance()) / fluid.maxChance();
                     provider = FluidRecipeCapability.CAP.copyWithModifier(provider,
                             ContentModifier.multiplier(countD));
                 }
+                fluidTag = IntProviderFluidIngredient.CODEC.codec().encodeStart(ops, provider)
+                        .map(tag -> (CompoundTag) tag)
+                        .getOrThrow();
             } else {
                 FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content()).getFluids();
                 if (stacks.length == 0) continue;
@@ -130,7 +128,6 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                         .map(tag -> (CompoundTag) tag)
                         .getOrThrow();
                 if (fluid.chance() < fluid.maxChance()) {
-                    // <<<<<<< HEAD
                     int amount = stack.getAmount();
                     double amountD = ((double) amount * runs * fluid.chance()) / fluid.maxChance();
                     amount = Math.max(1, (int) Math.round(amountD));
@@ -206,20 +203,20 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
             if (itemOutput == null || itemOutput.ingredient().hasNoItems()) {
                 continue;
             }
-            ItemStack item = itemOutput.getItems()[0];
-            int count = item.getCount();
-            item.setCount(1);
-
-            iTooltip.add(helper.smallItem(item));
+            ItemStack icon = itemOutput.getItems()[0].copyWithCount(1);
             MutableComponent text = CommonComponents.space();
-            item = itemOutput.getItems()[0];
-            text.append(String.valueOf(item.getCount()));
-            item.setCount(1);
+            if (itemOutput.ingredient().getCustomIngredient() instanceof IntProviderFluidIngredient provider) {
+                text.append(Component.translatable("gtceu.gui.content.range",
+                        provider.getCountProvider().getMinValue(),
+                        provider.getCountProvider().getMaxValue()));
+            } else {
+                text.append(String.valueOf(itemOutput.count()));
+            }
             text.append(Component.translatable("gtceu.gui.content.times_item",
-                    getItemName(item))
+                    getItemName(icon))
                     .withStyle(ChatFormatting.WHITE));
 
-            iTooltip.add(helper.smallItem(item));
+            iTooltip.add(helper.smallItem(icon));
             iTooltip.append(text);
         }
     }
@@ -230,8 +227,6 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                 continue;
             }
             FluidStack fluid = fluidOutput.getFluids()[0];
-
-            iTooltip.add(GTElementHelper.smallFluid(getFluid(fluid)));
             MutableComponent text = CommonComponents.space();
             if (fluidOutput.ingredient() instanceof IntProviderFluidIngredient provider) {
                 text.append(Component.translatable("gtceu.gui.content.range",
@@ -244,6 +239,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                     .append(getFluidName(fluid))
                     .withStyle(ChatFormatting.WHITE);
 
+            iTooltip.add(GTElementHelper.smallFluid(getFluid(fluid)));
             iTooltip.append(text);
         }
     }

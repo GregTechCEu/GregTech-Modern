@@ -62,6 +62,10 @@ public abstract class SectionCompilerMixin {
                                              CallbackInfoReturnable<SectionCompiler.Results> cir) {
         if (!BloomShaderManager.isBloomActive()) return;
 
+        if (BloomRenderer.SafeMode.enabled()) {
+            BloomRenderer.SafeMode.bakeBloomChunkBuffers(sectionPos, vertexSorting);
+        }
+
         BloomRenderer.bloomChunkContext().close();
     }
 }

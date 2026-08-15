@@ -66,7 +66,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
 
     public RotorHolderPartMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
-        this.inventory = attachTrait(new NotifiableItemStackHandler(1, IO.NONE, IO.BOTH));
+        this.inventory = attachTrait(new NotifiableItemStackHandler(1, IO.NONE, IO.NONE));
         this.maxRotorHolderSpeed = 2000 + 1000 * tier;
     }
 
@@ -239,7 +239,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         var slot = new ItemSlot()
-                .slot(new ModularSlot(inventory, 0).slotGroup(new SlotGroup("rotor", 1)))
+                .slot(new ModularSlot(inventory.storage, 0).slotGroup(new SlotGroup("rotor", 1)))
                 .background(GTGuiTextures.SLOT, GTGuiTextures.TURBINE_OVERLAY).center();
 
         var rotorSync = new IntSyncValue(this::getRotorSpeed);

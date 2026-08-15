@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -42,7 +41,6 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -52,7 +50,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import com.google.common.math.IntMath;
 import it.unimi.dsi.fastutil.Pair;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -1215,16 +1212,6 @@ public class GTMachines {
         // Dev-only test machines
         if (GTCEu.isDev()) {
             GTDevMachines.init();
-        }
-    }
-
-    public static void bakeRenderStates(Registry<MachineDefinition> registry) {
-        Iterator<MachineDefinition> iter = registry.iterator();
-        while (iter.hasNext()) {
-            MachineDefinition machine = iter.next();
-            for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
-                MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
-            }
         }
     }
 

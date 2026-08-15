@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.configurable;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 
@@ -279,21 +277,16 @@ public class RecipeRemoval {
     }
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
-        for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
+        for (DyeColor col : DyeColor.values()) {
+            String color = col.getName();
             registry.accept(
-                    ResourceLocation
-                            .withDefaultNamespace(String.format("%s_concrete_powder", colorMaterial.getName())));
-            registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", colorMaterial.getName())));
-            registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", colorMaterial.getName())));
-            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", colorMaterial.getName())));
-            registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", colorMaterial.getName())));
-            registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", colorMaterial.getName())));
-            registry.accept(
-                    ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", colorMaterial.getName())));
+                    ResourceLocation.withDefaultNamespace(String.format("%s_concrete_powder", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_terracotta", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_stained_glass", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("%s_candle", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_wool", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_carpet", color)));
+            registry.accept(ResourceLocation.withDefaultNamespace(String.format("dye_%s_bed", color)));
         }
         registry.accept(ResourceLocation.withDefaultNamespace("black_dye"));
         registry.accept(ResourceLocation.withDefaultNamespace("black_dye_from_wither_rose"));
@@ -324,6 +317,33 @@ public class RecipeRemoval {
         registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_oxeye_daisy"));
 
         registry.accept(ResourceLocation.withDefaultNamespace("dark_prismarine"));
+        registry.accept(ResourceLocation.withDefaultNamespace("white_dye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("black_dye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("black_dye_from_wither_rose"));
+        registry.accept(ResourceLocation.withDefaultNamespace("blue_dye"));
+        registry.accept(ResourceLocation.withDefaultNamespace("white_dye_from_lily_of_the_valley"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_blue_dye_from_blue_orchid"));
+        registry.accept(ResourceLocation.withDefaultNamespace("yellow_dye_from_dandelion"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_white_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_azure_bluet"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_poppy"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_rose_bush"));
+        registry.accept(ResourceLocation.withDefaultNamespace("red_dye_from_beetroot"));
+        registry.accept(ResourceLocation.withDefaultNamespace("orange_dye_from_orange_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("orange_dye_from_torchflower"));
+        registry.accept(ResourceLocation.withDefaultNamespace("yellow_dye_from_dandelion"));
+        registry.accept(ResourceLocation.withDefaultNamespace("cyan_dye_from_pitcher_plant"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_blue_dye_from_blue_orchid"));
+        registry.accept(ResourceLocation.withDefaultNamespace("blue_dye_from_cornflower"));
+        registry.accept(ResourceLocation.withDefaultNamespace("magenta_dye_from_allium"));
+        registry.accept(ResourceLocation.withDefaultNamespace("magenta_dye_from_lilac"));
+        registry.accept(ResourceLocation.withDefaultNamespace("lime_dye_from_lime"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pink_dye_from_pink_tulip"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pink_dye_from_pink_petals"));
+        registry.accept(ResourceLocation.withDefaultNamespace("pink_dye_from_peony"));
+        registry.accept(ResourceLocation.withDefaultNamespace("yellow_dye_from_sunflower"));
+        registry.accept(ResourceLocation.withDefaultNamespace("light_gray_dye_from_oxeye_daisy"));
     }
 
     private static void flintAndSteelRequireSteel(Consumer<ResourceLocation> registry) {

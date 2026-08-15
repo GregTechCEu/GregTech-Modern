@@ -20,7 +20,7 @@ import java.util.function.Function;
 @OnlyIn(Dist.CLIENT)
 public class GTRenderTypes extends RenderType {
 
-    public static final RenderStateShard.OutputStateShard BLOOM_TARGET = new RenderStateShard.OutputStateShard(
+    public static final RenderStateShard.OutputStateShard BLOOM_TARGET = new OutputStateShard(
             "bloom_target",
             () -> {
                 if (BloomShaderManager.isBloomActive()) {
@@ -32,12 +32,11 @@ public class GTRenderTypes extends RenderType {
                     Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
                 }
             });
-    public static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
-            BloomShaderManager::getRendertypeBloomShader);
-    public static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
-            BloomShaderManager::getRendertypeEntityBloomShader);
-    public static final RenderStateShard.ShaderStateShard POSITION_TEX_COLOR_SHADER = new RenderStateShard.ShaderStateShard(
-            GameRenderer::getPositionTexColorShader);
+    // spotless:off
+    public static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new ShaderStateShard(BloomShaderManager::getRendertypeBloomShader);
+    public static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new ShaderStateShard(BloomShaderManager::getRendertypeEntityBloomShader);
+    public static final RenderStateShard.ShaderStateShard POSITION_TEX_COLOR_SHADER = new ShaderStateShard(GameRenderer::getPositionTexColorShader);
+    // spotless:on
 
     private static final RenderType LIGHT_RING = RenderType.create("light_ring",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
@@ -65,7 +64,7 @@ public class GTRenderTypes extends RenderType {
                         .setOutputState(BLOOM_TARGET)
                         .setLightmapState(LIGHTMAP)
                         .setOverlayState(OVERLAY)
-                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, true))
+                        .setTextureState(new TextureStateShard(texture, false, true))
                         .createCompositeState(true));
     });
 
@@ -78,14 +77,23 @@ public class GTRenderTypes extends RenderType {
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
 
+    private static final RenderType ASSEMBLY_LINE = RenderType.create("assembly_line",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS,
+            RenderType.TRANSIENT_BUFFER_SIZE, false, false,
+            RenderType.CompositeState.builder()
+                    .setCullState(CULL)
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .createCompositeState(false));
+
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE_TRIANGLE_STRIP = Util.memoize((texture) -> {
         return create("gui_texture_triangle_strip", DefaultVertexFormat.POSITION_TEX_COLOR,
                 VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
                 RenderType.CompositeState.builder()
                         .setShaderState(POSITION_TEX_COLOR_SHADER)
-                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
-                        .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                        .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                        .setTextureState(new TextureStateShard(texture, false, false))
+                        .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                        .setDepthTestState(LEQUAL_DEPTH_TEST)
                         .createCompositeState(false));
     });
 
@@ -109,6 +117,10 @@ public class GTRenderTypes extends RenderType {
     @SuppressWarnings("deprecation")
     public static RenderType entityBloomBlockSheet() {
         return entityBloom(TextureAtlas.LOCATION_BLOCKS);
+    }
+
+    public static RenderType assemblyLine() {
+        return ASSEMBLY_LINE;
     }
 
     public static RenderType getMonitor() {

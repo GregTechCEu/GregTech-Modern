@@ -1,70 +1,70 @@
 {
-    "biomes": "#minecraft:is_nether",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 52,
-        "min_inclusive": 40
+  "biomes": "#minecraft:is_nether",
+  "cluster_size": {
+    "type": "minecraft:uniform",
+    "max_inclusive": 52,
+    "min_inclusive": 40
+  },
+  "density": 1.0,
+  "dimension_filter": [
+    "minecraft:the_nether"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "type": "gtceu:veined",
+    "edge_roundoff_begin": 3,
+    "filler_block": {
+      "Name": "minecraft:air"
     },
-    "density": 1.0,
-    "dimension_filter": [
-        "minecraft:the_nether"
+    "max_edge_roundoff": 0.10000000149011612,
+    "max_richness": 1.0,
+    "max_richness_threshold": 0.175,
+    "max_y": 40,
+    "min_richness": 0.7,
+    "min_y": 20,
+    "ore_blocks": [
+      {
+        "block": "gtceu:goethite",
+        "weight": 3
+      },
+      {
+        "block": "gtceu:yellow_limonite",
+        "weight": 2
+      },
+      {
+        "block": "gtceu:hematite",
+        "weight": 2
+      }
     ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:veined",
-        "edge_roundoff_begin": 3,
-        "filler_block": {
-            "Name": "minecraft:air"
-        },
-        "max_edge_roundoff": 0.10000000149011612,
-        "max_richness": 1.0,
-        "max_richness_threshold": 0.175,
-        "max_y": 40,
-        "min_richness": 0.7,
-        "min_y": 20,
-        "ore_blocks": [
-            {
-                "block": "gtceu:goethite",
-                "weight": 3
-            },
-            {
-                "block": "gtceu:yellow_limonite",
-                "weight": 2
-            },
-            {
-                "block": "gtceu:hematite",
-                "weight": 2
-            }
-        ],
-        "rare_block_chance": 0.075,
-        "rare_blocks": [
-            {
-                "block": "gtceu:gold",
-                "weight": 1
-            }
-        ],
-        "veininess_threshold": 0.01
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 40
-            },
-            "min_inclusive": {
-                "absolute": 20
-            }
-        }
-    },
-    "indicators": [
-        {
-            "type": "gtceu:surface",
-            "block": "gtceu:goethite",
-            "density": 0.2,
-            "placement": "above",
-            "radius": 5
-        }
+    "rare_block_chance": 0.075,
+    "rare_blocks": [
+      {
+        "block": "gtceu:gold",
+        "weight": 1
+      }
     ],
-    "layer": "gtceu:netherrack",
-    "weight": 30
+    "veininess_threshold": 0.01
+  },
+  "height_range": {
+    "height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": {
+        "absolute": 40
+      },
+      "min_inclusive": {
+        "absolute": 20
+      }
+    }
+  },
+  "indicators": [
+    {
+      "type": "gtceu:surface",
+      "block": "gtceu:goethite",
+      "density": 0.2,
+      "placement": "above",
+      "radius": 5
+    }
+  ],
+  "layer": "gtceu:netherrack",
+  "weight": 30
 }

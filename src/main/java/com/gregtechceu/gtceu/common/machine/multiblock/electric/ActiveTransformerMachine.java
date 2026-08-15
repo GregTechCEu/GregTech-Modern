@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -156,7 +156,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         converterSubscription.unsubscribe();
     }
 
-    public static PatternPredicate getHatchPredicates() {
+    public static MultiPredicate getHatchPredicates() {
         return abilities(PartAbility.INPUT_ENERGY).setPreviewCount(1)
                 .or(abilities(PartAbility.OUTPUT_ENERGY).setPreviewCount(2))
                 .or(abilities(PartAbility.SUBSTATION_INPUT_ENERGY).setPreviewCount(1))

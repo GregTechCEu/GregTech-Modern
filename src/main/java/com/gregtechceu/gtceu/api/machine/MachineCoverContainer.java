@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
@@ -36,9 +35,6 @@ import java.util.Set;
 public class MachineCoverContainer extends MachineTrait
                                    implements IFrontFacingTrait, IRenderingTrait, ICoverable, ISyncManaged {
 
-    public static final MachineTraitType<MachineCoverContainer> TYPE = new MachineTraitType<>(
-            MachineCoverContainer.class);
-
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
     @Getter
@@ -50,11 +46,6 @@ public class MachineCoverContainer extends MachineTrait
 
     public MachineCoverContainer(MetaMachine machine) {
         this.machine = machine;
-    }
-
-    @Override
-    public MachineTraitType<MachineCoverContainer> getTraitType() {
-        return TYPE;
     }
 
     @Override
@@ -143,8 +134,9 @@ public class MachineCoverContainer extends MachineTrait
     }
 
     @Override
-    public @Nullable CoverBehavior getCoverAtSide(Direction side) {
+    public @Nullable CoverBehavior getCoverAtSide(@Nullable Direction side) {
         return switch (side) {
+            case null -> null;
             case UP -> up;
             case SOUTH -> south;
             case WEST -> west;

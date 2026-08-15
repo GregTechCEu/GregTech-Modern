@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -42,6 +41,7 @@ import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -62,9 +62,8 @@ public class GTMultiblockTextUtil {
                         .getter(() -> {
                             var list = new ArrayList<PatternError>();
                             for (String structureName : controller.getStructurePatterns().keySet()) {
-                                var errors = controller.getPatternState(structureName)
-                                        .getErrors();
-                                if (errors != null && !errors.isEmpty()) {
+                                var errors = controller.getPatternState(structureName).getErrors();
+                                if (!errors.isEmpty()) {
                                     list.addAll(errors);
                                 }
                             }
@@ -259,8 +258,8 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().parallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().parallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -278,8 +277,8 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(rlMachine::isBatchEnabled));
         IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().batchParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().batchParallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -296,8 +295,8 @@ public class GTMultiblockTextUtil {
                                                         PanelSyncManager syncManager) {
         IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().subtickParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().subtickParallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -313,8 +312,8 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addTotalRunsLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().getTotalRuns();
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().getTotalRuns();
                 }));
 
         return Text.dynamic(() -> {
@@ -356,7 +355,8 @@ public class GTMultiblockTextUtil {
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 () -> Component.translatable("gtceu.multiblock.running").withStyle(ChatFormatting.GREEN),
-                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
+                () -> Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.RED));
     }
 
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
@@ -365,15 +365,30 @@ public class GTMultiblockTextUtil {
         return addWorkingStatusLine(rlMachine, syncManager,
                 () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
                 runningPerfectly,
-                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY));
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
+                () -> Component.translatable("gtceu.recipe_logic.recipe_waiting").withStyle(ChatFormatting.RED));
+    }
+
+    public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine,
+                                                     PanelSyncManager syncManager,
+                                                     Supplier<Component> runningPerfectly,
+                                                     Supplier<Component> waiting) {
+        return addWorkingStatusLine(rlMachine, syncManager,
+                () -> Component.translatable("gtceu.multiblock.work_paused").withStyle(ChatFormatting.GOLD),
+                runningPerfectly,
+                () -> Component.translatable("gtceu.multiblock.idling").withStyle(ChatFormatting.GRAY),
+                waiting);
     }
 
     public static TextWidget<?> addWorkingStatusLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager,
                                                      Supplier<Component> workPaused,
-                                                     Supplier<Component> runningPerfectly,
-                                                     Supplier<Component> idling) {
+                                                     Supplier<Component> runningPerfectly, Supplier<Component> idling,
+                                                     Supplier<Component> waiting) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(rlMachine::isFormed));
+        BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWaiting()));
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isActive()));
         BooleanSyncValue isWorkingEnabled = syncManager.getOrCreateSyncHandler("isWorkingEnabled",
@@ -383,6 +398,9 @@ public class GTMultiblockTextUtil {
         return Text
                 .dynamic(() -> {
                     if (!isFormed.getBoolValue()) return Component.empty();
+                    if (isWaiting.getBoolValue()) {
+                        return waiting.get();
+                    }
                     if (!isWorkingEnabled.getBoolValue()) {
                         return workPaused.get();
                     }
@@ -396,6 +414,63 @@ public class GTMultiblockTextUtil {
     }
 
     @SuppressWarnings("unchecked")
+    public static List<TextWidget<?>> addRecipeFailReasonLines(WorkableMultiblockMachine rlMachine,
+                                                               PanelSyncManager syncManager) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
+
+        BooleanSyncValue isIdle = syncManager.getOrCreateSyncHandler("isIdle", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isIdle()));
+        BooleanSyncValue hasRunningRecipe = syncManager.getOrCreateSyncHandler("hasRunningRecipe",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().getLastRecipe() != null));
+        BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isWaiting()));
+        GenericSyncValue<FriendlyByteBuf, Component> bestFailureReason = syncManager
+                .getOrCreateSyncHandler("bestFailureReason", GenericSyncValue.class,
+                        () -> GenericSyncValue.<FriendlyByteBuf, Component>builder(Component.class)
+                                .nullable()
+                                .adapter(GTByteBufAdapters.COMPONENT)
+                                .getter(() -> rlMachine.getRecipeLogic().getBestFailureReason())
+                                .build());
+        var lineList = new ArrayList<TextWidget<?>>();
+
+        lineList.add(Text
+                .dynamic(() -> Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED))
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
+                        !hasRunningRecipe.getBoolValue() && bestFailureReason.getValue() != null));
+        lineList.add(Text
+                .dynamic(() -> {
+                    Component reason = (Component) bestFailureReason.getValue();
+                    if (reason == null) return Component.empty();
+                    return Component.literal(" - ").append(reason);
+                })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue() && (isIdle.getBoolValue() || isWaiting.getBoolValue()) &&
+                        bestFailureReason.getValue() != null));
+        return lineList;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TextWidget<?> addRecipeTypeField(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
+        StringSyncValue recipeTypeName = syncManager.getOrCreateSyncHandler("recipeTypeName", StringSyncValue.class,
+                () -> new StringSyncValue(
+                        () -> FormattingUtil.toEnglishName(rlMachine.getRecipeType().registryName.getPath())));
+
+        // No need to sync the rlMachine.getRecipeTypes().length > 1 condition because the recipe type array is the same
+        // on client side.
+        return Text
+                .dynamic(() -> Component.translatable("gtceu.gui.machinemode",
+                        Component.literal(recipeTypeName.getStringValue())
+                                .withStyle(ChatFormatting.GOLD))
+                        .withStyle(ChatFormatting.GRAY))
+                .asWidget()
+                .tooltip((tooltip) -> tooltip.add(Component.translatable("gtceu.gui.machinemode.title")))
+                .setEnabledIf((w) -> rlMachine.getRecipeTypes().length > 1);
+    }
+
+    @SuppressWarnings("unchecked")
     public static DynamicWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                   PanelSyncManager syncManager) {
         GenericSyncValue<RegistryFriendlyByteBuf, GTRecipe> recipeSyncValue = (GenericSyncValue<RegistryFriendlyByteBuf, GTRecipe>) syncManager
@@ -403,7 +478,7 @@ public class GTMultiblockTextUtil {
                         "GTRecipe",
                         GenericSyncValue.class,
                         () -> GenericSyncValue.<RegistryFriendlyByteBuf, GTRecipe>builder(GTRecipe.class)
-                                .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
+                                .getter(() -> rlmachine.getRecipeLogic().getLastUnrolledRecipe())
                                 .setter((newRecipe) -> {})
                                 .adapter(GTByteBufAdapters.GTRECIPE)
                                 .nullable()
@@ -438,14 +513,12 @@ public class GTMultiblockTextUtil {
         return new DynamicWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
-                .syncHandler(dynamicLinkedSyncHandler);
+                .syncHandler(dynamicLinkedSyncHandler)
+                .setEnabledIf(w -> rlmachine.getRecipeLogic().getLastRecipe() != null);
     }
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
-
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         double maxDurationSec = (double) recipe.duration / 20.0;
 
         boolean rounded = false;
@@ -477,6 +550,7 @@ public class GTMultiblockTextUtil {
                 countD = countD * runs * itemOutput.chance() / itemOutput.maxChance();
             }
             count = Math.max(1, (int) Math.round(countD));
+            stack.setCount(count);
             displaycount = Component.literal(String.valueOf(count));
         }
         if (countD < maxDurationSec) {
@@ -513,8 +587,6 @@ public class GTMultiblockTextUtil {
     public static Optional<Widget<?>> createFluidLineForOutput(Content fluidOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
 
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         double maxDurationSec = (double) recipe.duration / 20.0;
 
         boolean rounded = false;
@@ -546,6 +618,7 @@ public class GTMultiblockTextUtil {
                 amountD = amountD * runs * fluidOutput.chance() / fluidOutput.maxChance();
             }
             amount = Math.max(1, (int) Math.round(amountD));
+            stack.setAmount(amount);
             displaycount = Component.literal(String.valueOf(amount));
         }
         if (amountD < maxDurationSec) {
