@@ -20,13 +20,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.LimitCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
@@ -78,7 +76,7 @@ public final class DynamicLootHandler {
         GTMaterialBlocks.ITEM_PIPE_BLOCKS.rowMap().values().forEach((map) -> addMaterialBlockLootTables(map, helpers, serializationContext));
         addMaterialBlockLootTables(GTMaterialBlocks.SURFACE_ROCK_BLOCKS, serializationContext, (material, block) -> {
             Item tinyDust = ChemicalHelper.getItem(TagPrefix.dustTiny, material);
-            if (tinyDust != null && tinyDust != Items.AIR) {
+            if (tinyDust != Items.AIR) {
                 return helpers.createSilkTouchDispatchTable(block.get(),
                         helpers.applyExplosionDecay(block,
                                 LootItem.lootTableItem(tinyDust)
@@ -105,15 +103,15 @@ public final class DynamicLootHandler {
     }
 
     private static void addMaterialBlockLootTables(Map<Material, ? extends BlockEntry<? extends Block>> map,
-                                                  VanillaBlockLoot blockLoot,
-                                                  DynamicOps<JsonElement> serializationContext) {
+                                                   VanillaBlockLoot blockLoot,
+                                                   DynamicOps<JsonElement> serializationContext) {
         addMaterialBlockLootTables(map, serializationContext,
                 (material, block) -> blockLoot.createSingleItemTable(block.get()));
     }
 
     private static void addMaterialBlockLootTables(Map<Material, ? extends BlockEntry<? extends Block>> map,
-                                                  DynamicOps<JsonElement> serializationContext,
-                                                  BiFunction<Material, BlockEntry<?>, LootTable.Builder> lootTableBuilder) {
+                                                   DynamicOps<JsonElement> serializationContext,
+                                                   BiFunction<Material, BlockEntry<?>, LootTable.Builder> lootTableBuilder) {
         map.forEach((material, block) -> {
             ResourceLocation lootTableId = block.getId().withPrefix("blocks/");
             ((BlockBehaviourAccessor) block.get()).setDrops(ResourceKey.create(Registries.LOOT_TABLE, lootTableId));
@@ -172,6 +170,5 @@ public final class DynamicLootHandler {
                 .setParamSet(LootContextParamSets.BLOCK)
                 .build();
         GTDynamicDataPack.addLootTable(lootTableId, lootTable, serializationContext);
-
     }
 }

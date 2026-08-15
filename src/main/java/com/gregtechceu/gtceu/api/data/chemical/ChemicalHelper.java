@@ -246,9 +246,9 @@ public class ChemicalHelper {
         }).stream().map(Supplier::get).collect(Collectors.toList());
     }
 
-    public static @Nullable Item getItem(MaterialEntry materialEntry) {
+    public static Item getItem(MaterialEntry materialEntry) {
         List<ItemLike> items = getItems(materialEntry);
-        if (items.isEmpty()) return null;
+        if (items.isEmpty()) return Items.AIR;
         return items.get(0).asItem();
     }
 

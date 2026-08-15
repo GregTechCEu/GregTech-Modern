@@ -85,7 +85,7 @@ public class GTDynamicDataPack implements PackResources {
 
     /**
      * @deprecated API consumers shouldn't use this method. Instead, they should implement their recipe additions in
-     * {@link IGTAddon#addRecipes(RecipeOutput) IGTAddon.addRecipes}.
+     *             {@link IGTAddon#addRecipes(RecipeOutput) IGTAddon.addRecipes}.
      * @see IGTAddon#addRecipes(RecipeOutput)
      */
     @Deprecated(since = "8.0.0", forRemoval = true)

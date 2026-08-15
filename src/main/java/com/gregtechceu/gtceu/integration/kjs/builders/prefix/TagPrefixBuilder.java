@@ -198,7 +198,8 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
-    public TagPrefixBuilder filteredUnformattedTag(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
+    public TagPrefixBuilder filteredUnformattedTag(String path, boolean isVanilla,
+                                                   Predicate<Material> materialPredicate) {
         base.filteredUnformattedTag(path, isVanilla, materialPredicate);
         return this;
     }

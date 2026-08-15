@@ -171,7 +171,7 @@ public final class DynamicTagHandler {
                                 path -> new ArrayList<>()).addAll(entries);
                         if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
                             tags.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(),
-                                            path -> new ArrayList<>())
+                                    path -> new ArrayList<>())
                                     .addAll(entries);
                         }
                     } else {

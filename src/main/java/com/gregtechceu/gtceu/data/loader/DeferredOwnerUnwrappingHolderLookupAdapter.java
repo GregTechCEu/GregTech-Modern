@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.loader;
 
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
@@ -12,9 +11,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DeferredOwnerUnwrappingHolderLookupAdapter implements RegistryOps.RegistryInfoLookup {
+
     public final HolderLookup.Provider lookupProvider;
-    private final Map<ResourceKey<? extends Registry<?>>,
-                      Optional<? extends RegistryOps.RegistryInfo<?>>> lookups = new ConcurrentHashMap<>();
+    private final Map<ResourceKey<? extends Registry<?>>, Optional<? extends RegistryOps.RegistryInfo<?>>> lookups = new ConcurrentHashMap<>();
 
     public DeferredOwnerUnwrappingHolderLookupAdapter(HolderLookup.Provider lookupProvider) {
         this.lookupProvider = lookupProvider;
@@ -43,8 +42,8 @@ public class DeferredOwnerUnwrappingHolderLookupAdapter implements RegistryOps.R
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof DeferredOwnerUnwrappingHolderLookupAdapter holderLookupAdapter
-                && this.lookupProvider.equals(holderLookupAdapter.lookupProvider);
+        return other instanceof DeferredOwnerUnwrappingHolderLookupAdapter holderLookupAdapter &&
+                this.lookupProvider.equals(holderLookupAdapter.lookupProvider);
     }
 
     @Override

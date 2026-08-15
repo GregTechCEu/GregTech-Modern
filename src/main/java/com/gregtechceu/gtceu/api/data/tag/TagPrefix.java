@@ -244,7 +244,7 @@ public class TagPrefix {
                 if (!mat.hasProperty(PropertyKey.ORE)) return false;
                 Material washedIn = mat.getProperty(PropertyKey.ORE).getWashedIn().first();
                 return !washedIn.isNull();
-                }, (path, mat) -> {
+            }, (path, mat) -> {
                 Material washedIn = mat.getProperty(PropertyKey.ORE).getWashedIn().first();
                 return TagUtil.createItemTag(path.formatted(washedIn.getName()));
             })
