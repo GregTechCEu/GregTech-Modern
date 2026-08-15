@@ -38,7 +38,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -89,7 +88,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    @Setter
     protected MachineInstanceFactory<MACHINE> instanceFactory;
 
     @Setter
@@ -115,7 +113,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
     private @Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
     private @Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
-    private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
+    private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
     private GTRecipeType[] recipeTypes = new GTRecipeType[0];
     @Getter // getter for KJS
@@ -166,6 +164,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @SuppressWarnings("unchecked")
     public SELF getThis() {
         return (SELF) this;
+    }
+
+    public SELF instanceFactory(MachineInstanceFactory<MACHINE> instanceFactory) {
+        this.instanceFactory = instanceFactory;
+        return getThis();
+    }
+
+    public SELF machine(MachineInstanceFactory<MACHINE> instanceFactory) {
+        return instanceFactory(instanceFactory);
     }
 
     public SELF blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
@@ -223,7 +230,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
+    public SELF onBlockEntityRegister(NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister) {
         this.onBlockEntityRegister = onBlockEntityRegister;
         return getThis();
     }
@@ -665,7 +672,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         var item = itemBuilder.register();
 
         var blockEntityBuilder = registrate
-                .blockEntity(
+                .<MACHINE>blockEntity(
                         (type, pos, state) -> instanceFactory
                                 .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)

@@ -28,10 +28,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -244,7 +242,7 @@ public class RecipeHelper {
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
-                .append(": ").append(result.capability().getName()), result.capability(), io);
+                .append(": ").append(result.capability().getName()), result.capability(), io, result.score());
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
@@ -436,5 +434,134 @@ public class RecipeHelper {
         } else {
             return DataComponentIngredient.of(true, stack);
         }
+    }
+
+    /**
+     * Rolls the value of all Ranged Ingredients in a recipe and replaces them with appropriate Sized Ingredients.
+     * Called once after successful recipe search, immediately before {@link RecipeLogic#handleRecipeIO(GTRecipe, IO)}.
+     * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
+     *
+     * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
+     * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
+     * 
+     * @return a copy of the input recipe with all ranged ingredients replaced
+     */
+    public static GTRecipe doPrerolls(GTRecipe recipe,
+                                      IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        GTRecipe runningRecipe = recipe.copy();
+        int count;
+        boolean zero;
+        for (List<Content> input : runningRecipe.inputs.values()) {
+            for (ListIterator<Content> iterator = input.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient) isRanged.right();
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    iterator.set(new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance()));
+                    ranged.reset();
+                }
+            }
+        }
+        for (List<Content> output : runningRecipe.outputs.values()) {
+            for (ListIterator<Content> iterator = output.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient) isRanged.right();
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    iterator.set(new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance()));
+                    ranged.reset();
+                }
+            }
+        }
+        return runningRecipe;
+    }
+
+    /**
+     * Rolls the value of all per-tick Ranged Ingredients in a recipe and replaces them with appropriate Sized
+     * Ingredients.
+     * Called every tick while a recipe is running, immediately before
+     * {@link RecipeLogic#handleTickRecipeIO(GTRecipe, IO)}.
+     *
+     * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
+     *
+     * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
+     * the future Chanced Item Prerolls, but it has been added early to avoid changing the method signature later.
+     * 
+     * @return a copy of the input recipe with all per-tick ranged ingredients replaced
+     */
+    public static GTRecipe doTickPrerolls(GTRecipe recipe,
+                                          IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                                          GTRecipe lastDisplayedRecipe) {
+        if (!recipe.hasTick()) return recipe;
+
+        GTRecipe runningRecipe = recipe.copyWithoutTicks();
+        int count;
+        boolean zero;
+        for (var entry : lastDisplayedRecipe.tickInputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient) isRanged.right();
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    content = new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance());
+                    ranged.reset();
+                }
+                runningRecipe.tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
+        }
+        for (var entry : lastDisplayedRecipe.tickOutputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                Pair isRanged = isRanged(content);
+                if (isRanged.left().equals(Boolean.TRUE)) {
+                    IRangedIngredient ranged = (IRangedIngredient) isRanged.right();
+                    count = ranged.rollSampledCount();
+                    zero = (count == 0);
+                    if (zero) ranged.setSampledCount(ranged.getMaxRoll());
+
+                    content = new Content(ranged.collapse(), (!zero ? content.chance() : 0), content.maxChance());
+                    ranged.reset();
+                }
+                runningRecipe.tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
+        }
+        return runningRecipe;
+    }
+
+    /**
+     * Unwraps a {@link Content} to check if its contained ingredient is a Ranged Ingredient.
+     * Doing this is necessary because NeoForge's {@link SizedIngredient} and {@link SizedFluidIngredient} are Final
+     * classes with no superclasses or interfaces which wrap internal ingredients in different ways, so there's no
+     * shared way to check them together.
+     * 
+     * @return a {@link Pair} of True/False the ingredient was ranged, and the Ranged Ingredient (if True) or Null (if
+     *         False)
+     */
+    public static Pair<Boolean, @Nullable IRangedIngredient> isRanged(Content content) {
+        if (content.content() instanceof SizedIngredient sized &&
+                sized.ingredient().getCustomIngredient() instanceof IRangedIngredient ranged) {
+            return new ObjectObjectImmutablePair<>(Boolean.TRUE, ranged);
+        }
+        if (content.content() instanceof SizedFluidIngredient sized &&
+                sized.ingredient() instanceof IRangedIngredient ranged) {
+            return new ObjectObjectImmutablePair<>(Boolean.TRUE, ranged);
+        }
+        return new ObjectObjectImmutablePair<>(Boolean.FALSE, null);
     }
 }

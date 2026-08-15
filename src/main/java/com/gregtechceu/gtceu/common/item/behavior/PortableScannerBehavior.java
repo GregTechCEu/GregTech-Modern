@@ -311,13 +311,14 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 }
 
                 // Recipe logic for EU production/consumption
-                RecipeLogic recipeLogic = machine.getTrait(RecipeLogic.TYPE);
+                RecipeLogic recipeLogic = machine.getTrait(RecipeLogic.class);
                 if (recipeLogic != null) {
-                    GTRecipe recipe = recipeLogic.getLastRecipe();
-                    if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {
+                    GTRecipe recipe = recipeLogic.getLastUnrolledRecipe();
+                    if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING) &&
+                            recipeLogic.getBestFailureReason() != null) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("gtceu.multiblock.waiting"));
-                        list.addAll(recipeLogic.getWaitingReasons());
+                        list.add(recipeLogic.getBestFailureReason());
                     } else if (recipe != null) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         var EUt = RecipeHelper.getRealEUtWithIO(recipe);

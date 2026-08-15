@@ -296,10 +296,14 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
-        if (!isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), waterTank)) {
+        if (FluidUtil.getFluidHandler(context.getItemInHand()).isPresent()) {
+            if (isRemote()) {
                 return InteractionResult.SUCCESS;
             }
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), waterTank)) {
+                return InteractionResult.CONSUME;
+            }
+            return InteractionResult.PASS;
         }
         return super.onUseWithItem(context);
     }

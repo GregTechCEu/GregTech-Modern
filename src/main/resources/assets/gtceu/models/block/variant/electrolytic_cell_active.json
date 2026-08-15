@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "gtceu:block/casings/unique/electrolytic_cell_active"
-  }
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "gtceu:block/casings/unique/electrolytic_cell_active"
+    }
 }

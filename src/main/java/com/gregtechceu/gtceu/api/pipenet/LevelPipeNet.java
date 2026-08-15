@@ -68,6 +68,8 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
             myPipeNet.addNode(nodePos, node);
             addPipeNet(myPipeNet);
             setDirty();
+        } else {
+            myPipeNet.onPipeConnectionsUpdate();
         }
     }
 

@@ -87,7 +87,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 IMonitorComponent component = machine.getComponent(row, col);
                 if (component != null && component.isMonitor()) {
                     // noinspection deprecation
-                    bounds.encapsulate(component.getBlockPos());
+                    bounds.encapsulate(component.getComponentPos());
                 }
             }
         }

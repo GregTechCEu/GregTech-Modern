@@ -1,33 +1,33 @@
 {
-    "elements": [
-        {
-            "faces": {
-                "east": {
-                    "texture": "#restrictor"
-                },
-                "north": {
-                    "texture": "#restrictor"
-                },
-                "south": {
-                    "texture": "#restrictor"
-                },
-                "west": {
-                    "texture": "#restrictor"
-                }
-            },
-            "from": [
-                4.997,
-                0,
-                4.997
-            ],
-            "to": [
-                11.002999,
-                4.997,
-                11.002999
-            ]
+  "elements": [
+    {
+      "faces": {
+        "east": {
+          "texture": "#restrictor"
+        },
+        "north": {
+          "texture": "#restrictor"
+        },
+        "south": {
+          "texture": "#restrictor"
+        },
+        "west": {
+          "texture": "#restrictor"
         }
-    ],
-    "textures": {
-        "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
+      },
+      "from": [
+        4.952,
+        0,
+        4.952
+      ],
+      "to": [
+        11.047999,
+        4.952,
+        11.047999
+      ]
     }
+  ],
+  "textures": {
+    "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
+  }
 }

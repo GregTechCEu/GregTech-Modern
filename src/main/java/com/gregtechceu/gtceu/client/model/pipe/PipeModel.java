@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTBlockBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
-import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
@@ -15,8 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.*;
 
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import it.unimi.dsi.fastutil.objects.Reference2FloatMap;
-import it.unimi.dsi.fastutil.objects.Reference2FloatOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
@@ -360,6 +357,8 @@ public class PipeModel {
                 (x1 == y1 && x1 == z1 && x1 <= 0.0f) &&
                 (x2 == y2 && x2 == z2 && x2 >= 16.0f);
 
+        // multiply the offset by 16 because JSON model elements are in the range of [-32,16] instead of [-1,1]
+        offset *= 16.0f;
         ModelBuilder<T>.ElementBuilder element = model.element()
                 .from(x1 - offset, y1 - offset, z1 - offset)
                 .to(x2 + offset, y2 + offset, z2 + offset);
@@ -378,23 +377,6 @@ public class PipeModel {
                 faceConfigurator.accept(dir, sideKey, face);
             }
         }
-    }
-
-    protected final Reference2FloatMap<Direction> makeFaceEndpointMap(final float x1, final float y1, final float z1,
-                                                                      final float x2, final float y2, final float z2) {
-        Reference2FloatMap<Direction> faceEndpoints = new Reference2FloatOpenHashMap<>();
-        faceEndpoints.defaultReturnValue(GTMath.max(x1, y1, z1, x2, y2, z2));
-        for (Direction dir : GTUtil.DIRECTIONS) {
-            faceEndpoints.put(dir, switch (dir) {
-                case DOWN -> Math.min(y1, y2);
-                case UP -> Math.max(y1, y2);
-                case NORTH -> Math.min(z1, z2);
-                case SOUTH -> Math.max(z1, z2);
-                case WEST -> Math.min(x1, x2);
-                case EAST -> Math.max(x1, x2);
-            });
-        }
-        return faceEndpoints;
     }
 
     @Override

@@ -43,13 +43,15 @@ public interface MachineCapabilityLayoutBuilder {
         var handlers = ItemRecipeCapability.CAP.getCapabilityHandlers(machine, io);
         if (handlers.isEmpty()) return;
         NotifiableItemStackHandler itemHandler = handlers.get(0);
-        if (itemHandler == null || layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 0) return;
+        if (itemHandler == null || itemHandler.getSlots() < 1 ||
+                layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 0)
+            return;
 
         var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.id + "_" + io.name(), 3);
 
         if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 1) {
             var slot = new ItemSlot()
-                    .slot(new ModularSlot(itemHandler, 0)
+                    .slot(new ModularSlot(itemHandler.storage, 0)
                             .slotGroup(slotGroup)
                             .accessibility(itemHandler.getCapabilityIO().support(IO.IN), true))
                     .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, 0));
@@ -62,7 +64,7 @@ public interface MachineCapabilityLayoutBuilder {
                 .builder()
                 .matrix(layout.capabilityInfo(ItemRecipeCapability.CAP).getMachineGrid(io, machine))
                 .key('s', i -> new ItemSlot()
-                        .slot(new ModularSlot(itemHandler, i)
+                        .slot(new ModularSlot(itemHandler.storage, i)
                                 .slotGroup(slotGroup)
                                 .accessibility(itemHandler.getCapabilityIO().support(IO.IN), true))
                         .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i)))
@@ -82,14 +84,16 @@ public interface MachineCapabilityLayoutBuilder {
         var handlers = FluidRecipeCapability.CAP.getCapabilityHandlers(machine, io);
         if (handlers.isEmpty()) return;
         NotifiableFluidTank fluidTank = handlers.get(0);
-        if (fluidTank == null || layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 0) return;
+        if (fluidTank == null || fluidTank.getStorages().length < 1 ||
+                layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 0)
+            return;
 
         if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 1) {
             var slot = new FluidSlot()
                     .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[0])
                             .canFillSlot(fluidTank.getCapabilityIO().support(IO.IN))
                             .canDrainSlot(true)
-                            .controlsAmount(false))
+                            .controlsAmount(true))
                     .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, 0));
             if (io == IO.IN) widget.inputColumn.child(slot);
             else widget.outputColumn.child(slot);

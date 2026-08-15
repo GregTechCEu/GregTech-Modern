@@ -198,6 +198,7 @@ public class BloomRenderer {
         }
 
         if (TextureMetadataHelper.hasBloom(quad, packedLights)) {
+            @SuppressWarnings("resource")
             Supplier<VertexConsumer> currentVertexConsumer = bloomChunkContext().getValue();
             if (currentVertexConsumer == null) return;
 

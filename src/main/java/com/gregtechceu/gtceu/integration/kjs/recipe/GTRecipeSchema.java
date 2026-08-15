@@ -1059,6 +1059,7 @@ public interface GTRecipeSchema {
                         new IllegalStateException());
             }
 
+            if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new ArrayList<>());
             ResearchCondition condition = this.getValue(CONDITIONS).stream()
                     .filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast)
                     .orElse(null);

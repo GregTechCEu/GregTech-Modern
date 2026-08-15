@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.factory.GuiData;
@@ -20,13 +19,16 @@ import brachy.modularui.widgets.slot.PhantomItemSlot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class SimpleItemFilter implements ItemFilter {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class SimpleItemFilter extends Filter<ItemStack> {
 
     public static final Codec<SimpleItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("is_blacklist").forGetter(val -> val.isBlackList),
@@ -41,13 +43,10 @@ public class SimpleItemFilter implements ItemFilter {
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
 
-    protected Consumer<SimpleItemFilter> itemWriter = filter -> {};
-    protected Consumer<SimpleItemFilter> onUpdated = filter -> itemWriter.accept(filter);
-
     @Getter
     protected int maxStackSize;
 
-    protected SimpleItemFilter() {
+    public SimpleItemFilter() {
         Arrays.fill(matches, ItemStack.EMPTY);
         maxStackSize = 1;
     }
@@ -58,52 +57,30 @@ public class SimpleItemFilter implements ItemFilter {
         this.matches = matches.toArray(ItemStack[]::new);
     }
 
-    public static SimpleItemFilter loadFilter(ItemStack itemStack) {
-        SimpleItemFilter handler = itemStack.getOrDefault(GTDataComponents.SIMPLE_ITEM_FILTER, new SimpleItemFilter());
-        handler.itemWriter = filter -> itemStack.set(GTDataComponents.SIMPLE_ITEM_FILTER, filter);
-        return handler;
-    }
-
     @Override
-    public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
-    }
-
-    @Override
-    public boolean isBlank() {
-        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty);
+    public boolean supportsAmounts() {
+        return !isBlackList();
     }
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
-        onUpdated.accept(this);
-    }
-
-    @Override
-    public ItemStack getFilterItem() {
-        return GTItems.ITEM_FILTER.asStack();
+        updateAndSaveFilter();
     }
 
     @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
-
         Grid filterGrid = new Grid()
                 .coverChildren()
                 .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
                         .size(16)
                         .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
-                                .changeListener((stack, amount, client, init) -> {
-                                    handler.setStackInSlot(i, stack);
-                                }).ignoreMaxStackSize(true).accessibility(true, false))));
+                                .ignoreMaxStackSize(true).accessibility(true, false))));
 
         BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList).allowC2S();
         syncManager.syncValue("blacklist", blacklist);
@@ -137,17 +114,17 @@ public class SimpleItemFilter implements ItemFilter {
         }
 
         @Override
-        public @NotNull ItemStack getStackInSlot(int slot) {
+        public ItemStack getStackInSlot(int slot) {
             return matches[slot];
         }
 
         @Override
-        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+        protected int getStackLimit(int slot, ItemStack stack) {
             return 1;
         }
 
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (amount >= matches[slot].getCount()) {
                 matches[slot] = ItemStack.EMPTY;
             }
@@ -155,25 +132,26 @@ public class SimpleItemFilter implements ItemFilter {
         }
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
-        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+        public void setStackInSlot(int slot, ItemStack stack) {
             super.setStackInSlot(slot, stack);
             matches[slot] = stack.copyWithCount(1);
-            filter.onUpdated.accept(filter);
+            filter.updateAndSaveFilter();
         }
     }
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return testItemCount(itemStack) > 0;
+        return testAmount(itemStack) > 0;
     }
 
     @Override
-    public int testItemCount(ItemStack itemStack) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int testAmount(ItemStack itemStack) {
         int totalItemCount = getTotalConfiguredItemCount(itemStack);
 
         if (isBlackList) {

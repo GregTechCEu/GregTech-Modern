@@ -37,7 +37,7 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
     public GTOreVeinInfoCategory(IJeiHelpers helpers) {
         super(v -> new OreVeinRecipeWidget(v.oreDefinition),
                 v -> Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                        .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY).getKey(v.oreDefinition));
+                        .registryOrThrow(GTRegistries.Keys.ORE_VEIN).getKey(v.oreDefinition));
 
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Iron));
@@ -45,7 +45,7 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
 
     public static void registerRecipes(IRecipeRegistration registry) {
         registry.addRecipes(RECIPE_TYPE, Minecraft.getInstance().level.registryAccess()
-                .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY).stream()
+                .registryOrThrow(GTRegistries.Keys.ORE_VEIN).stream()
                 .map(GTOreVeinInfoWrapper::new)
                 .toList());
     }

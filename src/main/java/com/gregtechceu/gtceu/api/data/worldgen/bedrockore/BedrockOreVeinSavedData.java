@@ -84,7 +84,7 @@ public class BedrockOreVeinSavedData extends SavedData {
      * @param chunkZ Z coordinate of desired chunk
      * @return The OreVeinWorldEntry corresponding with the given chunk
      */
-    public OreVeinWorldEntry getOreVeinWorldEntry(int chunkX, int chunkZ) {
+    public @Nullable OreVeinWorldEntry getOreVeinWorldEntry(int chunkX, int chunkZ) {
         ChunkPos pos = new ChunkPos(chunkX, chunkZ);
         if (!veinOres.containsKey(pos)) {
             int minDistance = ConfigHolder.INSTANCE.worldgen.oreVeins.bedrockOreDistance;
@@ -103,7 +103,7 @@ public class BedrockOreVeinSavedData extends SavedData {
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 var registry = serverLevel.registryAccess()
-                        .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)
                         .asHolderIdMap();
                 for (var holder : registry) {
                     var oreDefinition = holder.value();
@@ -176,7 +176,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)) {
+            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)) {
                 if (!definition.canGenerate()) {
                     continue;
                 }

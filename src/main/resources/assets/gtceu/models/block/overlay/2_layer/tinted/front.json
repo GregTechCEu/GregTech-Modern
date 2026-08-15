@@ -1,31 +1,98 @@
 {
-    "parent": "gtceu:block/overlay/front",
     "elements": [
         {
-            "from": [  0,  0,  0 ],
-            "to":   [ 16, 16, 16 ],
             "faces": {
-                "down":  { "texture": "#bottom", "cullface": "down",  "tintindex": 1 },
-                "up":    { "texture": "#top",    "cullface": "up",    "tintindex": 1 },
-                "north": { "texture": "#side",   "cullface": "north", "tintindex": 1 },
-                "south": { "texture": "#side",   "cullface": "south", "tintindex": 1 },
-                "west":  { "texture": "#side",   "cullface": "west",  "tintindex": 1 },
-                "east":  { "texture": "#side",   "cullface": "east",  "tintindex": 1 }
-            }
+                "down": {
+                    "cullface": "down",
+                    "texture": "#bottom",
+                    "tintindex": 1
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#side",
+                    "tintindex": 1
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#side",
+                    "tintindex": 1
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#side",
+                    "tintindex": 1
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#top",
+                    "tintindex": 1
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#side",
+                    "tintindex": 1
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
         },
         {
-            "from": [  0,  0, -0.096 ],
-            "to":   [ 16, 16, -0.096 ],
             "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
-            }
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.096
+            ],
+            "to": [
+                16,
+                16,
+                -0.096
+            ]
         },
         {
-            "from": [  0,  0, -0.128 ],
-            "to":   [ 16, 16, -0.128 ],
             "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_tinted", "cullface": "north", "tintindex": 2 }
-            }
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_tinted",
+                    "tintindex": 2,
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.128
+            ],
+            "to": [
+                16,
+                16,
+                -0.128
+            ]
         }
-    ]
+    ],
+    "parent": "gtceu:block/overlay/front"
 }

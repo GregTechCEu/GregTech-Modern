@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
-import com.gregtechceu.gtceu.integration.kjs.builders.WorldGenLayerBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
 
 import net.minecraft.resources.ResourceLocation;
 

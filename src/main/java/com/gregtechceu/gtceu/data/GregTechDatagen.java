@@ -23,7 +23,6 @@ public class GregTechDatagen {
             GTBlockstateProvider::new);
 
     public static void initPre() {
-        DataProvider.INDENT_WIDTH.set(4);
         // replace some default providers with ours
         RegistrateDataProviderAccessor.gtceu$getTypes().forcePut("blockstate", BLOCKSTATE_PROVIDER);
 

@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.FilterMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
@@ -75,6 +75,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -181,7 +182,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 if (isMachineBanned(machine)) {
                     return;
                 }
-                machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(this.cleanroomReceivers::add);
+                machine.getTraitOptional(CleanroomReceiverTrait.class).ifPresent(this.cleanroomReceivers::add);
             }
         });
         this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroomProvider(this.cleanroomProviderTrait));
@@ -314,17 +315,17 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            PatternPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
-            PatternPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
+            MultiPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
+            MultiPredicate energyPredicate = autoAbilities(true, false, false).and(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
-            PatternPredicate edgePredicate = wallPredicate.or(energyPredicate);
-            PatternPredicate facePredicate = wallPredicate.or(energyPredicate)
-                    .or(doorPredicate().setMaxGlobalLimited(8))
-                    .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-            PatternPredicate filterPredicate = cleanroomFilters();
-            PatternPredicate innerPredicate = innerPredicate();
-            PatternPredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
+            MultiPredicate edgePredicate = wallPredicate.and(energyPredicate);
+            MultiPredicate facePredicate = wallPredicate.and(energyPredicate)
+                    .and(doorPredicate().setMaxGlobalLimited(8))
+                    .and(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+            MultiPredicate filterPredicate = cleanroomFilters();
+            MultiPredicate innerPredicate = innerPredicate();
+            MultiPredicate verticalEdgePredicate = edgePredicate.and(blocks(getGlassState().getBlock()));
 
             return ExpandableMultiblockPatternBuilder
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
@@ -469,34 +470,40 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    protected static PatternPredicate doorPredicate() {
-        return Predicates.custom(
-                blockWorldState -> blockWorldState.retrieveCurrentBlockState().getBlock() instanceof DoorBlock ? null :
-                        Predicates.PLACEHOLDER,
-                List.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
-                        Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
+    protected static MultiPredicate doorPredicate() {
+        return builder("DoorPredicate")
+                .predicate(ctx -> ctx.state().getBlock() instanceof DoorBlock)
+                // .errorFunction(ctx -> PLACEHOLDER)
+                // spotless:off
+                .candidates(Stream.of(
+                        new BlockInfo(Blocks.IRON_DOOR),
+                        new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
+                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))
+                ))
+                //spotless:on
+                .toMultiPredicate();
     }
 
-    private static PatternPredicate getValidFloorBlocks() {
+    private static MultiPredicate getValidFloorBlocks() {
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    protected static PatternPredicate innerPredicate() {
-        return new PatternPredicate(blockWorldState -> {
-            // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getBlockEntity();
-            if (blockEntity instanceof MetaMachine machine) {
-                if (isMachineBanned(machine)) {
-                    return Predicates.PLACEHOLDER;
-                }
-            }
-            return null;
-        }, null);
+    protected static MultiPredicate innerPredicate() {
+        return builder("InnerPredicate")
+                .predicate(ctx -> {
+                    // all non-GTMachines are allowed inside by default
+                    if (ctx.blockEntity() instanceof MetaMachine machine) {
+                        return !isMachineBanned(machine);
+                    }
+                    return true;
+                })
+                // .errorFunction(ctx -> PLACEHOLDER)
+                .toMultiPredicate();
     }
 
     protected static boolean isMachineBanned(MetaMachine machine) {
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
-        if (machine.getTrait(CleanroomProviderTrait.TYPE) != null) return true;
+        if (machine.getTrait(CleanroomProviderTrait.class) != null) return true;
         if (machine instanceof MufflerPartMachine) return true;
         if (machine instanceof SimpleGeneratorMachine) return true;
         if (machine instanceof LargeCombustionEngineMachine) return true;
