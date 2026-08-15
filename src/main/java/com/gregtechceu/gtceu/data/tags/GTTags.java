@@ -3,19 +3,23 @@ package com.gregtechceu.gtceu.data.tags;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.Tags;
 
 import lombok.experimental.UtilityClass;
+
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 @UtilityClass
@@ -273,48 +277,25 @@ public class GTTags {
         public static final TagKey<Item> LENSES_RED = TagUtil.createModItemTag("lenses/red");
         public static final TagKey<Item> LENSES_BLACK = TagUtil.createModItemTag("lenses/black");
 
-        @SuppressWarnings("unchecked")
-        public static final TagKey<Item>[] LENSES_ARRAY = new TagKey[] {
-                LENSES_WHITE,
-                LENSES_ORANGE,
-                LENSES_MAGENTA,
-                LENSES_LIGHT_BLUE,
-                LENSES_YELLOW,
-                LENSES_LIME,
-                LENSES_PINK,
-                LENSES_GRAY,
-                LENSES_LIGHT_GRAY,
-                LENSES_CYAN,
-                LENSES_PURPLE,
-                LENSES_BLUE,
-                LENSES_BROWN,
-                LENSES_GREEN,
-                LENSES_RED,
-                LENSES_BLACK
-        };
+        public static final Map<DyeColor, TagKey<Item>> LENSES_BY_COLOR = Util.make(new Reference2ReferenceLinkedOpenHashMap<>(), map -> {
+            map.put(DyeColor.WHITE, LENSES_WHITE);
+            map.put(DyeColor.ORANGE, LENSES_ORANGE);
+            map.put(DyeColor.MAGENTA, LENSES_MAGENTA);
+            map.put(DyeColor.LIGHT_BLUE, LENSES_LIGHT_BLUE);
+            map.put(DyeColor.YELLOW, LENSES_YELLOW);
+            map.put(DyeColor.LIME, LENSES_LIME);
+            map.put(DyeColor.PINK, LENSES_PINK);
+            map.put(DyeColor.GRAY, LENSES_GRAY);
+            map.put(DyeColor.LIGHT_GRAY, LENSES_LIGHT_GRAY);
+            map.put(DyeColor.CYAN, LENSES_CYAN);
+            map.put(DyeColor.PURPLE, LENSES_PURPLE);
+            map.put(DyeColor.BLUE, LENSES_BLUE);
+            map.put(DyeColor.BROWN, LENSES_BROWN);
+            map.put(DyeColor.GREEN, LENSES_GREEN);
+            map.put(DyeColor.RED, LENSES_RED);
+            map.put(DyeColor.BLACK, LENSES_BLACK);
+        });
         // endregion lenses
-
-        // region dyes
-        @SuppressWarnings("unchecked")
-        public static final TagKey<Item>[] DYES_ARRAY = new TagKey[] {
-                Tags.Items.DYES_WHITE,
-                Tags.Items.DYES_ORANGE,
-                Tags.Items.DYES_MAGENTA,
-                Tags.Items.DYES_LIGHT_BLUE,
-                Tags.Items.DYES_YELLOW,
-                Tags.Items.DYES_LIME,
-                Tags.Items.DYES_PINK,
-                Tags.Items.DYES_GRAY,
-                Tags.Items.DYES_LIGHT_GRAY,
-                Tags.Items.DYES_CYAN,
-                Tags.Items.DYES_PURPLE,
-                Tags.Items.DYES_BLUE,
-                Tags.Items.DYES_BROWN,
-                Tags.Items.DYES_GREEN,
-                Tags.Items.DYES_RED,
-                Tags.Items.DYES_BLACK
-        };
-        // endregion dyes
     }
     // endregion items
 

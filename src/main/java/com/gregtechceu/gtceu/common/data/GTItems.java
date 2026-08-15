@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
@@ -73,7 +72,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectLinkedOpenHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -1446,10 +1445,8 @@ public class GTItems {
             .lang("Data Module").onRegister(attach(new DataItemBehavior(true, 256)))
             .register();
 
-    public static final Map<DyeColor, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
-
+    public static final Map<DyeColor, ItemEntry<Item>> GLASS_LENSES = new Reference2ObjectLinkedOpenHashMap<>();
     static {
-
         for (DyeColor color : DyeColor.values()) {
             if (color == DyeColor.WHITE) continue;
             GLASS_LENSES.put(color,
@@ -2192,7 +2189,7 @@ public class GTItems {
             .onRegister(attach(new MachineConfigCopyBehaviour()))
             .register();
 
-    public static final Map<DyeColor, ItemEntry<DyeItem>> CHEMICAL_DYES = new Object2ObjectOpenHashMap<>();
+    public static final Map<DyeColor, ItemEntry<DyeItem>> CHEMICAL_DYES = new Reference2ObjectLinkedOpenHashMap<>();
     static {
         for (DyeColor color : DyeColor.values()) {
             CHEMICAL_DYES.put(color, REGISTRATE

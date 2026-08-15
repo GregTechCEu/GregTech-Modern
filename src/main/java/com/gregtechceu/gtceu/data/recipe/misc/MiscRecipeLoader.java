@@ -382,7 +382,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // Dyed Lens Decomposition
-        for (ItemEntry<Item> item : GLASS_LENSES) {
+        for (ItemEntry<Item> item : GLASS_LENSES.values()) {
             EXTRACTOR_RECIPES.recipeBuilder("extract_" + item.get()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputFluids(Glass.getFluid(108))

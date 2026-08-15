@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.common.extensions.IForgeIntrinsicHolderTagAppender;
 
+import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -24,6 +25,11 @@ public interface IntrinsicTagAppenderExt<T> extends TagAppenderExt<T>, IForgeInt
         return self();
     }
 
+    default IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> add(Collection<? extends Supplier<? extends T>> values) {
+        values.forEach(this::add);
+        return self();
+    }
+
     default IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> addOptional(T value) {
         return addOptional(getKey(value));
     }
@@ -38,9 +44,20 @@ public interface IntrinsicTagAppenderExt<T> extends TagAppenderExt<T>, IForgeInt
         return self();
     }
 
+    default IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> addOptional(Collection<? extends Supplier<? extends T>> values) {
+        values.forEach(this::addOptional);
+        return self();
+    }
+
     @Override
     default IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> addOptional(ResourceKey<T> key) {
         TagAppenderExt.super.addOptional(key);
+        return self();
+    }
+
+    @Override
+    default IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> addTags(Collection<TagKey<T>> values) {
+        TagAppenderExt.super.addTags(values);
         return self();
     }
 
@@ -53,10 +70,12 @@ public interface IntrinsicTagAppenderExt<T> extends TagAppenderExt<T>, IForgeInt
     @SuppressWarnings("unchecked")
     @Override
     default IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> addOptionalTags(TagKey<T>... values) {
-        IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> builder = self();
-        for (TagKey<T> value : values) {
-            builder.addOptionalTag(value.location());
-        }
-        return builder;
+        TagAppenderExt.super.addOptionalTags(values);
+        return self();
+    }
+
+    default IntrinsicHolderTagsProvider.IntrinsicTagAppender<T> addOptionalTags(Collection<TagKey<T>> values) {
+        TagAppenderExt.super.addOptionalTags(values);
+        return self();
     }
 }

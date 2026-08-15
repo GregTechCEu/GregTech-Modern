@@ -64,7 +64,7 @@ public class ItemTagLoader {
                 .addTag(GTTags.Items.CORALS_DEAD);
         // spotless:on
 
-        provider.addTag(GTTags.Items.LENSES).addTags(GTTags.Items.LENSES_ARRAY)
+        provider.addTag(GTTags.Items.LENSES).addTags(GTTags.Items.LENSES_BY_COLOR.values())
                 .addTag(GTTags.Items.LENSES_GLASS);
 
         provider.addTag(GTTags.Items.LENSES_WHITE)
