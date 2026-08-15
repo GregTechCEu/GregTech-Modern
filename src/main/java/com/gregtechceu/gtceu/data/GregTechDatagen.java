@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.data.tags.EntityTypeTagLoader;
 import com.gregtechceu.gtceu.data.tags.FluidTagLoader;
 import com.gregtechceu.gtceu.data.tags.ItemTagLoader;
 
-import net.minecraft.data.DataProvider;
-
 import com.tterrag.registrate.providers.ProviderType;
 
 public class GregTechDatagen {
@@ -23,7 +21,6 @@ public class GregTechDatagen {
             GTBlockstateProvider::new);
 
     public static void initPre() {
-        DataProvider.INDENT_WIDTH.set(4);
         // replace some default providers with ours
         RegistrateDataProviderAccessor.gtceu$getTypes().forcePut("blockstate", BLOCKSTATE_PROVIDER);
 

@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
@@ -86,7 +87,7 @@ public class GTPlaceholders {
         return cnt;
     }
 
-    public static int countItems(@Nullable ItemFilter filter, @Nullable IItemHandler itemHandler) {
+    public static int countItems(@Nullable Filter<ItemStack> filter, @Nullable IItemHandler itemHandler) {
         if (itemHandler == null)
             return -1;
         int cnt = 0;
@@ -161,20 +162,20 @@ public class GTPlaceholders {
                 if (ctx.pos() == null) throw new NoTargetException();
                 IItemHandler itemHandler = GTCapabilityHelper.getItemHandler(ctx.level(), ctx.pos(), ctx.side());
                 if (args.isEmpty()) {
-                    return MultiLineComponent.literal(countItems((ItemFilter) null, itemHandler));
+                    return MultiLineComponent.literal(countItems((Filter<ItemStack>) null, itemHandler));
                 }
                 if (args.size() == 1) {
-                    return MultiLineComponent.literal(countItems(
-                            GTStringUtils.componentsToString(args.getFirst()), itemHandler));
+                    return MultiLineComponent
+                            .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
                 }
-                if (GTStringUtils.equals(args.getFirst(), "filter")) {
+                if (GTStringUtils.equals(args.get(0), "filter")) {
                     int slot = PlaceholderUtils.toInt(args.get(1));
                     if (ctx.itemStackHandler() == null)
                         throw new NotSupportedException();
                     PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     try {
                         return MultiLineComponent.literal(countItems(
-                                ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
+                                Filters.loadItemFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
                     } catch (NullPointerException e) {
                         throw new MissingItemException("filter", slot);
                     }

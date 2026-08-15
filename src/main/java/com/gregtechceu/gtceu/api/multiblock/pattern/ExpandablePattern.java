@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -16,12 +15,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public class ExpandablePattern implements IBlockPattern {
@@ -46,7 +46,7 @@ public class ExpandablePattern implements IBlockPattern {
     @Setter
     protected @Nullable BoundsConstraintProvider boundsConstraints = null;
     @Getter
-    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider;
+    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider;
     @Getter
     protected final OriginOffset offset = new OriginOffset();
 
@@ -54,7 +54,7 @@ public class ExpandablePattern implements IBlockPattern {
     protected final RelativeDirection[] directions;
 
     public ExpandablePattern(BoundsProvider boundsProvider,
-                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider,
+                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider,
                              RelativeDirection[] directions) {
         this.boundsProvider = boundsProvider;
         this.predicateProvider = predicateProvider;
@@ -64,10 +64,10 @@ public class ExpandablePattern implements IBlockPattern {
     @Override
     public void checkPatternFastAt(Level level, PatternState patternState, BlockPos centerPos, Direction frontFacing,
                                    Direction upwardsFacing, boolean allowsFlip) {
-        if (!patternState.cache.isEmpty()) {
+        if (!patternState.getCache().isEmpty()) {
             boolean pass = true;
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-            for (var entry : patternState.cache.long2ObjectEntrySet()) {
+            for (var entry : patternState.getCache().long2ObjectEntrySet()) {
                 pos.set(entry.getLongKey());
                 BlockState state = level.getBlockState(pos);
 
@@ -103,7 +103,7 @@ public class ExpandablePattern implements IBlockPattern {
             return;
         }
 
-        if (allowsFlip) {
+        if (allowsFlip && patternState.shouldCheckFlip()) {
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
         if (!valid) {
@@ -123,7 +123,11 @@ public class ExpandablePattern implements IBlockPattern {
         List<Integer> bounds = boundsProvider.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
         if (bounds.isEmpty()) return false;
 
-        patternState.globalCount.clear();
+        PredicateContext context = patternState.resetContext(false);
+
+        if (!isFlipped) {
+            patternState.clearErrors();
+        }
 
         BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
@@ -147,45 +151,54 @@ public class ExpandablePattern implements IBlockPattern {
             }
         }
 
-        patternState.currentBlockInfo.setLevel(level);
+        context.updateLevel(level);
 
         BlockPos.MutableBlockPos translation = centerPos.mutable();
 
         // SOUTH, UP, EAST means point is +z, line is +y, plane is +x. this basically means the x val of the iter is
         // aisle count, y is str count, and z is char count.
+        Set<MultiPredicate> visited = new HashSet<>();
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
-            PatternPredicate pred = predicateProvider.apply(mPos, bounds);
+            MultiPredicate multiPredicate = predicateProvider.apply(mPos, bounds);
+
+            if (visited.add(multiPredicate)) {
+                multiPredicate.resetLogic();
+            }
 
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
                     pos.getZ());
             // translate from the origin to the center
             mPos = mPos.offset(translation).mutable();
-            patternState.currentBlockInfo.setCurrentPos(mPos);
+            context.updatePos(mPos);
 
-            if (!pred.equals(PatternPredicate.ANY)) {
-                BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
-                BlockEntity blockEntity = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
-                patternState.cache.put(mPos.asLong(), new BlockInfo(state, blockEntity));
+            if (!multiPredicate.isAny()) patternState.updateCache();
+
+            // state check
+            BasePredicate innerPredicate = multiPredicate.getPredicateAtPos(context);
+
+            // all predicates failed
+            if (innerPredicate == null) {
+                context.commitSliceErrors(); // this is actually global errors, not slice
+                return false;
             }
 
-            List<PatternError> res = pred.test(patternState.currentBlockInfo, patternState.globalCount, null);
-            if (!res.isEmpty()) {
-                patternState.setErrors(res);
+            // max count checks
+            if (!innerPredicate.checkMaxCount(context)) {
+                context.commitSliceErrors(); // this is actually global errors, not slice
                 return false;
             }
         }
 
-        for (var entry : patternState.globalCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().minCount) {
-                patternState.setError(new SinglePredicateError(entry.getKey(),
-                        SinglePredicateError.ErrorType.MIN_COUNT, entry.getIntValue()));
+        for (MultiPredicate multiPredicate : visited) {
+            if (!multiPredicate.postGlobalTest(context)) {
+                context.commitSliceErrors();
                 return false;
             }
         }
 
-        patternState.setError(null);
+        patternState.clearErrors();
         return true;
     }
 }

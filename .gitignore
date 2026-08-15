@@ -1,24 +1,24 @@
-build/
+/build/
 *.ipr
-run*/
+/run*/
 *.iws
-out/
+/out/
 *.iml
-.gradle/
-output/
-bin/
+/.gradle/
+/output/
+/bin/
 
 .classpath
 */.factorypath
 .project
-.idea/
-.run/
-classes/
+/.idea/
+/.run/
+/classes/
 .metadata
 .vscode
 .settings
 *.launch
-src/generated/resources/.cache/
+/src/generated/resources/.cache/
 
 *.patch
 *.cap

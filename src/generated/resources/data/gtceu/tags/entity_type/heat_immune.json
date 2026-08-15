@@ -1,9 +1,9 @@
 {
-    "values": [
-        "minecraft:strider",
-        "minecraft:blaze",
-        "minecraft:magma_cube",
-        "minecraft:wither_skeleton",
-        "minecraft:wither"
-    ]
+  "values": [
+    "minecraft:strider",
+    "minecraft:blaze",
+    "minecraft:magma_cube",
+    "minecraft:wither_skeleton",
+    "minecraft:wither"
+  ]
 }

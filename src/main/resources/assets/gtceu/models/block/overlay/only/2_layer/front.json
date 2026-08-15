@@ -1,19 +1,53 @@
 {
-    "parent": "gtceu:block/overlay/only/front",
     "elements": [
         {
-            "from": [  0,  0, -0.096 ],
-            "to":   [ 16, 16, -0.096 ],
             "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
-            }
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.096
+            ],
+            "to": [
+                16,
+                16,
+                -0.096
+            ]
         },
         {
-            "from": [  0,  0, -0.128 ],
-            "to":   [ 16, 16, -0.128 ],
             "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_2", "cullface": "north" }
-            }
+                "north": {
+                    "cullface": "north",
+                    "texture": "#overlay_2",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                -0.128
+            ],
+            "to": [
+                16,
+                16,
+                -0.128
+            ]
         }
-    ]
+    ],
+    "parent": "gtceu:block/overlay/only/front"
 }

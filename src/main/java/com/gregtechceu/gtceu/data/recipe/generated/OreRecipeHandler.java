@@ -451,7 +451,7 @@ public final class OreRecipeHandler {
                 .recipeBuilder("centrifuge_" + material.getName() + "_dirty_dust_to_dust")
                 .inputItems(dustImpure, material)
                 .outputItems(dustStack)
-                .duration((int) (material.getMass() * 4)).EUt(24);
+                .duration(200).EUt(4);
 
         if (byproduct.hasProperty(PropertyKey.DUST)) {
             builder.chancedOutput(TagPrefix.dust, byproduct, "1/9");

@@ -1,84 +1,84 @@
 {
-    "biomes": "#minecraft:is_end",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 40,
-        "min_inclusive": 32
-    },
-    "density": 0.3,
-    "dimension_filter": [
-        "minecraft:the_end"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:layer",
-        "layer_patterns": [
-            [
-                {
-                    "max_size": 6,
-                    "min_size": 1,
-                    "targets": [
-                        [
-                            {
-                                "state": {
-                                    "Name": "minecraft:end_stone"
-                                },
-                                "target": {
-                                    "predicate_type": "minecraft:tag_match",
-                                    "tag": "c:end_stone_ore_replaceables"
-                                }
-                            }
-                        ]
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 4,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:bauxite"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 2,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:ilmenite"
-                    ],
-                    "weight": 1
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:aluminium"
-                    ],
-                    "weight": 1
-                }
-            ]
-        ]
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 80
-            },
-            "min_inclusive": {
-                "absolute": 10
-            }
-        }
-    },
-    "indicators": [
+  "biomes": "#minecraft:is_end",
+  "cluster_size": {
+    "type": "minecraft:uniform",
+    "max_inclusive": 40,
+    "min_inclusive": 32
+  },
+  "density": 0.3,
+  "dimension_filter": [
+    "minecraft:the_end"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "type": "gtceu:layer",
+    "layer_patterns": [
+      [
         {
-            "type": "gtceu:surface",
-            "block": "gtceu:bauxite",
-            "density": 0.2,
-            "placement": "above",
-            "radius": 5
+          "max_size": 6,
+          "min_size": 1,
+          "targets": [
+            [
+              {
+                "state": {
+                  "Name": "minecraft:end_stone"
+                },
+                "target": {
+                  "predicate_type": "minecraft:tag_match",
+                  "tag": "c:end_stone_ore_replaceables"
+                }
+              }
+            ]
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 4,
+          "min_size": 1,
+          "targets": [
+            "gtceu:bauxite"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 2,
+          "min_size": 1,
+          "targets": [
+            "gtceu:ilmenite"
+          ],
+          "weight": 1
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:aluminium"
+          ],
+          "weight": 1
         }
-    ],
-    "layer": "gtceu:endstone",
-    "weight": 40
+      ]
+    ]
+  },
+  "height_range": {
+    "height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": {
+        "absolute": 80
+      },
+      "min_inclusive": {
+        "absolute": 10
+      }
+    }
+  },
+  "indicators": [
+    {
+      "type": "gtceu:surface",
+      "block": "gtceu:bauxite",
+      "density": 0.2,
+      "placement": "above",
+      "radius": 5
+    }
+  ],
+  "layer": "gtceu:endstone",
+  "weight": 40
 }

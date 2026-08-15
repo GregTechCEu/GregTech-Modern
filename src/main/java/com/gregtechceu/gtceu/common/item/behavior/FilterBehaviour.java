@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -16,13 +19,15 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 
-import java.util.function.Function;
+import java.util.function.Supplier;
 
-public record FluidFilterBehaviour(Function<ItemStack, FluidFilter> filterCreator) implements IItemUIHolder {
+public record FilterBehaviour<T, S extends Filter<T>>(Class<T> filterableObjectType, Supplier<S> filterCreator,
+                                                      Holder<DataComponentType<?>> dataComponentType)
+        implements IItemUIHolder {
 
     @Override
     public void onAttached(Item item) {
-        FluidFilter.FILTERS.put(item, filterCreator);
+        Filters.registerFilter(filterableObjectType, item, filterCreator, dataComponentType);
     }
 
     @Override
@@ -39,6 +44,7 @@ public record FluidFilterBehaviour(Function<ItemStack, FluidFilter> filterCreato
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        return FluidFilter.loadFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings, true);
+        return Filters.loadFilter(filterableObjectType, data.getUsedItemStack()).getPanel(data, syncManager, settings,
+                true);
     }
 }

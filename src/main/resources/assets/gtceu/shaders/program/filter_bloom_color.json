@@ -1,23 +1,75 @@
 {
-	"blend": {
-		"func": "add",
-		"srcrgb": "srcalpha",
-		"dstrgb": "1-srcalpha",
-		"srcalpha": "zero",
-		"dstalpha": "one"
-	},
-	"vertex": "blit",
-	"fragment": "gtceu:filter_bloom_color",
-	"attributes": [ "Position" ],
-	"samplers": [
-		{ "name": "DiffuseSampler" },
-		{ "name": "DiffuseDepthSampler" },
-		{ "name": "MainDepthSampler" }
-	],
-	"uniforms": [
-		{ "name": "ProjMat",      "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
-		{ "name": "OutSize",      "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-		{ "name": "DepthNear",    "type": "float",     "count": 1,  "values": [ 0.05 ] },
-		{ "name": "DepthFar",     "type": "float",     "count": 1,  "values": [ 512.0 ] }
-	]
+    "attributes": [
+        "Position"
+    ],
+    "blend": {
+        "dstalpha": "one",
+        "dstrgb": "1-srcalpha",
+        "func": "add",
+        "srcalpha": "zero",
+        "srcrgb": "srcalpha"
+    },
+    "fragment": "gtceu:filter_bloom_color",
+    "samplers": [
+        {
+            "name": "DiffuseSampler"
+        },
+        {
+            "name": "DiffuseDepthSampler"
+        },
+        {
+            "name": "MainDepthSampler"
+        }
+    ],
+    "uniforms": [
+        {
+            "count": 16,
+            "name": "ProjMat",
+            "type": "matrix4x4",
+            "values": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "count": 2,
+            "name": "OutSize",
+            "type": "float",
+            "values": [
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "count": 1,
+            "name": "DepthNear",
+            "type": "float",
+            "values": [
+                0.05
+            ]
+        },
+        {
+            "count": 1,
+            "name": "DepthFar",
+            "type": "float",
+            "values": [
+                512.0
+            ]
+        }
+    ],
+    "vertex": "blit"
 }
