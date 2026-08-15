@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -118,7 +117,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         return (definition) -> {
 
             var floor = Predicates.blocks(Blocks.BRICKS);
-            var logs = PatternPredicate.AIR.or(logPredicate());
+            var logs = Predicates.air().or(logPredicate());
             var walls = wallPredicate();
 
             return ExpandableMultiblockPatternBuilder
@@ -140,7 +139,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                         if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersects++;
                         if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersects++;
 
-                        if (intersects >= 2) return PatternPredicate.ANY;
+                        if (intersects >= 2) return Predicates.any();
 
                         if (intersects == 1) {
                             if (bottomAisle) return floor;
@@ -152,21 +151,25 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         };
     }
 
-    private static PatternPredicate wallPredicate() {
-        return new PatternPredicate("Wall Blocks",
-                multiblockState -> {
-                    BlockPos p = multiblockState.getBlockPos();
-                    return multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
-                            null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
-                                    p.getX(), p.getY(), p.getZ()));
-                }, null);
+    private static MultiPredicate wallPredicate() {
+        return Predicates.builder("WallPredicate")
+                .predicate(ctx -> ctx.state().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS))
+                .errorFunction(ctx -> {
+                    BlockPos p = ctx.pos();
+                    return PatternStringError.translatable(
+                            "gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ());
+                })
+                .blockTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
+                .toMultiPredicate();
     }
 
-    private static PatternPredicate logPredicate() {
-        return new PatternPredicate(multiblockState -> {
-            boolean match = multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN);
-            return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));
-        }, null);
+    private static MultiPredicate logPredicate() {
+        return Predicates.builder("LogPredicate")
+                .predicate(ctx -> ctx.state().is(BlockTags.LOGS_THAT_BURN))
+                .errorFunction(ctx -> PatternStringError.translatable(
+                        "gtceu.predicate_error.charcoal.logs"))
+                .blockTag(BlockTags.LOGS_THAT_BURN)
+                .toMultiPredicate();
     }
 
     private static int findWallPos(Level level, Direction direction, BlockPos.MutableBlockPos pos) {

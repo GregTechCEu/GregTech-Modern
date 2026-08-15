@@ -1,31 +1,83 @@
 {
-  "parent": "block/block",
-  "textures": {
-    "particle": "#bot_side",
-    "top_side": "gtceu:block/casings/hermetic_casing/hermetic_casing_overlay"
-  },
-  "elements": [
-    {
-      "from": [  0,  0,  0 ],
-      "to":   [ 16, 16, 16 ],
-      "faces": {
-        "down":  { "texture": "#bot_bottom", "cullface": "down",  "tintindex": 1 },
-        "up":    { "texture": "#bot_top",    "cullface": "up",    "tintindex": 1 },
-        "north": { "texture": "#bot_side",   "cullface": "north", "tintindex": 1 },
-        "south": { "texture": "#bot_side",   "cullface": "south", "tintindex": 1 },
-        "west":  { "texture": "#bot_side",   "cullface": "west",  "tintindex": 1 },
-        "east":  { "texture": "#bot_side",   "cullface": "east",  "tintindex": 1 }
-      }
-    },
-    {
-      "from": [  0,  0,  0 ],
-      "to":   [ 16, 16, 16 ],
-      "faces": {
-        "north": { "texture": "#top_side", "cullface": "north" },
-        "south": { "texture": "#top_side", "cullface": "south" },
-        "west":  { "texture": "#top_side", "cullface": "west"  },
-        "east":  { "texture": "#top_side", "cullface": "east"  }
-      }
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "cullface": "down",
+                    "texture": "#bot_bottom",
+                    "tintindex": 1
+                },
+                "east": {
+                    "cullface": "east",
+                    "texture": "#bot_side",
+                    "tintindex": 1
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#bot_side",
+                    "tintindex": 1
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#bot_side",
+                    "tintindex": 1
+                },
+                "up": {
+                    "cullface": "up",
+                    "texture": "#bot_top",
+                    "tintindex": 1
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#bot_side",
+                    "tintindex": 1
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
+        },
+        {
+            "faces": {
+                "east": {
+                    "cullface": "east",
+                    "texture": "#top_side"
+                },
+                "north": {
+                    "cullface": "north",
+                    "texture": "#top_side"
+                },
+                "south": {
+                    "cullface": "south",
+                    "texture": "#top_side"
+                },
+                "west": {
+                    "cullface": "west",
+                    "texture": "#top_side"
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
+        }
+    ],
+    "parent": "block/block",
+    "textures": {
+        "particle": "#bot_side",
+        "top_side": "gtceu:block/casings/hermetic_casing/hermetic_casing_overlay"
     }
-  ]
 }

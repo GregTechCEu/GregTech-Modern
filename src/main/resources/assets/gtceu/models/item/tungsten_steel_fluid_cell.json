@@ -1,9 +1,9 @@
 {
-  "loader": "neoforge:fluid_container",
-  "parent": "neoforge:item/default",
-  "textures": {
-    "base": "gtceu:item/tungsten_steel_fluid_cell/base",
-    "fluid": "gtceu:item/tungsten_steel_fluid_cell/overlay"
-  },
-  "fluid": "minecraft:empty"
+    "fluid": "minecraft:empty",
+    "loader": "neoforge:fluid_container",
+    "parent": "neoforge:item/default",
+    "textures": {
+        "base": "gtceu:item/tungsten_steel_fluid_cell/base",
+        "fluid": "gtceu:item/tungsten_steel_fluid_cell/overlay"
+    }
 }

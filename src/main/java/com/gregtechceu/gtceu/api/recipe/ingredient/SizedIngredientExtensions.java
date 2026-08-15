@@ -54,7 +54,6 @@ public class SizedIngredientExtensions {
 
     private static Ingredient copyIntProvider(IntProviderIngredient toCopy) {
         var copied = new IntProviderIngredient(toCopy.inner, toCopy.countProvider);
-        copied.itemStacks = toCopy.itemStacks;
         copied.sampledCount = toCopy.sampledCount;
         return copied.toVanilla();
     }
