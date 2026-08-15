@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.OverlayButton;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -26,9 +27,12 @@ import net.minecraft.world.phys.HitResult;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.value.IValue;
 import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
@@ -37,6 +41,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.IntValue;
+import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
@@ -229,8 +234,53 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 .name("schema_widgets")
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .coverChildren()
-                                .child(new OverlayButton(definition)
+                                .child(new OverlayButton("test_overlay")
                                         .name("btn_overlay")
+                                        .menuList(l -> {
+                                            l.height(180).coverChildrenWidth(18)
+                                                    .background(new Rectangle()
+                                                            .color(Color.GREY.main));
+                                            patterns.stream()
+                                                    .filter(e -> e.getValue() instanceof BlockPattern)
+                                                    .map(e -> ((BlockPattern) e.getValue())
+                                                            .getPredicates()
+                                                            .values().stream()
+                                                            .filter(mp -> mp.getCandidates()
+                                                                    .stream().anyMatch(c2 -> !c2.isEmpty()))
+                                                            .map(mp -> mp.getCandidates()
+                                                                    .stream()
+                                                                    .map(c2 -> c2.stream()
+                                                                            .map(BlockInfo::getItemStackForm)
+                                                                            .toArray(ItemStack[]::new))
+                                                                    .map(a -> {
+                                                                        IValue<ItemStack> value = new ObjectValue.Dynamic<>(
+                                                                                ItemStack.class,
+                                                                                () -> {
+                                                                                    int cycleTime = 1000;
+                                                                                    int i = (int) (Util.getMillis() %
+                                                                                            (cycleTime * a.length)) /
+                                                                                            cycleTime;
+                                                                                    return a[i];
+                                                                                },
+                                                                                null);
+                                                                        return (IWidget) new ItemDisplayWidget()
+                                                                                .displayAmount(false)
+                                                                                .item(value)
+                                                                                .tooltipAutoUpdate(true)
+                                                                                .tooltipDynamic(rt -> {
+                                                                                    rt.addFromItem(value.getValue());
+                                                                                    rt.addLine(mp.toString());
+                                                                                });
+                                                                    })
+                                                                    .toList())
+                                                            .map(c -> (IWidget) Flow.row()
+                                                                    .children(c)
+                                                                    .mainAxisAlignment(Alignment.MainAxis.START)
+                                                                    .height(18)
+                                                                    .widthRel(1f))
+                                                            .toList())
+                                                    .forEach(l::children);
+                                        })
                                         .addTooltipLine("open an overlay"))
                                 .child(new DynamicWidget<>()
                                         .name("selected_block")
@@ -244,62 +294,63 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         .clientOnlyHandler(partsHandler))));
     }
 
-    private ContextMenuButton<?> createSelectedBlockMenu(MultiPredicate predicate) {
+    private IWidget createSelectedBlockMenu(MultiPredicate predicate) {
         // TODO this can throw invalid state exception when
         // opening after clicking on a block twice
-        return new ContextMenuButton<>(this.selectionInfo.pos().toString())
+        return new OverlayButton(predicate.toString() + this.selectionInfo.pos.toString())
                 .size(20)
                 .overlay(new ItemDrawable(this.selectionInfo.stack()).asIcon().center())
                 .tooltip(text -> text.addFromItem(this.selectionInfo.stack()))
-                .requiresClick()
-                .menuList(l -> l
-                        .maxSize(80)
-                        .coverChildrenWidth()
-                        .collapseDisabledChildren()
-                        .childSeparator(Icon.EMPTY_2PX)
-                        // todo handle children
-                        .children(predicate.expand(), basePredicate -> {
-                            List<BlockInfo> candidates = basePredicate.getCandidates();
-                            if (candidates.isEmpty())
-                                return new EmptyWidget();
-                            if (candidates.size() > 1) {
-                                return new ContextMenuButton<>(basePredicate.getTypeName())
-                                        .size(16)
-                                        .tooltip(r -> r.add(basePredicate.getTypeName()))
-                                        .overlay(new ItemDrawable(
-                                                candidates.get(0).getItemStackForm()))
-                                        .requiresClick()
-                                        .openRightDown()
-                                        .menuList(l1 -> l1
-                                                .maxSize(80)
-                                                .coverChildrenWidth()
-                                                .childSeparator(Icon.EMPTY_2PX)
-                                                .children(candidates, blockInfo -> {
-                                                    Component stackName = blockInfo
-                                                            .getItemStackForm().getHoverName();
-                                                    return new ToggleButton()
-                                                            .value(new BoolValue.Dynamic(
-                                                                    () -> false,
-                                                                    (b) -> setUserDefinedBlockInfo(
-                                                                            this.selectionInfo.pos(),
-                                                                            blockInfo)))
-                                                            .size(16)
-                                                            .tooltip(r -> r.add(stackName))
-                                                            .overlay(new ItemDrawable(
-                                                                    blockInfo.getItemStackForm()));
-                                                }));
-                            } else {
-                                return new ToggleButton()
-                                        .value(new BoolValue.Dynamic(() -> false,
-                                                (b) -> setUserDefinedBlockInfo(this.selectionInfo.pos(),
-                                                        candidates.get(0))))
-                                        .size(16)
-                                        .tooltip(r -> r.add(
-                                                basePredicate.getCandidates().get(0).getItemStackForm().getHoverName()))
-                                        .overlay(new ItemDrawable(
-                                                candidates.get(0).getItemStackForm()));
-                            }
-                        }));
+                // .requiresClick()
+                .menuList(l -> {
+                    l.maxSize(80).coverChildrenWidth()
+                            .collapseDisabledChildren()
+                            .childSeparator(Icon.EMPTY_2PX);
+                    predicate.predicates()
+                            .stream()
+                            .filter(p -> !p.getCandidates().isEmpty())
+                            .map(p -> {
+                                List<BlockInfo> candidates = p.getCandidates();
+                                if (candidates.size() > 1) {
+                                    return new OverlayButton(p.toString())
+                                            .size(16)
+                                            .tooltip(r -> r.add(p.getTypeName()))
+                                            .overlay(new ItemDrawable(candidates.get(0).getItemStackForm()))
+                                            // .requiresClick()
+                                            .openRightDown()
+                                            .menuList(l1 -> l1
+                                                    .maxSize(80)
+                                                    .coverChildrenWidth()
+                                                    .childSeparator(Icon.EMPTY_2PX)
+                                                    .children(candidates, blockInfo -> {
+                                                        ItemStack stackForm = blockInfo.getItemStackForm();
+                                                        return new ToggleButton()
+                                                                .value(new BoolValue.Dynamic(
+                                                                        () -> false,
+                                                                        (b) -> setUserDefinedBlockInfo(
+                                                                                this.selectionInfo.pos(),
+                                                                                blockInfo)))
+                                                                .size(16)
+                                                                .tooltip(r -> r.add(stackForm.getHoverName()))
+                                                                .overlay(new ItemDrawable(stackForm));
+                                                    }));
+                                } else {
+                                    BlockInfo first = candidates.get(0);
+                                    ItemStack stackForm = first.getItemStackForm();
+                                    return new ToggleButton()
+                                            .value(new BoolValue.Dynamic(() -> false,
+                                                    (b) -> setUserDefinedBlockInfo(this.selectionInfo.pos(),
+                                                            first)))
+                                            .size(16)
+                                            .tooltip(r -> r.add(stackForm.getHoverName()))
+                                            .overlay(new ItemDrawable(stackForm));
+                                }
+                            }).forEach(l::child);
+                    // predicate.children()
+                    // .stream()
+                    // .map(this::createSelectedBlockMenu)
+                    // .forEach(l::child);
+                });
     }
 
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {

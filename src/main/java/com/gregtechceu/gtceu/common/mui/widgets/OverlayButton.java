@@ -1,114 +1,110 @@
 package com.gregtechceu.gtceu.common.mui.widgets;
 
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
-import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-
-import net.minecraft.Util;
-import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.ITheme;
-import brachy.modularui.api.value.IValue;
+import brachy.modularui.api.widget.IPositioned;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.api.widget.Interactable;
+import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.overlay.OverlayStack;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.theme.WidgetThemeEntry;
+import brachy.modularui.utils.Color;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widget.sizer.Area;
-import brachy.modularui.widgets.ItemDisplayWidget;
+import brachy.modularui.widget.sizer.StandardResizer;
 import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.menu.AbstractMenuButton;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Supplier;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class OverlayButton extends Widget<OverlayButton> implements Interactable {
 
-    private final MultiblockMachineDefinition definition;
-    private @Nullable ModularScreen overlay;
+    private static final Map<String, ModularScreen> overlayScreens = new HashMap<>();
+    private static final MethodHandle positionerGetter;
+
+    static {
+        MethodHandle handle = null;
+        try {
+            Field positioner = AbstractMenuButton.Direction.class.getDeclaredField("positioner");
+            positioner.setAccessible(true);
+            handle = MethodHandles.lookup().unreflectGetter(positioner);
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+        positionerGetter = handle;
+    }
+
+    private static void applyDirection(AbstractMenuButton.Direction direction, IWidget widget) {
+        if (positionerGetter == null) return;
+        try {
+            // noinspection unchecked
+            final Consumer<StandardResizer> positioner = (Consumer<StandardResizer>) positionerGetter.invoke(direction);
+            positioner.accept(widget.resizer());
+        } catch (Throwable ignored) {}
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private static void open(String panelName, ModularScreen overlay, ModularScreen parent) {
+        if (overlayScreens.containsKey(panelName)) {
+            GTCEu.LOGGER.warn("Overlay Screen already exists for panel {}", panelName);
+            return;
+        }
+        overlayScreens.put(panelName, overlay);
+        overlay.constructOverlay(parent.getScreenWrapper().wrappedScreen());
+        OverlayStack.open(overlay);
+        Area screenArea = parent.getScreenArea();
+        overlay.onResize(screenArea.w(), screenArea.h());
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    private static void close(String panelName) {
+        ModularScreen overlay = overlayScreens.remove(panelName);
+        if (overlay != null) {
+            overlay.close();
+            OverlayStack.close(overlay);
+        }
+    }
+
+    private final String panelName;
     private boolean opened = false;
-    private final Supplier<ListWidget<?, ?>> items;
 
-    public OverlayButton(MultiblockMachineDefinition definition) {
-        this.definition = definition;
+    @Accessors(fluent = true)
+    @Setter
+    private Consumer<ListWidget<IWidget, ?>> menuList;
+
+    @Accessors(fluent = true)
+    @Setter
+    private AbstractMenuButton.Direction direction = AbstractMenuButton.Direction.DOWN;
+
+    public OverlayButton(String panelName) {
+        this.panelName = panelName;
         size(16);
-        items = () -> {
-            var first = definition.getStructurePatterns()
-                    .values()
-                    .stream()
-                    .map(Supplier::get)
-                    .filter(p -> p instanceof BlockPattern)
-                    .map(p -> (BlockPattern) p)
-                    .findFirst();
-            if (first.isPresent()) {
-                BlockPattern pattern = first.get();
-                Collection<MultiPredicate> predicates = pattern.getPredicates()
-                        .values().stream()
-                        .filter(mp -> !mp.getCandidates().isEmpty())
-                        .toList();
-                return new ListWidget<>()
-                        .height(160)
-                        .coverChildrenWidth(16)
-                        .children(predicates, p -> {
-                            List<IWidget> list = p.getCandidates()
-                                    .stream()
-                                    .filter(c -> !c.isEmpty())
-                                    .map(c -> c.stream()
-                                            .map(BlockInfo::getItemStackForm)
-                                            .toArray(ItemStack[]::new))
-                                    .map(a -> {
-                                        IValue<ItemStack> value = new IValue<>() {
-
-                                            private final int cycleTime = 1000;
-
-                                            @Override
-                                            public ItemStack getValue() {
-                                                return a[(int) (Util.getMillis() % (this.cycleTime * a.length)) /
-                                                        this.cycleTime];
-                                            }
-
-                                            @Override
-                                            public void setValue(ItemStack value) {}
-
-                                            @Override
-                                            public Class<ItemStack> getValueType() {
-                                                return ItemStack.class;
-                                            }
-                                        };
-                                        return (IWidget) new ItemDisplayWidget()
-                                                .displayAmount(false)
-                                                .item(value)
-                                                .tooltipAutoUpdate(true)
-                                                .tooltipDynamic(rt -> rt.addFromItem(value.getValue()));
-                                    })
-                                    .toList();
-                            return Flow.row()
-                                    .addTooltipLine(p.toString())
-                                    .children(list)
-                                    .height(16)
-                                    .coverChildrenWidth(16);
-                        });
-            } else {
-                return new ListWidget<>();
-            }
-        };
     }
 
     private ModularScreen constructOverlay() {
         final String ctx_theme = "modularui.context_menu";
-        final ModularPanel<?> panel = ModularPanel.defaultPanel("test")
+        final ModularPanel<?> panel = ModularPanel.defaultPanel(this.panelName)
                 .themeOverride(ctx_theme)
-                .fullScreenInvisible()
-                .child(items.get()
-                        .pos(getArea().x, getArea().y + getArea().height));
+                .fullScreenInvisible();
+        ListWidget<IWidget, ?> list = new ListWidget<>();
+        if (menuList != null) {
+            menuList.accept(list);
+        }
+        applyDirection(this.direction, list);
+        list.background(new Rectangle()
+                .color(Color.GREY.main));
+        panel.child(list.relative(this));
         return new GTGuiScreen(panel);
     }
 
@@ -117,25 +113,14 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
         return theme.getWidgetTheme(ThemeAPI.BUTTON);
     }
 
-    protected ModularScreen getScreenOverlay() {
-        if (overlay == null) {
-            overlay = constructOverlay();
-        }
-        return overlay;
-    }
-
     @Override
-    @SuppressWarnings("UnstableApiUsage")
     public @NotNull Result onMousePressed(int button) {
         if (!opened) {
-            ModularScreen screen = this.getScreenOverlay();
-            screen.constructOverlay(getScreen().getScreenWrapper().wrappedScreen());
-            OverlayStack.open(screen);
-            Area screenArea = getScreen().getScreenArea();
-            screen.onResize(screenArea.w(), screenArea.h());
+            ModularScreen screen = this.constructOverlay();
+            open(this.panelName, screen, getScreen());
             opened = true;
         } else {
-            disposeOverlay();
+            close(this.panelName);
             opened = false;
         }
         Interactable.playButtonClickSound();
@@ -144,16 +129,73 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     @Override
     public void dispose() {
-        disposeOverlay();
+        close(this.panelName);
         super.dispose();
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    private void disposeOverlay() {
-        if (this.overlay != null) {
-            this.overlay.close();
-            OverlayStack.close(this.overlay);
-            this.overlay = null;
-        }
+    /**
+     * Sets the menu to open in the "up" direction. This does not set a horizontal position.
+     * This is best used with {@link IPositioned#widthRel(float) IPositioned.widthRel(1f)}
+     *
+     * @return this
+     */
+    public OverlayButton openUp() {
+        return direction(AbstractMenuButton.Direction.UP);
+    }
+
+    /**
+     * Sets the menu to open in the "down" direction. This does not set a horizontal position.
+     * This is best used with {@link IPositioned#widthRel(float) IPositioned.widthRel(1f)}
+     *
+     * @return this
+     */
+    public OverlayButton openDown() {
+        return direction(AbstractMenuButton.Direction.DOWN);
+    }
+
+    /**
+     * Sets the menu to open in the "left and up" direction.
+     *
+     * @return this
+     */
+    public OverlayButton openLeftUp() {
+        return direction(AbstractMenuButton.Direction.LEFT_UP);
+    }
+
+    /**
+     * Sets the menu to open in the "left and down" direction.
+     *
+     * @return this
+     */
+    public OverlayButton openLeftDown() {
+        return direction(AbstractMenuButton.Direction.LEFT_DOWN);
+    }
+
+    /**
+     * Sets the menu to open in the "right and up" direction.
+     *
+     * @return this
+     */
+    public OverlayButton openRightUp() {
+        return direction(AbstractMenuButton.Direction.RIGHT_UP);
+    }
+
+    /**
+     * Sets the menu to open in the "right and down" direction.
+     *
+     * @return this
+     */
+    public OverlayButton openRightDown() {
+        return direction(AbstractMenuButton.Direction.RIGHT_DOWN);
+    }
+
+    /**
+     * Sets the menu to open in no specified direction. The position of the menu must be set manually, or it is left at
+     * 0,0.
+     *
+     * @return this
+     */
+    public OverlayButton openCustom() {
+        return direction(AbstractMenuButton.Direction.UNDEFINED);
     }
 }
