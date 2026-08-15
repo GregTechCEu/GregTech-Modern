@@ -122,8 +122,6 @@ public class CommonProxy {
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
-        GTRegistries.init(modBus);
-
         GTValueProviderTypes.init(modBus);
         GTPlacementModifiers.init(modBus);
         GTGlobalLootModifiers.init(modBus);
@@ -280,7 +278,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
+    public void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
         /*
          * event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
          * GTOreDefinition.CODEC, GTOreDefinition.CODEC);

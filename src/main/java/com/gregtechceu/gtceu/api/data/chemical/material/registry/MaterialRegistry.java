@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
@@ -17,6 +18,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,10 +41,10 @@ public class MaterialRegistry extends MappedRegistry<Material> {
      * Use {@link #get(ResourceLocation)} instead
      */
     @Deprecated(since = "8.0.0")
-    public @Nullable Material get(String name) {
+    public Material get(String name) {
         ResourceLocation location = ResourceLocation.tryParse(GTCEu.appendIdString(name));
-        if (location != null) return get(ResourceKey.create(GTRegistries.Keys.MATERIAL, location));
-        return null;
+        if (location != null) return Objects.requireNonNullElse(get(ResourceKey.create(GTRegistries.Keys.MATERIAL, location)), GTMaterials.NULL);
+        return GTMaterials.NULL;
     }
 
     public Material getOrThrow(ResourceLocation id) {

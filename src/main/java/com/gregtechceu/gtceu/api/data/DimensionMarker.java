@@ -87,7 +87,7 @@ public class DimensionMarker {
         public DimensionMarker buildAndRegister() {
             Objects.requireNonNull(id);
             Objects.requireNonNull(iconSupplier, "iconSupplier cannot be null;");
-            Preconditions.checkArgument(tier > 0 && tier < MAX_TIER, "Tier must be between 0 and " + MAX_TIER);
+            Preconditions.checkArgument(tier >= 0 && tier < MAX_TIER, "Tier must be between 0 and " + MAX_TIER);
             DimensionMarker marker = new DimensionMarker(tier, iconSupplier, overrideName);
             marker.register(id);
             return marker;
