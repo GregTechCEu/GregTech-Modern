@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
 import java.lang.invoke.WrongMethodTypeException;
 import java.util.*;
 
@@ -126,7 +127,7 @@ public class SyncDataHolder {
             if (field.transformer == null) {
                 GTCEu.LOGGER.error("Sync: Failed to serialize field {} in class {}: Missing value transformer for {}",
                         field.fieldName, holder.getClass().getName(), field.type);
-                return null;
+                return new CompoundTag();
             }
         }
 
@@ -139,7 +140,7 @@ public class SyncDataHolder {
             GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
         }
 
-        return null;
+        return new CompoundTag();
     }
 
     @SuppressWarnings("unchecked")
@@ -151,8 +152,14 @@ public class SyncDataHolder {
         }
         if (newValue == null ||
                 (newValue instanceof CompoundTag compound && compound.size() == 1 && compound.getBoolean("null"))) {
-            // the {null:1b} check is done client read and backwards compat
-            field.handle.set(holder, null);
+            // the {null:1b} check is done for client read and backwards compat
+
+            // since we **have no data version tag**, (we should add one...) all we can do is assume that this field
+            // should be set to null and that it ISN'T a case of an older version not having the field at all.
+            if (!field.type.isPrimitive() && field.handle.isAccessModeSupported(VarHandle.AccessMode.SET)) {
+                // we can only do this for non-primitive types in non-final fields.
+                field.handle.set(holder, null);
+            }
             return;
         }
 

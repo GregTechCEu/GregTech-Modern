@@ -89,14 +89,14 @@ public final class ClassSyncData {
         }
 
         for (Field field : clazz.getDeclaredFields()) {
-
             boolean hasSaveField = field.isAnnotationPresent(SaveField.class);
             boolean hasClientSync = field.isAnnotationPresent(SyncToClient.class);
             if (!hasSaveField && !hasClientSync) continue;
 
-            if (Modifier.isStatic(field.getModifiers()))
+            if (Modifier.isStatic(field.getModifiers())) {
                 throw new IllegalArgumentException("Cannot apply syncdata annotations to static field: %s.%s"
                         .formatted(field.getDeclaringClass().getName(), field.getName()));
+            }
 
             VarHandle handle;
             try {

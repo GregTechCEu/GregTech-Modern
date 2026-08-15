@@ -48,6 +48,10 @@ public class TypeDeclaration {
         return (classValue != null && classValue.isArray()) || (rawType instanceof GenericArrayType);
     }
 
+    public boolean isPrimitive() {
+        return classValue != null && classValue.isPrimitive();
+    }
+
     public TypeDeclaration getArrayComponentType() {
         if (arrayComponentType == null) throw new IllegalStateException(
                 "Attempted to get array component for non-array type %s".formatted(rawType));
