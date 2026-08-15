@@ -620,8 +620,8 @@ public class TagPrefix {
 
     // 3/4 of a Plate or Gem used to shape a Lens. Normally only used on Transparent Materials.
     public static final TagPrefix lens = new TagPrefix(GTCEu.id("lens"))
-            .defaultGTCEuTagPath("lenses/%s")
-            .unformattedGTCEuTagPath("lenses")
+            .defaultTagPath("lenses/%s")
+            .unformattedTagPath("lenses")
             .materialAmount((GTValues.M * 3) / 4)
             .materialIconType(MaterialIconType.lens)
             .unificationEnabled(true)

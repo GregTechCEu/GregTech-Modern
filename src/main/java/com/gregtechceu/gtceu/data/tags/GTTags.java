@@ -257,25 +257,25 @@ public class GTTags {
         // endregion Tools
 
         // region lenses
-        public static final TagKey<Item> LENSES = TagUtil.createModItemTag("lenses");
-        public static final TagKey<Item> LENSES_GLASS = TagUtil.createModItemTag("lenses/glass");
+        public static final TagKey<Item> LENSES = TagUtil.createItemTag("lenses");
+        public static final TagKey<Item> LENSES_GLASS = TagUtil.createItemTag("lenses/glass");
 
-        public static final TagKey<Item> LENSES_WHITE = TagUtil.createModItemTag("lenses/white");
-        public static final TagKey<Item> LENSES_ORANGE = TagUtil.createModItemTag("lenses/orange");
-        public static final TagKey<Item> LENSES_MAGENTA = TagUtil.createModItemTag("lenses/magenta");
-        public static final TagKey<Item> LENSES_LIGHT_BLUE = TagUtil.createModItemTag("lenses/light_blue");
-        public static final TagKey<Item> LENSES_YELLOW = TagUtil.createModItemTag("lenses/yellow");
-        public static final TagKey<Item> LENSES_LIME = TagUtil.createModItemTag("lenses/lime");
-        public static final TagKey<Item> LENSES_PINK = TagUtil.createModItemTag("lenses/pink");
-        public static final TagKey<Item> LENSES_GRAY = TagUtil.createModItemTag("lenses/gray");
-        public static final TagKey<Item> LENSES_LIGHT_GRAY = TagUtil.createModItemTag("lenses/light_gray");
-        public static final TagKey<Item> LENSES_CYAN = TagUtil.createModItemTag("lenses/cyan");
-        public static final TagKey<Item> LENSES_PURPLE = TagUtil.createModItemTag("lenses/purple");
-        public static final TagKey<Item> LENSES_BLUE = TagUtil.createModItemTag("lenses/blue");
-        public static final TagKey<Item> LENSES_BROWN = TagUtil.createModItemTag("lenses/brown");
-        public static final TagKey<Item> LENSES_GREEN = TagUtil.createModItemTag("lenses/green");
-        public static final TagKey<Item> LENSES_RED = TagUtil.createModItemTag("lenses/red");
-        public static final TagKey<Item> LENSES_BLACK = TagUtil.createModItemTag("lenses/black");
+        public static final TagKey<Item> LENSES_WHITE = TagUtil.createItemTag("lenses/white");
+        public static final TagKey<Item> LENSES_ORANGE = TagUtil.createItemTag("lenses/orange");
+        public static final TagKey<Item> LENSES_MAGENTA = TagUtil.createItemTag("lenses/magenta");
+        public static final TagKey<Item> LENSES_LIGHT_BLUE = TagUtil.createItemTag("lenses/light_blue");
+        public static final TagKey<Item> LENSES_YELLOW = TagUtil.createItemTag("lenses/yellow");
+        public static final TagKey<Item> LENSES_LIME = TagUtil.createItemTag("lenses/lime");
+        public static final TagKey<Item> LENSES_PINK = TagUtil.createItemTag("lenses/pink");
+        public static final TagKey<Item> LENSES_GRAY = TagUtil.createItemTag("lenses/gray");
+        public static final TagKey<Item> LENSES_LIGHT_GRAY = TagUtil.createItemTag("lenses/light_gray");
+        public static final TagKey<Item> LENSES_CYAN = TagUtil.createItemTag("lenses/cyan");
+        public static final TagKey<Item> LENSES_PURPLE = TagUtil.createItemTag("lenses/purple");
+        public static final TagKey<Item> LENSES_BLUE = TagUtil.createItemTag("lenses/blue");
+        public static final TagKey<Item> LENSES_BROWN = TagUtil.createItemTag("lenses/brown");
+        public static final TagKey<Item> LENSES_GREEN = TagUtil.createItemTag("lenses/green");
+        public static final TagKey<Item> LENSES_RED = TagUtil.createItemTag("lenses/red");
+        public static final TagKey<Item> LENSES_BLACK = TagUtil.createItemTag("lenses/black");
 
         public static final Map<DyeColor, TagKey<Item>> LENSES_BY_COLOR = Util.make(new Reference2ReferenceLinkedOpenHashMap<>(), map -> {
             map.put(DyeColor.WHITE, LENSES_WHITE);
