@@ -38,7 +38,7 @@ connects to a dedicated server instead.
 The remote side is the part of the game that is **connected to** the game's server side.  
 It always runs on the [client](#client-side).
 
-This side may not have the same amount of data available to it as the server does (see [SyncData](../Development/SyncData/index.md) if you
+This side may not have the same amount of data available to it as the server does (see [SyncData](Data-Sync-System/index.md) if you
 need to automatically synchronize certain data to the remote side).
 It also does not perform any tick update logic.
 

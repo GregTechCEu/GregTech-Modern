@@ -62,9 +62,8 @@ public class GTMultiblockTextUtil {
                         .getter(() -> {
                             var list = new ArrayList<PatternError>();
                             for (String structureName : controller.getStructurePatterns().keySet()) {
-                                var errors = controller.getPatternState(structureName)
-                                        .getErrors();
-                                if (errors != null && !errors.isEmpty()) {
+                                var errors = controller.getPatternState(structureName).getErrors();
+                                if (!errors.isEmpty()) {
                                     list.addAll(errors);
                                 }
                             }
@@ -259,8 +258,8 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addParallelLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue parallelAmount = syncManager.getOrCreateSyncHandler("parallelAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().parallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().parallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -278,8 +277,8 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(rlMachine::isBatchEnabled));
         IntSyncValue batchAmount = syncManager.getOrCreateSyncHandler("batchAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().batchParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().batchParallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -296,8 +295,8 @@ public class GTMultiblockTextUtil {
                                                         PanelSyncManager syncManager) {
         IntSyncValue subtickAmount = syncManager.getOrCreateSyncHandler("subtickAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().subtickParallels;
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().subtickParallels;
                 }));
 
         return Text.dynamic(() -> {
@@ -313,8 +312,8 @@ public class GTMultiblockTextUtil {
     public static TextWidget<?> addTotalRunsLine(WorkableMultiblockMachine rlMachine, PanelSyncManager syncManager) {
         IntSyncValue totalRunAmount = syncManager.getOrCreateSyncHandler("totalRunAmount", IntSyncValue.class,
                 () -> new IntSyncValue(() -> {
-                    if (rlMachine.getRecipeLogic().getLastRecipe() == null) return 0;
-                    return rlMachine.getRecipeLogic().getLastRecipe().getTotalRuns();
+                    if (rlMachine.getRecipeLogic().getLastUnrolledRecipe() == null) return 0;
+                    return rlMachine.getRecipeLogic().getLastUnrolledRecipe().getTotalRuns();
                 }));
 
         return Text.dynamic(() -> {
@@ -479,7 +478,7 @@ public class GTMultiblockTextUtil {
                         "GTRecipe",
                         GenericSyncValue.class,
                         () -> GenericSyncValue.<RegistryFriendlyByteBuf, GTRecipe>builder(GTRecipe.class)
-                                .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
+                                .getter(() -> rlmachine.getRecipeLogic().getLastUnrolledRecipe())
                                 .setter((newRecipe) -> {})
                                 .adapter(GTByteBufAdapters.GTRECIPE)
                                 .nullable()

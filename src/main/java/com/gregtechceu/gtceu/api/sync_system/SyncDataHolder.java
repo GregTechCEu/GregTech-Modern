@@ -58,13 +58,15 @@ public class SyncDataHolder {
 
         CompoundTag tag = new CompoundTag();
         for (var field : fieldsToSerialize) {
-            if (shouldSerializeField(field, writeClientFields, fullSync)) {
-                Tag nbtValue = serializeField(registries, holder, field, writeClientFields, fullSync);
+            if (shouldSerializeField(field, writeClientFields, fullSync || resyncAll)) {
+                Tag nbtValue = serializeField(registries, holder, field, writeClientFields, fullSync || resyncAll);
                 tag.put(field.nbtSaveKey, nbtValue);
             }
         }
-        resyncAll = false;
-        dirtySyncFields.clear();
+        if (writeClientFields) {
+            resyncAll = false;
+            dirtySyncFields.clear();
+        }
         return tag;
     }
 

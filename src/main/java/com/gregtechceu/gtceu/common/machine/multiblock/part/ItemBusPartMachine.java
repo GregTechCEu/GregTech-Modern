@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -55,7 +53,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @SaveField
     @SyncToClient
     @Getter
-    protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
+    protected final FilterHandler<ItemStack> filterHandler;
 
     @Getter
     @SaveField
@@ -86,7 +84,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         this.inventory = attachTrait(inventory);
         this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
         circuitSlot.setEnabled(io == IO.IN);
-        filterHandler = FilterHandlers.item(this);
+        filterHandler = new FilterHandler<>(this, ItemStack.class);
 
         inventory.setFilter(this::matchesFilter);
     }

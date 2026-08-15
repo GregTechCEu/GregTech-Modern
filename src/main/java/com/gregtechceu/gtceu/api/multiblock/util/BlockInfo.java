@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.FakeBlockTintGetter;
 
 import net.minecraft.core.BlockPos;
@@ -9,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
@@ -52,6 +55,14 @@ public class BlockInfo {
         FAKE_LEVEL.setState(blockState);
     }
 
+    public static BlockInfo fromFluid(Fluid fluid) {
+        return fromFluidState(fluid.defaultFluidState());
+    }
+
+    public static BlockInfo fromFluidState(FluidState fluidState) {
+        return fromBlockState(fluidState.createLegacyBlock());
+    }
+
     public static BlockInfo fromBlockState(BlockState state) {
         return new BlockInfo(state);
     }
@@ -69,6 +80,9 @@ public class BlockInfo {
     }
 
     public ItemStack getItemStackForm() {
+        if (GTCEu.isClientThread()) {
+            return new ItemStack(blockState.getBlock());
+        }
         return itemStack == null ? new ItemStack(blockState.getBlock()) : itemStack;
     }
 
@@ -77,6 +91,19 @@ public class BlockInfo {
         if (blockEntity != null) {
             level.setBlockEntity(blockEntity);
         }
+    }
+
+    public boolean isAir() {
+        return blockState.getBlock() == Blocks.AIR;
+    }
+
+    public boolean nonAir() {
+        return !isAir();
+    }
+
+    @Override
+    public String toString() {
+        return "BlockInfo{" + this.getBlockState() + ", hasBE=" + (this.blockEntity != null) + "}";
     }
 
     @Override
