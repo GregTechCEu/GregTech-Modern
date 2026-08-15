@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.client.util;
 
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
@@ -96,6 +98,43 @@ public class RenderBufferHelper {
             sinTheta = sinTheta1;
 
         }
+    }
+
+    public static void renderLine(VertexConsumer buf, PoseStack stack, BlockPos from, BlockPos to, float thickness,
+                                  int colorARGB) {
+        renderLine(buf, stack, from.getCenter().toVector3f(), to.getCenter().toVector3f(), thickness, colorARGB);
+    }
+
+    public static void renderLine(VertexConsumer buf, PoseStack stack, Vector3fc from, Vector3fc to, float thickness,
+                                  int colorARGB) {
+        Vector3f law = GTMath.getFirstPerpendicular(from, to);
+        Vector3f law2 = GTMath.getSecondPerpendicular(from, to, law).mul(thickness);
+        law = law.mul(thickness);
+
+        Vector3f topRight = from.add(law2, new Vector3f());
+        Vector3f bottomRight = from.sub(law, new Vector3f());
+        Vector3f bottomLeft = from.sub(law2, new Vector3f());
+        Vector3f topLeft = from.add(law, new Vector3f());
+        Vector3f topRight2 = to.add(law2, new Vector3f());
+        Vector3f bottomRight2 = to.sub(law, new Vector3f());
+        Vector3f bottomLeft2 = to.sub(law2, new Vector3f());
+        Vector3f topLeft2 = to.add(law, new Vector3f());
+
+        renderSide(buf, stack, topRight, topLeft, bottomRight, bottomLeft, colorARGB);
+        renderSide(buf, stack, topRight2, topRight, bottomRight2, bottomRight, colorARGB);
+        renderSide(buf, stack, topLeft2, topRight2, bottomLeft2, bottomRight2, colorARGB);
+        renderSide(buf, stack, topLeft, topLeft2, bottomLeft, bottomLeft2, colorARGB);
+        renderSide(buf, stack, topRight2, topLeft2, topRight, topLeft, colorARGB);
+        renderSide(buf, stack, bottomLeft2, bottomRight2, bottomLeft, bottomRight, colorARGB);
+    }
+
+    private static void renderSide(VertexConsumer buf, PoseStack poseStack,
+                                   Vector3f tr, Vector3f tl, Vector3f br, Vector3f bl, int colorARGB) {
+        PoseStack.Pose pose = poseStack.last();
+        buf.addVertex(pose, tr).setColor(colorARGB);
+        buf.addVertex(pose, br).setColor(colorARGB);
+        buf.addVertex(pose, bl).setColor(colorARGB);
+        buf.addVertex(pose, tl).setColor(colorARGB);
     }
 
     public static void renderTexturedCube(VertexConsumer buffer, PoseStack.Pose pose, Set<Direction> sidesToRender,

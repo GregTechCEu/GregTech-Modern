@@ -325,6 +325,22 @@ public class GTMath {
         return normal.cross(law).normalize();
     }
 
+    public static Vector3f getFirstPerpendicular(Vector3fc a, Vector3fc b) {
+        Vector3f normal = new Vector3f(a).sub(b).normalize();
+        if (Mth.equal(normal.lengthSquared(), 0.0f)) return normal;
+
+        Vector3fc up = Math.abs(normal.y) < 0.99f ? UNIT_Y : UNIT_X;
+
+        return normal.cross(up).normalize();
+    }
+
+    public static Vector3f getSecondPerpendicular(Vector3fc a, Vector3fc b, Vector3fc firstPerpendicular) {
+        Vector3f normal = new Vector3f(a).sub(b).normalize();
+        if (Mth.equal(normal.lengthSquared(), 0.0f)) return normal;
+
+        return normal.cross(firstPerpendicular).normalize();
+    }
+
     public static Vec3 getCenter(BlockPos a, BlockPos b) {
         Vec3 ac = a.getCenter();
         Vec3 bc = b.getCenter();

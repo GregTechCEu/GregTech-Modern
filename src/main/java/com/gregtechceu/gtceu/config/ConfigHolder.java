@@ -980,6 +980,10 @@ public class ConfigHolder {
             @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
             @Configurable.Gui.ColorValue
             public String assemblyLineLaser = "#1FA1FC";
+
+            public int getAssemblyLineLaserColor() {
+                return Long.decode(assemblyLineLaser).intValue() | 0xff000000;
+            }
         }
 
         public static class TankItemFluidPreview {
