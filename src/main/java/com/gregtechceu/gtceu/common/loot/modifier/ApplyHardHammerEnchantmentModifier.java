@@ -16,6 +16,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Arrays;
 
 public class ApplyHardHammerEnchantmentModifier extends LootModifier {
+
     // spotless:off
     public static final MapCodec<ApplyHardHammerEnchantmentModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance)
             .apply(instance, ApplyHardHammerEnchantmentModifier::new));

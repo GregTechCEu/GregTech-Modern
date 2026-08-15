@@ -688,9 +688,12 @@ public class ToolHelper {
         LootParams.Builder params = new LootParams.Builder(level)
                 .withParameter(LootContextParams.ORIGIN, origin)
                 .withParameter(LootContextParams.TOOL, tool)
-                .withOptionalParameter(LootContextParams.THIS_ENTITY, lootContext.getParamOrNull(LootContextParams.THIS_ENTITY))
-                .withOptionalParameter(LootContextParams.BLOCK_ENTITY, lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY))
-                .withOptionalParameter(LootContextParams.EXPLOSION_RADIUS, lootContext.getParamOrNull(LootContextParams.EXPLOSION_RADIUS));
+                .withOptionalParameter(LootContextParams.THIS_ENTITY,
+                        lootContext.getParamOrNull(LootContextParams.THIS_ENTITY))
+                .withOptionalParameter(LootContextParams.BLOCK_ENTITY,
+                        lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY))
+                .withOptionalParameter(LootContextParams.EXPLOSION_RADIUS,
+                        lootContext.getParamOrNull(LootContextParams.EXPLOSION_RADIUS));
 
         return lootContext.getParam(LootContextParams.BLOCK_STATE).getDrops(params);
     }

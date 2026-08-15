@@ -1,21 +1,21 @@
 {
-    "anvil_cost": 8,
-    "description": {
-        "translate": "enchantment.gtceu.hard_hammer"
-    },
-    "exclusive_set": "#minecraft:exclusive_set/mining",
-    "max_cost": {
-        "base": 60,
-        "per_level_above_first": 0
-    },
-    "max_level": 1,
-    "min_cost": {
-        "base": 20,
-        "per_level_above_first": 0
-    },
-    "slots": [
-        "mainhand"
-    ],
-    "supported_items": "#gtceu:mining_loot_enchantable_excluding_hammers",
-    "weight": 5
+  "anvil_cost": 8,
+  "description": {
+    "translate": "enchantment.gtceu.hard_hammer"
+  },
+  "exclusive_set": "#minecraft:exclusive_set/mining",
+  "max_cost": {
+    "base": 60,
+    "per_level_above_first": 0
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 20,
+    "per_level_above_first": 0
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#gtceu:mining_loot_enchantable_excluding_hammers",
+  "weight": 5
 }

@@ -1,36 +1,36 @@
 {
-    "values": [
-        "minecraft:enderman",
-        "minecraft:endermite",
-        "minecraft:shulker",
-        "minecraft:ender_dragon",
-        {
-            "id": "#c:endermen",
-            "required": false
-        },
-        {
-            "id": "#c:end_mobs",
-            "required": false
-        },
-        {
-            "id": "#c:ender_mobs",
-            "required": false
-        },
-        {
-            "id": "#c:ender",
-            "required": false
-        },
-        {
-            "id": "#c:enders",
-            "required": false
-        },
-        {
-            "id": "#c:shulkers",
-            "required": false
-        },
-        {
-            "id": "#c:endermites",
-            "required": false
-        }
-    ]
+  "values": [
+    "minecraft:enderman",
+    "minecraft:endermite",
+    "minecraft:shulker",
+    "minecraft:ender_dragon",
+    {
+      "id": "#c:endermen",
+      "required": false
+    },
+    {
+      "id": "#c:end_mobs",
+      "required": false
+    },
+    {
+      "id": "#c:ender_mobs",
+      "required": false
+    },
+    {
+      "id": "#c:ender",
+      "required": false
+    },
+    {
+      "id": "#c:enders",
+      "required": false
+    },
+    {
+      "id": "#c:shulkers",
+      "required": false
+    },
+    {
+      "id": "#c:endermites",
+      "required": false
+    }
+  ]
 }

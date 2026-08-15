@@ -28,6 +28,7 @@ public class GTLootModifications extends GlobalLootModifierProvider {
 
     @Override
     protected void start() {
+        // spotless:off
         HolderLookup.RegistryLookup<Enchantment> enchantments = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
 
         add("hard_hammer_enchant", ApplyHardHammerEnchantmentModifier.of(
@@ -35,7 +36,10 @@ public class GTLootModifications extends GlobalLootModifierProvider {
                 toolMatches(item()
                         .withSubPredicate(ItemSubPredicates.ENCHANTMENTS,
                                 enchantments(List.of(
-                                        new EnchantmentPredicate(enchantments.getOrThrow(CustomTags.PREVENTS_HAMMER_CRUSHING), MinMaxBounds.Ints.ANY)
+                                        new EnchantmentPredicate(
+                                                enchantments.getOrThrow(CustomTags.PREVENTS_HAMMER_CRUSHING),
+                                                MinMaxBounds.Ints.ANY
+                                        )
                                 ))
                         )
                 ).invert(),
@@ -44,7 +48,10 @@ public class GTLootModifications extends GlobalLootModifierProvider {
                         toolMatches(item()
                                 .withSubPredicate(ItemSubPredicates.ENCHANTMENTS,
                                         enchantments(List.of(
-                                                new EnchantmentPredicate(enchantments.getOrThrow(GTEnchantments.HARD_HAMMER), MinMaxBounds.Ints.atLeast(1))
+                                                new EnchantmentPredicate(
+                                                        enchantments.getOrThrow(GTEnchantments.HARD_HAMMER),
+                                                        MinMaxBounds.Ints.atLeast(1)
+                                                )
                                         ))
                                 )
                         ),
@@ -52,5 +59,6 @@ public class GTLootModifications extends GlobalLootModifierProvider {
                         toolMatches(item().of(CustomTags.TOOLS_HAMMER))
                 )
         ));
+        // spotless:on
     }
 }

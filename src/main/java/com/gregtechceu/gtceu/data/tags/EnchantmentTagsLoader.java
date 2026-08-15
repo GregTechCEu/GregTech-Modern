@@ -26,8 +26,8 @@ public class EnchantmentTagsLoader extends EnchantmentTagsProvider {
     // spotless:off
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
-        // noinspection unchecked
-        this.tooltipOrder(provider,
+        // don't use `tooltipOrder` because that requires all enchants to be in the input array
+        this.tag(EnchantmentTags.TOOLTIP_ORDER).add(
                 GTEnchantments.HARD_HAMMER,
                 GTEnchantments.DISJUNCTION
         );

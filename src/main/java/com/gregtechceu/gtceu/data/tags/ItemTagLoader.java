@@ -201,7 +201,7 @@ public class ItemTagLoader {
         provider.addTag(CustomTags.MINING_LOOT_ENCHANTABLE_EXCEPT_HAMMERS)
                 .addTag(ItemTags.MINING_LOOT_ENCHANTABLE)
                 .remove(CustomTags.TOOLS_HAMMER);
-        }
+    }
 
     private static IntrinsicHolderTagsProvider.IntrinsicTagAppender<Item> addTag(RegistrateItemTagsProvider provider,
                                                                                  TagPrefix prefix, Material material) {
