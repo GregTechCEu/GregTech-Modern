@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.capability;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * MUST be implemented on any multiblock which uses
@@ -19,52 +19,50 @@ public interface IOpticalComputationProvider {
      * @return The amount of CWU/t that could be supplied.
      */
     default int requestCWUt(int cwut, boolean simulate) {
-        Collection<IOpticalComputationProvider> list = new ArrayList<>();
-        list.add(this);
-        return requestCWUt(cwut, simulate, list);
+        Map<IOpticalComputationProvider, Object> seenWithContext = new HashMap<>();
+        return requestCWUt(cwut, simulate, seenWithContext);
     }
 
     /**
      * Request some amount of CWU/t (Compute Work Units per tick) from this Machine.
      * Implementors should expect these requests to occur each tick that computation is required.
      *
-     * @param cwut Maximum amount of CWU/t requested.
-     * @param seen The Optical Computation Providers already checked
+     * @param cwut            Maximum amount of CWU/t requested.
+     * @param seenWithContext The Optical Computation Providers already checked, with provider-specific context for
+     *                        simulation case
      * @return The amount of CWU/t that could be supplied.
      */
-    int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen);
+    int requestCWUt(int cwut, boolean simulate, @NotNull Map<IOpticalComputationProvider, Object> seenWithContext);
 
     /**
      * The maximum of CWU/t that this computation provider can provide.
      */
     default int getMaxCWUt() {
-        Collection<IOpticalComputationProvider> list = new ArrayList<>();
-        list.add(this);
-        return getMaxCWUt(list);
+        Map<IOpticalComputationProvider, Object> seenWithContext = new HashMap<>();
+        return getMaxCWUt(seenWithContext);
     }
 
     /**
      * The maximum of CWU/t that this computation provider can provide.
      *
-     * @param seen The Optical Computation Providers already checked
+     * @param seenWithContext The Optical Computation Providers already checked
      */
-    int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen);
+    int getMaxCWUt(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext);
 
     /**
      * Whether this Computation Provider can "Bridge" with other Computation Providers.
      * Checked by machines like the Network Switch.
      */
     default boolean canBridge() {
-        Collection<IOpticalComputationProvider> list = new ArrayList<>();
-        list.add(this);
-        return canBridge(list);
+        Map<IOpticalComputationProvider, Object> seenWithContext = new HashMap<>();
+        return canBridge(seenWithContext);
     }
 
     /**
      * Whether this Computation Provider can "Bridge" with other Computation Providers.
      * Checked by machines like the Network Switch.
      *
-     * @param seen The Optical Computation Providers already checked
+     * @param seenWithContext The Optical Computation Providers already checked
      */
-    boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen);
+    boolean canBridge(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext);
 }

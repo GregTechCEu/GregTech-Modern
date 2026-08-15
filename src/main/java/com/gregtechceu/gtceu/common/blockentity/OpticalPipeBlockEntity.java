@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.Map;
 
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> {
 
@@ -178,17 +179,18 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     private static class DefaultComputationHandler implements IOpticalComputationProvider {
 
         @Override
-        public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+        public int requestCWUt(int cwut, boolean simulate,
+                               @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
             return 0;
         }
 
         @Override
-        public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public int getMaxCWUt(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
             return 0;
         }
 
         @Override
-        public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public boolean canBridge(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
             return false;
         }
     }

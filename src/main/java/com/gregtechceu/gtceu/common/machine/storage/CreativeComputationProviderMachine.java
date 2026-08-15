@@ -24,7 +24,7 @@ import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -71,10 +71,12 @@ public class CreativeComputationProviderMachine extends MetaMachine
         }
     }
 
+    private static final Object PLACEHOLDER_TRANSFER_CONTEXT = new Object();
+
     @Override
     public int requestCWUt(
-                           int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+                           int cwut, boolean simulate, Map<IOpticalComputationProvider, Object> seenWithContext) {
+        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
         int requestedCWUt = workingEnabled ? Math.min(cwut, maxCWUt) : 0;
         if (!simulate) {
             this.requestedCWUPerSec += requestedCWUt;
@@ -83,14 +85,14 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public int getMaxCWUt(Map<IOpticalComputationProvider, Object> seenWithContext) {
+        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
         return workingEnabled ? maxCWUt : 0;
     }
 
     @Override
-    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public boolean canBridge(Map<IOpticalComputationProvider, Object> seenWithContext) {
+        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
         return true;
     }
 

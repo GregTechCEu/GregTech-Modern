@@ -161,21 +161,23 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         this.hpcaHandler.onStructureInvalidate();
     }
 
+    private static final Object PLACEHOLDER_TRANSFER_CONTEXT = new Object();
+
     @Override
-    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public int requestCWUt(int cwut, boolean simulate, Map<IOpticalComputationProvider, Object> seenWithContext) {
+        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
         return isActive() && isWorkingEnabled() && !hasNotEnoughEnergy ? hpcaHandler.allocateCWUt(cwut, simulate) : 0;
     }
 
     @Override
-    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public int getMaxCWUt(Map<IOpticalComputationProvider, Object> seenWithContext) {
+        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
         return isActive() && isWorkingEnabled() ? hpcaHandler.getMaxCWUt() : 0;
     }
 
     @Override
-    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public boolean canBridge(Map<IOpticalComputationProvider, Object> seenWithContext) {
+        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
         // don't show a problem if the structure is not yet formed
         return !isFormed() || hpcaHandler.hasHPCABridge();
     }

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationProvider {
 
@@ -49,21 +50,22 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate,
+                           @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
         if (cwut == 0) return 0;
-        int provided = traverseRequestCWUt(cwut, simulate, seen);
-        if (provided > 0) setPipesActive();
+        int provided = traverseRequestCWUt(cwut, simulate, seenWithContext);
+        if (provided > 0 && !simulate) setPipesActive();
         return provided;
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-        return traverseMaxCWUt(seen);
+    public int getMaxCWUt(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+        return traverseMaxCWUt(seenWithContext);
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-        return traverseCanBridge(seen);
+    public boolean canBridge(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+        return traverseCanBridge(seenWithContext);
     }
 
     private void setPipesActive() {
@@ -93,33 +95,35 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
         return false;
     }
 
-    private int traverseRequestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
-        IOpticalComputationProvider provider = getComputationProvider(seen);
+    private int traverseRequestCWUt(int cwut, boolean simulate,
+                                    @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+        IOpticalComputationProvider provider = getComputationProvider(seenWithContext);
         if (provider == null) return 0;
-        return provider.requestCWUt(cwut, simulate, seen);
+        return provider.requestCWUt(cwut, simulate, seenWithContext);
     }
 
-    private int traverseMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-        IOpticalComputationProvider provider = getComputationProvider(seen);
+    private int traverseMaxCWUt(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+        IOpticalComputationProvider provider = getComputationProvider(seenWithContext);
         if (provider == null) return 0;
-        return provider.getMaxCWUt(seen);
+        return provider.getMaxCWUt(seenWithContext);
     }
 
-    private boolean traverseCanBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-        IOpticalComputationProvider provider = getComputationProvider(seen);
+    private boolean traverseCanBridge(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+        IOpticalComputationProvider provider = getComputationProvider(seenWithContext);
         if (provider == null) return true; // nothing found, so don't report a problem, just pass quietly
-        return provider.canBridge(seen);
+        return provider.canBridge(seenWithContext);
     }
 
     @Nullable
-    private IOpticalComputationProvider getComputationProvider(@NotNull Collection<IOpticalComputationProvider> seen) {
+    private IOpticalComputationProvider getComputationProvider(
+                                                               @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
         if (isNetInvalidForTraversal()) return null;
 
         OpticalRoutePath inv = net.getNetData(pipe.getBlockPos(), facing);
         if (inv == null) return null;
 
         IOpticalComputationProvider hatch = inv.getComputationHatch();
-        if (hatch == null || seen.contains(hatch)) return null;
+        if (hatch == null || seenWithContext.containsKey(hatch)) return null;
         return hatch;
     }
 }
