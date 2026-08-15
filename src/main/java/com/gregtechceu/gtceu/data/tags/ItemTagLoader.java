@@ -99,9 +99,9 @@ public class ItemTagLoader {
         provider.addTag(GTTags.Items.CIRCUITS_UXV);
         provider.addTag(GTTags.Items.CIRCUITS_OpV);
         provider.addTag(GTTags.Items.CIRCUITS_MAX);
-        provider.addTag(GTTags.Items.CIRCUITS).addTags(GTTags.Items.CIRCUITS_ARRAY);
+        provider.addTag(GTTags.Items.CIRCUITS).addTags(GTTags.Items.CIRCUITS_BY_TIER);
 
-        provider.addTag(GTTags.Items.BATTERIES).addTags(GTTags.Items.BATTERIES_ARRAY);
+        provider.addTag(GTTags.Items.BATTERIES).addTags(GTTags.Items.BATTERIES_BY_TIER);
 
         // Add highTierContent items as optional entries so it doesn't error
         provider.addTag(GTTags.Items.ELECTRIC_MOTORS)

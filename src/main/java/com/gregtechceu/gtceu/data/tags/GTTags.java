@@ -164,7 +164,7 @@ public class GTTags {
         public static final TagKey<Item> CIRCUITS_OpV = TagUtil.createModItemTag("circuits/opv");
         public static final TagKey<Item> CIRCUITS_MAX = TagUtil.createModItemTag("circuits/max");
         @SuppressWarnings("unchecked")
-        public static final TagKey<Item>[] CIRCUITS_ARRAY = new TagKey[] {
+        public static final TagKey<Item>[] CIRCUITS_BY_TIER = new TagKey[] {
                 CIRCUITS_ULV,
                 CIRCUITS_LV,
                 CIRCUITS_MV,
@@ -196,7 +196,7 @@ public class GTTags {
         public static final TagKey<Item> BATTERIES_UHV = TagUtil.createModItemTag("batteries/uhv");
 
         @SuppressWarnings("unchecked")
-        public static final TagKey<Item>[] BATTERIES_ARRAY = new TagKey[] {
+        public static final TagKey<Item>[] BATTERIES_BY_TIER = new TagKey[] {
                 BATTERIES_ULV,
                 BATTERIES_LV,
                 BATTERIES_MV,
