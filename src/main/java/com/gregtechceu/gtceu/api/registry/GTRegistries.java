@@ -151,6 +151,7 @@ public final class GTRegistries {
 
     private static final Table<Registry<?>, ResourceLocation, Object> TO_REGISTER = HashBasedTable.create();
     private static boolean isFrozen = true;
+    private static boolean registriesClosed = false;
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
@@ -163,6 +164,10 @@ public final class GTRegistries {
             if (!isFrozen) {
                 Registry.register(registry, name, value);
             } else {
+                if (registriesClosed) throw new IllegalStateException(
+                        "Attempted to register content after register events have been fired.");
+                if (TO_REGISTER.contains(registry, name))
+                    throw new IllegalStateException("Registry %s contains key %s already".formatted(registryKey, name));
                 TO_REGISTER.put(registry, name, value);
             }
         }
@@ -188,6 +193,7 @@ public final class GTRegistries {
 
     private static void onFreeze(IdMappingEvent event) {
         isFrozen = event.isFrozen();
+        registriesClosed = true;
     }
 
     public static void init(IEventBus eventBus) {
