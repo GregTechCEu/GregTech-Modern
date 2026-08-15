@@ -1,14 +1,14 @@
 {
-    "type": "neoforge:add_table",
-    "conditions": [
-        {
-            "condition": "gtceu:config_value",
-            "config_field": "worldgen.addLoot"
-        },
-        {
-            "condition": "neoforge:loot_table_id",
-            "loot_table_id": "minecraft:chests/desert_pyramid"
-        }
-    ],
-    "table": "gtceu:chests/extra/desert_pyramid"
+  "type": "neoforge:add_table",
+  "conditions": [
+    {
+      "condition": "gtceu:config_value",
+      "config_field": "worldgen.addLoot"
+    },
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/desert_pyramid"
+    }
+  ],
+  "table": "gtceu:chests/extra/desert_pyramid"
 }
