@@ -195,7 +195,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     @Override
     public GTRecipeType register() {
-        var type = GTRecipeTypes.register(name, category);
+        var type = GTRecipeTypes.register(id, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
         if (this.layout != null) {
