@@ -1,4 +1,5 @@
 {
+  "argument.medical_condition.id.invalid": "Unknown medical condition %s",
   "behavior.data_item.data": "- §a%s",
   "behavior.data_item.title": "§n%s Construction Data:",
   "behavior.item_magnet.disabled": "§cMagnetic Field Disabled",

@@ -40,7 +40,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
 
     @Override
     public TagPrefix create(ResourceLocation id) {
-        return new TagPrefix(id)
+        return new TagPrefix(id, false, false)
                 .defaultTagPath("ores/%s")
                 .prefixOnlyTagPath("ores_in_ground/%s")
                 .unformattedTagPath("ores")

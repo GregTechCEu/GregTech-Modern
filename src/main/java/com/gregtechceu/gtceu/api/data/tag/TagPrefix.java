@@ -1069,12 +1069,16 @@ public class TagPrefix {
     }
 
     public TagPrefix(ResourceLocation id, boolean invertedName) {
+        this(id, invertedName, true);
+    }
+
+    public TagPrefix(ResourceLocation id, boolean invertedName, boolean register) {
         this.id = id;
         this.name = id.getPath();
         this.idPattern = "%s_" + name;
         this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(name);
-        GTRegistries.register(GTRegistries.TAG_PREFIXES, id, this);
+        if (register) GTRegistries.register(GTRegistries.TAG_PREFIXES, id, this);
     }
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {

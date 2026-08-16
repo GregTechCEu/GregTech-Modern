@@ -36,7 +36,7 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     }
 
     public TagPrefix create(ResourceLocation id) {
-        return new TagPrefix(id);
+        return new TagPrefix(id, false, false);
     }
 
     @Override

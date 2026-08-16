@@ -18,7 +18,7 @@ import java.util.Objects;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GTSoundEntries {
 
     // Machine Sounds

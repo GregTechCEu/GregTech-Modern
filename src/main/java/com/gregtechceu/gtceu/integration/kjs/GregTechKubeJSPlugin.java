@@ -215,14 +215,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         }
     }
 
-    public static void generateMachineBlockModels() {
-        GTRegistryInfo.MACHINE.forEach(builderBase -> {
-            try {
-                builderBase.generateAssetJsons(null);
-            } catch (IllegalStateException ignored) {}
-        });
-    }
-
     @Override
     public void registerClasses(ScriptType type, ClassFilter filter) {
         super.registerClasses(type, filter);
@@ -373,6 +365,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         super.registerTypeWrappers(type, typeWrappers);
+
+        typeWrappers.registerSimple(GTResourceLocation.class, GTResourceLocation::wrap);
 
         registryObjectTypeWrapper(typeWrappers, GTRecipeType.class, GTRegistries.Keys.RECIPE_TYPE);
         registryObjectTypeWrapper(typeWrappers, GTRecipeCategory.class, GTRegistries.Keys.RECIPE_CATEGORY);
