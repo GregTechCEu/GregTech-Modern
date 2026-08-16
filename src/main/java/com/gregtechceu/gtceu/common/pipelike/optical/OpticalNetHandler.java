@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationProvider {
 
@@ -51,21 +52,24 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
 
     @Override
     public int requestCWUt(int cwut, boolean simulate,
-                           @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+                           @NotNull Set<IOpticalComputationProvider> seen,
+                           @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
         if (cwut == 0) return 0;
-        int provided = traverseRequestCWUt(cwut, simulate, seenWithContext);
+        int provided = traverseRequestCWUt(cwut, simulate, seen, simulationState);
         if (provided > 0 && !simulate) setPipesActive();
         return provided;
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
-        return traverseMaxCWUt(seenWithContext);
+    public int getMaxCWUt(@NotNull Set<IOpticalComputationProvider> seen,
+                          @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
+        return traverseMaxCWUt(seen, simulationState);
     }
 
     @Override
-    public boolean canBridge(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
-        return traverseCanBridge(seenWithContext);
+    public boolean canBridge(@NotNull Set<IOpticalComputationProvider> seen,
+                             @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
+        return traverseCanBridge(seen, simulationState);
     }
 
     private void setPipesActive() {
@@ -96,34 +100,36 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     }
 
     private int traverseRequestCWUt(int cwut, boolean simulate,
-                                    @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
-        IOpticalComputationProvider provider = getComputationProvider(seenWithContext);
+                                    @NotNull Set<IOpticalComputationProvider> seen,
+                                    @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
+        IOpticalComputationProvider provider = getComputationProvider(seen);
         if (provider == null) return 0;
-        return provider.requestCWUt(cwut, simulate, seenWithContext);
+        return provider.requestCWUt(cwut, simulate, seen, simulationState);
     }
 
-    private int traverseMaxCWUt(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
-        IOpticalComputationProvider provider = getComputationProvider(seenWithContext);
+    private int traverseMaxCWUt(@NotNull Set<IOpticalComputationProvider> seen,
+                                @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
+        IOpticalComputationProvider provider = getComputationProvider(seen);
         if (provider == null) return 0;
-        return provider.getMaxCWUt(seenWithContext);
+        return provider.getMaxCWUt(seen, simulationState);
     }
 
-    private boolean traverseCanBridge(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
-        IOpticalComputationProvider provider = getComputationProvider(seenWithContext);
+    private boolean traverseCanBridge(@NotNull Set<IOpticalComputationProvider> seen,
+                                      @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
+        IOpticalComputationProvider provider = getComputationProvider(seen);
         if (provider == null) return true; // nothing found, so don't report a problem, just pass quietly
-        return provider.canBridge(seenWithContext);
+        return provider.canBridge(seen, simulationState);
     }
 
     @Nullable
-    private IOpticalComputationProvider getComputationProvider(
-                                                               @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+    private IOpticalComputationProvider getComputationProvider(@NotNull Set<IOpticalComputationProvider> seen) {
         if (isNetInvalidForTraversal()) return null;
 
         OpticalRoutePath inv = net.getNetData(pipe.getBlockPos(), facing);
         if (inv == null) return null;
 
         IOpticalComputationProvider hatch = inv.getComputationHatch();
-        if (hatch == null || seenWithContext.containsKey(hatch)) return null;
+        if (hatch == null || seen.contains(hatch)) return null;
         return hatch;
     }
 }

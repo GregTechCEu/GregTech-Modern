@@ -27,6 +27,7 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> {
 
@@ -180,17 +181,20 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
 
         @Override
         public int requestCWUt(int cwut, boolean simulate,
-                               @NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+                               @NotNull Set<IOpticalComputationProvider> seen,
+                               @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
             return 0;
         }
 
         @Override
-        public int getMaxCWUt(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+        public int getMaxCWUt(@NotNull Set<IOpticalComputationProvider> seen,
+                              @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
             return 0;
         }
 
         @Override
-        public boolean canBridge(@NotNull Map<IOpticalComputationProvider, Object> seenWithContext) {
+        public boolean canBridge(@NotNull Set<IOpticalComputationProvider> seen,
+                                 @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
             return false;
         }
     }

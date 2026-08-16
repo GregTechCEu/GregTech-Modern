@@ -25,6 +25,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -71,12 +72,11 @@ public class CreativeComputationProviderMachine extends MetaMachine
         }
     }
 
-    private static final Object PLACEHOLDER_TRANSFER_CONTEXT = new Object();
-
     @Override
     public int requestCWUt(
-                           int cwut, boolean simulate, Map<IOpticalComputationProvider, Object> seenWithContext) {
-        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
+                           int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                           Map<IOpticalComputationProvider, Object> simulationState) {
+        seen.add(this);
         int requestedCWUt = workingEnabled ? Math.min(cwut, maxCWUt) : 0;
         if (!simulate) {
             this.requestedCWUPerSec += requestedCWUt;
@@ -85,14 +85,16 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public int getMaxCWUt(Map<IOpticalComputationProvider, Object> seenWithContext) {
-        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
+    public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                          Map<IOpticalComputationProvider, Object> simulationState) {
+        seen.add(this);
         return workingEnabled ? maxCWUt : 0;
     }
 
     @Override
-    public boolean canBridge(Map<IOpticalComputationProvider, Object> seenWithContext) {
-        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
+    public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                             Map<IOpticalComputationProvider, Object> simulationState) {
+        seen.add(this);
         return true;
     }
 

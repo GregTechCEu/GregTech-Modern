@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableComputationContainer;
 
@@ -26,8 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class NetworkSwitchMachine extends DataBankMachine implements IOpticalComputationProvider {
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.IV];
-
-    private static final Object PLACEHOLDER_TRANSFER_CONTEXT = new Object();
 
     private final MultipleComputationHandler computationHandler;
 
@@ -95,22 +94,25 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, Map<IOpticalComputationProvider, Object> seenWithContext) {
-        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
+    public int requestCWUt(int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                           Map<IOpticalComputationProvider, Object> simulationState) {
+        seen.add(this);
         return isActive() && !getRecipeLogic().isWaiting() ?
-                computationHandler.requestCWUt(cwut, simulate, seenWithContext) : 0;
+                computationHandler.requestCWUt(cwut, simulate, seen, simulationState) : 0;
     }
 
     @Override
-    public int getMaxCWUt(Map<IOpticalComputationProvider, Object> seenWithContext) {
-        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
-        return isFormed() ? computationHandler.getMaxCWUt(seenWithContext) : 0;
+    public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                          Map<IOpticalComputationProvider, Object> simulationState) {
+        seen.add(this);
+        return isFormed() ? computationHandler.getMaxCWUt(seen, simulationState) : 0;
     }
 
     // allows chaining Network Switches together
     @Override
-    public boolean canBridge(Map<IOpticalComputationProvider, Object> seenWithContext) {
-        seenWithContext.put(this, PLACEHOLDER_TRANSFER_CONTEXT);
+    public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                             Map<IOpticalComputationProvider, Object> simulationState) {
+        seen.add(this);
         return true;
     }
 
@@ -158,7 +160,8 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
                 return new SwitchTransferContext(-1, false);
             }
 
-            public SwitchTransferContext conditionalTimedUpdate(long timer) {
+            public SwitchTransferContext conditionalTimedUpdate(MetaMachine machine) {
+                long timer = machine.getOffsetTimer();
                 if (timerCWUt != timer) {
                     return new SwitchTransferContext(timer, false);
                 }
@@ -189,27 +192,36 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         }
 
         @Override
-        public int requestCWUt(int cwut, boolean simulate, Map<IOpticalComputationProvider, Object> seenWithContext) {
-            if (seenWithContext.containsKey(this)) return 0;
+        public int requestCWUt(int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                               Map<IOpticalComputationProvider, Object> simulationState) {
+            if (seen.contains(this)) return 0;
+            seen.add(this);
 
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
-            SwitchTransferContext localContext = this.transferContext
-                    .conditionalTimedUpdate(NetworkSwitchMachine.this.getOffsetTimer());
-            seenWithContext.put(this, localContext);
+            SwitchTransferContext localTransferContext = (SwitchTransferContext) simulationState.getOrDefault(this,
+                    this.transferContext);
+            localTransferContext = localTransferContext.conditionalTimedUpdate(getMachine());
+            if (!simulate) {
+                this.transferContext = localTransferContext;
+            } else {
+                simulationState.put(this, localTransferContext);
+            }
 
             // Exit early if this Network Switch has already provided all available CWUt on its subnetwork for this tick
-            if (cwut == 0 || localContext.tickSaturated()) {
+            if (cwut == 0 || localTransferContext.tickSaturated()) {
                 if (!simulate) {
-                    this.transferContext = localContext;
+                    this.transferContext = localTransferContext;
+                } else {
+                    simulationState.put(this, localTransferContext);
                 }
                 return 0;
             }
 
-            Map<IOpticalComputationProvider, Object> bridgeSeen = new HashMap<>(seenWithContext);
+            Set<IOpticalComputationProvider> bridgeSeen = new HashSet<>(seen);
             int allocatedCWUt = 0;
             for (var provider : providers) {
-                if (!provider.canBridge(bridgeSeen)) continue;
-                int allocated = provider.requestCWUt(cwut, simulate, seenWithContext);
+                if (!provider.canBridge(bridgeSeen, simulationState)) continue;
+                int allocated = provider.requestCWUt(cwut, simulate, seen, simulationState);
                 allocatedCWUt += allocated;
                 cwut -= allocated;
                 if (cwut == 0) break;
@@ -217,49 +229,52 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
 
             if (allocatedCWUt == 0) {
                 // No computation left to give, remember this for subsequent calls this tick
-                localContext = localContext.markSaturated();
-                seenWithContext.put(this, localContext);
-            }
-
-            if (!simulate) {
-                this.transferContext = localContext;
+                localTransferContext = localTransferContext.markSaturated();
+                if (!simulate) {
+                    this.transferContext = localTransferContext;
+                } else {
+                    simulationState.put(this, localTransferContext);
+                }
             }
 
             return allocatedCWUt;
         }
 
         public int getMaxCWUtForDisplay() {
-            Map<IOpticalComputationProvider, Object> seenWithContext = new HashMap<>();
+            Set<IOpticalComputationProvider> seen = new HashSet<>();
+            Map<IOpticalComputationProvider, Object> simulationState = new HashMap<>();
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
-            seenWithContext.put(this, this.transferContext);
-            Map<IOpticalComputationProvider, Object> bridgeSeen = new HashMap<>(seenWithContext);
+            seen.add(this);
+            Set<IOpticalComputationProvider> bridgeSeen = new HashSet<>(seen);
             int maximumCWUt = 0;
             for (var provider : providers) {
-                if (!provider.canBridge(bridgeSeen)) continue;
-                maximumCWUt += provider.getMaxCWUt(seenWithContext);
+                if (!provider.canBridge(bridgeSeen, simulationState)) continue;
+                maximumCWUt += provider.getMaxCWUt(seen, simulationState);
             }
             return maximumCWUt;
         }
 
-        public int getMaxCWUt(Map<IOpticalComputationProvider, Object> seenWithContext) {
-            if (seenWithContext.containsKey(this)) return 0;
+        public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                              Map<IOpticalComputationProvider, Object> simulationState) {
+            if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
-            seenWithContext.put(this, this.transferContext);
-            Map<IOpticalComputationProvider, Object> bridgeSeen = new HashMap<>(seenWithContext);
+            seen.add(this);
+            Set<IOpticalComputationProvider> bridgeSeen = new HashSet<>(seen);
             int maximumCWUt = 0;
             for (var provider : providers) {
-                if (!provider.canBridge(bridgeSeen)) continue;
-                maximumCWUt += provider.getMaxCWUt(seenWithContext);
+                if (!provider.canBridge(bridgeSeen, simulationState)) continue;
+                maximumCWUt += provider.getMaxCWUt(seen, simulationState);
             }
             return maximumCWUt;
         }
 
         @Override
-        public boolean canBridge(Map<IOpticalComputationProvider, Object> seenWithContext) {
-            if (seenWithContext.containsKey(this)) return false;
-            seenWithContext.put(this, this.transferContext);
+        public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                                 Map<IOpticalComputationProvider, Object> simulationState) {
+            if (seen.contains(this)) return false;
+            seen.add(this);
             for (var provider : providers) {
-                if (provider.canBridge(seenWithContext)) {
+                if (provider.canBridge(seen, simulationState)) {
                     return true;
                 }
             }
@@ -268,9 +283,10 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
 
         /** Test if any of the provider hatches do not allow bridging */
         private boolean hasNonBridgingConnections() {
-            Map<IOpticalComputationProvider, Object> seenWithContext = new HashMap<>();
+            Set<IOpticalComputationProvider> seen = new HashSet<>();
+            Map<IOpticalComputationProvider, Object> simulationState = new HashMap<>();
             for (var provider : providers) {
-                if (!provider.canBridge(seenWithContext)) {
+                if (!provider.canBridge(seen, simulationState)) {
                     return true;
                 }
             }
