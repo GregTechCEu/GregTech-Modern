@@ -50,7 +50,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
     }
 
     /**
-     * Returns a list of contents for of this handler for the purposes of recipe searching.
+     * Returns a list of contents of this handler for the purposes of recipe searching.
      * The implementations must be pure, e.g. should not introduce no visible side effects.
      * Multiple getContents invocations can happen in parallel during recipe lookup.
      * 
@@ -61,7 +61,8 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
     List<Object> getContents();
 
     /**
-     * Returns a list of contents for of this handler for the purposes of recipe searching.
+     * Returns a total amount of contents (meaning of that is content type-specific)
+     * in this handler for purposes of recipe searching.
      * The implementations must be pure, e.g. should not introduce no visible side effects.
      * Multiple getContents invocations can happen in parallel during recipe lookup.
      *
