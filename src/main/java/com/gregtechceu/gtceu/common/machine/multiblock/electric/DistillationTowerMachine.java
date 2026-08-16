@@ -166,7 +166,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 recipe.outputChanceLogics,
                 recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
                 recipe.ingredientActions,
-                recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor);
+                recipe.data, recipe.duration, recipe.recipeCategory);
     }
 
     public static class DistillationTowerLogic extends RecipeLogic {
@@ -196,7 +196,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var match = matchDTRecipe(recipe);
             if (!match.isSuccess()) return match;
 
-            return RecipeHelper.matchTickRecipe(getMachine(), recipe);
+            return RecipeHelper.matchTickRecipe(getMachine(), recipe, match.assignedGroupColor());
         }
 
         @Override
@@ -207,14 +207,14 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
         private ActionResult matchDTRecipe(GTRecipe recipe) {
             var result = RecipeHelper.handleRecipe(getMachine(), recipe, IO.IN, recipe.inputs,
-                    Collections.emptyMap(), false, true);
+                    Collections.emptyMap(), false, true, -1);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
                 result = RecipeHelper.handleRecipe(getMachine(), recipe, IO.OUT, out, Collections.emptyMap(), false,
-                        true);
+                        true, result.assignedGroupColor());
                 if (!result.isSuccess()) return result;
             }
 
@@ -224,7 +224,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                         .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
             }
 
-            return ActionResult.SUCCESS;
+            return ActionResult.success(result.assignedGroupColor());
         }
 
         private void updateWorkingRecipe(GTRecipe recipe) {
@@ -246,9 +246,9 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         @Override
-        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
+        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io, int assignedGroupColor) {
             if (io != IO.OUT) {
-                var handleIO = super.handleRecipeIO(recipe, io);
+                var handleIO = super.handleRecipeIO(recipe, io, assignedGroupColor);
                 if (handleIO.isSuccess()) {
                     updateWorkingRecipe(recipe);
                 } else {
@@ -260,12 +260,13 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                RecipeHelper.handleRecipe(getMachine(), recipe, io, out, chanceCaches, false, false);
+                RecipeHelper.handleRecipe(getMachine(), recipe, io, out, chanceCaches, false, false,
+                        assignedGroupColor);
             }
 
             if (applyFluidOutputs(recipe, FluidAction.EXECUTE, getMachine().getVoidingMode())) {
                 workingRecipe = null;
-                return ActionResult.SUCCESS;
+                return ActionResult.success(assignedGroupColor);
             }
 
             return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")

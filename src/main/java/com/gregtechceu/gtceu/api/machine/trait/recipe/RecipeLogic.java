@@ -137,6 +137,9 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     @Setter
     protected boolean suspendAfterFinish = false;
     @Getter
+    @SaveField
+    protected int runningRecipeGroupColor = -1; // Group color for the running recipe object
+    @Getter
     @SaveField(nbtKey = "chance_cache")
     protected final IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = makeChanceCaches();
     protected @Nullable TickableSubscription subscription;
@@ -305,7 +308,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         if (modified != null) {
             var recipeMatch = checkRecipe(modified);
             if (recipeMatch.isSuccess()) {
-                setupRecipe(modified);
+                setupRecipe(modified, recipeMatch.assignedGroupColor());
             } else {
                 recordFailureReason(match, recipeMatch.reason(), recipeMatch.score());
             }
@@ -322,7 +325,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         assert lastRecipe != null;
         var conditionResult = RecipeHelper.checkConditions(lastRecipe, this);
         if (conditionResult.isSuccess()) {
-            var handleTick = handleTickRecipe(lastRecipe);
+            var handleTick = handleTickRecipe(lastRecipe, runningRecipeGroupColor);
             if (handleTick.isSuccess()) {
                 setStatus(Status.WORKING);
                 if (!getRLMachine().onWorking()) {
@@ -393,7 +396,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 lastRecipe = null;
                 lastUnrolledRecipe = null;
                 lastOriginRecipe = null;
-                setupRecipe(last);
+                setupRecipe(last, lastCheck.assignedGroupColor());
                 recipeDirty = false;
                 return;
             }
@@ -430,10 +433,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         }
     }
 
-    public ActionResult handleTickRecipe(GTRecipe recipe) {
-        if (!recipe.hasTick()) return ActionResult.SUCCESS;
+    public ActionResult handleTickRecipe(GTRecipe recipe, int recipeGroupColor) {
+        if (!recipe.hasTick()) return ActionResult.success(recipeGroupColor);
 
-        var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe);
+        var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe, recipeGroupColor);
         if (!result.isSuccess()) return result;
 
         if (lastUnrolledRecipe == null) {
@@ -444,14 +447,14 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         }
         GTRecipe runningRecipe = RecipeHelper.doTickPrerolls(recipe, chanceCaches, lastUnrolledRecipe);
 
-        result = handleTickRecipeIO(runningRecipe, IO.IN);
+        result = handleTickRecipeIO(runningRecipe, IO.IN, recipeGroupColor);
         if (!result.isSuccess()) return result;
 
-        result = handleTickRecipeIO(runningRecipe, IO.OUT);
+        result = handleTickRecipeIO(runningRecipe, IO.OUT, recipeGroupColor);
         return result;
     }
 
-    public void setupRecipe(GTRecipe recipe) {
+    public void setupRecipe(GTRecipe recipe, int recipeGroupColor) {
         if (!getRLMachine().beforeWorking(recipe)) {
             setStatus(Status.IDLE);
             consecutiveRecipes = 0;
@@ -467,13 +470,14 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         lastUnrolledRecipe = recipe.copy();
         syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
         GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
-        var handledIO = handleRecipeIO(runningRecipe, IO.IN);
+        var handledIO = handleRecipeIO(runningRecipe, IO.IN, recipeGroupColor);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
                 chanceCaches.clear();
             }
             clearFailureReason();
             recipeDirty = false;
+            runningRecipeGroupColor = recipeGroupColor;
             lastRecipe = runningRecipe;
             setStatus(Status.WORKING);
             progress = 0;
@@ -481,6 +485,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             isActive = true;
             syncDataHolder.resyncAllFields();
         } else {
+            runningRecipeGroupColor = -1;
             lastRecipe = null;
             lastUnrolledRecipe = null;
             syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
@@ -591,7 +596,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             runAttempt = 0;
             runDelay = 0;
             consecutiveRecipes++;
-            handleRecipeIO(lastRecipe, IO.OUT);
+            handleRecipeIO(lastRecipe, IO.OUT, runningRecipeGroupColor);
             // Don't ready the next recipe after finish if suspend is set
             // so that the modifiers won't be applied until re-starting.
             if (suspendAfterFinish) {
@@ -601,6 +606,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 duration = 0;
                 isActive = false;
                 // Force a recipe recheck.
+                runningRecipeGroupColor = -1;
                 lastRecipe = null;
                 lastUnrolledRecipe = null;
                 syncDataHolder.resyncAllFields();
@@ -621,7 +627,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             // try it again
             var recipeCheck = checkRecipe(lastRecipe);
             if (!recipeDirty && recipeCheck.isSuccess()) {
-                setupRecipe(lastRecipe);
+                setupRecipe(lastRecipe, recipeCheck.assignedGroupColor());
             } else {
                 setStatus(Status.IDLE);
                 consecutiveRecipes = 0;
@@ -633,12 +639,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         }
     }
 
-    protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleRecipeIO(getRLMachine(), recipe, io, this.chanceCaches);
+    protected ActionResult handleRecipeIO(GTRecipe recipe, IO io, int assignedGroupColor) {
+        return RecipeHelper.handleRecipeIO(getRLMachine(), recipe, io, this.chanceCaches, assignedGroupColor);
     }
 
-    protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleTickRecipeIO(getRLMachine(), recipe, io, this.chanceCaches);
+    protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io, int recipeGroupColor) {
+        return RecipeHelper.handleTickRecipeIO(getRLMachine(), recipe, io, this.chanceCaches, recipeGroupColor);
     }
 
     /**

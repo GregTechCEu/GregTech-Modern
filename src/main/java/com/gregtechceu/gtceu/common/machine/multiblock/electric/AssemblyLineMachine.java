@@ -91,10 +91,10 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return true;
     }
 
-    private ActionResult consumeItemContents(GTRecipe recipe, boolean isTick) {
+    private ActionResult consumeItemContents(GTRecipe recipe, boolean isTick, int recipeGroupColor) {
         var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
                 Collections.emptyList());
-        if (itemInputs.isEmpty()) return ActionResult.SUCCESS;
+        if (itemInputs.isEmpty()) return ActionResult.success(recipeGroupColor);
         int inputsSize = itemInputs.size();
         var itemHandlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
         if (itemHandlers.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
@@ -129,7 +129,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             }
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResult.success(recipeGroupColor);
     }
 
     private boolean checkFluidInputs(GTRecipe recipe, boolean isTick) {
@@ -165,10 +165,10 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return true;
     }
 
-    private ActionResult consumeFluidContents(GTRecipe recipe, boolean isTick) {
+    private ActionResult consumeFluidContents(GTRecipe recipe, boolean isTick, int recipeGroupColor) {
         var fluidInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(FluidRecipeCapability.CAP,
                 Collections.emptyList());
-        if (fluidInputs.isEmpty()) return ActionResult.SUCCESS;
+        if (fluidInputs.isEmpty()) return ActionResult.success(recipeGroupColor);
         int fluidsSize = fluidInputs.size();
         var fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
         if (fluidHandlers.size() < fluidsSize) return ActionResult.FAIL_NO_REASON;
@@ -201,11 +201,11 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             }
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResult.success(recipeGroupColor);
     }
 
     private ActionResult consumeAll(GTRecipe recipe, boolean isTick,
-                                    Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+                                    Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches, int recipeGroupColor) {
         GTRecipe copyWithItems = recipe.copy();
         copyWithItems.inputs.clear();
         copyWithItems.tickInputs.clear();
@@ -239,26 +239,26 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         var config = ConfigHolder.INSTANCE.machines;
         ActionResult result;
         if (config.orderedAssemblyLineItems) {
-            result = consumeItemContents(copyWithItems, isTick);
+            result = consumeItemContents(copyWithItems, isTick, recipeGroupColor);
         } else {
             result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(this, copyWithItems, IO.IN, chanceCaches) :
-                    RecipeHelper.handleRecipeIO(this, copyWithItems, IO.IN, chanceCaches);
+                    RecipeHelper.handleTickRecipeIO(this, copyWithItems, IO.IN, chanceCaches, recipeGroupColor) :
+                    RecipeHelper.handleRecipeIO(this, copyWithItems, IO.IN, chanceCaches, recipeGroupColor);
         }
         if (!result.isSuccess()) return result;
 
         if (config.orderedAssemblyLineFluids) {
-            result = consumeFluidContents(copyWithFluids, isTick);
+            result = consumeFluidContents(copyWithFluids, isTick, recipeGroupColor);
         } else {
             result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(this, copyWithFluids, IO.IN, chanceCaches) :
-                    RecipeHelper.handleRecipeIO(this, copyWithFluids, IO.IN, chanceCaches);
+                    RecipeHelper.handleTickRecipeIO(this, copyWithFluids, IO.IN, chanceCaches, recipeGroupColor) :
+                    RecipeHelper.handleRecipeIO(this, copyWithFluids, IO.IN, chanceCaches, recipeGroupColor);
         }
         if (!result.isSuccess()) return result;
 
         return isTick ?
-                RecipeHelper.handleTickRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches) :
-                RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches);
+                RecipeHelper.handleTickRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches, recipeGroupColor) :
+                RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches, recipeGroupColor);
     }
 
     private static class AsslineRecipeLogic extends RecipeLogic {
@@ -278,19 +278,19 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         }
 
         @Override
-        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
+        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io, int assignedGroupColor) {
             if (io.equals(IO.IN)) {
-                return getMachine().consumeAll(recipe, false, this.getChanceCaches());
+                return getMachine().consumeAll(recipe, false, this.getChanceCaches(), assignedGroupColor);
             }
-            return RecipeHelper.handleRecipeIO(getMachine(), recipe, io, this.chanceCaches);
+            return RecipeHelper.handleRecipeIO(getMachine(), recipe, io, this.chanceCaches, assignedGroupColor);
         }
 
         @Override
-        protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
+        protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io, int recipeGroupColor) {
             if (io.equals(IO.IN)) {
-                return getMachine().consumeAll(recipe, true, this.getChanceCaches());
+                return getMachine().consumeAll(recipe, true, this.getChanceCaches(), recipeGroupColor);
             }
-            return RecipeHelper.handleTickRecipeIO(getMachine(), recipe, io, this.chanceCaches);
+            return RecipeHelper.handleTickRecipeIO(getMachine(), recipe, io, this.chanceCaches, recipeGroupColor);
         }
 
         @Override
@@ -301,14 +301,15 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
             var config = ConfigHolder.INSTANCE.machines;
 
-            if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
+            if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids)
+                return ActionResult.success(normalMatch.assignedGroupColor());
             if (!getMachine().checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
             if (!getMachine().checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
 
-            if (!config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
+            if (!config.orderedAssemblyLineFluids) return ActionResult.success(normalMatch.assignedGroupColor());
             if (!getMachine().checkFluidInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
             if (!getMachine().checkFluidInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
-            return ActionResult.SUCCESS;
+            return ActionResult.success(normalMatch.assignedGroupColor());
         }
     }
 }

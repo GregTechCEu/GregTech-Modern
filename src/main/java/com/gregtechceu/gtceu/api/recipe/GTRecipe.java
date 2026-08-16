@@ -61,7 +61,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
     @Getter(lazy = true)
     private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
-    public int groupColor;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -76,12 +75,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration, int parallels, int subtickParallels, int batchParallels,
-                    @NotNull GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    @NotNull GTRecipeCategory recipeCategory) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels,
-                recipeCategory, groupColor);
+                recipeCategory);
     }
 
     /**
@@ -96,14 +94,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     CompoundTag data,
                     int duration,
                     GTRecipeSerializer.RecipeParallels allParallels,
-                    GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    GTRecipeCategory recipeCategory) {
         this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
                 recipeIO.inputChanceLogics(), recipeIO.outputChanceLogics(), recipeIO.tickInputChanceLogics(),
                 recipeIO.tickOutputChanceLogics(),
                 conditions, ingredientActions, data, duration, allParallels.parallels(),
                 allParallels.subtickParallels(),
-                allParallels.batchParallels(), recipeCategory, groupColor);
+                allParallels.batchParallels(), recipeCategory);
     }
 
     /**
@@ -123,11 +120,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    @NotNull GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    @NotNull GTRecipeCategory recipeCategory) {
         this(recipeType, id, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor);
+                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -144,7 +140,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration, int parallels, int subtickParallels, int batchParallels,
-                    @NotNull GTRecipeCategory recipeCategory, int groupColor) {
+                    @NotNull GTRecipeCategory recipeCategory) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -166,7 +162,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.subtickParallels = subtickParallels;
         this.batchParallels = batchParallels;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
-        this.groupColor = groupColor;
     }
 
     public GTRecipe copy() {
@@ -185,7 +180,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
                 new ArrayList<>(ingredientActions), data, duration, parallels, subtickParallels, batchParallels,
-                recipeCategory, groupColor);
+                recipeCategory);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
@@ -200,7 +195,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory);
         copied.ocLevel = ocLevel;
         copied.parallels = parallels;
         copied.batchParallels = batchParallels;

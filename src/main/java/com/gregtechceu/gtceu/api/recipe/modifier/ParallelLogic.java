@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -213,8 +214,9 @@ public class ParallelLogic {
 
         while (parallelLimit > 0) {
             var copied = recipe.copy(ContentModifier.multiplier(parallelLimit), false);
-            if (RecipeHelper.matchRecipe(holder, copied).isSuccess() &&
-                    RecipeHelper.matchTickRecipe(holder, copied).isSuccess()) {
+            ActionResult actionResult = RecipeHelper.matchRecipe(holder, copied);
+            if (actionResult.isSuccess() &&
+                    RecipeHelper.matchTickRecipe(holder, copied, actionResult.assignedGroupColor()).isSuccess()) {
                 return parallelLimit;
             }
             parallelLimit /= 2;

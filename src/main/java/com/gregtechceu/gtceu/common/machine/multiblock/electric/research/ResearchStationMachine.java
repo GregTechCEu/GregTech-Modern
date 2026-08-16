@@ -161,7 +161,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             var match = matchRecipeNoOutput(recipe);
             if (!match.isSuccess()) return match;
 
-            return matchTickRecipeNoOutput(recipe);
+            return matchTickRecipeNoOutput(recipe, match.assignedGroupColor());
         }
 
         @Override
@@ -175,7 +175,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 }
                 var recipeMatch = checkRecipe(modified);
                 if (recipeMatch.isSuccess()) {
-                    setupRecipe(modified);
+                    setupRecipe(modified, recipeMatch.assignedGroupColor());
                 } else {
                     setWaiting(recipeMatch.reason());
                 }
@@ -191,26 +191,26 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         protected ActionResult matchRecipeNoOutput(GTRecipe recipe) {
             if (!getMachine().hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
             return RecipeHelper.handleRecipe(getMachine(), recipe, IO.IN, recipe.inputs, Collections.emptyMap(), false,
-                    true);
+                    true, -1);
         }
 
-        protected ActionResult matchTickRecipeNoOutput(GTRecipe recipe) {
+        protected ActionResult matchTickRecipeNoOutput(GTRecipe recipe, int assignedGroupColor) {
             if (recipe.hasTick()) {
                 if (!getMachine().hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
                 return RecipeHelper.handleRecipe(getMachine(), recipe, IO.IN, recipe.tickInputs, Collections.emptyMap(),
-                        false, true);
+                        false, true, assignedGroupColor);
             }
-            return ActionResult.SUCCESS;
+            return ActionResult.success(assignedGroupColor);
         }
 
         // Handle RecipeIO manually
         @Override
-        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
+        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io, int assignedGroupColor) {
             if (io == IO.IN) {
                 // lock the object holder on recipe start
                 ObjectHolderMachine holder = getMachine().getObjectHolder();
                 holder.setLocked(true);
-                return ActionResult.SUCCESS;
+                return ActionResult.success(assignedGroupColor);
             }
 
             // "replace" the items in the slots rather than outputting elsewhere
@@ -218,7 +218,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             ObjectHolderMachine holder = getMachine().getObjectHolder();
             if (lastRecipe == null) {
                 holder.setLocked(false);
-                return ActionResult.SUCCESS;
+                return ActionResult.success(assignedGroupColor);
             }
 
             holder.setHeldItem(ItemStack.EMPTY);
@@ -231,15 +231,15 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 holder.setDataItem(outputItem.copy());
             }
             holder.setLocked(false);
-            return ActionResult.SUCCESS;
+            return ActionResult.success(assignedGroupColor);
         }
 
         @Override
-        protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
+        protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io, int recipeGroupColor) {
             if (io != IO.OUT) {
-                return super.handleTickRecipeIO(recipe, io);
+                return super.handleTickRecipeIO(recipe, io, recipeGroupColor);
             }
-            return ActionResult.SUCCESS;
+            return ActionResult.success(recipeGroupColor);
         }
     }
 }

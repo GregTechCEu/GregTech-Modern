@@ -183,7 +183,7 @@ public interface ModifierFunction {
                         new HashMap<>(recipe.inputChanceLogics), new HashMap<>(recipe.outputChanceLogics),
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions, new ArrayList<>(recipe.ingredientActions),
-                        recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor);
+                        recipe.data, recipe.duration, recipe.recipeCategory);
                 copied.parallels = recipe.parallels * parallels;
                 copied.subtickParallels = recipe.subtickParallels * subtickParallels;
                 copied.ocLevel = recipe.ocLevel + addOCs;

@@ -42,6 +42,7 @@ public class RecipeRunner {
     private final Predicate<RecipeCapability<?>> outputVoid;
     @Getter
     private int groupColor;
+    private final boolean canAssignGroupColor;
 
     /** Highest closeness score seen across handler-group attempts, and the leftover map that produced it. */
     private double bestScore = 0;
@@ -49,7 +50,7 @@ public class RecipeRunner {
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
-                        boolean simulated) {
+                        boolean simulated, int assignedGroupColor) {
         this.recipe = recipe;
         this.io = io;
         this.isTick = isTick;
@@ -59,7 +60,8 @@ public class RecipeRunner {
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
         this.outputVoid = cap -> holder instanceof IVoidable voidable && voidable.canVoidRecipeOutputs(cap);
-        this.groupColor = recipe.groupColor;
+        this.groupColor = assignedGroupColor;
+        this.canAssignGroupColor = io == IO.IN && assignedGroupColor == -1;
     }
 
     @NotNull
@@ -67,7 +69,7 @@ public class RecipeRunner {
         fillContentMatchList(entries);
 
         if (searchRecipeContents.isEmpty()) {
-            return ActionResult.PASS_NO_CONTENTS;
+            return ActionResult.passNoContents(groupColor);
         }
 
         return this.handleContents();
@@ -119,7 +121,7 @@ public class RecipeRunner {
     }
 
     private ActionResult handleContents() {
-        if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
+        if (recipeContents.isEmpty()) return ActionResult.success(this.groupColor);
         if (!capabilityProxies.containsKey(io)) {
             return ActionResult.fail(
                     Component.translatable("gtceu.recipe_logic.no_capabilities")
@@ -172,7 +174,7 @@ public class RecipeRunner {
                 }
             }
             recipeContents.clear();
-            return ActionResult.SUCCESS;
+            return ActionResult.success(this.groupColor);
         }
 
         // Check the other groups. For every group, try consuming the ingredients,
@@ -181,7 +183,7 @@ public class RecipeRunner {
             if (handlerListEntry.getKey().equals(BUS_DISTINCT)) continue;
 
             if (handlerListEntry.getKey() instanceof RecipeHandlerGroupColor coloredGroup) {
-                if (io == IO.IN && simulated && !isTick) {
+                if (canAssignGroupColor) {
                     groupColor = coloredGroup.color();
                 } else if (coloredGroup.color() != -1 && coloredGroup.color() != groupColor) {
                     continue;
@@ -218,14 +220,14 @@ public class RecipeRunner {
                     continue;
                 }
             }
-            if (simulated) return ActionResult.SUCCESS;
+            if (simulated) return ActionResult.success(this.groupColor);
             // Start actually removing items.
             // Keep track of the remaining items for this RecipeHandlerGroup
             // First go through the handlers of the group
             for (RecipeHandlerList handler : handlerListEntry.getValue()) {
                 recipeContents = handler.handleRecipe(io, recipe, recipeContents, false);
                 if (recipeContents.isEmpty()) {
-                    return ActionResult.SUCCESS;
+                    return ActionResult.success(this.groupColor);
                 }
             }
             // Then go through the handlers that bypass the distinctness system and empty those
@@ -235,7 +237,7 @@ public class RecipeRunner {
                         Collections.emptyList())) {
                     recipeContents = bypassHandler.handleRecipe(io, recipe, recipeContents, false);
                     if (recipeContents.isEmpty()) {
-                        return ActionResult.SUCCESS;
+                        return ActionResult.success(this.groupColor);
                     }
                 }
             }
@@ -269,7 +271,7 @@ public class RecipeRunner {
             }
         }
         if (!containsStuff) {
-            return ActionResult.PASS_NO_CONTENTS;
+            return ActionResult.passNoContents(groupColor);
         }
 
         return ActionResult.fail(null, null, io, bestScore);

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedDat
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.OreVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
@@ -64,8 +65,9 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             }
             var match = getOreMinerRecipe();
             if (match != null) {
-                if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
-                    setupRecipe(match);
+                ActionResult actionResult = RecipeHelper.matchContents(getMachine(), match);
+                if (actionResult.isSuccess()) {
+                    setupRecipe(match, actionResult.assignedGroupColor());
                 }
             }
         }
@@ -135,14 +137,16 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     public void onRecipeFinish() {
         getMachine().afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(getMachine(), lastRecipe, IO.OUT, this.chanceCaches);
+            RecipeHelper.handleRecipeIO(getMachine(), lastRecipe, IO.OUT, this.chanceCaches,
+                    this.runningRecipeGroupColor);
         }
         depleteVein();
         // try it again
         var match = getOreMinerRecipe();
         if (match != null) {
-            if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
-                setupRecipe(match);
+            ActionResult actionResult = RecipeHelper.matchContents(getMachine(), match);
+            if (actionResult.isSuccess()) {
+                setupRecipe(match, actionResult.assignedGroupColor());
                 return;
             }
         }

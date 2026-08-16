@@ -379,8 +379,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         }
 
         @Override
-        public void setupRecipe(GTRecipe recipe) {
-            super.setupRecipe(recipe);
+        public void setupRecipe(GTRecipe recipe, int recipeGroupColor) {
+            super.setupRecipe(recipe, recipeGroupColor);
             if (lastRecipe != null) {
                 setCurrentThrottle(getMachine().getThrottle());
             }

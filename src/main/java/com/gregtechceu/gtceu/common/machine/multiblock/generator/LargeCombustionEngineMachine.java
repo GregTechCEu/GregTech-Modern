@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -171,7 +172,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         if (runningTimer % 72 == 0) {
             // insufficient lubricant
-            if (!RecipeHelper.handleRecipeIO(this, getLubricantRecipe(), IO.IN, this.recipeLogic.getChanceCaches())
+            if (!RecipeHelper.handleRecipeIO(this, getLubricantRecipe(), IO.IN, this.recipeLogic.getChanceCaches(), -1)
                     .isSuccess()) {
                 recipeLogic.interruptRecipe();
                 return false;
@@ -180,8 +181,11 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         // check boost fluid
         if (isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
-            this.isOxygenBoosted = RecipeHelper.matchRecipe(this, boosterRecipe).isSuccess() &&
-                    RecipeHelper.handleRecipeIO(this, boosterRecipe, IO.IN, this.recipeLogic.getChanceCaches())
+            ActionResult actionResult = RecipeHelper.matchRecipe(this, boosterRecipe);
+            this.isOxygenBoosted = actionResult.isSuccess() &&
+                    RecipeHelper
+                            .handleRecipeIO(this, boosterRecipe, IO.IN, this.recipeLogic.getChanceCaches(),
+                                    actionResult.assignedGroupColor())
                             .isSuccess();
             syncDataHolder.markClientSyncFieldDirty("isOxygenBoosted");
         }

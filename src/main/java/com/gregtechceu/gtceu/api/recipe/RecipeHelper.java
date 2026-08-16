@@ -177,57 +177,63 @@ public class RecipeHelper {
     }
 
     public static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe) {
-        return matchRecipe(holder, recipe, false);
+        return matchRecipe(holder, recipe, false, -1);
     }
 
-    public static ActionResult matchTickRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe) {
-        return recipe.hasTick() ? matchRecipe(holder, recipe, true) : ActionResult.SUCCESS;
+    public static ActionResult matchTickRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, int recipeGroupColor) {
+        return recipe.hasTick() ? matchRecipe(holder, recipe, true, recipeGroupColor) :
+                ActionResult.success(recipeGroupColor);
     }
 
-    private static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, boolean tick) {
+    private static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, boolean tick,
+                                            int recipeGroupColorOverride) {
         if (!holder.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
 
         var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs,
-                Collections.emptyMap(), tick, true);
+                Collections.emptyMap(), tick, true, recipeGroupColorOverride);
         if (!result.isSuccess()) return result;
 
         result = handleRecipe(holder, recipe, IO.OUT, tick ? recipe.tickOutputs : recipe.outputs,
-                Collections.emptyMap(), tick, true);
+                Collections.emptyMap(), tick, true, result.assignedGroupColor());
         return result;
     }
 
     public static ActionResult handleRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
-                                              Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+                                              Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                                              int recipeGroupColor) {
         if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
         return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, chanceCaches, false,
-                false);
+                false, recipeGroupColor);
     }
 
     public static ActionResult handleTickRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
-                                                  Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+                                                  Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                                                  int recipeGroupColor) {
         if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
         return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, chanceCaches,
-                true, false);
+                true, false, recipeGroupColor);
     }
 
     /**
      * Checks if all the contents of the recipe are located in the holder.
      *
-     * @param simulated checks that the recipe ingredients are in the holder if true,
-     *                  process the recipe contents if false
+     * @param simulated              checks that the recipe ingredients are in the holder if true,
+     *                               process the recipe contents if false
+     * @param sourceRecipeGroupColor color assigned when handling the recipe inputs and passed around afterward.
+     *                               -1 means the color will be assigned by this runner (only supported for io == IN)
      */
     public static ActionResult handleRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
                                             Map<RecipeCapability<?>, List<Content>> contents,
                                             Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
-                                            boolean isTick, boolean simulated) {
+                                            boolean isTick, boolean simulated, int sourceRecipeGroupColor) {
         if (contents.isEmpty()) {
-            return ActionResult.PASS_NO_CONTENTS;
+            return ActionResult.passNoContents(sourceRecipeGroupColor);
         }
-        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
+        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated,
+                sourceRecipeGroupColor);
         var result = runner.handle(contents);
 
         if (result.isSuccess() || result.capability() == null) {
-            recipe.groupColor = runner.getGroupColor();
             return result;
         }
 
@@ -244,7 +250,7 @@ public class RecipeHelper {
         var match = matchRecipe(holder, recipe);
         if (!match.isSuccess()) return match;
 
-        return matchTickRecipe(holder, recipe);
+        return matchTickRecipe(holder, recipe, match.assignedGroupColor());
     }
 
     /**
@@ -255,7 +261,7 @@ public class RecipeHelper {
      * @return the list of failed conditions, or success if all conditions are satisfied
      */
     public static ActionResult checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        if (recipe.conditions.isEmpty()) return ActionResult.SUCCESS;
+        if (recipe.conditions.isEmpty()) return ActionResult.success(-1);
         Map<RecipeConditionType<?>, List<RecipeCondition>> or = new Reference2ObjectArrayMap<>();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.isOr()) {
@@ -281,7 +287,7 @@ public class RecipeHelper {
                 return ActionResult.fail(component, null, null);
             }
         }
-        return ActionResult.SUCCESS;
+        return ActionResult.success(-1);
     }
 
     /**
@@ -407,7 +413,8 @@ public class RecipeHelper {
 
     /**
      * Rolls the value of all Ranged Ingredients in a recipe and replaces them with appropriate Sized Ingredients.
-     * Called once after successful recipe search, immediately before {@link RecipeLogic#handleRecipeIO(GTRecipe, IO)}.
+     * Called once after successful recipe search, immediately before
+     * {@link RecipeLogic#handleRecipeIO(GTRecipe, IO, int)}.
      * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
      *
      * Takes the machine's current Chance Caches, but does not use them. Yet. This parameter will be used in
@@ -453,7 +460,7 @@ public class RecipeHelper {
      * Rolls the value of all per-tick Ranged Ingredients in a recipe and replaces them with appropriate Sized
      * Ingredients.
      * Called every tick while a recipe is running, immediately before
-     * {@link RecipeLogic#handleTickRecipeIO(GTRecipe, IO)}.
+     * {@link RecipeLogic#handleTickRecipeIO(GTRecipe, IO, int)}.
      *
      * If a ranged ingredient rolls 0, it is replaced by a Non-Consumed ingredient of max size.
      *

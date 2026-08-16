@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
@@ -59,8 +60,9 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
-                    setupRecipe(match);
+                ActionResult actionResult = RecipeHelper.matchContents(getMachine(), match);
+                if (actionResult.isSuccess()) {
+                    setupRecipe(match, actionResult.assignedGroupColor());
                 }
             }
         }
@@ -115,14 +117,16 @@ public class FluidDrillLogic extends RecipeLogic {
     public void onRecipeFinish() {
         getMachine().afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(getMachine(), lastRecipe, IO.OUT, this.chanceCaches);
+            RecipeHelper.handleRecipeIO(getMachine(), lastRecipe, IO.OUT, this.chanceCaches,
+                    this.runningRecipeGroupColor);
         }
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
-                setupRecipe(match);
+            ActionResult actionResult = RecipeHelper.matchContents(getMachine(), match);
+            if (actionResult.isSuccess()) {
+                setupRecipe(match, actionResult.assignedGroupColor());
                 return;
             }
         }

@@ -436,7 +436,7 @@ public class ToolHelper {
                         r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
                 GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
                 if (hammerRecipe != null &&
-                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, capHolder.getCacheChances())
+                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, capHolder.getCacheChances(), -1)
                                 .isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
