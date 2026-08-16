@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraft.core.BlockPos;
@@ -116,5 +117,10 @@ public class GTCapabilityHelper {
     @Nullable
     public static MedicalConditionTracker getMedicalConditionTracker(@NotNull Entity entity) {
         return entity.getCapability(GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER, null).orElse(null);
+    }
+
+    @Nullable
+    public static ISpoilableItem getSpoilable(ItemStack stack) {
+        return stack.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM).resolve().orElse(null);
     }
 }

@@ -1,7 +1,7 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "gtceu:item/tools/handle_screwdriver",
-    "layer1": "gtceu:item/tools/screwdriver"
-  }
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "gtceu:item/tools/handle_screwdriver",
+        "layer1": "gtceu:item/tools/screwdriver"
+    }
 }

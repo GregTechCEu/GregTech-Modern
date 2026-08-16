@@ -42,9 +42,14 @@ public class SinglePredicateError extends PatternError {
     public final int predMaxLayerCount;
     public final String debugName;
 
-    public SinglePredicateError(BasePredicate failingPredicate, ErrorType type, int actualCount) {
-        this(type, actualCount, failingPredicate.minCount, failingPredicate.maxCount, failingPredicate.minSliceCount,
-                failingPredicate.maxSliceCount, failingPredicate.getPredicateName(),
+    public SinglePredicateError(BasePredicate failingPredicate,
+                                ErrorType type, int actualCount) {
+        this(type, actualCount,
+                failingPredicate.getMinCount(),
+                failingPredicate.getMaxCount(),
+                failingPredicate.getMinSliceCount(),
+                failingPredicate.getMaxSliceCount(),
+                failingPredicate.toString(),
                 failingPredicate.getCandidates());
     }
 
@@ -93,6 +98,22 @@ public class SinglePredicateError extends PatternError {
                                         .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
                             })));
         };
+    }
+
+    public static SinglePredicateError maxCount(BasePredicate failingPredicate, int actualCount) {
+        return new SinglePredicateError(failingPredicate, ErrorType.MAX_COUNT, actualCount);
+    }
+
+    public static SinglePredicateError minCount(BasePredicate failingPredicate, int actualCount) {
+        return new SinglePredicateError(failingPredicate, ErrorType.MIN_COUNT, actualCount);
+    }
+
+    public static SinglePredicateError maxLayerCount(BasePredicate failingPredicate, int actualCount) {
+        return new SinglePredicateError(failingPredicate, ErrorType.MAX_LAYER_COUNT, actualCount);
+    }
+
+    public static SinglePredicateError minLayerCount(BasePredicate failingPredicate, int actualCount) {
+        return new SinglePredicateError(failingPredicate, ErrorType.MIN_LAYER_COUNT, actualCount);
     }
 
     @Getter
