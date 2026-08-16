@@ -188,6 +188,8 @@ public class ChemicalHelper {
             }
             ITEM_MATERIAL_ENTRY.clear();
 
+            if (ITEMS_WITHOUT_MATERIAL.contains(itemKey)) return null;
+
             // guess an entry based on the item's tags if none are pre-registered.
             materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
@@ -198,6 +200,7 @@ public class ChemicalHelper {
                         return materialEntry1;
                     }
                 }
+                ITEMS_WITHOUT_MATERIAL.add(item);
                 return null;
             });
         }
