@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedBlockSupplier;
 
-import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
@@ -26,6 +25,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,10 @@ public class ItemMaterialData {
 
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<Item, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectOpenHashMap<>();
-    /** Temporary mapping of item suppliers to a material entry. All supplies are resolved and this list is cleared after item material data is accessed for the first time. */
+    /**
+     * Temporary mapping of item suppliers to a material entry. All supplies are resolved and this list is cleared after
+     * item material data is accessed for the first time.
+     */
     public static final List<Pair<Supplier<? extends Item>, MaterialEntry>> ITEM_MATERIAL_ENTRY = new ArrayList<>();
 
     /**
