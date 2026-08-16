@@ -85,6 +85,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -963,22 +964,24 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             }
         }
 
+        // This function is not technically pure, but it has no visible side effects, and is safe to execute in parallel
+        @Contract(pure = true)
         public List<ItemStack> getItems() {
             if (itemStacks == null) {
-                itemStacks = new ArrayList<>();
-                itemInventory.object2LongEntrySet().stream()
-                        .map(e -> GTMath.splitStacks(e.getKey(), e.getLongValue()))
-                        .forEach(itemStacks::addAll);
+                itemStacks = itemInventory.object2LongEntrySet().stream()
+                        .flatMap(e -> GTMath.splitStacks(e.getKey(), e.getLongValue()).stream())
+                        .toList();
             }
             return itemStacks;
         }
 
+        // This function is not technically pure, but it has no visible side effects, and is safe to execute in parallel
+        @Contract(pure = true)
         public List<FluidStack> getFluids() {
             if (fluidStacks == null) {
-                fluidStacks = new ArrayList<>();
-                fluidInventory.object2LongEntrySet().stream()
-                        .map(e -> GTMath.splitFluidStacks(e.getKey(), e.getLongValue()))
-                        .forEach(fluidStacks::addAll);
+                fluidStacks = fluidInventory.object2LongEntrySet().stream()
+                        .flatMap(e -> GTMath.splitFluidStacks(e.getKey(), e.getLongValue()).stream())
+                        .toList();
             }
             return fluidStacks;
         }
@@ -1058,7 +1061,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     var stack = entry.getKey();
                     var count = entry.getLongValue();
                     if (stack.isEmpty() || count == 0) {
-                        it2.remove();
+                        if (!simulate) {
+                            it2.remove();
+                        }
                         continue;
                     }
                     if (!ingredient.test(stack)) continue;
@@ -1110,7 +1115,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     var stack = entry.getKey();
                     var count = entry.getLongValue();
                     if (stack.isEmpty() || count == 0) {
-                        it2.remove();
+                        if (!simulate) {
+                            it2.remove();
+                        }
                         continue;
                     }
                     if (!ingredient.test(stack)) continue;

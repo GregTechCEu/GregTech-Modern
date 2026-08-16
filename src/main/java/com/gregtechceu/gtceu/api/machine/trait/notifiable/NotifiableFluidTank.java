@@ -113,10 +113,13 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         if (io != IO.IN && io != IO.OUT) return left;
 
         // Temporarily remove listeners so that we can broadcast the entire set of transactions once
-        Runnable[] listeners = new Runnable[storages.length];
-        for (int i = 0; i < storages.length; i++) {
-            listeners[i] = storages[i].getOnContentsChanged();
-            storages[i].setOnContentsChanged(() -> {});
+        Runnable[] listeners = null;
+        if (!simulate) {
+            listeners = new Runnable[storages.length];
+            for (int i = 0; i < storages.length; i++) {
+                listeners[i] = storages[i].getOnContentsChanged();
+                storages[i].setOnContentsChanged(() -> {});
+            }
         }
         boolean changed = false;
 
@@ -222,9 +225,11 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             }
         }
 
-        for (int i = 0; i < storages.length; i++) {
-            storages[i].setOnContentsChanged(listeners[i]);
-            if (changed && action.execute()) listeners[i].run();
+        if (listeners != null && !simulate) {
+            for (int i = 0; i < storages.length; i++) {
+                storages[i].setOnContentsChanged(listeners[i]);
+                if (changed && action.execute()) listeners[i].run();
+            }
         }
 
         return left;
