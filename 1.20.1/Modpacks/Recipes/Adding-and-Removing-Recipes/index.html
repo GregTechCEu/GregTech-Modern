@@ -2479,6 +2479,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -2907,6 +2911,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../Other-Topics/Machine-Modification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Machine Modification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../Other-Topics/Modifying-Multiblock-Controller-UI/" class="md-nav__link">
         
   
@@ -2915,6 +2947,34 @@
     
   
     Modifying Multiblock Controller UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Other-Topics/Spoilage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spoilage
   
 
     
@@ -5347,6 +5407,9 @@ to distinguish them from other recipes in the same machine with similar ingredie
   running or all at once at recipe start/end. Set to true with <code>.perTick(true)</code> to make the recipe builder consider
   any following input/output calls as per-tick. Remember to set the value to false with <code>.perTick(false)</code> after the
   calls you intend to be per-tick, to prevent behaviour you don't want!</li>
+<li><code>.keepSpoilingProgress()</code>:
+  If set to true, spoilable outputs' freshness will depend on the recipe's inputs' freshness (default).<br>
+  If set to false, spoilable outputs of this recipe will always be crafted completely fresh.</li>
 </ul>
 </li>
 </ul>
