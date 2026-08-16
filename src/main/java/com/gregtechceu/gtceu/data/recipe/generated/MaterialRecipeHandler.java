@@ -461,7 +461,7 @@ public final class MaterialRecipeHandler {
 
         CUTTER_RECIPES
                 .recipeBuilder("cut_" + material.getName() + "_" + prefix.name +
-                        "_to_" + prefix.name)
+                        "_to_" + lowerPrefix.name)
                 .inputItems(prefix, material)
                 .outputItems(prevStack)
                 .duration(20)
