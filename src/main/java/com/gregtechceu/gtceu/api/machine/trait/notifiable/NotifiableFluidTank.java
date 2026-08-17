@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
@@ -187,11 +188,15 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                             visited[tank] = drained.copy();
                             visited[tank].setAmount(count - drained.getAmount());
                             changed = true;
+                            FluidStack copied = drained.copy();
+                            recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.FLUID,
+                                    FluidIngredient.of(copied));
                         }
                         amount -= drained.getAmount();
                     }
                 } else { // IO.OUT && allow same fluids
                     FluidStack output = fluids[0].copy();
+                    recipe.mutateOutput(output);
                     output.setAmount(amount);
                     if (visited[tank] == null || visited[tank].isFluidEqual(output)) {
                         if (count < storages[tank].getCapacity()) {

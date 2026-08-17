@@ -15,6 +15,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
+import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
@@ -35,6 +37,7 @@ import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
+import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -61,7 +64,9 @@ import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -131,6 +136,7 @@ public class CommonProxy {
         GTCommandArguments.init(modBus);
         GTMobEffects.init(modBus);
         GTParticleTypes.init(modBus);
+        SpoilableBehavior.init(modBus);
 
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -274,6 +280,44 @@ public class CommonProxy {
             GTFluids.registerMaterialFluids();
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
+        }
+    }
+
+    @SubscribeEvent
+    public void addSpoilTransferModifier(ModifyMachineEvent event) {
+        event.getBuilder().addRecipeModifier(GTRecipeModifiers.SPOILAGE_TRANSFER);
+    }
+
+    @SubscribeEvent
+    public void registerDevSpoilables(RegisterSpoilablesEvent event) {
+        if (GTCEu.isDev()) { // for testing purposes
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.DIRT)
+                    .build()
+                    .attachTo(Items.JIGSAW);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.STRUCTURE_BLOCK)
+                    .build()
+                    .attachTo(Items.APPLE);
+            event.getBuilder()
+                    .ticks(40)
+                    .result(Items.STRUCTURE_VOID)
+                    .build()
+                    .attachTo(Items.STRUCTURE_BLOCK);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.JIGSAW)
+                    .build()
+                    .attachTo(Items.STRUCTURE_VOID);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.DRAGON_EGG)
+                    .result(EntityType.PIG)
+                    .multiplyResult(3)
+                    .build()
+                    .attachTo(Items.EGG);
         }
     }
 

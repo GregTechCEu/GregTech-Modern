@@ -35,6 +35,9 @@ public abstract class RecipeCapability<T> {
     public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new DispatchedMapCodec<>(
             RecipeCapability.DIRECT_CODEC,
             RecipeCapability::contentCodec);
+    public static final Codec<Map<RecipeCapability<?>, List<?>>> INGREDIENT_CODEC = new DispatchedMapCodec<>(
+            RecipeCapability.DIRECT_CODEC,
+            RecipeCapability::ingredientCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
     public final ResourceLocation id;
@@ -63,6 +66,10 @@ public abstract class RecipeCapability<T> {
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
         return Content.codec(capability).listOf();
+    }
+
+    public static <T> Codec<List<T>> ingredientCodec(RecipeCapability<T> capability) {
+        return Content.ingredientCodec(capability).listOf();
     }
 
     public Tag contentToNbt(Object value) {

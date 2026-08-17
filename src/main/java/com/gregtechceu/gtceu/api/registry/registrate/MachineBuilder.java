@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
@@ -25,8 +26,12 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
+import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
@@ -44,6 +49,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -55,6 +61,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -592,6 +599,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
+    public SELF addRecipeModifier(RecipeModifier recipeModifier) {
+        if (this.recipeModifier instanceof RecipeModifierList list) {
+            this.recipeModifier = new RecipeModifierList(ArrayUtils.add(list.getModifiers(), recipeModifier));
+        } else {
+            this.recipeModifier = new RecipeModifierList(this.recipeModifier, recipeModifier);
+        }
+        return getThis();
+    }
+
     public SELF recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
         this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
         return this.recipeModifier(recipeModifier);
@@ -647,6 +663,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @HideFromJS
     public DEFINITION register() {
+        ModifyMachineEvent event = new ModifyMachineEvent(this);
+        FMLJavaModLoadingContext.get().getModEventBus().post(event);
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            KJSCallWrapper.fireKJSEvent(event);
+        }
         this.registrate.object(name);
         var definition = createDefinition();
 
@@ -799,4 +820,32 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         }
     }
     // spotless:on
+
+    protected static final class KJSCallWrapper {
+
+        public static <D extends MachineDefinition> void generateAssetJsons(@Nullable AssetJsonGenerator generator,
+                                                                            MachineBuilder<D, ?, ?> builder,
+                                                                            D definition) {
+            if (builder.model() == null && builder.blockModel() == null) return;
+
+            final ResourceLocation id = definition.getId();
+            // if generator is null, we're making the block models through GT
+            if (generator == null) {
+                // Fake a data provider for the GT model builders
+                var context = new DataGenContext<>(definition::getBlock, definition.getName(), id);
+                if (builder.blockModel() != null) {
+                    builder.blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);
+                } else {
+                    GTMachineModels.createMachineModel(builder.model())
+                            .accept(context, RuntimeBlockstateProvider.INSTANCE);
+                }
+            } else {
+                generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
+            }
+        }
+
+        public static void fireKJSEvent(ModifyMachineEvent event) {
+            GTCEuStartupEvents.MACHINE_MODIFICATION.post(new ModifyMachineEventJS(event));
+        }
+    }
 }
