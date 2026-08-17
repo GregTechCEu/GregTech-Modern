@@ -178,7 +178,9 @@ to distinguish them from other recipes in the same machine with similar ingredie
       running or all at once at recipe start/end. Set to true with `.perTick(true)` to make the recipe builder consider
       any following input/output calls as per-tick. Remember to set the value to false with `.perTick(false)` after the
       calls you intend to be per-tick, to prevent behaviour you don't want!
-
+    - `.keepSpoilingProgress()`:
+      If set to true, spoilable outputs' freshness will depend on the recipe's inputs' freshness (default).<br>
+      If set to false, spoilable outputs of this recipe will always be crafted completely fresh.
 
 ### The Research System
 

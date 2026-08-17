@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -58,6 +60,21 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         for (int i = 0; i < list.size(); i++) {
             matches[i] = ItemStack.of((CompoundTag) list.get(i));
         }
+    }
+
+    public static SimpleItemFilter forItems(boolean ignoreNbt, ItemStack... items) {
+        SimpleItemFilter filter = new SimpleItemFilter(GTItems.ITEM_FILTER.asStack());
+        filter.setIgnoreNbt(ignoreNbt);
+        filter.setBlackList(false);
+        int i = 0;
+        for (ItemStack item : items) {
+            filter.matches[i] = item.copy();
+            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(filter.matches[i]);
+            if (spoilable != null) spoilable.freezeSpoiling();
+            i++;
+        }
+        filter.updateAndSaveFilter();
+        return filter;
     }
 
     @Override
@@ -186,7 +203,7 @@ public class SimpleItemFilter extends Filter<ItemStack> {
             if (ignoreNbt && ItemStack.isSameItem(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
-            if (!ignoreNbt && GTUtil.isSameItemSameTags(candidate, itemStack)) {
+            if (!ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }

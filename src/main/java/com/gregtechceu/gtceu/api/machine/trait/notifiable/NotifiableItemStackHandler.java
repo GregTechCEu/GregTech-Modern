@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -12,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -75,6 +79,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void onContentsChanged() {
         isEmpty = null;
+        SpoilUtils.updateHandler(storage, getLevel(), getBlockPos(), null);
         syncDataHolder.markClientSyncFieldDirty("storage");
         notifyListeners();
     }
@@ -136,11 +141,16 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                         if (!extracted.isEmpty()) {
                             changed = true;
                             visited[slot] = extracted.copyWithCount(count - extracted.getCount());
+                            ItemStack copied = extracted.copy();
+                            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
+                            if (spoilable != null) spoilable.freezeSpoiling();
+                            recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.ITEM, Ingredient.of(copied));
                         }
                         amount -= extracted.getCount();
                     }
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
+                    recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
                     if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
