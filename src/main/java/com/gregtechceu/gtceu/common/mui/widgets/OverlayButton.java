@@ -28,9 +28,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class OverlayButton extends Widget<OverlayButton> implements Interactable {
@@ -181,8 +179,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
                 return;
             }
             if (parent instanceof MenuScreen menuScreen) {
-                // parent child relation
-                overlay.setParent(menuScreen);
+                menuScreen.addChild(overlay);
             }
             overlayScreens.put(panelName, overlay);
             overlay.constructOverlay(parent.getScreenWrapper().wrappedScreen());
@@ -207,34 +204,35 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     private static class MenuScreen extends GTGuiScreen {
 
-        public String parent;
+        private final Set<MenuScreen> children = new HashSet<>();
 
         public MenuScreen(@NotNull ModularPanel<?> mainPanel) {
             super(mainPanel);
         }
 
-        public void setParent(MenuScreen parent) {
-            this.parent = parent.getMainPanel().getName();
+        public void addChild(MenuScreen parent) {
+            this.children.add(parent);
         }
 
         @Override
-        public void onClose() {
-            if (parent != null) {
-                OverlayManager.close(parent);
+        public void close() {
+            for (MenuScreen child : children) {
+                child.close();
             }
+            super.close();
         }
     }
 
     // copied from AbstractMenuButton.java
     public enum Direction {
 
+        UNDEFINED,
         UP(resizer -> resizer.bottomRel(1f)),
         DOWN(resizer -> resizer.topRel(1f)),
         LEFT_UP(resizer -> resizer.rightRel(1f).bottom(0)),
         LEFT_DOWN(resizer -> resizer.rightRel(1f).top(0)),
         RIGHT_UP(resizer -> resizer.leftRel(1f).bottom(0)),
-        RIGHT_DOWN(resizer -> resizer.leftRel(1f).top(0)),
-        UNDEFINED;
+        RIGHT_DOWN(resizer -> resizer.leftRel(1f).top(0));
 
         private final @Nullable Consumer<StandardResizer> positioner;
 
