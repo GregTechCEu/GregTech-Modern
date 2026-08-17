@@ -664,7 +664,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @HideFromJS
     public DEFINITION register() {
         ModifyMachineEvent event = new ModifyMachineEvent(this);
-        FMLJavaModLoadingContext.get().getModEventBus().post(event);
+        ModLoader.get().postEvent(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent(event);
         }
