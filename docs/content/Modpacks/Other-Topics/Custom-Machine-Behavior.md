@@ -58,7 +58,7 @@ To use it, you would do:
             var casing = blocks(CASING_PTFE_INERT.get()).setMinGlobalLimited(10);
             var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
                     .and(Predicates.autoAbilities(true, false, false));
-            return MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
+            return MultiblockPatternBuilder.start()
                     .slice("XSX", "XXX", "XXX")
                     .slice("XXX", "XXX", "XXX")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))

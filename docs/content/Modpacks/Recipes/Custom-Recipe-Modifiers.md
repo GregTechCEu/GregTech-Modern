@@ -52,7 +52,6 @@ Custom recipe modifiers in are done through a function. For this example, we wil
 
 ## Using Modifier
 
-
 ```js title="example_temperature_multiblock.js"
 const $CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine");
 

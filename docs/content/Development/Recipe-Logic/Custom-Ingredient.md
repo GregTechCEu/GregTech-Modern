@@ -300,10 +300,10 @@ public class BonkMachines {
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
                         .and(Predicates.autoAbilities(true, false, false))
                         .and(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
-                return MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
-                        .slice("XXX", "XCX", "XXX")
-                        .slice("XCX", "CPC", "XCX")
+                return MultiblockPatternBuilder.start()
                         .slice("XXX", "XSX", "XXX")
+                        .slice("XCX", "CPC", "XCX")
+                        .slice("XXX", "XCX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('X', casing.and(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))

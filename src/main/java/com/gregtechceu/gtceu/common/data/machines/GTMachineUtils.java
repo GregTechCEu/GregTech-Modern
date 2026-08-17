@@ -55,6 +55,7 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import lombok.experimental.Tolerate;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -164,6 +165,10 @@ public class GTMachineUtils {
                 .register();
     }
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate,
                                                              String name,
                                                              GTRecipeType recipeType,
@@ -827,7 +832,6 @@ public class GTMachineUtils {
         private boolean hasPollutionDebuff = false;
         @Setter
         private PanelFactory panelFactory = null;
-        @Setter
         private int[] tiers = ELECTRIC_TIERS;
 
         // Simple Machines need to have a name, recipe type, and a registrate to register the machine to.
@@ -835,6 +839,11 @@ public class GTMachineUtils {
             this.registrate = registrate;
             this.name = name;
             this.recipeType = recipeType;
+        }
+
+        public SimpleMachineBuilder tiers(int... tiers) {
+            this.tiers = tiers;
+            return this;
         }
 
         public MachineDefinition[] register() {
