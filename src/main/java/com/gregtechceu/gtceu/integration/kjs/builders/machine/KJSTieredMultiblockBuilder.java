@@ -22,7 +22,6 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.GTValues.TIER_COUNT;
 import static com.gregtechceu.gtceu.api.GTValues.VN;
@@ -91,15 +90,13 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     }
 
     @Override
-    public MultiblockMachineDefinition createObject() {
+    public void createAdditionalObjects() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
-
-        MultiblockMachineDefinition anyDefinition = null;
 
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
@@ -113,9 +110,12 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
             this.definition.apply(tier, builder);
             this.builders[tier] = builder;
             this.machines[tier] = builder.register();
-            anyDefinition = this.machines[tier];
         }
-        return Objects.requireNonNull(anyDefinition);
+    }
+
+    @Override
+    public @Nullable MultiblockMachineDefinition createObject() {
+        return null;
     }
 
     @FunctionalInterface

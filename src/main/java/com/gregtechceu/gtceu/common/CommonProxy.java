@@ -55,7 +55,6 @@ import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.jade.GTJadePlugin;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
@@ -105,10 +104,6 @@ public class CommonProxy {
         GTCEuAPI.initializeHighTier();
 
         init(eventBus);
-
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.subscribeKubeJSPluginEvents(eventBus);
-        }
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
@@ -414,10 +409,6 @@ public class CommonProxy {
 
         public static void materialModification() {
             GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
-        }
-
-        public static void subscribeKubeJSPluginEvents(IEventBus modBus) {
-            modBus.register(GregTechKubeJSPlugin.class);
         }
     }
 }

@@ -48,8 +48,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
     }
 
     @Override
-    public MachineDefinition createObject() {
-        MachineDefinition value = null;
+    public void createAdditionalObjects() {
         if (hasLowPressure) {
             this.lowPressureBuilder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
                     .machine(String.format("lp_%s", this.id.getPath()),
@@ -62,7 +61,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
 
             definition.apply(false, lowPressureBuilder);
             this.lpObject = lowPressureBuilder.register();
-            value = lpObject;
         }
 
         if (hasHighPressure) {
@@ -77,10 +75,12 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
 
             definition.apply(true, highPressureBuilder);
             this.hpObject = highPressureBuilder.register();
-            if (value == null) value = hpObject;
         }
+    }
 
-        return value;
+    @Override
+    public @Nullable MachineDefinition createObject() {
+        return null;
     }
 
     @Override

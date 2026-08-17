@@ -110,11 +110,8 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
 
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
@@ -181,12 +178,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
         GTRegistryInfo.MACHINE.addType("generator", KJSTieredMachineBuilder.class,
                 (id) -> new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true));
-        GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilderWrapper.class,
-                MultiblockMachineBuilderWrapper::createKJSMulti);
+        GTRegistryInfo.MACHINE.addType("multiblock", KJSMultiblockMachineBuilderWrapper.class,
+                KJSMultiblockMachineBuilderWrapper::createKJSMulti);
         GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSTieredMultiblockBuilder.class,
                 KJSTieredMultiblockBuilder::new);
-        GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderWrapper.class,
-                (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
+        GTRegistryInfo.MACHINE.addType("primitive", KJSMultiblockMachineBuilderWrapper.class,
+                (id) -> KJSMultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
 
         GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
 
@@ -205,15 +202,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerEvents();
         GTCEuStartupEvents.GROUP.register();
         GTCEuServerEvents.GROUP.register();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void registerMachines(RegisterEvent event) {
-        if (event.getRegistryKey().equals(GTRegistries.Keys.MACHINE)) {
-            for (var builder : GTRegistryInfo.MACHINE) {
-                builder.createObject();
-            }
-        }
     }
 
     @Override
