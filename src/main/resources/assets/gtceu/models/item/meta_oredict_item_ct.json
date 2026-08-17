@@ -1,4 +1,5 @@
 {
-    "parent": "item/generated",
-    "textures": {}
+  "parent": "item/generated",
+  "textures": {
+  }
 }

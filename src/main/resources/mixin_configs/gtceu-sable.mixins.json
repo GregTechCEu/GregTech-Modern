@@ -1,21 +1,21 @@
 {
-    "client": [],
-    "compatibilityLevel": "JAVA_21",
-    "injectors": {
-        "defaultRequire": 1,
-        "maxShiftBy": 5
-    },
+    "required": true,
     "minVersion": "0.8",
     "mixinextras": {
         "minVersion": "0.5.0-rc.3"
     },
+    "refmap": "gtceu.refmap.json",
+    "package": "com.gregtechceu.gtceu.core.mixins",
+    "compatibilityLevel": "JAVA_21",
+    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
+    "client": [],
     "mixins": [
         "sable.PipeBlockSubLevelMixin",
         "sable.MetaMachineBlockSubLevelMixin",
         "sable.SubLevelAssemblyHelperRotationCaptureMixin"
     ],
-    "package": "com.gregtechceu.gtceu.core.mixins",
-    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
-    "refmap": "gtceu.refmap.json",
-    "required": true
+    "injectors": {
+        "defaultRequire": 1,
+        "maxShiftBy": 5
+    }
 }
