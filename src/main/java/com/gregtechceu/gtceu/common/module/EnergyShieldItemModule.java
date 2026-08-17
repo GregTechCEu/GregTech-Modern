@@ -62,7 +62,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
     @Override
     public float changeDamage(LivingEntity entity, AppliedItemModule module, float amount, DamageSource source) {
         long energyPerHP = getEnergyPerHP();
-        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || source.is(DamageTypeTags.IS_FALL) ||
+        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) ||
                 source.is(DamageTypeTags.IS_DROWNING) || source.is(DamageTypes.STARVE)) {
             return amount;
         }
@@ -70,9 +70,9 @@ public class EnergyShieldItemModule extends TieredItemModule {
         if (electricItem == null) {
             return amount;
         }
-        int damageReduction = Math.min(getDamageReduction(module), (int) amount);
+        float damageReduction = Math.min(getDamageReduction(module), amount);
         damageReduction = Math.toIntExact(electricItem.discharge(
-                damageReduction * energyPerHP,
+                Math.round(damageReduction) * energyPerHP,
                 electricItem.getTier(),
                 true, false, false) / energyPerHP);
         return Math.max(amount - damageReduction, 0);

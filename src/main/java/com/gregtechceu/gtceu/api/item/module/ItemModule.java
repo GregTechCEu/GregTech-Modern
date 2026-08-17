@@ -75,6 +75,11 @@ public abstract class ItemModule {
         return getModuleById(ResourceLocation.tryParse(tag.getString("id")));
     }
 
+    @Override
+    public String toString() {
+        return "ItemModule[%s]".formatted(id);
+    }
+
     public abstract Component getInfo();
 
     public void onAttach(AppliedItemModule module) {}
@@ -84,7 +89,7 @@ public abstract class ItemModule {
     public void onEquip(LivingEntity entity, AppliedItemModule module) {}
 
     public void onArmorTick(LivingEntity entity, AppliedItemModule module) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
         long energy = energyUsagePerTick(entity, module);
         if (electricItem != null) {
             electricItem.discharge(energy, electricItem.getTier(), true, false, false);
@@ -98,7 +103,7 @@ public abstract class ItemModule {
      */
     public void onInventoryTick(Player player, AppliedItemModule module) {
         if (module.getModuleItem() == null) return;
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
         long energy = energyUsagePerTick(player, module);
         if (electricItem != null && useEnergyInInventory(player, module)) {
             electricItem.discharge(energy, electricItem.getTier(), true, false, false);
