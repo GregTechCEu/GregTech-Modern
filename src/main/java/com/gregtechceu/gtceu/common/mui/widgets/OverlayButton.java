@@ -21,46 +21,24 @@ import brachy.modularui.widget.Widget;
 import brachy.modularui.widget.sizer.Area;
 import brachy.modularui.widget.sizer.StandardResizer;
 import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.menu.AbstractMenuButton;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class OverlayButton extends Widget<OverlayButton> implements Interactable {
 
     private static final Map<String, MenuScreen> overlayScreens = new HashMap<>();
-    private static final MethodHandle positionerGetter;
     private static final IDrawable background = (context, x, y, width, height, widgetTheme) -> {
         GuiGraphics gfx = context.getGraphics();
         GuiDraw.drawRect(gfx, x, y, width, height, Color.GREY.darker(1));
         GuiDraw.drawRect(gfx, x + 1, y + 1, width - 2, height - 2, Color.GREY.main);
     };
-
-    static {
-        MethodHandle handle = null;
-        try {
-            Field positioner = AbstractMenuButton.Direction.class.getDeclaredField("positioner");
-            positioner.setAccessible(true);
-            handle = MethodHandles.lookup().unreflectGetter(positioner);
-        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
-        positionerGetter = handle;
-    }
-
-    private static void applyDirection(AbstractMenuButton.Direction direction, IWidget widget) {
-        if (positionerGetter == null) return;
-        try {
-            // noinspection unchecked
-            final Consumer<StandardResizer> positioner = (Consumer<StandardResizer>) positionerGetter.invoke(direction);
-            positioner.accept(widget.resizer());
-        } catch (Throwable ignored) {}
-    }
 
     @SuppressWarnings("UnstableApiUsage")
     private static void open(String panelName, MenuScreen overlay, ModularScreen parent) {
@@ -93,7 +71,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     @Accessors(fluent = true)
     @Setter
-    private AbstractMenuButton.Direction direction = AbstractMenuButton.Direction.DOWN;
+    private Direction direction = Direction.DOWN;
 
     public OverlayButton(String panelName) {
         this.panelName = panelName;
@@ -114,7 +92,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
         if (menuList != null) {
             menuList.accept(list);
         }
-        applyDirection(this.direction, list);
+        this.direction.position(list);
         list.background(background);
         int x = getArea().x;
         int y = getArea().y;
@@ -166,7 +144,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      * @return this
      */
     public OverlayButton openUp() {
-        return direction(AbstractMenuButton.Direction.UP);
+        return direction(Direction.UP);
     }
 
     /**
@@ -176,7 +154,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      * @return this
      */
     public OverlayButton openDown() {
-        return direction(AbstractMenuButton.Direction.DOWN);
+        return direction(Direction.DOWN);
     }
 
     /**
@@ -185,7 +163,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      * @return this
      */
     public OverlayButton openLeftUp() {
-        return direction(AbstractMenuButton.Direction.LEFT_UP);
+        return direction(Direction.LEFT_UP);
     }
 
     /**
@@ -194,7 +172,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      * @return this
      */
     public OverlayButton openLeftDown() {
-        return direction(AbstractMenuButton.Direction.LEFT_DOWN);
+        return direction(Direction.LEFT_DOWN);
     }
 
     /**
@@ -203,7 +181,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      * @return this
      */
     public OverlayButton openRightUp() {
-        return direction(AbstractMenuButton.Direction.RIGHT_UP);
+        return direction(Direction.RIGHT_UP);
     }
 
     /**
@@ -212,7 +190,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      * @return this
      */
     public OverlayButton openRightDown() {
-        return direction(AbstractMenuButton.Direction.RIGHT_DOWN);
+        return direction(Direction.RIGHT_DOWN);
     }
 
     /**
@@ -222,10 +200,10 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
      * @return this
      */
     public OverlayButton openCustom() {
-        return direction(AbstractMenuButton.Direction.UNDEFINED);
+        return direction(Direction.UNDEFINED);
     }
 
-    private static final class MenuScreen extends GTGuiScreen {
+    private static class MenuScreen extends GTGuiScreen {
 
         public String parent;
 
@@ -250,6 +228,38 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
         public void onClose() {
             if (parent != null) {
                 OverlayButton.close(parent);
+            }
+        }
+    }
+
+    // copied from AbstractMenuButton.java
+    public enum Direction {
+
+        UP(resizer -> resizer.bottomRel(1f)),
+        DOWN(resizer -> resizer.topRel(1f)),
+        LEFT_UP(resizer -> resizer.rightRel(1f).bottom(0)),
+        LEFT_DOWN(resizer -> resizer.rightRel(1f).top(0)),
+        RIGHT_UP(resizer -> resizer.leftRel(1f).bottom(0)),
+        RIGHT_DOWN(resizer -> resizer.leftRel(1f).top(0)),
+        UNDEFINED;
+
+        private final @Nullable Consumer<StandardResizer> positioner;
+
+        Direction() {
+            this.positioner = null;
+        }
+
+        Direction(Consumer<StandardResizer> positioner) {
+            this.positioner = Objects.requireNonNull(positioner);
+        }
+
+        public void position(IWidget widget) {
+            this.position(widget.resizer());
+        }
+
+        public void position(StandardResizer resizer) {
+            if (this.positioner != null) {
+                this.positioner.accept(resizer);
             }
         }
     }
