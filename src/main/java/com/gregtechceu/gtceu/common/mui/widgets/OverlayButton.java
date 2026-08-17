@@ -86,11 +86,11 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     @Override
     public @NotNull Result onMousePressed(int button) {
-        if (!OverlayManager.isOpen(this.panelName)) {
-            MenuScreen screen = this.constructOverlay();
-            OverlayManager.open(this.panelName, screen, getScreen());
+        // different buttons may have the same panel name
+        if (!OverlayManager.isOpen(this)) {
+            OverlayManager.open(this);
         } else {
-            OverlayManager.close(this.panelName);
+            OverlayManager.close(this);
         }
         Interactable.playButtonClickSound();
         return Result.SUCCESS;
@@ -98,7 +98,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     @Override
     public void dispose() {
-        OverlayManager.close(this.panelName);
+        OverlayManager.close(this);
         super.dispose();
     }
 
@@ -170,31 +170,40 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     private static class OverlayManager {
 
-        private static final Map<String, MenuScreen> overlayScreens = new HashMap<>();
+        private static final Map<OverlayButton, MenuScreen> overlayScreens = new HashMap<>();
+        private static final Map<ModularScreen, ModularScreen> modularScreens = new HashMap<>();
 
         @SuppressWarnings("UnstableApiUsage")
-        private static void open(String panelName, MenuScreen overlay, ModularScreen parent) {
-            if (isOpen(panelName)) {
-                GTCEu.LOGGER.warn("Overlay Screen already exists for panel {}", panelName);
+        private static void open(OverlayButton menuHolder) {
+            if (isOpen(menuHolder)) {
+                GTCEu.LOGGER.warn("Overlay Screen already exists for panel {}", menuHolder);
                 return;
             }
+            var overlay = menuHolder.constructOverlay();
+            var parent = menuHolder.getScreen();
             if (parent instanceof MenuScreen menuScreen) {
                 menuScreen.addChild(overlay);
             }
-            overlayScreens.put(panelName, overlay);
+            if (modularScreens.containsKey(parent)) {
+                // parent already has an open menu
+                ModularScreen removed = modularScreens.remove(parent);
+                removed.close();
+            }
+            overlayScreens.put(menuHolder, overlay);
+            modularScreens.put(parent, overlay);
             overlay.constructOverlay(parent.getScreenWrapper().wrappedScreen());
             OverlayStack.open(overlay);
             Area screenArea = parent.getScreenArea();
             overlay.onResize(screenArea.w(), screenArea.h());
         }
 
-        private static boolean isOpen(String panelName) {
-            return overlayScreens.containsKey(panelName);
+        private static boolean isOpen(OverlayButton menuHolder) {
+            return overlayScreens.containsKey(menuHolder);
         }
 
         @SuppressWarnings("UnstableApiUsage")
-        private static void close(String panelName) {
-            MenuScreen overlay = overlayScreens.remove(panelName);
+        private static void close(OverlayButton menuHolder) {
+            MenuScreen overlay = overlayScreens.remove(menuHolder);
             if (overlay != null) {
                 overlay.close();
                 OverlayStack.close(overlay);
