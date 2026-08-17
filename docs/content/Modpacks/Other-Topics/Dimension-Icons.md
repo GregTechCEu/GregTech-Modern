@@ -24,13 +24,11 @@ private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, D
     event.register(sceneDimKey, sceneMarker);
     
     // Editing an existing icon.
-    ResourceLocation netherKey = ResourceLocation.withDefaultNamespace("the_nether");
-    DimensionMarker upgradedNetherMarker = new DimensionMarker(
-            5, 
-            () -> Items.NETHERITE_BLOCK,
-            "text.mymod.super_nether"
-    );
-    GTRegistries.DIMENSION_MARKERS.registerOrOverride(netherKey, upgradedNetherMarker);
+    
+    DimensionMarker marker = GTRegistries.DIMENSION_MARKERS.get(ResourceLocation.withDefaultNamespace("the_nether"));
+    marker.setTier(5);
+    marker.setOverrideName("text.mymod.super_nether");
+    marker.setIcon(() -> Items.NETHERITE_BLOCK);
 }
 ```
 
@@ -39,17 +37,10 @@ private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, D
 ```js
 GTCEuStartupEvents.registry("gtceu:dimension_marker", event => {
     // Edit existing dimension icon,
-    const DimensionMarker = Java.loadClass('com.gregtechceu.gtceu.api.data.DimensionMarker')
-    
-    let netherKey = ResourceLocation.withDefaultNamespace("the_nether")
-
-    let upgradedNetherMarker = new DimensionMarker(
-        5, 
-        Items.NETHERITE_BLOCK, 
-        "text.mymod.super_nether" 
-    )
-
-    GTRegistries.DIMENSION_MARKERS.registerOrOverride(netherKey, upgradedNetherMarker)
+    let marker = DimensionMarker.get(ResourceLocation.withDefaultNamespace("the_nether"));
+    marker.setTier(5);
+    marker.setOverrideName("text.mymod.super_nether");
+    marker.setIcon(() => Items.NETHERITE_BLOCK);
     
     // New icon
     event.create("ad_astra:glacio")

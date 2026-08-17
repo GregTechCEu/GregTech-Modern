@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
+import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
@@ -324,6 +325,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("EnergyStack", EnergyStack.class);
         event.add("IOEnergyStack", EnergyStack.WithIO.class);
         event.add("NBTPredicates", NBTPredicates.class);
+        event.add("DimensionMarker", DimensionMarker.class);
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);

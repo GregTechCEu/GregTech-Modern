@@ -26,13 +26,15 @@ public class DimensionMarker {
     public static final int MAX_TIER = 99;
 
     @Getter
-    public final int tier; // not only used to represent dimension tier, but also for sorting
+    @Setter
+    public int tier; // not only used to represent dimension tier, but also for sorting
 
     @Getter
+    @Setter
     @Nullable
-    private final String overrideName; // there may be other uses, so we store it
+    private String overrideName; // there may be other uses, so we store it
 
-    private final MemoizedSupplier<ItemStack> iconSupplier;
+    private MemoizedSupplier<ItemStack> iconSupplier;
 
     public DimensionMarker(int tier, ResourceLocation itemKey, @Nullable String overrideName) {
         this.tier = tier;
@@ -46,6 +48,17 @@ public class DimensionMarker {
     public DimensionMarker(int tier, Supplier<? extends ItemLike> supplier, @Nullable String overrideName) {
         this.tier = tier;
         this.overrideName = overrideName;
+        this.iconSupplier = GTMemoizer.memoize(() -> getStack(supplier.get().asItem()));
+    }
+
+    public void setIcon(ResourceLocation itemKey) {
+        this.iconSupplier = GTMemoizer.memoize(() -> ForgeRegistries.ITEMS.getDelegate(itemKey)
+                .map(Holder::get)
+                .map(this::getStack)
+                .orElse(ItemStack.EMPTY));
+    }
+
+    public void setIcon(Supplier<? extends ItemLike> supplier) {
         this.iconSupplier = GTMemoizer.memoize(() -> getStack(supplier.get().asItem()));
     }
 
@@ -66,6 +79,10 @@ public class DimensionMarker {
             stack.setHoverName(Component.translatable(overrideName));
         }
         return stack;
+    }
+
+    public static DimensionMarker get(ResourceLocation dimKey) {
+        return GTRegistries.DIMENSION_MARKERS.get(dimKey);
     }
 
     @Accessors(fluent = true, chain = true)
