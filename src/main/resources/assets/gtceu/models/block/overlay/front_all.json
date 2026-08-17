@@ -1,73 +1,24 @@
 {
+    "parent": "gtceu:block/cube/tinted/all",
     "elements": [
         {
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16, 16 ],
             "faces": {
-                "down": {
-                    "cullface": "down",
-                    "texture": "#all",
-                    "tintindex": 1
-                },
-                "east": {
-                    "cullface": "east",
-                    "texture": "#all",
-                    "tintindex": 1
-                },
-                "north": {
-                    "cullface": "north",
-                    "texture": "#all",
-                    "tintindex": 1
-                },
-                "south": {
-                    "cullface": "south",
-                    "texture": "#all",
-                    "tintindex": 1
-                },
-                "up": {
-                    "cullface": "up",
-                    "texture": "#all",
-                    "tintindex": 1
-                },
-                "west": {
-                    "cullface": "west",
-                    "texture": "#all",
-                    "tintindex": 1
-                }
-            },
-            "from": [
-                0,
-                0,
-                0
-            ],
-            "to": [
-                16,
-                16,
-                16
-            ]
+                "down":  { "texture": "#all", "cullface": "down",  "tintindex": 1 },
+                "up":    { "texture": "#all", "cullface": "up",    "tintindex": 1 },
+                "north": { "texture": "#all", "cullface": "north", "tintindex": 1 },
+                "south": { "texture": "#all", "cullface": "south", "tintindex": 1 },
+                "west":  { "texture": "#all", "cullface": "west",  "tintindex": 1 },
+                "east":  { "texture": "#all", "cullface": "east",  "tintindex": 1 }
+            }
         },
         {
+            "from": [  0,  0, -0.01 ],
+            "to":   [ 16, 16, -0.01 ],
             "faces": {
-                "north": {
-                    "cullface": "north",
-                    "texture": "#overlay",
-                    "uv": [
-                        0,
-                        0,
-                        16,
-                        16
-                    ]
-                }
-            },
-            "from": [
-                0,
-                0,
-                -0.01
-            ],
-            "to": [
-                16,
-                16,
-                -0.01
-            ]
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
+            }
         }
-    ],
-    "parent": "gtceu:block/cube/tinted/all"
+    ]
 }
