@@ -119,6 +119,7 @@ public class RecipeRunner {
     }
 
     private ActionResult handleContents() {
+        recipe.spoilageData.clear();
         if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
         if (!capabilityProxies.containsKey(io)) {
             return ActionResult.fail(
