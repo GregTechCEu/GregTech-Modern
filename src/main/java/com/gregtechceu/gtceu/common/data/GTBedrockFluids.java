@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -25,7 +26,7 @@ public class GTBedrockFluids {
     // ******** OVERWORLD ********//
     //////////////////////////////////////
     public static BedrockFluidDefinition HEAVY_OIL = create(GTCEu.id("heavy_oil_deposit"), builder -> builder
-            .fluid(GTMaterials.OilHeavy::getFluid)
+            .fluid(GTMaterials.OilHeavy.getFluid())
             .weight(15)
             .yield(100, 200)
             .depletionAmount(1)
@@ -36,7 +37,7 @@ public class GTBedrockFluids {
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition LIGHT_OIL = create(GTCEu.id("light_oil_deposit"), builder -> builder
-            .fluid(GTMaterials.OilLight::getFluid)
+            .fluid(GTMaterials.OilLight.getFluid())
             .weight(25)
             .yield(175, 300)
             .depletionAmount(1)
@@ -45,7 +46,7 @@ public class GTBedrockFluids {
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition NATURAL_GAS = create(GTCEu.id("natural_gas_deposit"), builder -> builder
-            .fluid(GTMaterials.NaturalGas::getFluid)
+            .fluid(GTMaterials.NaturalGas.getFluid())
             .weight(15)
             .yield(100, 175)
             .depletionAmount(1)
@@ -54,7 +55,7 @@ public class GTBedrockFluids {
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition OIL = create(GTCEu.id("oil_deposit"), builder -> builder
-            .fluid(GTMaterials.Oil::getFluid)
+            .fluid(GTMaterials.Oil.getFluid())
             .weight(20)
             .yield(175, 300)
             .depletionAmount(1)
@@ -65,7 +66,7 @@ public class GTBedrockFluids {
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition RAW_OIL = create(GTCEu.id("raw_oil_deposit"), builder -> builder
-            .fluid(GTMaterials.RawOil::getFluid)
+            .fluid(GTMaterials.RawOil.getFluid())
             .weight(20)
             .yield(200, 300)
             .depletionAmount(1)
@@ -74,7 +75,7 @@ public class GTBedrockFluids {
             .dimensions(overworld()));
 
     public static BedrockFluidDefinition SALT_WATER = create(GTCEu.id("salt_water_deposit"), builder -> builder
-            .fluid(GTMaterials.SaltWater::getFluid)
+            .fluid(GTMaterials.SaltWater.getFluid())
             .weight(0)
             .yield(50, 100)
             .depletionAmount(1)
@@ -88,7 +89,7 @@ public class GTBedrockFluids {
     // ******** NETHER ********//
     //////////////////////////////////////
     public static BedrockFluidDefinition LAVA = create(GTCEu.id("lava_deposit"), builder -> builder
-            .fluid(GTMaterials.Lava::getFluid)
+            .fluid(GTMaterials.Lava.getFluid())
             .weight(65)
             .yield(125, 250)
             .depletionAmount(1)
@@ -97,7 +98,7 @@ public class GTBedrockFluids {
             .dimensions(nether()));
 
     public static BedrockFluidDefinition NETHER_NATURAL_GAS = create(GTCEu.id("nether_natural_gas_deposit"),
-            builder -> builder.fluid(GTMaterials.NaturalGas::getFluid)
+            builder -> builder.fluid(GTMaterials.NaturalGas.getFluid())
                     .weight(35)
                     .yield(150, 300)
                     .depletionAmount(1)
@@ -111,7 +112,7 @@ public class GTBedrockFluids {
 
     public static BedrockFluidDefinition create(ResourceLocation id,
                                                 Consumer<BedrockFluidDefinition.Builder> consumer) {
-        BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(id);
+        BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME));
         consumer.accept(builder);
 
         BedrockFluidDefinition definition = builder.build();

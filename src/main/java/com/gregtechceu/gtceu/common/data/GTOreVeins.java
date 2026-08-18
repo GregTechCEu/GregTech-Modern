@@ -707,7 +707,6 @@ public class GTOreVeins {
         GTOreDefinition def = blankOreDefinition();
         config.accept(def);
 
-        def.register(name);
         toReRegister.put(name, def);
 
         return def;
