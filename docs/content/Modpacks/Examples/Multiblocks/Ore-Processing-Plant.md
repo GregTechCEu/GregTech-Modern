@@ -63,7 +63,7 @@ title: "Ore Processing Plant"
 === "JavaScript"
     ```js title="ore_processing_plant.js"
         GTCEuStartupEvents.registry('gtceu:machine', event => {
-            event.create('ore_processing_plant", 'multiblock')
+            event.create('ore_processing_plant', 'multiblock')
                 .rotationState(RotationState.NON_Y_AXIS)
                 .langValue("Ore Processing Plant")
                 .recipeType('gtceu:ore_processing_plant')

@@ -17,9 +17,9 @@ Custom recipe modifiers in are done through a function. For this example, we wil
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilWorkable)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        int temp = coilWorkable.getCoilType().getCoilTemperature()
+        int temp = coilWorkable.getCoilType().getCoilTemperature();
 
-        int recipeTemp = recipe.data.getInt("RequiredTemp")
+        int recipeTemp = recipe.data.getInt("RequiredTemp");
         if (recipeTemp > temp) {
             return ModifierFunction.NULL // Cancels recipe
         }

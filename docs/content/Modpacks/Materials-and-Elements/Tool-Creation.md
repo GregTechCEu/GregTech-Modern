@@ -112,7 +112,7 @@ You can also change the tool property of a GT material that already has a tool p
             GTMaterials.TungstenCarbide.removeProperty(PropertyKey.TOOL);
         }
         TungstenCarbide.setProperty(PropertyKey.TOOL,
-            (ToolProperty.Builder.of(180, 5.9, 2147483647, 6, GTToolType.SOFT_MALLET, GTToolType.DRILL_LV)
+            (ToolProperty.Builder.of(180, 5.9f, 2147483647, 6, GTToolType.SOFT_MALLET, GTToolType.DRILL_LV)
             .build()));
     }
 

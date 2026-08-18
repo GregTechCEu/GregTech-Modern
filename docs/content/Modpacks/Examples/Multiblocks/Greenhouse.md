@@ -108,6 +108,10 @@ title: "Greenhouse"
         greenhouseHelper(provider, AddonMod.id(id), input, List.of(output_normal), List.of(output_boosted));
     }
 
+    private static void greenhouseHelper(Consumer<FinishedRecipe> provider, String id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
+        greenhouseHelper(provider, AddonMod.id(id), input, output_normal, output_boosted);
+    }
+
     private static void greenhouseHelper(Consumer<FinishedRecipe> provider, ResourceLocation id, Item input, List<ItemStack> output_normal, List<ItemStack> output_boosted) {
          GREENHOUSE_RECIPES.recipeBuilder(id)
                 .circuitMeta(2)

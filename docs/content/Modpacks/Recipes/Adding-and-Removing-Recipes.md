@@ -9,7 +9,7 @@ title: "Adding & Removing Recipes"
 
 Removing recipes can be done from your java addon:
 
-```java title="CustomGTAddon.java"
+```java title="MyGTAddon.java"
 @GTAddon
 public class MyGTAddon implements IGTAddon {
     
@@ -67,7 +67,7 @@ ServerEvents.recipes(event => {
 Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
 
 === "Java"
-    ```java title="CustomGTAddon.java"
+    ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
         
@@ -188,7 +188,7 @@ GTCEu has Research System which allows for adding extra requirements to recipes 
 Scanner Research, Station Research and Computation.
 
 === "Java"
-    ```java title="CustomGTAddon.java"
+    ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
 
@@ -224,14 +224,14 @@ Scanner Research, Station Research and Computation.
    `Duration` outside of the `.researchStack()` object.
 
 === "Java"
-    ```java title="CustomGTAddon.java"
+    ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
             ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("research_station_test"))
-                .inputItems(new ItemStack(Blocks.COAL_BLOCK, 64))
+                .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
                 .duration(10000)
                 .EUt(GTValues.VA[GTValues.IV])
@@ -266,7 +266,7 @@ Rock breaker recipes use AdjacentFluidConditions.
 To add a condition, you can use the `adjacentFluids(Fluid...)` methods, see [our other condition builder methods](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/integration/kjs/recipe/GTRecipeSchema.java#L894).
 
 === "Java"
-    ```java title="CustomGTAddon.java"
+    ```java title="MyGTAddon.java"
     @GTAddon
     public class MyGTAddon implements IGTAddon {
 

@@ -11,7 +11,7 @@ can influence how the material behaves, as well as which items are generated for
 === "Java"
     ```java
       public static Material MY_MATERIAL = new Material.Builder(
-        ADDON_MOD.id('my_material'))
+        ADDON_MOD.id("my_material"))
         // ...
         .flags(MaterialFlags.FLAMMABLE)
         .buildAndRegister();

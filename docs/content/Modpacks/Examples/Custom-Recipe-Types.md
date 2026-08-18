@@ -12,7 +12,7 @@ title: Custom Recipe Type
         .setMaxIOSize(3, 3, 3, 3) // (1)
         .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                 .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SOLIDIFIER_OVERLAY))
-        .setSound(GTSoundEntries.COOLING)
+        .setSound(GTSoundEntries.COOLING);
 
     ```
 === "JavaScript"
