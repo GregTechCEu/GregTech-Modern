@@ -113,7 +113,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe,
                                                         List<SizedFluidIngredient> left,
                                                         boolean simulate) {
         if (io != handlerIO) return left;
@@ -193,15 +193,17 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
                         if (!drained.isEmpty()) {
                             visited[tank] = drained.copyWithAmount(count - drained.getAmount());
                             changed = true;
-                            FluidStack copied = drained.copy();
-                            recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.FLUID,
-                                    SizedFluidIngredient.of(copied));
+                            if (recipe != null) {
+                                FluidStack copied = drained.copy();
+                                recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.FLUID,
+                                        SizedFluidIngredient.of(copied));
+                            }
                         }
                         amount -= drained.getAmount();
                     }
                 } else { // IO.OUT && allow same fluids
                     FluidStack output = fluids[0].copy();
-                    recipe.mutateOutput(output);
+                    if (recipe != null) recipe.mutateOutput(output);
                     output.setAmount(amount);
                     if (visited[tank] == null || FluidStack.isSameFluidSameComponents(visited[tank], output)) {
                         if (count < storages[tank].getCapacity()) {
