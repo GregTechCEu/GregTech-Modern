@@ -43,7 +43,8 @@ public class RecipeSpoilageData {
     public RecipeSpoilageData copy() {
         HashMap<RecipeCapability<?>, List<?>> copied = new HashMap<>();
         for (Map.Entry<RecipeCapability<?>, List<?>> entry : consumedInputs.entrySet()) {
-            copied.put(entry.getKey(), entry.getValue().stream().map(entry.getKey()::copyContent).toList());
+            copied.put(entry.getKey(),
+                    new ArrayList<>(entry.getValue().stream().map(entry.getKey()::copyContent).toList()));
         }
         return new RecipeSpoilageData(copied, keepSpoilingProgress);
     }
