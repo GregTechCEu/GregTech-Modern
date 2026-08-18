@@ -116,7 +116,7 @@ public class GTDataFixers {
         createBlockItemRenameFix(builder, v1, "Rename Palladium Substation Casing",
                 createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
 
-        builder.addFixer(BlockRenameFix.create(v1, "Rename Tungstensteel Fluid Cell",
+        builder.addFixer(ItemRenameFix.create(v1, "Rename Tungstensteel Fluid Cell",
                 createRenamer("gtceu:tungstensteel_fluid_cell", "gtceu:tungsten_steel_fluid_cell")));
 
         createBlockItemEntityRenameFix(builder, v1, "Rename Low Pressure Steam Miner",
