@@ -92,21 +92,22 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
     protected void onLockedFluidChanged() {
         syncDataHolder.markClientSyncFieldDirty("lockedFluid");
-        var newFluid = this.lockedFluid.getFluid();
+        FluidStack newFluid = this.lockedFluid.getFluid();
         if (newFluid.isEmpty()) {
             this.setFilter(stack -> true);
             this.onContentsChanged();
             return;
         }
-        for (int i = 0; i < this.getTanks(); i++) {
-            if (this.getFluidInTank(i).isEmpty()) continue;
-            if (!this.getFluidInTank(i).isFluidEqual(newFluid)) {
+        for (int tank = 0; tank < this.getTanks(); tank++) {
+            FluidStack fluid = this.getFluidInTank(tank);
+            if (fluid.isEmpty()) continue;
+            if (!FluidStack.isSameFluidSameComponents(fluid, newFluid)) {
                 // Fluid in a tank that doesn't equal the new locked fluid
                 this.lockedFluid.setFluid(FluidStack.EMPTY);
                 return;
             }
         }
-        this.setFilter(stack -> stack.isFluidEqual(newFluid));
+        this.setFilter(stack -> FluidStack.isSameFluidSameComponents(stack, newFluid));
         this.onContentsChanged();
     }
 
