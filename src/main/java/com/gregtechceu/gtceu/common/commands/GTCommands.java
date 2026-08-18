@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.common.commands;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
@@ -13,9 +11,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketStartProspectionShare;
-import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
-import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
-import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 
 import net.minecraft.commands.*;
@@ -73,23 +68,6 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .then(literal("dump_data")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_OWNERS))
-                                .then(literal("bedrock_fluid_veins")
-                                        .executes(context -> dumpDataRegistry(context,
-                                                GTRegistries.BEDROCK_FLUID_DEFINITIONS,
-                                                BedrockFluidDefinition.FULL_CODEC,
-                                                BedrockFluidLoader.FOLDER)))
-                                .then(literal("bedrock_ore_veins")
-                                        .executes(context -> dumpDataRegistry(context,
-                                                GTRegistries.BEDROCK_ORE_DEFINITIONS,
-                                                BedrockOreDefinition.FULL_CODEC,
-                                                BedrockOreLoader.FOLDER)))
-                                .then(literal("ore_veins")
-                                        .executes(context -> dumpDataRegistry(context,
-                                                GTRegistries.ORE_VEINS,
-                                                GTOreDefinition.FULL_CODEC,
-                                                GTOreLoader.FOLDER))))
                         .then(literal("place_vein")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                 .then(argument("vein", GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))

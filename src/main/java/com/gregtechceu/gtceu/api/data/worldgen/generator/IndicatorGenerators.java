@@ -13,17 +13,18 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class IndicatorGenerators {
 
     public static final Codec<NoopIndicatorGenerator> NO_OP = register(GTCEu.id("no_op"), NoopIndicatorGenerator.CODEC,
-            entry -> NoopIndicatorGenerator.INSTANCE);
+            () -> NoopIndicatorGenerator.INSTANCE);
 
     public static final Codec<SurfaceIndicatorGenerator> SURFACE = register(GTCEu.id("surface"),
             SurfaceIndicatorGenerator.CODEC, SurfaceIndicatorGenerator::new);
 
     public static <T extends IndicatorGenerator> Codec<T> register(ResourceLocation id, Codec<T> codec,
-                                                                   Function<GTOreDefinition, T> function) {
+                                                                   Supplier<T> function) {
         WorldGeneratorUtils.INDICATOR_GENERATORS.put(id, codec);
         WorldGeneratorUtils.INDICATOR_GENERATOR_FUNCTIONS.put(id, function);
         return codec;

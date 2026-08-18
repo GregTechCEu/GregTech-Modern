@@ -135,7 +135,7 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
     @SuppressWarnings("all")
     private static String range(GTOreDefinition oreDefinition) {
-        HeightProvider height = oreDefinition.range().height;
+        HeightProvider height = oreDefinition.heightRange().height;
         int minHeight = 0, maxHeight = 0;
         if (height instanceof UniformHeight uniform) {
             minHeight = uniform.minInclusive.resolveY(null);

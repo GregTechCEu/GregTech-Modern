@@ -62,8 +62,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     private FloatProvider density = ConstantFloat.of(0.2f);
     private IndicatorPlacement placement = IndicatorPlacement.SURFACE;
 
-    public SurfaceIndicatorGenerator(GTOreDefinition entry) {
-        super(entry);
+    public SurfaceIndicatorGenerator() {
+        super();
     }
 
     public SurfaceIndicatorGenerator(Either<BlockState, Material> block, IntProvider radius, FloatProvider density,

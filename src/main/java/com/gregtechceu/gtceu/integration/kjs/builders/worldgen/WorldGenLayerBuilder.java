@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.level.gen.ruletest.AnyMatchRuleTest;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Accessors(fluent = true, chain = true)
 public class WorldGenLayerBuilder extends BuilderBase<IWorldGenLayer> {
@@ -47,6 +50,6 @@ public class WorldGenLayerBuilder extends BuilderBase<IWorldGenLayer> {
         return new SimpleWorldGenLayer(
                 this.id,
                 () -> new AnyMatchRuleTest(targets.stream().map(IWorldGenLayer.RuleTestSupplier::get).toList()),
-                Set.copyOf(dimensions), false);
+                Set.copyOf(dimensions.stream().map(r -> ResourceKey.create(Registries.DIMENSION, r)).collect(Collectors.toSet())), false);
     }
 }

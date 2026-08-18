@@ -752,9 +752,9 @@ public class GTOres {
 
     public static GTOreDefinition blankOreDefinition() {
         return new GTOreDefinition(
-                ConstantInt.ZERO, 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
+                ConstantInt.ZERO, 0, 0, IWorldGenLayer.NOWHERE, List.of(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
-                0, HolderSet::direct, BiomeWeightModifier.EMPTY, NoopVeinGenerator.INSTANCE,
+                0, HolderSet.direct(), BiomeWeightModifier.EMPTY, NoopVeinGenerator.INSTANCE,
                 new ArrayList<>());
     }
 }

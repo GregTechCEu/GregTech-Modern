@@ -157,7 +157,7 @@ public class OreGenerator {
         var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
 
         veinCenter = OreVeinUtil.getVeinCenter(pos, layeredRandom).orElse(veinCenter);
-        return entry.range().getPositions(
+        return entry.heightRange().getPositions(
                 new PlacementContext(level, generator, Optional.empty()),
                 layeredRandom, veinCenter).findFirst();
     }

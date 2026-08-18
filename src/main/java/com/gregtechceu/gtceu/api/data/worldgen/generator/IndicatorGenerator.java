@@ -40,13 +40,7 @@ public abstract class IndicatorGenerator {
     public static final Codec<IndicatorGenerator> DIRECT_CODEC = REGISTRY_CODEC
             .dispatchStable(IndicatorGenerator::codec, Function.identity());
 
-    protected GTOreDefinition entry;
-
     public IndicatorGenerator() {}
-
-    public IndicatorGenerator(GTOreDefinition entry) {
-        this.entry = entry;
-    }
 
     /**
      * Generate a map of all ore placers (by block position), containing each indicator block for the ore vein.
@@ -58,11 +52,6 @@ public abstract class IndicatorGenerator {
     @HideFromJS
     public abstract Map<ChunkPos, OreIndicatorPlacer> generate(WorldGenLevel level, RandomSource random,
                                                                GeneratedVeinMetadata metadata);
-
-    @HideFromJS
-    public GTOreDefinition parent() {
-        return entry;
-    }
 
     @Nullable
     public abstract Either<BlockState, Material> block();

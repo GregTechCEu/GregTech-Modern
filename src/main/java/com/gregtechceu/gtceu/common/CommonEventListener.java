@@ -37,16 +37,10 @@ import com.gregtechceu.gtceu.common.item.behavior.ToggleEnergyConsumerBehavior;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSendWorldID;
-import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
-import com.gregtechceu.gtceu.common.network.packets.SPacketSyncFluidVeins;
-import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
-import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
-import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -253,10 +247,6 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
-
-        event.addListener(new GTOreLoader());
-        event.addListener(new BedrockFluidLoader());
-        event.addListener(new BedrockOreLoader());
     }
 
     @SubscribeEvent
@@ -327,24 +317,6 @@ public class CommonEventListener {
             }
             CapeRegistry.detectNewCapes(serverPlayer);
             CapeRegistry.loadCurrentCapesOnLogin(serverPlayer);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onDatapackSync(OnDatapackSyncEvent event) {
-        ServerPlayer player = event.getPlayer();
-        if (player == null) {
-            // if player == null, the /reload command was ran. sync to all players.
-            GTNetwork.sendToAll(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
-            GTNetwork.sendToAll(new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
-            GTNetwork.sendToAll(new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
-        } else {
-            // else it's a player logging in. sync to only that player.
-            GTNetwork.sendToPlayer(player, new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
-            GTNetwork.sendToPlayer(player,
-                    new SPacketSyncFluidVeins(GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry()));
-            GTNetwork.sendToPlayer(player,
-                    new SPacketSyncBedrockOreVeins(GTRegistries.BEDROCK_ORE_DEFINITIONS.registry()));
         }
     }
 

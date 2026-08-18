@@ -4,11 +4,12 @@ import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -18,41 +19,32 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.ApiStatus;
+import lombok.experimental.Tolerate;
 
 import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class BedrockFluidDefinition {
 
+    // spotless:off
     public static final MapCodec<Pair<Integer, Integer>> YIELD = Codec.mapPair(Codec.INT.fieldOf("min"),
             Codec.INT.fieldOf("max"));
 
-    public static final Codec<BedrockFluidDefinition> FULL_CODEC = RecordCodecBuilder.create(
-            instance -> instance.group(
-                    Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
-                    YIELD.fieldOf("yield").forGetter(ft -> Pair.of(ft.minimumYield, ft.maximumYield)),
-                    Codec.INT.fieldOf("depletion_amount").forGetter(ft -> ft.depletionAmount),
-                    Codec.INT.fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
-                    Codec.INT.fieldOf("depleted_yield").forGetter(ft -> ft.depletedYield),
-                    BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(ft -> ft.storedFluid.get()),
-                    BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", List.of())
-                            .forGetter(ft -> ft.originalModifiers),
-                    ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter")
-                            .forGetter(ft -> new ArrayList<>(ft.dimensionFilter)))
-                    .apply(instance,
-                            (weight, yield, depletionAmount, depletionChance, depletedYield, storedFluid,
-                             biomeWeightModifier, dimensionFilter) -> new BedrockFluidDefinition(weight,
-                                     yield.getFirst(), yield.getSecond(), depletionAmount, depletionChance,
-                                     depletedYield, () -> storedFluid, biomeWeightModifier,
-                                     new HashSet<>(dimensionFilter))));
+    public static final Codec<BedrockFluidDefinition> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("weight").forGetter(BedrockFluidDefinition::getWeight),
+            YIELD.fieldOf("yield").forGetter(ft -> Pair.of(ft.minimumYield, ft.maximumYield)),
+            Codec.INT.fieldOf("depletion_amount").forGetter(BedrockFluidDefinition::getDepletionAmount),
+            Codec.INT.fieldOf("depletion_chance").forGetter(BedrockFluidDefinition::getDepletionChance),
+            Codec.INT.fieldOf("depleted_yield").forGetter(BedrockFluidDefinition::getDepletedYield),
+            BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(BedrockFluidDefinition::getStoredFluid),
+            BiomeWeightModifier.CODEC.optionalFieldOf("weight_modifier", BiomeWeightModifier.EMPTY).forGetter(BedrockFluidDefinition::getBiomeWeightModifier),
+            ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter))
+    ).apply(instance, BedrockFluidDefinition::new));
 
+    public static final Codec<Holder<BedrockFluidDefinition>> CODEC = RegistryFixedCodec.create(GTRegistries.Keys.BEDROCK_FLUID);
+    // spotless:on
     @Getter
     @Setter
     private int weight; // weight value for determining which vein will appear
@@ -70,26 +62,25 @@ public class BedrockFluidDefinition {
     private int depletedYield; // yield after the vein is depleted
     @Getter
     @Setter
-    private Supplier<Fluid> storedFluid; // the fluid which the vein contains
+    private Fluid storedFluid; // the fluid which the vein contains
     @Getter
+    @Setter
     private BiomeWeightModifier biomeWeightModifier; // weighting of biomes
-    private List<BiomeWeightModifier> originalModifiers; // weighting of biomes
     @Getter
     @Setter
     public Set<ResourceKey<Level>> dimensionFilter; // filtering of dimensions
 
-    public BedrockFluidDefinition(ResourceLocation name, int weight, int minimumYield, int maximumYield,
-                                  int depletionAmount, int depletionChance, int depletedYield,
-                                  Supplier<Fluid> storedFluid, List<BiomeWeightModifier> originalModifiers,
-                                  Set<ResourceKey<Level>> dimensionFilter) {
-        this(weight, minimumYield, maximumYield, depletionAmount, depletionChance, depletedYield, storedFluid,
-                originalModifiers, dimensionFilter);
-        GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(name, this);
+    private BedrockFluidDefinition(int weight, Pair<Integer, Integer> yield,
+                                   int depletionAmount, int depletionChance, int depletedYield,
+                                   Fluid storedFluid, BiomeWeightModifier modifier,
+                                   List<ResourceKey<Level>> dimensionFilter) {
+        this(weight, yield.getFirst(), yield.getSecond(), depletionAmount, depletionChance, depletedYield,
+                storedFluid, modifier, new HashSet<>(dimensionFilter));
     }
 
-    public BedrockFluidDefinition(int weight, int minimumYield, int maximumYield, int depletionAmount,
-                                  int depletionChance, int depletedYield, Supplier<Fluid> storedFluid,
-                                  List<BiomeWeightModifier> originalModifiers,
+    public BedrockFluidDefinition(int weight, int minimumYield, int maximumYield,
+                                  int depletionAmount, int depletionChance, int depletedYield,
+                                  Fluid storedFluid, BiomeWeightModifier modifier,
                                   Set<ResourceKey<Level>> dimensionFilter) {
         this.weight = weight;
         this.minimumYield = minimumYield;
@@ -98,53 +89,46 @@ public class BedrockFluidDefinition {
         this.depletionChance = depletionChance;
         this.depletedYield = depletedYield;
         this.storedFluid = storedFluid;
-        this.originalModifiers = originalModifiers;
-        this.biomeWeightModifier = new BiomeWeightModifier(
-                () -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()),
-                originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
-
-            @Override
-            public int applyAsInt(Holder<Biome> biome) {
-                int mod = 0;
-                for (var modifier : originalModifiers) {
-                    if (modifier.biomes.get().contains(biome)) {
-                        mod += modifier.applyAsInt(biome);
-                    }
-                }
-                return mod;
-            }
-        };
+        this.biomeWeightModifier = modifier;
         this.dimensionFilter = dimensionFilter;
     }
 
-    public void setOriginalModifiers(List<BiomeWeightModifier> modifiers) {
-        this.originalModifiers = modifiers;
-        this.biomeWeightModifier = new BiomeWeightModifier(
-                () -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()),
-                originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
-
-            @Override
-            public int applyAsInt(Holder<Biome> biome) {
-                int mod = 0;
-                for (var modifier : originalModifiers) {
-                    if (modifier.biomes.get().contains(biome)) {
-                        mod += modifier.applyAsInt(biome);
-                    }
-                }
-                return mod;
-            }
-        };
+    @Tolerate
+    public void setBiomeWeightModifier(List<BiomeWeightModifier> modifiers) {
+        this.biomeWeightModifier = BiomeWeightModifier.fromList(modifiers);
     }
 
-    public static Builder builder(ResourceLocation name) {
-        return new Builder(name);
+    public boolean canGenerate() {
+        return this.getWeight() > 0 || !this.getBiomeWeightModifier().isEmpty();
     }
 
-    @RemapPrefixForJS("kjs$")
+    public List<BiomeWeightModifier> getOriginalModifiers() {
+        if (this.biomeWeightModifier instanceof BiomeWeightModifier.FromList list) {
+            return list.getOriginalModifiers();
+        } else {
+            return Collections.singletonList(this.biomeWeightModifier);
+        }
+    }
+
+    public static Builder builder(HolderGetter<Biome> biomeLookup) {
+        return new Builder(biomeLookup);
+    }
+
+    public Builder asBuilder(HolderGetter<Biome> biomeLookup) {
+        Builder builder = builder(biomeLookup);
+        builder.weight(this.weight);
+        builder.minimumYield(this.minimumYield).maximumYield(this.maximumYield);
+        builder.depletionAmount(this.depletionAmount).depletionChance(this.depletionChance);
+        builder.depletedYield(this.depletedYield);
+        builder.fluid(this.storedFluid);
+        builder.dimensions(this.dimensionFilter);
+        builder.biomes(this.getOriginalModifiers());
+        return builder;
+    }
+
     @Accessors(chain = true, fluent = true)
     public static class Builder {
 
-        private final ResourceLocation name;
         @Setter
         private int weight; // weight value for determining which vein will appear
         @Setter
@@ -156,98 +140,45 @@ public class BedrockFluidDefinition {
         @Setter
         private int depletedYield; // yield after the vein is depleted
         @Setter
-        private Supplier<Fluid> fluid; // the fluid which the vein contains
-        private Set<ResourceKey<Level>> dimensions;
+        private Fluid fluid; // the fluid which the vein contains
+        @Setter
+        private Set<ResourceKey<Level>> dimensions = Collections.emptySet();
         private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
-        private Builder(ResourceLocation name) {
-            this.name = name;
-        }
+        private final HolderGetter<Biome> biomeLookup;
 
-        public Builder copy(ResourceLocation name) {
-            var copied = new Builder(name);
-            copied.weight = weight;
-            copied.minimumYield = minimumYield;
-            copied.maximumYield = maximumYield;
-            copied.depletionAmount = depletionAmount;
-            copied.depletionChance = depletionChance;
-            copied.depletedYield = depletedYield;
-            copied.fluid = fluid;
-            return copied;
+        private Builder(HolderGetter<Biome> biomeLookup) {
+            this.biomeLookup = biomeLookup;
         }
 
         public Builder yield(int min, int max) {
             return minimumYield(min).maximumYield(max);
         }
 
-        @HideFromJS
         public Builder biomes(int weight, TagKey<Biome> biomes) {
-            this.biomes.add(new BiomeWeightModifier(() -> GTRegistries.builtinRegistry()
-                    .registryOrThrow(Registries.BIOME).getOrCreateTag(biomes), weight));
+            this.biomes.add(new BiomeWeightModifier(biomeLookup.getOrThrow(biomes), weight));
             return this;
         }
 
-        @HideFromJS
         @SafeVarargs
         public final Builder biomes(int weight, ResourceKey<Biome>... biomes) {
-            this.biomes.add(new BiomeWeightModifier(() -> HolderSet.direct(GTRegistries.builtinRegistry()
-                    .registryOrThrow(Registries.BIOME)::getHolderOrThrow, biomes), weight));
+            this.biomes.add(new BiomeWeightModifier(HolderSet.direct(biomeLookup::getOrThrow, biomes), weight));
             return this;
         }
 
-        @HideFromJS
         public Builder biomes(int weight, HolderSet<Biome> biomes) {
-            this.biomes.add(new BiomeWeightModifier(() -> biomes, weight));
+            this.biomes.add(new BiomeWeightModifier(biomes, weight));
             return this;
         }
 
-        @HideFromJS
-        public Builder dimensions(Set<ResourceKey<Level>> dimensions) {
-            this.dimensions = dimensions;
+        public Builder biomes(List<BiomeWeightModifier> modifiers) {
+            this.biomes.addAll(modifiers);
             return this;
         }
 
-        // region KubeJS versions of the above methods
-
-        /// This method should <b>only</b> be used in KubeJS.
-        @SuppressWarnings("unused")
-        @ApiStatus.Internal
-        public Builder kjs$biomeTag(int weight, ResourceLocation biomeTag) {
-            return this.biomes(weight, TagKey.create(Registries.BIOME, biomeTag));
-        }
-
-        /// This method should <b>only</b> be used in KubeJS.
-        @SuppressWarnings({ "unused", "unchecked" })
-        @ApiStatus.Internal
-        public Builder kjs$biomes(int weight, ResourceLocation... biomes) {
-            ResourceKey<Biome>[] resourceKeys = new ResourceKey[biomes.length];
-            for (int i = 0; i < biomes.length; i++) {
-                resourceKeys[i] = ResourceKey.create(Registries.BIOME, biomes[i]);
-            }
-            return this.biomes(weight, resourceKeys);
-        }
-
-        /// This method should <b>only</b> be used in KubeJS.
-        @SuppressWarnings("unused")
-        @ApiStatus.Internal
-        public Builder kjs$dimensions(ResourceLocation... dimensions) {
-            return this.dimensions(Arrays.stream(dimensions)
-                    .map(id -> ResourceKey.create(Registries.DIMENSION, id))
-                    .collect(Collectors.toSet()));
-        }
-
-        // endregion
-
-        @ApiStatus.Internal
         public BedrockFluidDefinition build() {
             return new BedrockFluidDefinition(weight, minimumYield, maximumYield, depletionAmount,
-                    depletionChance, depletedYield, fluid, biomes, dimensions);
-        }
-
-        public BedrockFluidDefinition register() {
-            var definition = build();
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(name, definition);
-            return definition;
+                    depletionChance, depletedYield, fluid, BiomeWeightModifier.fromList(biomes), dimensions);
         }
     }
 }
