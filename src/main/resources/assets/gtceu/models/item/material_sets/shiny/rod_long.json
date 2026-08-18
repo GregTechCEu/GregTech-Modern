@@ -1,8 +1,8 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "gtceu:item/material_sets/shiny/rod_long",
-        "layer1": "gtceu:item/material_sets/shiny/rod_long_secondary",
-        "layer2": "gtceu:item/material_sets/shiny/rod_long_overlay"
-    }
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/material_sets/shiny/rod_long",
+    "layer1": "gtceu:item/material_sets/shiny/rod_long_secondary",
+    "layer2": "gtceu:item/material_sets/shiny/rod_long_overlay"
+  }
 }
