@@ -1,6 +1,9 @@
 ---
 title: "Custom Ingredient"
 ---
+---
+title: "Custom Ingredient"
+---
 
 !!! Note
     Before reading / following this document, it is heavily recommended to have read [Recipe Logic](./Recipe-Logic.md), [Recipe Searching](./Recipe-Searching.md) and [Recipe Execution](./Recipe-Execution.md) first. 
@@ -132,7 +135,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
     public final static BonkRecipeCapability CAP = new BonkRecipeCapability();
 
     protected BonkRecipeCapability() {
-        super(new ResourceLocation("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
+        super(ResourceLocation.fromNamespaceAndPath("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
     }
 
     @Override
