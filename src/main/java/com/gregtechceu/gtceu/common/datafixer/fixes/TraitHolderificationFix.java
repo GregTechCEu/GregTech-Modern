@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
-import com.mojang.datafixers.DataFix;
-import com.mojang.datafixers.OpticFinder;
-import com.mojang.datafixers.TypeRewriteRule;
+import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
-import com.mojang.serialization.Dynamic;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Unit;
 import net.minecraft.util.datafix.fixes.References;
 
-import static com.mojang.datafixers.DSL.remainderFinder;
+import java.util.function.Function;
+
+import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.optionalFields;
+import static com.mojang.datafixers.DSL.*;
 
 public class TraitHolderificationFix extends DataFix {
 
@@ -18,67 +20,77 @@ public class TraitHolderificationFix extends DataFix {
 
     @Override
     protected TypeRewriteRule makeRule() {
-        Type<?> blockEntityIn = this.getInputSchema().getType(References.BLOCK_ENTITY);
-        Type<?> blockEntityOut = this.getOutputSchema().getType(References.BLOCK_ENTITY);
-
-        OpticFinder<?> batterySlotFinder = blockEntityIn.findField("tag");
-
         // spotless:off
-        return TypeRewriteRule.seq(
-                this.fixTypeEverywhereTyped("TraitHolderDataFix - autoOutput", blockEntityIn, blockEntityOut, typed -> typed.update(remainderFinder(), TraitHolderificationFix::copyAutoOutputToTraitHolder)),
-                this.fixTypeEverywhereTyped("TraitHolderDataFix - batterySlot", blockEntityIn, blockEntityOut, typed -> typed.update(remainderFinder(), TraitHolderificationFix::fixBatteryAndCopyToTraitHolder)),
-                this.fixTypeEverywhereTyped("TraitHolderDataFix - circuitSlot", blockEntityIn, blockEntityOut, typed -> typed.update(remainderFinder(), TraitHolderificationFix::fixCircuitAndCopyToTraitHolder))
+        Schema out = this.getOutputSchema();
+        Type<?> blockEntityIn = this.getInputSchema().getType(References.BLOCK_ENTITY);
+        Type<?> blockEntityOut = out.getType(References.BLOCK_ENTITY);
+
+        var itemHandlerType = field("Items", list(out.getTypeRaw(References.ITEM_STACK)));
+        var wrappedItemHandlerType = field("storage", itemHandlerType);
+        var oldType = optionalFields(
+                "chargerInventory", itemHandlerType,
+                "circuitInventory", wrappedItemHandlerType
         );
+
+        var traitHolderType = optionalFields(
+                "batterySlot", wrappedItemHandlerType,
+                or(
+                        optionalFields("circuit", wrappedItemHandlerType),
+                        optionalFields("circuitSlot", wrappedItemHandlerType)
+                )
+        );
+        var newType = optionalFields("traitHolder", traitHolderType);
+
+        return this.fixTypeEverywhereTyped("TraitHolderDataFix", blockEntityIn, blockEntityOut, typed -> {
+            // move the auto output trait first
+            typed = typed.update(remainderFinder(), dynamic -> {
+                final var field = dynamic.get("autoOutput").result();
+                if (field.isPresent()) {
+                    dynamic = dynamic.update("traitHolder", val -> val.set("autoOutput", field.get()));
+                }
+                return dynamic;
+            });
+
+            // then rename the original fields
+            typed = moveItemHandlerField(typed, "chargerInventory", "batterySlot");
+            typed = moveItemHandlerField(typed, "circuitInventory", "circuitSlot");
+
+            // then copy the renamed fields into the `traitHolder` field
+            typed = copyFieldToTraitHolder(typed, "batterySlot");
+            typed = copyFieldToTraitHolder(typed, "circuitSlot", "circuit");
+            typed = copyFieldToTraitHolder(typed, "circuitSlot"); // do circuit slot twice with different names
+
+            return typed;
+        });
         // spotless:on
     }
 
-    private static Dynamic<?> addTraitHolderField(Dynamic<?> dynamic) {
-        var traitHolder = dynamic.get("traitHolder").result();
-        if (traitHolder.isEmpty()) {
-            dynamic = dynamic.set("traitHolder", dynamic.emptyMap());
-        }
-        return dynamic;
+    private static Typed<?> moveItemHandlerField(Typed<?> typed, String oldName, String newName) {
+        return moveItemHandlerFieldHelper(typed, oldName, newName, typed.getType().findFieldType(oldName))
+                .update(DSL.remainderFinder(), dynamic -> dynamic.remove(oldName));
     }
 
-    private static Dynamic<?> copyAutoOutputToTraitHolder(Dynamic<?> dynamic) {
-        dynamic = addTraitHolderField(dynamic);
+    private static <A> Typed<?> moveItemHandlerFieldHelper(Typed<?> typed, String oldName, String newName,
+                                                           Type<A> fieldType) {
+        Type<Either<A, Unit>> type = DSL.optional(DSL.field(oldName, fieldType));
+        Type<Either<A, Unit>> type1 = optional(field(newName, field("storage", fieldType)));
 
-        final var field = dynamic.get("autoOutput").result();
-        if (field.isPresent()) {
-            dynamic = dynamic.update("traitHolder", val -> val.set("autoOutput", field.get()));
-        }
-        return dynamic;
+        return typed.update(type.finder(), type1, Function.identity());
     }
 
-    private static Dynamic<?> fixBatteryAndCopyToTraitHolder(Dynamic<?> dynamic) {
-        dynamic = addTraitHolderField(dynamic);
-
-        final var field = dynamic.get("chargerInventory").result();
-        if (field.isPresent()) {
-            Dynamic<?> batterySlot = dynamic.emptyMap()
-                    .set("storage", field.get());
-            // move the original battery slot field to the trait's object
-            dynamic = dynamic.set("batterySlot", batterySlot)
-                    // and also copy it to the trait holder
-                    .update("traitHolder", val -> val.set("batterySlot", batterySlot));
-        }
-        return dynamic;
+    private static Typed<?> copyFieldToTraitHolder(Typed<?> typed, String name) {
+        return copyFieldToTraitHolder(typed, name, name);
     }
 
-    private static Dynamic<?> fixCircuitAndCopyToTraitHolder(Dynamic<?> dynamic) {
-        dynamic = addTraitHolderField(dynamic);
+    private static Typed<?> copyFieldToTraitHolder(Typed<?> typed, String oldName, String newName) {
+        return copyFieldToTraitHolderHelper(typed, oldName, newName, typed.getType().findFieldType(oldName));
+    }
 
-        final var field = dynamic.get("circuitInventory").result();
-        if (field.isPresent()) {
-            Dynamic<?> circuitSlot = dynamic.emptyMap()
-                    .set("storage", field.get());
-            // move the original battery slot field to the trait's object
-            dynamic = dynamic.set("circuitSlot", circuitSlot)
-                    // and also copy it to the trait holder
-                    // ...twice, to cover both the 'original' name and what SimpleTieredMachine uses
-                    .update("traitHolder", val -> val.set("circuitSlot", circuitSlot)
-                            .set("circuit", circuitSlot));
-        }
-        return dynamic;
+    private static <A> Typed<?> copyFieldToTraitHolderHelper(Typed<?> typed, String oldName, String newName,
+                                                             Type<A> fieldType) {
+        Type<Either<A, Unit>> type = DSL.optional(DSL.field(oldName, fieldType));
+        Type<Either<Either<A, Unit>, Unit>> type1 = optional(field("traitHolder", optional(field(newName, fieldType))));
+
+        return typed.update(type.finder(), type1, field -> Either.left(field));
     }
 }
