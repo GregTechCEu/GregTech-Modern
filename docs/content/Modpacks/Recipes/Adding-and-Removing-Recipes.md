@@ -195,7 +195,7 @@ Scanner Research, Station Research and Computation.
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
             ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("scanner_test"))
-                .inputItems(new ItemStack(Blocks.COAL_BLOCK, 64))
+                .inputItems(new ItemStack(Items.COAL, 64))
                 .outputItems(Items.DIAMOND)
                 .duration(10000)
                 .EUt(GTValues.VA[GTValues.IV])

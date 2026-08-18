@@ -111,7 +111,7 @@ You can change the properties of the material by adding any combination of the f
             .gem(2, 4000)
             .element(GTElements.C)
             .ore(2, 3)
-            .color(0x7D2DDB).iconSet(GTMaterialIconSet.LIGNITE)
+            .color(0x7D2DDB).iconSet(MaterialIconSet.LIGNITE)
             .buildAndRegister();
     
     ```

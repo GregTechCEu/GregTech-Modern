@@ -122,6 +122,10 @@ public class ChemicalHelper {
         return TagPrefix.NULL_PREFIX;
     }
 
+    public static TagPrefix getPrefix(ItemStack itemStack) {
+        return getPrefix(itemStack.getItem());
+    }
+
     public static ItemStack getDust(Material material, long materialAmount) {
         if (!material.hasProperty(PropertyKey.DUST) || materialAmount <= 0) {
             return ItemStack.EMPTY;

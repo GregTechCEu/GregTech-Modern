@@ -14,7 +14,7 @@ All periodic table elements are present in GT, but some of them don't have any p
 
 
 === "Java"
-    ```java title="CommonEventListeners.java"
+    ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
         // Ingot
@@ -25,7 +25,7 @@ All periodic table elements are present in GT, but some of them don't have any p
         GTMaterials.Selenium.setProperty(PropertyKey.DUST, new DustProperty());
     
         // Blast Property
-        GTMaterials.Zirconium.setProperty(PropertyKey.BLAST, new BlastProperty(8000, 'higher', GTValues.VA[GTValues.MV], 8000));
+        GTMaterials.Zirconium.setProperty(PropertyKey.BLAST, new BlastProperty(8000, GasTier.HIGHER));
     }
     ```
 === "JavaScript"
@@ -44,7 +44,7 @@ All periodic table elements are present in GT, but some of them don't have any p
         GTMaterials.Selenium.setProperty(PropertyKey.DUST, new $DustProperty());
     
         // Blast Property
-        GTMaterials.Zirconium.setProperty(PropertyKey.BLAST, new $BlastProperty(8000, 'higher', GTValues.VA[GTValues.MV], 8000));
+        GTMaterials.Zirconium.setProperty(PropertyKey.BLAST, new $BlastProperty(8000, 'higher'));
     
     });
     ```
@@ -52,7 +52,7 @@ All periodic table elements are present in GT, but some of them don't have any p
 Adding fluids to existing materials:
 
 === "Java"
-    ```java title="CommonEventListeners.java"
+    ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
         GTMaterials.Iodine.setProperty(PropertyKey.FLUID, new FluidProperty(FluidStorageKeys.LIQUID, new FluidBuilder()));
@@ -75,7 +75,7 @@ Adding fluids to existing materials:
 You can even add an ore to existing materials:
 
 === "Java"
-    ```java title="CommonEventListeners.java"
+    ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
         GTMaterials.Zinc.setProperty(PropertyKey.ORE, new OreProperty());
@@ -91,7 +91,7 @@ You can even add an ore to existing materials:
 
 Do note that to edit keys that already exist on materials, you have to remove them first:
 === "Java"
-    ```java title="CommonEventListeners.java"
+    ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
         GTMaterials.RedAlloy.removeProperty(PropertyKey.WIRE);
@@ -110,7 +110,7 @@ Do note that to edit keys that already exist on materials, you have to remove th
 You can also add flags to existing materials:
 
 === "Java"
-    ```java title="CommonEventListeners.java"
+    ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
         GTMaterials.Lead.addFlags(MaterialFlags.GENERATE_GEAR);
@@ -127,7 +127,7 @@ You can also add flags to existing materials:
 Editing the color of an existing material:
 
 === "Java"
-    ```java title="CommonEventListeners.java"
+    ```java title="AddonMod.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
         GTMaterials.BismuthBronze.setMaterialARGB(0x82AD92); //(1)
