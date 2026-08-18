@@ -58,4 +58,8 @@ public class RecipeSpoilageData {
     public static RecipeSpoilageData readFromNetwork(FriendlyByteBuf buf) {
         return new RecipeSpoilageData(new HashMap<>(), buf.readBoolean());
     }
+
+    public void writeToNetwork(FriendlyByteBuf buf) {
+        buf.writeBoolean(keepSpoilingProgress);
+    }
 }

@@ -34,6 +34,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITagManager;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapForJS;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
@@ -64,6 +66,7 @@ public class Predicates {
         return states(null, allowedStates);
     }
 
+    @RemapForJS("statesDebug")
     public static MultiPredicate states(@Nullable String debugName, BlockState... allowedStates) {
         List<BlockState> states = new ArrayList<>();
         BooleanProperty activeProp = GTBlockStateProperties.ACTIVE;
@@ -85,6 +88,7 @@ public class Predicates {
                 .toMultiPredicate();
     }
 
+    @HideFromJS
     public static MultiPredicate blocks(Block block) {
         return builder("Block")
                 .predicate(ctx -> ctx.state().is(block))
@@ -98,16 +102,19 @@ public class Predicates {
         return blocks(null, blocks);
     }
 
+    @RemapForJS("blocksDebug")
     public static MultiPredicate blocks(@Nullable String debugName, Block... blocks) {
         return blocks(debugName, Arrays.stream(blocks));
     }
 
+    @HideFromJS
     public static MultiPredicate blocks(@Nullable String debugName,
                                         Stream<Block> blocks) {
         List<Block> blockList = blocks.toList();
         return blocks(debugName, blockList, blockList.stream());
     }
 
+    @HideFromJS
     public static MultiPredicate blocks(@Nullable String debugName,
                                         List<Block> blocks,
                                         Stream<Block> candidates) {
@@ -164,8 +171,13 @@ public class Predicates {
     }
 
     public static MultiPredicate fluids(Fluid... fluids) {
+        return fluids(null, fluids);
+    }
+
+    @RemapForJS("fluidsDebug")
+    public static MultiPredicate fluids(@Nullable String debugName, Fluid... fluids) {
         Validate.noNullElements(fluids, "Fluids array has null element at index %s");
-        return builder("Fluids")
+        return builder(debugName == null ? "Fluids" : debugName)
                 .predicate(ctx -> ArrayUtils.contains(fluids, ctx.fluid()))
                 // .errorConsumer(ctx -> ctx.appendError(PLACEHOLDER))
                 .candidates(Arrays.stream(fluids).map(BlockInfo::fromFluid))
