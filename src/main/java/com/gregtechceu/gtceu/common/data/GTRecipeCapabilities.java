@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -10,7 +7,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fml.ModLoader;
 
 public class GTRecipeCapabilities {
 

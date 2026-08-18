@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.chance.logic;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -10,7 +9,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
@@ -360,6 +358,5 @@ public abstract class ChanceLogic {
     public abstract Component getTranslation();
 
     @ApiStatus.Internal
-    public static void init() {
-    }
+    public static void init() {}
 }

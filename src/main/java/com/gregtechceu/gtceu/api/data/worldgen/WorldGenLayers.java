@@ -1,15 +1,10 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraftforge.fml.ModLoader;
 
 import java.util.Set;
 
@@ -30,6 +25,5 @@ public class WorldGenLayers {
             GTCEu.id("endstone"), () -> WorldGeneratorUtils.END_ORE_REPLACEABLES,
             Set.of(Level.END.location()));
 
-    public static void init() {
-    }
+    public static void init() {}
 }

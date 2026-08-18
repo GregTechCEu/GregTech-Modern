@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;

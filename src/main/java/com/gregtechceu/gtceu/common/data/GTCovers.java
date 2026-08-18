@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
@@ -19,7 +17,6 @@ import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
@@ -148,6 +145,5 @@ public class GTCovers {
         }).toArray(CoverDefinition[]::new);
     }
 
-    public static void init() {
-    }
+    public static void init() {}
 }

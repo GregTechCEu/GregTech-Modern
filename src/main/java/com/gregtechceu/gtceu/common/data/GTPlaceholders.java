@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
@@ -16,7 +15,6 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.placeholder.ModulePlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
@@ -56,7 +54,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 

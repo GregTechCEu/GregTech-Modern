@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -150,6 +148,5 @@ public class MaterialIconSet {
         return id.toString();
     }
 
-    public static void init() {
-    }
+    public static void init() {}
 }

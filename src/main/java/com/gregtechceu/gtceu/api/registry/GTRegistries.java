@@ -183,7 +183,6 @@ public final class GTRegistries {
     // ignore the generics and hope the registered objects are still correctly typed :3
     @SuppressWarnings({ "unchecked" })
     private static void actuallyRegister(RegisterEvent event) {
-
         // Backwards compat for registration
 
         if (event.getRegistryKey() == Keys.TAG_PREFIX) {
@@ -214,7 +213,8 @@ public final class GTRegistries {
 
         if (event.getRegistryKey() == Keys.WORLD_GEN_LAYER) {
             AddonFinder.getAddons().forEach(IGTAddon::registerWorldgenLayers);
-            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class));
+            ModLoader.get()
+                    .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class));
         }
 
         if (event.getRegistryKey() == Keys.CHANCE_LOGIC) {
@@ -222,11 +222,13 @@ public final class GTRegistries {
         }
 
         if (event.getRegistryKey() == Keys.MATERIAL_ICON_SET) {
-            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class));
+            ModLoader.get()
+                    .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class));
         }
 
         if (event.getRegistryKey() == Keys.DIMENSION_MARKER) {
-            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
+            ModLoader.get()
+                    .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
         }
 
         if (event.getRegistryKey() == Keys.MACHINE) {
@@ -234,7 +236,8 @@ public final class GTRegistries {
         }
 
         if (event.getRegistryKey() == Keys.MEDICAL_CONDITION) {
-            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
+            ModLoader.get()
+                    .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
         }
 
         if (event.getRegistryKey() == Keys.PLACEHOLDER) {
@@ -242,7 +245,8 @@ public final class GTRegistries {
         }
 
         if (event.getRegistryKey() == Keys.RECIPE_CATEGORY) {
-            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
+            ModLoader.get()
+                    .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
         }
 
         if (event.getRegistryKey() == Keys.RECIPE_CONDITION) {

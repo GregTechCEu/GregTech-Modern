@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -11,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.ModLoader;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +66,5 @@ public class GTDimensionMarkers {
                 .register();
     }
 
-    public static void init() {
-    }
+    public static void init() {}
 }

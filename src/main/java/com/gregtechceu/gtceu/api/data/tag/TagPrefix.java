@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.data.tag;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
@@ -46,7 +43,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
