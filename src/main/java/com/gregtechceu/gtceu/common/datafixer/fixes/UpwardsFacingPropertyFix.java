@@ -9,15 +9,11 @@ import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public class UpwardsFacingPropertyFix extends DataFix {
-
-    private static final Logger LOGGER = LogManager.getLogger("GTCEu/DFU/UpwardsFacingPropertyFix");
 
     public UpwardsFacingPropertyFix(Schema outputSchema) {
         super(outputSchema, false);
@@ -41,7 +37,7 @@ public class UpwardsFacingPropertyFix extends DataFix {
         upwardsFacing = fixUpwardsFacing(frontFacing, upwardsFacing);
 
         return Direction.CODEC.encodeStart(property.getOps(), upwardsFacing)
-                .resultOrPartial(LOGGER::error)
+                .resultOrPartial(str -> {})
                 .map(value -> new Dynamic<>(property.getOps(), value))
                 .orElse(property);
     }
@@ -49,8 +45,7 @@ public class UpwardsFacingPropertyFix extends DataFix {
     private static <T> Dynamic<T> upgradeBlockStateTag(Dynamic<T> blockState) {
         return blockState.update("Properties", properties -> {
             OptionalDynamic<?> frontFacingProperty = properties.get("facing");
-            Optional<Direction> frontFacingOpt = frontFacingProperty.read(Direction.CODEC)
-                    .resultOrPartial(LOGGER::error);
+            Optional<Direction> frontFacingOpt = frontFacingProperty.read(Direction.CODEC).resultOrPartial(str -> {});
             if (frontFacingOpt.isEmpty()) {
                 return properties;
             }
