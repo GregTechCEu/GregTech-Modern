@@ -1,9 +1,6 @@
 ---
 title: "Custom Ingredient"
 ---
----
-title: "Custom Ingredient"
----
 
 !!! Note
     Before reading / following this document, it is heavily recommended to have read [Recipe Logic](./Recipe-Logic.md), [Recipe Searching](./Recipe-Searching.md) and [Recipe Execution](./Recipe-Execution.md) first. 
