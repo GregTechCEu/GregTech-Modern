@@ -72,28 +72,32 @@ public class UpwardsFacingPropertyFix extends DataFix {
 
         return switch (frontFacing) {
             case NORTH -> switch (upwardsFacing) {
+                case NORTH -> Direction.UP;
                 case EAST -> Direction.WEST;
                 case SOUTH -> Direction.DOWN;
                 case WEST -> Direction.EAST;
-                case NORTH, default -> Direction.UP;
+                default -> Direction.UP;
             };
             case EAST -> switch (upwardsFacing) {
+                case NORTH -> Direction.UP;
                 case EAST -> Direction.NORTH;
                 case SOUTH -> Direction.DOWN;
                 case WEST -> Direction.SOUTH;
-                case NORTH, default -> Direction.UP;
+                default -> Direction.UP;
             };
             case SOUTH -> switch (upwardsFacing) {
+                case NORTH -> Direction.UP;
                 case EAST -> Direction.EAST;
                 case SOUTH -> Direction.DOWN;
                 case WEST -> Direction.WEST;
-                case NORTH, default -> Direction.UP;
+                default -> Direction.UP;
             };
             case WEST -> switch (upwardsFacing) {
+                case NORTH -> Direction.UP;
                 case EAST -> Direction.SOUTH;
                 case SOUTH -> Direction.DOWN;
                 case WEST -> Direction.NORTH;
-                case NORTH, default -> Direction.UP;
+                default -> Direction.UP;
             };
             case UP, DOWN -> upwardsFacing;
         };
