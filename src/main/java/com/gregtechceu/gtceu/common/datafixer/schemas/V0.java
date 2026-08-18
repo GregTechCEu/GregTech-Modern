@@ -39,21 +39,25 @@ public class V0 extends AutomaticNamespacedSchema {
 
         // add forge registry id map to the level schema
         schema.registerType(false, GTReferences.FORGE_REGISTRY_DATA, () -> optionalFields(
-                "minecraft:block", optionalFields(
-                        "ids", compoundList(References.BLOCK_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), References.BLOCK_NAME.in(schema))
+                "minecraft:block", fields(
+                        "ids", list(fields("K", References.BLOCK_NAME.in(schema), "V", constType(intType()))),
+                        "aliases", list(fields("K", constType(namespacedString()), "V", References.BLOCK_NAME.in(schema))),
+                        "overrides", list(fields("K", References.BLOCK_NAME.in(schema), "V", constType(string())))
                 ),
-                "minecraft:item", optionalFields(
-                        "ids", compoundList(References.ITEM_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), References.ITEM_NAME.in(schema))
+                "minecraft:item", fields(
+                        "ids", list(fields("K", References.ITEM_NAME.in(schema), "V", constType(intType()))),
+                        "aliases", list(fields("K", constType(namespacedString()), "V", References.ITEM_NAME.in(schema))),
+                        "overrides", list(fields("K", References.ITEM_NAME.in(schema), "V", constType(string())))
                 ),
-                "minecraft:fluid", optionalFields(
-                        "ids", compoundList(GTReferences.FLUID_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), GTReferences.FLUID_NAME.in(schema))
+                "minecraft:fluid", fields(
+                        "ids", list(fields("K", GTReferences.FLUID_NAME.in(schema), "V", constType(intType()))),
+                        "aliases", list(fields("K", constType(namespacedString()), "V", GTReferences.FLUID_NAME.in(schema))),
+                        "overrides", list(fields("K", GTReferences.FLUID_NAME.in(schema), "V", constType(string())))
                 ),
-                "minecraft:entity_type", optionalFields(
-                        "ids", compoundList(References.ENTITY_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), References.ENTITY_NAME.in(schema))
+                "minecraft:entity_type", fields(
+                        "ids", list(fields("K", References.ENTITY_NAME.in(schema), "V", constType(intType()))),
+                        "aliases", list(fields("K", constType(namespacedString()), "V", References.ENTITY_NAME.in(schema))),
+                        "overrides", list(fields("K", References.ENTITY_NAME.in(schema), "V", constType(string())))
                 )
         ));
 
