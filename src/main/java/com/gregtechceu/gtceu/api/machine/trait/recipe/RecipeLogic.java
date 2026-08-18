@@ -467,6 +467,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         lastUnrolledRecipe = recipe.copy();
         syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
         GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
+        runningRecipe.spoilageData.clearConsumedInputs();
         var handledIO = handleRecipeIO(runningRecipe, IO.IN);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {

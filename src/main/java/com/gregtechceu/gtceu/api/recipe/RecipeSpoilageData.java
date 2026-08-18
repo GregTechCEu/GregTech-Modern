@@ -41,7 +41,13 @@ public class RecipeSpoilageData {
     }
 
     public RecipeSpoilageData copy() {
-        return new RecipeSpoilageData(new HashMap<>(consumedInputs), keepSpoilingProgress);
+        Map<RecipeCapability<?>, List<?>> copied = new HashMap<>();
+        consumedInputs.forEach((cap, contents) -> copied.put(cap, new ArrayList<>(contents)));
+        return new RecipeSpoilageData(copied, keepSpoilingProgress);
+    }
+
+    public void clearConsumedInputs() {
+        consumedInputs.clear();
     }
 
     public <T> void addConsumedInput(RecipeCapability<T> recipeCapability, T t) {
