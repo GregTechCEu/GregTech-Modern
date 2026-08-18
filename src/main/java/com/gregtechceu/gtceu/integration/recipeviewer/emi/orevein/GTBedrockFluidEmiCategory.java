@@ -66,7 +66,7 @@ public class GTBedrockFluidEmiCategory extends EmiRecipeCategory {
 
         @Override
         public @NotNull List<EmiStack> getOutputs() {
-            return List.of(EmiStack.of(fluid.getStoredFluid().get()));
+            return List.of(EmiStack.of(fluid.getStoredFluid()));
         }
     }
 }

@@ -333,7 +333,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTOreVein", GTOreDefinition.class);
         event.add("GTLayerPattern", GTLayerPattern.class);
         event.add("GTDikeBlockDefinition", DikeVeinGenerator.DikeBlockDefinition.class);
-        event.add("GTOres", GTOres.class);
+        event.add("GTOres", GTOreVeins.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
         // Cape related
         event.add("GTCapes", GTCapes.class);

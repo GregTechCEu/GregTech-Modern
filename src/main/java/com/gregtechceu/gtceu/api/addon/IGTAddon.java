@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -90,7 +90,7 @@ public interface IGTAddon {
     default void removeRecipes(Consumer<ResourceLocation> consumer) {}
 
     /**
-     * Use {@link GTOres#create(ResourceLocation, Consumer)} to register the veins.
+     * Use {@link GTOreVeins#create(ResourceLocation, Consumer)} to register the veins.
      */
     default void registerOreVeins() {}
 

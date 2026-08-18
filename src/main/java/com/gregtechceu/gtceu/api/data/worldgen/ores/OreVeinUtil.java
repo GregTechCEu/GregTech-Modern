@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.ores;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.common.data.GTOreVeins;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -99,7 +99,7 @@ public class OreVeinUtil {
      *         Depends on the largest registered vein size, as well as the configured random vein offset.
      */
     static int getMaxVeinSearchDistance() {
-        double halfVeinSize = GTOres.getLargestVeinSize() / 2.0;
+        double halfVeinSize = GTOreVeins.getLargestVeinSize() / 2.0;
         int randomOffset = ConfigHolder.INSTANCE.worldgen.oreVeins.oreVeinRandomOffset;
 
         return (int) Math.ceil((halfVeinSize + randomOffset) / 16.0);
@@ -110,7 +110,7 @@ public class OreVeinUtil {
      *         Depends on the largest registered indicator size, as well as the configured random vein offset.
      */
     static int getMaxIndicatorSearchDistance() {
-        return getMaxVeinSearchDistance() + (int) Math.ceil((double) GTOres.getLargestIndicatorOffset() / 16.0);
+        return getMaxVeinSearchDistance() + (int) Math.ceil((double) GTOreVeins.getLargestIndicatorOffset() / 16.0);
     }
 
     @Nullable

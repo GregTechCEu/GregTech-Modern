@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,7 +18,7 @@ public class GTOreVeinEventJS extends EventJS {
     public GTOreVeinEventJS() {}
 
     public void add(ResourceLocation id, Consumer<GTOreDefinition> consumer) {
-        var vein = GTOres.blankOreDefinition();
+        var vein = GTOreVeins.blankOreDefinition();
         consumer.accept(vein);
         vein.register(id);
     }

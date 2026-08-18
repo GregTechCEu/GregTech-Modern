@@ -191,7 +191,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
     public Fluid getFluidInChunk(int chunkX, int chunkZ) {
         FluidVeinWorldEntry info = getFluidVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return null;
-        return info.getDefinition().getStoredFluid().get();
+        return info.getDefinition().getStoredFluid();
     }
 
     /**

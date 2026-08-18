@@ -217,7 +217,7 @@ public abstract class ProspectorMode<T> {
             if (savedData.getDefinition() == null) {
                 return null;
             }
-            return new FluidInfo(savedData.getDefinition().getStoredFluid().get(),
+            return new FluidInfo(savedData.getDefinition().getStoredFluid(),
                     savedData.getFluidYield(),
                     100 * savedData.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
         }

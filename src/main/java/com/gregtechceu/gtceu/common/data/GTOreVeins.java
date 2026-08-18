@@ -35,7 +35,7 @@ import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVein
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 @SuppressWarnings("unused")
-public class GTOres {
+public class GTOreVeins {
 
     /**
      * The size of the largest registered vein.
@@ -736,13 +736,13 @@ public class GTOres {
 
     public static void updateLargestVeinSize() {
         // map to average of min & max values.
-        GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
+        GTOreVeins.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
                 .map(GTOreDefinition::clusterSize)
                 .mapToInt(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2)
                 .max()
                 .orElse(0);
 
-        GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
+        GTOreVeins.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
                 .flatMapToInt(definition -> definition.indicatorGenerators().stream()
                         .mapToInt(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
                                 (int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))))

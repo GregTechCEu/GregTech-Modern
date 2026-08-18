@@ -59,7 +59,7 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
         this(WIDTH, 140, getFluidName(fluid), fluid.getWeight(), null, fluid.dimensionFilter, veinYield(fluid),
                 depletion(fluid));
         drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create()
-                .value(new FluidStack(fluid.getStoredFluid().get(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
+                .value(new FluidStack(fluid.getStoredFluid(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
     }
 
     public OreVeinRecipeWidget(GTOreDefinition oreDefinition) {
