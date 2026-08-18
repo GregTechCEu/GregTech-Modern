@@ -9,7 +9,6 @@ import net.minecraft.util.datafix.fixes.References;
 
 import java.util.function.Function;
 
-import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.optionalFields;
 import static com.mojang.datafixers.DSL.*;
 
 public class TraitHolderificationFix extends DataFix {
@@ -20,26 +19,8 @@ public class TraitHolderificationFix extends DataFix {
 
     @Override
     protected TypeRewriteRule makeRule() {
-        // spotless:off
-        Schema out = this.getOutputSchema();
         Type<?> blockEntityIn = this.getInputSchema().getType(References.BLOCK_ENTITY);
-        Type<?> blockEntityOut = out.getType(References.BLOCK_ENTITY);
-
-        var itemHandlerType = field("Items", list(out.getTypeRaw(References.ITEM_STACK)));
-        var wrappedItemHandlerType = field("storage", itemHandlerType);
-        var oldType = optionalFields(
-                "chargerInventory", itemHandlerType,
-                "circuitInventory", wrappedItemHandlerType
-        );
-
-        var traitHolderType = optionalFields(
-                "batterySlot", wrappedItemHandlerType,
-                or(
-                        optionalFields("circuit", wrappedItemHandlerType),
-                        optionalFields("circuitSlot", wrappedItemHandlerType)
-                )
-        );
-        var newType = optionalFields("traitHolder", traitHolderType);
+        Type<?> blockEntityOut = this.getOutputSchema().getType(References.BLOCK_ENTITY);
 
         return this.fixTypeEverywhereTyped("TraitHolderDataFix", blockEntityIn, blockEntityOut, typed -> {
             // move the auto output trait first
@@ -62,7 +43,6 @@ public class TraitHolderificationFix extends DataFix {
 
             return typed;
         });
-        // spotless:on
     }
 
     private static Typed<?> moveItemHandlerField(Typed<?> typed, String oldName, String newName) {
