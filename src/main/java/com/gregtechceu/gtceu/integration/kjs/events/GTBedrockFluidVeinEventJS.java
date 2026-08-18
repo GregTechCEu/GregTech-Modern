@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreDefinitionBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidDefinitionBuilderJS;
 
 import com.mojang.serialization.Lifecycle;
 import dev.latvian.mods.kubejs.event.EventJS;
@@ -19,38 +19,39 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-public class GTBedrockOreVeinEventJS extends EventJS {
+@SuppressWarnings("unused")
+public class GTBedrockFluidVeinEventJS extends EventJS {
 
-    private final WritableRegistry<BedrockOreDefinition> registry;
+    private final WritableRegistry<BedrockFluidDefinition> registry;
 
-    public GTBedrockOreVeinEventJS(WritableRegistry<BedrockOreDefinition> registry) {
+    public GTBedrockFluidVeinEventJS(WritableRegistry<BedrockFluidDefinition> registry) {
         this.registry = registry;
     }
 
-    public void add(Context cx, ResourceLocation id, Consumer<BedrockOreDefinitionBuilderJS> consumer) {
-        BedrockOreDefinitionBuilderJS builder = new BedrockOreDefinitionBuilderJS(id);
+    public void add(Context cx, ResourceLocation id, Consumer<BedrockFluidDefinitionBuilderJS> consumer) {
+        BedrockFluidDefinitionBuilderJS builder = new BedrockFluidDefinitionBuilderJS(id);
         consumer.accept(builder);
         register(id, builder.createObject());
     }
 
-    private void register(ResourceLocation id, BedrockOreDefinition def) {
+    private void register(ResourceLocation id, BedrockFluidDefinition def) {
         registry.register(createKey(id), def, Lifecycle.stable());
     }
 
-    public void modify(Context cx, ResourceLocation id, Consumer<BedrockOreDefinitionBuilderJS> consumer) {
+    public void modify(Context cx, ResourceLocation id, Consumer<BedrockFluidDefinitionBuilderJS> consumer) {
         var vein = registry.get(id);
-        if (vein == null) throw new IllegalArgumentException("Bedrock ore vein doesn't exist: " + id);
-        var builder = BedrockOreDefinitionBuilderJS.from(vein, id);
+        if (vein == null) throw new IllegalArgumentException("Fluid vein doesn't exist: " + id);
+        var builder = BedrockFluidDefinitionBuilderJS.from(vein, id);
         consumer.accept(builder);
         register(id, builder.createObject());
     }
 
-    public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockOreDefinitionBuilderJS> consumer) {
-        Set<ResourceLocation> keys = registry.keySet();
+    public void modifyAll(Context cx, BiConsumer<ResourceLocation, BedrockFluidDefinitionBuilderJS> consumer) {
+        Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
         keys.forEach(id -> {
             var vein = registry.get(id);
-            if (vein == null) throw new IllegalArgumentException("Bedrock ore vein doesn't exist: " + id);
-            var builder = BedrockOreDefinitionBuilderJS.from(vein, id);
+            if (vein == null) throw new IllegalArgumentException("Fluid vein doesn't exist: " + id);
+            var builder = BedrockFluidDefinitionBuilderJS.from(vein, id);
             consumer.accept(id, builder);
             register(id, builder.createObject());
         });
@@ -61,7 +62,7 @@ public class GTBedrockOreVeinEventJS extends EventJS {
         keys.forEach(key -> remove(cx, key));
     }
 
-    public void removeAll(Context cx, BiPredicate<ResourceLocation, BedrockOreDefinition> predicate) {
+    public void removeAll(Context cx, BiPredicate<ResourceLocation, BedrockFluidDefinition> predicate) {
         Set<ResourceLocation> keys = Set.copyOf(registry.keySet());
         keys.stream()
                 .filter(key -> predicate.test(key, registry.get(key)))
@@ -75,11 +76,11 @@ public class GTBedrockOreVeinEventJS extends EventJS {
         }
         // blank out the vein info because we can't remove from the registry
         var holder = registry.getHolderOrThrow(createKey(id));
-        holder.value().biomeWeightModifier(BiomeWeightModifier.EMPTY);
-        holder.value().weight(0);
+        holder.value().setBiomeWeightModifier(BiomeWeightModifier.EMPTY);
+        holder.value().setWeight(0);
     }
 
-    public static ResourceKey<BedrockOreDefinition> createKey(ResourceLocation id) {
-        return ResourceKey.create(GTRegistries.Keys.BEDROCK_ORE, id);
+    public static ResourceKey<BedrockFluidDefinition> createKey(ResourceLocation id) {
+        return ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, id);
     }
 }

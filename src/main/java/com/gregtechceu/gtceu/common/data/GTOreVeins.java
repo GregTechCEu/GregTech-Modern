@@ -10,15 +10,18 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -710,7 +713,7 @@ public class GTOreVeins {
     }
 
     public static GTOreDefinition create(ResourceLocation name, Consumer<GTOreDefinition> config) {
-        GTOreDefinition def = blankOreDefinition();
+        GTOreDefinition def = blankOreDefinition(GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME));
         config.accept(def);
 
         toReRegister.put(name, def);
@@ -757,11 +760,11 @@ public class GTOreVeins {
                 .orElse(0);
     }
 
-    public static GTOreDefinition blankOreDefinition() {
+    public static GTOreDefinition blankOreDefinition(HolderGetter<Biome> biomeLookup) {
         return new GTOreDefinition(
-                ConstantInt.ZERO, 0, 0, IWorldGenLayer.NOWHERE, List.of(),
+                ConstantInt.ZERO, 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
                 0, HolderSet.direct(), BiomeWeightModifier.EMPTY, NoopVeinGenerator.INSTANCE,
-                new ArrayList<>());
+                new ArrayList<>(), biomeLookup);
     }
 }
