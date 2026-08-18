@@ -58,6 +58,11 @@ public class V0 extends AutomaticNamespacedSchema {
                         "ids", list(fields("K", References.ENTITY_NAME.in(schema), "V", constType(intType()))),
                         "aliases", list(fields("K", constType(namespacedString()), "V", References.ENTITY_NAME.in(schema))),
                         "overrides", list(fields("K", References.ENTITY_NAME.in(schema), "V", constType(string())))
+                ),
+                "gtceu:material", fields(
+                        "ids", list(fields("K", GTReferences.MATERIAL_NAME.in(schema), "V", constType(intType()))),
+                        "aliases", list(fields("K", constType(namespacedString()), "V", GTReferences.MATERIAL_NAME.in(schema))),
+                        "overrides", list(fields("K", GTReferences.MATERIAL_NAME.in(schema), "V", constType(string())))
                 )
         ));
 
