@@ -106,7 +106,7 @@ public class GTDataFixers {
         createBlockItemRenameFix(builder, v1, "Rename RTM Alloy Coil Block",
                 createRenamer("tungstensteel_coil_block", "rtm_alloy_coil_block"));
 
-        builder.addFixer(ItemRenameFix.create(v1, "Rename Advanced Nanomuscle Chestplate",
+        builder.addFixer(ItemRenameFix.create(v1, "Fix Advanced Nanomuscle Chestplate name",
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
         createBlockItemRenameFix(builder, v1, "Rename Palladium Substation Casing",
@@ -139,19 +139,16 @@ public class GTDataFixers {
 
         // separator
 
-        /*
-        createBlockItemRenameFix(builder, schemaV11, "U238",
-                createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_"));
-        createBlockItemRenameFix(builder, schemaV11, "Pu239",
-                createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_"));
-        createBlockItemRenameFix(builder, schemaV11, "Red Granite",
-                createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
-        createBlockItemRenameFix(builder, schemaV11, "Tungstensteel",
-                createRenamer(Pattern.compile("gtceu:(.*)tungstensteel"), "gtceu:$1tungsten_steel"));
-
-        createBlockItemRenameFix(builder, schemaV11, "Raw Oil",
-                createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
-        */
+        // Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
+        // createBlockItemRenameFix(builder, v10, "U238",
+        //         createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_"));
+        // createBlockItemRenameFix(builder, v10, "Pu239",
+        //         createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_"));
+        // createBlockItemRenameFix(builder, v10, "Red Granite",
+        //         createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
+        //
+        // createBlockItemRenameFix(builder, v10, "Oil Variants",
+        //         createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
     }
 
     private static void createBlockItemRenameFix(DataFixerBuilder builder, Schema schema, String name,
