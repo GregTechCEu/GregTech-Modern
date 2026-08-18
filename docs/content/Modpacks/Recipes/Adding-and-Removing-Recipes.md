@@ -78,7 +78,7 @@ Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
                     new ItemStack(Blocks.DIRT, 64),
                     new ItemStack(Items.DIAMOND, 32)
                 )
-                .inputFluids(new FluidStack(Fluids.LAVA, 1500)
+                .inputFluids(new FluidStack(Fluids.LAVA, 1500))
                 .outputItems(Items.STICK)
                 .duration(100)
                 .EUt(30)
@@ -200,7 +200,7 @@ Scanner Research, Station Research and Computation.
                 .duration(10000)
                 .EUt(GTValues.VA[GTValues.IV])
                 .scannerResearch(b -> b
-                    .researchStack(Blocks.COAL_BLOCK)
+                    .researchStack(new ItemStack(Blocks.COAL_BLOCK))
                     .duration(420)
                     .EUt(VA[IV]))
                 .save(provider);
@@ -230,13 +230,13 @@ Scanner Research, Station Research and Computation.
 
         @Override
         public void addRecipes(Consumer<FinishedRecipe> provider) {
-            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("scanner_test"))
+            ASSEMBLY_LINE_RECIPES.recipeBuilder(ADDON_MOD.id("research_station_test"))
                 .inputItems(new ItemStack(Blocks.COAL_BLOCK, 64))
                 .outputItems(Items.DIAMOND)
                 .duration(10000)
                 .EUt(GTValues.VA[GTValues.IV])
                 .stationResearch(b -> b
-                    .researchStack(Blocks.COAL_BLOCK)
+                    .researchStack(new ItemStack(Blocks.COAL_BLOCK))
                     .CWUt(10)
                     .EUt(VA[IV]))
                 .save(provider);
@@ -246,7 +246,7 @@ Scanner Research, Station Research and Computation.
 === "JavaScript"
     ```js title="station_research"
     ServerEvents.recipes(event => {
-        event.recipes.gtceu.assembly_line('station_test')
+        event.recipes.gtceu.assembly_line('research_station_test')
             .itemInputs('64x minecraft:coal')
             .itemOutputs('minecraft:diamond')
             .duration(10000)

@@ -708,7 +708,11 @@ public class GTRecipeTypes {
         return recipeType;
     }
 
-    private static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
+    /**
+     * @deprecated Use {@link #register(ResourceLocation, String, RecipeType[])} instead.
+     */
+    @Deprecated(since = "8.0.0", forRemoval = true)
+    public static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());

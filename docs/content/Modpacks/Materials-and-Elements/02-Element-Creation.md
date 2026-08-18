@@ -11,7 +11,7 @@ Elements are the base of GT materials. Registering an element WILL NOT add any i
 
 === "Java"
     ```java title="AddonElements.java"
-    public static final Element TEST = GTElements.createAndRegister(ADDON_MOD.id("test"), 27, 177, -1, null, 'test', false)
+    public static final Element TEST = GTElements.createAndRegister(ADDON_MOD.id("test"), 27, 177, -1, null, "Test", "test", false);
     ```
 === "JavaScript"
     ```js

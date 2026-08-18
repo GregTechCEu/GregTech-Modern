@@ -9,13 +9,13 @@ Using material flags, you can specify several properties of each material, which
 can influence how the material behaves, as well as which items are generated for it.
 
 === "Java"
-  ```java
-  public static Material MY_MATERIAL = new Material.Builder(
-          ADDON_MOD.id('my_material'))
-          // ...
-          .flags(GTMaterialFlags.FLAMMABLE)
-          .buildAndRegister();
-  ```
+    ```java
+      public static Material MY_MATERIAL = new Material.Builder(
+        ADDON_MOD.id('my_material'))
+        // ...
+        .flags(MaterialFlags.FLAMMABLE)
+        .buildAndRegister();
+    ```
 === "Javascript"
     ```js
     GTCEuStartupEvents.registry('gtceu:material', event => {

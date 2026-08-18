@@ -74,8 +74,3 @@ Below is an example of a multiblock using the LargeTurbineMachine class for maki
                 "gtceu:block/multiblock/generator/large_gas_turbine")
     });
     ```
-
-
-
-
-

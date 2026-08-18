@@ -23,11 +23,11 @@ title: "Custom Parallel Hatch"
                         .modelProperty(IS_FORMED, false)
                         .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                         .model(createWorkableTieredHullMachineModel(
-                                GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
+                                AddonMod.id("block/machines/parallel_hatch_mk" + (tier - 4)))
                                 .andThen((ctx, prov, model) -> {
                                     model.addReplaceableTextures("bottom", "top", "side");
                                 }))
-                        .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"),
+                        .tooltips(Component.translatable("addon.machine.parallel_hatch_mk" + tier + ".tooltip"),
                                 Component.translatable("gtceu.part_sharing.disabled"))
                         .register(),
             GTValues.UHV, GTValues.UIV, GTValues.UEV, GTValues.UXV);
@@ -92,4 +92,4 @@ title: "Custom Parallel Hatch"
 5. Specifying the multipart to use parallel hatch ability
 6. The texture to use for the multipart, this example just uses the t4 texture as a placeholder
   You can look at gtm's assets to see the animations and textures to edit
-7. You can just refer to the code in GCYMMachines.PARALLEL_HATCH here
+7. You can just refer to the code in GCYMMachines.PARALLEL_HATCH here.

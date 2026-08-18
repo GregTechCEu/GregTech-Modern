@@ -60,9 +60,12 @@ ItemStack representing that `TagPrefix`-`Material` combination with the specifie
 
 ## Usage Examples
 
-```java title="chemicalhelper_example_script.java"
-Material ironMaterial = ChemicalHelper.getMaterial(Item.of("gtceu:double_iron_plate").asItem()); // (1)
-TagPrefix rawOrePrefix = ChemicalHelper.getPrefix(Item.of("gtceu:raw_platinum").asItem()); // (2)
+```java title="ChemicalHelperExample.java"
+ItemStack doubleIronPlate = ChemicalHelper.get(TagPrefix.plateDouble, GTMaterials.Iron);
+ItemStack rawPlatinum = ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Platinum);
+
+MaterialStack ironMaterial = ChemicalHelper.getMaterialStack(doubleIronPlate); // (1)
+TagPrefix rawOrePrefix = ChemicalHelper.getPrefix(rawPlatinum); // (2)
 ItemStack cobaltIngotStack = ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Cobalt, 32); // (3)
 
 ItemStack goldNugget = ChemicalHelper.getIngot(GTMaterials.Gold, GTValues.M / 9); // (4)

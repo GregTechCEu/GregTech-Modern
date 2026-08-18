@@ -68,7 +68,7 @@ You can change the properties of the material by adding any combination of the f
             ADDON_MOD.id("andesite_alloy"))
             .ingot()
             .components("1x andesite", "1x iron")
-            .color(0xFF0000).secondaryColor(0x840707).iconSet(GTMaterialIconSet.DULL)
+            .color(0xFF0000).secondaryColor(0x840707).iconSet(MaterialIconSet.DULL)
             .flags(MaterialFlags.GENERATE_PLATE, MaterialFlags.GENERATE_GEAR, MaterialFlags.GENERATE_SMALL_GEAR)
             .buildAndRegister();
     ```

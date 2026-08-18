@@ -23,8 +23,8 @@ public class ExampleMod {
         modBus.addGenericListener(RecipeConditionType.class, this::registerConditions);
     }
     
-    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register(ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "example_condition"), // (1)
+    public void registerConditions(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeConditionType<?>> event) {
+        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"), // (1)
                 new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
     }
     // end 1.20.1
@@ -36,18 +36,18 @@ public class ExampleMod {
 
     public ExampleMod(IEventBus modBus, FMLModContainer container) {
         modBus.addListener(CommonInit::onRegister);
-        bus.addListener(RecipeConditionType.class, this::registerConditions);
+        bus.addListener(this::registerConditions);
     }
     
-    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition",
+    public void registerConditions(RegisterEvent event) {
+        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"),
                 new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
     }
     // end 1.21.1
 }
 ```
 
-1You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
+1. You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
 
 We will set up a condition that requires that the power buffer of the machine is above a certain Y level.
 ```java

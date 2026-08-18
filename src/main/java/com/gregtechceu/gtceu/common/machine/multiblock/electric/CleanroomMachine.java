@@ -442,7 +442,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      * .setMaxGlobalLimited(1))
      * .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
      *
-     * return FactoryBlockPattern.start(LEFT, FRONT, UP)
+     * return MultiblockPatternBuilder.start(LEFT, FRONT, UP)
      * .slice(f)
      * .slice(m).setRepeatable(wallLayers.size())
      * .slice(c)

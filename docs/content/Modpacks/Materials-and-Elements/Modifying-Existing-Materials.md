@@ -113,7 +113,7 @@ You can also add flags to existing materials:
     ```java title="CommonEventListeners.java"
     @SubscribeEvent
     public static void materialModification(PostMaterialEvent event) {
-        GTMaterials.Lead.addFlags(GTMaterialFlags.GENERATE_GEAR);
+        GTMaterials.Lead.addFlags(MaterialFlags.GENERATE_GEAR);
     }
     ```
 === "JavaScript"

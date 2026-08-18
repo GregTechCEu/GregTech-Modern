@@ -259,12 +259,12 @@ public class ChemicalHelper {
         return stack;
     }
 
-    public static ItemStack get(TagPrefix orePrefix, Material material, int stackSize) {
-        return get(new MaterialEntry(orePrefix, material), stackSize);
+    public static ItemStack get(TagPrefix tagPrefix, Material material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
     }
 
-    public static ItemStack get(TagPrefix orePrefix, Material material) {
-        return get(orePrefix, material, 1);
+    public static ItemStack get(TagPrefix tagPrefix, Material material) {
+        return get(tagPrefix, material, 1);
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
