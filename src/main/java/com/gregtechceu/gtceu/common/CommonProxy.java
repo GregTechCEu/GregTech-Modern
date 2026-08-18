@@ -152,7 +152,7 @@ public class CommonProxy {
         GTEntityTypes.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
-        GTPatternErrors.init();
+        GTPatternErrors.init(modBus);
         GTMachineUtils.init();
         GTMachines.init();
 

@@ -255,7 +255,6 @@ public final class GTRegistries {
         }
 
         if (event.getRegistryKey() == Keys.MATERIAL) {
-            GTCEu.LOGGER.info("Registering addon Materials");
             MaterialEvent materialEvent = new MaterialEvent();
             ModLoader.get().postEvent(materialEvent);
         }
