@@ -55,8 +55,8 @@ public class DikeVeinGenerator extends VeinGenerator {
     @Setter
     public int maxYLevel;
 
-    public DikeVeinGenerator(GTOreDefinition entry) {
-        super(entry);
+    public DikeVeinGenerator() {
+        super();
     }
 
     @Override

@@ -95,8 +95,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
     @Setter
     public float rareBlockChance = 0.02f;
 
-    public VeinedVeinGenerator(GTOreDefinition entry) {
-        super(entry);
+    public VeinedVeinGenerator() {
+        super();
     }
 
     @Override

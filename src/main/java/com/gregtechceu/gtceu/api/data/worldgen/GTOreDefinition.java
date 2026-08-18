@@ -253,7 +253,7 @@ public class GTOreDefinition {
     }
 
     public GTOreDefinition standardVeinGenerator(Consumer<StandardVeinGenerator> config) {
-        var veinGenerator = new StandardVeinGenerator(this);
+        var veinGenerator = new StandardVeinGenerator();
 
         config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
@@ -262,7 +262,7 @@ public class GTOreDefinition {
     }
 
     public GTOreDefinition layeredVeinGenerator(Consumer<LayeredVeinGenerator> config) {
-        var veinGenerator = new LayeredVeinGenerator(this);
+        var veinGenerator = new LayeredVeinGenerator();
 
         config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
@@ -271,7 +271,7 @@ public class GTOreDefinition {
     }
 
     public GTOreDefinition geodeVeinGenerator(Consumer<GeodeVeinGenerator> config) {
-        var veinGenerator = new GeodeVeinGenerator(this);
+        var veinGenerator = new GeodeVeinGenerator();
 
         config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
@@ -280,7 +280,7 @@ public class GTOreDefinition {
     }
 
     public GTOreDefinition dikeVeinGenerator(Consumer<DikeVeinGenerator> config) {
-        var veinGenerator = new DikeVeinGenerator(this);
+        var veinGenerator = new DikeVeinGenerator();
         if (inferredProperties.heightRange != null) {
             veinGenerator.minYLevel(inferredProperties.heightRange.firstInt());
             veinGenerator.maxYLevel(inferredProperties.heightRange.secondInt());
@@ -293,7 +293,7 @@ public class GTOreDefinition {
     }
 
     public GTOreDefinition veinedVeinGenerator(Consumer<VeinedVeinGenerator> config) {
-        var veinGenerator = new VeinedVeinGenerator(this);
+        var veinGenerator = new VeinedVeinGenerator();
         if (inferredProperties.heightRange != null) {
             veinGenerator.minYLevel(inferredProperties.heightRange.firstInt());
             veinGenerator.maxYLevel(inferredProperties.heightRange.secondInt());
@@ -306,7 +306,7 @@ public class GTOreDefinition {
     }
 
     public GTOreDefinition classicVeinGenerator(Consumer<ClassicVeinGenerator> config) {
-        var veinGenerator = new ClassicVeinGenerator(this);
+        var veinGenerator = new ClassicVeinGenerator();
 
         config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
@@ -315,7 +315,7 @@ public class GTOreDefinition {
     }
 
     public GTOreDefinition cuboidVeinGenerator(Consumer<CuboidVeinGenerator> config) {
-        var veinGenerator = new CuboidVeinGenerator(this);
+        var veinGenerator = new CuboidVeinGenerator();
         if (inferredProperties.heightRange != null) {
             veinGenerator.minY(inferredProperties.heightRange.firstInt());
             veinGenerator.maxY(inferredProperties.heightRange.secondInt());
@@ -332,7 +332,7 @@ public class GTOreDefinition {
     public @Nullable VeinGenerator veinGenerator(ResourceLocation id) {
         if (veinGenerator == null) {
             veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?
-                    WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
+                    WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).get() : null;
         }
         return veinGenerator;
     }

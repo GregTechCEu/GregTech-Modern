@@ -61,8 +61,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
     private int middleLayer2;
     private int topLayer;
 
-    public CuboidVeinGenerator(GTOreDefinition entry) {
-        super(entry);
+    public CuboidVeinGenerator() {
+        super();
     }
 
     public CuboidVeinGenerator(ClassicVeinGenerator.Layer top, ClassicVeinGenerator.Layer middle,

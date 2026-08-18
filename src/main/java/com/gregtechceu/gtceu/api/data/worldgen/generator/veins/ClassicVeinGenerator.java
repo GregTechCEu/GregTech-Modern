@@ -65,8 +65,8 @@ public class ClassicVeinGenerator extends VeinGenerator {
     @Setter
     private RuleTest[] rules;
 
-    public ClassicVeinGenerator(GTOreDefinition entry) {
-        super(entry);
+    public ClassicVeinGenerator() {
+        super();
     }
 
     public ClassicVeinGenerator(Layer primary, Layer secondary, Layer between, Layer sporadic, int yRadius) {

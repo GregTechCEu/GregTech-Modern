@@ -60,8 +60,8 @@ public class StandardVeinGenerator extends VeinGenerator {
 
     public Either<List<OreConfiguration.TargetBlockState>, Material> blocks;
 
-    public StandardVeinGenerator(GTOreDefinition entry) {
-        super(entry);
+    public StandardVeinGenerator() {
+        super();
     }
 
     public StandardVeinGenerator(Block block, Block deepBlock, Block netherBlock) {

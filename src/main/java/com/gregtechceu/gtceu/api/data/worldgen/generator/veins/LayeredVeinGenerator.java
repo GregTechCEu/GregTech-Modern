@@ -46,8 +46,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
     public List<GTLayerPattern> layerPatterns;
 
-    public LayeredVeinGenerator(GTOreDefinition entry) {
-        super(entry);
+    public LayeredVeinGenerator() {
+        super();
     }
 
     public List<GTLayerPattern> getLayerPatterns() {
@@ -211,13 +211,6 @@ public class LayeredVeinGenerator extends VeinGenerator {
     public LayeredVeinGenerator(List<GTLayerPattern> layerPatterns) {
         super();
         this.layerPatterns = layerPatterns;
-    }
-
-    public LayeredVeinGenerator buildLayerPattern(Consumer<GTLayerPattern.Builder> config) {
-        var builder = GTLayerPattern.builder(parent().layer().getTarget());
-        config.accept(builder);
-
-        return withLayerPattern(builder::build);
     }
 
     public LayeredVeinGenerator withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {

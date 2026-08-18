@@ -105,8 +105,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
     @Setter
     public int invalidBlocksThreshold = 0;
 
-    public GeodeVeinGenerator(GTOreDefinition entry) {
-        super(entry);
+    public GeodeVeinGenerator() {
+        super();
     }
 
     @Override

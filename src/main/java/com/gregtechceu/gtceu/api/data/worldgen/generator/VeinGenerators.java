@@ -12,12 +12,13 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.serialization.Codec;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class VeinGenerators {
 
     public static final Codec<NoopVeinGenerator> NO_OP = register(GTCEu.id("no_op"), NoopVeinGenerator.CODEC,
-            entry -> NoopVeinGenerator.INSTANCE);
+            () -> NoopVeinGenerator.INSTANCE);
 
     public static final Codec<StandardVeinGenerator> STANDARD = register(GTCEu.id("standard"),
             StandardVeinGenerator.CODEC, StandardVeinGenerator::new);
@@ -36,7 +37,7 @@ public class VeinGenerators {
 
     public static <
             T extends VeinGenerator> Codec<T> register(ResourceLocation id, Codec<T> codec,
-                                                       Function<GTOreDefinition, ? extends VeinGenerator> function) {
+                                                       Supplier<? extends VeinGenerator> function) {
         WorldGeneratorUtils.VEIN_GENERATORS.put(id, codec);
         WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.put(id, function);
         return codec;
