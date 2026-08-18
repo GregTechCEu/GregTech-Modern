@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.integration.recipeviewer.rei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -50,8 +52,8 @@ public class GTOreVeinDisplayCategory extends ModularUIREIDisplayCategory<GTOreV
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (var oreDefinition : ClientProxy.CLIENT_ORE_VEINS.entrySet()) {
-            registry.add(new GTOreVeinDisplay(oreDefinition.getKey(), oreDefinition.getValue()));
+        for (var oreDefinition : Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN).entrySet()) {
+            registry.add(new GTOreVeinDisplay(oreDefinition.getKey().location(), oreDefinition.getValue()));
         }
     }
 

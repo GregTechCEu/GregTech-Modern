@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class GTOreVeinEmiCategory extends EmiRecipeCategory {
 
@@ -28,7 +31,7 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (GTOreDefinition oreDefinition : ClientProxy.CLIENT_ORE_VEINS.values()) {
+        for (GTOreDefinition oreDefinition : Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN)) {
             registry.addRecipe(new GTEmiOreVein(oreDefinition));
         }
     }
@@ -49,7 +52,8 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
         private final GTOreDefinition oreDefinition;
 
         public GTEmiOreVein(GTOreDefinition oreDefinition) {
-            super(ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition).withPrefix("/ore_vein_diagram/"),
+            super(Objects.requireNonNull(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN).getKey(oreDefinition))
+                            .withPrefix("/ore_vein_diagram/"),
                     () -> new OreVeinRecipeWidget(oreDefinition));
             this.oreDefinition = oreDefinition;
         }

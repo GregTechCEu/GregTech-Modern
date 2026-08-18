@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
@@ -19,6 +21,7 @@ import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
 
@@ -30,7 +33,7 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (BedrockOreDefinition fluid : ClientProxy.CLIENT_BEDROCK_ORE_VEINS.values()) {
+        for (BedrockOreDefinition fluid : Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)) {
             registry.addRecipe(new GTBedrockOre(fluid));
         }
     }
@@ -50,7 +53,8 @@ public class GTBedrockOreEmiCategory extends EmiRecipeCategory {
         private final BedrockOreDefinition bedrockOre;
 
         public GTBedrockOre(BedrockOreDefinition bedrockOre) {
-            super(ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(bedrockOre).withPrefix("/bedrock_ore_diagram/"),
+            super(Objects.requireNonNull(Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_ORE).getKey(bedrockOre))
+                            .withPrefix("/bedrock_ore_diagram/"),
                     () -> new OreVeinRecipeWidget(bedrockOre));
             this.bedrockOre = bedrockOre;
         }

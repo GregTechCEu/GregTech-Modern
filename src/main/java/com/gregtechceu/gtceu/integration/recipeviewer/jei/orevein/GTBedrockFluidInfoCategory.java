@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.integration.recipeviewer.jei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
@@ -25,13 +27,14 @@ public class GTBedrockFluidInfoCategory extends
     private final IDrawable icon;
 
     public GTBedrockFluidInfoCategory(IJeiHelpers helpers) {
-        super(v -> new OreVeinRecipeWidget(v.fluid), v -> ClientProxy.CLIENT_FLUID_VEINS.inverse().get(v.fluid));
+        super(v -> new OreVeinRecipeWidget(v.fluid), v ->
+                Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).getKey(v.fluid));
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(GTMaterials.Oil.getFluid().getBucket().asItem().getDefaultInstance());
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(RECIPE_TYPE, ClientProxy.CLIENT_FLUID_VEINS.values().stream()
+        registry.addRecipes(RECIPE_TYPE, Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).stream()
                 .map(BedrockFluidInfoWrapper::new)
                 .toList());
     }

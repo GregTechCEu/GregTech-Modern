@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -53,8 +55,8 @@ public class GTBedrockOreDisplayCategory extends
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (var fluid : ClientProxy.CLIENT_BEDROCK_ORE_VEINS.entrySet()) {
-            registry.add(new GTBedrockOreDisplay(fluid.getKey(), fluid.getValue()));
+        for (var fluid : Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_ORE).entrySet()) {
+            registry.add(new GTBedrockOreDisplay(fluid.getKey().location(), fluid.getValue()));
         }
     }
 

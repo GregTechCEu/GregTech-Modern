@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
@@ -33,14 +35,14 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
 
     public GTOreVeinInfoCategory(IJeiHelpers helpers) {
         super(v -> new OreVeinRecipeWidget(v.oreDefinition),
-                v -> ClientProxy.CLIENT_ORE_VEINS.inverse().get(v.oreDefinition));
+                v -> Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN).getKey(v.oreDefinition));
 
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Iron));
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(RECIPE_TYPE, ClientProxy.CLIENT_ORE_VEINS.values().stream()
+        registry.addRecipes(RECIPE_TYPE, Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN).stream()
                 .map(GTOreVeinInfoWrapper::new)
                 .toList());
     }

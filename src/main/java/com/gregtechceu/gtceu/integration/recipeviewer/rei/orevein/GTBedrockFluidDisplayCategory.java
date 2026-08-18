@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.integration.recipeviewer.rei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.ClientProxy;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -50,8 +52,8 @@ public class GTBedrockFluidDisplayCategory extends
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (var fluid : ClientProxy.CLIENT_FLUID_VEINS.entrySet()) {
-            registry.add(new GTBedrockFluidDisplay(fluid.getKey(), fluid.getValue()));
+        for (var fluid : Minecraft.getInstance().level.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).entrySet()) {
+            registry.add(new GTBedrockFluidDisplay(fluid.getKey().location(), fluid.getValue()));
         }
     }
 
