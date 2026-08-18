@@ -184,7 +184,6 @@ public class ModularItemTest {
         // noinspection DataFlowIssue
         entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE).addPermanentModifier(
                 new AttributeModifier("no_knockback", 1000, AttributeModifier.Operation.ADDITION));
-        // noinspection DataFlowIssue
         helper.spawn(EntityType.IRON_GOLEM, 2, 1, 0);
         entity.equipItemIfPossible(armor);
 
