@@ -79,6 +79,8 @@ public final class AppliedItemModule {
     }
 
     public void setModuleItem(ItemStack stack) {
+        if (module.forceModuleItemNBT())
+            stack.getOrCreateTag();
         this.moduleItem = stack;
         this.moduleTag.put("item", stack.serializeNBT());
     }

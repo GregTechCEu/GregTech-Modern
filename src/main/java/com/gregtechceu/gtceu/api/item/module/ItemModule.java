@@ -160,6 +160,16 @@ public abstract class ItemModule {
     }
 
     /**
+     * If {@code true}, converts any null NBT tag into an empty tag when
+     * a module item is set for this module.
+     * Basically ensures that {@code appliedItemModule.getModuleItem().getTag()} is never {@code null}.
+     * Required for items that may have their NBT modified when in the module, such as batteries.
+     */
+    public boolean forceModuleItemNBT() {
+        return false;
+    }
+
+    /**
      * Called when the item this module is attached to is ticked,
      * ignores {@link #isEnabled(AppliedItemModule)}.
      *

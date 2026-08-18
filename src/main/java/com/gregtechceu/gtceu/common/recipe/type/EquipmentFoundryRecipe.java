@@ -143,7 +143,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             JsonArray arr = json.getAsJsonArray("modifier");
             ItemModule[] modifier = new ItemModule[arr.size()];
             for (int i = 0; i < arr.size(); i++)
-                modifier[i] = ItemModule.getModuleById(new ResourceLocation(arr.get(i).getAsString()));
+                modifier[i] = ItemModule.getModuleById(ResourceLocation.parse(arr.get(i).getAsString()));
 
             return new EquipmentFoundryRecipe(recipeId, equipment, ingredient, modifier);
         }

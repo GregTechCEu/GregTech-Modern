@@ -10,12 +10,16 @@ import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -23,8 +27,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 import net.minecraftforge.items.IItemHandler;
@@ -113,9 +120,9 @@ public class ModularItemTest {
         TestUtils.assertEqual(helper, output, makeModularItem(helper));
         IModularItem modular = getModularItem(helper, output);
 
-        checkModule(helper, modular, 0, GTItemModules.ATTACK_SPEED[GTValues.LuV - 1], GTItems.ELECTRIC_MOTOR_LuV);
-        checkModule(helper, modular, 1, GTItemModules.ATTACK_DAMAGE[GTValues.LuV - 1], GTItems.ELECTRIC_PISTON_LuV);
-        checkModule(helper, modular, 2, GTItemModules.BLOCK_REACH[GTValues.LV - 1], GTItems.ROBOT_ARM_LV);
+        checkModule(helper, modular, 0, GTItemModules.ATTACK_SPEED[GTValues.LuV], GTItems.ELECTRIC_MOTOR_LuV);
+        checkModule(helper, modular, 1, GTItemModules.ATTACK_DAMAGE[GTValues.LuV], GTItems.ELECTRIC_PISTON_LuV);
+        checkModule(helper, modular, 2, GTItemModules.BLOCK_REACH[GTValues.LV], GTItems.ROBOT_ARM_LV);
 
         helper.succeed();
     }
@@ -125,7 +132,7 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        AppliedItemModule module = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV - 1], false);
+        AppliedItemModule module = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], false);
         helper.assertTrue(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute");
 
@@ -165,24 +172,60 @@ public class ModularItemTest {
         TestUtils.succeedAfterTest(helper);
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
-        modular.attach(GTItemModules.DAMAGE_BLOCK[GTValues.LuV - 1], false);
+
+        modular.attach(GTItemModules.DAMAGE_BLOCK[GTValues.LuV], false);
         attachFullBattery(armor);
+
         helper.setBlock(0, 0, 0, Blocks.SMOOTH_QUARTZ);
         helper.setBlock(0, 3, 0, Blocks.SMOOTH_QUARTZ);
         helper.setBlock(2, 0, 0, Blocks.SMOOTH_QUARTZ);
+
         Zombie entity = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 0, 1, 0);
         // noinspection DataFlowIssue
-        entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE)
-                .addPermanentModifier(
-                        new AttributeModifier("no_knockback", 1000, AttributeModifier.Operation.ADDITION));
+        entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE).addPermanentModifier(
+                new AttributeModifier("no_knockback", 1000, AttributeModifier.Operation.ADDITION));
         // noinspection DataFlowIssue
-        helper.spawn(EntityType.IRON_GOLEM, 2, 1, 0).getAttribute(Attributes.MOVEMENT_SPEED)
-                .addPermanentModifier(
-                        new AttributeModifier("no_movement", 0, AttributeModifier.Operation.MULTIPLY_TOTAL));
+        helper.spawn(EntityType.IRON_GOLEM, 2, 1, 0);
         entity.equipItemIfPossible(armor);
+
         TestUtils.assertEqual(helper, entity.getHealth(), entity.getMaxHealth(),
                 "entity health wasn't max when just spawned");
         helper.runAtTickTime(80, () -> TestUtils.assertEqual(helper, entity.getHealth(), entity.getMaxHealth(),
                 "entity was damaged even though with energy shield"));
+    }
+
+    @GameTest(template = "empty_5x5", batch = "modularItemTests")
+    public void testWirelessCharging(GameTestHelper helper) {
+        TestUtils.succeedAfterTest(helper);
+        ItemStack armor = makeModularItem(helper);
+        IModularItem modular = getModularItem(helper, armor);
+
+        Player player = helper.makeMockSurvivalPlayer();
+        player.moveTo(helper.absoluteVec(Vec3.atBottomCenterOf(Vec3i.ZERO)));
+        helper.getLevel().addFreshEntity(player);
+
+        BatteryBufferMachine buffer = (BatteryBufferMachine) TestUtils.setMachine(helper, BlockPos.ZERO,
+                GTMachines.BATTERY_BUFFER_4[GTValues.MV]);
+        ItemStack bufferBattery = chargeToMax(GTItems.BATTERY_MV_LITHIUM.asStack());
+        buffer.getBatteryInventory().setStackInSlot(0, bufferBattery);
+        buffer.setOwnerUUID(player.getUUID());
+        IElectricItem bufferBatteryElectricItem = GTCapabilityHelper.getElectricItem(bufferBattery);
+        assert bufferBatteryElectricItem != null;
+
+        ItemStack sensor = GTItems.SENSOR_LuV.asStack();
+        sensor.onItemUseFirst(new UseOnContext(helper.getLevel(), player, InteractionHand.MAIN_HAND, sensor,
+                new BlockHitResult(Vec3.ZERO, Direction.UP, buffer.getBlockPos(), false)));
+        modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], false).setModuleItem(sensor);
+        modular.attach(GTItemModules.BATTERY, false).setModuleItem(GTItems.BATTERY_MV_LITHIUM.asStack());
+
+        player.setItemSlot(EquipmentSlot.CHEST, armor);
+
+        helper.runAtTickTime(20, () -> {
+            IElectricItem electric = GTCapabilityHelper.getElectricItem(armor);
+            TestUtils.assertNotNull(helper, electric, "expected armor with battery to be electric");
+            helper.assertTrue(electric.getCharge() > 0, "Armor didn't charge");
+            TestUtils.assertEqual(helper, electric.getCharge() + bufferBatteryElectricItem.getCharge(),
+                    electric.getMaxCharge(), "Sum of energy was not equal to initial energy");
+        });
     }
 }

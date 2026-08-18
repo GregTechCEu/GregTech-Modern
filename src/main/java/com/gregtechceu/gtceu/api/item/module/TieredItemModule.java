@@ -44,6 +44,6 @@ public abstract class TieredItemModule extends ItemModule implements ITieredItem
 
     public static TieredItemModule[] create(ResourceLocation id,
                                             BiFunction<ResourceLocation, Integer, TieredItemModule> constructor) {
-        return create(id, GTValues.LV, GTValues.MAX, constructor);
+        return create(id, GTValues.ULV, GTValues.MAX, constructor);
     }
 }
