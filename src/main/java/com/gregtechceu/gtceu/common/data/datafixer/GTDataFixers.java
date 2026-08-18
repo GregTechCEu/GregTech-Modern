@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.datafixer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.gregtechceu.gtceu.api.datafixer.LazyDataFixer;
+import com.gregtechceu.gtceu.api.datafixer.fixes.MaterialRenameFix;
 import com.gregtechceu.gtceu.common.datafixer.fixes.*;
 import com.gregtechceu.gtceu.common.datafixer.schemas.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -118,7 +119,7 @@ public class GTDataFixers {
         builder.addFixer(BlockRenameFix.create(v1, "Rename Tungstensteel Fluid Cell",
                 createRenamer("gtceu:tungstensteel_fluid_cell", "gtceu:tungsten_steel_fluid_cell")));
 
-        createBlockItemRenameFix(builder, v1, "Rename Low Pressure Steam Miner",
+        createBlockItemEntityRenameFix(builder, v1, "Rename Low Pressure Steam Miner",
                 createRenamer("gtceu:steam_miner", "gtceu:lp_steam_miner"));
 
         builder.addFixer(ItemRenameFix.create(v1, "Rename electric wire cutters",
@@ -143,14 +144,14 @@ public class GTDataFixers {
         // separator
 
         // Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
-        // createBlockItemRenameFix(builder, v10, "U238",
+        // createMaterialRenameFix(builder, v10, "U238",
         // createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_"));
-        // createBlockItemRenameFix(builder, v10, "Pu239",
+        // createMaterialRenameFix(builder, v10, "Pu239",
         // createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_"));
-        // createBlockItemRenameFix(builder, v10, "Red Granite",
+        // createMaterialRenameFix(builder, v10, "Red Granite",
         // createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
         //
-        // createBlockItemRenameFix(builder, v10, "Oil Variants",
+        // createMaterialRenameFix(builder, v10, "Oil Variants",
         // createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
     }
 
@@ -158,6 +159,17 @@ public class GTDataFixers {
                                                  UnaryOperator<String> renamer) {
         builder.addFixer(ItemRenameFix.create(schema, name, renamer));
         builder.addFixer(BlockRenameFix.create(schema, name, renamer));
+    }
+
+    private static void createMaterialRenameFix(DataFixerBuilder builder, Schema schema, String name,
+                                                UnaryOperator<String> renamer) {
+        createBlockItemRenameFix(builder, schema, name, renamer);
+        builder.addFixer(MaterialRenameFix.create(schema, name, renamer));
+    }
+
+    private static void createBlockItemEntityRenameFix(DataFixerBuilder builder, Schema schema, String name,
+                                                       UnaryOperator<String> renamer) {
+        createBlockItemRenameFix(builder, schema, name, renamer);
         builder.addFixer(BlockEntityRenameFix.create(schema, name, renamer));
     }
 
