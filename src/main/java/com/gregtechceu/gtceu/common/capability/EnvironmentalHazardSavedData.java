@@ -324,9 +324,8 @@ public class EnvironmentalHazardSavedData extends SavedData {
             float strength = buf.readFloat();
             boolean canSpread = buf.readBoolean();
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS.get(buf.readUtf());
-            Holder<MedicalCondition> condition = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
-                    .holderOrThrow(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
-            return new HazardZone(source, strength, canSpread, trigger, condition.value());
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
+            return new HazardZone(source, strength, canSpread, trigger, condition);
         }
     }
 

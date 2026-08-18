@@ -693,8 +693,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     protected IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
         IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> map = new IdentityHashMap<>();
-        for (RecipeCapability<?> cap : RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
-                .registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)) {
+        for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES) {
             map.put(cap, cap.makeChanceCache());
         }
         return map;
