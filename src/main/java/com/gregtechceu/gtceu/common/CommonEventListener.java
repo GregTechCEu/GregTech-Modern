@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketAddHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketRemoveHazardZone;
 import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncLevelHazards;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.loader.PostRegistryListener;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
@@ -247,6 +248,7 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
         GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
+        event.addListener(PostRegistryListener.INSTANCE);
     }
 
     @SubscribeEvent

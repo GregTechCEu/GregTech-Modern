@@ -68,7 +68,7 @@ public class ServerCache extends WorldCache {
         List<GeneratedVeinMetadata> nearbyVeins = getNearbyVeins(dim, pos, radius);
         List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
         for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {
-            for (var gen : nearbyVein.definition().indicatorGenerators()) {
+            for (var gen : nearbyVein.definition().value().indicatorGenerators()) {
                 var block = gen.block();
                 if (block == null) continue;
                 boolean found = block.map(state -> {
@@ -91,7 +91,7 @@ public class ServerCache extends WorldCache {
         List<GeneratedVeinMetadata> nearbyVeins = getNearbyVeins(dim, origin, radius);
         List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
         for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {
-            if (nearbyVein.definition().veinGenerator().getAllMaterials().contains(material)) {
+            if (nearbyVein.definition().value().veinGenerator().getAllMaterials().contains(material)) {
                 foundVeins.add(nearbyVein);
             }
         }
@@ -104,7 +104,7 @@ public class ServerCache extends WorldCache {
         List<GeneratedVeinMetadata> nearbyVeins = getNearbyVeins(dim, origin, radius);
         List<GeneratedVeinMetadata> foundVeins = new ArrayList<>();
         for (GeneratedVeinMetadata nearbyVein : nearbyVeins) {
-            if (GTRegistries.ORE_VEINS.getKey(nearbyVein.definition()).toString().equals(depositName)) {
+            if (nearbyVein.definition().unwrapKey().orElseThrow().toString().equals(depositName)) {
                 foundVeins.add(nearbyVein);
             }
         }

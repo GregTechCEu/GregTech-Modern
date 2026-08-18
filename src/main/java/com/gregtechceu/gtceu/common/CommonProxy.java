@@ -11,7 +11,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
@@ -121,7 +124,6 @@ public class CommonProxy {
         GTLootConditions.init(modBus);
         GTLootFunctions.init(modBus);
         GTFeatures.init(modBus);
-        GTCommandArguments.init(modBus);
         GTMobEffects.init(modBus);
         GTParticleTypes.init(modBus);
         SpoilableBehavior.init(modBus);
@@ -299,14 +301,12 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        /*
-         * event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
-         * GTOreDefinition.CODEC, GTOreDefinition.CODEC);
-         * event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID,
-         * BedrockFluidDefinition.FULL_CODEC, BedrockFluidDefinition.FULL_CODEC);
-         * event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
-         * BedrockOreDefinition.FULL_CODEC, BedrockOreDefinition.FULL_CODEC);
-         */
+         event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
+            GTOreDefinition.DIRECT_CODEC, GTOreDefinition.DIRECT_CODEC);
+         event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID,
+            BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.DIRECT_CODEC);
+         event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
+                 BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.DIRECT_CODEC);
     }
 
     @SubscribeEvent

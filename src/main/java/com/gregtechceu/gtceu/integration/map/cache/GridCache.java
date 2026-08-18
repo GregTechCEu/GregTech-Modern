@@ -25,19 +25,19 @@ public class GridCache {
         return true;
     }
 
-    public ListTag toNBT(boolean isClient) {
+    public ListTag toNBT() {
         ListTag result = new ListTag();
         for (GeneratedVeinMetadata pos : veins) {
-            result.add((isClient ? GeneratedVeinMetadata.CLIENT_CODEC : GeneratedVeinMetadata.CODEC)
+            result.add(GeneratedVeinMetadata.CODEC
                     .encodeStart(NbtOps.INSTANCE, pos)
                     .getOrThrow(false, GTCEu.LOGGER::error));
         }
         return result;
     }
 
-    public void fromNBT(ListTag tag, boolean isClient) {
+    public void fromNBT(ListTag tag) {
         for (Tag veinTag : tag) {
-            GeneratedVeinMetadata vein = (isClient ? GeneratedVeinMetadata.CLIENT_CODEC : GeneratedVeinMetadata.CODEC)
+            GeneratedVeinMetadata vein = GeneratedVeinMetadata.CODEC
                     .parse(NbtOps.INSTANCE, veinTag)
                     .getOrThrow(false, GTCEu.LOGGER::error);
             if (!veins.contains(vein)) {

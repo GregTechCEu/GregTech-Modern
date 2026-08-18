@@ -26,7 +26,7 @@ public class OreVeinElement {
     }
 
     public void onMouseSelect() {
-        Material firstMaterial = this.vein.definition().veinGenerator().getAllMaterials().get(0);
+        Material firstMaterial = this.vein.definition().value().veinGenerator().getAllMaterials().get(0);
         int color = firstMaterial.getMaterialARGB();
 
         // TODO generalize to all possible layer types
@@ -39,6 +39,6 @@ public class OreVeinElement {
     }
 
     public Material getFirstMaterial() {
-        return this.vein.definition().veinGenerator().getAllMaterials().get(0);
+        return this.vein.definition().value().veinGenerator().getAllMaterials().get(0);
     }
 }

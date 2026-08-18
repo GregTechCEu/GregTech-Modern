@@ -34,17 +34,16 @@ public class OreRenderLayer extends MapRenderLayer {
 
     public static Component getName(GeneratedVeinMetadata vein) {
         // noinspection ConstantValue IDK, it crashed
-        if (vein == null || vein.definition() == null ||
-                ClientProxy.CLIENT_ORE_VEINS.inverse().get(vein.definition()) == null) {
+        if (vein == null || vein.definition() == null || vein.definition().unwrapKey().isEmpty()) {
             return Component.translatable("gtceu.minimap.ore_vein.depleted");
         }
-        return Component.translatable(OreVeinRecipeWidget.getOreName(vein.definition()));
+        return Component.translatable(OreVeinRecipeWidget.getOreName(vein.definition().value()));
     }
 
     public static @NotNull Material getMaterial(@NotNull GeneratedVeinMetadata vein) {
         Material firstMaterial = null;
-        if (!vein.definition().indicatorGenerators().isEmpty()) {
-            var blockOrMaterial = vein.definition().indicatorGenerators().get(0).block();
+        if (!vein.definition().value().indicatorGenerators().isEmpty()) {
+            var blockOrMaterial = vein.definition().value().indicatorGenerators().get(0).block();
             firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
                     state -> {
                         var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
@@ -53,7 +52,7 @@ public class OreRenderLayer extends MapRenderLayer {
                     Function.identity());
         }
         if (firstMaterial == null) {
-            firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
+            firstMaterial = vein.definition().value().veinGenerator().getAllMaterials().get(0);
         }
         return firstMaterial;
     }
@@ -66,7 +65,7 @@ public class OreRenderLayer extends MapRenderLayer {
         }
         tooltip.add(title);
 
-        for (var filler : vein.definition().veinGenerator().getAllEntries()) {
+        for (var filler : vein.definition().value().veinGenerator().getAllEntries()) {
             filler.vein().ifLeft(state -> {
                 tooltip.add(Component.literal(ConfigHolder.INSTANCE.compat.minimap.oreNamePrefix)
                         .append(state.getBlock().getName()));

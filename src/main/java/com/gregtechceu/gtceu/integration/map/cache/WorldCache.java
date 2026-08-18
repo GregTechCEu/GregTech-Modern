@@ -4,14 +4,12 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class WorldCache {
 
@@ -44,14 +42,15 @@ public abstract class WorldCache {
         cache.clear();
     }
 
-    public void oreVeinDefinitionsChanged(Map<ResourceLocation, GTOreDefinition> defs) {
+    public void oreVeinDefinitionsChanged(HolderLookup.RegistryLookup<GTOreDefinition> registry) {
         // Existing instances of vein definitions referenced by the cache are now invalid. Repopulate them here.
         for (DimensionCache levelCache : cache.values()) {
             for (GridCache gridCache : levelCache.getCache().values()) {
                 gridCache.getVeins().removeIf(vein -> {
-                    GTOreDefinition def = defs.get(vein.id());
-                    if (def != null) vein.definition(def);
-                    return def == null;
+                    Optional<Holder.Reference<GTOreDefinition>> def = registry
+                            .get(Objects.requireNonNull(vein.definition().unwrapKey().orElseThrow()));
+                    def.ifPresent(vein::definition);
+                    return def.isEmpty();
                 });
             }
         }

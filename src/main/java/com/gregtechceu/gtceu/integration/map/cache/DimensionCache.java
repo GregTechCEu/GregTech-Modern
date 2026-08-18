@@ -31,25 +31,25 @@ public class DimensionCache {
         return added;
     }
 
-    public CompoundTag toNBT(boolean isClient) {
-        return toNBT(new CompoundTag(), isClient);
+    public CompoundTag toNBT() {
+        return toNBT(new CompoundTag());
     }
 
-    public CompoundTag toNBT(CompoundTag nbt, boolean isClient) {
+    public CompoundTag toNBT(CompoundTag nbt) {
         for (GridPos key : cache.keySet()) {
-            nbt.put(key.x + "," + key.z, cache.get(key).toNBT(isClient));
+            nbt.put(key.x + "," + key.z, cache.get(key).toNBT());
         }
         return nbt;
     }
 
-    public void fromNBT(CompoundTag tag, boolean isClient) {
+    public void fromNBT(CompoundTag tag) {
         for (String gridPos : tag.getAllKeys()) {
             String[] split = gridPos.split(",");
             GridPos key = new GridPos(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
             if (!cache.containsKey(key)) {
                 cache.put(key, new GridCache());
             }
-            cache.get(key).fromNBT(tag.getList(gridPos, Tag.TAG_COMPOUND), isClient);
+            cache.get(key).fromNBT(tag.getList(gridPos, Tag.TAG_COMPOUND));
         }
     }
 

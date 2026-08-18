@@ -25,7 +25,7 @@ public class ServerCacheSavedData extends SavedData {
             instance.setDirty();
         }
         if (instance.toRead != null) {
-            backingCache.fromNBT(instance.toRead, false);
+            backingCache.fromNBT(instance.toRead);
             instance.toRead = null;
         }
 
@@ -39,7 +39,7 @@ public class ServerCacheSavedData extends SavedData {
     public ServerCacheSavedData(DimensionCache backingCache, CompoundTag compoundTag) {
         this.backingCache = backingCache;
         if (backingCache != null) {
-            backingCache.fromNBT(compoundTag, false);
+            backingCache.fromNBT(compoundTag);
         } else {
             toRead = compoundTag;
         }
@@ -47,6 +47,6 @@ public class ServerCacheSavedData extends SavedData {
 
     @Override
     public @NotNull CompoundTag save(CompoundTag tag) {
-        return backingCache.toNBT(tag, false);
+        return backingCache.toNBT(tag);
     }
 }

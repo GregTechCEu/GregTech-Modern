@@ -151,7 +151,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
                                     return String.join("\n", s1, s2);
                                 }))
                 .setOverlayListener(new MarkerListener(() -> {
-                    Material firstMaterial = oreVein.definition().veinGenerator().getAllMaterials().get(0);
+                    Material firstMaterial = oreVein.definition().value().veinGenerator().getAllMaterials().get(0);
                     int color = firstMaterial.getMaterialARGB();
 
                     WaypointManager.toggleWaypoint(OreRenderLayer.getId(oreVein), name.getString(), color,
@@ -159,7 +159,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
                 }, () -> {
                     oreVein.depleted(!oreVein.depleted());
                 }, () -> {
-                    Material firstMaterial = oreVein.definition().veinGenerator().getAllMaterials().get(0);
+                    Material firstMaterial = oreVein.definition().value().veinGenerator().getAllMaterials().get(0);
                     int color = firstMaterial.getMaterialARGB();
                     WaypointManager.toggleWaypoint(OreRenderLayer.getId(oreVein), id, color,
                             null, center);

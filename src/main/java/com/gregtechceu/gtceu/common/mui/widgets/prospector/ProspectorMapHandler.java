@@ -334,7 +334,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
             });
             String uniqueId = OreRenderLayer.getId(veins.get(0));
             Component name = OreRenderLayer.getName(veins.get(0));
-            List<Material> materials = veins.get(0).definition().veinGenerator().getAllMaterials();
+            List<Material> materials = veins.get(0).definition().value().veinGenerator().getAllMaterials();
             Material mostCommonItem = materials.get(materials.size() - 1);
             int color = mostCommonItem.getMaterialARGB();
             return new WaypointItem(pos, uniqueId, name, color);

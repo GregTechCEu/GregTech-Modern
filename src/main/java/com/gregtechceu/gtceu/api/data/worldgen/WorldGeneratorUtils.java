@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
@@ -48,27 +49,26 @@ public class WorldGeneratorUtils {
     public static final HashBiMap<ResourceLocation, Supplier<? extends IndicatorGenerator>> INDICATOR_GENERATOR_FUNCTIONS = HashBiMap
             .create();
 
-    public record WeightedVein(GTOreDefinition vein, int weight) implements WeightedEntry {}
+    public record WeightedVein(Holder<GTOreDefinition> vein, int weight) implements WeightedEntry {}
 
     private static class WorldOreVeinCache {
 
-        private final List<GTOreDefinition> worldVeins;
+        private final List<Holder<GTOreDefinition>> worldVeins;
         private final Map<Holder<Biome>, List<WeightedVein>> biomeVeins = new Object2ObjectOpenHashMap<>();
 
         public WorldOreVeinCache(ServerLevel level) {
-            this.worldVeins = GTRegistries.ORE_VEINS.entries().stream()
-                    .filter(entry -> entry.getValue().dimensionFilter().stream()
+            this.worldVeins = level.registryAccess().registryOrThrow(GTRegistries.Keys.ORE_VEIN).holders()
+                    .filter(vein -> !(vein.value().veinGenerator() instanceof NoopVeinGenerator))
+                    .filter(entry -> entry.value().dimensionFilter().stream()
                             .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
-                    .sorted(Entry.comparingByKey())
-                    .map(Entry::getValue)
                     .collect(Collectors.toList());
         }
 
         private List<WeightedVein> getEntry(Holder<Biome> biome) {
             if (biomeVeins.containsKey(biome)) return biomeVeins.get(biome);
             var biomeVeins = worldVeins.stream()
-                    .filter(vein -> vein.isForBiome(biome))
-                    .map(vein -> new WeightedVein(vein, vein.weightForBiome(biome)))
+                    .filter(vein -> vein.value().isForBiome(biome))
+                    .map(vein -> new WeightedVein(vein, vein.value().weightForBiome(biome)))
                     .filter(vein -> vein.weight > 0)
                     .toList();
             this.biomeVeins.put(biome, biomeVeins);
