@@ -25,7 +25,7 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
                     "Sync: Deserialization of INBTSerializable objects requires an existing object, they cannot be instantiated purely from saved data.");
             return null;
         }
-        currentVal.deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(tag));
+        currentVal.deserializeNBT(tag);
         return currentVal;
     }
 }

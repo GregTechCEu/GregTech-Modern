@@ -50,8 +50,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
             current = Arrays.copyOf(current, listTag.size());
         }
         for (int i = 0; i < listTag.size(); i++) {
-            T result = elementTransformer.deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(listTag.get(i)),
-                    getInnerElemContext(current[i], context));
+            T result = elementTransformer.deserializeNBT(listTag.get(i), getInnerElemContext(current[i], context));
             if (result == null) return current;
             current[i] = result;
         }

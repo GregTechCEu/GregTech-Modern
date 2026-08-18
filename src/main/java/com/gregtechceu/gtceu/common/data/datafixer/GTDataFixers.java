@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.gregtechceu.gtceu.api.datafixer.LazyDataFixer;
 import com.gregtechceu.gtceu.common.datafixer.fixes.AutoOutputTraitFix;
+import com.gregtechceu.gtceu.common.datafixer.fixes.LDLibPayloadWrapperRemovalFix;
 import com.gregtechceu.gtceu.common.datafixer.schemas.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -108,6 +109,11 @@ public class GTDataFixers {
 
         builder.addFixer(ItemRenameFix.create(v1, "Rename electric wire cutters",
                 createRenamer(Pattern.compile("([lhi])v_([a-z0-9/._-]+)_wirecutter"), "$1v_$2_wire_cutter")));
+
+        // separator
+
+        Schema v2 = builder.addSchema(2, SAME_NAMESPACED);
+        builder.addFixer(new LDLibPayloadWrapperRemovalFix(v2));
 
         // separator
 
