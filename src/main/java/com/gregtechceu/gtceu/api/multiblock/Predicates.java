@@ -171,8 +171,13 @@ public class Predicates {
     }
 
     public static MultiPredicate fluids(Fluid... fluids) {
+        return fluids(null, fluids);
+    }
+
+    @RemapForJS("fluidsDebug")
+    public static MultiPredicate fluids(@Nullable String debugName, Fluid... fluids) {
         Validate.noNullElements(fluids, "Fluids array has null element at index %s");
-        return builder("Fluids")
+        return builder(debugName == null ? "Fluids" : debugName)
                 .predicate(ctx -> ArrayUtils.contains(fluids, ctx.fluid()))
                 // .errorConsumer(ctx -> ctx.appendError(PLACEHOLDER))
                 .candidates(Arrays.stream(fluids).map(BlockInfo::fromFluid))
