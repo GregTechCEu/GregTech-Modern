@@ -7,13 +7,11 @@ import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.GenericEvent;
@@ -22,7 +20,6 @@ import net.minecraftforge.fml.event.IModBusEvent;
 
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,24 +61,15 @@ public class GTCEuAPI {
     @Deprecated(forRemoval = true, since = "8.0.0")
     public static class RegisterEvent<K, V> extends GenericEvent<V> implements IModBusEvent {
 
-        private final @Nullable GTRegistry<ResourceLocation, V> registry;
-        private final @Nullable Registry<V> mcRegistry;
+        private final MappedRegistry<V> mcRegistry;
 
         public RegisterEvent(MappedRegistry<V> registry, Class<V> clazz) {
             super(clazz);
-            this.registry = null;
             this.mcRegistry = registry;
         }
 
-        public RegisterEvent(GTRegistry<ResourceLocation, V> registry, Class<V> clazz) {
-            super(clazz);
-            this.registry = registry;
-            this.mcRegistry = null;
-        }
-
         public void register(ResourceLocation key, V value) {
-            if (registry != null) registry.register(key, value);
-            if (mcRegistry != null) GTRegistries.register(mcRegistry, key, value);
+            GTRegistries.register(mcRegistry, key, value);
         }
     }
 }

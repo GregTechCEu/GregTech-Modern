@@ -54,7 +54,7 @@ public class GTOreVeins {
     @Getter
     private static int largestIndicatorOffset = 0;
 
-    private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
+    public static final Map<ResourceLocation, GTOreDefinition> toRegister = new HashMap<>();
 
     public static final Set<ResourceKey<GTOreDefinition>> ALL_KEYS = new ReferenceOpenHashSet<>();
 
@@ -716,7 +716,7 @@ public class GTOreVeins {
         GTOreDefinition def = blankOreDefinition(GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME));
         config.accept(def);
 
-        toReRegister.put(name, def);
+        toRegister.put(name, def);
 
         return def;
     }
@@ -739,7 +739,6 @@ public class GTOreVeins {
     }
 
     public static void init() {
-        toReRegister.forEach(GTRegistries.ORE_VEINS::registerOrOverride);
     }
 
     public static void updateLargestVeinSize(HolderLookup.RegistryLookup<GTOreDefinition> lookup) {

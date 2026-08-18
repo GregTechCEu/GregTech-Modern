@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -22,7 +21,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class GTBedrockFluids {
 
-    public static final Map<ResourceLocation, BedrockFluidDefinition> toReRegister = new HashMap<>();
+    public static final Map<ResourceLocation, BedrockFluidDefinition> toRegister = new HashMap<>();
 
     public static final Set<ResourceKey<BedrockFluidDefinition>> ALL_KEYS = new ReferenceOpenHashSet<>();
 
@@ -111,7 +110,6 @@ public class GTBedrockFluids {
                     .dimensions(nether()));
 
     public static void init() {
-        toReRegister.forEach(GTRegistries.BEDROCK_FLUID_DEFINITIONS::registerOrOverride);
     }
 
     public static BedrockFluidDefinition create(ResourceLocation id,
@@ -120,7 +118,7 @@ public class GTBedrockFluids {
         consumer.accept(builder);
 
         BedrockFluidDefinition definition = builder.build();
-        toReRegister.put(id, definition);
+        toRegister.put(id, definition);
         return definition;
     }
 

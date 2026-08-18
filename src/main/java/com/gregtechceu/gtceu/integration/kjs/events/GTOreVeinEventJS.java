@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.OreVeinDefinitionBuilderJS;
 import com.mojang.serialization.Lifecycle;
 import dev.latvian.mods.kubejs.event.EventJS;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
@@ -32,12 +32,12 @@ public class GTOreVeinEventJS extends EventJS {
         this.registry = registry;
     }
 
-    public void add(Context cx, ResourceLocation id, Consumer<GTOreDefinition> consumer) {
+    public void add(Context cx, ResourceLocation id, Consumer<OreVeinDefinitionBuilderJS> consumer) {
         var biomes = UtilsJS.staticRegistryAccess.lookupOrThrow(Registries.BIOME);
 
-        GTOreDefinition vein = GTOreVeins.blankOreDefinition(biomes);
-        consumer.accept(vein);
-        register(id, vein);
+        OreVeinDefinitionBuilderJS builder = new OreVeinDefinitionBuilderJS(id);
+        consumer.accept(builder);
+        register(id, builder.createObject());
     }
 
     private void register(ResourceLocation id, GTOreDefinition def) {

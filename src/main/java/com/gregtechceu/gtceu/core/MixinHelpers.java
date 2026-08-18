@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
@@ -19,8 +20,10 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
+import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
+import com.gregtechceu.gtceu.common.data.GTOreVeins;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -29,6 +32,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
+import com.mojang.serialization.Lifecycle;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
@@ -37,6 +41,7 @@ import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
 import net.minecraft.world.item.Item;
@@ -59,6 +64,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.versions.forge.ForgeVersion;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -403,10 +409,14 @@ public class MixinHelpers {
         }
 
         private static void postOreVeinEvent(WritableRegistry<GTOreDefinition> registry) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>((MappedRegistry<GTOreDefinition>)registry, GTOreDefinition.class));
+            GTOreVeins.toRegister.forEach((k, v) -> registry.register(ResourceKey.create(GTRegistries.Keys.ORE_VEIN, k), v, Lifecycle.stable()));
             GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS(registry));
         }
 
         private static void postBedrockFluidEvent(WritableRegistry<BedrockFluidDefinition> registry) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>((MappedRegistry<BedrockFluidDefinition>)registry, BedrockFluidDefinition.class));
+            GTBedrockFluids.toRegister.forEach((k, v) -> registry.register(ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, k), v, Lifecycle.stable()));
             GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinEventJS(registry));
         }
 
