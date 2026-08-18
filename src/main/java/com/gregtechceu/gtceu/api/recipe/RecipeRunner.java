@@ -119,7 +119,6 @@ public class RecipeRunner {
     }
 
     private ActionResult handleContents() {
-        recipe.spoilageData.clear();
         if (recipeContents.isEmpty()) return ActionResult.SUCCESS;
         if (!capabilityProxies.containsKey(io)) {
             return ActionResult.fail(
@@ -128,6 +127,7 @@ public class RecipeRunner {
                             .append(Component.translatable(io.getTooltip())),
                     null, io);
         }
+        recipe.spoilageData.clear();
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
         // Only sort for non-tick outputs
