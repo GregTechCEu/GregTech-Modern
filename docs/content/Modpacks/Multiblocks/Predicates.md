@@ -14,30 +14,31 @@ MultiPredicate air(); // (2)
 MultiPredicate controller(MultiblockMachineDefinition def); // (3)
 MultiPredicate machines(MachineDefinition... definitions); // (4)
 
-MultiPredicate blocks(String debugName, Block... blocks); // (5)
-MultiPredicate blocks(Block... blocks); // (6)
+MultiPredicate blocks(Block... blocks); // (5)
+MultiPredicate blocksDebug(String debugName, Block... blocks); // (6)
 MultiPredicate states(BlockState... allowedStates); // (7)
-MultiPredicate fluids(Fluid... fluids); // (8)
+MultiPredicate statesDebug(String debugName, BlockState... allowedStates); // (8)
+MultiPredicate fluids(Fluid... fluids); // (9)
 
-MultiPredicate blockTag(TagKey<Block> tag); // (9)
-MultiPredicate fluidTag(TagKey<Fluid> tag); // (10)
+MultiPredicate blockTag(TagKey<Block> tag); // (10)
+MultiPredicate fluidTag(TagKey<Fluid> tag); // (11)
 
-MultiPredicate abilities(PartAbility... abilities); // (11)
-MultiPredicate ability(PartAbility ability, int... tiers); // (12)
+MultiPredicate abilities(PartAbility... abilities); // (12)
+MultiPredicate ability(PartAbility ability, int... tiers); // (13)
 MultiPredicate autoAbilities(GTRecipeType[] recipeType,
                                boolean checkEnergyIn, boolean checkEnergyOut,
                                boolean checkItemIn, boolean checkItemOut,
-                               boolean checkFluidIn, boolean checkFluidOut); // (13)
-MultiPredicate autoAbilities(GTRecipeType... recipeType); // (14)
+                               boolean checkFluidIn, boolean checkFluidOut); // (14)
+MultiPredicate autoAbilities(GTRecipeType... recipeType); // (15)
 
 MultiPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
-                               boolean checkParallel); // (15)
+                               boolean checkParallel); // (16)
 
-MultiPredicate heatingCoils(); // (16)
-MultiPredicate cleanroomFilters(); // (17)
-MultiPredicate powerSubstationBatteries(); // (18)
-MultiPredicate dataHatchPredicate(); // (19)
-MultiPredicate frames(Material... frameMaterials); // (20)
+MultiPredicate heatingCoils(); // (17)
+MultiPredicate cleanroomFilters(); // (18)
+MultiPredicate powerSubstationBatteries(); // (19)
+MultiPredicate dataHatchPredicate(); // (20)
+MultiPredicate frames(Material... frameMaterials); // (21)
 ```
 
 1. Any block matches, returns no error.
@@ -50,35 +51,43 @@ MultiPredicate frames(Material... frameMaterials); // (20)
 
 5. Must match any of these blocks.
 
-6. Must match any of these blocks.
+6. Must match any of these blocks, labelled `debugName` instead of the default `Blocks` in the multiblock preview and error messages.
 
 7. Must match any of these block states.
 
-8. Must match any of these fluids.
+8. Must match any of these block states, labelled `debugName` instead of the default `States` in the multiblock preview and error messages.
 
-9. Must match the block tag.
+9. Must match any of these fluids.
 
-10. Must match the fluid tag.
+10. Must match the block tag.
 
-11. Must be one of the blocks in the `PartAbility` (see [Part Abilities](./PartAbility.md))
+11. Must match the fluid tag.
 
-12. Must be one of the blocks in the `PartAbility` (see [Part Abilities](./PartAbility.md)) with one of those tier values.
+12. Must be one of the blocks in the `PartAbility` (see [Part Abilities](./PartAbility.md))
 
-13. Fills predicate with the EU, Item and Fluid PartAbilities based on the RecipeType's recipe capability max values.
+13. Must be one of the blocks in the `PartAbility` (see [Part Abilities](./PartAbility.md)) with one of those tier values.
 
-14. Fills predicate with any of those RecipeType's recipe capabilities, see // (13)
+14. Fills predicate with the EU, Item and Fluid PartAbilities based on the RecipeType's recipe capability max values.
 
-15. Fills predicate with Maintenance, Muffler and ParallelHatch PartAbilities.
+15. Fills predicate with any of those RecipeType's recipe capabilities, see // (14)
 
-16. Fills predicate with CoilBlocks (used in Electric Blast Furnace, Cracking Unit, Rotary Hearth, etc.)
+16. Fills predicate with Maintenance, Muffler and ParallelHatch PartAbilities.
 
-17. Fills predicate with Cleanroom Filter casings.
+17. Fills predicate with CoilBlocks (used in Electric Blast Furnace, Cracking Unit, Rotary Hearth, etc.)
 
-18. Fills predicate with PowerSubstation batteries.
+18. Fills predicate with Cleanroom Filter casings.
 
-19. Fills predicate with Data Access and Optical Reception part abilities.
+19. Fills predicate with PowerSubstation batteries.
 
-20. Fills predicate with any GT frame matching those materials or any pipe with one of those frame box materials.
+20. Fills predicate with Data Access and Optical Reception part abilities.
+
+21. Fills predicate with any GT frame matching those materials or any pipe with one of those frame box materials.
+
+!!! Note "`blocksDebug` / `statesDebug` in KubeJS"
+    In Java these are both just overloads of `blocks(...)` and `states(...)` that take a leading debug name.
+    KubeJS can coerce any object into a `String`, so from a script `Predicates.blocks(someBlock)` would bind to
+    the debug-name overload with zero blocks, silently producing a predicate that matches nothing.
+    They are therefore exposed to KubeJS under the separate names `blocksDebug` and `statesDebug`.
 
 ## Combining Predicates
 
@@ -111,7 +120,7 @@ MultiPredicate myCustomPredicate = Predicates.blocks(GTBlocks.PLASCRETE)
     Setting a limit on a predicate sets the limit on all its children and predicates. It is currently not possible to do e.g.  
     `existingPredicate1.or(existingPredicate2).setMinLimit(4)` to mean "4 of combined either predicate",   
     this instead means "either 4 of predicate 1 or 4 of predicate 2".  
-    This is possible with e.g. simple blocks by creating one predicate with the blocks like `Predicate.blocks(List.of(Blocks.Dirt, Blocks.Stone)).setMinLimit(4)`  
+    This is possible with e.g. simple blocks by creating one predicate with all the blocks like `Predicates.blocks(Blocks.DIRT, Blocks.STONE).setMinLimit(4)`  
 
 ## Predicate Internals
 `MultiPredicate`s can be composed of one or more `BasePredicate`s and other `MultiPredicates` which means any, all or one of those predicates can succeed for the `MultiPredicate` to succeed (returning no `PatternError`).
