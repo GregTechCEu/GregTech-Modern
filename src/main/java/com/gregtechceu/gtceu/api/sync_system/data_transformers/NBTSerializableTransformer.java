@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
