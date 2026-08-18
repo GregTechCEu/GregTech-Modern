@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluid;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
@@ -85,6 +86,7 @@ public class Predicates {
                 .toMultiPredicate();
     }
 
+    @HideFromJS
     public static MultiPredicate blocks(Block block) {
         return builder("Block")
                 .predicate(ctx -> ctx.state().is(block))

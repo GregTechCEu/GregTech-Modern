@@ -223,6 +223,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeVarInt(recipe.batchParallels);
         buf.writeInt(recipe.groupColor);
         buf.writeResourceLocation(recipe.recipeCategory.registryKey);
+        recipe.spoilageData.writeToNetwork(buf);
     }
 
     public static <T> ArrayList<T> readCollection(RegistryFriendlyByteBuf buf,
