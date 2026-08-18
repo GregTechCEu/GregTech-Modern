@@ -105,6 +105,8 @@ public class GTRecipeBuilder {
     private boolean itemMaterialInfo = false;
     private boolean fluidMaterialInfo = false;
     private boolean removePreviousMatInfo = false;
+    @Setter
+    public boolean keepSpoilingProgress = true;
     public GTRecipeCategory recipeCategory;
     @Setter
     public @Nullable BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
@@ -1800,7 +1802,8 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, recipeCategory, -1);
+                conditions, List.of(), data, duration, recipeCategory, -1,
+                new RecipeSpoilageData(keepSpoilingProgress));
     }
 
     protected void warnTooManyIngredients(RecipeCapability<?> capability,

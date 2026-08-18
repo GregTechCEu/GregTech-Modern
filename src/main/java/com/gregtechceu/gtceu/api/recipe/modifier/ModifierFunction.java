@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * Represents a function that accepts a GTRecipe and returns a modified version of the GTRecipe, or null.
@@ -132,6 +133,7 @@ public interface ModifierFunction {
         private ContentModifier outputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickInputModifier = ContentModifier.IDENTITY;
         private ContentModifier tickOutputModifier = ContentModifier.IDENTITY;
+        private BiConsumer<GTRecipe, Object> actualOutputModifier = (recipe, object) -> {};
         private final List<RecipeCondition<?>> addedConditions = new ArrayList<>();
 
         public FunctionBuilder() {}
@@ -159,6 +161,11 @@ public interface ModifierFunction {
             return this;
         }
 
+        public FunctionBuilder modifyItemOutputs(BiConsumer<GTRecipe, Object> func) {
+            actualOutputModifier = actualOutputModifier.andThen(func);
+            return this;
+        }
+
         /**
          * Builds the ModifierFunction from this builder.
          * <p>
@@ -183,7 +190,7 @@ public interface ModifierFunction {
                         new HashMap<>(recipe.inputChanceLogics), new HashMap<>(recipe.outputChanceLogics),
                         new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions, new ArrayList<>(recipe.ingredientActions),
-                        recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor);
+                        recipe.data, recipe.duration, recipe.recipeCategory, recipe.groupColor, recipe.spoilageData);
                 copied.parallels = recipe.parallels * parallels;
                 copied.subtickParallels = recipe.subtickParallels * subtickParallels;
                 copied.ocLevel = recipe.ocLevel + addOCs;
@@ -198,6 +205,7 @@ public interface ModifierFunction {
                     EnergyStack eut = EURecipeCapability.CAP.copyWithModifier(preEUt.stack(), eutModifier);
                     EURecipeCapability.putEUContent(preEUt.isInput() ? copied.tickInputs : copied.tickOutputs, eut);
                 }
+                copied.outputModifier = actualOutputModifier;
                 return copied;
             };
         }
