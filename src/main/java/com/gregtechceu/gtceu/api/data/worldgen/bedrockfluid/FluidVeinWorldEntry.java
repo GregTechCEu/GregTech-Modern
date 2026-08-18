@@ -3,50 +3,41 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
-import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Supplier;
+
 public class FluidVeinWorldEntry {
 
-    private final MemoizedSupplier<BedrockFluidDefinition> vein;
-    @Nullable
-    @Getter
-    private String veinId;
+    @Setter
+    private Supplier<@Nullable Holder<BedrockFluidDefinition>> definition;
     @Getter
     private int fluidYield;
     @Getter
     private int operationsRemaining;
 
-    public FluidVeinWorldEntry(@Nullable BedrockFluidDefinition vein, int fluidYield, int operationsRemaining) {
-        this(GTMemoizer.memoize(() -> vein));
-        if (vein != null) {
-            ResourceLocation key = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(vein);
-            if (key != null) {
-                this.veinId = key.toString();
-            }
-        }
+    public FluidVeinWorldEntry(@Nullable Holder<BedrockFluidDefinition> definition, int fluidYield,
+                               int operationsRemaining) {
+        this.definition = () -> definition;
         this.fluidYield = fluidYield;
         this.operationsRemaining = operationsRemaining;
     }
 
-    private FluidVeinWorldEntry(MemoizedSupplier<BedrockFluidDefinition> vein) {
-        this.vein = vein;
-    }
+    private FluidVeinWorldEntry() {}
 
     @Nullable
-    public BedrockFluidDefinition getVein() {
-        return this.vein.get();
-    }
-
-    @Nullable
-    public BedrockFluidDefinition getDefinition() {
-        return this.vein.get();
+    public Holder<BedrockFluidDefinition> getDefinition() {
+        return this.definition.get();
     }
 
     @SuppressWarnings("unused")
@@ -63,32 +54,30 @@ public class FluidVeinWorldEntry {
         var tag = new CompoundTag();
         tag.putInt("fluidYield", fluidYield);
         tag.putInt("operationsRemaining", operationsRemaining);
-        if (veinId != null) {
-            tag.putString("vein", veinId);
+
+        Holder<BedrockFluidDefinition> def = getDefinition();
+        if (def != null && def.unwrapKey().isPresent()) {
+            tag.putString("vein", def.unwrapKey().get().location().toString());
         }
         return tag;
     }
 
     @NotNull
-    public static FluidVeinWorldEntry readFromNBT(@NotNull CompoundTag tag) {
-        String veinId;
-        MemoizedSupplier<BedrockFluidDefinition> vein;
-
-        if (tag.contains("vein")) {
-            veinId = tag.getString("vein");
-            vein = GTMemoizer.memoize(() -> {
-                ResourceLocation key = ResourceLocation.parse(veinId);
-                return GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(key);
-            });
-        } else {
-            veinId = null;
-            vein = GTMemoizer.memoize(() -> null);
-        }
-
-        FluidVeinWorldEntry info = new FluidVeinWorldEntry(vein);
-        info.veinId = veinId;
+    public static FluidVeinWorldEntry readFromNBT(@NotNull CompoundTag tag, HolderLookup.Provider provider) {
+        FluidVeinWorldEntry info = new FluidVeinWorldEntry();
         info.fluidYield = tag.getInt("fluidYield");
         info.operationsRemaining = tag.getInt("operationsRemaining");
+
+        if (tag.contains("vein")) {
+            ResourceLocation id = ResourceLocation.parse(tag.getString("vein"));
+            info.setDefinition(GTMemoizer.memoize(() -> {
+                return provider.lookup(GTRegistries.Keys.BEDROCK_FLUID)
+                        .flatMap(reg -> reg.get(ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, id)))
+                        .orElse(null);
+            }));
+        } else {
+            info.setDefinition(() -> null);
+        }
         return info;
     }
 }

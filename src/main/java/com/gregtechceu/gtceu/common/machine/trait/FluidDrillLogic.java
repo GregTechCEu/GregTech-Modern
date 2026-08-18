@@ -94,7 +94,7 @@ public class FluidDrillLogic extends RecipeLogic {
     private int getFluidToProduce(FluidVeinWorldEntry entry) {
         var definition = entry.getDefinition();
         if (definition != null) {
-            int depletedYield = definition.getDepletedYield();
+            int depletedYield = definition.value().getDepletedYield();
             int regularYield = entry.getFluidYield();
             int remainingOperations = entry.getOperationsRemaining();
 

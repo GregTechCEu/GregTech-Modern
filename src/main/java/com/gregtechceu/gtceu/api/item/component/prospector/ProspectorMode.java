@@ -217,7 +217,7 @@ public abstract class ProspectorMode<T> {
             if (savedData.getDefinition() == null) {
                 return null;
             }
-            return new FluidInfo(savedData.getDefinition().getStoredFluid(),
+            return new FluidInfo(savedData.getDefinition().value().getStoredFluid(),
                     savedData.getFluidYield(),
                     100 * savedData.getOperationsRemaining() / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
         }
@@ -316,9 +316,9 @@ public abstract class ProspectorMode<T> {
             if (chunk.getLevel() instanceof ServerLevel serverLevel) {
                 var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x,
                         chunk.getPos().z);
-                if (oreVein.getDefinition() != null) {
+                if (oreVein != null && oreVein.getDefinition() != null) {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
-                    for (var entry : oreVein.getDefinition().materials()) {
+                    for (var entry : oreVein.getDefinition().value().materials()) {
                         storage[0][0] = ArrayUtils.add(storage[0][0],
                                 new BedrockOreInfo(entry.material(), entry.weight(), left, oreVein.getOreYield()));
                     }

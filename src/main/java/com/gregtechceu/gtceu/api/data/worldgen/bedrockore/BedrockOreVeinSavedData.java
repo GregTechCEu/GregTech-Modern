@@ -54,7 +54,7 @@ public class BedrockOreVeinSavedData extends SavedData {
         for (Tag tag : list) {
             if (tag instanceof CompoundTag compoundTag) {
                 var chunkPos = new ChunkPos(compoundTag.getLong("pos"));
-                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompound("data")));
+                veinOres.put(chunkPos, OreVeinWorldEntry.readFromNBT(compoundTag.getCompound("data"), serverLevel.registryAccess()));
             }
         }
     }
@@ -93,7 +93,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                 return entry;
             }
 
-            BedrockOreDefinition definition = null;
+            Holder<BedrockOreDefinition> definition = null;
             int query = new XoroshiroRandomSource(
                     serverLevel.getSeed() ^ ChunkPos.asLong(getVeinCoord(chunkX), getVeinCoord(chunkZ)))
                     .nextInt();
@@ -101,7 +101,14 @@ public class BedrockOreVeinSavedData extends SavedData {
             int totalWeight = getTotalWeight(biome);
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
-                for (var oreDefinition : GTRegistries.BEDROCK_ORE_DEFINITIONS) {
+                var registry = serverLevel.registryAccess()
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)
+                        .asHolderIdMap();
+                for (var holder : registry) {
+                    var oreDefinition = holder.value();
+                    if (!oreDefinition.canGenerate()) {
+                        continue;
+                    }
                     int veinWeight = oreDefinition.weight() + (oreDefinition.biomeWeightModifier() != null ?
                             oreDefinition.biomeWeightModifier().applyAsInt(biome) : 0);
                     if (veinWeight > 0 &&
@@ -109,7 +116,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                                     dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension())))) {
                         weight -= veinWeight;
                         if (weight < 0) {
-                            definition = oreDefinition;
+                            definition = holder;
                             break;
                         }
                     }
@@ -127,8 +134,9 @@ public class BedrockOreVeinSavedData extends SavedData {
         return veinOres.get(pos);
     }
 
-    public void createVein(ChunkPos pos, @Nullable BedrockOreDefinition definition) {
-        if (definition != null) {
+    public void createVein(ChunkPos pos, @Nullable Holder<BedrockOreDefinition> holder) {
+        if (holder != null) {
+            BedrockOreDefinition definition = holder.value();
             int radius = definition.size() / 2;
             for (int x = pos.x - radius; x <= pos.x + radius; ++x) {
                 for (int z = pos.z - radius; z <= pos.z + radius; ++z) {
@@ -150,7 +158,7 @@ public class BedrockOreVeinSavedData extends SavedData {
                     }
                     maximumYield = Math.min(maximumYield, definition.yield().getMaxValue());
 
-                    veinOres.put(pos2, new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
+                    veinOres.put(pos2, new OreVeinWorldEntry(holder, maximumYield, MAXIMUM_VEIN_OPERATIONS));
                 }
             }
         }
@@ -165,7 +173,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public int getTotalWeight(Holder<Biome> biome) {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
-            for (var definition : GTRegistries.BEDROCK_ORE_DEFINITIONS) {
+            for (var definition : serverLevel.registryAccess().registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)) {
                 if (definition.dimensionFilter == null || definition.dimensionFilter().stream()
                         .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                     totalWeight += definition.biomeWeightModifier() != null ?
@@ -198,7 +206,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public int getDepletedOreYield(int chunkX, int chunkZ) {
         OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return 0;
-        return info.getDefinition().depletedYield();
+        return info.getDefinition().value().depletedYield();
     }
 
     /**
@@ -223,7 +231,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public List<WeightedMaterial> getOreInChunk(int chunkX, int chunkZ) {
         OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return null;
-        return info.getDefinition().materials();
+        return info.getDefinition().value().materials();
     }
 
     /**
@@ -237,6 +245,8 @@ public class BedrockOreVeinSavedData extends SavedData {
     public void depleteVein(int chunkX, int chunkZ, int amount, boolean ignoreVeinStats) {
         OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
 
+        if (info == null) return;
+
         if (ignoreVeinStats) {
             info.decreaseOperations(amount);
             if (amount != 0) {
@@ -245,11 +255,11 @@ public class BedrockOreVeinSavedData extends SavedData {
             return;
         }
 
-        BedrockOreDefinition definition = info.getDefinition();
+        if (info.getDefinition() == null) return;
+        BedrockOreDefinition definition = info.getDefinition().value();
 
         // prevent division by zero, veins that never deplete don't need updating
-        if (definition == null || definition.depletionChance() == 0)
-            return;
+        if (definition.depletionChance() == 0) return;
 
         if (definition.depletionChance() == 100 || GTValues.RNG.nextInt(100) <= definition.depletionChance()) {
             info.decreaseOperations(definition.depletionAmount());
