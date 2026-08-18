@@ -21,9 +21,9 @@ Custom recipe modifiers in are done through a function. For this example, we wil
 
         int recipeTemp = recipe.data.getInt("RequiredTemp");
         if (recipeTemp > temp) {
-            return ModifierFunction.NULL // Cancels recipe
+            return ModifierFunction.NULL; // Cancels recipe
         }
-        return ModifierFunction.IDENTITY // Runs recipe
+        return ModifierFunction.IDENTITY; // Runs recipe
     }
     ```
 === "JavaScript"

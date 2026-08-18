@@ -234,7 +234,7 @@ title: "Greenhouse"
                greenhouseHelper(provider, "red_mushroom", Items.RED_MUSHROOM, new ItemStack(Items.RED_MUSHROOM, 12), new ItemStack(Items.RED_MUSHROOM, 24));
        
                // Brown Mushroom
-               greenhouseHelper(provider, "brown_mushroom", Items.BROWN_MUSHROOM, new ItemStack(Items.BROWN_MUSHROOM, 12), new ItemStack(Items.BROWN_MUSHROOM, 24))
+               greenhouseHelper(provider, "brown_mushroom", Items.BROWN_MUSHROOM, new ItemStack(Items.BROWN_MUSHROOM, 12), new ItemStack(Items.BROWN_MUSHROOM, 24));
            }
    ```
 === "JavaScript"
