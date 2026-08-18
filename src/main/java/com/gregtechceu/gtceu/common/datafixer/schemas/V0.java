@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.common.datafixer.schemas;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.datafixer.schemas.AutomaticNamespacedSchema;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
@@ -11,7 +13,6 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 
 import net.minecraft.util.datafix.fixes.References;
-import net.minecraft.util.datafix.schemas.NamespacedSchema;
 import net.minecraftforge.fml.loading.LoadingModList;
 
 import java.util.Locale;
@@ -24,10 +25,10 @@ import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIER
 import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.*;
 import static com.mojang.datafixers.DSL.*;
 
-public class V0 extends NamespacedSchema {
+public class V0 extends AutomaticNamespacedSchema {
 
     public V0(int versionKey, Schema parent) {
-        super(versionKey, parent);
+        super(versionKey, parent, GTCEu.MOD_ID);
     }
 
     // spotless:off
@@ -40,19 +41,19 @@ public class V0 extends NamespacedSchema {
         schema.registerType(false, GTReferences.FORGE_REGISTRY_DATA, () -> optionalFields(
                 "minecraft:block", optionalFields(
                         "ids", compoundList(References.BLOCK_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(DSL.constType(namespacedString()), References.BLOCK_NAME.in(schema))
+                        "aliases", compoundList(constType(namespacedString()), References.BLOCK_NAME.in(schema))
                 ),
                 "minecraft:item", optionalFields(
                         "ids", compoundList(References.ITEM_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(DSL.constType(namespacedString()), References.ITEM_NAME.in(schema))
+                        "aliases", compoundList(constType(namespacedString()), References.ITEM_NAME.in(schema))
                 ),
                 "minecraft:fluid", optionalFields(
                         "ids", compoundList(GTReferences.FLUID_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(DSL.constType(namespacedString()), GTReferences.FLUID_NAME.in(schema))
+                        "aliases", compoundList(constType(namespacedString()), GTReferences.FLUID_NAME.in(schema))
                 ),
                 "minecraft:entity_type", optionalFields(
                         "ids", compoundList(References.ENTITY_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(DSL.constType(namespacedString()), References.ENTITY_NAME.in(schema))
+                        "aliases", compoundList(constType(namespacedString()), References.ENTITY_NAME.in(schema))
                 )
         ));
 
@@ -444,14 +445,6 @@ public class V0 extends NamespacedSchema {
         }
 
         return map;
-    }
-
-    @Override
-    public void register(final Map<String, Supplier<TypeTemplate>> map, String name, final Supplier<TypeTemplate> template) {
-        if (name.indexOf(':') == -1) {
-            name = "gtceu:" + name;
-        }
-        map.put(name, template);
     }
 
     protected static void registerSimpleMachine(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name, int... tiers) {

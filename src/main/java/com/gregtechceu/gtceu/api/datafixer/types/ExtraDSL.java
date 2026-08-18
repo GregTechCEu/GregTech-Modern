@@ -270,19 +270,16 @@ public interface ExtraDSL {
     }
 
     static <F> Type<Pair<Either<F, Unit>, Dynamic<?>>> optionalFields(final String name, final Type<F> element) {
-        return and(
-                optional(field(name, element)),
-                remainderType()
-        );
+        return optionalFields(name, element, remainderType());
     }
 
     static <F, G> Type<Pair<Either<F, Unit>, Pair<Either<G, Unit>, Dynamic<?>>>> optionalFields(
             final String name1, final Type<F> element1,
             final String name2, final Type<G> element2
     ) {
-        return and(
-                optional(field(name1, element1)),
-                optional(field(name2, element2)),
+        return optionalFields(
+                name1, element1,
+                name2, element2,
                 remainderType()
         );
     }
@@ -292,10 +289,10 @@ public interface ExtraDSL {
             final String name2, final Type<G> element2,
             final String name3, final Type<H> element3
     ) {
-        return and(
-                optional(field(name1, element1)),
-                optional(field(name2, element2)),
-                optional(field(name3, element3)),
+        return optionalFields(
+                name1, element1,
+                name2, element2,
+                name3, element3,
                 remainderType()
         );
     }
@@ -306,13 +303,12 @@ public interface ExtraDSL {
             final String name3, final Type<H> element3,
             final String name4, final Type<I> element4
     ) {
-        return and(
-                optional(field(name1, element1)),
-                optional(field(name2, element2)),
-                optional(field(name3, element3)),
-                optionalFields(
-                        name4, element4
-                )
+        return optionalFields(
+                name1, element1,
+                name2, element2,
+                name3, element3,
+                name4, element4,
+                remainderType()
         );
     }
 
@@ -323,14 +319,13 @@ public interface ExtraDSL {
             final String name4, final Type<I> element4,
             final String name5, final Type<J> element5
     ) {
-        return and(
-                optional(field(name1, element1)),
-                optional(field(name2, element2)),
-                optional(field(name3, element3)),
-                optionalFields(
-                        name4, element4,
-                        name5, element5
-                )
+        return optionalFields(
+                name1, element1,
+                name2, element2,
+                name3, element3,
+                name4, element4,
+                name5, element5,
+                remainderType()
         );
     }
 
@@ -342,15 +337,14 @@ public interface ExtraDSL {
             final String name5, final Type<J> element5,
             final String name6, final Type<K> element6
     ) {
-        return and(
-                optional(field(name1, element1)),
-                optional(field(name2, element2)),
-                optional(field(name3, element3)),
-                optionalFields(
-                        name4, element4,
-                        name5, element5,
-                        name6, element6
-                )
+        return optionalFields(
+                name1, element1,
+                name2, element2,
+                name3, element3,
+                name4, element4,
+                name5, element5,
+                name6, element6,
+                remainderType()
         );
     }
 
