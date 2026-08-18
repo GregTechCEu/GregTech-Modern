@@ -24,9 +24,9 @@ import static com.gregtechceu.gtceu.common.datafixer.schemas.V0.*;
 import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.*;
 import static com.mojang.datafixers.DSL.*;
 
-public class V3 extends AutomaticNamespacedSchema {
+public class V4 extends AutomaticNamespacedSchema {
 
-    public V3(int versionKey, Schema parent) {
+    public V4(int versionKey, Schema parent) {
         super(versionKey, parent, GTCEu.MOD_ID);
     }
 
@@ -360,8 +360,8 @@ public class V3 extends AutomaticNamespacedSchema {
         schema.register(map, "large_extruder", traitHolder);
         schema.register(map, "large_solidifier", traitHolder);
         schema.register(map, "large_wiremill", traitHolder);
-        schema.register(map, "mega_blast_furnace", traitHolder); // TODO add fixer to rename to "rotary_hearth_furnace"
-        schema.register(map, "mega_vacuum_freezer", traitHolder); // TODO add fixer to rename to "bulk_blast_chiller"
+        schema.register(map, "mega_blast_furnace", traitHolder);
+        schema.register(map, "mega_vacuum_freezer", traitHolder);
         // endregion
         // endregion
 

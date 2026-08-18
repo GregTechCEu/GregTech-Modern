@@ -127,8 +127,15 @@ public class GTDataFixers {
         builder.addFixer(new LDLibPayloadWrapperRemovalFix(v2));
         builder.addFixer(new AutoOutputTraitFix(v2));
 
-        Schema v3 = builder.addSchema(3, V3::new);
-        builder.addFixer(new TraitHolderificationFix(v3));
+        // separator
+
+        Schema v3 = builder.addSchema(3, SAME_NAMESPACED);
+        builder.addFixer(new UpwardsFacingPropertyFix(v3));
+
+        // separator
+
+        Schema v4 = builder.addSchema(4, V4::new);
+        builder.addFixer(new TraitHolderificationFix(v4));
 
         // separator
 
