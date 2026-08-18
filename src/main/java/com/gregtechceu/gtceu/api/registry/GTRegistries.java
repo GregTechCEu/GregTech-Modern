@@ -1,11 +1,15 @@
 package com.gregtechceu.gtceu.api.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -38,6 +42,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IdMappingEvent;
 import net.minecraftforge.registries.RegisterEvent;
@@ -178,6 +183,83 @@ public final class GTRegistries {
     // ignore the generics and hope the registered objects are still correctly typed :3
     @SuppressWarnings({ "unchecked" })
     private static void actuallyRegister(RegisterEvent event) {
+
+        // Backwards compat for registration
+
+        if (event.getRegistryKey() == Keys.TAG_PREFIX) {
+            AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TAG_PREFIXES, TagPrefix.class));
+        }
+
+        if (event.getRegistryKey() == Keys.ELEMENT) {
+            AddonFinder.getAddons().forEach(IGTAddon::registerElements);
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ELEMENTS, Element.class));
+        }
+
+        if (event.getRegistryKey() == Keys.SOUND) {
+            AddonFinder.getAddons().forEach(IGTAddon::registerSounds);
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
+        }
+
+        if (event.getRegistryKey() == Keys.COVER) {
+            AddonFinder.getAddons().forEach(IGTAddon::registerCovers);
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.COVERS, CoverDefinition.class));
+        }
+
+        if (event.getRegistryKey() == Keys.RECIPE_CAPABILITY) {
+            AddonFinder.getAddons().forEach(IGTAddon::registerRecipeCapabilities);
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CAPABILITIES,
+                    (Class<RecipeCapability<?>>) (Class<?>) RecipeCapability.class));
+        }
+
+        if (event.getRegistryKey() == Keys.WORLD_GEN_LAYER) {
+            AddonFinder.getAddons().forEach(IGTAddon::registerWorldgenLayers);
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class));
+        }
+
+        if (event.getRegistryKey() == Keys.CHANCE_LOGIC) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.CHANCE_LOGICS, ChanceLogic.class));
+        }
+
+        if (event.getRegistryKey() == Keys.MATERIAL_ICON_SET) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class));
+        }
+
+        if (event.getRegistryKey() == Keys.DIMENSION_MARKER) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
+        }
+
+        if (event.getRegistryKey() == Keys.MACHINE) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
+        }
+
+        if (event.getRegistryKey() == Keys.MEDICAL_CONDITION) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
+        }
+
+        if (event.getRegistryKey() == Keys.PLACEHOLDER) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.PLACEHOLDERS, Placeholder.class));
+        }
+
+        if (event.getRegistryKey() == Keys.RECIPE_CATEGORY) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
+        }
+
+        if (event.getRegistryKey() == Keys.RECIPE_CONDITION) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
+                    (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
+        }
+
+        if (event.getRegistryKey() == Keys.RECIPE_TYPE) {
+            ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
+        }
+
+        if (event.getRegistryKey() == Keys.MATERIAL) {
+            GTCEu.LOGGER.info("Registering addon Materials");
+            MaterialEvent materialEvent = new MaterialEvent();
+            ModLoader.get().postEvent(materialEvent);
+        }
+
         if (!TO_REGISTER.containsRow(event.getVanillaRegistry())) return;
 
         for (var entry : TO_REGISTER.row(event.getVanillaRegistry()).entrySet()) {

@@ -68,6 +68,5 @@ public class GTDimensionMarkers {
     }
 
     public static void init() {
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class));
     }
 }

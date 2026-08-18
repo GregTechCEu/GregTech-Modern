@@ -37,9 +37,7 @@ public class GTRecipeCategories {
         return category;
     }
 
-    public static void init() {
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
-    }
+    public static void init() {}
 
     public static GTRecipeCategory get(String name) {
         return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.id(name));

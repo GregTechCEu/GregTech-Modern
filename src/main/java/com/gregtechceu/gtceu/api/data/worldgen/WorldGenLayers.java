@@ -31,7 +31,5 @@ public class WorldGenLayers {
             Set.of(Level.END.location()));
 
     public static void init() {
-        AddonFinder.getAddons().forEach(IGTAddon::registerWorldgenLayers);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class));
     }
 }

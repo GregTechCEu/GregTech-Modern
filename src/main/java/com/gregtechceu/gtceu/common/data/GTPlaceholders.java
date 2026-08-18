@@ -1198,8 +1198,6 @@ public class GTPlaceholders {
         if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
             GTCreateIntegration.initPlaceholders();
         }
-
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.PLACEHOLDERS, Placeholder.class));
     }
 
     @OnlyIn(Dist.CLIENT)

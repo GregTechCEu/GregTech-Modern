@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -34,7 +33,6 @@ import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
-import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
 import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
@@ -135,7 +133,7 @@ public class CommonProxy {
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        initMaterials();
+        GTMaterials.init();
         GTMedicalConditions.init();
         TagPrefix.init();
         GTSoundEntries.init();
@@ -185,17 +183,6 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
-    }
-
-    private static void initMaterials() {
-        // First, register CEu Materials
-        GTCEu.LOGGER.info("Registering GTCEu Materials");
-        GTMaterials.init();
-
-        // Then, register addon Materials
-        GTCEu.LOGGER.info("Registering addon Materials");
-        MaterialEvent materialEvent = new MaterialEvent();
-        ModLoader.get().postEvent(materialEvent);
     }
 
     // Fire post material events after all other material registry events.

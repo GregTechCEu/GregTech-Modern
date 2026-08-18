@@ -22,8 +22,5 @@ public class GTPatternErrors {
         register(PatternStringError.TYPE);
         register(SinglePredicateError.TYPE);
         register(SimplePatternError.TYPE);
-
-        ModLoader.get()
-                .postEvent(new GTCEuAPI.RegisterEvent<>(PATTERN_ERROR_TYPES, PatternError.PatternErrorType.class));
     }
 }

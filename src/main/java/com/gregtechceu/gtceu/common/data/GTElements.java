@@ -167,10 +167,7 @@ public class GTElements {
         return element;
     }
 
-    public static void init() {
-        AddonFinder.getAddons().forEach(IGTAddon::registerElements);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ELEMENTS, Element.class));
-    }
+    public static void init() {}
 
     /**
      * @deprecated Use {@code GTRegistries.ELEMENTS.get(name)} instead

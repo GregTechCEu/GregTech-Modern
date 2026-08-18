@@ -141,8 +141,5 @@ public class GTMedicalConditions {
                 symptoms);
     }
 
-    public static void init() {
-        ModLoader.get()
-                .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
-    }
+    public static void init() {}
 }

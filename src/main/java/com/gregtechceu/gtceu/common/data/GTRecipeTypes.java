@@ -703,7 +703,6 @@ public class GTRecipeTypes {
 
     public static void init() {
         GCYMRecipeTypes.init();
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
 
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("machine"),
                 GTRecipeSerializer.SERIALIZER);

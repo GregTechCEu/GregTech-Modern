@@ -71,10 +71,7 @@ public class TagPrefix {
 
     public static final Map<TagPrefix, OreType> ORES = new Object2ObjectLinkedOpenHashMap<>();
 
-    public static void init() {
-        AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TAG_PREFIXES, TagPrefix.class));
-    }
+    public static void init() {}
 
     /**
      * @deprecated Use {@code GTRegistries.TAG_PREFIXES.get(name)}

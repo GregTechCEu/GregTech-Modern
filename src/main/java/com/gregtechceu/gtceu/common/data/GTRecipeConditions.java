@@ -45,10 +45,6 @@ public final class GTRecipeConditions {
         if (GTCEu.Mods.isHeraclesLoaded()) {
             HERACLES_QUEST = register("heracles_quest", HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC);
         }
-
-        // noinspection unchecked
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
-                (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
     }
 
     private static <T extends RecipeCondition<T>> RecipeConditionType<T> register(String name,

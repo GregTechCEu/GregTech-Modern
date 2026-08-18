@@ -361,6 +361,5 @@ public abstract class ChanceLogic {
 
     @ApiStatus.Internal
     public static void init() {
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.CHANCE_LOGICS, ChanceLogic.class));
     }
 }

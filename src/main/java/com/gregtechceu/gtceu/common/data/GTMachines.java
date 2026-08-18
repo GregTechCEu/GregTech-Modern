@@ -1204,8 +1204,6 @@ public class GTMachines {
         if (GTCEu.Mods.isAE2Loaded()) {
             GTAEMachines.init();
         }
-
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
     }
 
     public static MachineDefinition get(String name) {
