@@ -16,7 +16,7 @@ public class BlockStateRecipeCapability extends RecipeCapability<BlockState> {
     }
 
     @Override
-    public BlockState copyInner(@NotNull BlockState content) {
+    public BlockState copyInner(BlockState content) {
         return content;
     }
 }
