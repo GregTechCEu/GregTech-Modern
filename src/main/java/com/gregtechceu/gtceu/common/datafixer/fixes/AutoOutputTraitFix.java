@@ -8,6 +8,8 @@ import com.mojang.serialization.Dynamic;
 
 import java.util.Map;
 
+import static com.mojang.datafixers.DSL.*;
+
 public class AutoOutputTraitFix extends DataFix {
 
     private static final Map<String, String> FIELD_RENAMES = Map.of(
@@ -25,24 +27,20 @@ public class AutoOutputTraitFix extends DataFix {
 
     @Override
     protected TypeRewriteRule makeRule() {
-        return this.fixTypeEverywhereTyped("AutoOutputTraitFix", this.getInputSchema().getType(References.BLOCK_ENTITY), typed -> {
-            return typed.update(DSL.remainderFinder(), remainder -> {
-                Dynamic<?> traitValue = remainder.emptyMap();
-                for (var entry : FIELD_RENAMES.entrySet()) {
-                    String oldName = entry.getKey();
-                    String newName = entry.getValue();
+        return this.fixTypeEverywhereTyped("AutoOutputTraitFix", this.getInputSchema().getType(References.BLOCK_ENTITY), typed -> typed.update(remainderFinder(), dynamic -> {
+            Dynamic<?> traitValue = dynamic.emptyMap();
+            for (var entry : FIELD_RENAMES.entrySet()) {
+                String oldName = entry.getKey();
+                String newName = entry.getValue();
 
-                    var oldField = remainder.get(oldName).result();
-                    if (oldField.isPresent()) {
-                        traitValue = traitValue.set(newName, oldField.get());
-                        remainder = remainder.remove(oldName);
-                    }
+                var oldField = dynamic.get(oldName).result();
+                if (oldField.isPresent()) {
+                    traitValue = traitValue.set(newName, oldField.get());
+                    dynamic = dynamic.remove(oldName);
                 }
-
-                remainder.set("autoOutput", traitValue);
-
-                return remainder;
-            });
-        });
+            }
+            dynamic.set("autoOutput", traitValue);
+            return dynamic;
+        }));
     }
 }

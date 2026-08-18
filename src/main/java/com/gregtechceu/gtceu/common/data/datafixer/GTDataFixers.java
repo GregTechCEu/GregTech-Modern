@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.common.data.datafixer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.gregtechceu.gtceu.api.datafixer.LazyDataFixer;
-import com.gregtechceu.gtceu.common.datafixer.fixes.AutoOutputTraitFix;
-import com.gregtechceu.gtceu.common.datafixer.fixes.LDLibPayloadWrapperRemovalFix;
+import com.gregtechceu.gtceu.common.datafixer.fixes.*;
 import com.gregtechceu.gtceu.common.datafixer.schemas.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -42,11 +41,23 @@ import java.util.regex.Pattern;
  * <h3>DO NOT ADD NEW MACHINES TO {@link V0}!! THEY SHOULD BE IN NEW, CORRECTLY VERSIONED, SCHEMAS!!</h3>
  * Reference vanilla schemas for more information on that, examples linked below. Also check how they're used in
  * vanilla's {@link net.minecraft.util.datafix.DataFixers DataFixers}.<br>
- * {@link net.minecraft.util.datafix.schemas.V1460 V1460}, {@link net.minecraft.util.datafix.schemas.V1906 V1906}
+ * {@link net.minecraft.util.datafix.schemas.V1460 V1460}, {@link net.minecraft.util.datafix.schemas.V1906 V1906}<br>
+ * Also, always add a {@link AddNewChoices} fixer of the appropriate type(s) when adding new types to a schema.
  *
  * <p>
- * Note how only fields that use other registered types (such as item/fluid stacks) are defined. The same should be
- * done for all types.
+ * Note how only fields that use other registered (named) types (such as item/fluid stacks) are defined. The same should
+ * be done for all types.<br>
+ * If the type doesn't depend on any named types, register it with {@link Schema#register} like this:
+ * <pre>{@code
+ * public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema) {
+ *     Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
+ *     // ...
+ *     schema.register(map, "my_id_here", () -> traitHolder(schema));
+ *     // ...
+ *     return map;
+ * }
+ * }</pre>
+ * We don't use {@link Schema#registerSimple} because we need to register the trait holder type for all machines.
  */
 @SuppressWarnings("SameParameterValue")
 public class GTDataFixers {
@@ -114,11 +125,12 @@ public class GTDataFixers {
 
         Schema v2 = builder.addSchema(2, SAME_NAMESPACED);
         builder.addFixer(new LDLibPayloadWrapperRemovalFix(v2));
+        builder.addFixer(new AutoOutputTraitFix(v2));
+
+        Schema v3 = builder.addSchema(3, V3::new);
+        builder.addFixer(new TraitHolderificationFix(v3));
 
         // separator
-
-        Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
-        builder.addFixer(new AutoOutputTraitFix(v10));
 
         /*
         createBlockItemRenameFix(builder, schemaV11, "U238",

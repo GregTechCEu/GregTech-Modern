@@ -7,73 +7,40 @@ import com.gregtechceu.gtceu.api.datafixer.schemas.AutomaticNamespacedSchema;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
-
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-
 import net.minecraft.util.datafix.fixes.References;
 import net.minecraftforge.fml.loading.LoadingModList;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
+
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
+import static com.gregtechceu.gtceu.common.datafixer.schemas.V0.*;
 import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.*;
 import static com.mojang.datafixers.DSL.*;
 
-public class V0 extends AutomaticNamespacedSchema {
+public class V3 extends AutomaticNamespacedSchema {
 
-    public V0(int versionKey, Schema parent) {
+    public V3(int versionKey, Schema parent) {
         super(versionKey, parent, GTCEu.MOD_ID);
     }
 
     // spotless:off
     @Override
-    public void registerTypes(Schema schema, Map<String, Supplier<TypeTemplate>> entityTypes,
-                              Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
-        super.registerTypes(schema, entityTypes, blockEntityTypes);
-
-        // add forge registry id map to the level schema
-        schema.registerType(false, GTReferences.FORGE_REGISTRY_DATA, () -> optionalFields(
-                "minecraft:block", optionalFields(
-                        "ids", compoundList(References.BLOCK_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), References.BLOCK_NAME.in(schema))
-                ),
-                "minecraft:item", optionalFields(
-                        "ids", compoundList(References.ITEM_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), References.ITEM_NAME.in(schema))
-                ),
-                "minecraft:fluid", optionalFields(
-                        "ids", compoundList(GTReferences.FLUID_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), GTReferences.FLUID_NAME.in(schema))
-                ),
-                "minecraft:entity_type", optionalFields(
-                        "ids", compoundList(References.ENTITY_NAME.in(schema), constType(intType())),
-                        "aliases", compoundList(constType(namespacedString()), References.ENTITY_NAME.in(schema))
-                )
-        ));
-
-
-        schema.registerType(false, GTReferences.MATERIAL_NAME, () -> constType(namespacedString()));
-
-        schema.registerType(true, GTReferences.FLUID_STACK, () -> optionalFields(
-                "FluidName", GTReferences.FLUID_NAME.in(schema),
-                "Tag", remainder()
-        ));
-        schema.registerType(false, GTReferences.FLUID_NAME, () -> constType(namespacedString()));
-    }
-
-    @Override
     public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema) {
         Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
 
+        final Supplier<TypeTemplate> traitHolder = () -> traitHolder(schema);
+
         // region steam
         final Supplier<TypeTemplate> steamMachine = () -> optionalFields(
-                "steamTank", notifiableFluidTank(schema)
+                "steamTank", notifiableFluidTank(schema),
+                traitHolder(schema)
         );
         final Supplier<TypeTemplate> steamBoiler = () -> optionalFields(
                 "waterTank", notifiableFluidTank(schema),
@@ -99,7 +66,8 @@ public class V0 extends AutomaticNamespacedSchema {
         schema.register(map, "steam_miner", () -> optionalFields(
                 "importItems", notifiableItemHandler(schema),
                 "exportItems", notifiableItemHandler(schema),
-                "steamTank", notifiableFluidTank(schema)
+                "steamTank", notifiableFluidTank(schema),
+                traitHolder(schema)
         ));
         // endregion
 
@@ -160,12 +128,13 @@ public class V0 extends AutomaticNamespacedSchema {
         registerForTiers(schema, map, "8a_energy_converter", DSL::remainder, ALL_TIERS);
         registerForTiers(schema, map, "16a_energy_converter", DSL::remainder, ALL_TIERS);
 
-        schema.registerSimple(map, "long_distance_item_pipeline_endpoint");
-        schema.registerSimple(map, "long_distance_fluid_pipeline_endpoint");
-        schema.registerSimple(map, "long_distance_fluid_pipeline_endpoint");
+        schema.register(map, "long_distance_item_pipeline_endpoint", traitHolder);
+        schema.register(map, "long_distance_fluid_pipeline_endpoint", traitHolder);
+        schema.register(map, "long_distance_fluid_pipeline_endpoint", traitHolder);
 
         final Supplier<TypeTemplate> batteryBuffer = () -> optionalFields(
-                "batteryInventory", itemHandler(schema)
+                "batteryInventory", itemHandler(schema),
+                traitHolder(schema)
         );
         registerForTiers(schema, map, "battery_buffer_4x", batteryBuffer, ALL_TIERS);
         registerForTiers(schema, map, "battery_buffer_8x", batteryBuffer, ALL_TIERS);
@@ -173,44 +142,51 @@ public class V0 extends AutomaticNamespacedSchema {
         registerForTiers(schema, map, "charger_4x", batteryBuffer, ALL_TIERS);
 
         registerForTiers(schema, map, "pump", () -> optionalFields(
-                "cache", notifiableFluidTank(schema)
+                "cache", notifiableFluidTank(schema),
+                traitHolder(schema)
         ), LV, MV, HV, EV);
         registerForTiers(schema, map, "fisher", () -> optionalFields(
                 "cache", notifiableItemHandler(schema),
                 "baitHandler", notifiableItemHandler(schema),
-                "chargerInventory", itemHandler(schema)
+                "chargerInventory", itemHandler(schema),
+                traitHolder(schema)
         ), LV, MV, HV, EV, IV, LuV);
         registerForTiers(schema, map, "block_breaker", () -> optionalFields(
                 "cache", notifiableItemHandler(schema),
-                "chargerInventory", itemHandler(schema)
+                "chargerInventory", itemHandler(schema),
+                traitHolder(schema)
         ), LV, MV, HV, EV);
         registerSimpleMachine(schema, map, "miner", LV, MV, HV);
         registerForTiers(schema, map, "world_accelerator", DSL::remainder, LV, MV, HV, EV, IV, LuV, ZPM, UV);
         registerForTiers(schema, map, "item_collector", () -> optionalFields(
                 "output", notifiableItemHandler(schema),
                 "chargerInventory", itemHandler(schema),
-                "filterInventory", itemHandler(schema)
+                "filterInventory", itemHandler(schema),
+                traitHolder(schema)
         ), LV, MV, HV, EV);
         // endregion
 
         // region storage
         final Supplier<TypeTemplate> itemStorage = () -> optionalFields(
-                "inventory", notifiableItemHandler(schema)
+                "inventory", notifiableItemHandler(schema),
+                traitHolder(schema)
         );
         registerForTiers(schema, map, "buffer", () -> optionalFields(
                 "tank", notifiableFluidTank(schema),
                 itemStorage.get()
         ), LV, MV, HV);
-        schema.registerSimple(map, "creative_energy");
-        schema.registerSimple(map, "creative_computation_provider");
+        schema.register(map, "creative_energy", traitHolder);
+        schema.register(map, "creative_computation_provider", traitHolder);
 
         final Supplier<TypeTemplate> quantumChest = () -> optionalFields(
                 "lockedFluid", GTReferences.FLUID_STACK.in(schema),
-                "stored", GTReferences.FLUID_STACK.in(schema)
+                "stored", GTReferences.FLUID_STACK.in(schema),
+                traitHolder(schema)
         );
         final Supplier<TypeTemplate> quantumTank = () -> optionalFields(
                 "lockedItem", itemHandler(schema),
-                "stored", References.ITEM_STACK.in(schema)
+                "stored", References.ITEM_STACK.in(schema),
+                traitHolder(schema)
         );
         schema.register(map, "creative_chest", quantumChest);
         schema.register(map, "creative_tank", quantumTank);
@@ -228,7 +204,8 @@ public class V0 extends AutomaticNamespacedSchema {
         schema.register(map, "tungsten_steel_crate", itemStorage);
 
         final Supplier<TypeTemplate> drum = () -> optionalFields(
-                "stored", GTReferences.FLUID_STACK.in(schema)
+                "stored", GTReferences.FLUID_STACK.in(schema),
+                traitHolder(schema)
         );
         schema.register(map, "wood_drum", drum);
         schema.register(map, "bronze_drum", drum);
@@ -242,14 +219,15 @@ public class V0 extends AutomaticNamespacedSchema {
 
         // region part
         final Supplier<TypeTemplate> itemBus = () -> optionalFields(
-                "circuitInventory", notifiableItemHandler(schema),
+                "circuitSlot", notifiableItemHandler(schema),
                 itemStorage.get()
         );
         registerForTiers(schema, map, "input_bus", itemBus, ALL_TIERS);
         registerForTiers(schema, map, "output_bus", itemBus, ALL_TIERS);
         final Supplier<TypeTemplate> fluidHatch = () -> optionalFields(
                 "tank", notifiableFluidTank(schema),
-                "circuitInventory", notifiableItemHandler(schema)
+                "circuitSlot", notifiableItemHandler(schema),
+                traitHolder(schema)
         );
         registerForTiers(schema, map, "input_hatch", fluidHatch, ALL_TIERS);
         registerForTiers(schema, map, "input_hatch_4x", fluidHatch, ALL_TIERS);
@@ -272,10 +250,11 @@ public class V0 extends AutomaticNamespacedSchema {
         schema.register(map, "steam_input_bus", itemBus);
         schema.register(map, "steam_output_bus", itemBus);
         schema.register(map, "steam_input_hatch", fluidHatch);
-        schema.registerSimple(map, "coke_oven_hatch");
+        schema.register(map, "coke_oven_hatch", traitHolder);
         schema.register(map, "pump_hatch", fluidHatch);
         final Supplier<TypeTemplate> maintenanceHatch = () -> optionalFields(
-                "itemStackHandler", notifiableItemHandler(schema)
+                "itemStackHandler", notifiableItemHandler(schema),
+                traitHolder(schema)
         );
         schema.register(map, "maintenance_hatch", maintenanceHatch);
         schema.register(map, "configurable_maintenance_hatch", maintenanceHatch);
@@ -305,111 +284,114 @@ public class V0 extends AutomaticNamespacedSchema {
         registerForTiers(schema, map, "4096a_laser_target_hatch", DSL::remainder, HIGH_TIERS);
         registerForTiers(schema, map, "4096a_laser_source_hatch", DSL::remainder, HIGH_TIERS);
 
-        schema.registerSimple(map, "monitor");
-        schema.registerSimple(map, "advanced_monitor");
+        schema.register(map, "monitor", traitHolder);
+        schema.register(map, "advanced_monitor", traitHolder);
         // endregion
 
         // region multiblock
-        schema.registerSimple(map, "bronze_large_boiler");
-        schema.registerSimple(map, "steel_large_boiler");
-        schema.registerSimple(map, "titanium_large_boiler");
-        schema.registerSimple(map, "tungstensteel_large_boiler");
+        schema.register(map, "bronze_large_boiler", traitHolder);
+        schema.register(map, "steel_large_boiler", traitHolder);
+        schema.register(map, "titanium_large_boiler", traitHolder);
+        schema.register(map, "tungstensteel_large_boiler", traitHolder);
 
         final Supplier<TypeTemplate> primitiveMachine = () -> optionalFields(
                 "importItems", notifiableItemHandler(schema),
                 "exportItems", notifiableItemHandler(schema),
                 "importFluids", notifiableFluidTank(schema),
-                "exportFluids", notifiableFluidTank(schema)
+                "exportFluids", notifiableFluidTank(schema),
+                traitHolder(schema)
         );
         schema.register(map, "coke_oven", primitiveMachine);
         schema.register(map, "primitive_blast_furnace", primitiveMachine);
 
-        schema.registerSimple(map, "electric_blast_furnace");
-        schema.registerSimple(map, "large_chemical_reactor");
-        schema.registerSimple(map, "implosion_compressor");
-        schema.registerSimple(map, "pyrolyse_oven");
-        schema.registerSimple(map, "multi_smelter");
-        schema.registerSimple(map, "cracker");
-        schema.registerSimple(map, "distillation_tower");
-        schema.registerSimple(map, "vacuum_freezer");
-        schema.registerSimple(map, "assembly_line");
-        schema.registerSimple(map, "primitive_pump");
-        schema.registerSimple(map, "steam_grinder");
-        schema.registerSimple(map, "steam_oven");
+        schema.register(map, "electric_blast_furnace", traitHolder);
+        schema.register(map, "large_chemical_reactor", traitHolder);
+        schema.register(map, "implosion_compressor", traitHolder);
+        schema.register(map, "pyrolyse_oven", traitHolder);
+        schema.register(map, "multi_smelter", traitHolder);
+        schema.register(map, "cracker", traitHolder);
+        schema.register(map, "distillation_tower", traitHolder);
+        schema.register(map, "vacuum_freezer", traitHolder);
+        schema.register(map, "assembly_line", traitHolder);
+        schema.register(map, "primitive_pump", traitHolder);
+        schema.register(map, "steam_grinder", traitHolder);
+        schema.register(map, "steam_oven", traitHolder);
         registerForTiers(schema, map, "fusion_reactor", DSL::remainder, LuV, ZPM, UV);
         registerForTiers(schema, map, "fluid_drilling_rig", DSL::remainder, MV, HV, EV);
         registerForTiers(schema, map, "large_miner", DSL::remainder, EV, IV, LuV);
-        schema.registerSimple(map, "cleanroom");
-        schema.registerSimple(map, "large_combustion_engine");
-        schema.registerSimple(map, "extreme_combustion_engine");
-        schema.registerSimple(map, "steam_large_turbine");
-        schema.registerSimple(map, "gas_large_turbine");
-        schema.registerSimple(map, "plasma_large_turbine");
-        schema.registerSimple(map, "active_transformer");
-        schema.registerSimple(map, "power_substation");
+        schema.register(map, "cleanroom", traitHolder);
+        schema.register(map, "large_combustion_engine", traitHolder);
+        schema.register(map, "extreme_combustion_engine", traitHolder);
+        schema.register(map, "steam_large_turbine", traitHolder);
+        schema.register(map, "gas_large_turbine", traitHolder);
+        schema.register(map, "plasma_large_turbine", traitHolder);
+        schema.register(map, "active_transformer", traitHolder);
+        schema.register(map, "power_substation", traitHolder);
         registerForTiers(schema, map, "bedrock_ore_miner", DSL::remainder, MV, HV, EV);
-        schema.registerSimple(map, "wooden_tank_valve");
-        schema.registerSimple(map, "wooden_multiblock_tank");
-        schema.registerSimple(map, "bronze_tank_valve");
-        schema.registerSimple(map, "bronze_multiblock_tank");
-        schema.registerSimple(map, "steel_tank_valve");
-        schema.registerSimple(map, "steel_multiblock_tank");
+        schema.register(map, "wooden_tank_valve", traitHolder);
+        schema.register(map, "wooden_multiblock_tank", traitHolder);
+        schema.register(map, "bronze_tank_valve", traitHolder);
+        schema.register(map, "bronze_multiblock_tank", traitHolder);
+        schema.register(map, "steel_tank_valve", traitHolder);
+        schema.register(map, "steel_multiblock_tank", traitHolder);
 
-        schema.registerSimple(map, "central_monitor");
+        schema.register(map, "central_monitor", traitHolder);
 
         // region GCYM
         registerForTiers(schema, map, "parallel_hatch", DSL::remainder, IV, LuV, ZPM, UV);
-        schema.registerSimple(map, "large_maceration_tower");
-        schema.registerSimple(map, "large_chemical_bath");
-        schema.registerSimple(map, "large_centrifuge");
-        schema.registerSimple(map, "large_mixer");
-        schema.registerSimple(map, "large_electrolyzer");
-        schema.registerSimple(map, "large_electromagnet");
-        schema.registerSimple(map, "large_packer");
-        schema.registerSimple(map, "large_assembler");
-        schema.registerSimple(map, "large_circuit_assembler");
-        schema.registerSimple(map, "large_arc_smelter");
-        schema.registerSimple(map, "large_engraving_laser");
-        schema.registerSimple(map, "large_sifting_funnel");
-        schema.registerSimple(map, "alloy_blast_smelter");
-        schema.registerSimple(map, "large_autoclave");
-        schema.registerSimple(map, "large_material_press");
-        schema.registerSimple(map, "large_brewer");
-        schema.registerSimple(map, "large_cutter");
-        schema.registerSimple(map, "large_extractor");
-        schema.registerSimple(map, "large_extruder");
-        schema.registerSimple(map, "large_solidifier");
-        schema.registerSimple(map, "large_wiremill");
-        schema.registerSimple(map, "mega_blast_furnace"); // TODO add fixer to rename to "rotary_hearth_furnace"
-        schema.registerSimple(map, "mega_vacuum_freezer"); // TODO add fixer to rename to "bulk_blast_chiller"
+        schema.register(map, "large_maceration_tower", traitHolder);
+        schema.register(map, "large_chemical_bath", traitHolder);
+        schema.register(map, "large_centrifuge", traitHolder);
+        schema.register(map, "large_mixer", traitHolder);
+        schema.register(map, "large_electrolyzer", traitHolder);
+        schema.register(map, "large_electromagnet", traitHolder);
+        schema.register(map, "large_packer", traitHolder);
+        schema.register(map, "large_assembler", traitHolder);
+        schema.register(map, "large_circuit_assembler", traitHolder);
+        schema.register(map, "large_arc_smelter", traitHolder);
+        schema.register(map, "large_engraving_laser", traitHolder);
+        schema.register(map, "large_sifting_funnel", traitHolder);
+        schema.register(map, "alloy_blast_smelter", traitHolder);
+        schema.register(map, "large_autoclave", traitHolder);
+        schema.register(map, "large_material_press", traitHolder);
+        schema.register(map, "large_brewer", traitHolder);
+        schema.register(map, "large_cutter", traitHolder);
+        schema.register(map, "large_extractor", traitHolder);
+        schema.register(map, "large_extruder", traitHolder);
+        schema.register(map, "large_solidifier", traitHolder);
+        schema.register(map, "large_wiremill", traitHolder);
+        schema.register(map, "mega_blast_furnace", traitHolder); // TODO add fixer to rename to "rotary_hearth_furnace"
+        schema.register(map, "mega_vacuum_freezer", traitHolder); // TODO add fixer to rename to "bulk_blast_chiller"
         // endregion
         // endregion
 
         // region research
-        schema.registerSimple(map, "research_station");
+        schema.register(map, "research_station", traitHolder);
         schema.register(map, "object_holder", () -> optionalFields(
-                "heldItems", notifiableItemHandler(schema)
+                "heldItems", notifiableItemHandler(schema),
+                traitHolder(schema)
         ));
-        schema.registerSimple(map, "data_bank");
-        schema.registerSimple(map, "network_switch");
-        schema.registerSimple(map, "high_performance_computation_array");
-        schema.registerSimple(map, "computation_transmitter_hatch");
-        schema.registerSimple(map, "computation_receiver_hatch");
-        schema.registerSimple(map, "data_transmitter_hatch");
-        schema.registerSimple(map, "data_receiver_hatch");
+        schema.register(map, "data_bank", traitHolder);
+        schema.register(map, "network_switch", traitHolder);
+        schema.register(map, "high_performance_computation_array", traitHolder);
+        schema.register(map, "computation_transmitter_hatch", traitHolder);
+        schema.register(map, "computation_receiver_hatch", traitHolder);
+        schema.register(map, "data_transmitter_hatch", traitHolder);
+        schema.register(map, "data_receiver_hatch", traitHolder);
         final Supplier<TypeTemplate> dataAccessHatch = () -> optionalFields(
-                "importItems", notifiableItemHandler(schema)
+                "importItems", notifiableItemHandler(schema),
+                traitHolder(schema)
         );
         schema.register(map, "basic_data_access_hatch", dataAccessHatch);
         schema.register(map, "data_access_hatch", dataAccessHatch);
         schema.register(map, "advanced_data_access_hatch", dataAccessHatch);
         schema.register(map, "creative_data_access_hatch", dataAccessHatch);
-        schema.registerSimple(map, "hpca_empty_component");
-        schema.registerSimple(map, "hpca_computation_component");
-        schema.registerSimple(map, "hpca_advanced_computation_component");
-        schema.registerSimple(map, "hpca_heat_sink_component");
-        schema.registerSimple(map, "hpca_active_cooler_component");
-        schema.registerSimple(map, "hpca_bridge_component");
+        schema.register(map, "hpca_empty_component", traitHolder);
+        schema.register(map, "hpca_computation_component", traitHolder);
+        schema.register(map, "hpca_advanced_computation_component", traitHolder);
+        schema.register(map, "hpca_heat_sink_component", traitHolder);
+        schema.register(map, "hpca_active_cooler_component", traitHolder);
+        schema.register(map, "hpca_bridge_component", traitHolder);
         // endregion
 
         // region AE2 compat
@@ -432,15 +414,16 @@ public class V0 extends AutomaticNamespacedSchema {
                     ),
                     itemBus.get()
             ));
-            schema.registerSimple(map, "me_pattern_buffer_proxy");
+            schema.register(map, "me_pattern_buffer_proxy", traitHolder);
         }
         // endregion
 
-        // register all remaining machines as very 'plain' types
+        // register all remaining machines as ""plain"" types
+        // IDEK if this works because the registry might not be loaded at this point... oh well.
         for (MachineDefinition definition : GTRegistries.MACHINES) {
             String id = definition.getId().toString();
             if (!map.containsKey(id)) {
-                schema.registerSimple(map, id);
+                schema.register(map, id, () -> traitHolder(schema));
             }
         }
 
@@ -453,42 +436,21 @@ public class V0 extends AutomaticNamespacedSchema {
                 "exportItems", notifiableItemHandler(schema),
                 "importFluids", notifiableFluidTank(schema),
                 "exportFluids", notifiableFluidTank(schema),
-                "chargerInventory", itemHandler(schema),
-                "circuitInventory", notifiableItemHandler(schema)
+                traitHolder(schema)
         ), tiers);
     }
 
-    protected static void registerForTiers(Schema schema, Map<String, Supplier<TypeTemplate>> map,
-                                           String name, Supplier<TypeTemplate> template, int... tiers) {
-        for (int tier : tiers) {
-            schema.register(map, GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, template);
-        }
-    }
-
-    protected static void registerSteamMachine(Schema schema, Map<String, Supplier<TypeTemplate>> map,
-                                               String name, Supplier<TypeTemplate> template) {
-        schema.register(map, "lp_%s".formatted(name), template);
-        schema.register(map, "hp_%s".formatted(name), template);
-    }
-
-    protected static void registerSimpleSteamMachine(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {
-        registerSteamMachine(schema, map, name, () -> optionalFields(
-                "importItems", notifiableItemHandler(schema),
-                "exportItems", notifiableItemHandler(schema),
-                "steamTank", notifiableFluidTank(schema)
-        ));
-    }
-
-    protected static TypeTemplate itemHandler(Schema schema) {
-        return field("Items", list(References.ITEM_STACK.in(schema)));
-    }
-
-    protected static TypeTemplate notifiableItemHandler(Schema schema) {
-        return field("storage", itemHandler(schema));
-    }
-
-    protected static TypeTemplate notifiableFluidTank(Schema schema) {
-        return field("storages", list(GTReferences.FLUID_STACK.in(schema)));
+    protected static TypeTemplate traitHolder(Schema schema) {
+        return optionalFields(
+                "traitHolder", optionalFields(
+                        // TODO I'm not sure if this is all of the item/fluid fields? - add missing ones if not
+                        "batterySlot", notifiableItemHandler(schema),
+                        or(
+                                optionalFields("circuit", notifiableItemHandler(schema)),
+                                optionalFields("circuitSlot", notifiableItemHandler(schema))
+                        )
+                )
+        );
     }
     // spotless:on
 }
