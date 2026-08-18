@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
+import net.minecraft.util.datafix.fixes.References;
+
 import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Unit;
-import net.minecraft.util.datafix.fixes.References;
 
 import java.util.function.Function;
 

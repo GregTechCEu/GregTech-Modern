@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.core.mixins.datafixer;
 
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
+
+import net.minecraft.util.datafix.DataFixTypes;
+
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.datafixers.DSL;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.util.datafix.DataFixTypes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

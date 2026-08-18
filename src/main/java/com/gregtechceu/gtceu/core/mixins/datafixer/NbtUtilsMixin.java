@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.core.mixins.datafixer;
 
 import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 

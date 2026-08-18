@@ -27,7 +27,9 @@ public class ForgeHooksMixin {
     }
 
     @Definition(id = "tag", local = @Local(type = CompoundTag.class, name = "tag"))
-    @Definition(id = "getCompound", method = "Lnet/minecraft/nbt/CompoundTag;getCompound(Ljava/lang/String;)Lnet/minecraft/nbt/CompoundTag;", remap = true)
+    @Definition(id = "getCompound",
+                method = "Lnet/minecraft/nbt/CompoundTag;getCompound(Ljava/lang/String;)Lnet/minecraft/nbt/CompoundTag;",
+                remap = true)
     @Expression("tag.getCompound('Registries')")
     @ModifyExpressionValue(method = "readAdditionalLevelSaveData", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
     private static CompoundTag gtceu$fixRegistriesTag(CompoundTag regs,

@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.datafixer.fixes;
 
+import net.minecraft.util.datafix.fixes.ItemStackTagFix;
+
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.util.datafix.fixes.ItemStackTagFix;
 
 public abstract class ToolBehaviorFix extends ItemStackTagFix {
 

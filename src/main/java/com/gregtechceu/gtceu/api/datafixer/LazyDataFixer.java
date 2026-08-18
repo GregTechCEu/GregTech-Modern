@@ -8,13 +8,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.gregtechceu.gtceu.api.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
@@ -33,6 +32,7 @@ import java.util.function.Supplier;
  * "https://github.com/embeddedt/ModernFix/blob/c561d818f398f9b9f6b826db34b705a97c187f74/src/main/java/org/embeddedt/modernfix/dfu/LazyDataFixer.java">ModernFix</a>
  */
 public class LazyDataFixer implements DataFixer {
+
     private @Nullable DataFixer backingDataFixer;
     private final Supplier<@Nullable DataFixer> dfuSupplier;
 
@@ -42,7 +42,7 @@ public class LazyDataFixer implements DataFixer {
     }
 
     private DataFixer getDataFixer() {
-        synchronized(this) {
+        synchronized (this) {
             if (this.backingDataFixer == null) {
                 GTCEu.LOGGER.info("Instantiating GTCEu Data Fixers");
                 this.backingDataFixer = this.dfuSupplier.get();

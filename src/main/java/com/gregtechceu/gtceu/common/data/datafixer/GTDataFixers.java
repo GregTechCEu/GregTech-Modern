@@ -48,7 +48,9 @@ import java.util.regex.Pattern;
  * Note how only fields that use other registered (named) types (such as item/fluid stacks) are defined. The same should
  * be done for all types.<br>
  * If the type doesn't depend on any named types, register it with {@link Schema#register} like this:
+ * 
  * <pre>{@code
+ * 
  * public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema) {
  *     Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
  *     // ...
@@ -57,6 +59,7 @@ import java.util.regex.Pattern;
  *     return map;
  * }
  * }</pre>
+ * 
  * We don't use {@link Schema#registerSimple} because we need to register the trait holder type for all machines.
  */
 @SuppressWarnings("SameParameterValue")
@@ -76,7 +79,6 @@ public class GTDataFixers {
 
         DataFixHelper.LOGGER.info("Registering data fixers");
 
-
         return new LazyDataFixer(() -> {
             try {
                 DataFixerBuilder builder = new DataFixerBuilder(GTCEu.GT_DATA_VERSION);
@@ -90,7 +92,8 @@ public class GTDataFixers {
                     return builder.buildOptimized(typesToOptimize, executor);
                 }
             } catch (Exception ex) {
-                DataFixHelper.LOGGER.warn("Failed to initialize! Either someone stopped DFU from initializing, or this Minecraft build is hosed.");
+                DataFixHelper.LOGGER.warn(
+                        "Failed to initialize! Either someone stopped DFU from initializing, or this Minecraft build is hosed.");
                 DataFixHelper.LOGGER.warn("Using no-op implementation.");
                 DataFixHelper.LOGGER.warn("Full error: ", ex);
 
@@ -141,14 +144,14 @@ public class GTDataFixers {
 
         // Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
         // createBlockItemRenameFix(builder, v10, "U238",
-        //         createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_"));
+        // createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_"));
         // createBlockItemRenameFix(builder, v10, "Pu239",
-        //         createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_"));
+        // createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_"));
         // createBlockItemRenameFix(builder, v10, "Red Granite",
-        //         createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
+        // createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
         //
         // createBlockItemRenameFix(builder, v10, "Oil Variants",
-        //         createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
+        // createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
     }
 
     private static void createBlockItemRenameFix(DataFixerBuilder builder, Schema schema, String name,

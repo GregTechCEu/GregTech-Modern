@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.common.datafixer.fixes;
 
+import net.minecraft.core.Direction;
+import net.minecraft.util.datafix.fixes.References;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.OptionalDynamic;
-import net.minecraft.core.Direction;
-import net.minecraft.util.datafix.fixes.References;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +25,8 @@ public class UpwardsFacingPropertyFix extends DataFix {
 
     @Override
     protected TypeRewriteRule makeRule() {
-        return this.fixTypeEverywhereTyped("UpwardsFacingPropertyFix", this.getInputSchema().getType(References.BLOCK_STATE),
+        return this.fixTypeEverywhereTyped("UpwardsFacingPropertyFix",
+                this.getInputSchema().getType(References.BLOCK_STATE),
                 typed -> typed.update(DSL.remainderFinder(), UpwardsFacingPropertyFix::upgradeBlockStateTag));
     }
 

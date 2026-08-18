@@ -18,8 +18,7 @@ public class AutoOutputTraitFix extends DataFix {
             "autoOutputItems", "autoOutputItems",
             "autoOutputFluids", "autoOutputFluids",
             "allowInputFromOutputSideItems", "allowItemInputFromOutputSide",
-            "allowInputFromOutputSideFluids", "allowFluidInputFromOutputSide"
-    );
+            "allowInputFromOutputSideFluids", "allowFluidInputFromOutputSide");
 
     public AutoOutputTraitFix(Schema outputSchema) {
         super(outputSchema, false);
@@ -27,20 +26,21 @@ public class AutoOutputTraitFix extends DataFix {
 
     @Override
     protected TypeRewriteRule makeRule() {
-        return this.fixTypeEverywhereTyped("AutoOutputTraitFix", this.getInputSchema().getType(References.BLOCK_ENTITY), typed -> typed.update(remainderFinder(), dynamic -> {
-            Dynamic<?> traitValue = dynamic.emptyMap();
-            for (var entry : FIELD_RENAMES.entrySet()) {
-                String oldName = entry.getKey();
-                String newName = entry.getValue();
+        return this.fixTypeEverywhereTyped("AutoOutputTraitFix", this.getInputSchema().getType(References.BLOCK_ENTITY),
+                typed -> typed.update(remainderFinder(), dynamic -> {
+                    Dynamic<?> traitValue = dynamic.emptyMap();
+                    for (var entry : FIELD_RENAMES.entrySet()) {
+                        String oldName = entry.getKey();
+                        String newName = entry.getValue();
 
-                var oldField = dynamic.get(oldName).result();
-                if (oldField.isPresent()) {
-                    traitValue = traitValue.set(newName, oldField.get());
-                    dynamic = dynamic.remove(oldName);
-                }
-            }
-            dynamic.set("autoOutput", traitValue);
-            return dynamic;
-        }));
+                        var oldField = dynamic.get(oldName).result();
+                        if (oldField.isPresent()) {
+                            traitValue = traitValue.set(newName, oldField.get());
+                            dynamic = dynamic.remove(oldName);
+                        }
+                    }
+                    dynamic.set("autoOutput", traitValue);
+                    return dynamic;
+                }));
     }
 }

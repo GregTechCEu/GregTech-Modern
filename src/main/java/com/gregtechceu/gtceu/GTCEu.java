@@ -141,7 +141,7 @@ public class GTCEu {
     /**
      * @return if the game is the <strong>PHYSICAL</strong> client, e.g. not a dedicated server.
      * @apiNote Do not use this to check if you're currently on the server thread for side-specific actions!
-     * It does <strong>NOT</strong> work for that. Use {@link #isClientThread()} instead.
+     *          It does <strong>NOT</strong> work for that. Use {@link #isClientThread()} instead.
      * @see #isClientThread()
      */
     public static boolean isClientSide() {
@@ -152,7 +152,7 @@ public class GTCEu {
      * This check isn't the same for client and server!
      *
      * @return if it's safe to access the current instance {@link net.minecraft.world.level.Level Level} on client or if
-     * it's safe to access any level on server.
+     *         it's safe to access any level on server.
      */
     public static boolean canGetServerLevel() {
         if (isClientSide()) {

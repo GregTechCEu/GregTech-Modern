@@ -7,21 +7,22 @@ import com.gregtechceu.gtceu.api.datafixer.schemas.AutomaticNamespacedSchema;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
+
+import net.minecraft.util.datafix.fixes.References;
+import net.minecraftforge.fml.loading.LoadingModList;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.minecraft.util.datafix.fixes.References;
-import net.minecraftforge.fml.loading.LoadingModList;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-
 import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.ALL_TIERS;
 import static com.gregtechceu.gtceu.common.datafixer.schemas.V0.*;
-import static com.gregtechceu.gtceu.api.datafixer.types.ExtraDSL.*;
 import static com.mojang.datafixers.DSL.*;
 
 public class V4 extends AutomaticNamespacedSchema {
