@@ -1,53 +1,19 @@
 {
+    "parent": "gtceu:block/overlay/only/front",
     "elements": [
         {
+            "from": [  0,  0, -0.096 ],
+            "to":   [ 16, 16, -0.096 ],
             "faces": {
-                "north": {
-                    "cullface": "north",
-                    "texture": "#overlay",
-                    "uv": [
-                        0,
-                        0,
-                        16,
-                        16
-                    ]
-                }
-            },
-            "from": [
-                0,
-                0,
-                -0.096
-            ],
-            "to": [
-                16,
-                16,
-                -0.096
-            ]
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
+            }
         },
         {
+            "from": [  0,  0, -0.128 ],
+            "to":   [ 16, 16, -0.128 ],
             "faces": {
-                "north": {
-                    "cullface": "north",
-                    "texture": "#overlay_2",
-                    "uv": [
-                        0,
-                        0,
-                        16,
-                        16
-                    ]
-                }
-            },
-            "from": [
-                0,
-                0,
-                -0.128
-            ],
-            "to": [
-                16,
-                16,
-                -0.128
-            ]
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_2", "cullface": "north" }
+            }
         }
-    ],
-    "parent": "gtceu:block/overlay/only/front"
+    ]
 }
