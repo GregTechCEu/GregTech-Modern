@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -39,8 +41,10 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
 
 import com.mojang.authlib.GameProfile;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -163,9 +167,11 @@ public class TestUtils {
      * Forces a structure check on multiblocks after being placed, to avoid having to wait ticks.
      * Ideally this doesn't need to happen, but it seems not doing this makes the multiblock tests flakey
      */
-    public static void formMultiblock(MultiblockControllerMachine controller) {
-        controller.getPattern().checkPatternAt(controller.getMultiblockState(), false);
-        controller.onStructureFormed();
+    public static void formMultiblock(GameTestHelper helper, MultiblockControllerMachine controller) {
+        if (controller.isFormed()) return;
+        controller.checkAndFormStructure();
+        helper.assertTrue(controller.isFormed(),
+                "Multiblock failed to form: " + controller + " at " + controller.getBlockPos());
     }
 
     /**
@@ -223,6 +229,18 @@ public class TestUtils {
         return type;
     }
 
+    /**
+     * Fetches the most-relevant failure reason from a machine's {@link RecipeLogic},
+     * along with the recipe it was attributed to.
+     */
+    public static String getFailures(RecipeLogic recipeLogic) {
+        var reason = recipeLogic.getBestFailureReason();
+        if (reason == null) return "";
+        var recipe = recipeLogic.getBestFailureRecipe();
+        String id = recipe == null ? "<no recipe>" : recipe.getId().toString();
+        return id + " - " + reason.getString() + "\n";
+    }
+
     public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
                                            Direction direction) {
         return placeCover(helper, machine, stack, direction, false);
@@ -239,8 +257,7 @@ public class TestUtils {
                 }
             }
         }
-        helper.assertTrue(coverDefinition != null, "attempted to place cover with item that is not a cover");
-        assert coverDefinition != null;
+        TestUtils.assertNotNull(helper, coverDefinition, "attempted to place cover with item that is not a cover");
         helper.assertTrue(shouldFail ^ machine.getCoverContainer().placeCoverOnSide(
                 direction, stack, coverDefinition, null), "failed to place cover");
         return machine.getCoverContainer().getCoverAtSide(direction);
@@ -255,6 +272,16 @@ public class TestUtils {
         MultiLineComponent component = new MultiLineComponent(text);
         helper.assertTrue(component.equalsString(s),
                 "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
+    }
+
+    public static void assertEqual(GameTestHelper helper, long a, long b, String message) {
+        helper.assertTrue(a == b, "%s (%d != %d)".formatted(message, a, b));
+    }
+
+    public static void assertEqual(GameTestHelper helper, ItemStack stack1, ItemStack stack2, String message) {
+        helper.assertTrue(
+                isItemStackEqual(stack1, stack2),
+                "%s (%s != %s)".formatted(message, stack1, stack2));
     }
 
     public static void assertEqual(GameTestHelper helper, ItemStack stack1, ItemStack stack2) {
@@ -296,8 +323,21 @@ public class TestUtils {
         helper.runAtTickTime(timeout, helper::succeed);
     }
 
+    public static IItemHandler getItemHandler(GameTestHelper helper, BlockPos pos) {
+        return GTCapabilityHelper.getItemHandler(helper.getLevel(), helper.absolutePos(pos), null);
+    }
+
     public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
+    }
+
+    /**
+     * Use this instead of {@code helper.assertTrue(obj != null, ...)} to stop IntelliJ from complaining
+     * about nullability.
+     */
+    @Contract("_, null, _ -> fail")
+    public static void assertNotNull(GameTestHelper helper, Object object, String failureMessage) {
+        helper.assertTrue(object != null, failureMessage);
     }
 
     public static void assertRedstone(GameTestHelper helper, BlockPos pos, int min, int max) {

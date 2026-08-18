@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.api.drawable.IDrawable;
 import org.jetbrains.annotations.Nullable;
 
 public interface IMonitorComponent {
@@ -13,9 +13,15 @@ public interface IMonitorComponent {
         return false;
     }
 
-    IGuiTexture getComponentIcon();
+    IDrawable getIcon();
 
-    BlockPos getBlockPos();
+    default BlockPos getComponentPos() {
+        if (this instanceof BlockEntity be) {
+            return be.getBlockPos();
+        }
+        throw new UnsupportedOperationException(
+                "IMonitorComponent implementations that are not BlockEntities must override getComponentPos()");
+    }
 
     default @Nullable IItemHandler getDataItems() {
         return null;

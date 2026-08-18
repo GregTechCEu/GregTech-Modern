@@ -1,6 +1,6 @@
 {
-  "ldlib": {
-    "connection": "gtceu:block/casings/slicing_blades/top_ctm"
+  "gtceu": {
+    "connection_texture": "gtceu:block/casings/slicing_blades/top_ctm"
   },
   "animation": {
     "interpolate": false,

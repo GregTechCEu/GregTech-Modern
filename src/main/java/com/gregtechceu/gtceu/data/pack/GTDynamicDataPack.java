@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
@@ -32,12 +34,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class GTDynamicDataPack implements PackResources {
+
+    // change the path to `recipe` on 1.21!!
+    public static final FileToIdConverter RECIPE_ID_CONVERTER = FileToIdConverter.json("recipes");
+    // change the path to `advancement` on 1.21!!
+    public static final FileToIdConverter ADVANCEMENT_ID_CONVERTER = FileToIdConverter.json("advancements");
+    public static final Function<String, FileToIdConverter> TAG_ID_CONVERTER = Util
+            .memoize(registryName -> FileToIdConverter.json("tags/" + registryName));
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
     protected static final GTDynamicPackContents CONTENTS = new GTDynamicPackContents();
@@ -186,16 +196,14 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static ResourceLocation getRecipeLocation(ResourceLocation recipeId) {
-        return new ResourceLocation(recipeId.getNamespace(), String.join("", "recipes/", recipeId.getPath(), ".json"));
+        return RECIPE_ID_CONVERTER.idToFile(recipeId);
     }
 
     public static ResourceLocation getAdvancementLocation(ResourceLocation advancementId) {
-        return new ResourceLocation(advancementId.getNamespace(),
-                String.join("", "advancements/", advancementId.getPath(), ".json"));
+        return ADVANCEMENT_ID_CONVERTER.idToFile(advancementId);
     }
 
     public static ResourceLocation getTagLocation(String identifier, ResourceLocation tagId) {
-        return new ResourceLocation(tagId.getNamespace(),
-                String.join("", "tags/", identifier, "/", tagId.getPath(), ".json"));
+        return TAG_ID_CONVERTER.apply(identifier).idToFile(tagId);
     }
 }

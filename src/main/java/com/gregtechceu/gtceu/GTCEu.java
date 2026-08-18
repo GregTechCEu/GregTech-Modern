@@ -28,7 +28,7 @@ import java.nio.file.Path;
 public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
-    private static final ResourceLocation TEMPLATE_LOCATION = new ResourceLocation(MOD_ID, "");
+    private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -67,7 +67,7 @@ public class GTCEu {
 
         int i = path.indexOf(':');
         if (i > 0) {
-            return new ResourceLocation(path);
+            return ResourceLocation.parse(path);
         } else if (i == 0) {
             path = path.substring(i + 1);
         }
@@ -124,7 +124,9 @@ public class GTCEu {
      * @return if the mod whose id is {@code modId} is loaded or not
      */
     public static boolean isModLoaded(String modId) {
-        return ModList.get().isLoaded(modId);
+        ModList modList = ModList.get();
+        if (modList != null) return modList.isLoaded(modId);
+        else return FMLLoader.getLoadingModList().getModFileById(modId) != null;
     }
 
     /**
@@ -191,9 +193,8 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
         }
 
-        public static boolean isSodiumRubidiumEmbeddiumLoaded() {
-            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_RUBIDIUM) ||
-                    isModLoaded(GTValues.MODID_EMBEDDIUM);
+        public static boolean isSodiumEmbeddiumLoaded() {
+            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_EMBEDDIUM);
         }
 
         public static boolean isAE2Loaded() {
@@ -204,16 +205,8 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_CURIOS);
         }
 
-        public static boolean isShimmerLoaded() {
-            return isModLoaded(GTValues.MODID_SHIMMER);
-        }
-
         public static boolean isModernFixLoaded() {
             return isModLoaded(GTValues.MODID_MODERNFIX);
-        }
-
-        public static boolean isJAVDLoaded() {
-            return isModLoaded(GTValues.MODID_JAVD);
         }
 
         public static boolean isFTBTeamsLoaded() {

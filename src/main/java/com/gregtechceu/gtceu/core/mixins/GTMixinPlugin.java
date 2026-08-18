@@ -1,19 +1,72 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.LoadingModList;
+import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
+import com.gregtechceu.gtceu.core.config.Option;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.UnknownNullability;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.File;
+import java.util.*;
+
+import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.OPTIFINE_PRESENT;
 
 public class GTMixinPlugin implements IMixinConfigPlugin {
+
+    public static final Logger LOGGER = LogManager.getLogger("GregTechCEu");
+
+    public static final String MIXIN_PACKAGE_ROOT = "com.gregtechceu.gtceu.core.mixins.";
+
+    public static @UnknownNullability GTEarlyConfig CONFIG = null;
+
+    public GTMixinPlugin() {
+        if (CONFIG != null) {
+            return;
+        }
+
+        try {
+            CONFIG = GTEarlyConfig.load(new File("./config/gtceu-early.properties"));
+        } catch (Exception e) {
+            throw new RuntimeException("Could not load mixin configuration file for GTCEu", e);
+        }
+
+        if (OPTIFINE_PRESENT) {
+            LOGGER.fatal(
+                    "OptiFine detected. Use of GTCEu with OptiFine is not supported due to its breakage of Forge features.");
+        }
+    }
+
+    @Override
+    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (!mixinClassName.startsWith(MIXIN_PACKAGE_ROOT)) {
+            LOGGER.error("Expected mixin '{}' to start with package root '{}', treating as foreign and disabling!",
+                    mixinClassName, MIXIN_PACKAGE_ROOT);
+
+            return false;
+        }
+
+        String mixin = mixinClassName.substring(MIXIN_PACKAGE_ROOT.length());
+
+        if (!isOptionEnabled(mixin)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isOptionEnabled(String mixin) {
+        Option option = CONFIG.getEffectiveOptionForMixin(mixin);
+        if (option == null) {
+            // if the mixin doesn't have an option, it's always enabled
+            return true;
+        }
+
+        return option.isEnabled();
+    }
 
     @Override
     public void onLoad(String mixinPackage) {}
@@ -21,51 +74,6 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
     @Override
     public String getRefMapperConfig() {
         return null;
-    }
-
-    private static final String MIXIN_PACKAGE = "com.gregtechceu.gtceu.core.mixins.";
-    private static final Map<String, String> MOD_COMPAT_MIXINS = new HashMap<>();
-
-    private static final String DEV_PACKAGE = "dev.";
-    private static final String DATAGEN_PACKAGE = "datagen.";
-
-    static {
-        MOD_COMPAT_MIXINS.put("roughlyenoughitems", "rei.");
-        addModCompatMixin("emi");
-        addModCompatMixin("jei");
-        addModCompatMixin("top");
-        addModCompatMixin("ftbchunks");
-        addModCompatMixin("xaerominimap");
-        addModCompatMixin("xaeroworldmap");
-    }
-
-    @Override
-    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (!mixinClassName.startsWith(MIXIN_PACKAGE)) {
-            // skip checking mixins that aren't in our package
-            // this should never happen, but better safe than sorry
-            return true;
-        }
-        mixinClassName = mixinClassName.substring(MIXIN_PACKAGE.length());
-
-        if (mixinClassName.startsWith(DEV_PACKAGE)) {
-            if (FMLLoader.isProduction()) {
-                // don't load dev-only mixins in prod
-                return false;
-            }
-            mixinClassName = mixinClassName.substring(DEV_PACKAGE.length());
-            if (mixinClassName.startsWith(DATAGEN_PACKAGE)) {
-                // only load datagen mixins in datagen
-                return FMLLoader.getLaunchHandler().isData();
-            }
-            return true;
-        }
-        for (var compatMod : MOD_COMPAT_MIXINS.entrySet()) {
-            if (mixinClassName.startsWith(compatMod.getValue())) {
-                return isModLoaded(compatMod.getKey());
-            }
-        }
-        return true;
     }
 
     @Override
@@ -81,15 +89,4 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
-
-    private static void addModCompatMixin(String modId) {
-        MOD_COMPAT_MIXINS.put(modId, modId + ".");
-    }
-
-    private static boolean isModLoaded(String modId) {
-        if (ModList.get() == null) {
-            return LoadingModList.get().getModFileById(modId) != null;
-        }
-        return ModList.get().isLoaded(modId);
-    }
 }

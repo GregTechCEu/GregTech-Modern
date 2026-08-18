@@ -6,36 +6,26 @@ import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualRedstone;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.Direction;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
+import java.util.Objects;
 
 public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedstone> {
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    @SaveField
-    @SyncToClient
-    private VirtualRedstone storage;
-    @SaveField
-    @SyncToClient
-    private UUID uuid;
+    private @Nullable VirtualRedstone storage = new VirtualRedstone();
 
     public EnderRedstoneLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        if (!isRemote()) {
-            uuid = UUID.randomUUID();
-            setVirtualEntry();
-        } else uuid = null;
     }
 
     @Override
@@ -44,20 +34,15 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     }
 
     @Override
-    protected String identifier() {
-        return "ERLink#";
-    }
-
-    @Override
-    protected VirtualRedstone getEntry() {
+    protected @Nullable VirtualRedstone getEntry() {
         return storage;
     }
 
     @Override
     protected void setEntry(VirtualEntry entry) {
-        if (storage != null) storage.removeMember(uuid);
+        if (storage != null) storage.removeMember(this);
         storage = (VirtualRedstone) entry;
-        storage.addMember(uuid);
+        storage.addMember(this);
         syncDataHolder.markClientSyncFieldDirty("storage");
     }
 
@@ -69,19 +54,9 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
     @Override
     protected void transfer() {
         switch (io) {
-            case IN -> storage.setSignal(uuid, getSignalInput());
-            case OUT -> setRedstoneSignalOutput(storage.getSignal());
+            case IN -> Objects.requireNonNull(storage).setSignal(this, getSignalInput());
+            case OUT -> setRedstoneSignalOutput(Objects.requireNonNull(storage).getSignal());
         }
-    }
-
-    @Override
-    protected Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height, boolean canClick) {
-        return new WidgetGroup(x, y, width, height);
-    }
-
-    @Override
-    protected String getUITitle() {
-        return "cover.ender_redstone_link.title";
     }
 
     @Override
@@ -89,9 +64,13 @@ public class EnderRedstoneLinkCover extends AbstractEnderLinkCover<VirtualRedsto
         return true;
     }
 
+    protected IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h, int index) {
+        return new ParentWidget<>().size(w, h);
+    }
+
     @Override
     public void onRemoved() {
-        storage.removeMember(uuid);
+        if (storage != null) storage.removeMember(this);
         super.onRemoved();
     }
 

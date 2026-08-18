@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -89,7 +89,7 @@ public class ParallelLogic {
         if (minimum == Integer.MAX_VALUE) {
             Component reason = Component.translatable("gtceu.recipe_logic.no_capabilities")
                     .append(Component.literal(": "))
-                    .append(Component.translatable(IO.IN.tooltip));
+                    .append(Component.translatable(IO.IN.getTooltip()));
             RecipeLogic.putFailureReason(holder, recipe, reason);
             return 0;
         }

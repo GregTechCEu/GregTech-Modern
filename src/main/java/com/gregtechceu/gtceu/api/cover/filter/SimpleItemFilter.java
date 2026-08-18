@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -14,16 +12,27 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.PhantomItemSlotSyncHandler;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.PhantomItemSlot;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleItemFilter implements ItemFilter {
+public class SimpleItemFilter extends Filter<ItemStack> {
 
     @Getter
     protected boolean isBlackList;
@@ -32,48 +41,49 @@ public class SimpleItemFilter implements ItemFilter {
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
 
-    protected Consumer<ItemFilter> itemWriter = filter -> {};
-    protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
-
     @Getter
     protected int maxStackSize;
 
-    protected SimpleItemFilter() {
+    public SimpleItemFilter(ItemStack stack) {
+        super(stack);
+
+        var tag = stack.getOrCreateTag();
+
         Arrays.fill(matches, ItemStack.EMPTY);
         maxStackSize = 1;
-    }
 
-    public static SimpleItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
-    }
+        if (tag.isEmpty()) return;
 
-    private static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
-        var handler = new SimpleItemFilter();
-        handler.itemWriter = itemWriter;
-        handler.isBlackList = tag.getBoolean("isBlackList");
-        handler.ignoreNbt = tag.getBoolean("matchNbt");
+        isBlackList = tag.getBoolean("isBlackList");
+        ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
-            handler.matches[i] = ItemStack.of((CompoundTag) list.get(i));
+            matches[i] = ItemStack.of((CompoundTag) list.get(i));
         }
-        return handler;
+    }
+
+    public static SimpleItemFilter forItems(boolean ignoreNbt, ItemStack... items) {
+        SimpleItemFilter filter = new SimpleItemFilter(GTItems.ITEM_FILTER.asStack());
+        filter.setIgnoreNbt(ignoreNbt);
+        filter.setBlackList(false);
+        int i = 0;
+        for (ItemStack item : items) {
+            filter.matches[i] = item.copy();
+            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(filter.matches[i]);
+            if (spoilable != null) spoilable.freezeSpoiling();
+            i++;
+        }
+        filter.updateAndSaveFilter();
+        return filter;
     }
 
     @Override
-    public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
+    public boolean supportsAmounts() {
+        return !isBlackList();
     }
 
-    @Override
-    public boolean isBlank() {
-        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty);
-    }
-
-    public CompoundTag saveFilter() {
-        if (isBlank()) {
+    public @Nullable CompoundTag writeFilterNBT() {
+        if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty)) {
             return null;
         }
         var tag = new CompoundTag();
@@ -89,59 +99,94 @@ public class SimpleItemFilter implements ItemFilter {
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final int index = i * 3 + j;
+    @Override
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
+        Grid filterGrid = new Grid()
+                .coverChildren()
+                .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
+                        .size(16)
+                        .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
+                                .ignoreMaxStackSize(true).accessibility(true, false))));
 
-                var handler = new CustomItemStackHandler(matches[index]);
+        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList).allowC2S();
+        syncManager.syncValue("blacklist", blacklist);
 
-                var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt).allowC2S();
+        syncManager.syncValue("ignoreNBT", ignoreNBT);
 
-                    @Override
-                    public void updateScreen() {
-                        super.updateScreen();
-                        setMaxStackSize(maxStackSize);
-                    }
+        Flow filterConfigButtons = Flow.col()
+                .coverChildren()
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).syncHandler("blacklist"))
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
+        return Flow.row()
+                .coverChildrenHeight()
+                .child(filterGrid.horizontalCenter())
+                .child(filterConfigButtons.marginLeft(118));
+    }
 
-                    @Override
-                    public void detectAndSendChanges() {
-                        super.detectAndSendChanges();
-                        setMaxStackSize(maxStackSize);
-                    }
-                };
+    public static class FilterItemStackHandler extends CustomItemStackHandler {
 
-                slot.setChangeListener(() -> {
-                    matches[index] = handler.getStackInSlot(0);
-                    onUpdated.accept(this);
-                }).setBackground(GuiTextures.SLOT);
+        private final ItemStack[] matches;
+        private final SimpleItemFilter filter;
 
-                group.addWidget(slot);
-            }
+        public FilterItemStackHandler(SimpleItemFilter filter) {
+            this(filter.matches, filter);
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
-                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
-                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
-        return group;
+
+        public FilterItemStackHandler(ItemStack[] matches, SimpleItemFilter simpleItemFilter) {
+            super(matches.length);
+            this.matches = matches;
+            this.filter = simpleItemFilter;
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            return matches[slot];
+        }
+
+        @Override
+        protected int getStackLimit(int slot, ItemStack stack) {
+            return 1;
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (amount >= matches[slot].getCount()) {
+                matches[slot] = ItemStack.EMPTY;
+            }
+            return matches[slot];
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        public void setStackInSlot(int slot, ItemStack stack) {
+            super.setStackInSlot(slot, stack);
+            matches[slot] = stack.copyWithCount(1);
+            filter.updateAndSaveFilter();
+        }
     }
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return testItemCount(itemStack) > 0;
+        return testAmount(itemStack) > 0;
     }
 
     @Override
-    public int testItemCount(ItemStack itemStack) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int testAmount(ItemStack itemStack) {
         int totalItemCount = getTotalConfiguredItemCount(itemStack);
 
         if (isBlackList) {
@@ -158,7 +203,7 @@ public class SimpleItemFilter implements ItemFilter {
             if (ignoreNbt && ItemStack.isSameItem(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
-            if (!ignoreNbt && GTUtil.isSameItemSameTags(candidate, itemStack)) {
+            if (!ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             }
         }

@@ -52,8 +52,8 @@ public class GTRegistryArgument<K, V> implements ArgumentType<V> {
     public V parse(StringReader reader) throws CommandSyntaxException {
         String id = readId(reader);
         if (ResourceLocation.class.isAssignableFrom(keyClass)) {
-            K loc = (K) new ResourceLocation(id);
-            if (!registry.containKey(loc)) {
+            K loc = (K) ResourceLocation.parse(id);
+            if (!registry.containsKey(loc)) {
                 throw new SimpleCommandExceptionType(new LiteralMessage("Failed to find object" + id + " in registry"))
                         .createWithContext(reader);
             }
@@ -61,7 +61,7 @@ public class GTRegistryArgument<K, V> implements ArgumentType<V> {
             return registry.get(loc);
         } else if (String.class.isAssignableFrom(keyClass)) {
             K loc = (K) id;
-            if (!registry.containKey(loc)) {
+            if (!registry.containsKey(loc)) {
                 throw new SimpleCommandExceptionType(Component.literal("Failed to find object " + id + " in registry"))
                         .createWithContext(reader);
             }

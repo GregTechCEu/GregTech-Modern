@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
@@ -31,7 +30,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
 
-    private final MachineBuilder<?, ?>[] builders = new MachineBuilder[TIER_COUNT];
+    private final MachineBuilder<?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -48,8 +47,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     @Setter
     public transient boolean isGenerator = false;
 
-    public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
-
     public KJSTieredMachineBuilder(ResourceLocation id) {
         super(id);
         this.addDefaultTooltips = false;
@@ -57,11 +54,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
-                                   BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI,
                                    boolean isGenerator) {
         super(id);
         this.machine = machine;
-        this.editableUI = editableUI;
         this.isGenerator = isGenerator;
     }
 
@@ -69,7 +64,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
         super.generateAssetJsons(generator);
         for (int tier : this.tiers) {
-            MachineBuilder<?, ?> builder = this.builders[tier];
+            MachineBuilder<?, ?, ?> builder = this.builders[tier];
             if (builder != null) {
                 builder.generateAssetJsons(generator);
             }
@@ -77,10 +72,10 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     }
 
     @Override
-    public void generateLang(@NotNull LangEventJS lang) {
+    public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         for (int tier : this.tiers) {
-            MachineBuilder<?, ?> builder = this.builders[tier];
+            MachineBuilder<?, ?, ?> builder = this.builders[tier];
             if (builder != null) {
                 builder.generateLang(lang);
             }
@@ -98,7 +93,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
         MachineDefinition[] definitions = new MachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MachineBuilder<?, ?> builder = GTRegistration.REGISTRATE.machine(
+            MachineBuilder<?, ?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace()).machine(
                     String.format("%s_%s", tierName, this.id.getPath()),
                     holder -> machine.create(holder, tier, tankScalingFunction));
 
@@ -111,14 +106,14 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
 
             if (builder.recipeTypes().length > 0) {
                 GTRecipeType recipeType = builder.recipeTypes()[0];
-                if (this.editableUI != null && builder.editableUI() == null) {
-                    builder.editableUI(this.editableUI.apply(this.id, recipeType));
-                }
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
+            }
+            if (builder.ui() == null) {
+                builder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
             }
 
             this.builders[tier] = builder;
@@ -142,6 +137,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?> builder);
+        void apply(int tier, MachineBuilder<?, ?, ?> builder);
     }
 }

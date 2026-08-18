@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;
@@ -36,7 +38,7 @@ public class GTValues {
     public static final int L = 144;
     public static final RandomSource RNG = RandomSource.createThreadSafe();
 
-    // shortcut for various lengths of time in ticks
+    // shortcut for various lengths of time in ticks (with the default tickrate of 20)
     public static final long SECONDS = 20;
     public static final long MINUTES = 60 * SECONDS;
     public static final long HOURS = 60 * MINUTES;
@@ -44,12 +46,6 @@ public class GTValues {
     public static final long WEEKS = 7 * DAYS;
     public static final long MONTHS = 30 * DAYS;
     public static final long YEARS = 365 * DAYS;
-
-    /**
-     * The Item WildCard Tag. Even shorter than the "-1" of the past
-     */
-
-    // public static final short W = OreDictionary.WILDCARD_VALUE;
 
     /** Current time on the Client. Will always be zero on the server. */
     public static long CLIENT_TIME = 0;
@@ -121,18 +117,16 @@ public class GTValues {
             MODID_IRIS = "iris",
             MODID_OCULUS = "oculus",
             MODID_SODIUM = "sodium",
-            MODID_RUBIDIUM = "rubidium",
             MODID_EMBEDDIUM = "embeddium",
+            MODID_OPTIFINE = "optifine",
             MODID_CREATE = "create",
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
-            MODID_SHIMMER = "shimmer",
             MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
             MODID_XAEROS_WORLDMAP = "xaeroworldmap",
             MODID_FTB_CHUNKS = "ftbchunks",
-            MODID_JAVD = "javd",
             MODID_FTB_TEAMS = "ftbteams",
             MODID_ARGONAUTS = "argonauts",
             MODID_HERACLES = "heracles",
@@ -272,6 +266,7 @@ public class GTValues {
             0x7EC3C4, 0x7EB07E, 0xBF74C0, 0x0B5CFE, 0x914E91, 0x488748, 0x8C0000, 0x2828F5 };
 
     // Main colour for each tier
+    @SuppressWarnings("DataFlowIssue")
     public static final int[] VCM = new int[] {
             DARK_GRAY.getColor(),
             GRAY.getColor(),
@@ -308,6 +303,7 @@ public class GTValues {
     public static boolean HT = false;
 
     public static BooleanSupplier FOOLS = () -> {
+        if (ConfigHolder.INSTANCE != null && ConfigHolder.INSTANCE.client.aprilFoolsMode) return true;
         var now = LocalDate.now();
         return now.getMonth() == Month.APRIL && now.getDayOfMonth() == 1;
     };

@@ -1,8 +1,6 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/lamps/blue_on_ctm"
-    },
-    "shimmer": {
+    "gtceu": {
+        "connection_texture": "gtceu:block/lamps/blue_on_ctm",
         "bloom": false
     }
 }

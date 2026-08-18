@@ -3,21 +3,26 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
+import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -28,7 +33,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -39,8 +43,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
@@ -49,16 +55,28 @@ import net.minecraftforge.fluids.FluidType;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
+import dev.emi.emi.api.EmiApi;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.runtime.IRecipesGui;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
@@ -66,6 +84,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final Direction[] HORIZONTALS = { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
     public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
     @SuppressWarnings("UnstableApiUsage")
@@ -190,7 +209,7 @@ public class GTUtil {
      * @return Index of the nearest value lesser or equal than {@code value},
      *         or {@code -1} if there's no entry matching the condition
      */
-    public static int nearestLesserOrEqual(@NotNull long[] array, long value) {
+    public static int nearestLesserOrEqual(long @NotNull [] array, long value) {
         int low = 0, high = array.length - 1;
         while (true) {
             int median = (low + high) / 2;
@@ -210,7 +229,7 @@ public class GTUtil {
      * @return Index of the nearest value lesser than {@code value},
      *         or {@code -1} if there's no entry matching the condition
      */
-    public static int nearestLesser(@NotNull long[] array, long value) {
+    public static int nearestLesser(long @NotNull [] array, long value) {
         int low = 0, high = array.length - 1;
         while (true) {
             int median = (low + high) / 2;
@@ -489,19 +508,6 @@ public class GTUtil {
         return opacity << 24 | colorValue;
     }
 
-    /**
-     * @param material the material to use
-     * @return the correct "molten" fluid for a material
-     */
-    @Nullable
-    public static Fluid getMoltenFluid(@NotNull Material material) {
-        if (material.hasProperty(PropertyKey.ALLOY_BLAST))
-            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
-        if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
-            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
-        return null;
-    }
-
     public static int getFluidColor(FluidStack fluid) {
         return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
     }
@@ -511,22 +517,23 @@ public class GTUtil {
             return false;
         }
 
-        Biome biome = world.getBiome(blockPos.above()).value();
+        Holder<Biome> biome = world.getBiome(blockPos.above());
         if (world.isRaining()) {
-            if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
+            if (biome.value().warmEnoughToRain(blockPos.above()) || biome.value().coldEnoughToSnow(blockPos.above())) {
                 return false;
             }
         }
 
-        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
+        if (biome.is(BiomeTags.IS_END)) {
             return false;
         }
 
-        ResourceLocation javdVoidBiome = new ResourceLocation("javd", "void");
-        if (GTCEu.Mods.isJAVDLoaded() &&
-                world.registryAccess().registryOrThrow(Registries.BIOME).getKey(biome).equals(javdVoidBiome)) {
-            return !world.isDay();
-        } else return world.isDay();
+        // skip the fixed time check Level.isDay() does
+
+        // skyDarken is the amount of light subtracted from the stored skylight value in
+        // `Level.getMaxLocalRawBrightness(pos)` depending on the time of day.
+        // this here is the same code Level.isDay() uses to determine whether it's day or not.
+        return world.getSkyDarken() < 4;
     }
 
     /**
@@ -594,7 +601,7 @@ public class GTUtil {
 
     public static ItemStack loadItemStack(CompoundTag compoundTag) {
         try {
-            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(compoundTag.getString("id")));
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(compoundTag.getString("id")));
             int count = compoundTag.getInt("Count");
             ItemStack stack = new ItemStack(item, count);
             if (compoundTag.contains("tag", Tag.TAG_COMPOUND)) {
@@ -614,19 +621,19 @@ public class GTUtil {
         }
     }
 
-    public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
+    public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
-            case 0 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
+            case 0 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WRENCH),
                     Component.translatable("gtceu.top.maintenance.wrench"));
-            case 1 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
+            case 1 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
                     Component.translatable("gtceu.top.maintenance.screwdriver"));
-            case 2 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
+            case 2 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
                     Component.translatable("gtceu.top.maintenance.soft_mallet"));
-            case 3 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
+            case 3 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
                     Component.translatable("gtceu.top.maintenance.hard_hammer"));
-            case 4 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
+            case 4 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
                     Component.translatable("gtceu.top.maintenance.wire_cutter"));
-            default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
+            default -> Pair.of(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
                     Component.translatable("gtceu.top.maintenance.crowbar"));
         };
     }
@@ -662,6 +669,15 @@ public class GTUtil {
         return new ArrayList<>(List.of(obj));
     }
 
+    public static Direction cross(Direction a, Direction b) {
+        if (a.getAxis() == b.getAxis()) return null;
+
+        return Direction.getNearest(
+                a.getStepY() * b.getStepZ() - a.getStepZ() * b.getStepY(),
+                a.getStepZ() * b.getStepX() - a.getStepX() * b.getStepZ(),
+                a.getStepX() * b.getStepY() - a.getStepY() * b.getStepX());
+    }
+
     public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
         level.removeBlock(pos, false);
         level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
@@ -682,6 +698,125 @@ public class GTUtil {
                     level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
                 }
             }
+        }
+    }
+
+    public static AABB rotateAABB(AABB AABB, Direction facing) {
+        switch (facing) {
+            case SOUTH -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), 180);
+            }
+            case EAST -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), -90);
+            }
+            case WEST -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), 90);
+            }
+            case UP -> {
+                return rotateAABB(AABB, new Vector3f(1, 0, 0), 90);
+            }
+            case DOWN -> {
+                return rotateAABB(AABB, new Vector3f(1, 0, 0), -90);
+            }
+        }
+        return AABB;
+    }
+
+    public static AABB rotateAABB(AABB AABB, Vector3f axis, double degree) {
+        Vector3f min = new Vector3f((float) AABB.minX, (float) AABB.minY, (float) AABB.minZ).sub(0.5f, 0.5f, 0.5f);
+        Vector3f max = new Vector3f((float) AABB.minX, (float) AABB.minY, (float) AABB.minZ).sub(0.5f, 0.5f, 0.5f);
+        float radians = (float) Math.toRadians(degree);
+        min.rotateAxis(radians, axis.x, axis.y, axis.z);
+        max.rotateAxis(radians, axis.x, axis.y, axis.z);
+        min.add(0.5f, 0.5f, 0.5f);
+        max.add(0.5f, 0.5f, 0.5f);
+        return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
+    }
+
+    public static VoxelShape rotateVoxelShape(VoxelShape shape, Vector3f axis, double degree) {
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, axis, degree)))
+                .reduce(Shapes.empty(), Shapes::or);
+    }
+
+    public static VoxelShape rotateVoxelShape(VoxelShape shape, Direction dir) {
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, dir))).reduce(Shapes.empty(),
+                Shapes::or);
+    }
+
+    public static boolean resourceExists(@NotNull ResourceLocation rs) {
+        if (GTCEu.isClientSide()) {
+            return Minecraft.getInstance().getResourceManager().getResource(rs).isPresent();
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean textureResourceExists(@NotNull ResourceLocation location) {
+        return resourceExists(GTDynamicResourcePack.TEXTURE_ID_CONVERTER.idToFile(location));
+    }
+
+    public static boolean modelResourceExists(@NotNull ResourceLocation location) {
+        return resourceExists(GTDynamicResourcePack.MODEL_ID_CONVERTER.idToFile(location));
+    }
+
+    public static void openRecipeViewerCategory(GTRecipeCategory category) {
+        if (GTCEu.Mods.isEMILoaded()) {
+            EmiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isJEILoaded()) {
+            JeiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isREILoaded()) {
+            ReiCallWrapper.openRecipeCategory(category);
+        }
+    }
+
+    private static class EmiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            List<EmiRecipeCategory> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeEMICategory::machineCategory)
+                    .toList();
+            Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
+            for (EmiRecipeCategory cat : categories) {
+                recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
+            }
+            EmiApiAccessor.gtceu$setPages(recipes, EmiStack.EMPTY);
+
+            // switch to the requested category if possible
+            if (Minecraft.getInstance().screen instanceof RecipeScreen emiRecipeScreen) {
+                emiRecipeScreen.focusCategory(GTRecipeEMICategory.machineCategory(category));
+            }
+        }
+    }
+
+    private static class JeiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            List<RecipeType<?>> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeJEICategory::machineType)
+                    .collect(Collectors.toList());
+            IRecipesGui recipesGui = GTJEIPlugin.getRuntime().getRecipesGui();
+            recipesGui.showTypes(categories);
+
+            // switch to the requested category if possible
+            if (recipesGui instanceof RecipesGuiAccessor accessor) {
+                IRecipeCategory<?> specificCategory = GTJEIPlugin.getRuntime().getRecipeManager()
+                        .getRecipeCategory(GTRecipeJEICategory.machineType(category));
+                accessor.gtceu$getLogic().setRecipeCategory(specificCategory);
+            }
+        }
+    }
+
+    private static class ReiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            List<CategoryIdentifier<?>> categories = category.getRecipeType().getCategories().stream()
+                    .map(GTRecipeREICategory::machineCategory)
+                    .collect(Collectors.toList());
+            ViewSearchBuilder.builder()
+                    .addCategories(categories)
+                    // switch to the requested category if possible
+                    .setPreferredOpenedCategory(GTRecipeREICategory.machineCategory(category))
+                    .open();
         }
     }
 }

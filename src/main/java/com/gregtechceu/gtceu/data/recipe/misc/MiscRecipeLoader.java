@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -13,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -71,11 +71,11 @@ public class MiscRecipeLoader {
         SIFTER_RECIPES.recipeBuilder("gravel_sifting").duration(100).EUt(16)
                 .inputItems(new ItemStack(Blocks.GRAVEL))
                 .outputItems(gem, Flint)
-                .chancedOutput(gem, Flint, 9000, 0)
-                .chancedOutput(gem, Flint, 8000, 0)
-                .chancedOutput(gem, Flint, 6000, 0)
-                .chancedOutput(gem, Flint, "1/3", 0)
-                .chancedOutput(gem, Flint, 2500, 0)
+                .chancedOutput(gem, Flint, 9000)
+                .chancedOutput(gem, Flint, 8000)
+                .chancedOutput(gem, Flint, 6000)
+                .chancedOutput(gem, Flint, "1/3")
+                .chancedOutput(gem, Flint, 2500)
                 .save(provider);
 
         PACKER_RECIPES.recipeBuilder("matchbox")
@@ -410,9 +410,10 @@ public class MiscRecipeLoader {
         final int dyeAmount = 288;
 
         // skip white lens
-        for (int i = 1; i < CHEMICAL_DYES.length; i++) {
-            builder.copy(CHEMICAL_DYES[i].getName() + "_lens").inputFluids(CHEMICAL_DYES[i].getFluid(dyeAmount))
-                    .outputItems(GLASS_LENSES.get(Color.VALUES[i]))
+        for (DyeColor color : DyeColor.values()) {
+            if (color == DyeColor.WHITE) continue;
+            builder.copy(color.getName() + "_lens").inputFluids(DYE_MATERIALS.get(color).getFluid(dyeAmount))
+                    .outputItems(GLASS_LENSES.get(color))
                     .save(provider);
         }
 

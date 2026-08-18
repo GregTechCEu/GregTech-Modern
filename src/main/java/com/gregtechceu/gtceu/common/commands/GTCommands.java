@@ -8,10 +8,11 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SPacketStartProspectionShare;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
@@ -72,12 +73,6 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .then(literal("ui_editor")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
-                                .executes(context -> {
-                                    GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
-                                    return 1;
-                                }))
                         .then(literal("dump_data")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_OWNERS))
                                 .then(literal("bedrock_fluid_veins")
@@ -162,7 +157,18 @@ public class GTCommands {
                                                 .executes(ctx -> {
                                                     ServerPlayer player = ctx.getSource().getPlayerOrException();
                                                     return setActiveCape(ctx.getSource(), player, null);
-                                                })))));
+                                                }))))
+                        .then(literal("share_prospection_data")
+                                .then(argument("player", EntityArgument.player())
+                                        .executes(ctx -> {
+                                            // resolve both players server-side (uses the server player list),
+                                            // then ask the sender's client to read its cache and send the data
+                                            ServerPlayer sender = ctx.getSource().getPlayerOrException();
+                                            ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
+                                            GTNetwork.sendToPlayer(sender,
+                                                    new SPacketStartProspectionShare(receiver.getUUID()));
+                                            return 1;
+                                        }))));
     }
     // spotless:on
 

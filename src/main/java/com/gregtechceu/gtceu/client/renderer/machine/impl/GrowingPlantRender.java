@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.machine.impl;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -92,7 +92,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
     @Override
     public AABB getRenderBoundingBox(IRecipeLogicMachine machine) {
-        final BlockPos pos = machine.self().getBlockPos();
+        final BlockPos pos = machine.getBlockPos();
 
         List<BlockPos> positions = new ArrayList<>();
         Collections.addAll(positions, pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
@@ -112,7 +112,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
         final RecipeLogic recipeLogic = rlm.getRecipeLogic();
 
         Optional<Block> currentBlock = this.growingBlock
-                .or(() -> Optional.ofNullable(recipeLogic.getLastRecipe()).flatMap(this::findGrowing));
+                .or(() -> Optional.ofNullable(recipeLogic.getLastUnrolledRecipe()).flatMap(this::findGrowing));
         if (currentBlock.isEmpty()) return;
         Block growing = currentBlock.get();
         BlockState state = growing.defaultBlockState();
@@ -206,7 +206,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
                 allItemContents.addAll(recipe.getOutputContents(ItemRecipeCapability.CAP));
                 allItemContents.addAll(recipe.getTickOutputContents(ItemRecipeCapability.CAP));
                 return allItemContents.stream()
-                        .map(Content::getContent).map(ItemRecipeCapability.CAP::of)
+                        .map(Content::content).map(ItemRecipeCapability.CAP::of)
                         .map(Ingredient::getItems).flatMap(Arrays::stream)
                         .map(ItemStack::getItem)
                         .filter(BlockItem.class::isInstance)

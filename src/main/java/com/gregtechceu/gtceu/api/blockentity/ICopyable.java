@@ -10,9 +10,7 @@ import java.util.List;
 public interface ICopyable {
 
     /// Saves the current config into a CompoundTag.
-    default CompoundTag copyConfig(CompoundTag tag) {
-        return tag;
-    }
+    default void copyConfig(CompoundTag tag) {}
 
     /// Loads a saved config from a CompoundTag and applies it to an existing object.
     default void pasteConfig(ServerPlayer player, CompoundTag tag) {}

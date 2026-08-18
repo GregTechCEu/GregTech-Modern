@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.trait.hpca;
 
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -14,8 +13,6 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 @Getter
 public class HPCAComponentTrait extends MachineTrait {
-
-    public static final MachineTraitType<HPCAComponentTrait> TYPE = new MachineTraitType<>(HPCAComponentTrait.class);
 
     @Getter
     private final int upkeepEUt, maxEUt;
@@ -35,11 +32,6 @@ public class HPCAComponentTrait extends MachineTrait {
         this.canBeDamaged = canBeDamaged;
         this.isDamaged = false;
         this.allowBridging = allowBridging;
-    }
-
-    @Override
-    public MachineTraitType<HPCAComponentTrait> getTraitType() {
-        return TYPE;
     }
 
     public void setDamaged(boolean damaged) {

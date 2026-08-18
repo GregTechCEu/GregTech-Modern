@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
-
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+import com.gregtechceu.gtceu.utils.data.NBTToJsonConverter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -123,7 +122,7 @@ public class ShapelessRecipeBuilder {
             @Override
             public ResourceLocation getId() {
                 var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "shapeless" + "/" + ID.getPath());
+                return ID.withPath("shapeless/" + ID.getPath());
             }
 
             @Override

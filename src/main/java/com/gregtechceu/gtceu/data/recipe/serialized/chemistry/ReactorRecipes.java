@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -377,7 +376,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(gem, Charcoal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -385,7 +384,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(gem, Coal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -393,7 +392,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(dust, Charcoal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -402,7 +401,7 @@ public class ReactorRecipes {
                 .inputItems(dust, Coal)
                 .circuitMeta(1)
                 .inputFluids(Oxygen.getFluid(1000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .save(provider);
 
@@ -447,7 +446,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(gem, Charcoal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -455,7 +454,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(gem, Coal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -463,7 +462,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(dust, Charcoal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -471,7 +470,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(dust, Coal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .chancedOutput(dust, Ash, "1/9", 0)
+                .chancedOutput(dust, Ash, "1/9")
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -640,12 +639,13 @@ public class ReactorRecipes {
                 .duration(200).EUt(VA[HV]).save(provider);
 
         // Dyes
-        for (int i = 0; i < GTMaterials.CHEMICAL_DYES.length; i++) {
-            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + MarkerMaterials.Color.VALUES[i].getName())
-                    .inputItems(dye, MarkerMaterials.Color.VALUES[i])
+
+        for (DyeColor color : DyeColor.values()) {
+            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + color.getName())
+                    .inputItems(color.getTag())
                     .inputItems(dust, Salt, 2)
                     .inputFluids(SulfuricAcid.getFluid(250))
-                    .outputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(288))
+                    .outputFluids(DYE_MATERIALS.get(color).getFluid(288))
                     .duration(600).EUt(24).save(provider);
         }
 

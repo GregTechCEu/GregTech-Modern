@@ -6,15 +6,12 @@ title: "Usage"
 
 ### Registering classes with the sync system
 
-At the core of the system are the `ISyncManaged` and `ISyncAnnotated` interfaces, which allow for their fields to have sync annotations..
-All block entities which should be synchronised or saved must extend the abstract class `ManagedSyncBlockEntity`.
+At the core of the system is the `ISyncManaged` interface, which allows for fields to have sync annotations.
 
-`ISyncManaged` should be used for classes with any form of persistent state, and cannot be instantiated or reassigned.<br>
-`ISyncAnnotated` should be used for record-like classes that hold data, and must define a no-args constructor.
+All `ISyncManaged` objects must belong to a root managed sync object. There are two default types of root sync objects:
 
-
-!!! warning 
-  Block entities that inherit `ManagedSyncBlockEntity` must call `ManagedSyncBlockEntity::updateTick`***every tick*** within their ticker, or they will not be saved.
+- `ManagedSyncBlockEntity` is a block entity storing its data through the system. The `Block` class using this `BlockEntity` must implement `ManagedSyncEntityBlock`.
+- `ManagedSavedData` is a `SavedData` object that stores data through the system.
 
 #### Example of `ISyncManaged` usage
 ```java
@@ -32,32 +29,33 @@ class MySyncObject implements ISyncManaged {
     
     @SaveField
     @SyncToClient
-    private BlockPos syncPos;
+    private BlockPos syncPos = BlockPos.ZERO;
     
-    @SaveField
-    @SyncToClient
-    private ExampleSyncAnnotated syncAnnotatedField;
+    @Getter
+    private String syncString = "";
      
     public MySyncObject(MetaMachine machine) {
         this.parentSyncObject = machine;
     }
     
     public void doChanges() {
-        
-      syncPos = BlockPos.ZERO;
-        // Client sync fields do not update automatically.
-      getSyncDataHolder().markClientSyncFieldDirty("syncPos")
-                
-      syncAnnotatedField.someValue = 10;
-      /*
-       * Because ISyncAnnotated classes do not manage their own sync state, 
-       * updating a field in an ISyncAnnotated class requires the parent field to be marked as changed.
-       */
-      getSyncDataHolder().markClientSyncFieldDirty("syncAnnotatedField");        
+      syncPos = new BlockPos(100, 50, 100);
+      // Client sync fields do not update automatically.
+      getSyncDataHolder().markClientSyncFieldDirty("syncPos");
+      
+      setSyncString("abcd");
     }
     
-    private static class ExampleSyncAnnotated implements ISyncAnnotated {
-        public int someValue = 0;
+    // It is often good practice to wrap client sync fields in getters/setters, and have the setter update the sync status.
+    public void setSyncString(String syncString) {
+        this.syncString = syncString;
+        getSyncDataHolder().markClientSyncFieldDirty("syncString");
+    }
+    
+    // Called on the client side when the given sync field is updated.
+    @ClientFieldChangeListener(fieldName="syncString")
+    private void onSyncStringChanged() {
+        
     }
 }
 ```
@@ -91,7 +89,7 @@ The following field types are supported by default:
 
 The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialized.
 
-To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
+To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerGenericTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
 
 Additionally, fields can be explicitly directed to use a specific value transformer:
 ```java

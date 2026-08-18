@@ -1,129 +1,101 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.widgets.textfield.TextEditorWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.StringSyncValue;
+import brachy.modularui.widgets.layout.Flow;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, S> {
-
-    private static final Pattern DOUBLE_WILDCARD = Pattern.compile("\\*{2,}");
-    private static final Pattern DOUBLE_AND = Pattern.compile("&{2,}");
-    private static final Pattern DOUBLE_OR = Pattern.compile("\\|{2,}");
-    private static final Pattern DOUBLE_NOT = Pattern.compile("!{2,}");
-    private static final Pattern DOUBLE_XOR = Pattern.compile("\\^{2,}");
-    private static final Pattern DOUBLE_SPACE = Pattern.compile(" {2,}");
+public class TagFilter<T, S> extends Filter<T> {
 
     @Getter
-    protected String oreDictFilterExpression = "";
+    protected String filterString;
 
-    protected Consumer<S> itemWriter = filter -> {};
-    protected Consumer<S> onUpdated = filter -> itemWriter.accept(filter);
+    private final Object2BooleanMap<S> matchResultCache = new Object2BooleanOpenHashMap<>();
 
-    protected TagExprFilter.TagExprParser.MatchExpr matchExpr = null;
+    protected @Nullable TagExprFilter.TagExprParser.MatchExpr matchExpr;
+    private final Function<T, S> tagHolderObject;
+    private final Function<T, Stream<TagKey<S>>> tagsSupplier;
 
-    protected TagFilter() {}
+    public TagFilter(ItemStack stack, Function<T, S> tagHolderObjectSupplier,
+                     Function<T, Stream<TagKey<S>>> tagsSupplier) {
+        super(stack);
+        this.tagHolderObject = tagHolderObjectSupplier;
+        this.tagsSupplier = tagsSupplier;
 
-    @Override
-    public boolean isBlank() {
-        return oreDictFilterExpression.isBlank();
+        var tag = stack.getOrCreateTag();
+
+        // oreDict is backwards compat
+        filterString = tag.contains("filter_string") ? tag.getString("filter_string") : tag.getString("oreDict");
+        matchExpr = TagExprFilter.parseExpression(filterString);
     }
 
-    public CompoundTag saveFilter() {
-        if (isBlank()) {
+    public @Nullable CompoundTag writeFilterNBT() {
+        if (filterString.isBlank()) {
             return null;
         }
         var tag = new CompoundTag();
-        tag.putString("oreDict", oreDictFilterExpression);
+        tag.putString("filter_string", filterString);
         return tag;
     }
 
-    public void setOreDict(String oreDict) {
-        this.oreDictFilterExpression = oreDict;
-        matchExpr = TagExprFilter.parseExpression(oreDictFilterExpression);
-        onUpdated.accept((S) this);
-    }
-
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        group.addWidget(new ImageWidget(0, 0, 20, 20, GuiTextures.INFO_ICON)
-                .setHoverTooltips(
-                        LangHandler.getMultiLang("cover.tag_filter.info").toArray(new MutableComponent[0])));
-        group.addWidget(new TextFieldWidget(0, 29, 18 * 3 + 25, 12, () -> oreDictFilterExpression, this::setOreDict)
-                .setMaxStringLength(64)
-                .setValidator(input -> {
-                    // remove all operators that are double
-                    input = DOUBLE_WILDCARD.matcher(input).replaceAll("*");
-                    input = DOUBLE_AND.matcher(input).replaceAll("&");
-                    input = DOUBLE_OR.matcher(input).replaceAll("|");
-                    input = DOUBLE_NOT.matcher(input).replaceAll("!");
-                    input = DOUBLE_XOR.matcher(input).replaceAll("^");
-                    input = DOUBLE_SPACE.matcher(input).replaceAll(" ");
-                    // move ( and ) so it doesn't create invalid expressions f.e. xxx (& yyy) => xxx & (yyy)
-                    // append or prepend ( and ) if the amount is not equal
-                    StringBuilder builder = new StringBuilder();
-                    int unclosed = 0;
-                    char last = ' ';
-                    for (int i = 0; i < input.length(); i++) {
-                        char c = input.charAt(i);
-                        if (c == ' ') {
-                            if (last != '(')
-                                builder.append(" ");
-                            continue;
-                        }
-                        if (c == '(')
-                            unclosed++;
-                        else if (c == ')') {
-                            unclosed--;
-                            if (last == '&' || last == '|' || last == '^') {
-                                int l = builder.lastIndexOf(" " + last);
-                                int l2 = builder.lastIndexOf(String.valueOf(last));
-                                builder.insert(l == l2 - 1 ? l : l2, ")");
-                                continue;
-                            }
-                            if (i > 0 && builder.charAt(builder.length() - 1) == ' ') {
-                                builder.deleteCharAt(builder.length() - 1);
-                            }
-                        } else if ((c == '&' || c == '|' || c == '^') && last == '(') {
-                            builder.deleteCharAt(builder.lastIndexOf("("));
-                            builder.append(c).append(" (");
-                            continue;
-                        }
-
-                        builder.append(c);
-                        last = c;
-                    }
-                    if (unclosed > 0) {
-                        builder.append(")".repeat(unclosed));
-                    } else if (unclosed < 0) {
-                        unclosed = -unclosed;
-                        for (int i = 0; i < unclosed; i++) {
-                            builder.insert(0, "(");
-                        }
-                    }
-                    input = builder.toString();
-                    input = input.replaceAll(" {2,}", " ");
-                    return input;
-                }));
-        return group;
+    public void setFilterString(String filterString) {
+        matchResultCache.clear();
+        this.filterString = filterString;
+        matchExpr = TagExprFilter.parseExpression(filterString);
+        updateAndSaveFilter();
     }
 
     @Override
-    public void setOnUpdated(Consumer<S> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString).allowC2S();
+        RichTooltip infoTooltip = new RichTooltip();
+        LangHandler.getMultiLang("cover.tag_filter.info").forEach(infoTooltip::addLine);
+
+        return Flow.row()
+                .coverChildren()
+                .child(new TextEditorWidget<>().width(140).height(50).padding(4).value(filterString))
+                .child(GTGuiTextures.INFO.asWidget().tooltip(infoTooltip));
+    }
+
+    private boolean testTagExpr(T t) {
+        Set<String> tags = tagsSupplier.apply(t)
+                .map(TagKey::location)
+                .map(ResourceLocation::toString)
+                .collect(Collectors.toSet());
+
+        return matchExpr != null && matchExpr.matches(tags);
+    }
+
+    @Override
+    public boolean test(T t) {
+        var tagHolder = tagHolderObject.apply(t);
+
+        if (filterString.isEmpty()) return false;
+        if (matchResultCache.containsKey(tagHolder)) return matchResultCache.getOrDefault(tagHolder, false);
+
+        var result = testTagExpr(t);
+        matchResultCache.put(tagHolder, result);
+        return result;
     }
 }

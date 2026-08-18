@@ -39,14 +39,17 @@ public class GTJadePlugin implements IWailaPlugin {
                 new StainedColorProvider(),
                 new HazardCleanerBlockProvider(),
                 new TransformerBlockProvider(),
+                new DiodeModeProvider(),
                 new PrimitivePumpBlockProvider(),
                 new DataBankBlockProvider(),
                 new EnergyConverterModeProvider(),
                 new BatteryStorageInfoProvider(),
-                new LDPEndpointProvider());
+                new LDPEndpointProvider(),
+                new ProgrammableCircuitProvider());
 
         if (GTCEu.Mods.isAE2Loaded()) {
-            register(registration, new MEPatternBufferProvider(), new MEPatternBufferProxyProvider());
+            register(registration, new MEGridConnectedProvider(), new MEPatternBufferProvider(),
+                    new MEPatternBufferProxyProvider());
         }
 
         registration.registerItemStorage(GTItemStorageProvider.INSTANCE, MetaMachine.class);
@@ -72,15 +75,18 @@ public class GTJadePlugin implements IWailaPlugin {
                 new StainedColorProvider(),
                 new HazardCleanerBlockProvider(),
                 new TransformerBlockProvider(),
+                new DiodeModeProvider(),
                 new PrimitivePumpBlockProvider(),
                 new DataBankBlockProvider(),
                 new LDPEndpointProvider(),
                 new EnergyConverterModeProvider(),
                 new BatteryStorageInfoProvider(),
-                new CableBlockProvider());
+                new CableBlockProvider(),
+                new ProgrammableCircuitProvider());
 
         if (GTCEu.Mods.isAE2Loaded()) {
-            register(registration, new MEPatternBufferProvider(), new MEPatternBufferProxyProvider());
+            register(registration, new MEGridConnectedProvider(), new MEPatternBufferProvider(),
+                    new MEPatternBufferProxyProvider());
         }
 
         registration.registerItemStorageClient(GTItemStorageProvider.INSTANCE);

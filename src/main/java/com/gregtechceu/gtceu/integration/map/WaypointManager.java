@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.integration.map.xaeros.XaeroWaypointHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -52,12 +53,12 @@ public class WaypointManager {
         }
     }
 
-    public static void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z) {
+    public static void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, BlockPos pos) {
         if (dim == null) dim = currentDimension;
         for (IWaypointHandler handler : handlers) {
-            handler.setWaypoint(key, name, color, dim, x, y, z);
+            handler.setWaypoint(key, name, color, dim, pos);
         }
-        waypoints.put(key, new WaypointKey(dim, x, y, z));
+        waypoints.put(key, new WaypointKey(dim, pos));
     }
 
     public static void removeWaypoint(String key) {
@@ -67,14 +68,13 @@ public class WaypointManager {
         waypoints.remove(key);
     }
 
-    public static boolean toggleWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y,
-                                         int z) {
+    public static boolean toggleWaypoint(String key, String name, int color, ResourceKey<Level> dim, BlockPos pos) {
         if (dim == null) dim = currentDimension;
-        if ((new WaypointKey(dim, x, y, z)).equals(waypoints.get(key))) {
+        if ((new WaypointKey(dim, pos)).equals(waypoints.get(key))) {
             removeWaypoint(key);
             return false;
         }
-        setWaypoint(key, name, color, dim, x, y, z);
+        setWaypoint(key, name, color, dim, pos);
         return true;
     }
 
@@ -85,13 +85,11 @@ public class WaypointManager {
     private static class WaypointKey {
 
         ResourceKey<Level> dim;
-        int x, y, z;
+        BlockPos pos;
 
-        public WaypointKey(ResourceKey<Level> dim, int x, int y, int z) {
+        public WaypointKey(ResourceKey<Level> dim, BlockPos pos) {
             this.dim = dim;
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.pos = pos;
         }
 
         @Override
@@ -99,12 +97,12 @@ public class WaypointManager {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             WaypointKey that = (WaypointKey) o;
-            return dim == that.dim && x == that.x && y == that.y && z == that.z;
+            return this.dim == that.dim && this.pos.equals(that.pos);
         }
 
         @Override
         public int hashCode() {
-            return GTMath.hashInts(dim.hashCode(), x, y, z);
+            return GTMath.hashInts(dim.hashCode(), pos.hashCode());
         }
     }
 }

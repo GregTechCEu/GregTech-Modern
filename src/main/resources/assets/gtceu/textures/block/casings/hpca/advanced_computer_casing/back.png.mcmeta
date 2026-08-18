@@ -1,5 +1,5 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/casings/hpca/advanced_computer_casing/back_ctm"
+    "gtceu": {
+        "connection_texture": "gtceu:block/casings/hpca/advanced_computer_casing/back_ctm"
     }
 }

@@ -38,7 +38,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     @Nullable
     public FluidStack[] stacks;
     @Getter
-    protected int amount;
+    private int amount;
     @Getter
     protected CompoundTag nbt;
     protected boolean changed = true;
@@ -290,11 +290,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
         } else if (GsonHelper.isStringValue(jsonObject, "value")) {
             String value = GsonHelper.getAsString(jsonObject, "value");
             if (value.startsWith("#")) {
-                ResourceLocation resourceLocation = new ResourceLocation(value.substring(1));
+                ResourceLocation resourceLocation = ResourceLocation.parse(value.substring(1));
                 TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, resourceLocation);
                 return FluidIngredient.fromValue(new TagValue(tagKey), amount, nbt);
             } else {
-                Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(value));
+                Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(value));
                 return FluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
             }
         } else {
@@ -307,11 +307,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");
         }
         if (json.has("fluid")) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(GsonHelper.getAsString(json, "fluid")));
+            Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(GsonHelper.getAsString(json, "fluid")));
             return new FluidValue(fluid);
         }
         if (json.has("tag")) {
-            ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, "tag"));
+            ResourceLocation resourceLocation = ResourceLocation.parse(GsonHelper.getAsString(json, "tag"));
             TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, resourceLocation);
             return new TagValue(tagKey);
         }

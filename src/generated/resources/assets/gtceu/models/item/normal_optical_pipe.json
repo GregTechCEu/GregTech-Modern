@@ -17,9 +17,8 @@
           "tintindex": 1
         },
         "south": {
-          "cullface": "south",
-          "texture": "#end",
-          "tintindex": 1
+          "texture": "#side",
+          "tintindex": 0
         },
         "up": {
           "texture": "#side",
@@ -51,6 +50,10 @@
           "texture": "#side_overlay",
           "tintindex": 2
         },
+        "south": {
+          "texture": "#side_overlay",
+          "tintindex": 2
+        },
         "up": {
           "texture": "#side_overlay",
           "tintindex": 2
@@ -61,14 +64,14 @@
         }
       },
       "from": [
-        4.998,
-        4.998,
-        -0.002
+        4.968,
+        4.968,
+        -0.032
       ],
       "to": [
-        11.002,
-        11.002,
-        16.002
+        11.032,
+        11.032,
+        16.032
       ]
     }
   ],

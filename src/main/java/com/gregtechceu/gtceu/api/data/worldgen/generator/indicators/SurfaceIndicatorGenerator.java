@@ -141,12 +141,12 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         return WorldGeneratorUtils.groupByChunks(positions).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        entry -> createPlacer(level, entry.getValue(), blockState)));
+                        entry -> createPlacer(entry.getValue(), blockState)));
     }
 
-    private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY,
+    private OreIndicatorPlacer createPlacer(List<BlockPos> positionsWithoutY,
                                             BlockState blockState) {
-        return (access) -> {
+        return (access, level) -> {
             var positions = positionsWithoutY.stream()
                     .map(pos -> placement.resolver.apply(level, access, pos))
                     .filter(pos -> !level.isOutsideBuildHeight(pos))

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -50,17 +52,23 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     @NotNull
     public CompoundTag data;
     public int duration;
-    public int parallels = 1;
-    public int subtickParallels = 1;
-    public int batchParallels = 1;
+    public int parallels;
+    public int subtickParallels;
+    public int batchParallels;
     public int ocLevel = 0;
+    /**
+     * Called for each output before it is inserted into the output container.
+     * Does nothing by default, to be modified with {@link BiConsumer#andThen(BiConsumer)} in {@link RecipeModifier}
+     */
+    public BiConsumer<GTRecipe, Object> outputModifier = (recipe, object) -> {};
     public final GTRecipeCategory recipeCategory;
     // Lazy fields, since we need the recipe EUt very often
     @Getter(lazy = true)
     private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
     @Getter(lazy = true)
     private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
-    public int groupColor = -1;
+    public int groupColor;
+    public RecipeSpoilageData spoilageData;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -74,12 +82,62 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
-                    int duration,
+                    int duration, int parallels, int subtickParallels, int batchParallels,
                     @NotNull GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    int groupColor,
+                    RecipeSpoilageData spoilageData) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, recipeCategory, groupColor);
+                conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels,
+                recipeCategory, groupColor, spoilageData);
+    }
+
+    /**
+     * Accepts Parallels, Batches, and BatchParallels as a single List,
+     * as well as combining all I/O data into a {@link GTRecipeSerializer.RecipeIO} record.
+     * Necessary for {@link GTRecipeSerializer}
+     */
+    public GTRecipe(GTRecipeType recipeType,
+                    GTRecipeSerializer.RecipeIO recipeIO,
+                    List<RecipeCondition<?>> conditions,
+                    List<?> ingredientActions,
+                    CompoundTag data,
+                    int duration,
+                    GTRecipeSerializer.RecipeParallels allParallels,
+                    GTRecipeCategory recipeCategory,
+                    int groupColor,
+                    RecipeSpoilageData spoilageData) {
+        this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
+                recipeIO.inputChanceLogics(), recipeIO.outputChanceLogics(), recipeIO.tickInputChanceLogics(),
+                recipeIO.tickOutputChanceLogics(),
+                conditions, ingredientActions, data, duration, allParallels.parallels(),
+                allParallels.subtickParallels(),
+                allParallels.batchParallels(), recipeCategory, groupColor, spoilageData);
+    }
+
+    /**
+     * Main constructor, used by {@link GTRecipeBuilder#buildRawRecipe()}
+     */
+    public GTRecipe(GTRecipeType recipeType,
+                    @Nullable ResourceLocation id,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
+                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+                    List<RecipeCondition<?>> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor,
+                    RecipeSpoilageData spoilageData) {
+        this(recipeType, id, inputs, outputs, tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
+                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor, spoilageData);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -95,8 +153,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
-                    int duration,
-                    @NotNull GTRecipeCategory recipeCategory, int groupColor) {
+                    int duration, int parallels, int subtickParallels, int batchParallels,
+                    @NotNull GTRecipeCategory recipeCategory, int groupColor,
+                    RecipeSpoilageData spoilageData) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -114,8 +173,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.ingredientActions = ingredientActions;
         this.data = data;
         this.duration = duration;
+        this.parallels = parallels;
+        this.subtickParallels = subtickParallels;
+        this.batchParallels = batchParallels;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
         this.groupColor = groupColor;
+        this.spoilageData = spoilageData;
     }
 
     public GTRecipe copy() {
@@ -133,14 +196,29 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
+                new ArrayList<>(ingredientActions), data, duration, parallels, subtickParallels, batchParallels,
+                recipeCategory, groupColor, spoilageData.copy());
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
         copied.ocLevel = ocLevel;
+        copied.outputModifier = outputModifier;
+        return copied;
+    }
+
+    public GTRecipe copyWithoutTicks() {
+        var copied = new GTRecipe(recipeType, id,
+                new HashMap<>(inputs), new HashMap<>(outputs),
+                new HashMap<>(), new HashMap<>(),
+                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
+                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
+                new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor, spoilageData);
+        copied.ocLevel = ocLevel;
         copied.parallels = parallels;
         copied.batchParallels = batchParallels;
         copied.subtickParallels = subtickParallels;
+        copied.outputModifier = outputModifier;
         return copied;
     }
 
@@ -218,13 +296,20 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return ChanceLogic.OR;
     }
 
+    public GTRecipeSerializer.RecipeIO getRecipeIO() {
+        return new GTRecipeSerializer.RecipeIO(inputs, outputs,
+                tickInputs, tickOutputs,
+                inputChanceLogics, outputChanceLogics,
+                tickInputChanceLogics, tickOutputChanceLogics);
+    }
+
     // Technically should account for overflow but realistically not an issue.
     protected @NotNull EnergyStack calculateEUt(Map<RecipeCapability<?>, List<Content>> contents) {
         var outputs = contents.get(EURecipeCapability.CAP);
         if (outputs == null) return EnergyStack.EMPTY;
         long v = 0, a = 0;
         for (var content : outputs) {
-            EnergyStack stack = EURecipeCapability.CAP.of(content.content);
+            EnergyStack stack = EURecipeCapability.CAP.of(content.content());
             v += stack.voltage();
             a += stack.amperage();
         }
@@ -251,5 +336,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     @Override
     public String toString() {
         return id.toString();
+    }
+
+    public void mutateOutput(Object stack) {
+        if (this.outputModifier != null) outputModifier.accept(this, stack);
     }
 }

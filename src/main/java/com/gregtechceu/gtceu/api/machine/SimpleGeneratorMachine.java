@@ -3,48 +3,30 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
-
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-
-import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.function.BiFunction;
 
 /**
  * All singleblock generators are implemented here.
  */
-public class SimpleGeneratorMachine extends WorkableTieredMachine
-                                    implements IFancyUIMachine {
+public class SimpleGeneratorMachine extends WorkableTieredMachine {
 
     @Getter
     private final EnvironmentalHazardEmitterTrait hazardEmitter;
 
     public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier,
                                   float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction) {
-        super(info, tier, tankScalingFunction);
+        super(info, tier, true, tankScalingFunction);
 
+        recipeLogic.setRegressWhenWaiting(false);
         energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
         this.hazardEmitter = attachTrait(
                 new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
@@ -57,12 +39,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
-
-    @Override
-    protected boolean isEnergyEmitter() {
-        return true;
-    }
 
     @Override
     public int tintColor(int index) {
@@ -105,19 +81,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
     }
 
     @Override
-    public boolean regressWhenWaiting() {
-        return false;
-    }
-
-    @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
         return capability != EURecipeCapability.CAP;
-    }
-
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        hazardEmitter.emitHazard();
     }
 
     @Override
@@ -125,39 +90,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         return GTValues.V[this.tier];
     }
 
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, recipeType) -> new EditableMachineUI("generator", path, () -> {
-                WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-                WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width + 4 + 8,
-                        template.getSize().height + 8);
-                Size size = group.getSize();
-                template.setSelfPosition(new Position(
-                        (size.width - 4 - template.getSize().width) / 2 + 4,
-                        (size.height - template.getSize().height) / 2));
-                group.addWidget(template);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof SimpleGeneratorMachine generatorMachine) {
-                    var storages = Tables.newCustomTable(new EnumMap<>(IO.class),
-                            LinkedHashMap<RecipeCapability<?>, Object>::new);
-                    storages.put(IO.IN, ItemRecipeCapability.CAP, generatorMachine.importItems.storage);
-                    storages.put(IO.OUT, ItemRecipeCapability.CAP, generatorMachine.exportItems.storage);
-                    storages.put(IO.IN, FluidRecipeCapability.CAP, generatorMachine.importFluids);
-                    storages.put(IO.OUT, FluidRecipeCapability.CAP, generatorMachine.exportFluids);
-
-                    generatorMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(
-                            template,
-                            new GTRecipeTypeUI.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
-                                    storages,
-                                    new CompoundTag(),
-                                    Collections.emptyList(),
-                                    false, false));
-                    createEnergyBar().setupUI(template, generatorMachine);
-                }
-            }));
+    @Override
+    public long getDisplayGeneratorPower() {
+        return energyContainer.getOutputVoltage() * energyContainer.getOutputAmperage();
+    }
 }

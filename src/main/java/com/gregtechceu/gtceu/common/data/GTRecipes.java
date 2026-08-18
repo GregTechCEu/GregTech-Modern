@@ -51,7 +51,7 @@ public class GTRecipes {
         MaterialInfoLoader.init();
 
         // com.gregtechceu.gtceu.data.recipe.generated.*
-        for (Material material : GTRegistries.MATERIALS.values()) {
+        for (Material material : GTRegistries.MATERIALS) {
             if (material.hasFlag(MaterialFlags.NO_UNIFICATION) ||
                     material.hasFlag(MaterialFlags.DISABLE_MATERIAL_RECIPES)) {
                 continue;
