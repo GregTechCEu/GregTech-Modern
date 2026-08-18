@@ -79,7 +79,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 
@@ -89,32 +88,29 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
+@ApiStatus.Internal
 public class CommonProxy {
 
-    public CommonProxy() {
+    public static void init(IEventBus modBus) {
+        GTCEu.LOGGER.info("GTCEu common proxy init!");
+
         // used for forge events (ClientProxy + CommonProxy)
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.register(this);
+        modBus.register(CommonProxy.class);
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
-
-        init(eventBus);
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
-        eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
-    }
-
-    public static void init(IEventBus modBus) {
-        GTCEu.LOGGER.info("GTCEu common proxy init!");
+        modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
 
         GTNetwork.init();
         GTRegistries.init(modBus);
@@ -204,7 +200,7 @@ public class CommonProxy {
 
     // Fire post material events after all other material registry events.
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRegisterLowest(RegisterEvent event) {
+    public static void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
@@ -243,7 +239,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void registerMaterialContent(RegisterEvent event) {
+    public static void registerMaterialContent(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.BLOCK) {
             GTCEu.LOGGER.info("Generating material blocks...");
 
@@ -279,12 +275,12 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void addSpoilTransferModifier(ModifyMachineEvent event) {
+    public static void addSpoilTransferModifier(ModifyMachineEvent event) {
         event.getBuilder().addRecipeModifier(GTRecipeModifiers.SPOILAGE_TRANSFER);
     }
 
     @SubscribeEvent
-    public void registerDevSpoilables(RegisterSpoilablesEvent event) {
+    public static void registerDevSpoilables(RegisterSpoilablesEvent event) {
         if (GTCEu.isDev()) { // for testing purposes
             event.getBuilder()
                     .ticks(10)
@@ -317,7 +313,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
+    public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
         /*
          * event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
          * GTOreDefinition.CODEC, GTOreDefinition.CODEC);
@@ -329,7 +325,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void commonSetup(FMLCommonSetupEvent event) {
+    public static void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
@@ -374,12 +370,12 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerCapabilities(RegisterCapabilitiesEvent event) {
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         GTCapability.register(event);
     }
 
     @SubscribeEvent
-    public void registerPackFinders(AddPackFindersEvent event) {
+    public static void registerPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
             // Clear old data
             GTDynamicResourcePack.clearClient();

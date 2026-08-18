@@ -62,16 +62,16 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import lombok.Getter;
 
-public class ClientProxy extends CommonProxy {
+public class ClientProxy {
 
     @Getter
     private static final Timer timer60Fps = new Timer(60f, 0);
@@ -80,12 +80,11 @@ public class ClientProxy extends CommonProxy {
     public static final BiMap<ResourceLocation, BedrockFluidDefinition> CLIENT_FLUID_VEINS = HashBiMap.create();
     public static final BiMap<ResourceLocation, BedrockOreDefinition> CLIENT_BEDROCK_ORE_VEINS = HashBiMap.create();
 
-    public ClientProxy() {
-        super();
-        init();
-    }
+    public static void init(IEventBus modBus) {
+        CommonProxy.init(modBus);
 
-    public static void init() {
+        modBus.register(ClientProxy.class);
+
         if (!GTCEu.isDataGen()) {
 
             ClientCacheManager.registerClientCache(GTClientCache.instance, "gtceu");
@@ -102,11 +101,11 @@ public class ClientProxy extends CommonProxy {
 
         MinecraftForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
         GTGuiTextures.init();
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(GTGuiTheme::onReloadThemes);
+        modBus.addListener(GTGuiTheme::onReloadThemes);
     }
 
     @SubscribeEvent
-    public void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.INDUSTRIAL_TNT.get(), GTExplosiveRenderer::new);
@@ -119,7 +118,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void onRegisterEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    public static void onRegisterEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         for (var type : GTBoat.BoatType.values()) {
             event.registerLayerDefinition(GTBoatRenderer.getBoatModelName(type), BoatModel::createBodyModel);
             event.registerLayerDefinition(GTBoatRenderer.getChestBoatModelName(type),
@@ -128,7 +127,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
+    public static void onRegisterItemDecorations(RegisterItemDecorationsEvent event) {
         for (Item item : ForgeRegistries.ITEMS) {
             if (item instanceof IComponentItem) {
                 event.register(item, GTComponentItemDecorator.INSTANCE);
@@ -149,23 +148,23 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerKeyBindings(RegisterKeyMappingsEvent event) {
+    public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
         SyncedKeyMapping.onRegisterKeyBinds(event);
     }
 
     @SubscribeEvent
-    public void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
+    public static void onRegisterGuiOverlays(RegisterGuiOverlaysEvent event) {
         event.registerAboveAll("hud", new HudGuiOverlay());
     }
 
     @SubscribeEvent
-    public void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
+    public static void onRegisterParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(GTParticleTypes.HAZARD_PARTICLE.get(), HazardParticle.Provider::new);
         event.registerSpriteSet(GTParticleTypes.MUFFLER_PARTICLE.get(), MufflerParticle.Provider::new);
     }
 
     @SubscribeEvent
-    public void onClientSetup(FMLClientSetupEvent event) {
+    public static void onClientSetup(FMLClientSetupEvent event) {
         MachineOwner.init();
         if (ConfigHolder.INSTANCE.compat.minimap.toggle.ftbChunksIntegration &&
                 GTCEu.isModLoaded(GTValues.MODID_FTB_CHUNKS)) {
@@ -188,7 +187,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent
-    public void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+    public static void onRegisterModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(MachineModelLoader.ID.getPath(), MachineModelLoader.INSTANCE);
         event.register(PipeModelLoader.ID.getPath(), PipeModelLoader.INSTANCE);
         event.register("facade", FacadeUnbakedModel.Loader.INSTANCE);
@@ -196,12 +195,12 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void preRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
+    public static void preRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
         PipeModel.DYNAMIC_MODELS.clear();
     }
 
     @SubscribeEvent
-    public void registerDynamicAssets(RegisterDynamicResourcesEvent event) {
+    public static void registerDynamicAssets(RegisterDynamicResourcesEvent event) {
         // regenerate all pipe models in case their textures changed
         // cables may do this, others too if something's removed
         for (var block : GTMaterialBlocks.CABLE_BLOCKS.values()) {
@@ -227,7 +226,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void postRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
+    public static void postRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
         // do this last so addons can easily add new variants to the registered model set
         PipeModel.initDynamicModels();
         RuntimeBlockstateProvider.INSTANCE.run();
