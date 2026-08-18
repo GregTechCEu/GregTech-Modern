@@ -171,11 +171,13 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
 
+        RecipeSpoilageData spoilageData = RecipeSpoilageData.readFromNetwork(buf);
+
         GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels, category,
-                groupColor);
+                groupColor, spoilageData);
 
         recipe.recipeCategory.addRecipe(recipe);
 
@@ -269,12 +271,13 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", false).forGetter(val -> val.duration),
                             RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
-                            Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
+                            Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
+                            RecipeSpoilageData.CODEC.fieldOf("spoilageData").forGetter(val -> val.spoilageData))
                     .apply(instance, (type,
                                       recipeIO,
-                                      conditions, data, duration, allParallels, recipeCategory, groupColor) ->
+                                      conditions, data, duration, allParallels, recipeCategory, groupColor, spoilageData) ->
                             new GTRecipe(type, recipeIO,
-                                    conditions, List.of(), data, duration, allParallels, recipeCategory, groupColor)));
+                                    conditions, List.of(), data, duration, allParallels, recipeCategory, groupColor, spoilageData)));
         } else {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                     GT_RECIPE_TYPE_CODEC.fieldOf("type").forGetter(val -> val.recipeType),
@@ -285,8 +288,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", true).forGetter(val -> val.duration),
                     RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
-                    Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
-            .apply(instance, GTRecipe::new));
+                    Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
+            RecipeSpoilageData.CODEC.fieldOf("spoilageData").forGetter(val -> val.spoilageData))
+                    .apply(instance, GTRecipe::new));
         }
         // spotless:on
     }

@@ -837,6 +837,8 @@ public class ConfigHolder {
                 "Disable if experiencing performance issues.", "Default: true" })
         public boolean machinesHaveBERsByDefault = true;
         @Configurable
+        public boolean aprilFoolsMode = false;
+        @Configurable
         @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.",
                 "Default: true" })
         public boolean toolUseSounds = true;
