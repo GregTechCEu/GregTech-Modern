@@ -386,6 +386,7 @@ public class KJSMultiblockMachineBuilderWrapper extends BuilderBase<MachineDefin
 
     @Override
     public void generateAssetJsons(AssetJsonGenerator generator) {
+        generateMachineModels();
         final ResourceLocation id = this.id;
         generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
     }

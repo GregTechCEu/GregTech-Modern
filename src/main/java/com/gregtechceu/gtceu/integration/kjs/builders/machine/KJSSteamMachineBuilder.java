@@ -91,6 +91,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
 
     @Override
     public void generateAssetJsons(AssetJsonGenerator generator) {
+        generateMachineModels();
         if (this.lowPressureBuilder != null) {
             generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
         }

@@ -65,6 +65,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
 
     @Override
     public void generateAssetJsons(AssetJsonGenerator generator) {
+        generateMachineModels();
         for (int tier : this.tiers) {
             MachineDefinition definition = this.machines[tier];
             if (definition == null) continue;

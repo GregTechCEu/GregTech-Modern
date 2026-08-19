@@ -80,6 +80,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
 
     @Override
     public void generateAssetJsons(AssetJsonGenerator generator) {
+        generateMachineModels();
         for (int tier : this.tiers) {
             var definition = this.machines[tier];
             if (definition == null) continue;
