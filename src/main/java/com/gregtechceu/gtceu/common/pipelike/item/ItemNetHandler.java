@@ -374,12 +374,12 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     public CoverBehavior getCoverOnNeighbour(BlockPos pos, Direction handlerFacing) {
-        var level = pipe.getLevel();
+        var level = pipe.GTGetLevel();
         if (level == null) return null;
-        BlockEntity tile = pipe.getLevel().getBlockEntity(pos.relative(handlerFacing));
+        BlockEntity tile = pipe.GTGetLevel().getBlockEntity(pos.relative(handlerFacing));
         if (tile == null) return null;
 
-        ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing),
+        ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.GTGetLevel(), pos.relative(handlerFacing),
                 handlerFacing.getOpposite());
         if (coverable == null) return null;
         return coverable.getCoverAtSide(handlerFacing.getOpposite());

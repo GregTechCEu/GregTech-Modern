@@ -28,7 +28,7 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
         if (endpoint == null) {
             return null;
         }
-        return GTTransferUtils.getAdjacentItemHandler(getLevel(), endpoint.getBlockPos(), endpoint.getOutputFacing())
+        return GTTransferUtils.getAdjacentItemHandler(GTGetLevel(), endpoint.getBlockPos(), endpoint.getOutputFacing())
                 .map(ItemHandlerWrapper::new)
                 .orElse(null);
     }

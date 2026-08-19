@@ -188,7 +188,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         if (!isRemote()) {
             for (int i = 0; i < patternInventory.getSlots(); i++) {
                 patternSlotDetails[i] = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(i),
-                        getLevel());
+                        GTGetLevel());
             }
             needPatternSync = true;
             syncWorkerCount();
@@ -581,7 +581,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         if (proxyMachines.size() != proxies.size()) {
             proxyMachines.clear();
             for (var pos : proxies) {
-                if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferProxyPartMachine proxy) {
+                if (MetaMachine.getMachine(GTGetLevel(), pos) instanceof MEPatternBufferProxyPartMachine proxy) {
                     proxyMachines.add(proxy);
                 }
             }
@@ -601,7 +601,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         IPatternDetails oldPattern = patternSlotDetails[index];
         IPatternDetails newPatternDetails = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(index),
-                getLevel());
+                GTGetLevel());
         patternSlotDetails[index] = newPatternDetails;
         if (oldPattern != null && !oldPattern.equals(newPatternDetails)) {
             for (Worker worker : workers) {
@@ -877,7 +877,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public void onMachineDestroyed() {
-        patternInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        patternInventory.dropInventoryInWorld(GTGetLevel(), getBlockPos());
         shareInventory.dropInventoryInWorld();
     }
 

@@ -32,7 +32,7 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
     @Override
     public void serverTick() {
         amps = 0;
-        if (getMachine().getLevel().isClientSide)
+        if (getMachine().GTGetLevel().isClientSide)
             return;
         if (getEnergyStored() < getOutputVoltage() || getOutputVoltage() <= 0 || getOutputAmperage() <= 0)
             return;
@@ -42,9 +42,9 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
         long amperesUsed = 0;
         for (Direction side : GTUtil.DIRECTIONS) {
             if (!outputsEnergy(side)) continue;
-            BlockEntity be = getMachine().getLevel().getBlockEntity(getMachine().getBlockPos().relative(side));
+            BlockEntity be = getMachine().GTGetLevel().getBlockEntity(getMachine().getBlockPos().relative(side));
             Direction oppositeSide = side.getOpposite();
-            ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().getLevel(),
+            ILaserContainer laserContainer = GTCapabilityHelper.getLaser(getMachine().GTGetLevel(),
                     getMachine().getBlockPos().relative(side), oppositeSide);
             if (be != null && laserContainer != null) {
                 if (!laserContainer.inputsEnergy(oppositeSide)) continue;

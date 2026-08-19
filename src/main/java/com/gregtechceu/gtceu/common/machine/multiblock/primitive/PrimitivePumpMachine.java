@@ -108,7 +108,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
     private void produceWater() {
         if (getOffsetTimer() % 20 == 0 && isFormed()) {
             if (biomeModifier == 0) {
-                biomeModifier = GTUtil.getPumpBiomeModifier(getLevel().getBiome(getBlockPos()));
+                biomeModifier = GTUtil.getPumpBiomeModifier(GTGetLevel().getBiome(getBlockPos()));
             } else if (biomeModifier > 0) {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
@@ -120,12 +120,12 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
     }
 
     private boolean isRainingInBiome() {
-        if (!getLevel().isRaining()) return false;
+        if (!GTGetLevel().isRaining()) return false;
         return getBiomePrecipitation() != Precipitation.NONE;
     }
 
     private Precipitation getBiomePrecipitation() {
-        return getLevel().getBiome(getBlockPos()).value().getPrecipitationAt(getBlockPos());
+        return GTGetLevel().getBiome(getBlockPos()).value().getPrecipitationAt(getBlockPos());
     }
 
     public int getFluidProduction() {

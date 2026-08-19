@@ -127,7 +127,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         super.formStructure(substructureName);
         var pState = patternStates.get(substructureName);
 
-        bounds = boundsFunction().apply(getLevel(), getBlockPos().mutable(), getFrontFacing(), getUpwardsFacing());
+        bounds = boundsFunction().apply(GTGetLevel(), getBlockPos().mutable(), getFrontFacing(), getUpwardsFacing());
         int d = bounds.get(1);
         int l = bounds.get(2);
         int r = bounds.get(3);

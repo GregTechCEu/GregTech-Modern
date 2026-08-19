@@ -52,7 +52,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
 
     @Override
     protected void updateCurrentTemperature() {
-        if (GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getBlockPos())) {
+        if (GTUtil.canSeeSunClearly(Objects.requireNonNull(GTGetLevel()), getBlockPos())) {
             recipeLogic.setStatus(RecipeLogic.Status.WORKING);
         } else {
             recipeLogic.setStatus(RecipeLogic.Status.IDLE);
@@ -80,7 +80,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
 
         DoubleSyncValue canSeeSun = syncManager.getOrCreateSyncHandler("canSeeSun", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(() -> {
-                    if (GTUtil.canSeeSunClearly(getLevel(), getBlockPos())) return 1.0f;
+                    if (GTUtil.canSeeSunClearly(GTGetLevel(), getBlockPos())) return 1.0f;
                     return 0.0f;
                 }));
 

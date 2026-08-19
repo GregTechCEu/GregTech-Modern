@@ -216,7 +216,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
      *                  pump cycle.
      */
     private void updatePumpQueue(@Nullable FluidType fluidType) {
-        if (getLevel() == null) return;
+        if (GTGetLevel() == null) return;
 
         if (pumpQueue != null && !pumpQueue.queue().isEmpty()) {
             return;
@@ -225,7 +225,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
         BlockPos headPos = getBlockPos().below(pumpHeadY);
 
         BlockPos downPos = headPos.below(1);
-        var downBlock = getLevel().getBlockState(downPos);
+        var downBlock = GTGetLevel().getBlockState(downPos);
 
         if (!(downBlock.getBlock() instanceof LiquidBlock)) {
             pumpQueue = null;
@@ -237,7 +237,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
             return;
         }
 
-        pumpQueue = buildPumpQueue(getLevel(), headPos, downBlock.getFluidState().getFluidType(), queueSize(), true);
+        pumpQueue = buildPumpQueue(GTGetLevel(), headPos, downBlock.getFluidState().getFluidType(), queueSize(), true);
     }
 
     /**
@@ -360,7 +360,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
 
         if (pumpQueue == null || pumpQueue.queue.isEmpty()) {
             Level level;
-            if ((level = getLevel()) != null) {
+            if ((level = GTGetLevel()) != null) {
                 BlockPos downPos = headPos.below(1);
                 var downBlock = level.getBlockState(downPos);
 
@@ -380,7 +380,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        if (getLevel() instanceof ServerLevel serverLevel) {
+        if (GTGetLevel() instanceof ServerLevel serverLevel) {
             var pos = getBlockPos().relative(Direction.DOWN);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
                 serverLevel.removeBlock(pos, false);
@@ -398,7 +398,7 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
      */
     private void pumpCycle() {
         Level level;
-        if ((level = getLevel()) == null) {
+        if ((level = GTGetLevel()) == null) {
             return;
         }
         // Will only update if the queue is empty
@@ -439,13 +439,13 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
                     states.removeLast();
                     FluidState fluidState = sourceState.state().getFluidState();
                     if (sourceState.state().getBlock() instanceof LiquidBlock liquidBlock && fluidState.isSource()) {
-                        var fluidHandler = new BucketPickupHandlerWrapper(liquidBlock, getLevel(), pos);
+                        var fluidHandler = new BucketPickupHandlerWrapper(liquidBlock, GTGetLevel(), pos);
                         FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
                         if (!drainStack.isEmpty() &&
                                 cache.fillInternal(drainStack, FluidAction.SIMULATE) == drainStack.getAmount()) {
                             cache.fillInternal(drainStack, FluidAction.EXECUTE);
                             fluidHandler.drain(drainStack, FluidAction.EXECUTE);
-                            getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                            GTGetLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                             pumped = true;
                             pumps--;
                         } else if (!drainStack.isEmpty()) {

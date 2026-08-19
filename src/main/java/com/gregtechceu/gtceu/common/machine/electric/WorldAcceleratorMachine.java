@@ -125,12 +125,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                         GTValues.RNG.nextInt(randRange),
                         GTValues.RNG.nextInt(randRange),
                         GTValues.RNG.nextInt(randRange));
-                if (randomPos.getY() > getLevel().getMaxBuildHeight() ||
-                        randomPos.getY() < getLevel().getMinBuildHeight() || !getLevel().isLoaded(randomPos) ||
+                if (randomPos.getY() > GTGetLevel().getMaxBuildHeight() ||
+                        randomPos.getY() < GTGetLevel().getMinBuildHeight() || !GTGetLevel().isLoaded(randomPos) ||
                         randomPos.equals(getBlockPos()))
                     continue;
-                if (getLevel().getBlockState(randomPos).isRandomlyTicking()) {
-                    getLevel().getBlockState(randomPos).randomTick((ServerLevel) this.getLevel(), randomPos,
+                if (GTGetLevel().getBlockState(randomPos).isRandomlyTicking()) {
+                    GTGetLevel().getBlockState(randomPos).randomTick((ServerLevel) this.GTGetLevel(), randomPos,
                             GTValues.RNG);
                 }
                 i++;
@@ -138,7 +138,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         } else {
             // else handle block entity mode
             for (Direction dir : GTUtil.DIRECTIONS) {
-                BlockEntity blockEntity = this.getLevel().getBlockEntity(this.getBlockPos().relative(dir));
+                BlockEntity blockEntity = this.GTGetLevel().getBlockEntity(this.getBlockPos().relative(dir));
                 if (blockEntity != null && canAccelerate(blockEntity)) {
                     tickBlockEntity(blockEntity);
                 }
@@ -162,7 +162,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     private <T extends BlockEntity> void tickBlockEntity(T blockEntity) {
         BlockPos pos = blockEntity.getBlockPos();
         // noinspection unchecked
-        BlockEntityTicker<T> blockEntityTicker = this.getLevel().getBlockState(pos).getTicker(this.getLevel(),
+        BlockEntityTicker<T> blockEntityTicker = this.GTGetLevel().getBlockState(pos).getTicker(this.GTGetLevel(),
                 (BlockEntityType<T>) blockEntity.getType());
         if (blockEntityTicker == null) return;
         for (int i = 0; i < speed - 1; i++) {

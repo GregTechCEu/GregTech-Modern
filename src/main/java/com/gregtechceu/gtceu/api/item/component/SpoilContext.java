@@ -75,7 +75,7 @@ public record SpoilContext(@Nullable Level level,
     }
 
     public SpoilContext(@NotNull MetaMachine machine) {
-        this(machine.getLevel(), machine.getBlockPos(), null, null, null, -1);
+        this(machine.GTGetLevel(), machine.getBlockPos(), null, null, null, -1);
     }
 
     public boolean isEmpty() {

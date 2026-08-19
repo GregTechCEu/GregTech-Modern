@@ -148,7 +148,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     public void invalidateStructure(String name) {
         if ((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) &&
                 !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
-            GTUtil.doExplosion(getLevel(), getBlockPos(), 6f + getTier());
+            GTUtil.doExplosion(GTGetLevel(), getBlockPos(), 6f + getTier());
         }
         super.invalidateStructure(name);
         this.powerOutput = new EnergyContainerList(new ArrayList<>());

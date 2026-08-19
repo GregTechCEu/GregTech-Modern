@@ -185,7 +185,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 var blockState = getBlockState();
                 boolean changeGlobal = blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal;
                 if (blockState.getBlock() instanceof MetaMachineBlock && changeGlobal) {
-                    getLevel().setBlock(getBlockPos(),
+                    GTGetLevel().setBlock(getBlockPos(),
                             blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal),
                             Block.UPDATE_IMMEDIATE);
                 }
@@ -207,7 +207,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param runnable The callback to execute
      */
     public final void scheduleForNextServerTick(Runnable runnable) {
-        if (getLevel() instanceof ServerLevel serverLevel) {
+        if (GTGetLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, runnable));
         }
     }
@@ -525,14 +525,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getBlockPos(), context.getGridSide());
+        var controllable = GTCapabilityHelper.getControllable(GTGetLevel(), getBlockPos(), context.getGridSide());
         if (controllable == null) return InteractionResult.PASS;
         if (!isRemote()) {
             controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
             context.getPlayer().sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled_cycle"));
         }
-        return InteractionResult.sidedSuccess(getLevel().isClientSide);
+        return InteractionResult.sidedSuccess(GTGetLevel().isClientSide);
     }
 
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
@@ -615,7 +615,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return null;
     }
 
-    public @UnknownNullability Level getLevel() {
+    public @UnknownNullability Level GTGetLevel() {
         return super.getLevel();
     }
 
@@ -802,10 +802,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         var blockState = getBlockState();
         if (isFacingValid(facing)) {
-            getLevel().setBlockAndUpdate(getBlockPos(), blockState.setValue(getRotationState().property, facing));
+            GTGetLevel().setBlockAndUpdate(getBlockPos(), blockState.setValue(getRotationState().property, facing));
         }
 
-        if (getLevel() != null && !getLevel().isClientSide) {
+        if (GTGetLevel() != null && !GTGetLevel().isClientSide) {
             notifyBlockUpdate();
         }
     }
@@ -833,9 +833,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
-            getLevel().setBlockAndUpdate(getBlockPos(),
+            GTGetLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
-            if (getLevel() != null && !getLevel().isClientSide) {
+            if (GTGetLevel() != null && !GTGetLevel().isClientSide) {
                 notifyBlockUpdate();
             }
         }
@@ -919,10 +919,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return The current tick offset.
      */
     public final long getOffsetTimer() {
-        if (getLevel() == null) return getOffset();
-        else if (getLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
+        if (GTGetLevel() == null) return getOffset();
+        else if (GTGetLevel().isClientSide()) return GTValues.CLIENT_TIME + getOffset();
 
-        var server = getLevel().getServer();
+        var server = GTGetLevel().getServer();
         if (server == null) return getOffset();
         return server.getTickCount() + getOffset();
     }

@@ -156,7 +156,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     }
 
     public void serverTick() {
-        if (getMachine().getLevel().isClientSide)
+        if (getMachine().GTGetLevel().isClientSide)
             return;
         if (getEnergyStored() >= getOutputVoltage() && getOutputVoltage() > 0 && getOutputAmperage() > 0) {
             long outputVoltage = getOutputVoltage();

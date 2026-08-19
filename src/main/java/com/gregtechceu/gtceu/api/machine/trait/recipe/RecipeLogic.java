@@ -681,8 +681,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             if (sound != null) {
                 workingSound = sound.playAutoReleasedSound(
                         () -> getRLMachine().shouldWorkingPlaySound() && isWorking() && !getMachine().isRemoved() &&
-                                getMachine().getLevel().isLoaded(getMachine().getBlockPos()) &&
-                                MetaMachine.getMachine(getMachine().getLevel(), getMachine().getBlockPos()) ==
+                                getMachine().GTGetLevel().isLoaded(getMachine().getBlockPos()) &&
+                                MetaMachine.getMachine(getMachine().GTGetLevel(), getMachine().getBlockPos()) ==
                                         getMachine(),
                         getMachine().getBlockPos(), true, 0, 1, 1);
             }

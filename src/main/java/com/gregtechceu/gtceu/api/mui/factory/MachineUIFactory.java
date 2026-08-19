@@ -38,7 +38,7 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
         if (machine.isRemoved()) {
             throw new IllegalArgumentException("Can't open invalid MetaMachine GUI!");
         }
-        if (player.level() != machine.getLevel()) {
+        if (player.level() != machine.GTGetLevel()) {
             throw new IllegalArgumentException("MetaMachine must be in same dimension as the player!");
         }
         BlockPos pos = machine.getBlockPos();

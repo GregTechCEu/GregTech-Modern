@@ -28,9 +28,9 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         if (newDefinition == null) return false;
         BlockState newBlockState = newDefinition.getBlock().defaultBlockState();
 
-        getLevel().setBlockAndUpdate(blockPos, newBlockState);
+        GTGetLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof SteamItemBusPartMachine newMachine) {
+        if (GTGetLevel().getBlockEntity(blockPos) instanceof SteamItemBusPartMachine newMachine) {
             // We don't set the circuit or distinct busses, since
             // that doesn't make sense on an output bus.
             // Furthermore, existing inventory items

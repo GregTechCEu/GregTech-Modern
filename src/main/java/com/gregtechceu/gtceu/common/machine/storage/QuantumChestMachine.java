@@ -206,7 +206,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
                 var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
                     if (!player.addItem(drained)) {
-                        Block.popResourceFromFace(getLevel(), getBlockPos(), getFrontFacing(), drained);
+                        Block.popResourceFromFace(GTGetLevel(), getBlockPos(), getFrontFacing(), drained);
                     }
                 }
             }
@@ -369,7 +369,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
 
         public void exportToNearby(Direction... facings) {
             if (stored.isEmpty()) return;
-            var level = getMachine().getLevel();
+            var level = getMachine().GTGetLevel();
             var pos = getMachine().getBlockPos();
             for (Direction facing : facings) {
                 var filter = getMachine().getItemCapFilter(facing, IO.OUT);

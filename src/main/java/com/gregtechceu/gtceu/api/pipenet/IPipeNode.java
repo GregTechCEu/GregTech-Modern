@@ -100,7 +100,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     @Nullable
     default PipeNet<NodeDataType> getPipeNet() {
-        if (getLevel() instanceof ServerLevel serverLevel) {
+        if (GTGetLevel() instanceof ServerLevel serverLevel) {
             return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
         }
         return null;

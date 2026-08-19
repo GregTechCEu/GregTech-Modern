@@ -27,7 +27,7 @@ public class GuiModuleBehaviour implements IMonitorModuleItem {
     @Override
     public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
         return renderers.computeIfAbsent(
-                Pair.of(group.getTargetLevel(machine.getLevel()), group.getTarget(machine.getLevel())),
+                Pair.of(group.getTargetLevel(machine.GTGetLevel()), group.getTarget(machine.GTGetLevel())),
                 MonitorGuiRenderer::new);
     }
 

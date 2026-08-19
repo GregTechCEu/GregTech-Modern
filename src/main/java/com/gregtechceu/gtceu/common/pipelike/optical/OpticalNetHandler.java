@@ -29,7 +29,7 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
         this.net = net;
         this.pipe = pipe;
         this.facing = facing;
-        this.world = pipe.getLevel();
+        this.world = pipe.GTGetLevel();
     }
 
     public void updateNetwork(OpticalPipeNet net) {

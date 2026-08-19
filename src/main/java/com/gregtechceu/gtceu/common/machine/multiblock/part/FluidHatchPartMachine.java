@@ -156,7 +156,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
 
     protected void updateTankSubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io.support(IO.OUT) && !tank.isEmpty()) || io.support(IO.IN)) &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentFluidHandler(GTGetLevel(), getBlockPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -193,7 +193,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
         if (io == IO.BOTH) return InteractionResult.PASS;
         if (context.getPlayer().isShiftKeyDown()) {
             if (swapIO()) {
-                return InteractionResult.sidedSuccess(getLevel().isClientSide);
+                return InteractionResult.sidedSuccess(GTGetLevel().isClientSide);
             }
         }
         return InteractionResult.PASS;
@@ -216,9 +216,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
 
         BlockState newBlockState = newDefinition.getBlock().defaultBlockState();
 
-        getLevel().setBlockAndUpdate(blockPos, newBlockState);
+        GTGetLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof FluidHatchPartMachine newMachine) {
+        if (GTGetLevel().getBlockEntity(blockPos) instanceof FluidHatchPartMachine newMachine) {
             newMachine.setFrontFacing(this.getFrontFacing());
             newMachine.setUpwardsFacing(this.getUpwardsFacing());
             newMachine.setPaintingColor(this.getPaintingColor());

@@ -47,7 +47,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     default Level getLevel() {
-        return getHolder().getLevel();
+        return getHolder().GTGetLevel();
     }
 
     default BlockPos getBlockPos() {

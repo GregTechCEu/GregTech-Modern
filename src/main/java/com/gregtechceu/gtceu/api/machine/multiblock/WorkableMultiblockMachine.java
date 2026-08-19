@@ -219,11 +219,11 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         if (activeBlocks != null) {
             for (long pos : activeBlocks) {
                 var blockPos = BlockPos.of(pos);
-                var blockState = getLevel().getBlockState(blockPos);
+                var blockState = GTGetLevel().getBlockState(blockPos);
                 if (blockState.hasProperty(GTBlockStateProperties.ACTIVE)) {
                     var newState = blockState.setValue(GTBlockStateProperties.ACTIVE, active);
                     if (newState != blockState) {
-                        getLevel().setBlock(blockPos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+                        GTGetLevel().setBlock(blockPos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
                     }
                 }
             }

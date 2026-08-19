@@ -103,7 +103,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public @UnknownNullability Level getLevel() {
+    public @UnknownNullability Level GTGetLevel() {
         return super.getLevel();
     }
 
@@ -240,10 +240,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
         // fix desync between two connections.
         // Can happen if a pipe side is blocked, and a new pipe is placed next to it.
-        if (getLevel() == null) {
+        if (GTGetLevel() == null) {
             return;
         }
-        if (!getLevel().isClientSide) {
+        if (!GTGetLevel().isClientSide) {
             if (isConnected(side) == connected) {
                 return;
             }
@@ -263,7 +263,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             setConnections(withSideConnection(connections, side, connected));
             updateNetworkConnection(side, connected);
             // notify neighbor of change so Auto Output updates its ticking status
-            getLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
+            GTGetLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
             setChanged();
 
             if (!fromNeighbor && tile instanceof IPipeNode<?, ?> pipeTile) {
@@ -284,7 +284,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     private void updateNetworkConnection(Direction side, boolean connected) {
-        LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet((ServerLevel) getLevel());
+        LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet((ServerLevel) GTGetLevel());
         worldPipeNet.updateBlockedConnections(this.getBlockPos(), side, !connected);
     }
 
@@ -299,8 +299,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public void notifyBlockUpdate() {
-        getLevel().updateNeighborsAt(getBlockPos(), getPipeBlock());
-        getPipeBlock().updateActiveNodeStatus(getLevel(), getBlockPos(), this);
+        GTGetLevel().updateNeighborsAt(getBlockPos(), getPipeBlock());
+        getPipeBlock().updateActiveNodeStatus(GTGetLevel(), getBlockPos(), this);
     }
 
     @Override
@@ -400,13 +400,13 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public void doExplosion(float explosionPower) {
-        getLevel().removeBlock(this.getBlockPos(), false);
-        if (!getLevel().isClientSide) {
-            ((ServerLevel) getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, this.getBlockPos().getX() + 0.5,
+        GTGetLevel().removeBlock(this.getBlockPos(), false);
+        if (!GTGetLevel().isClientSide) {
+            ((ServerLevel) GTGetLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, this.getBlockPos().getX() + 0.5,
                     this.getBlockPos().getY() + 0.5, this.getBlockPos().getZ() + 0.5,
                     10, 0.2, 0.2, 0.2, 0.0);
         }
-        getLevel().explode(null, this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 0.5,
+        GTGetLevel().explode(null, this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 0.5,
                 this.getBlockPos().getZ() + 0.5,
                 explosionPower, Level.ExplosionInteraction.NONE);
     }

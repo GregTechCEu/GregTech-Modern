@@ -117,7 +117,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     //////////////////////////////////////
 
     public void updateBreakerSubscription() {
-        if (drainEnergy(true) && !getLevel().getBlockState(getBlockPos().relative(getFrontFacing())).isAir() &&
+        if (drainEnergy(true) && !GTGetLevel().getBlockState(getBlockPos().relative(getFrontFacing())).isAir() &&
                 isWorkingEnabled) {
             breakerSubs = subscribeServerTick(breakerSubs, this::breakerUpdate);
         } else if (breakerSubs != null) {
@@ -134,7 +134,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
 
             if (blockBreakProgress == 0) {
                 var pos = getBlockPos().relative(getFrontFacing());
-                var blockState = getLevel().getBlockState(pos);
+                var blockState = GTGetLevel().getBlockState(pos);
                 float hardness = blockState.getBlock().defaultDestroyTime();
                 if (hardness >= 0.0f && Math.abs(hardness - currentHardness) < .5f) {
                     var drops = tryDestroyBlockAndGetDrops(pos);
@@ -142,9 +142,9 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                         var remainder = tryFillCache(drop);
                         if (!remainder.isEmpty()) {
                             if (autoOutput.getItemOutputDirection() == null) {
-                                Block.popResource(getLevel(), getBlockPos(), remainder);
+                                Block.popResource(GTGetLevel(), getBlockPos(), remainder);
                             } else {
-                                Block.popResource(getLevel(),
+                                Block.popResource(GTGetLevel(),
                                         getBlockPos().relative(autoOutput.getItemOutputDirection()),
                                         remainder);
                             }
@@ -157,7 +157,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
 
         if (blockBreakProgress == 0) {
             var pos = getBlockPos().relative(getFrontFacing());
-            var blockState = getLevel().getBlockState(pos);
+            var blockState = GTGetLevel().getBlockState(pos);
             float hardness = blockState.getBlock().defaultDestroyTime();
             boolean skipBlock = blockState.isAir();
             if (hardness >= 0f && !skipBlock) {
@@ -178,15 +178,15 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         super.clientTick();
         if (blockBreakProgress > 0) {
             var pos = getBlockPos().relative(getFrontFacing());
-            var blockState = getLevel().getBlockState(pos);
-            getLevel().addDestroyBlockEffect(pos, blockState);
+            var blockState = GTGetLevel().getBlockState(pos);
+            GTGetLevel().addDestroyBlockEffect(pos, blockState);
         }
     }
 
     private List<ItemStack> tryDestroyBlockAndGetDrops(BlockPos pos) {
-        List<ItemStack> drops = Block.getDrops(getLevel().getBlockState(pos), (ServerLevel) getLevel(), pos, null, null,
+        List<ItemStack> drops = Block.getDrops(GTGetLevel().getBlockState(pos), (ServerLevel) GTGetLevel(), pos, null, null,
                 ItemStack.EMPTY);
-        getLevel().destroyBlock(pos, false);
+        GTGetLevel().destroyBlock(pos, false);
         return drops;
     }
 

@@ -28,7 +28,7 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         if (endpoint == null) {
             return null;
         }
-        return GTTransferUtils.getAdjacentFluidHandler(getLevel(), endpoint.getBlockPos(), endpoint.getOutputFacing())
+        return GTTransferUtils.getAdjacentFluidHandler(GTGetLevel(), endpoint.getBlockPos(), endpoint.getOutputFacing())
                 .map(LDFluidEndpointMachine.FluidHandlerWrapper::new)
                 .orElse(null);
     }

@@ -101,7 +101,7 @@ public abstract class MachineTrait implements ISyncManaged {
     }
 
     public Level getLevel() {
-        return getMachine().getLevel();
+        return getMachine().GTGetLevel();
     }
 
     public boolean isRemote() {

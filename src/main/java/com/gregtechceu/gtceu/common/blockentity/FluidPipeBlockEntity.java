@@ -328,7 +328,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply heat damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                List<LivingEntity> entities = this.GTGetLevel().getEntitiesOfClass(LivingEntity.class,
                         new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
@@ -344,7 +344,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         }
 
         if (isCorroding) {
-            FluidPipeBlockEntity.spawnParticles(this.getLevel(), this.getBlockPos(), Direction.UP, ParticleTypes.CRIT,
+            FluidPipeBlockEntity.spawnParticles(this.GTGetLevel(), this.getBlockPos(), Direction.UP, ParticleTypes.CRIT,
                     3 + GTValues.RNG.nextInt(2));
 
             // voids 25%
@@ -352,7 +352,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply chemical damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                List<LivingEntity> entities = this.GTGetLevel().getEntitiesOfClass(LivingEntity.class,
                         new AABB(this.getBlockPos()).inflate(1));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyChemicalDamage(entityLivingBase, 2);
@@ -380,7 +380,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply heat damage in area surrounding the pipe
             if (isMelting && getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                List<LivingEntity> entities = this.GTGetLevel().getEntitiesOfClass(LivingEntity.class,
                         new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,
@@ -405,7 +405,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
             // apply frost damage in area surrounding the pipe
             if (getOffsetTimer() % 20 == 0) {
-                List<LivingEntity> entities = this.getLevel().getEntitiesOfClass(LivingEntity.class,
+                List<LivingEntity> entities = this.GTGetLevel().getEntitiesOfClass(LivingEntity.class,
                         new AABB(this.getBlockPos()).inflate(2));
                 for (LivingEntity entityLivingBase : entities) {
                     EntityDamageUtil.applyTemperatureDamage(entityLivingBase,

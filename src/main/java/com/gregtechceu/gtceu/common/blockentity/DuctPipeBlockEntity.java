@@ -45,7 +45,7 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_HAZARD_CONTAINER) {
-            if (getLevel().isClientSide())
+            if (GTGetLevel().isClientSide())
                 return GTCapability.CAPABILITY_HAZARD_CONTAINER.orEmpty(cap, LazyOptional.of(() -> clientCapability));
 
             if (handlers.isEmpty()) {
@@ -99,7 +99,7 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
         if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(this.getBlockPos())) {
             return currentPipeNet;
         }
-        LevelDuctPipeNet worldNet = (LevelDuctPipeNet) getPipeBlock().getWorldPipeNet((ServerLevel) this.getLevel());
+        LevelDuctPipeNet worldNet = (LevelDuctPipeNet) getPipeBlock().getWorldPipeNet((ServerLevel) this.GTGetLevel());
         currentPipeNet = worldNet.getNetFromPos(this.getBlockPos());
         if (currentPipeNet != null) {
             this.currentPipeNet = new WeakReference<>(currentPipeNet);

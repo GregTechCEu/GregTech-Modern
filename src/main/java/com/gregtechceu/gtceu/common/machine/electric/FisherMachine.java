@@ -176,7 +176,7 @@ public class FisherMachine extends TieredEnergyMachine
             for (int z = 0; z < WATER_CHECK_SIZE; z++) {
                 BlockPos waterCheckPos = getBlockPos().below().offset(x - WATER_CHECK_SIZE / 2, 0,
                         z - WATER_CHECK_SIZE / 2);
-                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
+                if (!GTGetLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
                     hasWater = false;
                     return;
                 }
@@ -192,19 +192,19 @@ public class FisherMachine extends TieredEnergyMachine
 
         drainEnergy(false);
         if (progress >= maxProgress) {
-            LootTable lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
+            LootTable lootTable = GTGetLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
             if (!this.junkEnabled) {
-                lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING_FISH);
+                lootTable = GTGetLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING_FISH);
             }
 
-            FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
+            FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, GTGetLevel()) {
 
                 public boolean isOpenWaterFishing() {
                     return true;
                 }
             };
 
-            LootParams lootContext = new LootParams.Builder((ServerLevel) getLevel())
+            LootParams lootContext = new LootParams.Builder((ServerLevel) GTGetLevel())
                     .withOptionalParameter(LootContextParams.THIS_ENTITY, simulatedHook)
                     .withParameter(LootContextParams.TOOL, fishingRod)
                     .withParameter(LootContextParams.ORIGIN,

@@ -124,7 +124,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     protected void updateAutoOutputSubscription() {
         var outputFacingItems = getFrontFacing();
         if (!exportItems.isEmpty() &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFacingItems)) {
+                GTTransferUtils.hasAdjacentItemHandler(GTGetLevel(), getBlockPos(), outputFacingItems)) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();

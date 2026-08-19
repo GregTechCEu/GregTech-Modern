@@ -561,7 +561,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         page.sizeRel(1f);
         page.child(Text.str("Schema").asWidget());
 
-        if (getLevel().isClientSide()) {
+        if (GTGetLevel().isClientSide()) {
             page.child(new SchemaWidget(
                     new SchemaRenderer(ArraySchema.of(data.getPlayer(), 20))
                             .highlightRenderer(

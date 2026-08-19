@@ -367,7 +367,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
         final var facing = getFrontFacing();
         final var up = facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
         final var pos = getBlockPos();
-        final var level = getLevel();
+        final var level = GTGetLevel();
         for (int dLeft = -1; dLeft < 2; dLeft++) {
             for (int dUp = -1; dUp < 2; dUp++) {
                 final var checkPos = RelativeDirection.offsetPos(pos, facing, up, false, dUp, dLeft, 1);

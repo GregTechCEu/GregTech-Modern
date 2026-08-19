@@ -308,7 +308,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
 
         public void exportToNearby(Direction... facings) {
             if (stored.isEmpty()) return;
-            var level = getMachine().getLevel();
+            var level = getMachine().GTGetLevel();
             var pos = getMachine().getBlockPos();
             for (Direction facing : facings) {
                 var filter = getMachine().getFluidCapFilter(facing, IO.OUT);

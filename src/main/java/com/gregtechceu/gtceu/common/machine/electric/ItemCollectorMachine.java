@@ -179,7 +179,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             filter = Filters.loadItemFilter(filterInventory.getStackInSlot(0));
         BlockPos centerPos = getBlockPos().above();
 
-        List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, Objects.requireNonNull(aabb));
+        List<ItemEntity> itemEntities = GTGetLevel().getEntitiesOfClass(ItemEntity.class, Objects.requireNonNull(aabb));
         for (ItemEntity itemEntity : itemEntities) {
             if (!itemEntity.isAlive()) continue;
             if (filter != null && !filter.test(itemEntity.getItem())) continue;

@@ -124,11 +124,11 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 x += horizontalOffset;
             }
             if (ConfigHolder.INSTANCE.machines.machineSounds && GTValues.RNG.nextDouble() < 0.1) {
-                getLevel().playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F,
+                GTGetLevel().playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F,
                         false);
             }
-            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
-            getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
+            GTGetLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
+            GTGetLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
     }
 

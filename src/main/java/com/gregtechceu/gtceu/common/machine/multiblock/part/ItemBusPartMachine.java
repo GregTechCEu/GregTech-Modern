@@ -125,7 +125,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void onMachineDestroyed() {
         if (filterHandler.isFilterPresent())
-            Block.popResource(getLevel(), getBlockPos(), filterHandler.getFilterItem());
+            Block.popResource(GTGetLevel(), getBlockPos(), filterHandler.getFilterItem());
         super.onMachineDestroyed();
     }
 
@@ -174,7 +174,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     protected void updateInventorySubscription(Direction newFacing) {
         if (isWorkingEnabled() && ((io.support(IO.OUT) && !getInventory().isEmpty()) || io.support(IO.IN)) &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), newFacing)) {
+                GTTransferUtils.hasAdjacentItemHandler(GTGetLevel(), getBlockPos(), newFacing)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -229,9 +229,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         if (newDefinition == null) return false;
         BlockState newBlockState = newDefinition.getBlock().defaultBlockState();
 
-        getLevel().setBlockAndUpdate(blockPos, newBlockState);
+        GTGetLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof ItemBusPartMachine newMachine) {
+        if (GTGetLevel().getBlockEntity(blockPos) instanceof ItemBusPartMachine newMachine) {
             // We don't set the circuit or distinct busses, since
             // that doesn't make sense on an output bus.
             // Furthermore, existing inventory items

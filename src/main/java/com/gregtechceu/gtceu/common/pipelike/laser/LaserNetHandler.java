@@ -21,7 +21,7 @@ public class LaserNetHandler implements ILaserContainer {
         this.net = net;
         this.pipe = pipe;
         this.facing = facing;
-        this.world = pipe.getLevel();
+        this.world = pipe.GTGetLevel();
     }
 
     public void updateNetwork(LaserPipeNet net) {

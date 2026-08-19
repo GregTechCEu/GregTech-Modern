@@ -125,7 +125,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     protected void updateAutoOutputSubscription() {
         if (Direction.stream().filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                .anyMatch(direction -> GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), direction))) {
+                .anyMatch(direction -> GTTransferUtils.hasAdjacentFluidHandler(GTGetLevel(), getBlockPos(), direction))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -137,7 +137,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (getOffsetTimer() % 5 == 0) {
             steamTank.exportToNearby(Direction.stream()
                     .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                    .filter(direction -> GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), direction))
+                    .filter(direction -> GTTransferUtils.hasAdjacentFluidHandler(GTGetLevel(), getBlockPos(), direction))
                     .toArray(Direction[]::new));
             updateAutoOutputSubscription();
         }
@@ -186,11 +186,11 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                             FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
-                    GTUtil.doExplosion(getLevel(), getBlockPos(), 2.0f);
+                    GTUtil.doExplosion(GTGetLevel(), getBlockPos(), 2.0f);
                 } else {
                     this.hasNoWater = !hasDrainedWater;
                 }
-                if (filledSteam == 0 && hasDrainedWater && getLevel() instanceof ServerLevel serverLevel) {
+                if (filledSteam == 0 && hasDrainedWater && GTGetLevel() instanceof ServerLevel serverLevel) {
                     final float x = getBlockPos().getX() + 0.5F;
                     final float y = getBlockPos().getY() + 0.5F;
                     final float z = getBlockPos().getZ() + 0.5F;
@@ -205,7 +205,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                             getFrontFacing().getStepZ() / 2.0, 0.1);
 
                     if (ConfigHolder.INSTANCE.machines.machineSounds) {
-                        getLevel().playSound(null, x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f,
+                        GTGetLevel().playSound(null, x, y, z, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0f,
                                 1.0f);
                     }
 
@@ -290,7 +290,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (!isRemote()) {
             context.getPlayer().sendSystemMessage(Component.translatable("behaviour.soft_hammer.ignored"));
         }
-        return InteractionResult.sidedSuccess(getLevel().isClientSide);
+        return InteractionResult.sidedSuccess(GTGetLevel().isClientSide);
     }
 
     @Override
@@ -378,8 +378,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     protected void randomDisplayTick(RandomSource random, float x, float y, float z) {
-        getLevel().addParticle(isHighPressure ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, x, y, z, 0, 0, 0);
-        getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
+        GTGetLevel().addParticle(isHighPressure ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, x, y, z, 0, 0, 0);
+        GTGetLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
     }
 
     @Override

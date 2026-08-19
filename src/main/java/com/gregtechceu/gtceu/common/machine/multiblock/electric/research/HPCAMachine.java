@@ -246,7 +246,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         if (isRemote()) {
             hpcaHandler.clearClientComponents();
             if (isFormed()) {
-                hpcaHandler.tryGatherClientComponents(getLevel(), getBlockPos(), getFrontFacing(), getUpwardsFacing(),
+                hpcaHandler.tryGatherClientComponents(GTGetLevel(), getBlockPos(), getFrontFacing(), getUpwardsFacing(),
                         isFlipped());
             }
         }

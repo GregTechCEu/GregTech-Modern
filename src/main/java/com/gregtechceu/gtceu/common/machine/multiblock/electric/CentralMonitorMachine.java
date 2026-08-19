@@ -109,7 +109,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     public void tick() {
-        Level level = getLevel();
+        Level level = GTGetLevel();
         if (level == null) {
             return;
         }
@@ -143,7 +143,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     public void updateStructureDimensions() {
-        Level level = getLevel();
+        Level level = GTGetLevel();
         if (level == null) return;
 
         Direction front = getFrontFacing();
@@ -286,7 +286,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     @Nullable
     public IMonitorComponent getComponent(int row, int col) {
-        Level level = getLevel();
+        Level level = GTGetLevel();
         if (level == null) return null;
 
         Direction front = getFrontFacing();
@@ -329,8 +329,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         for (MonitorGroup group : monitorGroups) {
-            group.getItemStackHandler().dropInventoryInWorld(getLevel(), getBlockPos());
-            group.getPlaceholderSlotsHandler().dropInventoryInWorld(getLevel(), getBlockPos());
+            group.getItemStackHandler().dropInventoryInWorld(GTGetLevel(), getBlockPos());
+            group.getPlaceholderSlotsHandler().dropInventoryInWorld(GTGetLevel(), getBlockPos());
         }
     }
 }

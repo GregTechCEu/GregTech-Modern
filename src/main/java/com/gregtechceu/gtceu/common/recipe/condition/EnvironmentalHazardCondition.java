@@ -53,7 +53,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return true;
-        if (!(recipeLogic.getMachine().getLevel() instanceof ServerLevel serverLevel)) {
+        if (!(recipeLogic.getMachine().GTGetLevel() instanceof ServerLevel serverLevel)) {
             return false;
         }
         EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);

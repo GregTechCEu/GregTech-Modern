@@ -206,21 +206,21 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             float horSpd2 = 0.03F * GTValues.RNG.nextFloat();
 
             if (GTValues.RNG.nextFloat() < 0.1F) {
-                getLevel().playLocalSound(xPos, yPos, zPos, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 1.0F,
+                GTGetLevel().playLocalSound(xPos, yPos, zPos, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 1.0F,
                         1.0F, false);
             }
             for (float xi = xPos - 1; xi <= xPos + 1; xi++) {
                 for (float zi = zPos - 1; zi <= zPos + 1; zi++) {
                     if (GTValues.RNG.nextFloat() < .9F)
                         continue;
-                    getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xi, yPos, zi, horSpd, ySpd, horSpd2);
+                    GTGetLevel().addParticle(ParticleTypes.LARGE_SMOKE, xi, yPos, zi, horSpd, ySpd, horSpd2);
                 }
             }
         }
     }
 
     public void convertLogBlocks() {
-        Level level = getLevel();
+        Level level = GTGetLevel();
         for (BlockPos pos : logPos) {
             level.setBlockAndUpdate(pos, GTBlocks.BRITTLE_CHARCOAL.getDefaultState());
         }
@@ -237,7 +237,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             return InteractionResult.PASS;
         }
 
-        if (getLevel().isClientSide && !isActive()) {
+        if (GTGetLevel().isClientSide && !isActive()) {
             return InteractionResult.SUCCESS;
         } else if (!isActive()) {
             boolean shouldActivate = false;

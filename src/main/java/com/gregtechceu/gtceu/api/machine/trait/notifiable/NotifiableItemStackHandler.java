@@ -266,7 +266,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void exportToNearby(Direction... facings) {
         if (isEmpty()) return;
-        var level = getMachine().getLevel();
+        var level = getMachine().GTGetLevel();
         var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.OUT);
@@ -276,7 +276,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     public void importFromNearby(Direction... facings) {
-        var level = getMachine().getLevel();
+        var level = getMachine().GTGetLevel();
         var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
             var filter = getMachine().getItemCapFilter(facing, IO.IN);

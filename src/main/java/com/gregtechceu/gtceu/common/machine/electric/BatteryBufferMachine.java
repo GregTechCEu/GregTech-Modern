@@ -247,7 +247,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     @Override
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
-        batteryInventory.dropInventoryInWorld(getLevel(), getBlockPos());
+        batteryInventory.dropInventoryInWorld(GTGetLevel(), getBlockPos());
     }
 
     @Override

@@ -89,7 +89,7 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
     @Override
     protected void updateInventorySubscription() {
         boolean canOutput = io == IO.OUT && (!tank.isEmpty() || !getInventory().isEmpty());
-        var level = getLevel();
+        var level = GTGetLevel();
         if (level != null) {
             this.hasItemHandler = GTTransferUtils.hasAdjacentItemHandler(level, getBlockPos(), getFrontFacing());
             this.hasFluidHandler = GTTransferUtils.hasAdjacentFluidHandler(level, getBlockPos(), getFrontFacing());
@@ -144,9 +144,9 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
 
         BlockState newBlockState = newDefinition.getBlock().defaultBlockState();
 
-        getLevel().setBlockAndUpdate(blockPos, newBlockState);
+        GTGetLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof DualHatchPartMachine newMachine) {
+        if (GTGetLevel().getBlockEntity(blockPos) instanceof DualHatchPartMachine newMachine) {
             newMachine.setFrontFacing(this.getFrontFacing());
             newMachine.setUpwardsFacing(this.getUpwardsFacing());
             for (int i = 0; i < this.tank.getTanks(); i++) {

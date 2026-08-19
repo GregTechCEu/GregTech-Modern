@@ -212,7 +212,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * Call this method every tick in update
      */
     public void serverTick() {
-        if (!isSuspend() && getMachine().getLevel() instanceof ServerLevel serverLevel && checkCanMine()) {
+        if (!isSuspend() && getMachine().GTGetLevel() instanceof ServerLevel serverLevel && checkCanMine()) {
             // if the inventory is not full, drain energy etc. from the miner
             // the storages have already been checked earlier
             if (!isInventoryFull()) {
@@ -555,7 +555,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         LinkedList<BlockPos> blocks = new LinkedList<>();
 
         // determine how many blocks to retrieve this time
-        var level = getMachine().getLevel();
+        var level = getMachine().GTGetLevel();
         assert level != null;
         double quotient = getQuotient(getMeanTickTime(level));
         int calcAmount = quotient < 1 ? 1 : (int) (Math.min(quotient, Short.MAX_VALUE));
@@ -647,7 +647,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      */
     private void incrementPipeLength() {
         this.pipeLength++;
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel) {
             var pos = getMiningPos().relative(dir, this.pipeLength);
             serverLevel.setBlockAndUpdate(pos, GTBlocks.MINER_PIPE.getDefaultState());
         }
@@ -667,7 +667,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
     public void removePipes() {
         pipeLength = 0;
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel) {
             var pos = getMiningPos().relative(dir);
             while (serverLevel.getBlockState(pos).is(GTBlocks.MINER_PIPE.get())) {
                 serverLevel.removeBlock(pos, false);

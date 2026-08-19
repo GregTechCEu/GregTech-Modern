@@ -97,7 +97,7 @@ public class MultiblockPartMachine extends MetaMachine {
         synchronized (controllers) {
             controllers.clear();
             for (BlockPos blockPos : controllerPositions) {
-                if (MetaMachine.getMachine(getLevel(), blockPos) instanceof MultiblockControllerMachine controller) {
+                if (MetaMachine.getMachine(GTGetLevel(), blockPos) instanceof MultiblockControllerMachine controller) {
                     controllers.add(controller);
                 }
             }
@@ -132,7 +132,7 @@ public class MultiblockPartMachine extends MetaMachine {
     @Override
     public void onUnload() {
         super.onUnload();
-        if (getLevel() instanceof ServerLevel serverLevel) {
+        if (GTGetLevel() instanceof ServerLevel serverLevel) {
             // Copy so we can call removedFromController (which mutates controllers) safely without CME
             Set<MultiblockControllerMachine> toIter;
             synchronized (controllers) {

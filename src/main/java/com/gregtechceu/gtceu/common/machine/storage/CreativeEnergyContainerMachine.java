@@ -93,7 +93,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
             this.setIOSpeed(energyIOPerSec / 20);
             energyIOPerSec = 0;
             if (doExplosion) {
-                getLevel().explode(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5,
+                GTGetLevel().explode(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5,
                         getBlockPos().getZ() + 0.5,
                         1, Level.ExplosionInteraction.NONE);
                 doExplosion = false;
@@ -104,12 +104,12 @@ public class CreativeEnergyContainerMachine extends TieredMachine
         int ampsUsed = 0;
         for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
-            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(),
+            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(GTGetLevel(),
                     getBlockPos().relative(facing),
                     opposite);
             // Try to get laser capability
             if (container == null)
-                container = GTCapabilityHelper.getLaser(getLevel(), getBlockPos().relative(facing), opposite);
+                container = GTCapabilityHelper.getLaser(GTGetLevel(), getBlockPos().relative(facing), opposite);
 
             if (container != null && container.inputsEnergy(opposite) && container.getEnergyCanBeInserted() > 0) {
                 ampsUsed += container.acceptEnergyFromNetwork(opposite, voltage, amps - ampsUsed);

@@ -44,7 +44,7 @@ public class FluidDrillLogic extends RecipeLogic {
 
     @Override
     public void findAndHandleRecipe() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel) {
             lastRecipe = null;
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             if (veinFluid == null) {
@@ -68,7 +68,7 @@ public class FluidDrillLogic extends RecipeLogic {
 
     @Nullable
     private GTRecipe getFluidDrillRecipe() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
@@ -84,7 +84,7 @@ public class FluidDrillLogic extends RecipeLogic {
     }
 
     public int getFluidToProduce() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             return getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()));
         }
@@ -137,7 +137,7 @@ public class FluidDrillLogic extends RecipeLogic {
     }
 
     protected void depleteVein() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel) {
             int chance = FluidDrillMachine.getDepletionChance(getMachine().getTier());
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             // chance to deplete based on the rig

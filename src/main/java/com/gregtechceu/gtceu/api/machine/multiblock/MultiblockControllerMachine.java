@@ -87,14 +87,14 @@ public class MultiblockControllerMachine extends MetaMachine {
         super.onLoad();
         if (!isRemote()) {
             // run a structure check on the first tick
-            ((ServerLevel) getLevel()).getServer().tell(new TickTask(2, this::checkAndFormStructure));
+            ((ServerLevel) GTGetLevel()).getServer().tell(new TickTask(2, this::checkAndFormStructure));
         }
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        if (getLevel() instanceof ServerLevel serverLevel) {
+        if (GTGetLevel() instanceof ServerLevel serverLevel) {
             for (var pattern : patternStates.values()) {
                 MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(pattern);
             }
@@ -116,7 +116,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     protected void onPartsUpdated() {
         parts.clear();
         for (var pos : partPositions) {
-            if (getMachine(getLevel(), pos) instanceof MultiblockPartMachine part) {
+            if (getMachine(GTGetLevel(), pos) instanceof MultiblockPartMachine part) {
                 parts.add(part);
             }
         }
@@ -165,7 +165,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         if (this.parts.size() != this.partPositions.length) {
             this.parts.clear();
             for (BlockPos pos : this.partPositions) {
-                if (getMachine(getLevel(), pos) instanceof MultiblockPartMachine part) {
+                if (getMachine(GTGetLevel(), pos) instanceof MultiblockPartMachine part) {
                     this.parts.add(part);
                 }
             }
@@ -189,7 +189,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     //////////////////////////////////////
 
     public void checkAndFormStructure() {
-        if (!(getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(GTGetLevel() instanceof ServerLevel serverLevel)) return;
         if (isRemoved()) return;
         for (var entry : patternStates.entrySet()) {
             String name = entry.getKey();
@@ -269,10 +269,10 @@ public class MultiblockControllerMachine extends MetaMachine {
     public PatternState checkStructurePattern(String structureName) {
         IBlockPattern pattern = getSubstructurePattern(structureName);
         PatternState state = getPatternState(structureName);
-        if (pattern == null || !state.shouldUpdate() || getLevel() == null) return state;
+        if (pattern == null || !state.shouldUpdate() || GTGetLevel() == null) return state;
 
         state.setController(this, getBlockPos());
-        pattern.checkPatternFastAt(getLevel(), state, getBlockPos(), getFrontFacing(), getUpwardsFacing(),
+        pattern.checkPatternFastAt(GTGetLevel(), state, getBlockPos(), getFrontFacing(), getUpwardsFacing(),
                 allowFlip());
 
         return state;
@@ -446,7 +446,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     @Override
     public void onRotated(Direction oldFacing, Direction newFacing) {
-        if (oldFacing != newFacing && getLevel() instanceof ServerLevel serverLevel) {
+        if (oldFacing != newFacing && GTGetLevel() instanceof ServerLevel serverLevel) {
             // invalid structure
             invalidateStructureCaches();
             var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
@@ -472,14 +472,14 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     @Override
     public void setUpwardsFacing(Direction upwardsFacing) {
-        if (getLevel() == null) return;
+        if (GTGetLevel() == null) return;
         if (!getDefinition().isAllowExtendedFacing()) return;
         BlockState blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
-            getLevel().setBlockAndUpdate(getBlockPos(),
+            GTGetLevel().setBlockAndUpdate(getBlockPos(),
                     blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsFacing));
-            if (getLevel() != null && !getLevel().isClientSide) {
+            if (GTGetLevel() != null && !GTGetLevel().isClientSide) {
                 notifyBlockUpdate();
                 invalidateStructureCaches();
                 checkAndFormStructure();
@@ -491,7 +491,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void setFrontFacing(Direction facing) {
         super.setFrontFacing(facing);
 
-        if (getLevel() != null && !getLevel().isClientSide) {
+        if (GTGetLevel() != null && !GTGetLevel().isClientSide) {
             invalidateStructureCaches();
             checkAndFormStructure();
         }

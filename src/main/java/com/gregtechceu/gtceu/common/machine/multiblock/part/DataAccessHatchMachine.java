@@ -111,7 +111,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     private void rebuildData(boolean isDataBank) {
-        if (isCreative || getLevel() == null || getLevel().isClientSide) return;
+        if (isCreative || GTGetLevel() == null || GTGetLevel().isClientSide) return;
         recipes.clear();
         for (int i = 0; i < this.importItems.getSlots(); i++) {
             ItemStack stack = this.importItems.getStackInSlot(i);

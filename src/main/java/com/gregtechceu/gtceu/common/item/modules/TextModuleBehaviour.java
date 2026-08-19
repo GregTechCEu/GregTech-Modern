@@ -35,11 +35,11 @@ public class TextModuleBehaviour implements IMonitorModuleItem, IAddInformation 
             stack.getOrCreateTag().putUUID("placeholderUUID", UUID.randomUUID());
         }
         return new PlaceholderContext(
-                group.getTargetLevel(machine.getLevel()),
-                group.getTarget(machine.getLevel()),
+                group.getTargetLevel(machine.GTGetLevel()),
+                group.getTarget(machine.GTGetLevel()),
                 group.getTargetCoverSide(),
                 group.getPlaceholderSlotsHandler(),
-                group.getTargetCover(machine.getLevel()),
+                group.getTargetCover(machine.GTGetLevel()),
                 group,
                 null,
                 stack.getOrCreateTag().getUUID("placeholderUUID"));

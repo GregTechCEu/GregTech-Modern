@@ -61,7 +61,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 var blockPos = RelativeDirection.offsetPos(getBlockPos(), getFrontFacing(), getUpwardsFacing(),
                         isFlipped(),
                         i, j, 1);
-                var blockState = this.getLevel().getBlockState(blockPos);
+                var blockState = this.GTGetLevel().getBlockState(blockPos);
                 if (!blockState.isAir())
                     return true;
             }

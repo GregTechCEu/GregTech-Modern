@@ -62,7 +62,7 @@ public class LargeMinerLogic extends MinerLogic {
             super.initPos(pos, currentRadius);
         } else {
             Direction dir = super.getDir();
-            ServerLevel world = (ServerLevel) this.getMachine().getLevel();
+            ServerLevel world = (ServerLevel) this.getMachine().GTGetLevel();
             ChunkAccess origin = world.getChunk(pos);
             ChunkPos startPos = (world.getChunk(origin.getPos().x - currentRadius / CHUNK_LENGTH,
                     origin.getPos().z - currentRadius / CHUNK_LENGTH)).getPos();

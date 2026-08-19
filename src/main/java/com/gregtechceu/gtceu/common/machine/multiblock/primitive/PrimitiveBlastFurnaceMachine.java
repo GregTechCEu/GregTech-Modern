@@ -111,13 +111,13 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             var speed = ((shouldY ? facing.getStepY() : shouldX ? facing.getStepX() : facing.getStepZ()) * 0.1F + 0.2F +
                     0.1F * GTValues.RNG.nextFloat()) * sign;
             if (getOffsetTimer() % 20 == 0) {
-                getLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
+                GTGetLevel().addParticle(ParticleTypes.LAVA, xPos, yPos, zPos,
                         shouldX ? speed * 2 : 0,
                         shouldY ? speed * 2 : 0,
                         shouldZ ? speed * 2 : 0);
             }
             if (isActive()) {
-                getLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
+                GTGetLevel().addParticle(ParticleTypes.LARGE_SMOKE, xPos, yPos, zPos,
                         shouldX ? speed : 0,
                         shouldY ? speed : 0,
                         shouldZ ? speed : 0);
@@ -230,21 +230,21 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
                 x += horizontalOffset;
             }
             if (ConfigHolder.INSTANCE.machines.machineSounds && GTValues.RNG.nextDouble() < 0.1) {
-                getLevel().playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE,
+                GTGetLevel().playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE,
                         SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
-            getLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
-            getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
+            GTGetLevel().addParticle(ParticleTypes.LARGE_SMOKE, x, y, z, 0, 0, 0);
+            GTGetLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
         }
     }
 
     private void hurtEntitiesAndBreakSnow() {
         BlockPos middlePos = getBlockPos().offset(getFrontFacing().getOpposite().getNormal());
-        getLevel().getEntities(null, new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
+        GTGetLevel().getEntities(null, new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
 
         if (getOffsetTimer() % 10 == 0) {
-            BlockState state = getLevel().getBlockState(middlePos);
-            GTUtil.tryBreakSnow(getLevel(), middlePos, state, true);
+            BlockState state = GTGetLevel().getBlockState(middlePos);
+            GTUtil.tryBreakSnow(GTGetLevel(), middlePos, state, true);
         }
     }
 }

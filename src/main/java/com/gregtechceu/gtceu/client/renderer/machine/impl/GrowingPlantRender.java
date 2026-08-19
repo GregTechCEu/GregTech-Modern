@@ -141,7 +141,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
         }
 
         MetaMachine machine = rlm.self();
-        Level level = machine.getLevel();
+        Level level = machine.GTGetLevel();
         assert level != null;
         BlockPos machinePos = machine.getBlockPos();
 

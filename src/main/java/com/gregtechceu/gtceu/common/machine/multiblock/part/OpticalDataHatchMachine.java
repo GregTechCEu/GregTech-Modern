@@ -64,7 +64,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
             return isRecipeAvailable(dataAccesses, seen, recipe) ||
                     isRecipeAvailable(transmitters, seen, recipe);
         } else {
-            BlockEntity blockEntity = getLevel().getBlockEntity(getBlockPos().relative(getFrontFacing()));
+            BlockEntity blockEntity = GTGetLevel().getBlockEntity(getBlockPos().relative(getFrontFacing()));
             if (blockEntity == null) return false;
 
             if (blockEntity instanceof OpticalPipeBlockEntity) {

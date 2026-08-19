@@ -187,15 +187,15 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     public double getAverageAmperage() {
-        return averageAmperageCounter.getAverage(getLevel());
+        return averageAmperageCounter.getAverage(GTGetLevel());
     }
 
     public long getCurrentMaxVoltage() {
-        return maxVoltageCounter.get(getLevel());
+        return maxVoltageCounter.get(GTGetLevel());
     }
 
     public double getAverageVoltage() {
-        return averageVoltageCounter.getAverage(getLevel());
+        return averageVoltageCounter.getAverage(GTGetLevel());
     }
 
     public long getMaxAmperage() {
@@ -220,13 +220,13 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
      * @return if the cable should be destroyed
      */
     public boolean incrementAmperage(long amps, long voltage) {
-        if (voltage > maxVoltageCounter.get(getLevel())) {
-            maxVoltageCounter.set(getLevel(), voltage);
+        if (voltage > maxVoltageCounter.get(GTGetLevel())) {
+            maxVoltageCounter.set(GTGetLevel(), voltage);
         }
-        averageVoltageCounter.increment(getLevel(), voltage * amps);
-        averageAmperageCounter.increment(getLevel(), amps);
+        averageVoltageCounter.increment(GTGetLevel(), voltage * amps);
+        averageAmperageCounter.increment(GTGetLevel(), amps);
 
-        int dif = GTMath.saturatedCast(averageAmperageCounter.getLast(getLevel()) - getMaxAmperage());
+        int dif = GTMath.saturatedCast(averageAmperageCounter.getLast(GTGetLevel()) - getMaxAmperage());
         if (dif > 0) {
             applyHeat(dif * 40);
             return true;
@@ -318,7 +318,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
-        getLevel().getLightEngine().checkBlock(worldPosition);
+        GTGetLevel().getLightEngine().checkBlock(worldPosition);
     }
 
     @ClientFieldChangeListener(fieldName = "temperature")
@@ -339,7 +339,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             float yPos = Direction.UP.getStepY() * 0.76f + getBlockPos().getY() + 0.25f;
             float zPos = Direction.UP.getStepZ() * 0.76f + getBlockPos().getZ() + 0.25f;
 
-            float horizontalDirection = getLevel().random.nextFloat() * 2 * Mth.PI;
+            float horizontalDirection = GTGetLevel().random.nextFloat() * 2 * Mth.PI;
             float xSpd = Mth.sin(horizontalDirection) * 0.1f;
             float ySpd = Direction.UP.getStepY() * 0.1f + 0.2f + 0.1f * level.random.nextFloat();
             float zSpd = Mth.cos(horizontalDirection) * 0.1f;

@@ -49,7 +49,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     @Override
     public void findAndHandleRecipe() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel) {
             lastRecipe = null;
             var data = BedrockOreVeinSavedData.getOrCreate(serverLevel);
             if (veinMaterials == null) {
@@ -73,7 +73,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     @Nullable
     private GTRecipe getOreMinerRecipe() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
             WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.random, veinMaterials);
             if (wm == null) return null;
             Material material = wm.material();
@@ -124,7 +124,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     }
 
     public int getOreToProduce() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
             var data = BedrockOreVeinSavedData.getOrCreate(serverLevel);
             return getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ()));
         }
@@ -157,7 +157,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     }
 
     protected void depleteVein() {
-        if (getMachine().getLevel() instanceof ServerLevel serverLevel) {
+        if (getMachine().GTGetLevel() instanceof ServerLevel serverLevel) {
             int chance = BedrockOreMinerMachine.getDepletionChance(getMachine().getTier());
             var data = BedrockOreVeinSavedData.getOrCreate(serverLevel);
             // chance to deplete based on the rig

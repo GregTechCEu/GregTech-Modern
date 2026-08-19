@@ -136,7 +136,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        Level level = recipeLogic.getMachine().getLevel();
+        Level level = recipeLogic.getMachine().GTGetLevel();
         BlockPos pos = recipeLogic.getMachine().getBlockPos();
         if (level == null) {
             return false;

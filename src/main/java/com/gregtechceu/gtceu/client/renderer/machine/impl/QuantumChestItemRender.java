@@ -72,7 +72,7 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         poseStack.pushPose();
         setupModelRotation(machine, poseStack);
 
-        var totalTick = machine.getLevel().getGameTime() + partialTick;
+        var totalTick = machine.GTGetLevel().getGameTime() + partialTick;
         renderChestItem(poseStack, buffer, totalTick, machine.getFrontFacing(),
                 machine.getStored(), machine.getStoredAmount(), machine.getLockedItem(),
                 machine instanceof CreativeChestMachine);

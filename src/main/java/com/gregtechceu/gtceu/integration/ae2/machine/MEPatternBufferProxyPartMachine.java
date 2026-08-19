@@ -73,7 +73,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
 
     public void setBuffer(@Nullable BlockPos pos) {
         bufferResolved = true;
-        var level = getLevel();
+        var level = GTGetLevel();
         if (level == null || pos == null) {
             buffer = null;
         } else if (MetaMachine.getMachine(level, pos) instanceof MEPatternBufferPartMachine machine) {

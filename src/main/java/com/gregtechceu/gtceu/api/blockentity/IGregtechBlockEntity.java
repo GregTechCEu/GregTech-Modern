@@ -13,7 +13,7 @@ import net.minecraftforge.common.extensions.IForgeBlockEntity;
 
 public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IForgeBlockEntity {
 
-    Level getLevel();
+    Level GTGetLevel();
 
     BlockPos getBlockPos();
 
@@ -27,13 +27,13 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
      * Called to notify neighboring blocks that this block has changed.
      */
     default void notifyBlockUpdate() {
-        if (getLevel() != null) {
-            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        if (GTGetLevel() != null) {
+            GTGetLevel().updateNeighborsAt(getBlockPos(), GTGetLevel().getBlockState(getBlockPos()).getBlock());
         }
     }
 
     default void scheduleNeighborShapeUpdate() {
-        Level level = getLevel();
+        Level level = GTGetLevel();
         BlockPos pos = getBlockPos();
 
         if (level == null || pos == null)
@@ -43,14 +43,14 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
+        return GTGetLevel() == null ? GTCEu.isClientThread() : GTGetLevel().isClientSide;
     }
 
     default void scheduleRenderUpdate() {
         var pos = getBlockPos();
-        var level = getLevel();
+        var level = GTGetLevel();
         if (level != null) {
-            var state = getLevel().getBlockState(pos);
+            var state = GTGetLevel().getBlockState(pos);
             if (level.isClientSide) {
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
                 requestModelDataUpdate();
@@ -61,6 +61,6 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
     }
 
     default BlockEntity getNeighbor(Direction direction) {
-        return getLevel().getBlockEntity(getBlockPos().relative(direction));
+        return GTGetLevel().getBlockEntity(getBlockPos().relative(direction));
     }
 }

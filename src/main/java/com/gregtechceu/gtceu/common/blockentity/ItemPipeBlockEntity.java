@@ -51,7 +51,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
     }
 
     public long getLevelTime() {
-        return hasLevel() ? Objects.requireNonNull(getLevel()).getGameTime() : 0L;
+        return hasLevel() ? Objects.requireNonNull(GTGetLevel()).getGameTime() : 0L;
     }
 
     public static void onBlockEntityRegister(BlockEntityType<ItemPipeBlockEntity> itemPipeBlockEntityBlockEntityType) {}
@@ -59,7 +59,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            Level world = getLevel();
+            Level world = GTGetLevel();
             if (world == null || world.isClientSide()) return LazyOptional.empty();
 
             if (side != null && isConnected(side)) {

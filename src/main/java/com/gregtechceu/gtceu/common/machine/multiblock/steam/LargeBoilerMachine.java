@@ -157,15 +157,15 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
 
                 // check explosion
                 if (drained < maxDrain) {
-                    GTUtil.doExplosion(getLevel(), getBlockPos(), 2f);
+                    GTUtil.doExplosion(GTGetLevel(), getBlockPos(), 2f);
                     var center = getBlockPos().below().relative(getFrontFacing().getOpposite());
                     if (GTValues.RNG.nextInt(100) > 80) {
-                        GTUtil.doExplosion(getLevel(), center, 2f);
+                        GTUtil.doExplosion(GTGetLevel(), center, 2f);
                     }
                     for (Direction x : Direction.Plane.HORIZONTAL) {
                         for (Direction y : Direction.Plane.HORIZONTAL) {
                             if (GTValues.RNG.nextInt(100) > 80) {
-                                GTUtil.doExplosion(getLevel(), center.relative(x).relative(y), 2f);
+                                GTUtil.doExplosion(GTGetLevel(), center.relative(x).relative(y), 2f);
                             }
                         }
                     }
