@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -189,12 +191,22 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                             visited[tank] = drained.copy();
                             visited[tank].setAmount(count - drained.getAmount());
                             changed = true;
-                            if (recipe != null) {
+                            if (!simulate) {
                                 FluidStack copied = drained.copy();
-                                getMachine().getTraitOptional(RecipeLogic.class)
-                                        .map(RecipeLogic::getConsumedInputs)
-                                        .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.FLUID,
-                                                FluidIngredient.of(copied)));
+                                if (getMachine() instanceof MultiblockPartMachine partMachine) {
+                                    for (MultiblockControllerMachine controller : partMachine.getControllers()) {
+                                        RecipeLogic logic = controller.getTrait(RecipeLogic.class);
+                                        if (logic != null && logic.getStartingRecipe() == recipe) {
+                                            logic.getConsumedInputs().addConsumedInput(GTRecipeCapabilities.FLUID,
+                                                    FluidIngredient.of(copied));
+                                        }
+                                    }
+                                } else {
+                                    getMachine().getTraitOptional(RecipeLogic.class)
+                                            .map(RecipeLogic::getConsumedInputs)
+                                            .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.FLUID,
+                                                    FluidIngredient.of(copied)));
+                                }
                             }
                         }
                         amount -= drained.getAmount();

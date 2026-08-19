@@ -216,7 +216,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
-                            Codec.BOOL.optionalFieldOf("spoilageData", true).forGetter(val -> val.keepSpoilingProgress))
+                            Codec.BOOL.optionalFieldOf("keepSpoilingProgress", true).forGetter(val -> val.keepSpoilingProgress))
                     .apply(instance, (type,
                                       recipeIO,
                                       conditions, data, duration, allParallels, recipeCategory, groupColor, keepSpoilingProgress) ->

@@ -146,7 +146,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                         if (!extracted.isEmpty()) {
                             changed = true;
                             visited[slot] = extracted.copyWithCount(count - extracted.getCount());
-                            if (recipe != null) {
+                            if (!simulate) {
                                 ItemStack copied = extracted.copy();
                                 ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
                                 if (spoilable != null) spoilable.freezeSpoiling();

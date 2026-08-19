@@ -475,6 +475,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
         GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
         startingRecipe = runningRecipe;
+        consumedInputs.clear();
         var handledIO = handleRecipeIO(runningRecipe, IO.IN);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
@@ -638,7 +639,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 isActive = false;
                 syncDataHolder.resyncAllFields();
             }
-            consumedInputs.clear();
         }
     }
 
