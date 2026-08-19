@@ -139,6 +139,7 @@ public class GTRecipeBuilder {
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
         this.recipeCategory = toCopy.recipeCategory;
+        this.keepSpoilingProgress = toCopy.keepSpoilingProgress;
     }
 
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
@@ -170,6 +171,7 @@ public class GTRecipeBuilder {
         copy.perTick = this.perTick;
         copy.recipeCategory = this.recipeCategory;
         copy.onSave = this.onSave;
+        copy.keepSpoilingProgress = this.keepSpoilingProgress;
         return copy;
     }
 
@@ -1637,7 +1639,7 @@ public class GTRecipeBuilder {
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
                 conditions, List.of(), data, duration, recipeCategory, -1,
-                new RecipeSpoilageData(keepSpoilingProgress));
+                keepSpoilingProgress);
     }
 
     protected void warnTooManyIngredients(RecipeCapability<?> capability,

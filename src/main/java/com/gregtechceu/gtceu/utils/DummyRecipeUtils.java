@@ -101,7 +101,7 @@ public class DummyRecipeUtils {
         @Override
         public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
                                                        boolean simulate) {
-            return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, handlerIO, storage);
+            return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, handlerIO, storage, null);
         }
 
         @Override

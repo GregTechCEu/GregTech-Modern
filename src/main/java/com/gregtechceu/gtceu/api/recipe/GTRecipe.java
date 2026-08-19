@@ -65,7 +65,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     @Getter(lazy = true)
     private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
     public int groupColor;
-    public RecipeSpoilageData spoilageData;
+    public boolean keepSpoilingProgress;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -82,11 +82,11 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     int duration, int parallels, int subtickParallels, int batchParallels,
                     @NotNull GTRecipeCategory recipeCategory,
                     int groupColor,
-                    RecipeSpoilageData spoilageData) {
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels,
-                recipeCategory, groupColor, spoilageData);
+                recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     /**
@@ -103,13 +103,13 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     GTRecipeSerializer.RecipeParallels allParallels,
                     GTRecipeCategory recipeCategory,
                     int groupColor,
-                    RecipeSpoilageData spoilageData) {
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
                 recipeIO.inputChanceLogics(), recipeIO.outputChanceLogics(), recipeIO.tickInputChanceLogics(),
                 recipeIO.tickOutputChanceLogics(),
                 conditions, ingredientActions, data, duration, allParallels.parallels(),
                 allParallels.subtickParallels(),
-                allParallels.batchParallels(), recipeCategory, groupColor, spoilageData);
+                allParallels.batchParallels(), recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     /**
@@ -130,11 +130,11 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     List<Integer> allParallels,
                     @NotNull GTRecipeCategory recipeCategory,
                     int groupColor,
-                    RecipeSpoilageData spoilageData) {
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, List.of(), data, duration, allParallels.get(0), allParallels.get(1),
-                allParallels.get(2), recipeCategory, groupColor, spoilageData);
+                allParallels.get(2), recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     /**
@@ -156,10 +156,11 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     int duration,
                     @NotNull GTRecipeCategory recipeCategory,
                     int groupColor,
-                    RecipeSpoilageData spoilageData) {
+                    boolean keepSpoilingProgress) {
         this(recipeType, id, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor, spoilageData);
+                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor,
+                keepSpoilingProgress);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -176,10 +177,10 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     int duration,
                     @NotNull GTRecipeCategory recipeCategory,
                     int groupColor,
-                    RecipeSpoilageData spoilageData) {
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, List.of(), data, duration, recipeCategory, groupColor, spoilageData);
+                conditions, List.of(), data, duration, recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -197,7 +198,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     @NotNull CompoundTag data,
                     int duration, int parallels, int subtickParallels, int batchParallels,
                     @NotNull GTRecipeCategory recipeCategory, int groupColor,
-                    RecipeSpoilageData spoilageData) {
+                    boolean keepSpoilingProgress) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -220,7 +221,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
         this.batchParallels = batchParallels;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
         this.groupColor = groupColor;
-        this.spoilageData = spoilageData;
+        this.keepSpoilingProgress = keepSpoilingProgress;
     }
 
     public GTRecipe copy() {
@@ -239,7 +240,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
                 new ArrayList<>(ingredientActions), data, duration, parallels, subtickParallels, batchParallels,
-                recipeCategory, groupColor, spoilageData.copy());
+                recipeCategory, groupColor, keepSpoilingProgress);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
@@ -255,7 +256,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor, spoilageData);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor, keepSpoilingProgress);
         copied.ocLevel = ocLevel;
         copied.parallels = parallels;
         copied.batchParallels = batchParallels;

@@ -7,7 +7,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingInput;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -86,14 +90,15 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     @Override
     public List<SizedIngredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<SizedIngredient> left,
                                                    boolean simulate) {
-        return handleRecipe(io, recipe, left, simulate, handlerIO, storage);
+        return handleRecipe(io, recipe, left, simulate, handlerIO, storage, getMachine());
     }
 
     // TODO: See if implementable in outside callers and unstatic; or move to different common class if not
     // Notable caller is ItemRecipeHandler, used for MinerLogic
     public static List<SizedIngredient> handleRecipe(IO io, @Nullable GTRecipe recipe, List<SizedIngredient> left,
                                                      boolean simulate,
-                                                     IO handlerIO, CustomItemStackHandler storage) {
+                                                     IO handlerIO, CustomItemStackHandler storage,
+                                                     @Nullable MetaMachine machine) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left;
 
@@ -140,12 +145,22 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                         if (!extracted.isEmpty()) {
                             changed = true;
                             visited[slot] = extracted.copyWithCount(count - extracted.getCount());
-                            if (recipe != null) {
+                            if (!simulate) {
                                 ItemStack copied = extracted.copy();
                                 ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
                                 if (spoilable != null) spoilable.freezeSpoiling();
-                                recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.ITEM,
-                                        new SizedIngredient(Ingredient.of(copied), 1));
+                                if (machine instanceof MultiblockPartMachine partMachine) {
+                                    for (MultiblockControllerMachine controller : partMachine.getControllers()) {
+                                        RecipeLogic logic = controller.getTrait(RecipeLogic.class);
+                                        if (logic != null && logic.getStartingRecipe() == recipe) {
+                                            logic.getConsumedInputs().addConsumedInput(GTRecipeCapabilities.ITEM,
+                                                    new SizedIngredient(Ingredient.of(copied), 1));
+                                        }
+                                    }
+                                } else if (machine != null) machine.getTraitOptional(RecipeLogic.class)
+                                        .map(RecipeLogic::getConsumedInputs)
+                                        .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.ITEM,
+                                                new SizedIngredient(Ingredient.of(copied), 1)));
                             }
                         }
                         amount -= extracted.getCount();

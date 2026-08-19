@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ConsumedInputsData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -62,10 +64,13 @@ public class GTRecipeModifiers {
                 ISpoilableItem outputSpoilable = GTCapabilityHelper.getSpoilable(stack);
                 if (outputSpoilable == null) return;
                 SpoilUtils.update(stack, new SpoilContext(machine));
-                if (!r.spoilageData.keepSpoilingProgress()) return;
+                if (!r.keepSpoilingProgress) return;
                 double spoilProgress = 0;
                 int spoilableCount = 0;
-                for (Object inObject : r.spoilageData.getConsumedInputs(GTRecipeCapabilities.ITEM)) {
+                ConsumedInputsData inputs = machine.getTraitOptional(RecipeLogic.class)
+                        .map(RecipeLogic::getConsumedInputs).orElse(null);
+                if (inputs == null) return;
+                for (Object inObject : inputs.getConsumedInputs(GTRecipeCapabilities.ITEM)) {
                     if (!(inObject instanceof SizedIngredient ingredient)) continue;
                     if (ingredient.getItems().length == 0) continue;
                     ItemStack in = ingredient.getItems()[0];
