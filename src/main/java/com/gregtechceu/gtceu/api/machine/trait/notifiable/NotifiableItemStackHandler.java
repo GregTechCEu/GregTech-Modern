@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
@@ -148,7 +150,15 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                                 ItemStack copied = extracted.copy();
                                 ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
                                 if (spoilable != null) spoilable.freezeSpoiling();
-                                if (machine != null) machine.getTraitOptional(RecipeLogic.class)
+                                if (machine instanceof MultiblockPartMachine partMachine) {
+                                    for (MultiblockControllerMachine controller : partMachine.getControllers()) {
+                                        RecipeLogic logic = controller.getTrait(RecipeLogic.class);
+                                        if (logic != null && logic.getStartingRecipe() == recipe) {
+                                            logic.getConsumedInputs().addConsumedInput(GTRecipeCapabilities.ITEM,
+                                                    Ingredient.of(copied));
+                                        }
+                                    }
+                                } else if (machine != null) machine.getTraitOptional(RecipeLogic.class)
                                         .map(RecipeLogic::getConsumedInputs)
                                         .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.ITEM,
                                                 Ingredient.of(copied)));
