@@ -184,7 +184,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     }
 
     private List<ItemStack> tryDestroyBlockAndGetDrops(BlockPos pos) {
-        List<ItemStack> drops = Block.getDrops(GTGetLevel().getBlockState(pos), (ServerLevel) GTGetLevel(), pos, null, null,
+        List<ItemStack> drops = Block.getDrops(GTGetLevel().getBlockState(pos), (ServerLevel) GTGetLevel(), pos, null,
+                null,
                 ItemStack.EMPTY);
         GTGetLevel().destroyBlock(pos, false);
         return drops;

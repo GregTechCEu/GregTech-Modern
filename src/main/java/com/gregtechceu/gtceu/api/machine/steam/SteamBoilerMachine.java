@@ -125,7 +125,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     protected void updateAutoOutputSubscription() {
         if (Direction.stream().filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                .anyMatch(direction -> GTTransferUtils.hasAdjacentFluidHandler(GTGetLevel(), getBlockPos(), direction))) {
+                .anyMatch(
+                        direction -> GTTransferUtils.hasAdjacentFluidHandler(GTGetLevel(), getBlockPos(), direction))) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -137,7 +138,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (getOffsetTimer() % 5 == 0) {
             steamTank.exportToNearby(Direction.stream()
                     .filter(direction -> direction != getFrontFacing() && direction != Direction.DOWN)
-                    .filter(direction -> GTTransferUtils.hasAdjacentFluidHandler(GTGetLevel(), getBlockPos(), direction))
+                    .filter(direction -> GTTransferUtils.hasAdjacentFluidHandler(GTGetLevel(), getBlockPos(),
+                            direction))
                     .toArray(Direction[]::new));
             updateAutoOutputSubscription();
         }
