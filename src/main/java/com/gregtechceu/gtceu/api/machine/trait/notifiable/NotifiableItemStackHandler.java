@@ -145,7 +145,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                                 ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
                                 if (spoilable != null) spoilable.freezeSpoiling();
                                 recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.ITEM,
-                                    new SizedIngredient(Ingredient.of(copied), 1));
+                                        new SizedIngredient(Ingredient.of(copied), 1));
                             }
                         }
                         amount -= extracted.getCount();
