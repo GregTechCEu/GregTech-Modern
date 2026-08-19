@@ -23,7 +23,7 @@ public class RecipeSpoilageData {
 
     public static final Codec<RecipeSpoilageData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RecipeCapability.INGREDIENT_CODEC.optionalFieldOf("consumedInputs", new HashMap<>())
-                    .xmap(RecipeSpoilageData::mutableCopy, Function.identity())
+                    .xmap(HashMap::new, Function.identity())
                     .forGetter(RecipeSpoilageData::getConsumedInputs),
             Codec.BOOL.fieldOf("keepSpoilingProgress").forGetter(RecipeSpoilageData::keepSpoilingProgress))
             .apply(instance, RecipeSpoilageData::new));
@@ -40,12 +40,6 @@ public class RecipeSpoilageData {
 
     public RecipeSpoilageData(boolean keepSpoilingProgress) {
         this(new HashMap<>(), keepSpoilingProgress);
-    }
-
-    private static Map<RecipeCapability<?>, List<?>> mutableCopy(Map<RecipeCapability<?>, List<?>> consumedInputs) {
-        Map<RecipeCapability<?>, List<?>> copied = new HashMap<>();
-        consumedInputs.forEach((capability, inputs) -> copied.put(capability, new ArrayList<>(inputs)));
-        return copied;
     }
 
     public RecipeSpoilageData copy() {
