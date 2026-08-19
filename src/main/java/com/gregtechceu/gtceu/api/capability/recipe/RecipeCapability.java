@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Used to detect whether a machine has a certain capability.
@@ -65,11 +66,11 @@ public abstract class RecipeCapability<T> {
     }
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
-        return Content.codec(capability).listOf();
+        return Content.codec(capability).listOf().xmap(ArrayList::new, Function.identity());
     }
 
     public static <T> Codec<List<T>> ingredientCodec(RecipeCapability<T> capability) {
-        return Content.ingredientCodec(capability).listOf();
+        return Content.ingredientCodec(capability).listOf().xmap(ArrayList::new, Function.identity());
     }
 
     public Tag contentToNbt(Object value) {

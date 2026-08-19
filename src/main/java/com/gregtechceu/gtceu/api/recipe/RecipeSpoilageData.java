@@ -16,12 +16,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @AllArgsConstructor
 public class RecipeSpoilageData {
 
     public static final Codec<RecipeSpoilageData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RecipeCapability.INGREDIENT_CODEC.optionalFieldOf("consumedInputs", new HashMap<>())
+                    .xmap((map -> (Map<RecipeCapability<?>, List<?>>) new HashMap(map)), Function.identity())
                     .forGetter(RecipeSpoilageData::getConsumedInputs),
             Codec.BOOL.fieldOf("keepSpoilingProgress").forGetter(RecipeSpoilageData::keepSpoilingProgress))
             .apply(instance, RecipeSpoilageData::new));
