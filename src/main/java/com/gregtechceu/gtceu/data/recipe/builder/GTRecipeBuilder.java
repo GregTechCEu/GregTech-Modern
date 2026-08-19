@@ -1646,7 +1646,7 @@ public class GTRecipeBuilder {
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
                 conditions, List.of(), data, duration, recipeCategory, -1,
-                new RecipeSpoilageData(keepSpoilingProgress));
+                true);
     }
 
     protected void warnTooManyIngredients(RecipeCapability<?> capability,

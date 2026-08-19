@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -190,8 +191,10 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
                             changed = true;
                             if (recipe != null) {
                                 FluidStack copied = drained.copy();
-                                recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.FLUID,
-                                        FluidIngredient.of(copied));
+                                getMachine().getTraitOptional(RecipeLogic.class)
+                                        .map(RecipeLogic::getConsumedInputs)
+                                        .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.FLUID,
+                                                FluidIngredient.of(copied)));
                             }
                         }
                         amount -= drained.getAmount();
