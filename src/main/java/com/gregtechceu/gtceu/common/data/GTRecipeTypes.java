@@ -696,7 +696,7 @@ public class GTRecipeTypes {
         var recipeType = new GTRecipeType(id, group, proxyRecipes);
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
-        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
+        GTRegistries.register(GTRegistries.RECIPE_TYPES, recipeType.registryName, recipeType);
         return recipeType;
     }
 
