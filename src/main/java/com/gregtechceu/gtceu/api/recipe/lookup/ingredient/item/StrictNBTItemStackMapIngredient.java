@@ -60,10 +60,12 @@ public class StrictNBTItemStackMapIngredient extends AbstractMapIngredient {
                     return GTUtil.isSameItemSameTags(((StrictNBTIngredientAccessor) nbtIngredient).getStack(),
                             ((StrictNBTIngredientAccessor) other.nbtIngredient).getStack());
                 } else {
-                    this.nbtIngredient.test(other.stack);
+                    return this.nbtIngredient.test(other.stack);
                 }
             } else if (other.nbtIngredient != null) {
                 return other.nbtIngredient.test(this.stack);
+            } else {
+                return GTUtil.isSameItemSameTags(this.stack, other.stack);
             }
         }
         return false;

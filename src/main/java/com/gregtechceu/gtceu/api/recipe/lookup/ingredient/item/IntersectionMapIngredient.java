@@ -57,9 +57,9 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
 
     @Override
     protected int hash() {
-        int hash = 31;
+        int hash = 1;
         for (var child : children) {
-            hash *= 31 * child.hashCode();
+            hash = 31 * hash + child.hashCode();
         }
         return hash;
     }
@@ -68,26 +68,17 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
     public boolean equals(Object o) {
         if (super.equals(o)) {
             IntersectionMapIngredient other = (IntersectionMapIngredient) o;
-            if (this.children != null) {
-                if (other.children != null) {
-                    if (this.children.size() != other.children.size()) return false;
-                    for (int i = 0; i < this.children.size(); ++i) {
-                        var ingredient1 = this.children.get(i);
-                        var ingredient2 = other.children.get(i);
-                        if (!ingredient1.equals(ingredient2)) {
-                            return false;
-                        }
+            if (this.children != null && other.children != null) {
+                if (this.children.size() != other.children.size()) return false;
+                for (int i = 0; i < this.children.size(); ++i) {
+                    var ingredient1 = this.children.get(i);
+                    var ingredient2 = other.children.get(i);
+                    if (!ingredient1.equals(ingredient2)) {
+                        return false;
                     }
-                    return true;
                 }
+                return true;
             }
-        } else if (o instanceof ItemMapIngredient stackIngredient) {
-            for (var child : this.children) {
-                if (!child.equals(stackIngredient)) {
-                    return false;
-                }
-            }
-            return true;
         }
         return false;
     }

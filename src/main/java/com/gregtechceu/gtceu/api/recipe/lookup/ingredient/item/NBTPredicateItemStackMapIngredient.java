@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.world.item.ItemStack;
@@ -65,10 +66,12 @@ public class NBTPredicateItemStackMapIngredient extends AbstractMapIngredient {
                     }
                     return true;
                 } else {
-                    this.nbtIngredient.test(other.stack);
+                    return this.nbtIngredient.test(other.stack);
                 }
             } else if (other.nbtIngredient != null) {
                 return other.nbtIngredient.test(this.stack);
+            } else {
+                return GTUtil.isSameItemSameTags(this.stack, other.stack);
             }
         }
         return false;

@@ -55,12 +55,14 @@ public class FluidStackMapIngredient extends AbstractMapIngredient {
             }
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
-                    return this.ingredient.equals(other.ingredient);
+                    return this.ingredient.test(other.stack) && other.ingredient.test(this.stack);
                 } else {
                     return this.ingredient.test(other.stack);
                 }
             } else if (other.ingredient != null) {
                 return other.ingredient.test(this.stack);
+            } else {
+                return this.stack.isFluidEqual(other.stack);
             }
         }
         return false;

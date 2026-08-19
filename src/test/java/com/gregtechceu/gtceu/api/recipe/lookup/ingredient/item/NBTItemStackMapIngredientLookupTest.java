@@ -215,4 +215,29 @@ public class NBTItemStackMapIngredientLookupTest {
                 "GT Recipe should be STRICT_TAG_2, instead was " + resultRecipe);
         helper.succeed();
     }
+
+    @GameTest(template = "empty", batch = "NBTItemStackMapIngredientLookup")
+    public static void NBTItemStackMapIngredientMatchingFromItemStackTest(GameTestHelper helper) {
+        ItemStack greenBedWithTag1 = new ItemStack(Items.GREEN_BED);
+        for (var key : tag1.getAllKeys()) {
+            greenBedWithTag1.getOrCreateTag().put(key, tag1.get(key));
+        }
+        GTRecipeDefinition resultRecipe = DB.find(
+                StrictNBTItemStackMapIngredient.from(greenBedWithTag1),
+                ALWAYS_TRUE);
+        helper.assertTrue(resultRecipe == STRICT_TAG_1,
+                "GT Recipe should be STRICT_TAG_1 when looking up from ItemStack, instead was " + resultRecipe);
+
+        ItemStack redBedWithTag1 = new ItemStack(Items.RED_BED);
+        for (var key : tag1.getAllKeys()) {
+            redBedWithTag1.getOrCreateTag().put(key, tag1.get(key));
+        }
+        resultRecipe = DB.find(
+                PartialNBTItemStackMapIngredient.from(redBedWithTag1),
+                ALWAYS_TRUE);
+        helper.assertTrue(resultRecipe == PARTIAL_TAG_1,
+                "GT Recipe should be PARTIAL_TAG_1 when looking up from ItemStack, instead was " + resultRecipe);
+
+        helper.succeed();
+    }
 }

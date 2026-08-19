@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -14,15 +14,15 @@ import java.util.List;
 
 public class CustomMapIngredient extends AbstractMapIngredient {
 
-    protected Item item;
+    protected ItemStack stack;
     protected Ingredient ingredient = null;
 
     public CustomMapIngredient(ItemStack stack) {
-        this.item = stack.getItem();
+        this.stack = stack;
     }
 
     public CustomMapIngredient(ItemStack stack, Ingredient ingredient) {
-        this.item = stack.getItem();
+        this.stack = stack;
         this.ingredient = ingredient;
     }
 
@@ -44,7 +44,7 @@ public class CustomMapIngredient extends AbstractMapIngredient {
     public boolean equals(Object o) {
         if (super.equals(o)) {
             CustomMapIngredient other = (CustomMapIngredient) o;
-            if (this.item != other.item) {
+            if (this.stack.getItem() != other.stack.getItem()) {
                 return false;
             }
             if (this.ingredient != null) {
@@ -57,10 +57,12 @@ public class CustomMapIngredient extends AbstractMapIngredient {
                     }
                     return true;
                 } else {
-                    return this.ingredient.test(other.item.getDefaultInstance());
+                    return this.ingredient.test(other.stack);
                 }
             } else if (other.ingredient != null) {
-                return other.ingredient.test(this.item.getDefaultInstance());
+                return other.ingredient.test(this.stack);
+            } else {
+                return GTUtil.isSameItemSameTags(this.stack, other.stack);
             }
         }
         return false;
@@ -68,13 +70,13 @@ public class CustomMapIngredient extends AbstractMapIngredient {
 
     @Override
     protected int hash() {
-        return item.hashCode() * 31;
+        return stack.getItem().hashCode() * 31;
     }
 
     @Override
     public String toString() {
         return "CustomMapIngredient{" +
-                "item=" + item +
+                "stack=" + stack +
                 "ingredient=" + ingredient +
                 "}";
     }
