@@ -193,5 +193,6 @@ public final class ValueTransformers {
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
 
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
+        registerTransformer(ConsumedInputsDataTransformer.class, new ConsumedInputsDataTransformer());
     }
 }

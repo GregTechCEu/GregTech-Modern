@@ -171,6 +171,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected boolean alwaysTryModifyRecipe = true;
 
     @Getter
+    @SaveField
     protected ConsumedInputsData consumedInputs = new ConsumedInputsData();
 
     public RecipeLogic() {
