@@ -17,13 +17,19 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         return ((BlockEntity) this).getLevel();
     }
 
-    BlockPos getBlockPos();
+    default BlockPos getBlockPos() {
+        return ((BlockEntity) this).getBlockPos();
+    }
 
-    BlockState getBlockState();
+    default BlockState getBlockState() {
+        return ((BlockEntity) this).getBlockState();
+    }
 
     long getOffsetTimer();
 
-    boolean isRemoved();
+    default boolean isRemoved() {
+        return ((BlockEntity) this).isRemoved();
+    }
 
     /**
      * Called to notify neighboring blocks that this block has changed.
