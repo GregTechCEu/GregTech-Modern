@@ -85,14 +85,14 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+    public List<Ingredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe, List<Ingredient> left,
                                               boolean simulate) {
         return handleRecipe(io, recipe, left, simulate, handlerIO, storage);
     }
 
     // TODO: See if implementable in outside callers and unstatic; or move to different common class if not
     // Notable caller is ItemRecipeHandler, used for MinerLogic
-    public static List<Ingredient> handleRecipe(IO io, GTRecipe recipe, List<Ingredient> left,
+    public static List<Ingredient> handleRecipe(IO io, @Nullable GTRecipe recipe, List<Ingredient> left,
                                                 boolean simulate,
                                                 IO handlerIO, CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
@@ -136,25 +136,28 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 if (io == IO.IN) {
                     if (current.isEmpty()) continue;
                     if (ingredient.test(current)) {
-                        var extracted = getActioned(storage, slot, recipe.ingredientActions);
+                        var extracted = recipe == null ? null : getActioned(storage, slot, recipe.ingredientActions);
                         if (extracted == null) extracted = storage.extractItem(slot, Math.min(count, amount), simulate);
                         if (!extracted.isEmpty()) {
                             changed = true;
                             visited[slot] = extracted.copyWithCount(count - extracted.getCount());
-                            ItemStack copied = extracted.copy();
-                            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
-                            if (spoilable != null) spoilable.freezeSpoiling();
-                            recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.ITEM, Ingredient.of(copied));
+                            if (recipe != null) {
+                                ItemStack copied = extracted.copy();
+                                ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(copied);
+                                if (spoilable != null) spoilable.freezeSpoiling();
+                                recipe.spoilageData.addConsumedInput(GTRecipeCapabilities.ITEM, Ingredient.of(copied));
+                            }
                         }
                         amount -= extracted.getCount();
                     }
                 } else { // IO.OUT
                     ItemStack output = items[0].copyWithCount(amount);
-                    recipe.mutateOutput(output);
+                    if (recipe != null) recipe.mutateOutput(output);
                     // Only try this slot if not visited or if visited with the same type of item
                     if (visited[slot] == null || GTUtil.isSameItemSameTags(visited[slot], output)) {
                         if (count < output.getMaxStackSize() && count < storage.getSlotLimit(slot)) {
-                            var remainder = getActioned(storage, slot, recipe.ingredientActions);
+                            var remainder = recipe == null ? null :
+                                    getActioned(storage, slot, recipe.ingredientActions);
                             if (remainder == null) remainder = storage.insertItem(slot, output, simulate);
                             if (remainder.getCount() < amount) {
                                 changed = true;

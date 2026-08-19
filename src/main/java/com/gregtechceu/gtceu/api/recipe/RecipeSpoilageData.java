@@ -41,7 +41,16 @@ public class RecipeSpoilageData {
     }
 
     public RecipeSpoilageData copy() {
-        return new RecipeSpoilageData(new HashMap<>(consumedInputs), keepSpoilingProgress);
+        HashMap<RecipeCapability<?>, List<?>> copied = new HashMap<>();
+        for (Map.Entry<RecipeCapability<?>, List<?>> entry : consumedInputs.entrySet()) {
+            copied.put(entry.getKey(),
+                    new ArrayList<>(entry.getValue().stream().map(entry.getKey()::copyContent).toList()));
+        }
+        return new RecipeSpoilageData(copied, keepSpoilingProgress);
+    }
+
+    public void clear() {
+        consumedInputs.clear();
     }
 
     public <T> void addConsumedInput(RecipeCapability<T> recipeCapability, T t) {
@@ -57,5 +66,9 @@ public class RecipeSpoilageData {
 
     public static RecipeSpoilageData readFromNetwork(FriendlyByteBuf buf) {
         return new RecipeSpoilageData(new HashMap<>(), buf.readBoolean());
+    }
+
+    public void writeToNetwork(FriendlyByteBuf buf) {
+        buf.writeBoolean(keepSpoilingProgress);
     }
 }
