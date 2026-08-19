@@ -96,7 +96,8 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                               boolean simulate) {
         if (!controllerAllowsCircuits || !enabled || !ConfigHolder.INSTANCE.machines.ghostCircuit) return left;
-        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, getHandlerIO(), storage);
+        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, getHandlerIO(), storage,
+                getMachine());
     }
 
     @Override

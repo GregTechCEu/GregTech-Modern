@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
+import com.gregtechceu.gtceu.api.recipe.ConsumedInputsData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -111,6 +112,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     @SaveField
     protected GTRecipe lastOriginRecipe;
 
+    @Nullable
+    @Getter
+    protected GTRecipe startingRecipe;
+
     @Getter
     @SaveField
     @SyncToClient
@@ -164,6 +169,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
      * Defaults to true, so that recipes will always attempt to update OC, parallels, etc.
      */
     protected boolean alwaysTryModifyRecipe = true;
+
+    @Getter
+    @SaveField
+    protected ConsumedInputsData consumedInputs = new ConsumedInputsData();
 
     public RecipeLogic() {
         super();
@@ -465,6 +474,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         lastUnrolledRecipe = recipe.copy();
         syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
         GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
+        startingRecipe = runningRecipe;
+        consumedInputs.clear();
         var handledIO = handleRecipeIO(runningRecipe, IO.IN);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
