@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.builders;
+package com.gregtechceu.gtceu.integration.kjs.builders.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;

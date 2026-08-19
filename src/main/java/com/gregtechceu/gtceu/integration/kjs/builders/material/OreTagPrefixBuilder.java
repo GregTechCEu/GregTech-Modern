@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.builders;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.common.data.GTElements;
