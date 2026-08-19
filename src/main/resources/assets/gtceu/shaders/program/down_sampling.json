@@ -1,39 +1,19 @@
 {
-    "attributes": [
-        "Position"
-    ],
     "blend": {
-        "dstalpha": "one",
-        "dstrgb": "1-srcalpha",
         "func": "add",
+        "srcrgb": "srcalpha",
+        "dstrgb": "1-srcalpha",
         "srcalpha": "zero",
-        "srcrgb": "srcalpha"
+        "dstalpha": "one"
     },
+    "vertex": "blit",
     "fragment": "gtceu:down_sampling",
+    "attributes": [ "Position" ],
     "samplers": [
-        {
-            "name": "DiffuseSampler"
-        }
+        { "name": "DiffuseSampler" }
     ],
     "uniforms": [
-        {
-            "count": 2,
-            "name": "InSize",
-            "type": "float",
-            "values": [
-                1.0,
-                1.0
-            ]
-        },
-        {
-            "count": 2,
-            "name": "OutSize",
-            "type": "float",
-            "values": [
-                1.0,
-                1.0
-            ]
-        }
-    ],
-    "vertex": "blit"
+        { "name": "InSize",  "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "OutSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] }
+    ]
 }

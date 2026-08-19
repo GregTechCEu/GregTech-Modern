@@ -276,6 +276,10 @@ public class TestUtils {
                 "strings not equal: \"%s\" != \"%s\"".formatted(component.toString(), s));
     }
 
+    public static void assertBetween(GameTestHelper helper, long x, long min, long max, String message) {
+        helper.assertTrue(min <= x && x <= max, "%s (%d was not between %d and %d)".formatted(message, x, min, max));
+    }
+
     public static void assertEqual(GameTestHelper helper, long a, long b, String message) {
         helper.assertTrue(a == b, "%s (%d != %d)".formatted(message, a, b));
     }

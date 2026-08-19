@@ -6,7 +6,7 @@ title: Custom Sounds
 ## Creating a Custom Sound
 
 !!! Warning
-    Registering custom sounds is currently only supported in Java, though you can use your sound in kubejs scripts once it's defined.
+    Registering custom sounds is only supported in Java, though you can use your sound in kubejs scripts once it's defined.
 
 To add a new sound, a sounds class is required. 
 This class prepares for registrate to register the sounds. 
