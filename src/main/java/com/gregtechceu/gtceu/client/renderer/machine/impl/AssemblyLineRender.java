@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.machine.impl;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
@@ -48,12 +49,13 @@ public class AssemblyLineRender extends DynamicRender<AssemblyLineMachine, Assem
 
     @OnlyIn(Dist.CLIENT)
     private void renderLines(AssemblyLineMachine machine, float partialTick, PoseStack stack, VertexConsumer buffer) {
-        if (machine.getRecipeLogic().getLastRecipe() == null) return;
+        GTRecipe recipe = machine.getRecipeLogic().getLastUnrolledRecipe();
+        if (recipe == null) return;
         int asslineColor = Long.decode(ConfigHolder.INSTANCE.client.renderer.assemblyLineLaser).intValue();
         float progress = machine.getProgress() / (float) machine.getMaxProgress();
         int recipeInputs = Math.max(
-                machine.getRecipeLogic().getLastRecipe().getInputContents(ItemRecipeCapability.CAP).size(),
-                machine.getRecipeLogic().getLastRecipe().getInputContents(FluidRecipeCapability.CAP).size());
+                recipe.getInputContents(ItemRecipeCapability.CAP).size(),
+                recipe.getInputContents(FluidRecipeCapability.CAP).size());
         progress *= recipeInputs;
         Direction down = RelativeDirection.DOWN.getRelativeFacing(machine.getFrontFacing(), machine.getUpwardsFacing(),
                 machine.isFlipped());
