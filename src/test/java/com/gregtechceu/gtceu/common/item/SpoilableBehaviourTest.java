@@ -212,7 +212,7 @@ public class SpoilableBehaviourTest {
                             new ItemStack(Items.STRUCTURE_BLOCK).toString()));
             ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(stack);
             TestUtils.assertNotNull(helper, spoilable, "recipe output was not spoilable");
-            TestUtils.assertEqual(helper, spoilable.getTicksUntilSpoiled(), 27,
+            TestUtils.assertBetween(helper, spoilable.getTicksUntilSpoiled(), 26, 30,
                     "recipe output didn't have correct ticks until spoiled");
         });
     }

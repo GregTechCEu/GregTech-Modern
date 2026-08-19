@@ -127,6 +127,8 @@ public class RecipeRunner {
                             .append(Component.translatable(io.getTooltip())),
                     null, io);
         }
+        if (!simulated && io.support(IO.IN) && !isTick)
+            recipe.spoilageData.clear();
 
         List<RecipeHandlerList> handlers = capabilityProxies.getOrDefault(io, Collections.emptyList());
         // Only sort for non-tick outputs
