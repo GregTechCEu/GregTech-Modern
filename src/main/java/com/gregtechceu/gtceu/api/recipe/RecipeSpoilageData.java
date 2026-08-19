@@ -23,7 +23,7 @@ public class RecipeSpoilageData {
 
     public static final Codec<RecipeSpoilageData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RecipeCapability.INGREDIENT_CODEC.optionalFieldOf("consumedInputs", new HashMap<>())
-                    .xmap(HashMap::new, Function.identity())
+                    .xmap((map -> (Map<RecipeCapability<?>, List<?>>) new HashMap(map)), Function.identity())
                     .forGetter(RecipeSpoilageData::getConsumedInputs),
             Codec.BOOL.fieldOf("keepSpoilingProgress").forGetter(RecipeSpoilageData::keepSpoilingProgress))
             .apply(instance, RecipeSpoilageData::new));
