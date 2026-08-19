@@ -150,8 +150,8 @@ public class GTDataComponents {
             .registerComponentType("placeholder_uuid",
                     builder -> builder.persistent(UUIDUtil.CODEC)
                             .networkSynchronized(UUIDUtil.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpoilableItemStack.SpoilableData>> SPOILABLE_DATA = DATA_COMPONENTS
-            .registerComponentType("spoilable_data", builder -> builder
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpoilableItemStack.SpoilableData>> SPOILABLE = DATA_COMPONENTS
+            .registerComponentType("spoilable", builder -> builder
                     .persistent(SpoilableItemStack.SpoilableData.CODEC)
                     .networkSynchronized(SpoilableItemStack.SpoilableData.STREAM_CODEC));
 

@@ -17,16 +17,19 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.ToLongFunction;
 
 /**
  * This object holds all spoilage-related data for specific item types,
@@ -35,7 +38,7 @@ import java.util.function.Supplier;
  */
 public class SpoilableBehavior {
 
-    private final Function<ItemStack, Long> ticks;
+    private final ToLongFunction<ItemStack> ticks;
     private final SpoilResultProvider spoilResult;
     private final Function<ItemStack, Component> spoilsIntoTooltip;
     private final List<Item> attachedTo = new ArrayList<>();
@@ -52,7 +55,7 @@ public class SpoilableBehavior {
         return new Builder();
     }
 
-    private SpoilableBehavior(Function<ItemStack, Long> ticks, SpoilResultProvider spoilResult,
+    private SpoilableBehavior(ToLongFunction<ItemStack> ticks, SpoilResultProvider spoilResult,
                               Function<ItemStack, Component> spoilsIntoTooltip) {
         this.ticks = ticks;
         this.spoilResult = spoilResult;
@@ -68,14 +71,13 @@ public class SpoilableBehavior {
      */
     public SpoilableBehavior attachTo(ItemLike item) {
         if (attachedTo.isEmpty()) {
-            GTCEu.gtModBus.register(this);
+            GTCEu.gtModBus.addListener(this::registerCapabilities);
         }
         attachedTo.add(item.asItem());
         return this;
     }
 
-    @SubscribeEvent
-    public void registerCapabilities(RegisterCapabilitiesEvent event) {
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(GTCapability.CAPABILITY_SPOILABLE_ITEM, (stack, ctx) -> new SpoilableBehaviourStack(stack),
                 attachedTo.toArray(Item[]::new));
     }
@@ -92,7 +94,7 @@ public class SpoilableBehavior {
 
         @Override
         public long getSpoilTicks() {
-            return ticks.apply(getStack());
+            return SpoilableBehavior.this.ticks.applyAsLong(getStack());
         }
 
         @Override
@@ -112,9 +114,11 @@ public class SpoilableBehavior {
         ItemStack getSpoilResult(@NotNull ItemStack stack, @NotNull SpoilContext spoilContext, boolean simulate);
     }
 
+    @Accessors(fluent = true)
+    @Setter
     public static class Builder {
 
-        private Function<ItemStack, Long> ticks;
+        private ToLongFunction<ItemStack> ticks;
         private SpoilResultProvider result;
         private Function<ItemStack, Component> tooltip;
 
@@ -127,33 +131,22 @@ public class SpoilableBehavior {
             return new SpoilableBehavior(ticks, result, tooltip);
         }
 
-        public Builder ticks(Function<ItemStack, Long> ticks) {
-            this.ticks = ticks;
-            return this;
-        }
-
-        public Builder result(SpoilResultProvider result) {
-            this.result = result;
-            return this;
-        }
-
-        public Builder tooltip(Function<ItemStack, Component> tooltip) {
-            this.tooltip = tooltip;
-            return this;
-        }
-
+        @Tolerate
         public Builder ticks(long ticks) {
             return ticks(stack -> ticks);
         }
 
+        @Tolerate
         public Builder result(ItemLike itemLike) {
             return result(stack -> itemLike.asItem().getDefaultInstance().copyWithCount(stack.getCount()));
         }
 
+        @Tolerate
         public Builder result(ItemStack stack) {
             return result(stack1 -> stack.copyWithCount(stack1.getCount()));
         }
 
+        @Tolerate
         public Builder result(Function<ItemStack, ItemStack> result) {
             return result((stack, spoilContext, simulate) -> result.apply(stack))
                     .tooltip(stack -> {
@@ -163,10 +156,12 @@ public class SpoilableBehavior {
                     });
         }
 
+        @Tolerate
         public Builder result(EntityType<? extends Mob> entityType) {
             return result(() -> entityType);
         }
 
+        @Tolerate
         public Builder result(Supplier<? extends EntityType<? extends Mob>> entityType) {
             SpoilResultProvider previousResult = result;
             Function<ItemStack, Component> previousTooltip = tooltip;
@@ -203,6 +198,7 @@ public class SpoilableBehavior {
             });
         }
 
+        @Tolerate
         public Builder tooltip(Component tooltip) {
             return tooltip(stack -> tooltip);
         }

@@ -507,7 +507,7 @@ public class CommonEventListener {
             stack.addToTooltip(GTDataComponents.RESEARCH_ITEM, event.getContext(),
                     event::addTooltipLines, event.getContext().flag());
         }
-        if (stack.has(GTDataComponents.SPOILABLE_DATA)) {
+        if (stack.has(GTDataComponents.SPOILABLE)) {
             ISpoilableItem spoilable = stack.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
             if (spoilable instanceof IAddInformation tooltipProvider) {
                 List<Component> tmp = new ArrayList<>();

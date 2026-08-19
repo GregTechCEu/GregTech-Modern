@@ -52,7 +52,6 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
             implements IMergeableDataComponent {
 
         public static final Codec<SpoilableData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.BOOL.fieldOf("initialized").forGetter(SpoilableData::initialized),
                 Codec.BOOL.fieldOf("frozen").forGetter(SpoilableData::frozen),
                 Codec.LONG.fieldOf("frozen_ticks").forGetter(SpoilableData::frozenTicks),
                 Codec.LONG.fieldOf("creation_tick").forGetter(SpoilableData::creationTick),
@@ -60,12 +59,17 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                 .apply(instance, SpoilableData::new));
 
         public static final StreamCodec<ByteBuf, SpoilableData> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.BOOL, SpoilableData::initialized,
                 ByteBufCodecs.BOOL, SpoilableData::frozen,
                 ByteBufCodecs.VAR_LONG, SpoilableData::frozenTicks,
                 ByteBufCodecs.VAR_LONG, SpoilableData::creationTick,
                 SpoilContext.STREAM_CODEC, SpoilableData::spoilContext,
                 SpoilableData::new);
+
+        public static final SpoilableData EMPTY = new SpoilableData(false, 0, -1, new SpoilContext());
+
+        public SpoilableData(boolean frozen, long frozenTicks, long creationTick, SpoilContext spoilContext) {
+            this(creationTick != -1, frozen, frozenTicks, creationTick, spoilContext);
+        }
 
         /**
          * This method averages the spoil progress of the two stacks (or, more
@@ -77,7 +81,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
          */
         @Override
         public void prepareForComparisonWith(ItemStack stack, ItemStack other) {
-            SpoilableData spoilable = other.get(GTDataComponents.SPOILABLE_DATA);
+            SpoilableData spoilable = other.get(GTDataComponents.SPOILABLE);
             if (spoilable == null) return;
             if (!initialized || !spoilable.initialized) return;
             if (frozen || spoilable.frozen) {
@@ -91,8 +95,8 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                     average = (tick1 * stack.getCount() + tick2 * other.getCount()) /
                             (stack.getCount() + other.getCount());
                 } else average = tick1;
-                stack.set(GTDataComponents.SPOILABLE_DATA, this.withCreationTick(average));
-                other.set(GTDataComponents.SPOILABLE_DATA, spoilable.withCreationTick(average));
+                stack.set(GTDataComponents.SPOILABLE, this.withCreationTick(average));
+                other.set(GTDataComponents.SPOILABLE, spoilable.withCreationTick(average));
             }
         }
     }
@@ -116,13 +120,11 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     private SpoilableData getData() {
-        SpoilableData data = stack.get(GTDataComponents.SPOILABLE_DATA);
-        if (data == null) return new SpoilableData(false, false, 0, 0, new SpoilContext());
-        return data;
+        return stack.getOrDefault(GTDataComponents.SPOILABLE, SpoilableData.EMPTY);
     }
 
     private void setData(SpoilableData data) {
-        stack.set(GTDataComponents.SPOILABLE_DATA, data);
+        stack.set(GTDataComponents.SPOILABLE, data);
     }
 
     public void setCreationTick(long creationTick) {
@@ -196,7 +198,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
             long timeDifference = level.getGameTime() - getCreationTick() - spoilTicks;
             if (timeDifference >= 0) {
                 ItemStack newStack = this.spoilResult(getSpoilContext(), GTCEu.isClientThread());
-                ((ISpoilableItemStackExtension) (Object) stack).gtceu$setStack(newStack);
+                ((ISpoilableItemStackExtension) (Object) stack).gtceu$forceContentTo(newStack);
                 onItemChanged();
                 ISpoilableItem newSpoilable = GTCapabilityHelper.getSpoilable(stack);
                 if (newSpoilable != null) {
@@ -287,7 +289,8 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
             if (ctx.itemHandlerSource() != null) tooltipComponents
                     .add(Component.translatable("gtceu.tooltip.item_handler_source", ctx.itemHandlerSource()));
             if (ctx.itemHandlerData() != null)
-                tooltipComponents.add(Component.translatable("gtceu.tooltip.item_handler_data", ctx.itemHandlerData()));
+                tooltipComponents.add(
+                        Component.translatable("gtceu.tooltip.item_handler_data", ctx.itemHandlerData().toString()));
             if (ctx.slot() != -1)
                 tooltipComponents.add(Component.translatable("gtceu.tooltip.location_slot", ctx.slot()));
         }

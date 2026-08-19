@@ -60,14 +60,14 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
 
     @Unique
     @Override
-    public void gtceu$setStack(ItemStack newStack) {
-        item = newStack.getItem();
-        count = newStack.getCount();
-        components = new PatchedDataComponentMap(newStack.getComponents());
+    public void gtceu$forceContentTo(ItemStack newStack) {
+        this.item = newStack.getItem();
+        this.count = newStack.getCount();
+        this.components = new PatchedDataComponentMap(newStack.getComponents());
     }
 
     @Unique
-    public void gtceu$updateFreshness(@NotNull SpoilContext spoilContext, boolean createTag) {
+    private void gtceu$updateFreshness(@NotNull SpoilContext spoilContext, boolean createTag) {
         if (!gtceu$isUpdating) {
             gtceu$isUpdating = true;
             ISpoilableItem spoilable = gtceu$self().getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
@@ -84,7 +84,7 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
     @Inject(at = @At("HEAD"), method = { "getItem", "getCount" })
     private void gtceu$injectedFreshnessUpdate(CallbackInfoReturnable<Item> cir) {
         if (gtceu$self().getEntityRepresentation() != null)
-            gtceu$updateFreshness(new SpoilContext(gtceu$self().getEntityRepresentation()), true);
+            gtceu$updateFreshness(new SpoilContext(gtceu$self().getEntityRepresentation(), 0), true);
         else gtceu$updateFreshness(new SpoilContext(), false);
     }
 
@@ -92,7 +92,7 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
     private void gtceu$tickFreshness(Level level, Entity entity, int inventorySlot, boolean isCurrentItem,
                                      CallbackInfo ci) {
         if (entity instanceof Player player) gtceu$updateFreshness(new SpoilContext(player, inventorySlot), true);
-        else gtceu$updateFreshness(new SpoilContext(entity), true);
+        else gtceu$updateFreshness(new SpoilContext(entity, 0), true);
     }
 
     @Inject(at = @At("HEAD"), method = "onCraftedBy")

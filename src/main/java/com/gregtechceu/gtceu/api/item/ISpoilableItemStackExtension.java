@@ -4,5 +4,5 @@ import net.minecraft.world.item.ItemStack;
 
 public interface ISpoilableItemStackExtension {
 
-    void gtceu$setStack(ItemStack newStack);
+    void gtceu$forceContentTo(ItemStack newStack);
 }
