@@ -13,7 +13,9 @@ import net.minecraftforge.common.extensions.IForgeBlockEntity;
 
 public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IForgeBlockEntity {
 
-    Level getLevel();
+    default Level getLevel() {
+        return ((BlockEntity) this).getLevel();
+    }
 
     BlockPos getBlockPos();
 
