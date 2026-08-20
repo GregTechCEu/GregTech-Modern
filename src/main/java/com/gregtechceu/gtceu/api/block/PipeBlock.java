@@ -209,7 +209,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         BlockPos pos = selfTile.self().getBlockPos();
         if (level == null) return false;
 
-        if (level.getBlockState(pos.relative(facing)).getBlock().defaultBlockState().isAir())
+        if (level.getBlockState(pos.relative(facing)).isAir())
             return false;
         CoverBehavior cover = selfTile.getCoverContainer().getCoverAtSide(facing);
         if (cover != null && !cover.canPipePassThrough()) {
