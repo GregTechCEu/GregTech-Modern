@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
+import com.gregtechceu.gtceu.api.recipe.ConsumedInputsData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -95,7 +96,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     @Nullable
     @Getter
     @SaveField
-    @SyncToClient
     protected GTRecipe lastRecipe;
     @Nullable
     @Getter
@@ -111,6 +111,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     @Getter
     @SaveField
     protected GTRecipe lastOriginRecipe;
+
+    @Nullable
+    @Getter
+    protected GTRecipe startingRecipe;
 
     @Getter
     @SaveField
@@ -165,6 +169,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
      * Defaults to true, so that recipes will always attempt to update OC, parallels, etc.
      */
     protected boolean alwaysTryModifyRecipe = true;
+
+    @Getter
+    @SaveField
+    protected ConsumedInputsData consumedInputs = new ConsumedInputsData();
 
     public RecipeLogic() {
         super();
@@ -405,8 +413,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         lastUnrolledRecipe = null;
         lastOriginRecipe = null;
         handleSearchingRecipes(searchRecipe());
-        syncDataHolder.markClientSyncFieldDirty("lastRecipe");
-        syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+        syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
         recipeDirty = false;
     }
 
@@ -439,7 +446,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         if (lastUnrolledRecipe == null) {
             GTCEu.LOGGER.warn("Last Displayed Recipe is null! Ingredients may roll incorrectly.");
             this.lastUnrolledRecipe = lastRecipe.copy();
-            syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+            syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
             markLastRecipeDirty();
         }
         GTRecipe runningRecipe = RecipeHelper.doTickPrerolls(recipe, chanceCaches, lastUnrolledRecipe);
@@ -465,8 +472,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             chanceCaches.clear();
         }
         lastUnrolledRecipe = recipe.copy();
-        syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+        syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
         GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
+        startingRecipe = runningRecipe;
+        consumedInputs.clear();
         var handledIO = handleRecipeIO(runningRecipe, IO.IN);
         if (handledIO.isSuccess()) {
             if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
@@ -483,7 +492,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         } else {
             lastRecipe = null;
             lastUnrolledRecipe = null;
-            syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+            syncDataHolder.markClientSyncFieldDirty("lastUnrolledRecipe");
         }
     }
 
