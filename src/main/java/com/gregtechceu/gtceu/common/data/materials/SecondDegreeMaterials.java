@@ -45,7 +45,7 @@ public class SecondDegreeMaterials {
                 .buildAndRegister();
 
         Borax = new Material.Builder(GTCEu.id("borax"))
-                .dust(1)
+                .dust(1).ore(2, 1)
                 .color(0xFAFAFA).secondaryColor(0xd7e7e7).iconSet(FINE)
                 .components(Sodium, 2, Boron, 4, Water, 10, Oxygen, 7)
                 .buildAndRegister();
