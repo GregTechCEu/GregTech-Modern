@@ -121,8 +121,9 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
-                this::getVoidingMode, this::setVoidingMode);
-        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalVoidingLimit, this::setGlobalVoidingLimit);
+                this::getVoidingMode, this::setVoidingMode).allowC2S();
+        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalVoidingLimit, this::setGlobalVoidingLimit)
+                .allowC2S();
 
         syncManager.syncValue("voidingMode", voidingMode);
         syncManager.syncValue("voidingLimit", voidingLimit);

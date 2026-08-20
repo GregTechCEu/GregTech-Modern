@@ -122,9 +122,9 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         super.createCoverUIRows(column, data, syncManager, settings);
 
         EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
-                this::getVoidingMode, this::setVoidingMode);
+                this::getVoidingMode, this::setVoidingMode).allowC2S();
         IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalTransferSizeMillibuckets,
-                this::setGlobalTransferSizeMillibuckets);
+                this::setGlobalTransferSizeMillibuckets).allowC2S();
         EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
                 this::setBucketMode);
 
