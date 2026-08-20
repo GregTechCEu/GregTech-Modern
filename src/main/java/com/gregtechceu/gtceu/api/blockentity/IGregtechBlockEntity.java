@@ -10,47 +10,47 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeBlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IForgeBlockEntity {
 
-    Level getLevel();
-
-    BlockPos getBlockPos();
-
-    BlockState getBlockState();
-
+    default BlockEntity self() {
+        return (BlockEntity)this;
+    }
+    
     long getOffsetTimer();
-
-    boolean isRemoved();
 
     /**
      * Called to notify neighboring blocks that this block has changed.
      */
     default void notifyBlockUpdate() {
-        if (getLevel() != null) {
-            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        var level = self().getLevel();
+        var pos = self().getBlockPos();
+        if (level != null) {
+            level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
         }
     }
 
     default void scheduleNeighborShapeUpdate() {
-        Level level = getLevel();
-        BlockPos pos = getBlockPos();
+        Level level = self().getLevel();
+        BlockPos pos = self().getBlockPos();
 
-        if (level == null || pos == null)
+        if (level == null)
             return;
 
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
 
     default boolean isRemote() {
-        return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
+        Level level = self().getLevel();
+        return level == null ? GTCEu.isClientThread() : level.isClientSide;
     }
 
     default void scheduleRenderUpdate() {
-        var pos = getBlockPos();
-        var level = getLevel();
+        var pos = self().getBlockPos();
+        var level = self().getLevel();
         if (level != null) {
-            var state = getLevel().getBlockState(pos);
+            var state = level.getBlockState(pos);
             if (level.isClientSide) {
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
                 requestModelDataUpdate();
@@ -60,7 +60,9 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         }
     }
 
-    default BlockEntity getNeighbor(Direction direction) {
-        return getLevel().getBlockEntity(getBlockPos().relative(direction));
+    default @Nullable BlockEntity getNeighbor(Direction direction) {
+        Level level = self().getLevel();
+        if (level == null) return null;
+        return level.getBlockEntity(self().getBlockPos().relative(direction));
     }
 }

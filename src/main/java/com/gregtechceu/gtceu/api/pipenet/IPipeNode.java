@@ -85,14 +85,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     int getBlockedConnections();
 
-    default BlockState getState() {
-        return self().getBlockState();
-    }
-
-    default BlockEntity self() {
-        return (BlockEntity) this;
-    }
-
     @SuppressWarnings("unchecked")
     default PipeBlock<PipeType, NodeDataType, ?> getPipeBlock() {
         return (PipeBlock<PipeType, NodeDataType, ?>) self().getBlockState().getBlock();
@@ -100,8 +92,8 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     @Nullable
     default PipeNet<NodeDataType> getPipeNet() {
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
+        if (self().getLevel() instanceof ServerLevel serverLevel) {
+            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(self().getBlockPos());
         }
         return null;
     }
@@ -114,7 +106,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     default NodeDataType getNodeData() {
         var net = getPipeNet();
         if (net != null) {
-            return net.getNodeAt(getBlockPos()).data;
+            return net.getNodeAt(self().getBlockPos()).data;
         }
         return null;
     }
