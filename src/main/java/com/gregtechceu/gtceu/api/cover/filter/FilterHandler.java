@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
@@ -33,12 +35,10 @@ public class FilterHandler<T> implements ISyncManaged {
     @Getter
     private final Class<T> filterableType;
 
-    @SaveField
-    @SyncToClient
-    @Getter
-    private ItemStack filterItem = ItemStack.EMPTY;
-
     private @Nullable Filter<T> filter;
+
+    @SaveField(nbtKey = "filterItem")
+    @SyncToClient
     @Getter
     private CustomItemStackHandler filterSlot;
 
@@ -54,11 +54,22 @@ public class FilterHandler<T> implements ISyncManaged {
         this.container = container;
         this.filterableType = filterableType;
 
-        this.filterSlot = new CustomItemStackHandler(this.filterItem) {
+        this.filterSlot = new CustomItemStackHandler(1) {
 
             @Override
             public int getSlotLimit(int slot) {
                 return 1;
+            }
+
+            @Override
+            public void deserializeNBT(CompoundTag nbt) {
+                if (!nbt.contains("Items", Tag.TAG_LIST) && nbt.contains("id", Tag.TAG_STRING)) {
+                    setStackInSlot(0, ItemStack.of(nbt));
+                    return;
+                }
+
+                super.deserializeNBT(nbt);
+                updateFilter();
             }
         };
 
@@ -76,6 +87,10 @@ public class FilterHandler<T> implements ISyncManaged {
 
     public boolean isFilterPresent() {
         return filter != null;
+    }
+
+    public ItemStack getFilterItem() {
+        return filterSlot.getStackInSlot(0);
     }
 
     public Filter<T> getFilter() {
@@ -111,23 +126,20 @@ public class FilterHandler<T> implements ISyncManaged {
     }
 
     private void updateFilter() {
-        var filterContainer = getFilterSlot();
+        ItemStack filterItem = getFilterItem();
 
-        if (GTCEu.isClientThread()) {
-            if (!filterContainer.getStackInSlot(0).isEmpty() && !this.filterItem.isEmpty()) {
-                return;
-            }
+        if (GTCEu.isClientThread() && this.filter != null && !filterItem.isEmpty()) {
+            return;
         }
 
-        this.filterItem = filterContainer.getStackInSlot(0);
-        syncDataHolder.markClientSyncFieldDirty("filterItem");
+        syncDataHolder.markClientSyncFieldDirty("filterSlot");
 
         if (this.filter != null) {
             this.filter = null;
             this.onFilterRemoved.run();
         }
 
-        if (!this.filterItem.isEmpty()) {
+        if (!filterItem.isEmpty()) {
             this.filter = Filters.loadFilter(filterableType, filterItem);
             filter.onFilterLoaded(this);
             filter.setOnUpdated(this.onFilterUpdated);

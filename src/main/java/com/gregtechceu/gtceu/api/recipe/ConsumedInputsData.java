@@ -2,29 +2,27 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 
-import net.minecraft.network.FriendlyByteBuf;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @AllArgsConstructor
-public class RecipeSpoilageData {
+public class ConsumedInputsData {
 
-    public static final Codec<RecipeSpoilageData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<ConsumedInputsData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RecipeCapability.INGREDIENT_CODEC.optionalFieldOf("consumedInputs", new HashMap<>())
-                    .forGetter(RecipeSpoilageData::getConsumedInputs),
-            Codec.BOOL.fieldOf("keepSpoilingProgress").forGetter(RecipeSpoilageData::keepSpoilingProgress))
-            .apply(instance, RecipeSpoilageData::new));
+                    .xmap((map -> (Map<RecipeCapability<?>, List<?>>) new HashMap(map)), Function.identity())
+                    .forGetter(ConsumedInputsData::getConsumedInputs))
+            .apply(instance, ConsumedInputsData::new));
 
     /**
      * Populated after the inputs are already consumed, but the recipe didn't start yet.
@@ -32,21 +30,18 @@ public class RecipeSpoilageData {
      */
     @Getter(AccessLevel.PRIVATE)
     private Map<RecipeCapability<?>, List<?>> consumedInputs;
-    @Accessors(fluent = true)
-    @Getter
-    private boolean keepSpoilingProgress;
 
-    public RecipeSpoilageData(boolean keepSpoilingProgress) {
-        this(new HashMap<>(), keepSpoilingProgress);
+    public ConsumedInputsData() {
+        this(new HashMap<>());
     }
 
-    public RecipeSpoilageData copy() {
+    public ConsumedInputsData copy() {
         HashMap<RecipeCapability<?>, List<?>> copied = new HashMap<>();
         for (Map.Entry<RecipeCapability<?>, List<?>> entry : consumedInputs.entrySet()) {
             copied.put(entry.getKey(),
                     new ArrayList<>(entry.getValue().stream().map(entry.getKey()::copyContent).toList()));
         }
-        return new RecipeSpoilageData(copied, keepSpoilingProgress);
+        return new ConsumedInputsData(copied);
     }
 
     public void clear() {
@@ -62,13 +57,5 @@ public class RecipeSpoilageData {
     public <T> List<T> getConsumedInputs(RecipeCapability<T> recipeCapability) {
         // noinspection unchecked
         return (List<T>) consumedInputs.getOrDefault(recipeCapability, List.of());
-    }
-
-    public static RecipeSpoilageData readFromNetwork(FriendlyByteBuf buf) {
-        return new RecipeSpoilageData(new HashMap<>(), buf.readBoolean());
-    }
-
-    public void writeToNetwork(FriendlyByteBuf buf) {
-        buf.writeBoolean(keepSpoilingProgress);
     }
 }
