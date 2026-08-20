@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import brachy.modularui.api.ITheme;
+import brachy.modularui.api.MCHelper;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.widget.IPositioned;
 import brachy.modularui.api.widget.IWidget;
@@ -13,7 +14,6 @@ import brachy.modularui.api.widget.Interactable;
 import brachy.modularui.drawable.GuiDraw;
 import brachy.modularui.overlay.OverlayStack;
 import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.theme.WidgetThemeEntry;
@@ -49,6 +49,10 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
     @Setter
     private Direction direction = Direction.DOWN;
 
+    private MenuScreen menuScreen;
+
+    private boolean open = false;
+
     public OverlayButton(String panelName) {
         this.panelName = panelName;
         size(16);
@@ -68,7 +72,7 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
         // use panel as anchor
         panel.pos(point.x, point.y).child(list);
 
-        return new MenuScreen(panel);
+        return new MenuScreen(panel, this);
     }
 
     private @NotNull Point unTransformedPos() {
@@ -87,10 +91,12 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
     @Override
     public @NotNull Result onMousePressed(int button) {
         // different buttons may have the same panel name
-        if (!OverlayManager.isOpen(this)) {
+        if (!open) {
             OverlayManager.open(this);
+            this.open = true;
         } else {
             OverlayManager.close(this);
+            this.open = false;
         }
         Interactable.playButtonClickSound();
         return Result.SUCCESS;
@@ -170,62 +176,61 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     private static class OverlayManager {
 
-        private static final Map<OverlayButton, MenuScreen> overlayScreens = new HashMap<>();
-        private static final Map<ModularScreen, ModularScreen> modularScreens = new HashMap<>();
-
         @SuppressWarnings("UnstableApiUsage")
         private static void open(OverlayButton menuHolder) {
-            if (isOpen(menuHolder)) {
-                GTCEu.LOGGER.warn("Overlay Screen already exists for panel {}", menuHolder);
+            if (menuHolder.open) {
+                GTCEu.LOGGER.warn("Overlay Screen already exists for panel {}", menuHolder.getPanel());
                 return;
             }
             var overlay = menuHolder.constructOverlay();
             var parent = menuHolder.getScreen();
             if (parent instanceof MenuScreen menuScreen) {
-                menuScreen.addChild(overlay);
+                menuScreen.setChild(overlay);
+            } else {
+                GTCEu.LOGGER.warn("new overlay?");
             }
-            if (modularScreens.containsKey(parent)) {
-                // parent already has an open menu
-                ModularScreen removed = modularScreens.remove(parent);
-                removed.close();
-            }
-            overlayScreens.put(menuHolder, overlay);
-            modularScreens.put(parent, overlay);
-            overlay.constructOverlay(parent.getScreenWrapper().wrappedScreen());
+
+            overlay.constructOverlay(MCHelper.getCurrentScreen());
             OverlayStack.open(overlay);
             Area screenArea = parent.getScreenArea();
             overlay.onResize(screenArea.w(), screenArea.h());
-        }
-
-        private static boolean isOpen(OverlayButton menuHolder) {
-            return overlayScreens.containsKey(menuHolder);
+            menuHolder.menuScreen = overlay;
         }
 
         @SuppressWarnings("UnstableApiUsage")
         private static void close(OverlayButton menuHolder) {
-            MenuScreen overlay = overlayScreens.remove(menuHolder);
-            if (overlay != null) {
-                overlay.close();
-                OverlayStack.close(overlay);
+            MenuScreen screen = menuHolder.menuScreen;
+            if (screen != null) {
+                screen.close();
+                OverlayStack.close(screen);
+                menuHolder.open = false;
             }
         }
     }
 
     private static class MenuScreen extends GTGuiScreen {
 
-        private final Set<MenuScreen> children = new HashSet<>();
+        private @Nullable MenuScreen child = null;
+        private final OverlayButton owner;
 
-        public MenuScreen(@NotNull ModularPanel<?> mainPanel) {
+        public MenuScreen(@NotNull ModularPanel<?> mainPanel, OverlayButton owner) {
             super(mainPanel);
+            this.owner = owner;
         }
 
-        public void addChild(MenuScreen parent) {
-            this.children.add(parent);
+        @Override
+        public void onOpen() {}
+
+        public void setChild(MenuScreen parent) {
+            if (child != null) {
+                OverlayManager.close(child.owner);
+            }
+            this.child = parent;
         }
 
         @Override
         public void close() {
-            for (MenuScreen child : children) {
+            if (child != null) {
                 child.close();
             }
             super.close();
