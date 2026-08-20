@@ -8,16 +8,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeBlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IForgeBlockEntity {
 
     default BlockEntity self() {
-        return (BlockEntity)this;
+        return (BlockEntity) this;
     }
-    
+
     long getOffsetTimer();
 
     /**
