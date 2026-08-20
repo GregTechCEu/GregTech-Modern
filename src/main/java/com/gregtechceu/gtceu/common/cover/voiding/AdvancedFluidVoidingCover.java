@@ -126,7 +126,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalTransferSizeMillibuckets,
                 this::setGlobalTransferSizeMillibuckets).allowC2S();
         EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
-                this::setBucketMode);
+                this::setBucketMode).allowC2S();
 
         syncManager.syncValue("voidingMode", voidingMode);
         syncManager.syncValue("voidingLimit", voidingLimit);
