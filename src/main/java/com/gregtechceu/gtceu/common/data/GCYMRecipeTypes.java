@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -14,7 +13,7 @@ public class GCYMRecipeTypes {
     //////////////////////////////////////
     // ******* Multiblock *******//
     //////////////////////////////////////
-    public final static GTRecipeType ALLOY_BLAST_RECIPES = register(GTCEu.id("alloy_blast_smelter"), MULTIBLOCK)
+    public final static GTRecipeType ALLOY_BLAST_RECIPES = register("alloy_blast_smelter", MULTIBLOCK)
             .setMaxIOSize(9, 0, 3, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder

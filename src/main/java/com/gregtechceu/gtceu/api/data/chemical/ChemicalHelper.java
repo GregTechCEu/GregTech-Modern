@@ -126,10 +126,6 @@ public class ChemicalHelper {
         return TagPrefix.NULL_PREFIX;
     }
 
-    public static TagPrefix getPrefix(ItemStack itemStack) {
-        return getPrefix(itemStack.getItem());
-    }
-
     public static ItemStack getDust(Material material, long materialAmount) {
         if (!material.hasProperty(PropertyKey.DUST) || materialAmount <= 0) {
             return ItemStack.EMPTY;
@@ -257,12 +253,12 @@ public class ChemicalHelper {
         return stack;
     }
 
-    public static ItemStack get(TagPrefix tagPrefix, Material material, int stackSize) {
-        return get(new MaterialEntry(tagPrefix, material), stackSize);
+    public static ItemStack get(TagPrefix orePrefix, Material material, int stackSize) {
+        return get(new MaterialEntry(orePrefix, material), stackSize);
     }
 
-    public static ItemStack get(TagPrefix tagPrefix, Material material) {
-        return get(tagPrefix, material, 1);
+    public static ItemStack get(TagPrefix orePrefix, Material material) {
+        return get(orePrefix, material, 1);
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {

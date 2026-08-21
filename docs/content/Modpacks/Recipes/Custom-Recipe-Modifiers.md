@@ -5,53 +5,36 @@ title: Custom Recipe Modifiers
 # Custom Recipe Modifiers / Data Logic
 
 ## Adding a Modifier
+Custom recipe modifiers in KubeJS are done through a function. For this example, we will make multiblock that requires temperature for recipes, like the EBF does.
+```js title="temperature_recipe_modifier.js"
+const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
+const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
 
-Custom recipe modifiers in are done through a function. For this example, we will make multiblock that requires temperature for recipes, like the EBF does.
+function TemperatureModifier(machine, recipe) {
+    if (!(machine instanceof $MetaMachine)) return ModifierFunction.NULL // (1)
+    if (!(recipe instanceof $GTRecipe)) return ModifierFunction.NULL
+    
+    if (!machine instanceof $CoilWorkableElectricMultiblockMachine) {
+        return $RecipeModifier.nullWrongType($CoilWorkableElectricMultiblockMachine, machine);
+    } else {
 
-!!! Warning
-    It is recommended that your custom recipe modifiers are implemented in Java.
+        let temp = machine.getCoilType().getCoilTemperature() // (3)
 
-=== "Java"
-    ```java title="AddonRecipeModifiers.java"
-    public static ModifierFunction customTemperatureModifier(MetaMachine machine, GTRecipe recipe) {
-        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilWorkable)) {
-            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
-        }
-        int temp = coilWorkable.getCoilType().getCoilTemperature();
-
-        int recipeTemp = recipe.data.getInt("RequiredTemp");
+        let recipeTemp = recipe.data.getInt("RequiredTemp") // (4)
         if (recipeTemp > temp) {
-            return ModifierFunction.NULL; // Cancels recipe
+            return ModifierFunction.NULL
         }
-        return ModifierFunction.IDENTITY; // Runs recipe
+        return ModifierFunction.IDENTITY // (2)
     }
-    ```
-=== "JavaScript"
-    ```js title="temperature_recipe_modifier.js"
-    const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
-    const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
-    
-    function TemperatureModifier(machine, recipe) {
-        if (!machine instanceof $CoilWorkableElectricMultiblockMachine) {
-            return $RecipeModifier.nullWrongType($CoilWorkableElectricMultiblockMachine, machine);
-        } else {
-    
-            let temp = machine.getCoilType().getCoilTemperature() // (1)
-    
-            let recipeTemp = recipe.data.getInt("RequiredTemp") // (2)
-            if (recipeTemp > temp) {
-                return ModifierFunction.NULL // Cancels recipe
-            }
-            return ModifierFunction.IDENTITY // Runs recipe
-        }
-    }
-    ```
+}
+```
 
-1. Getting the coil temperature, multiblock **must** contain ``.heatingCoils()`` in any of its keys.
-2. Checking if coil temperature is high enough.
+1. `ModifierFunction.NULL` Stops recipe.
+2. `ModifierFunction.IDENTITY` Starts recipe.
+3. Getting the coil temperature, multiblock **must** contain ``.heatingCoils()`` in any of its keys.
+4. Checking if coil temperature is high enough.
 
 ## Using Modifier
-
 ```js title="example_temperature_multiblock.js"
 const $CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine");
 
@@ -72,10 +55,10 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 		.recipeType('alchemy')
 		.recipeModifiers([(machine, recipe) => TemperatureModifier(machine, recipe)]) // (2)
 		.appearanceBlock(() => Block.getBlock("gtceu:solid_machine_casing"))
-		.pattern(definition => MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
-			.slice("###","HHH","###")
-			.slice("###","H H","###")
-			.slice("#C#","HHH","###")
+		.pattern(definition => FactoryBlockPattern.start()
+			.aisle('###','HHH','###')
+			.aisle('###','H H','###')
+			.aisle('#C#','HHH','###')
 			.where('C', Predicates.controller(Predicates.blocks(definition.get())))
 			.where('#', Predicates.blocks("gtceu:solid_machine_casing")
 				.and(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))

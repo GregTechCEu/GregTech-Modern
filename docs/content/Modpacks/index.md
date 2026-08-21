@@ -3,17 +3,13 @@ title: Modpack Creation
 ---
 
 
+# Modpack Creation
 
-# Addon and Modpack Creation
-
-GTCEu Modern offers an extensive Java API for addons and modpacks to use, 
-and also offers integration with KubeJS for creating machines, recipes, materials, and other GregTech content.  
+GTCEu Modern offers extensive integration with KubeJS for customizability.  
+Most of our tools for modpack creators revolve around this KubeJS API.
 
 Refer to this section for information on how to use it, as well as for examples.
 
-## Addon Template
-
-A basic template for creating Java addons and modpack coremods is provided [here](https://github.com/GregTechCEu/GregTech-Addon-Template).
 
 ## General Notes
 

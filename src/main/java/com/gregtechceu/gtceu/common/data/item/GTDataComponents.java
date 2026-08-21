@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
-import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
@@ -150,10 +149,6 @@ public class GTDataComponents {
             .registerComponentType("placeholder_uuid",
                     builder -> builder.persistent(UUIDUtil.CODEC)
                             .networkSynchronized(UUIDUtil.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpoilableItemStack.SpoilableData>> SPOILABLE = DATA_COMPONENTS
-            .registerComponentType("spoilable", builder -> builder
-                    .persistent(SpoilableItemStack.SpoilableData.CODEC)
-                    .networkSynchronized(SpoilableItemStack.SpoilableData.STREAM_CODEC));
 
     // Filters
 

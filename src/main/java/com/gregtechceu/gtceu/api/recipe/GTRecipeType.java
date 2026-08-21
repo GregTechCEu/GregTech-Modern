@@ -232,12 +232,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return recipeBuilder(id);
     }
 
-    @ApiStatus.Internal
     public GTRecipeBuilder recipeBuilder(String id) {
         return recipeBuilder(GTCEu.id(id));
     }
 
-    @ApiStatus.Internal
     public GTRecipeBuilder recipeBuilder(String id, Object... append) {
         return recipeBuilder(GTCEu.id(id), append);
     }

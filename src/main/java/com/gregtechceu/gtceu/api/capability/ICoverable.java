@@ -34,7 +34,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -50,15 +49,15 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     default Level getLevel() {
-        return getHolder().self().getLevel();
+        return getHolder().getLevel();
     }
 
     default BlockPos getBlockPos() {
-        return getHolder().self().getBlockPos();
+        return getHolder().getBlockPos();
     }
 
     default BlockState getBlockState() {
-        return getHolder().self().getBlockState();
+        return getHolder().getBlockState();
     }
 
     default long getOffsetTimer() {
@@ -66,7 +65,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     default boolean isRemoved() {
-        return getHolder().self().isRemoved();
+        return getHolder().isRemoved();
     }
 
     default void notifyBlockUpdate() {
@@ -79,7 +78,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     @Nullable
     @Override
-    default TickableSubscription subscribeServerTick(@NotNull Runnable runnable) {
+    default TickableSubscription subscribeServerTick(Runnable runnable) {
         return getHolder().subscribeServerTick(runnable);
     }
 
@@ -329,14 +328,14 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     @Override
-    default void copyConfig(@NotNull CompoundTag tag) {
+    default void copyConfig(CompoundTag tag) {
         for (Direction dir : GTUtil.DIRECTIONS) {
             tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
         }
     }
 
     @Override
-    default void pasteConfig(@NotNull ServerPlayer player, @NotNull CompoundTag tag) {
+    default void pasteConfig(ServerPlayer player, CompoundTag tag) {
         for (Direction side : GTUtil.DIRECTIONS) {
             removeCover(side, player);
         }
@@ -347,7 +346,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     @Override
-    default @NotNull List<ItemStack> getItemsRequiredToPaste() {
+    default List<ItemStack> getItemsRequiredToPaste() {
         Map<Item, Integer> allDrops = new HashMap<>();
         List<ItemStack> rawDrops = new ArrayList<>();
 

@@ -41,14 +41,10 @@ The following icon sets are available by default:
 ## Custom Icon Sets
 
 Custom iconsets can be specified as well, using the `gtceu:matieral_icon_set` event:
-=== "Java"
-    ```java title="AddonIconSets.java"
-    public static final MaterialIconSet STARRY = new MaterialIconSet(ADDON_MOD.id("starry"), MaterialIconSet.SHINY);
-    ```
-=== "JavaScript"
-    ```js title="custom_iconsets.js"
-    GTCEuStartupEvents.registry('gtceu:material_icon_set', event => {
-        event.create('starry')
-            .parent('shiny')
-    })
-    ```
+
+```js title="custom_iconsets.js"
+GTCEuStartupEvents.registry('gtceu:material_icon_set', event => {
+    event.create('starry')
+        .parent('shiny')
+})
+```

@@ -8,8 +8,5 @@
     "net/minecraft/world/entity/Entity": [
         "com/gregtechceu/gtceu/core/IFireImmuneEntity",
         "com/gregtechceu/gtceu/core/IBreathingEntity"
-    ],
-    "net/minecraft/world/item/ItemStack": [
-        "com/gregtechceu/gtceu/api/item/ISpoilableItemStackExtension"
     ]
 }

@@ -24,6 +24,4 @@ public interface GTCEuStartupEvents {
     EventHandler CRAFTING_COMPONENTS = GROUP.startup("craftingComponents", () -> CraftingComponentsEventJS.class);
 
     EventHandler REGISTER_WOODS = GROUP.startup("registerWoods", () -> RegisterWoodsEventJS.class);
-    EventHandler MACHINE_MODIFICATION = GROUP.startup("machineModification", () -> ModifyMachineEventJS.class);
-    EventHandler REGISTER_SPOILABLES = GROUP.startup("registerSpoilables", () -> RegisterSpoilablesEventJS.class);
 }

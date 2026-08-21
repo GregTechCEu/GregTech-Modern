@@ -7,13 +7,6 @@ title: Material Properties
 
 Properties can be applied to a material to decide how they behave. An example of this can be seen below:
 
-=== "Java"
-    ```java
-    public static Material MY_MATERIAL = new Material.Builder(ADDON_MOD.id("my_material"))
-    /// ...
-    .blastTemp(3700, BlastProperty.GasTier.MID, GTValues.VA[GTValues.EV], 1600)
-    .buildAndRegister();
-    ```
 === "Javascript"
     ```js
     GTCEuStartupEvents.registry('gtceu:material', event => {
@@ -21,6 +14,17 @@ Properties can be applied to a material to decide how they behave. An example of
             // ...
             .blastTemp(3700, "mid", GTValues.VA[GTValues.EV], 1600)
     })
+    ```
+=== "Java"
+    ```java
+    public static Material MY_MATERIAL;
+    public static void register() {
+       MY_MATERIAL = new Material.Builder(
+            your_mod_id.id('my_material'))
+            // ...
+            .blastTemp(3700, "mid", GTValues.VA[GTValues.EV], 1600)
+            .buildAndRegister();
+        }
     ```
 
 ## `Blast Furnace Properties`

@@ -7,7 +7,7 @@ title: ChemicalHelper
 
 It may behoove a packmaker working with GTCEu Modern to learn about the ChemicalHelper class.
 
-This class contains a number of useful methods that can ease working with GTCEu
+This class, available for use in server scripts, contains a number of useful methods that can ease working with GTCEu
 Materials in contexts where it might not be possible, or it might be unsafe, to work with item or block tags.
 
 
@@ -60,18 +60,15 @@ ItemStack representing that `TagPrefix`-`Material` combination with the specifie
 
 ## Usage Examples
 
-```java title="ChemicalHelperExample.java"
-ItemStack doubleIronPlate = ChemicalHelper.get(TagPrefix.plateDouble, GTMaterials.Iron);
-ItemStack rawPlatinum = ChemicalHelper.get(TagPrefix.rawOre, GTMaterials.Platinum);
+```js title="chemicalhelper_example_script.js"
+var ironMaterial = ChemicalHelper.getMaterial(Item.of("gtceu:double_iron_plate").asItem()) // (1)
+var rawOrePrefix = ChemicalHelper.getPrefix(Item.of("gtceu:raw_platinum").asItem()) // (2)
+var cobaltIngotStack = ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Cobalt, 32) // (3)
 
-MaterialStack ironMaterial = ChemicalHelper.getMaterialStack(doubleIronPlate); // (1)
-TagPrefix rawOrePrefix = ChemicalHelper.getPrefix(rawPlatinum); // (2)
-ItemStack cobaltIngotStack = ChemicalHelper.get(TagPrefix.ingot, GTMaterials.Cobalt, 32); // (3)
+var goldNugget = ChemicalHelper.getIngot(GTMaterials.Gold, GTValues.M / 9) // (4)
+var steelBlock = ChemicalHelper.getIngot(GTMaterials.Steel, GTValues.M * 9)
 
-ItemStack goldNugget = ChemicalHelper.getIngot(GTMaterials.Gold, GTValues.M / 9); // (4)
-ItemStack steelBlock = ChemicalHelper.getIngot(GTMaterials.Steel, GTValues.M * 9);
-
-ItemStack ashSmallDust = ChemicalHelper.getDust(GTMaterials.Ash, GTValues.M / 4); // (5)
+var ashSmallDust = ChemicalHelper.getDust(GTMaterials.Ash, GTValues.M / 4) // (5)
 ```
 
 1. `ironMaterial` is now a reference to `GTMaterials.Iron`.

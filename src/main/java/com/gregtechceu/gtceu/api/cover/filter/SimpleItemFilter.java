@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -58,19 +55,6 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         this.isBlackList = isBlackList;
         this.ignoreNbt = ignoreNbt;
         this.matches = matches.toArray(ItemStack[]::new);
-    }
-
-    public static SimpleItemFilter forItems(boolean ignoreNbt, ItemStack... items) {
-        SimpleItemFilter filter = new SimpleItemFilter(false, ignoreNbt, List.of(GTItems.ITEM_FILTER.asStack()));
-        int i = 0;
-        for (ItemStack item : items) {
-            filter.matches[i] = item.copy();
-            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(filter.matches[i]);
-            if (spoilable != null) spoilable.freezeSpoiling();
-            i++;
-        }
-        filter.updateAndSaveFilter();
-        return filter;
     }
 
     @Override

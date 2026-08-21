@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -23,18 +22,16 @@ public class ItemRecipeHandler implements IRecipeHandler<SizedIngredient> {
     @Getter
     public final IO handlerIO;
     public final CustomItemStackHandler storage;
-    private final MetaMachine machine;
 
-    public ItemRecipeHandler(IO handlerIO, int slots, MetaMachine machine) {
+    public ItemRecipeHandler(IO handlerIO, int slots) {
         this.handlerIO = handlerIO;
         this.storage = new CustomItemStackHandler(slots);
-        this.machine = machine;
     }
 
     @Override
     public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe,
                                                    List<SizedIngredient> left, boolean simulate) {
-        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, this.handlerIO, storage, machine);
+        return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Override

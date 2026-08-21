@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -65,7 +66,10 @@ public class SmartItemFilter extends Filter<ItemStack> {
     public void onFilterLoaded(FilterHandler<ItemStack> handler) {
         if (handler.getParentSyncObject() instanceof CoverBehavior cover &&
                 cover.coverHolder instanceof MachineCoverContainer mcc) {
-            setModeFromMachine(mcc.getMachine().getDefinition().getName());
+            var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
+            if (machine != null) {
+                setModeFromMachine(machine.getDefinition().getName());
+            }
         }
     }
 

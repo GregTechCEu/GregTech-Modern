@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.client.model.GTModelProperties;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -83,6 +85,14 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     int getBlockedConnections();
 
+    default BlockState getState() {
+        return self().getBlockState();
+    }
+
+    default BlockEntity self() {
+        return (BlockEntity) this;
+    }
+
     @SuppressWarnings("unchecked")
     default PipeBlock<PipeType, NodeDataType, ?> getPipeBlock() {
         return (PipeBlock<PipeType, NodeDataType, ?>) self().getBlockState().getBlock();
@@ -90,8 +100,8 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     @Nullable
     default PipeNet<NodeDataType> getPipeNet() {
-        if (self().getLevel() instanceof ServerLevel serverLevel) {
-            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(self().getBlockPos());
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
         }
         return null;
     }
@@ -104,7 +114,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     default NodeDataType getNodeData() {
         var net = getPipeNet();
         if (net != null) {
-            return net.getNodeAt(self().getBlockPos()).data;
+            return net.getNodeAt(getBlockPos()).data;
         }
         return null;
     }

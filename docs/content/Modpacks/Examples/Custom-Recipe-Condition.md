@@ -23,31 +23,32 @@ public class ExampleMod {
         modBus.addGenericListener(RecipeConditionType.class, this::registerConditions);
     }
     
-    public void registerConditions(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"), // (1)
+    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
+        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition", // (1)
                 new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
     }
     // end 1.20.1
     
     // in 1.21.1
     public static final RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-            ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "example_condition"), // (1)
+            ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "example_condition"), // (2)
             new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
 
     public ExampleMod(IEventBus modBus, FMLModContainer container) {
         modBus.addListener(CommonInit::onRegister);
-        bus.addListener(this::registerConditions);
+        bus.addListener(RecipeConditionType.class, this::registerConditions);
     }
     
-    public void registerConditions(RegisterEvent event) {
-        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"),
+    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
+        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition",
                 new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
     }
     // end 1.21.1
 }
 ```
 
-1. You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
+1. The 1.20.1 version doesn't require a namespace, so make sure you don't use the same ID as someone else!  
+2. You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
 
 We will set up a condition that requires that the power buffer of the machine is above a certain Y level.
 ```java
@@ -153,7 +154,7 @@ This is the actual condition.
     public int height;
 ```
 
-The CODEC is how Minecraft knows how to serialize/deserialize your condition. This is needed for syncing between client/server, and storing it to json to load when the world loads.
+The CODEC is how java knows how to serialize/deserialize your condition. This is needed for syncing between client/server, and storing it to json to load when the world loads.
 It consists of a few parts:
 
 - `RecordCodecBuilder.create(instance -> ` means we will start a RecordCodecBuilder, or a builder that only consists of simple types.

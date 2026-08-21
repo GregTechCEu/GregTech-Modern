@@ -33,10 +33,12 @@ public class FilterHandler<T> implements ISyncManaged {
     @Getter
     private final Class<T> filterableType;
 
-    private @Nullable Filter<T> filter;
-
-    @SaveField(nbtKey = "filterItem")
+    @SaveField
     @SyncToClient
+    @Getter
+    private ItemStack filterItem = ItemStack.EMPTY;
+
+    private @Nullable Filter<T> filter;
     @Getter
     private CustomItemStackHandler filterSlot;
 
@@ -52,7 +54,7 @@ public class FilterHandler<T> implements ISyncManaged {
         this.container = container;
         this.filterableType = filterableType;
 
-        this.filterSlot = new CustomItemStackHandler(1) {
+        this.filterSlot = new CustomItemStackHandler(this.filterItem) {
 
             @Override
             public int getSlotLimit(int slot) {
@@ -74,10 +76,6 @@ public class FilterHandler<T> implements ISyncManaged {
 
     public boolean isFilterPresent() {
         return filter != null;
-    }
-
-    public ItemStack getFilterItem() {
-        return filterSlot.getStackInSlot(0);
     }
 
     public Filter<T> getFilter() {
@@ -113,20 +111,23 @@ public class FilterHandler<T> implements ISyncManaged {
     }
 
     private void updateFilter() {
-        ItemStack filterItem = getFilterItem();
+        var filterContainer = getFilterSlot();
 
-        if (GTCEu.isClientThread() && this.filter != null && !filterItem.isEmpty()) {
-            return;
+        if (GTCEu.isClientThread()) {
+            if (!filterContainer.getStackInSlot(0).isEmpty() && !this.filterItem.isEmpty()) {
+                return;
+            }
         }
 
-        syncDataHolder.markClientSyncFieldDirty("filterSlot");
+        this.filterItem = filterContainer.getStackInSlot(0);
+        syncDataHolder.markClientSyncFieldDirty("filterItem");
 
         if (this.filter != null) {
             this.filter = null;
             this.onFilterRemoved.run();
         }
 
-        if (!filterItem.isEmpty()) {
+        if (!this.filterItem.isEmpty()) {
             this.filter = Filters.loadFilter(filterableType, filterItem);
             filter.onFilterLoaded(this);
             filter.setOnUpdated(this.onFilterUpdated);

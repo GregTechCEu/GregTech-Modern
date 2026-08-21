@@ -20,15 +20,6 @@ toolStats has the following arguments:
       This argument can be left out if you want your material to apply to all tool types.
 
 An example of this being used is included below.
-=== "Java"
-    ```java title="ExampleToolMaterial.java"
-        public static Material ALUMINFROST = new Material.Builder(
-            your_mod_id.id("aluminfrost"))
-            .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
-            .toolStats(new ToolProperty(12.0F, 7.0F, 3072, 6,
-                    new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER }))
-            .buildAndRegister();
-    ```
 === "JavaScript"
     ```js title="example_tool_material.js"
     // When working with tools in kubejs you will need to load these classes at the top of your file.
@@ -45,6 +36,16 @@ An example of this being used is included below.
                 ]
             ))
     });
+    ```
+=== "Java"
+    ```java title="ExampleToolMaterial.java"
+            public static Material ALUMINFROST;
+            ALUMINFROST = new Material.Builder(
+                your_mod_id.id("aluminfrost"))
+                .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
+                .toolStats(new ToolProperty(12.0F, 7.0F, 3072, 6,
+                        new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER }))
+                .buildAndRegister();
     ```
 Using the ToolProperties.Builder, you can also add further arguments onto your tools.
 The builder has the same arguments as the constructor, and can have chained methods such as:
@@ -66,22 +67,6 @@ The builder has the same arguments as the constructor, and can have chained meth
       Iron is 14, Diamond is 10, Stone is 5.
 
 Here is an example of using the builder in a material:
-=== "Java"
-    ```java title="ExampleToolMaterial.java"
-        public static Material ALUMINFROST = new Material.Builder(
-                ADDON_MOD.id("aluminfrost"))
-                .ingot()
-                .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
-                .toolStats(ToolProperty.Builder.of(1.8F, 1.7F, 700, 3)
-                        .types(
-                                GTToolType.SWORD,
-                                GTToolType.PICKAXE,
-                                GTToolType.SHOVEL)
-                        .unbreakable()
-                        .enchantment(SILK_TOUCH, 1)
-                        .build())
-                .buildAndRegister();
-    ```
 === "JavaScript"
     ```js title="example_tool_material.js"
     GTCEuStartupEvents.registry('gtceu:material', event => {
@@ -102,21 +87,25 @@ Here is an example of using the builder in a material:
             ) 
     });
     ```
+=== "Java"
+    ```java title="ExampleToolMaterial.java"
+        public static Material ALUMINFROST;
+        ALUMINFROST = new Material.Builder(
+                your_mod_id.id("aluminfrost"))
+                .ingot()
+                .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
+                .toolStats(ToolProperty.Builder.of(1.8F, 1.7F, 700, 3)
+                        .types(
+                                GTToolType.SWORD,
+                                GTToolType.PICKAXE,
+                                GTToolType.SHOVEL)
+                        .unbreakable()
+                        .enchantment(SILK_TOUCH, 1)
+                        .build())
+                .buildAndRegister();
+    ```
 
 You can also change the tool property of a GT material that already has a tool property. You do, however, have to remove the current tool property as it is immutable.
-=== "Java"
-    ```java title="ToolReplacement.java"
-    @SubscribeEvent
-    public static void modifyMaterials(PostMaterialEvent event) {
-        if (GTMaterials.TungstenCarbide.hasProperty(PropertyKey.TOOL)) {
-            GTMaterials.TungstenCarbide.removeProperty(PropertyKey.TOOL);
-        }
-        TungstenCarbide.setProperty(PropertyKey.TOOL,
-            (ToolProperty.Builder.of(180, 5.9f, 2147483647, 6, GTToolType.SOFT_MALLET, GTToolType.DRILL_LV)
-            .build()));
-    }
-
-    ```
 === "JavaScript"
     ```js title="tool_replacement.js"
     GTCEuStartupEvents.materialModification(event => {
@@ -131,6 +120,18 @@ You can also change the tool property of a GT material that already has a tool p
             ]
         ).build());
     });
+    ```
+=== "Java"
+    ```java title="ToolReplacement.java"
+    public static void modifyMaterials() {
+        if (GTMaterials.TungstenCarbide.hasProperty(PropertyKey.TOOL)) {
+            GTMaterials.TungstenCarbide.removeProperty(PropertyKey.TOOL);
+        }
+        TungstenCarbide.setProperty(PropertyKey.TOOL,
+                (ToolProperty.Builder.of(180, 5.9, 2147483647, 6, GTToolType.SOFT_MALLET, GTToolType.DRILL_LV)
+                        .build()));
+    }
+    
     ```
 
 Here is a list of all the GtToolTypes.

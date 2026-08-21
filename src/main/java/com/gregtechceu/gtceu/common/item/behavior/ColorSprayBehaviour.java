@@ -226,7 +226,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             }
         } else if (first instanceof IPipeNode pipe) {
             var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, pipe,
-                    first.getLevel(), (p) -> p.self().getBlockPos(),
+                    first.getLevel(), IPipeNode::getBlockPos,
                     gtPipePredicate, limit, limit * 6);
             paintPaintables(collected, context);
         } else if (first instanceof IPaintable paintable) {

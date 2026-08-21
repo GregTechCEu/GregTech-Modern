@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 @Accessors(chain = true)
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
-    public transient String category;
+    public transient String name, category;
     public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
     public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
     @Nullable
@@ -43,6 +43,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     public GTRecipeTypeBuilder(ResourceLocation id) {
         super(id);
+        name = this.id.getPath();
         category = "custom";
         maxInputs = new Object2IntOpenHashMap<>();
         maxOutputs = new Object2IntOpenHashMap<>();
