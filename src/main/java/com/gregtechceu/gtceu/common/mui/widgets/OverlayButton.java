@@ -99,6 +99,12 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
     }
 
     @Override
+    public void onMouseLeaveArea() {
+        super.onMouseLeaveArea();
+        GTCEu.LOGGER.warn("mouse left overlay button area");
+    }
+
+    @Override
     public void dispose() {
         this.handler.close();
         super.dispose();
@@ -179,12 +185,33 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
         @Getter
         private final OverlayButton owner;
 
+        private boolean justHovered = true;
+
         private MenuWidget(OverlayButton owner) {
             this.owner = owner;
             Point point = owner.unTransformedPos();
             pos(point.x, point.y);
             Area area = owner.getArea();
             size(area.w(), area.h());
+        }
+
+        @Override
+        public void onUpdate() {
+            super.onUpdate();
+            int mx = getContext().getMouseX();
+            int my = getContext().getMouseY();
+            boolean hoveringMenu = getChild().getArea().isInside(mx,my);
+            if (hoveringMenu) {
+                if (justHovered) {
+                    GTCEu.LOGGER.warn("mouse entered menu area");
+                    justHovered = false;
+                }
+            } else if (!justHovered) {
+                GTCEu.LOGGER.warn("mouse left menu area");
+                // is hovering overlay button?
+                // is hovering a child menu?
+                justHovered = true;
+            }
         }
     }
 
