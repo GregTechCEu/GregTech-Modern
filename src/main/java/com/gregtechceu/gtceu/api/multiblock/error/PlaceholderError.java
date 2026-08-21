@@ -1,30 +1,19 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-
-import net.minecraft.core.BlockPos;
-
 import brachy.modularui.api.drawable.Text;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class PlaceholderError extends PatternError {
 
-    public static MapCodec<PlaceholderError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
-            .apply(instance, PlaceholderError::new));
+    public static final MapCodec<PlaceholderError> CODEC = MapCodec.unit(PlaceholderError::instance);
 
-    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("placeholder_error"), CODEC);
+    private static final PlaceholderError INSTANCE = new PlaceholderError();
 
-    public PlaceholderError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
-        super(pos, candidates);
+    public static PlaceholderError instance() {
+        return INSTANCE;
     }
+
+    private PlaceholderError() {}
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
@@ -33,6 +22,6 @@ public class PlaceholderError extends PatternError {
 
     @Override
     public PatternErrorType type() {
-        return TYPE;
+        return GTPatternErrors.PLACEHOLDER_ERROR.value();
     }
 }

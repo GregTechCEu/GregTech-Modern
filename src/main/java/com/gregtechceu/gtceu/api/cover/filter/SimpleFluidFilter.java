@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SimpleFluidFilter extends Filter<FluidStack> {
 
-    //spotless:off
+    // spotless:off
     public static final Codec<SimpleFluidFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("is_blacklist").forGetter(val -> val.isBlackList),
             Codec.BOOL.fieldOf("ignore_components").forGetter(val -> val.ignoreNbt),
