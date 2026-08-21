@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.common.mui.widgets;
 
+import brachy.modularui.widget.SingleChildWidget;
+import brachy.modularui.widget.sizer.Area;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 
 import brachy.modularui.api.ITheme;
 import brachy.modularui.api.MCHelper;
@@ -14,22 +17,25 @@ import brachy.modularui.api.widget.Interactable;
 import brachy.modularui.drawable.GuiDraw;
 import brachy.modularui.overlay.OverlayStack;
 import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.ThemeAPI;
 import brachy.modularui.theme.WidgetThemeEntry;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.Point;
 import brachy.modularui.widget.Widget;
-import brachy.modularui.widget.sizer.Area;
 import brachy.modularui.widget.sizer.StandardResizer;
 import brachy.modularui.widgets.ListWidget;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class OverlayButton extends Widget<OverlayButton> implements Interactable {
 
@@ -41,6 +47,9 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     private final String panelName;
 
+    @Getter
+    private MenuHandler handler;
+
     @Accessors(fluent = true)
     @Setter
     private Consumer<ListWidget<IWidget, ?>> menuList;
@@ -49,30 +58,24 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
     @Setter
     private Direction direction = Direction.DOWN;
 
-    private MenuScreen menuScreen;
-
-    private boolean open = false;
-
     public OverlayButton(String panelName) {
         this.panelName = panelName;
         size(16);
     }
 
-    private MenuScreen constructOverlay() {
-        final ModularPanel<?> panel = ModularPanel.defaultPanel(this.panelName)
-                .invisible()
-                .size(getArea().w(), getArea().h());
+    @Override
+    public void afterInit() {
+        this.handler = new MenuHandler(getPanel(), (handler) -> new MenuPanel(this.panelName, getMenu()));
+    }
+
+    private MenuWidget getMenu() {
         ListWidget<IWidget, ?> list = new ListWidget<>();
-        if (menuList != null) {
-            menuList.accept(list);
+        if (this.menuList != null) {
+            this.menuList.accept(list);
         }
         this.direction.position(list);
         list.background(background);
-        Point point = unTransformedPos();
-        // use panel as anchor
-        panel.pos(point.x, point.y).child(list);
-
-        return new MenuScreen(panel, this);
+        return new MenuWidget(this).child(list);
     }
 
     private @NotNull Point unTransformedPos() {
@@ -90,21 +93,14 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
 
     @Override
     public @NotNull Result onMousePressed(int button) {
-        // different buttons may have the same panel name
-        if (!open) {
-            OverlayManager.open(this);
-            this.open = true;
-        } else {
-            OverlayManager.close(this);
-            this.open = false;
-        }
+        this.handler.toggleMenu();
         Interactable.playButtonClickSound();
         return Result.SUCCESS;
     }
 
     @Override
     public void dispose() {
-        OverlayManager.close(this);
+        this.handler.close();
         super.dispose();
     }
 
@@ -174,66 +170,127 @@ public class OverlayButton extends Widget<OverlayButton> implements Interactable
         return direction(Direction.UNDEFINED);
     }
 
-    private static class OverlayManager {
+    private void setChild(MenuHandler menuHandler) {
+        getHandler().setChild(menuHandler);
+    }
 
-        @SuppressWarnings("UnstableApiUsage")
-        private static void open(OverlayButton menuHolder) {
-            if (menuHolder.open) {
-                GTCEu.LOGGER.warn("Overlay Screen already exists for panel {}", menuHolder.getPanel());
-                return;
-            }
-            var overlay = menuHolder.constructOverlay();
-            var parent = menuHolder.getScreen();
-            if (parent instanceof MenuScreen menuScreen) {
-                menuScreen.setChild(overlay);
-            } else {
-                GTCEu.LOGGER.warn("new overlay?");
-            }
+    private static class MenuWidget extends SingleChildWidget<MenuWidget> {
 
-            overlay.constructOverlay(MCHelper.getCurrentScreen());
-            OverlayStack.open(overlay);
-            Area screenArea = parent.getScreenArea();
-            overlay.onResize(screenArea.w(), screenArea.h());
-            menuHolder.menuScreen = overlay;
+        @Getter
+        private final OverlayButton owner;
+
+        private MenuWidget(OverlayButton owner) {
+            this.owner = owner;
+            Point point = owner.unTransformedPos();
+            pos(point.x, point.y);
+            Area area = owner.getArea();
+            size(area.w(), area.h());
+        }
+    }
+
+    private static class MenuPanel extends ModularPanel<MenuPanel> {
+
+        @Getter
+        private final MenuWidget menu;
+
+        public MenuPanel(String name, MenuWidget menu) {
+            super(name);
+            this.menu = menu;
+            fullScreenInvisible();
+            child(menu);
         }
 
-        @SuppressWarnings("UnstableApiUsage")
-        private static void close(OverlayButton menuHolder) {
-            MenuScreen screen = menuHolder.menuScreen;
-            if (screen != null) {
-                screen.close();
-                OverlayStack.close(screen);
-                menuHolder.open = false;
+        @Override
+        public void closeIfOpen() {
+            if (!isOpen() || (!getContext().getUItype().isScreen && isMainPanel())) return;
+            closeSubPanels();
+            if (!shouldAnimate()) {
+                closeInternal();
+                return;
+            }
+            if (isOpening() || isClosing()) return;
+
+            getAnimator().onFinish(this::closeInternal);
+            getAnimator().reset(true);
+            getAnimator().animate(true);
+        }
+
+        private void closeInternal() {
+            if (GTCEu.isClientSide()) {
+                ModularScreen ms = getScreen();
+                ms.close();
+                // noinspection UnstableApiUsage
+                OverlayStack.close(ms);
             }
         }
     }
 
-    private static class MenuScreen extends GTGuiScreen {
+    // discount "panel" handler
+    private static class MenuHandler {
 
-        private @Nullable MenuScreen child = null;
-        private final OverlayButton owner;
+        private final ModularPanel<?> owner;
+        private final Function<MenuHandler, ModularPanel<?>> panelSupplier;
 
-        public MenuScreen(@NotNull ModularPanel<?> mainPanel, OverlayButton owner) {
-            super(mainPanel);
-            this.owner = owner;
+        @Getter
+        private boolean open;
+        private ModularPanel<?> panel;
+
+        private MenuHandler child;
+
+        public MenuHandler(ModularPanel<?> parent, Function<MenuHandler, ModularPanel<?>> panelSupplier) {
+            this.owner = parent;
+            this.panelSupplier = panelSupplier;
         }
 
-        @Override
-        public void onOpen() {}
-
-        public void setChild(MenuScreen parent) {
-            if (child != null) {
-                OverlayManager.close(child.owner);
+        @SuppressWarnings("UnstableApiUsage")
+        public void open() {
+            if (open) return;
+            this.panel = Objects.requireNonNull(this.panelSupplier.apply(this));
+            if (GTCEu.isClientSide()) {
+                ModularScreen screen = new GTGuiScreen(this.panel);
+                Screen mcScreen = MCHelper.getCurrentScreen();
+                screen.constructOverlay(mcScreen);
+                OverlayStack.open(screen);
+                screen.onResize(mcScreen.width, mcScreen.height);
             }
-            this.child = parent;
+            getMenuPanel().ifPresent(mp -> mp.getMenu().getOwner().setChild(this));
+            open = true;
         }
 
-        @Override
-        public void close() {
-            if (child != null) {
+        private Optional<MenuPanel> getMenuPanel() {
+            if (this.owner instanceof MenuPanel) {
+                return Optional.of((MenuPanel) this.owner);
+            }
+            return Optional.empty();
+        }
+
+        private void closeChild() {
+            if (this.child != null) {
                 child.close();
             }
-            super.close();
+        }
+
+        private void setChild(MenuHandler menuHandler) {
+            closeChild();
+            this.child = menuHandler;
+        }
+
+        public void close() {
+            if (open) {
+                closeChild();
+                this.panel.closeIfOpen();
+                open = false;
+            }
+        }
+
+        public boolean toggleMenu() {
+            if (isOpen()) {
+                close();
+                return true;
+            } else {
+                open();
+                return false;
+            }
         }
     }
 
