@@ -23,7 +23,6 @@ import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class RobotArmCover extends ConveyorCover {
 
-    @Setter(AccessLevel.PRIVATE)
+    @Setter
     @SaveField
     @Getter
     protected TransferMode transferMode;

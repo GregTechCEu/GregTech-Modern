@@ -25,7 +25,6 @@ import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +36,7 @@ public class FluidRegulatorCover extends PumpCover {
 
     @SaveField
     @Getter
-    @Setter(AccessLevel.PRIVATE)
+    @Setter
     private TransferMode transferMode = TransferMode.TRANSFER_ANY;
 
     @Setter
