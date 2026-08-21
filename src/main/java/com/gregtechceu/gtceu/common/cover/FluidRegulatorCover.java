@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import lombok.AccessLevel;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +40,7 @@ public class FluidRegulatorCover extends PumpCover {
 
     @SaveField
     @Getter
+    @Setter(AccessLevel.PRIVATE)
     private TransferMode transferMode = TransferMode.TRANSFER_ANY;
 
     @Setter
@@ -151,21 +153,6 @@ public class FluidRegulatorCover extends PumpCover {
         }
 
         return platformTransferLimit - fluidLeftToTransfer;
-    }
-
-    private void setTransferMode(TransferMode transferMode) {
-        this.transferMode = transferMode;
-
-        if (!this.isRemote()) {
-            configureFilter();
-        }
-    }
-
-    @Override
-    protected void configureFilter() {
-        if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
-            filter.setMaxStackSize(transferMode == TransferMode.TRANSFER_ANY ? 1 : MAX_STACK_SIZE);
-        }
     }
 
     private int getFilteredFluidAmount(FluidStack fluidStack) {

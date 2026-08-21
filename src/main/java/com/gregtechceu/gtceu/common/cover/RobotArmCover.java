@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
@@ -24,6 +23,7 @@ import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +36,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class RobotArmCover extends ConveyorCover {
 
+    @Setter(AccessLevel.PRIVATE)
     @SaveField
     @Getter
     protected TransferMode transferMode;
@@ -172,21 +173,6 @@ public class RobotArmCover extends ConveyorCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
-    }
-
-    public void setTransferMode(TransferMode transferMode) {
-        this.transferMode = transferMode;
-
-        if (!this.isRemote()) {
-            configureFilter();
-        }
-    }
-
-    @Override
-    protected void configureFilter() {
-        if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
-            filter.setMaxStackSize(filter.supportsAmounts() ? transferMode.maxStackSize : 1);
-        }
     }
 
     private boolean shouldShowStackSize() {
