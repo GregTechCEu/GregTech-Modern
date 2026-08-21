@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -102,10 +101,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     public void setVoidingMode(VoidingMode voidingMode) {
         this.voidingMode = voidingMode;
         syncDataHolder.markClientSyncFieldDirty("voidingMode");
-
-        if (!this.isRemote()) {
-            configureFilter();
-        }
     }
 
     private void setTransferBucketMode(BucketMode transferBucketMode) {
@@ -152,13 +147,6 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     private void setCurrentBucketModeTransferSize(int transferSize) {
         this.globalTransferSizeMillibuckets = Math.max(transferSize * this.transferBucketMode.multiplier, 0);
         syncDataHolder.markClientSyncFieldDirty("globalTransferSizeMillibuckets");
-    }
-
-    @Override
-    protected void configureFilter() {
-        if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
-            filter.setMaxStackSize(voidingMode == VoidingMode.VOID_ANY ? 1 : Integer.MAX_VALUE);
-        }
     }
 
     private boolean shouldShowStackSize() {
