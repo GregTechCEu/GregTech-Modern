@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -26,6 +25,7 @@ import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,10 +35,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class FluidRegulatorCover extends PumpCover {
 
-    private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
-
     @SaveField
     @Getter
+    @Setter(AccessLevel.PRIVATE)
     private TransferMode transferMode = TransferMode.TRANSFER_ANY;
 
     @Setter
@@ -153,21 +152,6 @@ public class FluidRegulatorCover extends PumpCover {
         return platformTransferLimit - fluidLeftToTransfer;
     }
 
-    private void setTransferMode(TransferMode transferMode) {
-        this.transferMode = transferMode;
-
-        if (!this.isRemote()) {
-            configureFilter();
-        }
-    }
-
-    @Override
-    protected void configureFilter() {
-        if (filterHandler.getFilter() instanceof SimpleFluidFilter filter) {
-            filter.setMaxStackSize(transferMode == TransferMode.TRANSFER_ANY ? 1 : MAX_STACK_SIZE);
-        }
-    }
-
     private int getFilteredFluidAmount(FluidStack fluidStack) {
         if (!filterHandler.isFilterPresent())
             return globalTransferLimit;
@@ -195,11 +179,9 @@ public class FluidRegulatorCover extends PumpCover {
 
         GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
-        column.child(GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode,
-                () -> maxFluidTransferRate));
-
-        column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> MAX_STACK_SIZE)
-                .setEnabledIf($ -> shouldShowTransferSize()));
+        column.child(
+                GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode, () -> maxFluidTransferRate)
+                        .setEnabledIf($ -> shouldShowTransferSize()));
     }
 
     private boolean shouldShowTransferSize() {
