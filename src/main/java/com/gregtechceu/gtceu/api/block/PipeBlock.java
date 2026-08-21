@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
+import com.gregtechceu.gtceu.api.pipenet.Node;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
@@ -65,6 +66,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -78,6 +80,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     public final PipeType pipeType;
 
     protected final Map<Direction, VoxelShape> shapes = new IdentityHashMap<>();
+    private final AtomicReferenceArray<VoxelShape> shapeCache = new AtomicReferenceArray<>(Node.ALL_OPENED + 1);
 
     public PipeBlock(Properties properties, PipeType pipeType) {
         super(properties);
@@ -474,9 +477,15 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     public VoxelShape getShapes(int connections) {
-        return this.shapes.entrySet().stream()
-                .filter(entry -> entry.getKey() == null || PipeBlockEntity.isConnected(connections, entry.getKey()))
+        int connectionMask = connections & Node.ALL_OPENED;
+        VoxelShape cachedShape = shapeCache.get(connectionMask);
+        if (cachedShape != null) return cachedShape;
+
+        VoxelShape shape = this.shapes.entrySet().stream()
+                .filter(entry -> entry.getKey() == null || PipeBlockEntity.isConnected(connectionMask, entry.getKey()))
                 .map(Map.Entry::getValue)
                 .reduce(Shapes.empty(), Shapes::or);
+        if (shapeCache.compareAndSet(connectionMask, null, shape)) return shape;
+        return shapeCache.get(connectionMask);
     }
 }
