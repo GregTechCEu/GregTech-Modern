@@ -78,9 +78,9 @@ public class SyncDataHolder {
     public void deserializeNBT(CompoundTag tag) {
         for (var field : syncData.getServerSaveFields()) {
             Tag newValue = tag.get(field.nbtSaveKey);
-            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) return;
+            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) continue;
 
-            if (!confirmTransformerPresent(field, holder)) return;
+            if (!confirmTransformerPresent(field, holder)) continue;
 
             try {
                 ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
@@ -154,14 +154,14 @@ public class SyncDataHolder {
 
             Tag newValue = tag.get(field.nbtSaveKey);
 
-            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) return;
+            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) continue;
 
             if (newValue instanceof CompoundTag compound && compound.getBoolean("null")) {
                 field.handle.set(holder, null);
-                return;
+                continue;
             }
 
-            if (!confirmTransformerPresent(field, holder)) return;
+            if (!confirmTransformerPresent(field, holder)) continue;
 
             try {
                 ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
