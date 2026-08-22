@@ -215,9 +215,13 @@ public final class MachineTraitHolder {
         public Tag serializeNBT(MachineTraitHolder value, TransformerContext<MachineTraitHolder> context) {
             CompoundTag tag = new CompoundTag();
 
-            value.traitsToSave.forEach((k, v) -> tag.put(k,
-                    v.getSyncDataHolder().serializeNBT(context.lookup(), context.isClientSync(),
-                            context.isClientFullSyncUpdate())));
+            if (context.isClientSync()) {
+                value.traitsToSave.forEach((k, v) -> tag.put(k,
+                        v.getSyncDataHolder().serializeClientData(context.lookup(), context.isClientFullSyncUpdate())));
+            } else {
+                value.traitsToSave.forEach((k, v) -> tag.put(k,
+                        v.getSyncDataHolder().serializeNBT(context.lookup())));
+            }
 
             return tag;
         }
@@ -234,8 +238,11 @@ public final class MachineTraitHolder {
                             key);
                     continue;
                 }
-                trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key),
-                        context.isClientSync());
+                if (context.isClientSync()) {
+                    trait.getSyncDataHolder().deserializeClientData(context.lookup(), compoundTag.getCompound(key));
+                } else {
+                    trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key));
+                }
             }
 
             return traitHolder;

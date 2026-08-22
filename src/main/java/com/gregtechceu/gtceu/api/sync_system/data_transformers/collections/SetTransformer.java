@@ -31,9 +31,8 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
 
     private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<Set<T>> parentContext) {
-        return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[0], elem, parentContext.fieldName() + "[element]",
-                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate(), parentContext.lookup());
+        return parentContext.createChildContext(parentContext.type().getGenericTypeArgs()[0], elem,
+                parentContext.fieldName() + "[element]");
     }
 
     @Override
