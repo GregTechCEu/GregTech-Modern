@@ -43,13 +43,13 @@ public class RareEarthRecipes {
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("sift_light_rare_earth_sludge")
                 .inputItems(dust, LightRareEarthSludge, 1)
                 .chancedOutput(dust, Cerium, 2200)
-                .chancedOutput(dust, Neodymium, 2200)
+                .chancedOutput(dust, Neodymium, 3300)
                 .chancedOutput(dust, Lanthanum, 2200)
                 .duration(64).EUt(VA[MV]).save(provider);
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("sift_heavy_rare_earth_sludge")
                 .inputItems(dust, HeavyRareEarthSludge, 1)
                 .chancedOutput(dust, Cadmium, 2200)
-                .chancedOutput(dust, Samarium, 2200)
+                .chancedOutput(dust, Samarium, 3300)
                 .chancedOutput(dust, Yttrium, 2200)
                 .duration(64).EUt(VA[MV]).save(provider);
 
