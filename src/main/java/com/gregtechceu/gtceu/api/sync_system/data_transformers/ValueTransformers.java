@@ -157,24 +157,18 @@ public final class ValueTransformers {
         //// Java classes and standard minecraft/forge classes
 
         registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::getAsString, StringTag.class);
-        registerSimpleClassTransformer(ItemStack.class, IForgeItemStack::serializeNBT, ItemStack::of,
-                CompoundTag.class);
-        registerSimpleClassTransformer(FluidStack.class, (v) -> v.writeToNBT(new CompoundTag()),
-                FluidStack::loadFluidStackFromNBT, CompoundTag.class);
+
+        registerTransformer(ItemStack.class, new SimpleClassTransformers.ItemStackTransformer());
+        registerTransformer(FluidStack.class, new SimpleClassTransformers.FluidStackTransformer());
+        registerTransformer(Component.class, new SimpleClassTransformers.ComponentTransformer());
 
         // The default value supplier will never be called as NbtUtils::loadUUID will throw if the UUID is invalid.
         registerSimpleClassTransformer(UUID.class, NbtUtils::createUUID, NbtUtils::loadUUID, IntArrayTag.class);
 
-        registerSimpleClassTransformer(BlockPos.class, NbtUtils::writeBlockPos, NbtUtils::readBlockPos,
-                CompoundTag.class);
+        registerTransformer(BlockPos.class, new SimpleClassTransformers.BlockPosTransformer());
         registerTransformer(BlockState.class, new CodecTransformer<>(BlockState.CODEC));
         registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class);
 
-        registerSimpleClassTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
-                t -> {
-                    var comp = Component.Serializer.fromJson(t.getAsString());
-                    return comp == null ? Component.empty() : comp;
-                }, StringTag.class);
 
         registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
         registerTransformer(ISyncManaged.class, new SyncDataHolder.SyncManagedTransformer());
