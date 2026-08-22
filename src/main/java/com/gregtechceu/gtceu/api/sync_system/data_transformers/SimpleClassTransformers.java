@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -24,6 +25,16 @@ public class SimpleClassTransformers {
             return ItemStack.CODEC.parse(context.nbtOps(), compoundTag)
                     .getOrThrow(false, GTCEu.LOGGER::error);
         }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, ItemStack value, TransformerContext<ItemStack> context) {
+            buf.writeItem(value);
+        }
+
+        @Override
+        public @Nullable ItemStack readFromPacket(FriendlyByteBuf buf, TransformerContext<ItemStack> context) {
+            return buf.readItem();
+        }
     }
 
     public static class FluidStackTransformer implements ValueTransformer<FluidStack> {
@@ -40,6 +51,16 @@ public class SimpleClassTransformers {
             return FluidStack.CODEC.parse(context.nbtOps(), compoundTag)
                     .getOrThrow(false, GTCEu.LOGGER::error);
         }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, FluidStack value, TransformerContext<FluidStack> context) {
+            value.writeToPacket(buf);
+        }
+
+        @Override
+        public @Nullable FluidStack readFromPacket(FriendlyByteBuf buf, TransformerContext<FluidStack> context) {
+            return FluidStack.readFromPacket(buf);
+        }
     }
 
     public static class BlockPosTransformer implements ValueTransformer<BlockPos> {
@@ -52,6 +73,16 @@ public class SimpleClassTransformers {
         @Override
         public @Nullable BlockPos deserializeNBT(Tag tag, TransformerContext<BlockPos> context) {
             return NbtUtils.readBlockPos(ValueTransformer.assertTagType(CompoundTag.class, tag, context));
+        }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, BlockPos value, TransformerContext<BlockPos> context) {
+            buf.writeBlockPos(value);
+        }
+
+        @Override
+        public @Nullable BlockPos readFromPacket(FriendlyByteBuf buf, TransformerContext<BlockPos> context) {
+            return buf.readBlockPos();
         }
     }
 
@@ -66,6 +97,16 @@ public class SimpleClassTransformers {
         public @Nullable Component deserializeNBT(Tag tag, TransformerContext<Component> context) {
             if (tag instanceof StringTag strTag) return Component.Serializer.fromJson(strTag.getAsString());
             return Component.empty();
+        }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, Component value, TransformerContext<Component> context) {
+            buf.writeComponent(value);
+        }
+
+        @Override
+        public @Nullable Component readFromPacket(FriendlyByteBuf buf, TransformerContext<Component> context) {
+            return buf.readComponent();
         }
     }
 

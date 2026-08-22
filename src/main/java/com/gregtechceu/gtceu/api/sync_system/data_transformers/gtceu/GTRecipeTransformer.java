@@ -70,4 +70,16 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         }
         return result;
     }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, GTRecipe value, TransformerContext<GTRecipe> context) {
+        buf.writeResourceLocation(value.id);
+        GTRecipeSerializer.SERIALIZER.toNetwork(buf, value);
+    }
+
+    @Override
+    public @Nullable GTRecipe readFromPacket(FriendlyByteBuf buf, TransformerContext<GTRecipe> context) {
+        ResourceLocation id = buf.readResourceLocation();
+        return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buf);
+    }
 }

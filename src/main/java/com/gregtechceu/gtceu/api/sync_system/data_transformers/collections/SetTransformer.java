@@ -7,9 +7,12 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class SetTransformer<T> implements ValueTransformer<Set<T>> {
@@ -53,6 +56,29 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         for (Tag elementTag : listTag) {
             T value = getElemTransformer(context).deserializeNBT(elementTag, getInnerElemContext(null, context));
             if (value != null) current.add(value);
+        }
+        return current;
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, Set<T> value, TransformerContext<Set<T>> context) {
+        buf.writeInt(value.size());
+        for (T elem: value) {
+            getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
+        }
+    }
+
+    @Override
+    public @Nullable Set<T> readFromPacket(FriendlyByteBuf buf, TransformerContext<Set<T>> context) {
+        var len = buf.readInt();
+        var current = context.currentValue();
+
+        if (current != null) current.clear();
+        else current = new ObjectOpenHashSet<>();
+
+        for (int i=0; i<len; i++) {
+            T val = getElemTransformer(context).readFromPacket(buf, getInnerElemContext(null, context));
+            if (val != null) current.add(val);
         }
         return current;
     }

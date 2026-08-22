@@ -9,8 +9,11 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
@@ -92,9 +95,42 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
                         "Sync: Skipping null key or field while deserializing map: [key: {}, value: {}] [nbt key: {}, nbt value: {}]",
                         key, value, keyTag, valueTag);
                 continue;
-            } ;
+            }
             current.put(key, value);
         }
         return current;
     }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, Map<K, V> value, TransformerContext<Map<K, V>> context) {
+        buf.writeInt(value.size());
+        for (var entry : value.entrySet()) {
+            getKeyTransformer(context).writeToPacket(buf, entry.getKey(), getInnerKeyContext(entry.getKey(), context));
+            getValueTransformer(context).writeToPacket(buf, entry.getValue(), getInnerValueContext(entry.getValue(), context));
+        }
+    }
+
+    @Override
+    public @Nullable Map<K, V> readFromPacket(FriendlyByteBuf buf, TransformerContext<Map<K, V>> context) {
+        var current = context.currentValue();
+        if (current != null) current.clear();
+        else current = new Object2ObjectOpenHashMap<>();
+
+        int size = buf.readInt();
+
+        for (int i=0; i<size; i++) {
+            K key = getKeyTransformer(context).readFromPacket(buf, getInnerKeyContext(null, context));
+            V value = getValueTransformer(context).readFromPacket(buf, getInnerValueContext(null, context));
+
+            if (key == null || value == null) {
+                GTCEu.LOGGER.warn(
+                        "Sync: Skipping null key or field while reading map: [key: {}, value: {}]",
+                        key, value);
+                continue;
+            }
+            current.put(key, value);
+        }
+        return current;
+    }
+
 }
