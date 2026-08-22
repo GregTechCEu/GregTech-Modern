@@ -66,46 +66,11 @@ public class ChanceCacheTransformer implements ValueTransformer<IdentityHashMap<
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void writeToPacket(FriendlyByteBuf buf, IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> value, TransformerContext<IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>>> context) {
-        buf.writeInt(value.size());
-        value.forEach((cap, cache) -> {
-
-            buf.writeResourceLocation(cap.id);
-            buf.writeInt(cache.size());
-
-            for (var entry : cache.object2IntEntrySet()) {
-                buf.writeJsonWithCodec((Codec<Object>)cap.serializer.codec(), entry.getKey());
-                buf.writeInt(entry.getIntValue());
-            }
-        });
-    }
+    public void writeToPacket(FriendlyByteBuf buf, IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> value, TransformerContext<IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>>> context) {}
 
     @Override
     public @Nullable IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> readFromPacket(FriendlyByteBuf buf, TransformerContext<IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>>> context) {
-
-        IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = new IdentityHashMap<>();
-
-        int totalCaps = buf.readInt();
-
-        for (int capIndex = 0; capIndex<totalCaps; capIndex++) {
-            ResourceLocation capId = buf.readResourceLocation();
-
-            RecipeCapability<?> cap = Objects.requireNonNull(GTRegistries.RECIPE_CAPABILITIES.get(capId));
-            int totalCached = buf.readInt();
-
-            Object2IntMap<Object> map = new Object2IntOpenHashMap<>();
-
-            for (int i=0; i<totalCached; i++) {
-                var content = buf.readJsonWithCodec(cap.serializer.codec());
-                int amount = buf.readInt();
-                map.put(content, amount);
-            }
-
-            chanceCaches.put(cap, map);
-        }
-
-
-        return chanceCaches;
+        // no-op, client sync not required
+        return null;
     }
 }

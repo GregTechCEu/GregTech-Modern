@@ -4,10 +4,14 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -69,23 +73,19 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         getSyncDataHolder().deserializeNBT(getHolderLookup(), tag);
     }
 
-    /**
-     * Loads BE data from client update packet
-     */
-    @MustBeInvokedByOverriders
-    public void clientLoad(CompoundTag tag) {
-        getSyncDataHolder().deserializeClientData(getHolderLookup(), tag);
-    }
-
     @Override
     public final void handleUpdateTag(CompoundTag tag) {
-        this.clientLoad(tag);
+        byte[] data = tag.getByteArray("data");
+        getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
     }
 
     @Override
     public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
-        if (tag != null) clientLoad(tag);
+        if (tag != null) {
+            byte[] data = tag.getByteArray("data");
+            getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
+        };
     }
 
     /**
@@ -93,10 +93,15 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
+        var data = new CompoundTag();
+
+        var stream = new FriendlyByteBuf(Unpooled.buffer());
         getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeClientData(getHolderLookup()));
-        return tag;
+        getSyncDataHolder().writeClientPacket(getHolderLookup(), stream);
+
+        stream.capacity(stream.readableBytes());
+        data.putByteArray("data", stream.array());
+        return data;
     }
 
     /**
@@ -104,11 +109,19 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        var data = new CompoundTag();
+
+        var stream = new FriendlyByteBuf(Unpooled.buffer());
+        getSyncDataHolder().writeClientPacket(getHolderLookup(), stream);
+
+        stream.capacity(stream.readableBytes());
+        data.putByteArray("data", stream.array());
+
         return ClientboundBlockEntityDataPacket.create(this,
-                b -> getSyncDataHolder().serializeClientData(getHolderLookup()));
+                b -> data);
     }
 
-    private HolderLookup.Provider getHolderLookup() {
+    private RegistryAccess getHolderLookup() {
         Level level = getLevel();
         return level == null ? GTRegistries.builtinRegistry() : level.registryAccess();
     }
