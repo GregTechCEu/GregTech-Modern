@@ -13,7 +13,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class RareEarthRecipes {
-
+    //TODO: Rare Earths for some reason gives *cadmium*, fix it at a later date or keep it here.
     public static void init(Consumer<FinishedRecipe> provider) {
         // Ln2O3 + 6HCl + 3H2O -> [2LnCl3 + 6H2O]aq
         MIXER_RECIPES.recipeBuilder("rare_earth_sludge_mixture_from_pure_rare_earth")
@@ -30,19 +30,18 @@ public class RareEarthRecipes {
                 .outputItems(dust, LightRareEarthSludge, 2)
                 .outputItems(dust, HeavyRareEarthSludge, 2)
                 .duration(64).EUt(VA[MV]).save(provider);
-        //Basically a 66% chance to hit a dust per sludge batch,
-        //so on average like 1-2 dusts per batch each category for both
+
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("sift_light_rare_earth_sludge")
                 .inputItems(dust, LightRareEarthSludge, 1)
-                .chancedOutput(dust, Cerium, 2200)
-                .chancedOutput(dust, Neodymium, 3300)
-                .chancedOutput(dust, Lanthanum, 2200)
+                .chancedOutput(dust, Cerium, 2800)
+                .chancedOutput(dust, Neodymium, 3200)
+                .chancedOutput(dust, Lanthanum, 1500)
                 .duration(64).EUt(VA[MV]).save(provider);
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("sift_heavy_rare_earth_sludge")
                 .inputItems(dust, HeavyRareEarthSludge, 1)
-                .chancedOutput(dust, Cadmium, 2200)
-                .chancedOutput(dust, Samarium, 3300)
-                .chancedOutput(dust, Yttrium, 2200)
+                .chancedOutput(dust, Cadmium, 1800)
+                .chancedOutput(dust, Samarium, 2700)
+                .chancedOutput(dust, Yttrium, 1800)
                 .duration(64).EUt(VA[MV]).save(provider);
 
 
