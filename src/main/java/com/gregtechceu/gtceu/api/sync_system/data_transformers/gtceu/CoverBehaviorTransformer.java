@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -95,7 +94,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         if (value == null) return;
         buf.writeInt(value.attachedSide.ordinal());
         buf.writeResourceLocation(value.coverDefinition.getId());
-        value.getSyncDataHolder().serializeClientData(context.lookup()).;
+        if (context.isClientFullSyncUpdate()) value.getSyncDataHolder().resyncAllFields();
+        value.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
     }
 
     @Override
@@ -106,16 +106,15 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return null;
         }
 
+
+        Direction side = Direction.values()[buf.readInt()];
+        ResourceLocation coverId = buf.readResourceLocation();
+        CoverBehavior cover = context.currentValue();
+
         if (buf.readBoolean()) {
             holder.setCoverAtSide(null, side);
             return null;
         }
-
-
-        Direction side = Direction.values()[buf.readInt()];
-        ResourceLocation coverId = buf.readResourceLocation();
-
-        CoverBehavior cover = context.currentValue();
 
         if (cover == null || !cover.coverDefinition.getId().equals(coverId)) {
             var coverReg = GTRegistries.COVERS.get(coverId);
@@ -129,7 +128,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
 
-        newCover.getSyncDataHolder().deserializeClientData(context.lookup(), ));
+        newCover.getSyncDataHolder().readClientPacket(context.lookup(), buf);
 
         return newCover;
     }

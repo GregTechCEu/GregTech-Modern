@@ -216,13 +216,7 @@ public final class MachineTraitHolder {
         public Tag serializeNBT(MachineTraitHolder value, TransformerContext<MachineTraitHolder> context) {
             CompoundTag tag = new CompoundTag();
 
-            if (context.isClientSync()) {
-                value.traitsToSave.forEach((k, v) -> tag.put(k,
-                        v.getSyncDataHolder().serializeClientData(context.lookup(), context.isClientFullSyncUpdate())));
-            } else {
-                value.traitsToSave.forEach((k, v) -> tag.put(k,
-                        v.getSyncDataHolder().serializeNBT(context.lookup())));
-            }
+            value.traitsToSave.forEach((k, v) -> tag.put(k, v.getSyncDataHolder().serializeNBT(context.lookup())));
 
             return tag;
         }
@@ -239,11 +233,8 @@ public final class MachineTraitHolder {
                             key);
                     continue;
                 }
-                if (context.isClientSync()) {
-                    trait.getSyncDataHolder().deserializeClientData(context.lookup(), compoundTag.getCompound(key));
-                } else {
-                    trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key));
-                }
+
+                trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key));
             }
 
             return traitHolder;
@@ -254,7 +245,7 @@ public final class MachineTraitHolder {
             buf.writeInt(value.traitsToSave.size());
             for (Map.Entry<String, MachineTrait> traitEntry: value.traitsToSave.entrySet()) {
                 buf.writeUtf(traitEntry.getKey());
-                traitEntry.getValue().getSyncDataHolder().;
+                traitEntry.getValue().getSyncDataHolder().writeClientPacket(context.lookup(), buf);
             }
         }
 
@@ -268,9 +259,9 @@ public final class MachineTraitHolder {
                 var trait = traitHolder.getPersistentTrait(name);
                 if (trait == null) {
                     GTCEu.LOGGER.warn("Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID",
-                            key);
+                            name);
                 } else {
-                    trait.getSyncDataHolder().;
+                    trait.getSyncDataHolder().readClientPacket(context.lookup(), buf);
                 }
             }
 
