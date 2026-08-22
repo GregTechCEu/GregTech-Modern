@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -105,17 +107,19 @@ public final class ValueTransformers {
      * Creates and registers a {@link ValueTransformer} for the given class using predefined NBT parsing functions.
      *
      * @param type     The class to register this {@link ValueTransformer} for
-     * @param write    A function that writes the value into a specific tag type
-     * @param read     A function that reads the value from a specific tag type
+     * @param writeNBT    A function that writes the value into a specific tag type
+     * @param readNBT     A function that reads the value from a specific tag type
      * @param tagClass The tag type the value is serialized into
      */
     public static <T,
-            TagType extends Tag> void registerSimpleClassTransformer(Class<T> type, Function<T, TagType> write,
-                                                                     Function<TagType, T> read,
+            TagType extends Tag> void registerSimpleClassTransformer(Class<T> type, Function<T, TagType> writeNBT,
+                                                                     Function<TagType, @Nullable T> readNBT,
+                                                                     BiConsumer<FriendlyByteBuf, T> writePacket,
+                                                                     Function<FriendlyByteBuf, @Nullable T> readPacket,
                                                                      Class<TagType> tagClass) {
         if (REGISTERED.containsKey(type))
             throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
-        ValueTransformer<T> transformer = new SimpleClassTransformer<>(write, read, tagClass);
+        ValueTransformer<T> transformer = new SimpleClassTransformer<>(writeNBT, readNBT, writePacket, readPacket, tagClass);
         REGISTERED.putIfAbsent(type, transformer);
     }
 
@@ -137,37 +141,37 @@ public final class ValueTransformers {
 
         //// Primitives
 
-        registerSimpleClassTransformer(Integer.class, IntTag::valueOf, IntTag::getAsInt, IntTag.class);
-        registerSimpleClassTransformer(Long.class, LongTag::valueOf, LongTag::getAsLong, LongTag.class);
-        registerSimpleClassTransformer(Float.class, FloatTag::valueOf, FloatTag::getAsFloat, FloatTag.class);
-        registerSimpleClassTransformer(Double.class, DoubleTag::valueOf, DoubleTag::getAsDouble, DoubleTag.class);
-        registerSimpleClassTransformer(Short.class, ShortTag::valueOf, ShortTag::getAsShort, ShortTag.class);
-        registerSimpleClassTransformer(Byte.class, ByteTag::valueOf, ByteTag::getAsByte, ByteTag.class);
-        registerSimpleClassTransformer(Character.class, (b) -> IntTag.valueOf(b), (t) -> (char) t.getAsInt(),
-                IntTag.class);
-        registerSimpleClassTransformer(Boolean.class, ByteTag::valueOf, (b) -> b.getAsByte() != 0, ByteTag.class);
+        //spotless:off
+        registerSimpleClassTransformer(Integer.class, IntTag::valueOf, IntTag::getAsInt, FriendlyByteBuf::writeVarInt, FriendlyByteBuf::readVarInt, IntTag.class);
+        registerSimpleClassTransformer(Long.class, LongTag::valueOf, LongTag::getAsLong, FriendlyByteBuf::writeLong, FriendlyByteBuf::readLong, LongTag.class);
+        registerSimpleClassTransformer(Float.class, FloatTag::valueOf, FloatTag::getAsFloat, FriendlyByteBuf::writeFloat, FriendlyByteBuf::readFloat, FloatTag.class);
+        registerSimpleClassTransformer(Double.class, DoubleTag::valueOf, DoubleTag::getAsDouble, FriendlyByteBuf::writeDouble, FriendlyByteBuf::readDouble, DoubleTag.class);
+        registerSimpleClassTransformer(Short.class, ShortTag::valueOf, ShortTag::getAsShort, (buf, s) -> buf.writeShort(s), FriendlyByteBuf::readShort, ShortTag.class);
+        registerSimpleClassTransformer(Byte.class, ByteTag::valueOf, ByteTag::getAsByte, (buf, b) -> buf.writeByte(b), FriendlyByteBuf::readByte, ByteTag.class);
+        registerSimpleClassTransformer(Character.class, (b) -> IntTag.valueOf(b), (t) -> (char) t.getAsInt(), (buf, c) -> buf.writeChar(c), FriendlyByteBuf::readChar, IntTag.class);
+        registerSimpleClassTransformer(Boolean.class, ByteTag::valueOf, (b) -> b.getAsByte() != 0, FriendlyByteBuf::writeBoolean, FriendlyByteBuf::readBoolean, ByteTag.class);
 
         // Primtive arrays
-        registerSimpleClassTransformer(int[].class, IntArrayTag::new, IntArrayTag::getAsIntArray, IntArrayTag.class);
-        registerSimpleClassTransformer(long[].class, LongArrayTag::new, LongArrayTag::getAsLongArray,
-                LongArrayTag.class);
-        registerSimpleClassTransformer(byte[].class, ByteArrayTag::new, ByteArrayTag::getAsByteArray,
-                ByteArrayTag.class);
+        registerSimpleClassTransformer(int[].class, IntArrayTag::new, IntArrayTag::getAsIntArray, FriendlyByteBuf::writeVarIntArray, FriendlyByteBuf::readVarIntArray, IntArrayTag.class);
+        registerSimpleClassTransformer(long[].class, LongArrayTag::new, LongArrayTag::getAsLongArray, FriendlyByteBuf::writeLongArray, FriendlyByteBuf::readLongArray, LongArrayTag.class);
+        registerSimpleClassTransformer(byte[].class, ByteArrayTag::new, ByteArrayTag::getAsByteArray, FriendlyByteBuf::writeByteArray, FriendlyByteBuf::readByteArray, ByteArrayTag.class);
+
 
         //// Java classes and standard minecraft/forge classes
 
-        registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::getAsString, StringTag.class);
+        registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::getAsString, FriendlyByteBuf::writeUtf, FriendlyByteBuf::readUtf, StringTag.class);
+        registerSimpleClassTransformer(UUID.class, NbtUtils::createUUID, NbtUtils::loadUUID, FriendlyByteBuf::writeUUID, FriendlyByteBuf::readUUID , IntArrayTag.class);
+        registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, FriendlyByteBuf::writeNbt, FriendlyByteBuf::readNbt, CompoundTag.class);
+
+        //spotless:on
 
         registerTransformer(ItemStack.class, new SimpleClassTransformers.ItemStackTransformer());
         registerTransformer(FluidStack.class, new SimpleClassTransformers.FluidStackTransformer());
         registerTransformer(Component.class, new SimpleClassTransformers.ComponentTransformer());
 
-        // The default value supplier will never be called as NbtUtils::loadUUID will throw if the UUID is invalid.
-        registerSimpleClassTransformer(UUID.class, NbtUtils::createUUID, NbtUtils::loadUUID, IntArrayTag.class);
 
         registerTransformer(BlockPos.class, new SimpleClassTransformers.BlockPosTransformer());
         registerTransformer(BlockState.class, new CodecTransformer<>(BlockState.CODEC));
-        registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class);
 
 
         registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
@@ -179,16 +183,18 @@ public final class ValueTransformers {
 
         //// GT specific classes
 
+        registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
         registerTransformer(GTRecipe.class, new GTRecipeTransformer());
+
         registerTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
+        registerTransformer(MonitorGroup.class, new CodecTransformer<>(MonitorGroup.CODEC));
+        registerTransformer(ConsumedInputsData.class, new CodecTransformer<>(ConsumedInputsData.CODEC));
+
         registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
                 GTRecipeType::getRegistryName,
                 (r) -> (GTRecipeType) Objects.requireNonNull(BuiltInRegistries.RECIPE_TYPE.get(r))));
         registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
                 Material::getResourceLocation, GTRegistries.MATERIALS::get));
-        registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
 
-        registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
-        registerTransformer(ConsumedInputsData.class, new ConsumedInputsDataTransformer());
     }
 }

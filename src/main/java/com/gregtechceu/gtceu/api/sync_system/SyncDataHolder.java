@@ -12,6 +12,7 @@ import net.minecraft.nbt.Tag;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Setter;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -264,6 +265,16 @@ public class SyncDataHolder {
             }
 
             return syncManaged;
+        }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, ISyncManaged value, TransformerContext<ISyncManaged> context) {
+
+        }
+
+        @Override
+        public @Nullable ISyncManaged readFromPacket(FriendlyByteBuf buf, TransformerContext<ISyncManaged> context) {
+            return null;
         }
     }
 }

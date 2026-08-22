@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,13 +63,24 @@ public interface ValueTransformer<T> {
     }
 
     /**
-     * A method which serializes this value into a tag, based on the current value and provided transformer context.
+     * Serializes this value into a tag, based on the current value and provided transformer context.
      */
     Tag serializeNBT(T value, TransformerContext<T> context);
 
     /**
-     * A method which deserializes this value, based on the stored tag and provided transformer context.
+     * Deserializes this value, based on the stored tag and provided transformer context.
      */
     @Nullable
     T deserializeNBT(Tag tag, TransformerContext<T> context);
+
+    /**
+     * Writes this value to a {@link FriendlyByteBuf} to be sent to the client.
+     */
+    void writeToPacket(FriendlyByteBuf buf, T value, TransformerContext<T> context);
+
+    /**
+     * Reads this value from a {@link FriendlyByteBuf}.
+     */
+    @Nullable
+    T readFromPacket(FriendlyByteBuf buf, TransformerContext<T> context);
 }

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
@@ -51,6 +52,36 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         for (int i = 0; i < listTag.size(); i++) {
             T result = elementTransformer.deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(listTag.get(i)),
                     getInnerElemContext(current[i], context));
+            if (result == null) return current;
+            current[i] = result;
+        }
+        return current;
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, T[] value, TransformerContext<T[]> context) {
+        buf.writeInt(value.length);
+        for (T elem: value) {
+            elementTransformer.writeToPacket(buf, elem, getInnerElemContext(elem, context));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public @Nullable T @Nullable [] readFromPacket(FriendlyByteBuf buf, TransformerContext<T[]> context) {
+        T[] current = context.currentValue();
+        int length = buf.readInt();
+
+        if (current == null) {
+            current = (T[]) Array.newInstance((Class<T>) (context.type().getArrayComponentType().getRawType()),
+                    length);
+        }
+
+        if (length != current.length) {
+            current = Arrays.copyOf(current, length);
+        }
+        for (int i = 0; i < length; i++) {
+            T result = elementTransformer.readFromPacket(buf, getInnerElemContext(current[i], context));
             if (result == null) return current;
             current[i] = result;
         }

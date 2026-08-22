@@ -18,6 +18,7 @@ import net.minecraft.nbt.Tag;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.GuiTextures;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -101,6 +102,18 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
                 connectedBlockEntity.getMainNode().loadFromNBT(c);
                 return context.currentValue();
             }
+            return null;
+        }
+
+        // No-op as this isn't synced to client
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, Object value, TransformerContext<Object> context) {
+
+        }
+
+        // No-op as this isn't synced to client
+        @Override
+        public @Nullable Object readFromPacket(FriendlyByteBuf buf, TransformerContext<Object> context) {
             return null;
         }
     }

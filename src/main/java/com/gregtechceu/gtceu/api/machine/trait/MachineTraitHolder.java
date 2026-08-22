@@ -10,6 +10,7 @@ import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -242,6 +243,34 @@ public final class MachineTraitHolder {
                     trait.getSyncDataHolder().deserializeClientData(context.lookup(), compoundTag.getCompound(key));
                 } else {
                     trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key));
+                }
+            }
+
+            return traitHolder;
+        }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, MachineTraitHolder value, TransformerContext<MachineTraitHolder> context) {
+            buf.writeInt(value.traitsToSave.size());
+            for (Map.Entry<String, MachineTrait> traitEntry: value.traitsToSave.entrySet()) {
+                buf.writeUtf(traitEntry.getKey());
+                traitEntry.getValue().getSyncDataHolder().;
+            }
+        }
+
+        @Override
+        public @Nullable MachineTraitHolder readFromPacket(FriendlyByteBuf buf, TransformerContext<MachineTraitHolder> context) {
+            var traitHolder = Objects.requireNonNull(context.currentValue());
+            int length = buf.readInt();
+            for (int i=0; i<length; i++) {
+                String name = buf.readUtf();
+
+                var trait = traitHolder.getPersistentTrait(name);
+                if (trait == null) {
+                    GTCEu.LOGGER.warn("Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID",
+                            key);
+                } else {
+                    trait.getSyncDataHolder().;
                 }
             }
 

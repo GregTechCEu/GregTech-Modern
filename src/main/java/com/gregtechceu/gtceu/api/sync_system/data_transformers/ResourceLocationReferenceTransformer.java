@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,5 +31,15 @@ public class ResourceLocationReferenceTransformer<T> implements ValueTransformer
                 .tryParse(ValueTransformer.assertTagType(StringTag.class, tag, context).getAsString());
         if (location == null) return null;
         return loadFromLocation.apply(location);
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, T value, TransformerContext<T> context) {
+        buf.writeResourceLocation(getResourceLocation.apply(value));
+    }
+
+    @Override
+    public @Nullable T readFromPacket(FriendlyByteBuf buf, TransformerContext<T> context) {
+        return loadFromLocation.apply(buf.readResourceLocation());
     }
 }
