@@ -636,5 +636,21 @@ public class UnknownCompositionMaterials {
                 .dust()
                 .color(0x6F2DA8).iconSet(SAND)
                 .buildAndRegister();
+
+        RareEarthSludgeMixture = new Material.Builder(GTCEu.id("rare_earth_sludge_mixture"))
+                .liquid()
+                .color(0xF0C267)
+                .buildAndRegister();
+
+        LightRareEarthSludge = new Material.Builder(GTCEu.id("light_rare_earth_sludge"))
+                .dust()
+                .color(0x47464A).secondaryColor(0x44315E).iconSet(ROUGH)
+                .buildAndRegister();
+
+        HeavyRareEarthSludge = new Material.Builder(GTCEu.id("heavy_rare_earth_sludge"))
+                .dust()
+                .color(0x6F2DA8).iconSet(ROUGH) //TODO: SECONDARY COLOR
+                .buildAndRegister();
+
     }
 }
