@@ -5,12 +5,13 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
-import lombok.Setter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -55,16 +56,18 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider lookup) {
         CompoundTag tag = new CompoundTag();
         for (var field : syncData.getServerSaveFields()) {
             Object currentValue = field.handle.get(holder);
             if (currentValue == null || !confirmTransformerPresent(field, holder)) continue;
 
             try {
-                Tag nbtValue = ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer)).serializeNBT(currentValue,
-                        new ValueTransformer.TransformerContext<>(holder, field.type, currentValue, field.fieldName,
-                                false, false));
+                Tag nbtValue = ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
+                        .serializeNBT(currentValue,
+                                new ValueTransformer.TransformerContext<>(holder, field.type, currentValue,
+                                        field.fieldName,
+                                        false, false, lookup));
                 tag.put(field.nbtSaveKey, nbtValue);
 
             } catch (Exception e) {
@@ -75,7 +78,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag tag) {
         for (var field : syncData.getServerSaveFields()) {
             Tag newValue = tag.get(field.nbtSaveKey);
             if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) continue;
@@ -86,8 +89,9 @@ public class SyncDataHolder {
                 ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
                 var current = field.handle.get(holder);
 
-                Object result = Objects.requireNonNull(transformer).deserializeNBT(newValue, new ValueTransformer.TransformerContext<>(
-                        holder, field.type, current, field.fieldName, false, false));
+                Object result = Objects.requireNonNull(transformer).deserializeNBT(newValue,
+                        new ValueTransformer.TransformerContext<>(
+                                holder, field.type, current, field.fieldName, false, false, lookup));
 
                 if (result != current) trySetField(field, holder, result);
 
@@ -97,13 +101,13 @@ public class SyncDataHolder {
         }
     }
 
-    public CompoundTag serializeClientData(boolean fullSync) {
+    public CompoundTag serializeClientData(HolderLookup.Provider lookup, boolean fullSync) {
         if (fullSync) resyncAllFields();
-        return serializeClientData();
+        return serializeClientData(lookup);
     }
 
     @SuppressWarnings("unchecked")
-    public CompoundTag serializeClientData() {
+    public CompoundTag serializeClientData(HolderLookup.Provider lookup) {
         Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields();
 
         CompoundTag tag = new CompoundTag();
@@ -112,7 +116,8 @@ public class SyncDataHolder {
 
                 Object currentValue = field.handle.get(holder);
 
-                if (!resyncAll && currentValue instanceof ISyncManaged syncManaged && !syncManaged.getSyncDataHolder().needsSync()) {
+                if (!resyncAll && currentValue instanceof ISyncManaged syncManaged &&
+                        !syncManaged.getSyncDataHolder().needsSync()) {
                     continue;
                 }
 
@@ -126,9 +131,11 @@ public class SyncDataHolder {
                 }
 
                 try {
-                    Tag nbtValue = ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer)).serializeNBT(currentValue,
-                            new ValueTransformer.TransformerContext<>(holder, field.type, currentValue, field.fieldName,
-                                    true, resyncAll));
+                    Tag nbtValue = ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
+                            .serializeNBT(currentValue,
+                                    new ValueTransformer.TransformerContext<>(holder, field.type, currentValue,
+                                            field.fieldName,
+                                            true, resyncAll, lookup));
                     tag.put(field.nbtSaveKey, nbtValue);
                 } catch (Exception e) {
                     GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
@@ -140,7 +147,6 @@ public class SyncDataHolder {
         hasDirtyChildSyncObject = false;
         dirtySyncFields.clear();
         return tag;
-
     }
 
     private boolean shouldSerializeClientField(FieldSyncData field, boolean fullSync) {
@@ -149,7 +155,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public void deserializeClientData(CompoundTag tag) {
+    public void deserializeClientData(HolderLookup.Provider lookup, CompoundTag tag) {
         for (var field : syncData.getClientSyncFields()) {
 
             Tag newValue = tag.get(field.nbtSaveKey);
@@ -167,8 +173,9 @@ public class SyncDataHolder {
                 ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
                 var current = field.handle.get(holder);
 
-                Object result = Objects.requireNonNull(transformer).deserializeNBT(newValue, new ValueTransformer.TransformerContext<>(
-                        holder, field.type, current, field.fieldName, true, false));
+                Object result = Objects.requireNonNull(transformer).deserializeNBT(newValue,
+                        new ValueTransformer.TransformerContext<>(
+                                holder, field.type, current, field.fieldName, true, false, lookup));
 
                 if (result != current) trySetField(field, holder, result);
 
@@ -201,7 +208,8 @@ public class SyncDataHolder {
         if (field.transformer == null) {
             field.setTransformer(ValueTransformers.get(field.type.getRawType()));
             if (field.transformer == null) {
-                GTCEu.LOGGER.error("Sync: Failed to serialize/deserialize field {} in class {}: Missing value transformer for {}",
+                GTCEu.LOGGER.error(
+                        "Sync: Failed to serialize/deserialize field {} in class {}: Missing value transformer for {}",
                         field.fieldName, holder.getClass().getName(), field.type);
                 return false;
             }
@@ -227,8 +235,9 @@ public class SyncDataHolder {
 
         @Override
         public Tag serializeNBT(ISyncManaged value, TransformerContext<ISyncManaged> context) {
-            if (context.isClientSync()) return value.getSyncDataHolder().serializeClientData(context.isClientFullSyncUpdate());
-            else return value.getSyncDataHolder().serializeNBT();
+            if (context.isClientSync()) return value.getSyncDataHolder().serializeClientData(context.lookup(),
+                    context.isClientFullSyncUpdate());
+            else return value.getSyncDataHolder().serializeNBT(context.lookup());
         }
 
         @Override
@@ -248,9 +257,9 @@ public class SyncDataHolder {
             }
 
             if (context.isClientSync()) {
-                syncManaged.getSyncDataHolder().deserializeClientData((CompoundTag)tag);
+                syncManaged.getSyncDataHolder().deserializeClientData(context.lookup(), (CompoundTag) tag);
             } else {
-                syncManaged.getSyncDataHolder().deserializeNBT((CompoundTag)tag);
+                syncManaged.getSyncDataHolder().deserializeNBT(context.lookup(), (CompoundTag) tag);
             }
 
             return syncManaged;

@@ -471,12 +471,12 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             list.add(Component.translatable("behavior.portable_scanner.divider"));
             list.add(Component.literal("Save data"));
-            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT());
+            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(level.registryAccess()));
 
             list.add(Component.translatable("behavior.portable_scanner.divider"));
             list.add(Component.literal("Update packet"));
             syncBlockEntity.getSyncDataHolder().resyncAllFields();
-            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeClientData());
+            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeClientData(level.registryAccess()));
         }
 
         return energyCost;

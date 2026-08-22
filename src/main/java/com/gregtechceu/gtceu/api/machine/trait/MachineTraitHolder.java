@@ -217,10 +217,10 @@ public final class MachineTraitHolder {
 
             if (context.isClientSync()) {
                 value.traitsToSave.forEach((k, v) -> tag.put(k,
-                        v.getSyncDataHolder().serializeClientData(context.isClientFullSyncUpdate())));
+                        v.getSyncDataHolder().serializeClientData(context.lookup(), context.isClientFullSyncUpdate())));
             } else {
                 value.traitsToSave.forEach((k, v) -> tag.put(k,
-                        v.getSyncDataHolder().serializeNBT()));
+                        v.getSyncDataHolder().serializeNBT(context.lookup())));
             }
 
             return tag;
@@ -239,9 +239,9 @@ public final class MachineTraitHolder {
                     continue;
                 }
                 if (context.isClientSync()) {
-                    trait.getSyncDataHolder().deserializeClientData(compoundTag.getCompound(key));
+                    trait.getSyncDataHolder().deserializeClientData(context.lookup(), compoundTag.getCompound(key));
                 } else {
-                    trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound(key));
+                    trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key));
                 }
             }
 
