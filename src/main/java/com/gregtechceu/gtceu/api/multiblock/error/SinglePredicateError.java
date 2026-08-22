@@ -9,25 +9,25 @@ import net.minecraft.util.StringRepresentable;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
-import java.util.Collections;
 import java.util.List;
 
 public class SinglePredicateError extends PatternError {
 
     public static final Codec<SinglePredicateError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            SinglePredicateError.ErrorType.CODEC.fieldOf("error_type").forGetter(e -> e.type),
+            ErrorType.CODEC.fieldOf("error_type").forGetter(e -> e.type),
             Codec.INT.fieldOf("actual_count").forGetter(e -> e.actualCount),
             Codec.INT.fieldOf("pred_min_count").forGetter(e -> e.predMinCount),
             Codec.INT.fieldOf("pred_max_count").forGetter(e -> e.predMaxCount),
             Codec.INT.fieldOf("pred_min_layer_count").forGetter(e -> e.predMinLayerCount),
             Codec.INT.fieldOf("pred_max_layer_count").forGetter(e -> e.predMaxLayerCount),
             Codec.STRING.fieldOf("name").forGetter(e -> e.debugName),
-            Codec.list(BlockInfo.CODEC).fieldOf("candidates").forGetter(e -> e.candidates))
+            BlockInfo.CODEC.listOf().fieldOf("candidates").forGetter(e -> e.candidates))
             .apply(instance, SinglePredicateError::new));
 
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("single_predicate_error"), CODEC);
@@ -55,7 +55,6 @@ public class SinglePredicateError extends PatternError {
 
     public SinglePredicateError(ErrorType type, int actualCount, int minCount, int maxCount, int minLayerCount,
                                 int maxLayerCount, String name, List<BlockInfo> candidates) {
-        super(null, Collections.singletonList(candidates));
         this.type = type;
         this.actualCount = actualCount;
         this.candidates = candidates;
@@ -70,26 +69,7 @@ public class SinglePredicateError extends PatternError {
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             parent.child(Text.of(Component.translatable(debugName)).asWidget());
-            switch (type) {
-                case MAX_COUNT -> {
-                    parent.child(Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count",
-                            predMaxCount, actualCount)).asWidget());
-                }
-                case MIN_COUNT -> {
-                    parent.child(Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count",
-                            predMinCount, actualCount)).asWidget());
-                }
-                case MAX_LAYER_COUNT -> {
-                    parent.child(
-                            Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.max_layer_count",
-                                    predMaxLayerCount, actualCount)).asWidget());
-                }
-                case MIN_LAYER_COUNT -> {
-                    parent.child(
-                            Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.min_layer_count",
-                                    predMinLayerCount, actualCount)).asWidget());
-                }
-            }
+            this.type.appendComponent(parent, this);
             parent.child(new ContextMenuButton<>("predicate")
                     .menuList(l -> l
                             .maxSize(40)
@@ -135,6 +115,23 @@ public class SinglePredicateError extends PatternError {
         @Override
         public String getSerializedName() {
             return getName();
+        }
+
+        private void appendComponent(ParentWidget<?> parent, SinglePredicateError error) {
+            parent.child(Text.of(getComponent(error)).asWidget());
+        }
+
+        private Component getComponent(SinglePredicateError error) {
+            return switch (this) {
+                case MAX_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.max_count",
+                        error.predMaxCount, error.actualCount);
+                case MIN_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.min_count",
+                        error.predMinCount, error.actualCount);
+                case MAX_LAYER_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.max_layer_count",
+                        error.predMaxLayerCount, error.actualCount);
+                case MIN_LAYER_COUNT -> Component.translatable("gtceu.multiblock.pattern.error.limited.min_layer_count",
+                        error.predMinLayerCount, error.actualCount);
+            };
         }
     }
 
