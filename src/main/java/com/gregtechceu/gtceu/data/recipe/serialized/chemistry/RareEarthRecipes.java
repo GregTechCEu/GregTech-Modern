@@ -28,7 +28,7 @@ public class RareEarthRecipes {
                 .inputItems(dust, RareEarth, 4)
                 .inputFluids(HydrochloricAcid.getFluid(6000))
                 .inputFluids(Water.getFluid(3000))
-                .outputFluids(RareEarthSludgeMixture.getFluid(2000))
+                .outputFluids(RareEarthSludgeMixture.getFluid(1000))
                 .duration(64).EUt(VA[MV]).save(provider);
         //[2LnCl3 + 6H2O]aq + 6NH3 -> LowLn(OH3) + HighLn(OH3) + 6NH4CL
         CENTRIFUGE_RECIPES.recipeBuilder("rare_earth_sludge_dust_washing_from_sludge_mixture")
