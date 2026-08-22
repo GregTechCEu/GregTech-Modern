@@ -651,6 +651,5 @@ public class UnknownCompositionMaterials {
                 .dust()
                 .color(0x47464A).secondaryColor(0x6F2DA8).iconSet(ROUGH)
                 .buildAndRegister();
-
     }
 }

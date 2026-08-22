@@ -907,7 +907,6 @@ public class GTMaterials {
     public static Material LightRareEarthSludge;
     public static Material HeavyRareEarthSludge;
 
-
     /**
      * Second Degree Compounds
      */
