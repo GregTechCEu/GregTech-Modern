@@ -10,11 +10,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
-import java.util.Collections;
-
 public class PatternStringError extends PatternError {
 
-    public static Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ExtraCodecs.COMPONENT.fieldOf("component").forGetter(PatternStringError::getComponent))
             .apply(instance, PatternStringError::new));
 
@@ -24,11 +22,10 @@ public class PatternStringError extends PatternError {
     public final Component component;
 
     public PatternStringError(Component component) {
-        super(null, Collections.emptyList());
         this.component = component;
     }
 
-    public static PatternStringError component(Component component) {
+    public static PatternStringError of(Component component) {
         return new PatternStringError(component);
     }
 
@@ -40,19 +37,17 @@ public class PatternStringError extends PatternError {
         return new PatternStringError(Component.literal(String.format(s, args)));
     }
 
-    public static PatternStringError translatable(String s) {
-        return new PatternStringError(Component.translatable(s));
+    public static PatternStringError translatable(String langKey) {
+        return new PatternStringError(Component.translatable(langKey));
     }
 
-    public static PatternStringError translatable(String s, Object... args) {
-        return new PatternStringError(Component.translatable(s, args));
+    public static PatternStringError translatable(String langKey, Object... args) {
+        return new PatternStringError(Component.translatable(langKey, args));
     }
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
-        return (parent) -> {
-            parent.child(Text.of(component).asWidget());
-        };
+        return (parent) -> parent.child(Text.of(component).asWidget());
     }
 
     @Override
