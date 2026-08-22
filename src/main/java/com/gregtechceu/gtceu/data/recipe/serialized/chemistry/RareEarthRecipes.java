@@ -21,7 +21,7 @@ public class RareEarthRecipes {
                 .inputFluids(HydrochloricAcid.getFluid(6000))
                 .inputFluids(Water.getFluid(3000))
                 .outputFluids(RareEarthSludgeMixture.getFluid(1000))
-                .duration(64).EUt(VA[MV]).save(provider);
+                .duration(128).EUt(VA[MV]).save(provider);
         //[2LnCl3 + 6H2O]aq + 6NH3 -> LowLn(OH3) + HighLn(OH3) + 6NH4CL
         CENTRIFUGE_RECIPES.recipeBuilder("rare_earth_sludge_dust_washing_from_sludge_mixture")
                 .inputFluids(RareEarthSludgeMixture.getFluid(1000))
@@ -29,20 +29,20 @@ public class RareEarthRecipes {
                 .outputItems(dust, AmmoniumChloride, 12)
                 .outputItems(dust, LightRareEarthSludge, 2)
                 .outputItems(dust, HeavyRareEarthSludge, 2)
-                .duration(64).EUt(VA[MV]).save(provider);
+                .duration(128).EUt(VA[MV]).save(provider);
 
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("sift_light_rare_earth_sludge")
                 .inputItems(dust, LightRareEarthSludge, 1)
                 .chancedOutput(dust, Cerium, 2800)
                 .chancedOutput(dust, Neodymium, 3200)
                 .chancedOutput(dust, Lanthanum, 1500)
-                .duration(64).EUt(VA[MV]).save(provider);
+                .duration(32).EUt(VA[MV]).save(provider);
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("sift_heavy_rare_earth_sludge")
                 .inputItems(dust, HeavyRareEarthSludge, 1)
                 .chancedOutput(dust, Cadmium, 1800)
                 .chancedOutput(dust, Samarium, 2700)
                 .chancedOutput(dust, Yttrium, 1800)
-                .duration(64).EUt(VA[MV]).save(provider);
+                .duration(32).EUt(VA[MV]).save(provider);
 
 
 
