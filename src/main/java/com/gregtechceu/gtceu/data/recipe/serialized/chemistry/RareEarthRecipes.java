@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.FinishedRecipe;
+
+import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.crushedPurified;
@@ -12,17 +14,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class RareEarthRecipes {
 
-    public static void init(RecipeOutput provider) {
-
-        //Keep this here.
-        /*
-        Old Rare Earths used to be
-        1 RARE EARTH -> Small piles @ % chances of...
-        Cadmium(35%) + Neodymium(45%) + Samarium (35%) + Cerium (55%)
-        Yttrium(35%) + Lanthanum (25%)
-         */
-        // For Reference against the new chain.
-
+    public static void init(Consumer<FinishedRecipe> provider) {
         // Ln2O3 + 6HCl + 3H2O -> [2LnCl3 + 6H2O]aq
         MIXER_RECIPES.recipeBuilder("rare_earth_sludge_mixture_from_pure_rare_earth")
                 .inputItems(dust, RareEarth, 4)
