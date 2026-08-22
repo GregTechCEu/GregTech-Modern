@@ -48,7 +48,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
         compound.putInt("side", cover.attachedSide.ordinal());
         compound.putString("coverType", cover.coverDefinition.getId().toString());
-        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync, fullSync);
+        CompoundTag serializedCover = isSync ? cover.getSyncDataHolder().serializeClientData(fullSync) : cover.getSyncDataHolder().serializeNBT();
         compound.put("data", serializedCover);
 
         return compound;
@@ -82,7 +82,9 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
-        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"), isSync);
+
+        if (isSync) newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"));
+        else newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"));
 
         if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");

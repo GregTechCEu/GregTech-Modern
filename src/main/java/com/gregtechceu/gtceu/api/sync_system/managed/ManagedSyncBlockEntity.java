@@ -48,7 +48,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     protected final void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.merge(getSyncDataHolder().serializeNBT(false));
+        tag.merge(getSyncDataHolder().serializeNBT());
     }
 
     /**
@@ -63,7 +63,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @MustBeInvokedByOverriders
     public void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(tag, false);
+        getSyncDataHolder().deserializeNBT(tag);
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @MustBeInvokedByOverriders
     public void clientLoad(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(tag, true);
+        getSyncDataHolder().deserializeClientData(tag);
     }
 
     @Override
@@ -92,7 +92,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeNBT(true, true));
+        tag.merge(getSyncDataHolder().serializeClientData());
         return tag;
     }
 
@@ -101,7 +101,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder().serializeNBT(true));
+        return ClientboundBlockEntityDataPacket.create(this, b -> getSyncDataHolder().serializeClientData());
     }
 
     @Override

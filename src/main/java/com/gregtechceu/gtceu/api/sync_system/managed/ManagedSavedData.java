@@ -20,7 +20,7 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
     public ManagedSavedData() {}
 
     public ManagedSavedData(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(tag, false);
+        getSyncDataHolder().deserializeNBT(tag);
     }
 
     @Override
@@ -43,6 +43,6 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
 
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
-        return getSyncDataHolder().serializeNBT(false);
+        return getSyncDataHolder().serializeNBT();
     }
 }
