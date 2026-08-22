@@ -613,7 +613,7 @@ public class UnknownCompositionMaterials {
 
         HeavyRareEarthSludge = new Material.Builder(GTCEu.id("heavy_rare_earth_sludge"))
                 .dust()
-                .color(0x6F2DA8).iconSet(ROUGH) //TODO: SECONDARY COLOR
+                .color(0x47464A).secondaryColor(0x6F2DA8).iconSet(ROUGH)
                 .buildAndRegister();
 
     }
