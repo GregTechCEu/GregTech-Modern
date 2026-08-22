@@ -893,6 +893,10 @@ public class GTMaterials {
     public static Material BauxiteSludge;
     public static Material DecalcifiedBauxiteSludge;
     public static Material BauxiteSlag;
+    public static Material RareEarthSludgeMixture;
+    public static Material LightRareEarthSludge;
+    public static Material HeavyRareEarthSludge;
+
 
     /**
      * Second Degree Compounds

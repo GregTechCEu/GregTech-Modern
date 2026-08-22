@@ -172,7 +172,7 @@ public class GTRecipeTypes {
             .addCustomRecipeLogic(CannerLogic.INSTANCE)
             .setSound(GTSoundEntries.BATH);
 
-    public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
+    public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 2, 6)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(5))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
