@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 
+import net.minecraft.resources.RegistryOps;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -30,13 +32,19 @@ public interface ValueTransformer<T> {
      */
     record TransformerContext<U>(Object holder, TypeDeclaration type,
                                  @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
-                                 boolean isClientFullSyncUpdate, HolderLookup.Provider lookup) {
+                                 boolean isClientFullSyncUpdate, HolderLookup.Provider lookup, RegistryOps<Tag> nbtOps) {
+
+        public TransformerContext(Object holder, TypeDeclaration type,
+                                  @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
+                                  boolean isClientFullSyncUpdate, HolderLookup.Provider lookup) {
+            this(holder, type, currentValue, fieldName, isClientSync, isClientFullSyncUpdate, lookup, RegistryOps.create(NbtOps.INSTANCE, lookup));
+        }
 
         @SuppressWarnings("NullableProblems")
         public <V> TransformerContext<V> createChildContext(TypeDeclaration childType,
                                                             @Nullable V childValue, @Nullable String childFieldName) {
             return new TransformerContext<>(holder, childType, childValue, childFieldName, isClientSync,
-                    isClientFullSyncUpdate, lookup);
+                    isClientFullSyncUpdate, lookup, nbtOps);
         }
     }
 

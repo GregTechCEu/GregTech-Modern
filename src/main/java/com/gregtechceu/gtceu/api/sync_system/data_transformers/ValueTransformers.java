@@ -158,16 +158,17 @@ public final class ValueTransformers {
 
         registerSimpleClassTransformer(String.class, StringTag::valueOf, StringTag::getAsString, StringTag.class);
 
+        registerTransformer(ItemStack.class, new SimpleClassTransformers.ItemStackTransformer());
+        registerTransformer(FluidStack.class, new SimpleClassTransformers.FluidStackTransformer());
+        registerTransformer(Component.class, new SimpleClassTransformers.ComponentTransformer());
+
         // The default value supplier will never be called as NbtUtils::loadUUID will throw if the UUID is invalid.
         registerSimpleClassTransformer(UUID.class, NbtUtils::createUUID, NbtUtils::loadUUID, IntArrayTag.class);
 
+        registerTransformer(BlockPos.class, new SimpleClassTransformers.BlockPosTransformer());
         registerTransformer(BlockState.class, new CodecTransformer<>(BlockState.CODEC));
         registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class);
 
-        registerTransformer(ItemStack.class, new SimpleClassTransformers.ItemStackTransformer());
-        registerTransformer(FluidStack.class, new SimpleClassTransformers.FluidStackTransformer());
-        registerTransformer(BlockPos.class, new SimpleClassTransformers.BlockPosTransformer());
-        registerTransformer(Component.class, new SimpleClassTransformers.ComponentTransformer());
 
         registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
         registerTransformer(ISyncManaged.class, new SyncDataHolder.SyncManagedTransformer());
