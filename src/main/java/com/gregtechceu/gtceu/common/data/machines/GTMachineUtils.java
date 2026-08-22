@@ -65,6 +65,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.value.sync.BooleanSyncValue;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -73,9 +75,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -686,6 +686,33 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingModel(casingTexture, overlayModel)
+                .additionalDisplay((controller, syncManager) -> {
+                    if (!(controller instanceof LargeCombustionEngineMachine lceMachine))
+                        return Collections.emptyList();
+                    BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                            () -> new BooleanSyncValue(controller::isFormed));
+                    BooleanSyncValue isOxygenBoosted = syncManager.getOrCreateSyncHandler("isOxygenBoosted",
+                            BooleanSyncValue.class,
+                            () -> new BooleanSyncValue(lceMachine::isOxygenBoosted));
+                    BooleanSyncValue isExtreme = syncManager.getOrCreateSyncHandler("isExtreme", BooleanSyncValue.class,
+                            () -> new BooleanSyncValue(lceMachine::isExtreme));
+
+                    var canBoost = Text.dynamic(() -> Component.translatable(
+                            isExtreme.getValue() ?
+                                    "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
+                                    "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"))
+                            .asWidget()
+                            .setEnabledIf(w -> isFormed.getBoolValue() && !isOxygenBoosted.getBoolValue());
+
+                    var isBoosted = Text.dynamic(() -> Component.translatable(
+                            isExtreme.getValue() ?
+                                    "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+                                    "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
+                            .asWidget()
+                            .setEnabledIf(w -> isFormed.getBoolValue() && isOxygenBoosted.getBoolValue());
+
+                    return Arrays.asList(canBoost, isBoosted);
+                })
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant",
