@@ -164,6 +164,7 @@ public class SyncDataHolder {
 
             if (newValue instanceof CompoundTag compound && compound.getBoolean("null")) {
                 field.handle.set(holder, null);
+                executeClientSyncCallbacks(field);
                 continue;
             }
 
