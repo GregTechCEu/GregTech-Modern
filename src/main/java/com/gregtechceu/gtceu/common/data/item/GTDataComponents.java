@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.common.data.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SmartItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
+import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import com.gregtechceu.gtceu.common.item.behavior.ItemMagnetBehavior;
 import com.gregtechceu.gtceu.common.item.datacomponents.*;
 import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
@@ -21,8 +20,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -99,16 +102,6 @@ public class GTDataComponents {
             .registerComponentType("scanner_mode",
                     builder -> builder.persistent(Codec.BYTE).networkSynchronized(ByteBufCodecs.BYTE));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidFilter>> SIMPLE_FLUID_FILTER = DATA_COMPONENTS
-            .registerComponentType("simple_fluid_filter", builder -> builder.persistent(SimpleFluidFilter.CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleItemFilter>> SIMPLE_ITEM_FILTER = DATA_COMPONENTS
-            .registerComponentType("simple_item_filter", builder -> builder.persistent(SimpleItemFilter.CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> TAG_FILTER_EXPRESSION = DATA_COMPONENTS
-            .registerComponentType("tag_filter_expression",
-                    builder -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SmartItemFilter.SmartFilteringMode>> SMART_ITEM_FILTER = DATA_COMPONENTS
-            .registerComponentType("smart_item_filter",
-                    builder -> builder.persistent(SmartItemFilter.SmartFilteringMode.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CIRCUIT_CONFIG = DATA_COMPONENTS
             .registerComponentType("circuit_config", builder -> builder.persistent(Codec.INT));
 
@@ -157,6 +150,35 @@ public class GTDataComponents {
             .registerComponentType("placeholder_uuid",
                     builder -> builder.persistent(UUIDUtil.CODEC)
                             .networkSynchronized(UUIDUtil.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SpoilableItemStack.SpoilableData>> SPOILABLE = DATA_COMPONENTS
+            .registerComponentType("spoilable", builder -> builder
+                    .persistent(SpoilableItemStack.SpoilableData.CODEC)
+                    .networkSynchronized(SpoilableItemStack.SpoilableData.STREAM_CODEC));
+
+    // Filters
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidFilter>> SIMPLE_FLUID_FILTER = DATA_COMPONENTS
+            .registerComponentType("simple_fluid_filter", builder -> builder.persistent(SimpleFluidFilter.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleItemFilter>> SIMPLE_ITEM_FILTER = DATA_COMPONENTS
+            .registerComponentType("simple_item_filter", builder -> builder.persistent(SimpleItemFilter.CODEC));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TagFilter<ItemStack, Item>>> ITEM_TAG_FILTER = DATA_COMPONENTS
+            .registerComponentType("item_tag_filter",
+                    builder -> builder.persistent(TagFilter.codec(ItemStack::getItem, ItemStack::getTags)));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TagFilter<FluidStack, Fluid>>> FLUID_TAG_FILTER = DATA_COMPONENTS
+            .registerComponentType("fluid_tag_filter",
+                    builder -> builder.persistent(TagFilter.codec(FluidStack::getFluid, FluidStack::getTags)));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompositeFilter<ItemStack>>> COMPOSITE_ITEM_FILTER = DATA_COMPONENTS
+            .registerComponentType("item_composite_filter",
+                    builder -> builder.persistent(CompositeFilter.codec(ItemStack.class)));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompositeFilter<FluidStack>>> COMPOSITE_FLUID_FILTER = DATA_COMPONENTS
+            .registerComponentType("fluid_composite_filter",
+                    builder -> builder.persistent(CompositeFilter.codec(FluidStack.class)));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SmartItemFilter>> SMART_ITEM_FILTER = DATA_COMPONENTS
+            .registerComponentType("smart_item_filter",
+                    builder -> builder.persistent(SmartItemFilter.CODEC));
 
     // machine info
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<LargeItemContent>> LARGE_ITEM_CONTENT = DATA_COMPONENTS

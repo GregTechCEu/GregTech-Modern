@@ -1,66 +1,66 @@
 {
-    "biomes": "#minecraft:is_nether",
-    "cluster_size": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 29,
-        "min_inclusive": 25
-    },
-    "density": 0.25,
-    "dimension_filter": [
-        "minecraft:the_nether"
-    ],
-    "discard_chance_on_air_exposure": 0.0,
-    "generator": {
-        "type": "gtceu:layer",
-        "layer_patterns": [
-            [
-                {
-                    "max_size": 4,
-                    "min_size": 2,
-                    "targets": [
-                        "gtceu:quartzite"
-                    ],
-                    "weight": 3
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:certus_quartz"
-                    ],
-                    "weight": 2
-                },
-                {
-                    "max_size": 1,
-                    "min_size": 1,
-                    "targets": [
-                        "gtceu:barite"
-                    ],
-                    "weight": 1
-                }
-            ]
-        ]
-    },
-    "height_range": {
-        "height": {
-            "type": "minecraft:uniform",
-            "max_inclusive": {
-                "absolute": 120
-            },
-            "min_inclusive": {
-                "absolute": 80
-            }
-        }
-    },
-    "indicators": [
+  "biomes": "#minecraft:is_nether",
+  "cluster_size": {
+    "type": "minecraft:uniform",
+    "max_inclusive": 29,
+    "min_inclusive": 25
+  },
+  "density": 0.25,
+  "dimension_filter": [
+    "minecraft:the_nether"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "type": "gtceu:layer",
+    "layer_patterns": [
+      [
         {
-            "type": "gtceu:surface",
-            "block": "gtceu:certus_quartz",
-            "density": 0.2,
-            "placement": "below",
-            "radius": 5
+          "max_size": 4,
+          "min_size": 2,
+          "targets": [
+            "gtceu:quartzite"
+          ],
+          "weight": 3
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:certus_quartz"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:barite"
+          ],
+          "weight": 1
         }
-    ],
-    "layer": "gtceu:netherrack",
-    "weight": 40
+      ]
+    ]
+  },
+  "height_range": {
+    "height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": {
+        "absolute": 120
+      },
+      "min_inclusive": {
+        "absolute": 80
+      }
+    }
+  },
+  "indicators": [
+    {
+      "type": "gtceu:surface",
+      "block": "gtceu:certus_quartz",
+      "density": 0.2,
+      "placement": "below",
+      "radius": 5
+    }
+  ],
+  "layer": "gtceu:netherrack",
+  "weight": 40
 }

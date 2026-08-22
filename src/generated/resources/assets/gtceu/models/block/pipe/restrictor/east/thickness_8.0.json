@@ -1,33 +1,33 @@
 {
-    "elements": [
-        {
-            "faces": {
-                "down": {
-                    "texture": "#restrictor"
-                },
-                "north": {
-                    "texture": "#restrictor"
-                },
-                "south": {
-                    "texture": "#restrictor"
-                },
-                "up": {
-                    "texture": "#restrictor"
-                }
-            },
-            "from": [
-                12.047999,
-                3.952,
-                3.952
-            ],
-            "to": [
-                16,
-                12.047999,
-                12.047999
-            ]
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#restrictor"
+        },
+        "north": {
+          "texture": "#restrictor"
+        },
+        "south": {
+          "texture": "#restrictor"
+        },
+        "up": {
+          "texture": "#restrictor"
         }
-    ],
-    "textures": {
-        "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
+      },
+      "from": [
+        12.047999,
+        3.952,
+        3.952
+      ],
+      "to": [
+        16,
+        12.047999,
+        12.047999
+      ]
     }
+  ],
+  "textures": {
+    "restrictor": "gtceu:block/pipe/blocked/pipe_blocked"
+  }
 }

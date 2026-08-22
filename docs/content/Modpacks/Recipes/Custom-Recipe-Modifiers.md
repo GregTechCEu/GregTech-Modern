@@ -5,36 +5,53 @@ title: Custom Recipe Modifiers
 # Custom Recipe Modifiers / Data Logic
 
 ## Adding a Modifier
-Custom recipe modifiers in KubeJS are done through a function. For this example, we will make multiblock that requires temperature for recipes, like the EBF does.
-```js title="temperature_recipe_modifier.js"
-const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
-const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
 
-function TemperatureModifier(machine, recipe) {
-    if (!(machine instanceof $MetaMachine)) return ModifierFunction.NULL // (1)
-    if (!(recipe instanceof $GTRecipe)) return ModifierFunction.NULL
-    
-    if (!machine instanceof $CoilWorkableElectricMultiblockMachine) {
-        return $RecipeModifier.nullWrongType($CoilWorkableElectricMultiblockMachine, machine);
-    } else {
+Custom recipe modifiers in are done through a function. For this example, we will make multiblock that requires temperature for recipes, like the EBF does.
 
-        let temp = machine.getCoilType().getCoilTemperature() // (3)
+!!! Warning
+    It is recommended that your custom recipe modifiers are implemented in Java.
 
-        let recipeTemp = recipe.data.getInt("RequiredTemp") // (4)
-        if (recipeTemp > temp) {
-            return ModifierFunction.NULL
+=== "Java"
+    ```java title="AddonRecipeModifiers.java"
+    public static ModifierFunction customTemperatureModifier(MetaMachine machine, GTRecipe recipe) {
+        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilWorkable)) {
+            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        return ModifierFunction.IDENTITY // (2)
-    }
-}
-```
+        int temp = coilWorkable.getCoilType().getCoilTemperature();
 
-1. `ModifierFunction.NULL` Stops recipe.
-2. `ModifierFunction.IDENTITY` Starts recipe.
-3. Getting the coil temperature, multiblock **must** contain ``.heatingCoils()`` in any of its keys.
-4. Checking if coil temperature is high enough.
+        int recipeTemp = recipe.data.getInt("RequiredTemp");
+        if (recipeTemp > temp) {
+            return ModifierFunction.NULL; // Cancels recipe
+        }
+        return ModifierFunction.IDENTITY; // Runs recipe
+    }
+    ```
+=== "JavaScript"
+    ```js title="temperature_recipe_modifier.js"
+    const $GTRecipe = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipe");
+    const $MetaMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.MetaMachine");
+    
+    function TemperatureModifier(machine, recipe) {
+        if (!machine instanceof $CoilWorkableElectricMultiblockMachine) {
+            return $RecipeModifier.nullWrongType($CoilWorkableElectricMultiblockMachine, machine);
+        } else {
+    
+            let temp = machine.getCoilType().getCoilTemperature() // (1)
+    
+            let recipeTemp = recipe.data.getInt("RequiredTemp") // (2)
+            if (recipeTemp > temp) {
+                return ModifierFunction.NULL // Cancels recipe
+            }
+            return ModifierFunction.IDENTITY // Runs recipe
+        }
+    }
+    ```
+
+1. Getting the coil temperature, multiblock **must** contain ``.heatingCoils()`` in any of its keys.
+2. Checking if coil temperature is high enough.
 
 ## Using Modifier
+
 ```js title="example_temperature_multiblock.js"
 const $CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine");
 
@@ -42,15 +59,12 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 	event.create('example_smelting')
 		.category('multiblock')
 		.setMaxIOSize(1, 1, 0, 0)
-		.setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, FillDirection.LEFT_TO_RIGHT)
+		.setProgressBar(GTGuiTextures.PROGRESS_FUSION)
+		.addRecipeInfo(recipe => Text.literal(`Temperature: ${recipe.data.getInt("RequiredTemp")}K`)) // (3) (4)
 		.setSound(GTSoundEntries.BATH);
 });
 
 GTCEuStartupEvents.registry('gtceu:machine', event => {
-
-	GTRecipeTypes.get("example_smelting").addDataInfo((data) => (
-		`Temperature: ${data.getInt("RequiredTemp")}K` // (4)
-	)) // (3)
 
 	event.create('example_smelter', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
@@ -58,15 +72,15 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 		.recipeType('alchemy')
 		.recipeModifiers([(machine, recipe) => TemperatureModifier(machine, recipe)]) // (2)
 		.appearanceBlock(() => Block.getBlock("gtceu:solid_machine_casing"))
-		.pattern(definition => FactoryBlockPattern.start()
-			.aisle('###','HHH','###')
-			.aisle('###','H H','###')
-			.aisle('#C#','HHH','###')
+		.pattern(definition => MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
+			.slice("###","HHH","###")
+			.slice("###","H H","###")
+			.slice("#C#","HHH","###")
 			.where('C', Predicates.controller(Predicates.blocks(definition.get())))
 			.where('#', Predicates.blocks("gtceu:solid_machine_casing")
-				.or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
-				.or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
-				.or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1).setPreviewCount(1)))
+				.and(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
+				.and(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
+				.and(Predicates.abilities(PartAbility.INPUT_ENERGY).setMaxGlobalLimited(1).setPreviewCount(1)))
 			.where('H', Predicates.heatingCoils())
 			.where(' ', Predicates.any())
 			.build())

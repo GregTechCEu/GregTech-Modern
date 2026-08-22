@@ -686,6 +686,10 @@ public class GTRecipeTypes {
     public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
             .setXEIVisible(false);
 
+    /**
+     * @deprecated Use {@link #register(ResourceLocation, String, RecipeType[])} instead.
+     */
+    @Deprecated(since = "8.0.0", forRemoval = true)
     protected static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
         return register(GTCEu.id(name), group, proxyRecipes);
     }

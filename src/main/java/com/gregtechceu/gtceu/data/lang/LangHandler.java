@@ -467,6 +467,7 @@ public class LangHandler {
         provider.add("cover.voiding.message.disabled", "Voiding Cover Disabled");
         provider.add("cover.voiding.message.enabled", "Voiding Cover Enabled");
         provider.add("cover.item_smart_filter.title", "Smart Item Filter");
+        provider.add("cover.item_smart_filter.recipe_type", "Recipe Type");
         provider.add("cover.item_smart_filter.filtering_mode.electrolyzer", "Electrolyzer");
         provider.add("cover.item_smart_filter.filtering_mode.centrifuge", "Centrifuge");
         provider.add("cover.item_smart_filter.filtering_mode.sifter", "Sifter");
@@ -1325,6 +1326,7 @@ public class LangHandler {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
         provider.add("config.jade.plugin_gtceu.diode_provider", "[GTCEu] Diode Info");
+        provider.add("config.jade.plugin_gtceu.programmed_circuit_info", "[GTCEu] Programmed Circuit Info");
 
         provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
@@ -1898,6 +1900,15 @@ public class LangHandler {
                 "Then select the data access hatch as the target, and set the slot index of your data stick in the number field that appeared.");
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
         provider.add("gtceu.gui.item_collector.range", "Range: ");
+        provider.add("gtceu.tooltip.spoil_time_remaining", "Time until spoils: %s");
+        provider.add("gtceu.tooltip.spoil_time_total", "Total spoil time: %s");
+        provider.add("gtceu.tooltip.spoils_into", "Spoils into: %s");
+        provider.add("gtceu.tooltip.creation_tick", "Created on overworld tick %d");
+        provider.add("gtceu.tooltip.location", "Location: %s (%d, %d, %d)");
+        provider.add("gtceu.tooltip.location_entity", "Entity: %s");
+        provider.add("gtceu.tooltip.item_handler_source", "Handler source: %s");
+        provider.add("gtceu.tooltip.item_handler_data", "Handler data: %s");
+        provider.add("gtceu.tooltip.location_slot", "Slot: %s");
     }
 
     /**

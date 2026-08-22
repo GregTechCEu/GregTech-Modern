@@ -102,6 +102,8 @@ public class GTRecipeBuilder {
     private boolean itemMaterialInfo = false;
     private boolean fluidMaterialInfo = false;
     private boolean removePreviousMatInfo = false;
+    @Setter
+    public boolean keepSpoilingProgress = true;
     public GTRecipeCategory recipeCategory;
     @Setter
     public @Nullable BiConsumer<GTRecipeBuilder, RecipeOutput> onSave;
@@ -137,6 +139,7 @@ public class GTRecipeBuilder {
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
         this.recipeCategory = toCopy.recipeCategory;
+        this.keepSpoilingProgress = toCopy.keepSpoilingProgress;
     }
 
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
@@ -168,6 +171,7 @@ public class GTRecipeBuilder {
         copy.perTick = this.perTick;
         copy.recipeCategory = this.recipeCategory;
         copy.onSave = this.onSave;
+        copy.keepSpoilingProgress = this.keepSpoilingProgress;
         return copy;
     }
 
@@ -1554,7 +1558,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.ingredient().hasNoItems()) {
                 ItemStack[] items = currOutput.getItems();
@@ -1605,7 +1609,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.ingredient().hasNoItems()) {
                 ItemStack[] items = currOutput.getItems();
@@ -1634,7 +1638,8 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, recipeCategory, -1);
+                conditions, List.of(), data, duration, recipeCategory, -1,
+                keepSpoilingProgress);
     }
 
     protected void warnTooManyIngredients(RecipeCapability<?> capability,

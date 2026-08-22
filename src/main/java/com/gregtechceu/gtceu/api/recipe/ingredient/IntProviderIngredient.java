@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IngredientType;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -33,7 +34,7 @@ import static com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngred
  * and an {@link IntProvider}.
  * Functions similarly to {@link IntProviderFluidIngredient}.
  */
-public class IntProviderIngredient implements ICustomIngredient, IRangedIngredient {
+public class IntProviderIngredient implements ICustomIngredient, IRangedIngredient<SizedIngredient> {
 
     // spotless:off
     public static final MapCodec<IntProviderIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -58,8 +59,6 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
      */
     @Getter
     protected final Ingredient inner;
-    @Setter
-    protected ItemStack @Nullable [] itemStacks = null;
 
     protected IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
         this.inner = inner;
@@ -70,6 +69,10 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
         this.inner = inner;
         this.countProvider = countProvider;
         this.sampledCount = sampledCount;
+    }
+
+    public IntProviderIngredient copy() {
+        return new IntProviderIngredient(this.inner, this.countProvider, this.sampledCount);
     }
 
     /**
@@ -102,19 +105,9 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
      * 
      * @return a {@link ItemStack ItemStack[]} with count {@link IntProviderIngredient#sampledCount}
      */
-    public ItemStack[] getItemStacks() {
-        if (itemStacks == null) {
-            int cachedCount = rollSampledCount();
-            if (cachedCount == 0) {
-                return EMPTY_STACK_ARRAY;
-            }
-            var innerStacks = inner.getItems();
-            this.itemStacks = new ItemStack[innerStacks.length];
-            for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = innerStacks[i].copyWithCount(cachedCount);
-            }
-        }
-        return itemStacks;
+    public ItemStack @NotNull [] getItemStacks() {
+        GTCEu.LOGGER.warn("Cannot get items of a Ranged Ingredient!");
+        return EMPTY_STACK_ARRAY;
     }
 
     @Override
@@ -167,12 +160,17 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
      * @param random {@link RandomSource}, must be threadsafe, usually called using {@link GTValues#RNG}.
      * @return the count rolled
      */
-    @Override
     public int rollSampledCount(@NotNull RandomSource random) {
-        if (sampledCount == -1) {
+        if (!isRolled()) {
             sampledCount = countProvider.sample(random);
         }
         return sampledCount;
+    }
+
+    @Override
+    public SizedIngredient collapse() {
+        IRangedIngredient.super.collapse();
+        return new SizedIngredient(inner, rollSampledCount());
     }
 
     /**
@@ -180,6 +178,5 @@ public class IntProviderIngredient implements ICustomIngredient, IRangedIngredie
      */
     public void reset() {
         sampledCount = -1;
-        itemStacks = null;
     }
 }

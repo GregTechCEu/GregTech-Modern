@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.lookup.StagingRecipeDB;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.advancements.Advancement;
@@ -19,22 +20,19 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @Mixin(value = RecipeManager.class, priority = 1500)
 public abstract class RecipeManagerLateMixin {
@@ -45,11 +43,16 @@ public abstract class RecipeManagerLateMixin {
     @Shadow
     private Map<ResourceLocation, RecipeHolder<?>> byName;
 
+    @Shadow
+    public abstract void replaceRecipes(Iterable<RecipeHolder<?>> recipes);
+
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
     private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager,
                                            ProfilerFiller profiler, CallbackInfo ci) {
-        var recipesByName = new HashMap<>(byName);
+        // use a linked hash map to keep the immutable map's order
+        Map<ResourceLocation, RecipeHolder<?>> recipesByName = new LinkedHashMap<>(byName);
+        // regenerate child recipes
         byName.values().forEach(holder -> {
             if (holder.value() instanceof GTRecipe gtRecipe) {
                 new GTRecipeBuilder(gtRecipe, gtRecipe.recipeType)
@@ -73,55 +76,24 @@ public abstract class RecipeManagerLateMixin {
                         });
             }
         });
-        gtceu$replaceRecipes(recipesByName);
+        replaceRecipes(recipesByName.values());
 
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                var stagingDB = new StagingRecipeDB();
-
-                var proxyRecipes = gtRecipeType.getProxyRecipes();
-                for (Map.Entry<RecipeType<?>, List<RecipeHolder<GTRecipe>>> entry : proxyRecipes.entrySet()) {
-                    var type = entry.getKey();
-                    var recipes = entry.getValue();
-                    recipes.clear();
-                    if (this.byType.containsKey(type)) {
-                        for (var recipe : this.byType.get(type)) {
-                            recipes.add(gtRecipeType.toGTRecipe(recipe));
-                        }
-                    }
-                }
-
-                if (this.byType.containsKey(gtRecipeType)) {
-                    Stream.concat(
-                            this.byType.get(gtRecipeType).stream(),
-                            proxyRecipes.entrySet().stream().flatMap(entry -> entry.getValue().stream()))
-                            .filter(holder -> holder != null && holder.value() instanceof GTRecipe)
-                            .forEach(holder -> {
-                                GTRecipe recipe = (GTRecipe) holder.value();
-                                recipe.setId(holder.id());
-                                stagingDB.add(recipe);
-                            });
-                } else if (!proxyRecipes.isEmpty()) {
-                    proxyRecipes.values().stream()
-                            .flatMap(List::stream)
-                            .forEach(gtRecipe -> stagingDB.add(gtRecipe.value()));
-                }
-
-                stagingDB.populateDB(gtRecipeType.db());
+            if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
+                continue;
             }
+            gtRecipeType.beginStagingRecipes();
+            gtRecipeType.getProxyRecipes().forEach((type, list) -> {
+                Collection<RecipeHolder<?>> recipes = this.byType.get(type);
+                if (recipes.isEmpty()) {
+                    return;
+                }
+                RecipeManagerHandler.addProxyRecipesToLookup(recipes, gtRecipeType, type, list);
+            });
+            Collection<RecipeHolder<?>> recipesByID = this.byType.get(gtRecipeType);
+            RecipeManagerHandler.addRecipesToLookup(recipesByID, gtRecipeType);
+            gtRecipeType.getAdditionHandler().completeStaging();
         }
-    }
-
-    @Unique
-    public void gtceu$replaceRecipes(Map<ResourceLocation, RecipeHolder<?>> map) {
-        byName = map;
-
-        var recipesByType = ImmutableMultimap.<RecipeType<?>, RecipeHolder<?>>builder();
-
-        for (var entry : map.entrySet()) {
-            recipesByType.put(entry.getValue().value().getType(), entry.getValue());
-        }
-
-        byType = recipesByType.build();
+        MapIngredientPool.clear();
     }
 }

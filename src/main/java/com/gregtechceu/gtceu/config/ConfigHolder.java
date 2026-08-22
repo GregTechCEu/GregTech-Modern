@@ -837,6 +837,9 @@ public class ConfigHolder {
                 "Disable if experiencing performance issues.", "Default: true" })
         public boolean machinesHaveBERsByDefault = true;
         @Configurable
+        @Configurable.Comment({ "Whether april fools \"features\" should always be enabled.", "Default: false" })
+        public boolean aprilFoolsMode = false;
+        @Configurable
         @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.",
                 "Default: true" })
         public boolean toolUseSounds = true;
@@ -973,6 +976,13 @@ public class ConfigHolder {
                     "Whether or not to color wire/cable highlights based on voltage tier or material color",
                     "Default: true" })
             public boolean coloredWireOutline = true;
+
+            @Configurable
+            @Configurable.Comment({ "The color of the assembly line lasers",
+                    "Default: #1FA1FC" })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
+            @Configurable.Gui.ColorValue
+            public String assemblyLineLaser = "#1FA1FC";
         }
 
         public static class TankItemFluidPreview {

@@ -22,11 +22,10 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -170,6 +169,10 @@ public class GTMachineUtils {
                 .register();
     }
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate,
                                                              String name,
                                                              GTRecipeType recipeType,
@@ -550,7 +553,7 @@ public class GTMachineUtils {
                         .slice("CCC", "CSC", "CCC")
                         .where('S', controller(blocks(definition.get())))
                         .where('C', blocks(casing.get())
-                                .or(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
+                                .and(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
                         .build())
                 .appearanceBlock(casing);
@@ -608,15 +611,15 @@ public class GTMachineUtils {
                         controller.getBlockPos().below().getY() == part.getBlockPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
-                    PatternPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
-                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
+                    MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
+                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
                                     .setPreviewCount(1))
-                            .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
+                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
                                     .setPreviewCount(1))
-                            .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
+                            .and(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
 
                     if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-                        fireboxPred = fireboxPred.or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
+                        fireboxPred = fireboxPred.and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
                     }
 
                     return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
@@ -627,7 +630,7 @@ public class GTMachineUtils {
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
                             .where('C', blocks(casing.get()).setMinGlobalLimited(20)
-                                    .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1)
+                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1)
                                             .setPreviewCount(1)))
                             .build();
                 })
@@ -670,15 +673,15 @@ public class GTMachineUtils {
                         .where('X', blocks(casing.get()))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()).setMinGlobalLimited(3)
-                                .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, true, false)))
+                                .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                                .and(autoAbilities(true, true, false)))
                         .where('D',
                                 ability(PartAbility.OUTPUT_ENERGY,
                                         IntStream.of(ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV)
                                                 .filter(t -> t >= tier)
                                                 .toArray())
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
-                                                GTValues.VN[tier])))
+                                        .addTooltips(Component.translatable(
+                                                "gtceu.multiblock.pattern.error.limited.1", GTValues.VN[tier])))
                         .where('A',
                                 blocks(intake.get())
                                         .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
@@ -731,10 +734,10 @@ public class GTMachineUtils {
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()))
                         .where('R', rotorHolder(tier).setExactLimit(1)
-                                .or(abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1)))
+                                .and(abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1)))
                         .where('H', blocks(casing.get())
-                                .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
-                                .or(autoAbilities(true, needsMuffler, false)))
+                                .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                                .and(autoAbilities(true, needsMuffler, false)))
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
@@ -746,23 +749,22 @@ public class GTMachineUtils {
                 .register();
     }
 
-    private static PatternPredicate rotorHolder(int tier) {
-        return new PatternPredicate(new BasePredicate((worldState) -> {
-            if (MetaMachine.getMachine(worldState.getLevel(),
-                    worldState.getPos().immutable()) instanceof RotorHolderPartMachine rotorHolder &&
-                    worldState.getLevel()
-                            .getBlockState(worldState.getPos().immutable()
-                                    .relative(rotorHolder.getFrontFacing()))
-                            .isAir()) {
-                return null;
-            }
-            return new PartAbilityError(worldState.getBlockPos(), PartAbility.ROTOR_HOLDER);
-        }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
-                .map(BlockInfo::fromBlock)
-                .toList()))
+    private static MultiPredicate rotorHolder(int tier) {
+        return builder("RotorHolder")
+                .predicate(ctx -> {
+                    if (MetaMachine.getMachine(ctx.level(), ctx.pos()) instanceof RotorHolderPartMachine rotorHolder) {
+                        return ctx.level().getBlockState(ctx.pos().relative(rotorHolder.getFrontFacing())).isAir();
+                    }
+                    return false;
+                })
+                .errorFunction(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
+                .candidates(PartAbility.ROTOR_HOLDER.getAllBlocks()
+                        .stream().map(BlockInfo::fromBlock))
+                .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
+                .toMultiPredicate()
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
-                        VN[tier]));
+                // todo lang: must be of tier %s
+                .addTooltips(Component.literal("Can only be of tier: %s".formatted(VN[tier])));
     }
 
     // Tooltips
@@ -841,7 +843,6 @@ public class GTMachineUtils {
         private boolean hasPollutionDebuff = false;
         @Setter
         private PanelFactory panelFactory = null;
-        @Setter
         private int[] tiers = ELECTRIC_TIERS;
 
         // Simple Machines need to have a name, recipe type, and a registrate to register the machine to.
@@ -849,6 +850,11 @@ public class GTMachineUtils {
             this.registrate = registrate;
             this.name = name;
             this.recipeType = recipeType;
+        }
+
+        public SimpleMachineBuilder tiers(int... tiers) {
+            this.tiers = tiers;
+            return this;
         }
 
         public MachineDefinition[] register() {

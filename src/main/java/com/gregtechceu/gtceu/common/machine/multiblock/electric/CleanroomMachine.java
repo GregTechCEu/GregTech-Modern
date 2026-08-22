@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.FilterMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
@@ -75,6 +75,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -314,17 +315,17 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            PatternPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
-            PatternPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
+            MultiPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
+            MultiPredicate energyPredicate = autoAbilities(true, false, false).and(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
-            PatternPredicate edgePredicate = wallPredicate.or(energyPredicate);
-            PatternPredicate facePredicate = wallPredicate.or(energyPredicate)
-                    .or(doorPredicate().setMaxGlobalLimited(8))
-                    .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-            PatternPredicate filterPredicate = cleanroomFilters();
-            PatternPredicate innerPredicate = innerPredicate();
-            PatternPredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
+            MultiPredicate edgePredicate = wallPredicate.and(energyPredicate);
+            MultiPredicate facePredicate = wallPredicate.and(energyPredicate)
+                    .and(doorPredicate().setMaxGlobalLimited(8))
+                    .and(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+            MultiPredicate filterPredicate = cleanroomFilters();
+            MultiPredicate innerPredicate = innerPredicate();
+            MultiPredicate verticalEdgePredicate = edgePredicate.and(blocks(getGlassState().getBlock()));
 
             return ExpandableMultiblockPatternBuilder
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
@@ -364,102 +365,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     // this means auto-build will still work, and prevents terminal crashes.
     // if (getLevel() == null)
 
-    /*
-     * // these can sometimes get set to 0 when loading the game, breaking JEI
-     * if (lDist < MIN_RADIUS) lDist = MIN_RADIUS;
-     * if (rDist < MIN_RADIUS) rDist = MIN_RADIUS;
-     * if (bDist < MIN_RADIUS) bDist = MIN_RADIUS;
-     * if (fDist < MIN_RADIUS) fDist = MIN_RADIUS;
-     * if (hDist < MIN_DEPTH) hDist = MIN_DEPTH;
-     *
-     * if (this.getFrontFacing() == Direction.EAST || this.getFrontFacing() == Direction.WEST) {
-     * int tmp = lDist;
-     * lDist = rDist;
-     * rDist = tmp;
-     * }
-     *
-     * StringBuilder[] floorLayer = new StringBuilder[fDist + bDist + 1];
-     * List<StringBuilder[]> wallLayers = new ArrayList<>();
-     * StringBuilder[] ceilingLayer = new StringBuilder[fDist + bDist + 1];
-     *
-     * for (int i = 0; i < floorLayer.length; i++) {
-     * floorLayer[i] = new StringBuilder(lDist + rDist + 1);
-     * ceilingLayer[i] = new StringBuilder(lDist + rDist + 1);
-     * }
-     *
-     * for (int i = 0; i < hDist - 1; i++) {
-     * wallLayers.add(new StringBuilder[fDist + bDist + 1]);
-     * for (int j = 0; j < fDist + bDist + 1; j++) {
-     * var s = new StringBuilder(lDist + rDist + 1);
-     * wallLayers.get(i)[j] = s;
-     * }
-     * }
-     *
-     * for (int i = 0; i < lDist + rDist + 1; i++) {
-     * for (int j = 0; j < fDist + bDist + 1; j++) {
-     * if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
-     * floorLayer[j].append('A'); // floor edge
-     * for (int k = 0; k < hDist - 1; k++) {
-     * wallLayers.get(k)[j].append('W'); // walls
-     * }
-     * ceilingLayer[j].append('D'); // ceiling edge
-     * } else { // not edges
-     * if (i == lDist && j == fDist) { // very center
-     * floorLayer[j].append('K');
-     * } else {
-     * floorLayer[j].append('E'); // floor valid blocks
-     * }
-     * for (int k = 0; k < hDist - 1; k++) {
-     * wallLayers.get(k)[j].append(' ');
-     * }
-     * if (i == lDist && j == fDist) { // very center
-     * ceilingLayer[j].append('C'); // controller
-     * } else {
-     * ceilingLayer[j].append('F'); // filter
-     * }
-     * }
-     * }
-     * }
-     *
-     * String[] f = new String[bDist + fDist + 1];
-     * for (int i = 0; i < floorLayer.length; i++) {
-     * f[i] = floorLayer[i].toString();
-     * }
-     * String[] m = new String[bDist + fDist + 1];
-     * for (int i = 0; i < wallLayers.get(0).length; i++) {
-     * m[i] = wallLayers.get(0)[i].toString();
-     * }
-     * String[] c = new String[bDist + fDist + 1];
-     * for (int i = 0; i < ceilingLayer.length; i++) {
-     * c[i] = ceilingLayer[i].toString();
-     * }
-     *
-     * TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
-     * TraceabilityPredicate basePredicate = Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-     * .setMaxGlobalLimited(2)
-     * .or(blocks(GTMachines.MAINTENANCE_HATCH.get(), GTMachines.AUTO_MAINTENANCE_HATCH.get())
-     * .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
-     * .setMaxGlobalLimited(1))
-     * .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-     *
-     * return FactoryBlockPattern.start(LEFT, FRONT, UP)
-     * .aisle(f)
-     * .aisle(m).setRepeatable(wallLayers.size())
-     * .aisle(c)
-     * .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
-     * .where('F', Predicates.cleanroomFilters())
-     * .where('D', states(getCasingState())) // ceiling edges
-     * .where(' ', innerPredicate())
-     * .where('E', wallPredicate.or(basePredicate) // inner floor
-     * .or(getValidFloorBlocks().setMaxGlobalLimited(4)))
-     * .where('K', wallPredicate // very center floor, needed for height check
-     * .or(getValidFloorBlocks()))
-     * .where('W', wallPredicate.or(basePredicate)// walls
-     * .or(doorPredicate().setMaxGlobalLimited(8)))
-     * .where('A', wallPredicate.or(basePredicate)) // floor edges
-     * .build();
-     */
-
     // protected to allow easy addition of addon "cleanrooms"
     protected static BlockState getCasingState() {
         return GTBlocks.PLASTCRETE.getDefaultState();
@@ -469,29 +374,35 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    protected static PatternPredicate doorPredicate() {
-        return Predicates.custom(
-                blockWorldState -> blockWorldState.retrieveCurrentBlockState().getBlock() instanceof DoorBlock ? null :
-                        Predicates.PLACEHOLDER,
-                List.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
-                        Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
+    protected static MultiPredicate doorPredicate() {
+        return builder("DoorPredicate")
+                .predicate(ctx -> ctx.state().getBlock() instanceof DoorBlock)
+                // .errorFunction(ctx -> PLACEHOLDER)
+                // spotless:off
+                .candidates(Stream.of(
+                        new BlockInfo(Blocks.IRON_DOOR),
+                        new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
+                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))
+                ))
+                //spotless:on
+                .toMultiPredicate();
     }
 
-    private static PatternPredicate getValidFloorBlocks() {
+    private static MultiPredicate getValidFloorBlocks() {
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    protected static PatternPredicate innerPredicate() {
-        return new PatternPredicate(blockWorldState -> {
-            // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getBlockEntity();
-            if (blockEntity instanceof MetaMachine machine) {
-                if (isMachineBanned(machine)) {
-                    return Predicates.PLACEHOLDER;
-                }
-            }
-            return null;
-        }, null);
+    protected static MultiPredicate innerPredicate() {
+        return builder("InnerPredicate")
+                .predicate(ctx -> {
+                    // all non-GTMachines are allowed inside by default
+                    if (ctx.blockEntity() instanceof MetaMachine machine) {
+                        return !isMachineBanned(machine);
+                    }
+                    return true;
+                })
+                // .errorFunction(ctx -> PLACEHOLDER)
+                .toMultiPredicate();
     }
 
     protected static boolean isMachineBanned(MetaMachine machine) {

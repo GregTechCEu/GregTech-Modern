@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -31,49 +31,42 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import brachy.modularui.widgets.menu.Menu;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.function.Consumer;
 
-public class SmartItemFilter implements ItemFilter {
+public class SmartItemFilter extends Filter<ItemStack> {
 
-    protected Consumer<SmartItemFilter> itemWriter = filter -> {};
-    protected Consumer<SmartItemFilter> onUpdated = filter -> itemWriter.accept(filter);
+    public static final Codec<SmartItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            SmartFilteringMode.CODEC.fieldOf("filterMode").forGetter(v -> v.filterMode))
+            .apply(instance, SmartItemFilter::new));
 
     @Getter
     private SmartFilteringMode filterMode;
 
-    private SmartItemFilter(SmartFilteringMode filterMode) {
+    public SmartItemFilter() {
+        filterMode = SmartFilteringMode.ELECTROLYZER;
+    }
+
+    public SmartItemFilter(SmartFilteringMode filterMode) {
         this.filterMode = filterMode;
-    }
-
-    public static SmartItemFilter loadFilter(ItemStack itemStack) {
-        SmartFilteringMode mode = itemStack.getOrDefault(GTDataComponents.SMART_ITEM_FILTER,
-                SmartFilteringMode.ELECTROLYZER);
-        SmartItemFilter handler = new SmartItemFilter(mode);
-        handler.itemWriter = filter -> itemStack.set(GTDataComponents.SMART_ITEM_FILTER, filter.filterMode);
-        return handler;
-    }
-
-    @Override
-    public ItemStack getFilterItem() {
-        return GTItems.SMART_ITEM_FILTER.asStack();
-    }
-
-    @Override
-    public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
     }
 
     private void setFilterMode(SmartFilteringMode filterMode) {
         this.filterMode = filterMode;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
+    }
+
+    @Override
+    public void onFilterLoaded(FilterHandler<ItemStack> handler) {
+        if (handler.getParentSyncObject() instanceof CoverBehavior cover &&
+                cover.coverHolder instanceof MachineCoverContainer mcc) {
+            setModeFromMachine(mcc.getMachine().getDefinition().getName());
+        }
     }
 
     @Override
@@ -87,7 +80,7 @@ public class SmartItemFilter implements ItemFilter {
                 .child(new ContextMenuButton<>("smart_filter")
                         .size(18)
                         .requiresClick()
-                        .tooltip(r -> r.add(Text.str("Set Machine Recipe Type")))
+                        .tooltip(r -> r.add(Text.lang("cover.item_smart_filter.filtering_mode.description")))
                         .openRightDown()
                         .overlay(new DynamicDrawable(() -> SmartFilteringMode.getTextures()[mode.getIntValue()]))
                         .menu(new Menu<>()
@@ -109,16 +102,22 @@ public class SmartItemFilter implements ItemFilter {
                                                     .tooltip(r -> r.add(Text.comp(Component
                                                             .translatable(SmartFilteringMode.VALUES[w].getTooltip()))));
                                         }))))
-                .child(Text.str("Recipe Type").asWidget().verticalCenter().rightRel(0.f));
+                .child(Text.lang("cover.item_smart_filter.recipe_type").asWidget().verticalCenter().rightRel(0.f));
+    }
+
+    @Override
+    public boolean supportsAmounts() {
+        return true;
     }
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return testItemCount(itemStack) > 0;
+        return testAmount(itemStack) > 0;
     }
 
     @Override
-    public int testItemCount(ItemStack itemStack) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int testAmount(ItemStack itemStack) {
         return filterMode.cache.computeIfAbsent(itemStack, this::lookup);
     }
 
