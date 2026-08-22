@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
@@ -25,6 +26,8 @@ public class SyncDataHolder {
     private final ISyncManaged holder;
 
     private final ObjectSet<String> dirtySyncFields = new ObjectOpenHashSet<>();
+    @Setter
+    private boolean hasDirtyChildSyncObject = false;
     private boolean resyncAll = false;
 
     public SyncDataHolder(ISyncManaged o) {
@@ -47,6 +50,10 @@ public class SyncDataHolder {
         holder.markAsChanged();
     }
 
+    public boolean needsSync() {
+        return !dirtySyncFields.isEmpty() || resyncAll || hasDirtyChildSyncObject;
+    }
+
     public CompoundTag serializeNBT(boolean writeClientFields) {
         return serializeNBT(writeClientFields, resyncAll);
     }
@@ -59,11 +66,12 @@ public class SyncDataHolder {
         for (var field : fieldsToSerialize) {
             if (shouldSerializeField(field, writeClientFields, fullSync || resyncAll)) {
                 Tag nbtValue = serializeField(holder, field, writeClientFields, fullSync || resyncAll);
-                tag.put(field.nbtSaveKey, nbtValue);
+                if (nbtValue != null) tag.put(field.nbtSaveKey, nbtValue);
             }
         }
         if (writeClientFields) {
             resyncAll = false;
+            hasDirtyChildSyncObject = false;
             dirtySyncFields.clear();
         }
         return tag;
@@ -103,9 +111,13 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    private static Tag serializeField(Object holder, FieldSyncData field,
+    private static @Nullable Tag serializeField(Object holder, FieldSyncData field,
                                       boolean writeClientFields, boolean fullSync) {
         Object currentValue = field.handle.get(holder);
+
+        if (!fullSync && currentValue instanceof ISyncManaged syncManaged && !syncManaged.getSyncDataHolder().needsSync()) {
+            return null;
+        }
 
         if (currentValue == null) {
             var nullCompound = new CompoundTag();
