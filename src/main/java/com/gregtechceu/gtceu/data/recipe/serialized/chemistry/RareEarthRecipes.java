@@ -30,7 +30,6 @@ public class RareEarthRecipes {
                 .outputItems(dust, LightRareEarthSludge, 2)
                 .outputItems(dust, HeavyRareEarthSludge, 2)
                 .duration(128).EUt(VA[MV]).save(provider);
-
         ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("sift_light_rare_earth_sludge")
                 .inputItems(dust, LightRareEarthSludge, 1)
                 .chancedOutput(dust, Cerium, 2800)
