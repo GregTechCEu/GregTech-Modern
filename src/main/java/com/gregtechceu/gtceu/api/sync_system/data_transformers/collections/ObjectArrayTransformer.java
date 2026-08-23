@@ -69,7 +69,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     @Override
     @SuppressWarnings("unchecked")
     public @Nullable T @Nullable [] readFromPacket(FriendlyByteBuf buf, TransformerContext<T[]> context) {
-        T[] current = context.currentValue();
+        @Nullable T @Nullable [] current = context.currentValue();
         int length = buf.readInt();
 
         if (current == null) {
@@ -82,7 +82,6 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
         }
         for (int i = 0; i < length; i++) {
             T result = elementTransformer.readFromPacket(buf, getInnerElemContext(current[i], context));
-            if (result == null) return current;
             current[i] = result;
         }
         return current;

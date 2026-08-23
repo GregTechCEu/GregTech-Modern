@@ -74,6 +74,7 @@ public class SyncDataHolder {
 
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
+                return tag;
             }
         }
         return tag;
@@ -99,6 +100,7 @@ public class SyncDataHolder {
 
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName, e);
+                return;
             }
         }
     }
@@ -127,6 +129,7 @@ public class SyncDataHolder {
                                         true, resyncAll, lookup));
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to write client packet on field {}", field.fieldName, e);
+                return;
             }
         }
 
@@ -146,6 +149,8 @@ public class SyncDataHolder {
 
             Object currentValue = field.handle.get(holder);
 
+            if (!confirmTransformerPresent(field, holder)) continue;
+
             boolean isNull = buf.readBoolean();
             if (isNull) {
                 trySetField(field, holder, null);
@@ -163,6 +168,7 @@ public class SyncDataHolder {
                 if (result != currentValue) trySetField(field, holder, result);
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to read client packet on field {}", field.fieldName, e);
+                return;
             }
 
         }

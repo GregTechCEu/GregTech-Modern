@@ -106,15 +106,13 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return null;
         }
 
+        if (buf.readBoolean()) {
+            return null;
+        }
 
         Direction side = Direction.values()[buf.readInt()];
         ResourceLocation coverId = buf.readResourceLocation();
         CoverBehavior cover = context.currentValue();
-
-        if (buf.readBoolean()) {
-            holder.setCoverAtSide(null, side);
-            return null;
-        }
 
         if (cover == null || !cover.coverDefinition.getId().equals(coverId)) {
             var coverReg = GTRegistries.COVERS.get(coverId);
