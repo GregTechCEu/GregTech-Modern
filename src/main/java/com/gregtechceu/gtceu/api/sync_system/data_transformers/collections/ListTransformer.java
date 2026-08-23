@@ -4,14 +4,13 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-
 import net.minecraft.network.FriendlyByteBuf;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListTransformer<T> implements ValueTransformer<List<T>> {
@@ -64,7 +63,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
     @Override
     public void writeToPacket(FriendlyByteBuf buf, List<T> value, TransformerContext<List<T>> context) {
         buf.writeInt(value.size());
-        for (T elem: value) {
+        for (T elem : value) {
             getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
         }
     }
@@ -77,7 +76,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         if (current != null) current.clear();
         else current = new ObjectArrayList<>();
 
-        for (int i=0; i<len; i++) {
+        for (int i = 0; i < len; i++) {
             T val = getElemTransformer(context).readFromPacket(buf, getInnerElemContext(null, context));
             if (val != null) current.add(val);
         }

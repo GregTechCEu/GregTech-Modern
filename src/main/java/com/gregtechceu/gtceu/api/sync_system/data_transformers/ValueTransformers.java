@@ -107,8 +107,8 @@ public final class ValueTransformers {
      * Creates and registers a {@link ValueTransformer} for the given class using predefined NBT parsing functions.
      *
      * @param type     The class to register this {@link ValueTransformer} for
-     * @param writeNBT    A function that writes the value into a specific tag type
-     * @param readNBT     A function that reads the value from a specific tag type
+     * @param writeNBT A function that writes the value into a specific tag type
+     * @param readNBT  A function that reads the value from a specific tag type
      * @param tagClass The tag type the value is serialized into
      */
     public static <T,
@@ -119,7 +119,8 @@ public final class ValueTransformers {
                                                                      Class<TagType> tagClass) {
         if (REGISTERED.containsKey(type))
             throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
-        ValueTransformer<T> transformer = new SimpleClassTransformer<>(writeNBT, readNBT, writePacket, readPacket, tagClass);
+        ValueTransformer<T> transformer = new SimpleClassTransformer<>(writeNBT, readNBT, writePacket, readPacket,
+                tagClass);
         REGISTERED.putIfAbsent(type, transformer);
     }
 
@@ -141,7 +142,7 @@ public final class ValueTransformers {
 
         //// Primitives
 
-        //spotless:off
+        // spotless:off
         registerSimpleClassTransformer(Integer.class, IntTag::valueOf, IntTag::getAsInt, FriendlyByteBuf::writeVarInt, FriendlyByteBuf::readVarInt, IntTag.class);
         registerSimpleClassTransformer(Long.class, LongTag::valueOf, LongTag::getAsLong, FriendlyByteBuf::writeLong, FriendlyByteBuf::readLong, LongTag.class);
         registerSimpleClassTransformer(Float.class, FloatTag::valueOf, FloatTag::getAsFloat, FriendlyByteBuf::writeFloat, FriendlyByteBuf::readFloat, FloatTag.class);
@@ -169,10 +170,8 @@ public final class ValueTransformers {
         registerTransformer(FluidStack.class, new SimpleClassTransformers.FluidStackTransformer());
         registerTransformer(Component.class, new SimpleClassTransformers.ComponentTransformer());
 
-
         registerTransformer(BlockPos.class, new SimpleClassTransformers.BlockPosTransformer());
         registerTransformer(BlockState.class, new CodecTransformer<>(BlockState.CODEC));
-
 
         registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
         registerTransformer(ISyncManaged.class, new SyncDataHolder.SyncManagedTransformer());

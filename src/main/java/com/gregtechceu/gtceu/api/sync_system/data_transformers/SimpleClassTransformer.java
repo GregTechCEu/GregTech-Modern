@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;

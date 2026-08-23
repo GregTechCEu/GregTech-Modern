@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 public class CodecTransformer<T> implements ValueTransformer<T> {
@@ -32,7 +32,8 @@ public class CodecTransformer<T> implements ValueTransformer<T> {
         Tag data = codec.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
         if (data instanceof CompoundTag compoundTag) buf.writeNbt(compoundTag);
         else {
-            GTCEu.LOGGER.error("Sync: Cannot write non-compound NBT tag to packet. Field {}, class {}", context.fieldName(), context.type().getClassValue());
+            GTCEu.LOGGER.error("Sync: Cannot write non-compound NBT tag to packet. Field {}, class {}",
+                    context.fieldName(), context.type().getClassValue());
         }
     }
 

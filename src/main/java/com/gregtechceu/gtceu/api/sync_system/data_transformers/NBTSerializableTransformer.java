@@ -20,7 +20,7 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
 
     @Override
     public @Nullable INBTSerializable<CompoundTag> deserializeNBT(Tag tag,
-                                                          ValueTransformer.TransformerContext<INBTSerializable<CompoundTag>> context) {
+                                                                  ValueTransformer.TransformerContext<INBTSerializable<CompoundTag>> context) {
         var currentVal = context.currentValue();
         if (currentVal == null) {
             GTCEu.LOGGER.warn(
@@ -37,7 +37,8 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
     }
 
     @Override
-    public @Nullable INBTSerializable<CompoundTag> readFromPacket(FriendlyByteBuf buf, TransformerContext<INBTSerializable<CompoundTag>> context) {
+    public @Nullable INBTSerializable<CompoundTag> readFromPacket(FriendlyByteBuf buf,
+                                                                  TransformerContext<INBTSerializable<CompoundTag>> context) {
         var currentVal = context.currentValue();
         CompoundTag data = buf.readNbt();
         if (currentVal == null) {

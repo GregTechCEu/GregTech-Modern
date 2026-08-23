@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -31,12 +31,14 @@ public interface ValueTransformer<T> {
      */
     record TransformerContext<U>(Object holder, TypeDeclaration type,
                                  @Nullable U currentValue, @Nullable String fieldName,
-                                 boolean isClientFullSyncUpdate, HolderLookup.Provider lookup, RegistryOps<Tag> nbtOps) {
+                                 boolean isClientFullSyncUpdate, HolderLookup.Provider lookup,
+                                 RegistryOps<Tag> nbtOps) {
 
         public TransformerContext(Object holder, TypeDeclaration type,
                                   @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
                                   boolean isClientFullSyncUpdate, HolderLookup.Provider lookup) {
-            this(holder, type, currentValue, fieldName, isClientFullSyncUpdate, lookup, RegistryOps.create(NbtOps.INSTANCE, lookup));
+            this(holder, type, currentValue, fieldName, isClientFullSyncUpdate, lookup,
+                    RegistryOps.create(NbtOps.INSTANCE, lookup));
         }
 
         @SuppressWarnings("NullableProblems")

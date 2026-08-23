@@ -5,14 +5,12 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class SetTransformer<T> implements ValueTransformer<Set<T>> {
@@ -63,7 +61,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
     @Override
     public void writeToPacket(FriendlyByteBuf buf, Set<T> value, TransformerContext<Set<T>> context) {
         buf.writeInt(value.size());
-        for (T elem: value) {
+        for (T elem : value) {
             getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
         }
     }
@@ -76,7 +74,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
         if (current != null) current.clear();
         else current = new ObjectOpenHashSet<>();
 
-        for (int i=0; i<len; i++) {
+        for (int i = 0; i < len; i++) {
             T val = getElemTransformer(context).readFromPacket(buf, getInnerElemContext(null, context));
             if (val != null) current.add(val);
         }
