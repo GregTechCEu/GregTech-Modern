@@ -11,7 +11,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jspecify.annotations.Nullable;
 
-public class SimpleClassTransformers {
+public final class SimpleClassTransformers {
+
+    private SimpleClassTransformers() {}
 
     public static class ItemStackTransformer implements ValueTransformer<ItemStack> {
 
