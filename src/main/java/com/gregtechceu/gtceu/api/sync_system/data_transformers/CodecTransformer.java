@@ -30,10 +30,12 @@ public class CodecTransformer<T> implements ValueTransformer<T> {
     @Override
     public void writeToPacket(FriendlyByteBuf buf, T value, TransformerContext<T> context) {
         Tag data = codec.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
-        if (data instanceof CompoundTag compoundTag) buf.writeNbt(compoundTag);
-        else {
-            GTCEu.LOGGER.error("Sync: Cannot write non-compound NBT tag to packet. Field {}, class {}",
-                    context.fieldName(), context.type().getClassValue());
+        if (data instanceof CompoundTag compoundTag) {
+            buf.writeNbt(compoundTag);
+        } else {
+            CompoundTag wrapper = new CompoundTag();
+            wrapper.put("$$gtceu:value$$", data);
+            buf.writeNbt(wrapper);
         }
     }
 
