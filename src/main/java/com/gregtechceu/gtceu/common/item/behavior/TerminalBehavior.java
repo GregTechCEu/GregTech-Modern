@@ -55,6 +55,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
+import static com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper.readBlockPreferences;
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
@@ -129,8 +130,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             }
 
             if (structureHelper != null) {
-                // TODO: ADD BLOCK PREFERENCES
-                structureHelper.populate(resultStructure, pattern, null, frontFacing, upFacing, flipped);
+                structureHelper.populate(resultStructure, pattern, readBlockPreferences(tag), frontFacing, upFacing, flipped);
             }
 
             // Extract controller block offset
