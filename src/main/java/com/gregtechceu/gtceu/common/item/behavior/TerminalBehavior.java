@@ -58,6 +58,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         Player player = context.getPlayer();
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
+        ItemStack stack = context.getItemInHand();
+        CompoundTag tag = stack.getOrCreateTag();
 
         if (player == null || !player.isShiftKeyDown()) {
             return InteractionResult.PASS;
@@ -73,6 +75,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (controller.getDefaultPatternState().isFormed()) {
             return InteractionResult.PASS;
         }
+        /*
         if (controller.getDefinition() == this.multiblockDefinition && this.multiblockSchemaInfo != null) {
             this.refreshSchema();
         }
@@ -83,6 +86,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 this.multiblockSchemaInfo.getStructureBlocks().isEmpty()) {
             return InteractionResult.PASS;
         }
+        */
 
         BlockPos controllerOffset = controller.getBlockPos()
                 .offset(this.multiblockSchemaInfo.getMapSchema().getControllerPos().multiply(-1));
@@ -131,14 +135,16 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
-    @Override
-    public boolean shouldOpenUI() {
-        return true;
+    public boolean shouldOpenUI(ItemStack item) {
+        return item.getOrCreateTag().contains("controller");
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        if (!shouldOpenUI()) return IItemUIHolder.super.use(item, level, player, usedHand);
+        if (!shouldOpenUI(player.getItemInHand(usedHand))) {
+            if(level.isClientSide) player.displayClientMessage(Component.literal("No controller information loaded"), false);
+            return InteractionResultHolder.pass(player.getItemInHand(usedHand));
+        }
 
         if (level.isClientSide) {
             PlayerInventoryGuiData<?> guiData = PlayerInventoryGuiData.of(player, InventoryTypes.PLAYER, null,
