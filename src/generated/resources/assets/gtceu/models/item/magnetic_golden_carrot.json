@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/magnetized_golden_carrot"
+    "layer0": "gtceu:item/magnetic_golden_carrot"
   }
 }
