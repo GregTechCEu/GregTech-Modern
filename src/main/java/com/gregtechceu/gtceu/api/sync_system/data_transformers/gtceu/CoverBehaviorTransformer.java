@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return nullTag;
         }
 
-        return serialize(value, context.isClientSync(), context.isClientFullSyncUpdate());
+        return serialize(value, context.lookup(), context.isClientSync(), context.isClientFullSyncUpdate());
     }
 
     @Override
@@ -37,24 +38,27 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
 
         if (context.holder() instanceof ICoverable coverable) {
-            return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
+            return deserialize(compoundTag, context.lookup(), coverable, context.currentValue(),
+                    context.isClientSync());
         }
         GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
         return null;
     }
 
-    private CompoundTag serialize(CoverBehavior cover, boolean isSync, boolean fullSync) {
+    private CompoundTag serialize(CoverBehavior cover, HolderLookup.Provider lookup, boolean isSync, boolean fullSync) {
         var compound = new CompoundTag();
 
         compound.putInt("side", cover.attachedSide.ordinal());
         compound.putString("coverType", cover.coverDefinition.getId().toString());
-        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync, fullSync);
+        CompoundTag serializedCover = isSync ? cover.getSyncDataHolder().serializeClientData(lookup, fullSync) :
+                cover.getSyncDataHolder().serializeNBT(lookup);
         compound.put("data", serializedCover);
 
         return compound;
     }
 
-    public @Nullable CoverBehavior deserialize(CompoundTag tag, ICoverable holder, @Nullable CoverBehavior cover,
+    public @Nullable CoverBehavior deserialize(CompoundTag tag, HolderLookup.Provider lookup, ICoverable holder,
+                                               @Nullable CoverBehavior cover,
                                                boolean isSync) {
         /// Ldlib backwards compat
         if (tag.contains("payload") && tag.contains("uid")) {
@@ -82,7 +86,9 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
-        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"), isSync);
+
+        if (isSync) newCover.getSyncDataHolder().deserializeNBT(lookup, tag.getCompound("data"));
+        else newCover.getSyncDataHolder().deserializeNBT(lookup, tag.getCompound("data"));
 
         if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");

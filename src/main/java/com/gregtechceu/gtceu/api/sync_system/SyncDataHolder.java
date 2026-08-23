@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -25,6 +27,8 @@ public class SyncDataHolder {
     private final ISyncManaged holder;
 
     private final ObjectSet<String> dirtySyncFields = new ObjectOpenHashSet<>();
+    @Setter
+    private boolean hasDirtyChildSyncObject = false;
     private boolean resyncAll = false;
 
     public SyncDataHolder(ISyncManaged o) {
@@ -47,124 +51,176 @@ public class SyncDataHolder {
         holder.markAsChanged();
     }
 
-    public CompoundTag serializeNBT(boolean writeClientFields) {
-        return serializeNBT(writeClientFields, resyncAll);
+    public boolean needsSync() {
+        return !dirtySyncFields.isEmpty() || resyncAll || hasDirtyChildSyncObject;
     }
 
-    public CompoundTag serializeNBT(boolean writeClientFields, boolean fullSync) {
-        Set<FieldSyncData> fieldsToSerialize = writeClientFields ? syncData.getClientSyncFields() :
-                syncData.getServerSaveFields();
-
+    @SuppressWarnings("unchecked")
+    public CompoundTag serializeNBT(HolderLookup.Provider lookup) {
         CompoundTag tag = new CompoundTag();
-        for (var field : fieldsToSerialize) {
-            if (shouldSerializeField(field, writeClientFields, fullSync || resyncAll)) {
-                Tag nbtValue = serializeField(holder, field, writeClientFields, fullSync || resyncAll);
+        for (var field : syncData.getServerSaveFields()) {
+            Object currentValue = field.handle.get(holder);
+            if (currentValue == null || !confirmTransformerPresent(field, holder)) continue;
+
+            try {
+                Tag nbtValue = ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
+                        .serializeNBT(currentValue,
+                                new ValueTransformer.TransformerContext<>(holder, field.type, currentValue,
+                                        field.fieldName,
+                                        false, false, lookup));
                 tag.put(field.nbtSaveKey, nbtValue);
+
+            } catch (Exception e) {
+                GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
             }
-        }
-        if (writeClientFields) {
-            resyncAll = false;
-            dirtySyncFields.clear();
         }
         return tag;
     }
 
-    private boolean shouldSerializeField(FieldSyncData field, boolean writeClient, boolean fullSync) {
-        return !writeClient || fullSync || dirtySyncFields.contains(field.fieldName) ||
+    @SuppressWarnings("unchecked")
+    public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag tag) {
+        for (var field : syncData.getServerSaveFields()) {
+            Tag newValue = tag.get(field.nbtSaveKey);
+            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) continue;
+
+            if (!confirmTransformerPresent(field, holder)) continue;
+
+            try {
+                ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
+                var current = field.handle.get(holder);
+
+                Object result = Objects.requireNonNull(transformer).deserializeNBT(newValue,
+                        new ValueTransformer.TransformerContext<>(
+                                holder, field.type, current, field.fieldName, false, false, lookup));
+
+                if (result != current) trySetField(field, holder, result);
+
+            } catch (Exception e) {
+                GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName, e);
+            }
+        }
+    }
+
+    public CompoundTag serializeClientData(HolderLookup.Provider lookup, boolean fullSync) {
+        if (fullSync) resyncAllFields();
+        return serializeClientData(lookup);
+    }
+
+    @SuppressWarnings("unchecked")
+    public CompoundTag serializeClientData(HolderLookup.Provider lookup) {
+        Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields();
+
+        CompoundTag tag = new CompoundTag();
+        for (var field : fieldsToSerialize) {
+            if (shouldSerializeClientField(field, resyncAll)) {
+
+                Object currentValue = field.handle.get(holder);
+
+                if (!resyncAll && currentValue instanceof ISyncManaged syncManaged &&
+                        !syncManaged.getSyncDataHolder().needsSync()) {
+                    continue;
+                }
+
+                if (!confirmTransformerPresent(field, holder)) continue;
+
+                if (currentValue == null) {
+                    var nullCompound = new CompoundTag();
+                    nullCompound.putBoolean("null", true);
+                    tag.put(field.nbtSaveKey, nullCompound);
+                    continue;
+                }
+
+                try {
+                    Tag nbtValue = ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
+                            .serializeNBT(currentValue,
+                                    new ValueTransformer.TransformerContext<>(holder, field.type, currentValue,
+                                            field.fieldName,
+                                            true, resyncAll, lookup));
+                    tag.put(field.nbtSaveKey, nbtValue);
+                } catch (Exception e) {
+                    GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
+                }
+            }
+        }
+
+        resyncAll = false;
+        hasDirtyChildSyncObject = false;
+        dirtySyncFields.clear();
+        return tag;
+    }
+
+    private boolean shouldSerializeClientField(FieldSyncData field, boolean fullSync) {
+        return fullSync || dirtySyncFields.contains(field.fieldName) ||
                 (field.type.getClassValue() != null && ISyncManaged.class.isAssignableFrom(field.type.getClassValue()));
     }
 
-    public void deserializeNBT(CompoundTag tag, boolean readingClientFields) {
-        Set<FieldSyncData> fieldsToCheck = readingClientFields ? syncData.getClientSyncFields() :
-                syncData.getServerSaveFields();
+    @SuppressWarnings("unchecked")
+    public void deserializeClientData(HolderLookup.Provider lookup, CompoundTag tag) {
+        for (var field : syncData.getClientSyncFields()) {
 
-        for (var field : fieldsToCheck) {
+            Tag newValue = tag.get(field.nbtSaveKey);
 
-            Tag savedValue = tag.get(field.nbtSaveKey);
-            deserializeField(holder, field, savedValue, readingClientFields);
+            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) continue;
 
-            if (readingClientFields) {
-                try {
-                    for (MethodHandle changeListenerHandle : field.changeListenerHandles) {
-                        changeListenerHandle.invoke(holder);
-                    }
-                } catch (Throwable e) {
-                    if (e instanceof WrongMethodTypeException) {
-                        throw new IllegalArgumentException(
-                                "Invalid method signature for change listener for field %s %s"
-                                        .formatted(field.fieldName, holder.getClass().getName()));
-                    }
-                    GTCEu.LOGGER.error("Sync: Error while invoking change listener for field {}", field.fieldName, e);
-                }
-
-                if (field.triggerClientRerender) holder.scheduleRenderUpdate();
+            if (newValue instanceof CompoundTag compound && compound.getBoolean("null")) {
+                field.handle.set(holder, null);
+                executeClientSyncCallbacks(field);
+                continue;
             }
+
+            if (!confirmTransformerPresent(field, holder)) continue;
+
+            try {
+                ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
+                var current = field.handle.get(holder);
+
+                Object result = Objects.requireNonNull(transformer).deserializeNBT(newValue,
+                        new ValueTransformer.TransformerContext<>(
+                                holder, field.type, current, field.fieldName, true, false, lookup));
+
+                if (result != current) trySetField(field, holder, result);
+
+            } catch (Exception e) {
+                GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName, e);
+            }
+
+            executeClientSyncCallbacks(field);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static Tag serializeField(Object holder, FieldSyncData field,
-                                      boolean writeClientFields, boolean fullSync) {
-        Object currentValue = field.handle.get(holder);
-
-        if (currentValue == null) {
-            var nullCompound = new CompoundTag();
-            nullCompound.putBoolean("null", true);
-            return nullCompound;
-        }
-
-        if (field.transformer == null) {
-            field.setTransformer(ValueTransformers.get(field.type.getRawType()));
-            if (field.transformer == null) {
-                GTCEu.LOGGER.error("Sync: Failed to serialize field {} in class {}: Missing value transformer for {}",
-                        field.fieldName, holder.getClass().getName(), field.type);
-                return new CompoundTag();
-            }
-        }
-
+    private void executeClientSyncCallbacks(FieldSyncData field) {
         try {
-            return ((ValueTransformer<Object>) field.transformer).serializeNBT(currentValue,
-                    new ValueTransformer.TransformerContext<>(holder, field.type, currentValue, field.fieldName,
-                            writeClientFields, fullSync));
-
-        } catch (Exception e) {
-            GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
+            for (MethodHandle changeListenerHandle : field.changeListenerHandles) {
+                changeListenerHandle.invoke(holder);
+            }
+        } catch (Throwable e) {
+            if (e instanceof WrongMethodTypeException) {
+                throw new IllegalArgumentException(
+                        "Invalid method signature for change listener for field %s %s"
+                                .formatted(field.fieldName, holder.getClass().getName()));
+            }
+            GTCEu.LOGGER.error("Sync: Error while invoking change listener for field {}", field.fieldName, e);
         }
 
-        return new CompoundTag();
+        if (field.triggerClientRerender) holder.scheduleRenderUpdate();
     }
 
-    @SuppressWarnings("unchecked")
-    private static void deserializeField(Object holder, FieldSyncData field,
-                                         @Nullable Tag newValue,
-                                         boolean readingClientFields) {
-        if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) return;
-
-        if (newValue instanceof CompoundTag compound && compound.getBoolean("null")) {
-            field.handle.set(holder, null);
-            return;
-        }
-
+    private static boolean confirmTransformerPresent(FieldSyncData field, Object holder) {
         if (field.transformer == null) {
             field.setTransformer(ValueTransformers.get(field.type.getRawType()));
             if (field.transformer == null) {
-                GTCEu.LOGGER.error("Sync: Failed to deserialize field {} in class {}: Missing value transformer for {}",
+                GTCEu.LOGGER.error(
+                        "Sync: Failed to serialize/deserialize field {} in class {}: Missing value transformer for {}",
                         field.fieldName, holder.getClass().getName(), field.type);
-                return;
+                return false;
             }
         }
+        return true;
+    }
 
+    private static void trySetField(FieldSyncData field, Object holder, @Nullable Object value) {
         try {
-            ValueTransformer<Object> transformer = (ValueTransformer<Object>) field.transformer;
-            var current = field.handle.get(holder);
-
-            Object result = transformer.deserializeNBT(newValue, new ValueTransformer.TransformerContext<>(
-                    holder, field.type, current, field.fieldName, readingClientFields, false));
-
-            if (result != current) {
-                field.handle.set(holder, result);
-            }
-
+            field.handle.set(holder, value);
         } catch (Exception e) {
             if (e instanceof UnsupportedOperationException) {
                 GTCEu.LOGGER.error(
@@ -172,7 +228,7 @@ public class SyncDataHolder {
                         field.fieldName);
                 return;
             }
-            GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName, e);
+            GTCEu.LOGGER.error("Sync: Failed to perform VarHandle set on {} : {}", field.fieldName, e);
         }
     }
 
@@ -180,7 +236,9 @@ public class SyncDataHolder {
 
         @Override
         public Tag serializeNBT(ISyncManaged value, TransformerContext<ISyncManaged> context) {
-            return value.getSyncDataHolder().serializeNBT(context.isClientSync(), context.isClientFullSyncUpdate());
+            if (context.isClientSync()) return value.getSyncDataHolder().serializeClientData(context.lookup(),
+                    context.isClientFullSyncUpdate());
+            else return value.getSyncDataHolder().serializeNBT(context.lookup());
         }
 
         @Override
@@ -199,7 +257,11 @@ public class SyncDataHolder {
                 return null;
             }
 
-            syncManaged.getSyncDataHolder().deserializeNBT((CompoundTag) tag, context.isClientSync());
+            if (context.isClientSync()) {
+                syncManaged.getSyncDataHolder().deserializeClientData(context.lookup(), (CompoundTag) tag);
+            } else {
+                syncManaged.getSyncDataHolder().deserializeNBT(context.lookup(), (CompoundTag) tag);
+            }
 
             return syncManaged;
         }

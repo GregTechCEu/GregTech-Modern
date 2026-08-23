@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 
 import org.jetbrains.annotations.Nullable;
@@ -24,11 +25,20 @@ public interface ValueTransformer<T> {
      *                     being invoked directly on a field.
      * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
      *                     being written to the server save.
+     * @param lookup       The current registry lookup context.
      *
      */
     record TransformerContext<U>(Object holder, TypeDeclaration type,
                                  @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
-                                 boolean isClientFullSyncUpdate) {}
+                                 boolean isClientFullSyncUpdate, HolderLookup.Provider lookup) {
+
+        @SuppressWarnings("NullableProblems")
+        public <V> TransformerContext<V> createChildContext(TypeDeclaration childType,
+                                                            @Nullable V childValue, @Nullable String childFieldName) {
+            return new TransformerContext<>(holder, childType, childValue, childFieldName, isClientSync,
+                    isClientFullSyncUpdate, lookup);
+        }
+    }
 
     /**
      * Casts a given NBT tag to a specific tag type, throwing an error if the tag cannot be casted.

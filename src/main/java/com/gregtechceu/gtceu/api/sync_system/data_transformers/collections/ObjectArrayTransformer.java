@@ -20,9 +20,8 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
 
     private ValueTransformer.TransformerContext<T> getInnerElemContext(@Nullable T elem,
                                                                        ValueTransformer.TransformerContext<T[]> parentContext) {
-        return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getArrayComponentType(), elem, parentContext.fieldName() + "[element]",
-                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate());
+        return parentContext.createChildContext(parentContext.type().getArrayComponentType(), elem,
+                parentContext.fieldName() + "[element]");
     }
 
     @Override

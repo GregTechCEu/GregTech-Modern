@@ -46,17 +46,14 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
     private ValueTransformer.TransformerContext<K> getInnerKeyContext(@Nullable K key,
                                                                       ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
-        return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[0], key, parentContext.fieldName() + "[key]",
-                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate());
+        return parentContext.createChildContext(parentContext.type().getGenericTypeArgs()[0], key,
+                parentContext.fieldName() + "[key]");
     }
 
     private ValueTransformer.TransformerContext<V> getInnerValueContext(@Nullable V value,
                                                                         ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
-        return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[1], value,
-                parentContext.fieldName() + "[value]",
-                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate());
+        return parentContext.createChildContext(parentContext.type().getGenericTypeArgs()[1], value,
+                parentContext.fieldName() + "[value]");
     }
 
     @Override
