@@ -28,29 +28,8 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     private final List<BlockInfo> candidates = computeCandidates();
 
     @Getter
-    @Setter
-    protected int priority = 0;
-    @Getter
-    @Setter
-    protected int minCount = -1;
-    @Getter
-    @Setter
-    protected int maxCount = -1;
-    @Getter
-    @Setter
-    protected int minSliceCount = -1;
-    @Getter
-    @Setter
-    protected int maxSliceCount = -1;
-    @Getter
-    @Setter
-    protected int previewCount = -1;
-    @Getter
-    @Setter
-    protected boolean disableRenderFormed = false;
-    @Getter
-    @Setter
-    private @Nullable String nbtParser; // unsure what this does
+    protected PredicateSettings settings = PredicateSettings.create();
+
     @Setter
     private @Nullable MultiPredicate parent;
 
@@ -64,6 +43,9 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     /// the main testing method
     public abstract boolean test(PredicateContext ctx);
 
+    // this is called after calling getPredicateAtPos()
+    public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
+
     public abstract void onError(PredicateContext ctx);
 
     /// @param root the top-most multi predicate for this multi predicate
@@ -73,14 +55,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     public abstract BasePredicate copy();
 
     protected void copyTo(BasePredicate other) {
-        other.priority = this.priority;
-        other.minCount = this.minCount;
-        other.maxCount = this.maxCount;
-        other.minSliceCount = this.minSliceCount;
-        other.maxSliceCount = this.maxSliceCount;
-        other.previewCount = this.previewCount;
-        other.disableRenderFormed = this.disableRenderFormed;
-        other.nbtParser = this.nbtParser;
+        other.settings = this.settings.copy();
         other.additionalTooltips.addAll(this.additionalTooltips);
     }
 
@@ -97,7 +72,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
         int count = ctx.incrementGlobalCount(this);
-        if (testGlobalMax(count)) return true;
+        if (getSettings().testGlobalMax(count)) return true;
         ctx.appendError(SinglePredicateError.maxCount(this, count));
         return false;
     }
@@ -106,7 +81,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     public boolean testSliceMax(PredicateContext ctx) {
         if (!ctx.isCheckLayer()) return true;
         int count = ctx.incrementSliceCount(this);
-        if (testSliceMax(count)) return true;
+        if (getSettings().testSliceMax(count)) return true;
         ctx.appendError(SinglePredicateError.maxLayerCount(this, count));
         return false;
     }
@@ -115,38 +90,22 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     public boolean testGlobalMin(PredicateContext ctx) {
         if (getMinCount() == -1) return true;
         int count = ctx.getGlobalCount(this);
-        if (testGlobalMin(count)) return true;
+        if (getSettings().testGlobalMin(count)) return true;
         ctx.appendError(SinglePredicateError.minCount(this, count));
         return false;
+    }
+
+    private int getMinCount() {
+        return getSettings().minCount();
     }
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
         if (!ctx.isCheckLayer()) return true;
         int count = ctx.getSliceCount(this);
-        if (testSliceMin(count)) return true;
+        if (getSettings().testSliceMin(count)) return true;
         ctx.appendError(SinglePredicateError.minLayerCount(this, count));
         return false;
-    }
-
-    /// simple test against global min count
-    public boolean testGlobalMin(int count) {
-        return minCount == -1 || count >= minCount;
-    }
-
-    /// simple test against slice min count
-    public boolean testSliceMin(int count) {
-        return minSliceCount == -1 || count >= minSliceCount;
-    }
-
-    /// simple test against global max count
-    public boolean testGlobalMax(int count) {
-        return maxCount == -1 || count <= maxCount;
-    }
-
-    /// simple test against slice max count
-    public boolean testSliceMax(int count) {
-        return maxSliceCount == -1 || count <= maxSliceCount;
     }
 
     /// computes the candidates for this predicate
@@ -182,6 +141,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     @Override
     public int compareTo(BasePredicate o) {
-        return Integer.compare(this.priority, o.priority);
+        return this.settings.comparePriority(o.settings);
     }
 }

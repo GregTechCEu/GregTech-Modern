@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import dev.latvian.mods.rhino.util.RemapForJS;
 import net.minecraft.network.chat.Component;
 
 import lombok.Getter;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 public abstract class MultiPredicate {
 
@@ -33,6 +36,15 @@ public abstract class MultiPredicate {
     @Setter
     @Accessors(chain = true)
     private boolean controller;
+
+    // there needs to be a way to know whether to adhere to this settings or predicates/childrens settings
+    // like if this == null, check children, else only check this
+    @Nullable
+    @Getter
+    private PredicateSettings settings = null;
+
+    @Getter
+    private final List<Component> additionalTooltips = new ArrayList<>();
 
     @Nullable
     @Getter
@@ -167,6 +179,16 @@ public abstract class MultiPredicate {
         return this.hasAir;
     }
 
+    private MultiPredicate deepCopy() {
+        MultiPredicate copy = this.type.makePredicate(
+                children().stream().map(MultiPredicate::deepCopy).toList(),
+                predicates().stream().map(BasePredicate::copy).toList(),
+                this.hasAir);
+        copy.additionalTooltips.addAll(this.additionalTooltips);
+        copy.setController(this.controller);
+        return copy;
+    }
+
     @CheckReturnValue
     private MultiPredicate mutatedCopy(Consumer<BasePredicate> mutation) {
         List<BasePredicate> copiedPredicates = new ArrayList<>(this.predicates.size());
@@ -184,14 +206,73 @@ public abstract class MultiPredicate {
         return copy;
     }
 
+    @RemapForJS("addTooltip")
     @CheckReturnValue
     public MultiPredicate addTooltips(Component tooltip) {
-        return mutatedCopy(p -> p.addTooltips(tooltip));
+        MultiPredicate copy = deepCopy();
+        copy.additionalTooltips.add(tooltip);
+        return copy;
+    }
+
+    @CheckReturnValue
+    public MultiPredicate addTooltips(Component... tooltip) {
+        MultiPredicate copy = deepCopy();
+        Collections.addAll(copy.additionalTooltips, tooltip);
+        return copy;
+    }
+
+    private void updateSettings(UnaryOperator<PredicateSettings> configurator) {
+        PredicateSettings copy = Objects.requireNonNullElseGet(this.settings, PredicateSettings::create);
+        this.settings = configurator.apply(copy);
     }
 
     @CheckReturnValue
     public MultiPredicate setPriority(int priority) {
-        return mutatedCopy(p -> p.setPriority(priority));
+        MultiPredicate copy = deepCopy();
+        copy.updateSettings(s -> s.withPriority(priority));
+        return copy;
+    }
+
+    @CheckReturnValue
+    public MultiPredicate setMinCount(int min) {
+        MultiPredicate copy = deepCopy();
+        copy.updateSettings(s -> s.withMinCount(min));
+        return copy;
+    }
+
+    @CheckReturnValue
+    public MultiPredicate setMaxCount(int max) {
+        MultiPredicate copy = deepCopy();
+        copy.updateSettings(s -> s.withMaxCount(max));
+        return copy;
+    }
+
+    @CheckReturnValue
+    public MultiPredicate setMinSliceCount(int min) {
+        MultiPredicate copy = deepCopy();
+        copy.updateSettings(s -> s.withMinSliceCount(min));
+        return copy;
+    }
+
+    @CheckReturnValue
+    public MultiPredicate setMaxSliceCount(int max) {
+        MultiPredicate copy = deepCopy();
+        copy.updateSettings(s -> s.withMaxSliceCount(max));
+        return copy;
+    }
+
+    @CheckReturnValue
+    public MultiPredicate setPreviewCount(int previewCount) {
+        MultiPredicate copy = deepCopy();
+        copy.updateSettings(s -> s.withPreviewCount(previewCount));
+        return copy;
+    }
+
+    @CheckReturnValue
+    public MultiPredicate setDisableRenderFormed(boolean disable) {
+        MultiPredicate copy = deepCopy();
+        copy.updateSettings(s -> s.withDisableRenderFormed(disable));
+        return copy;
     }
 
     @CheckReturnValue
@@ -205,11 +286,6 @@ public abstract class MultiPredicate {
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinCount(int min) {
-        return mutatedCopy(p -> p.setMinCount(min));
-    }
-
-    @CheckReturnValue
     public MultiPredicate setMaxGlobalLimited(int max) {
         return this.setMaxCount(max);
     }
@@ -220,12 +296,7 @@ public abstract class MultiPredicate {
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxCount(int max) {
-        return mutatedCopy(p -> p.setMaxCount(max));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate setGlobalMinMax(int min, int max) {
+    public MultiPredicate ranged(int min, int max) {
         return this.setMinCount(min).setMaxCount(max);
     }
 
@@ -240,11 +311,6 @@ public abstract class MultiPredicate {
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinSliceCount(int min) {
-        return mutatedCopy(p -> p.setMinSliceCount(min));
-    }
-
-    @CheckReturnValue
     public MultiPredicate setMaxLayerLimited(int max) {
         return this.setMaxSliceCount(max);
     }
@@ -255,17 +321,7 @@ public abstract class MultiPredicate {
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxSliceCount(int max) {
-        return mutatedCopy(p -> p.setMaxSliceCount(max));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate setPreviewCount(int previewCount) {
-        return mutatedCopy(p -> p.setPreviewCount(previewCount));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate setLayerMinMax(int min, int max) {
+    public MultiPredicate sliceRanged(int min, int max) {
         return this.setMinSliceCount(min).setMaxSliceCount(max);
     }
 
@@ -276,17 +332,12 @@ public abstract class MultiPredicate {
      */
     @CheckReturnValue
     public MultiPredicate setExactLimit(int limit) {
-        return this.setGlobalMinMax(limit, limit);
+        return this.ranged(limit, limit);
     }
 
     @CheckReturnValue
     public MultiPredicate disabledRenderFormed() {
         return setDisableRenderFormed(true);
-    }
-
-    @CheckReturnValue
-    public MultiPredicate setDisableRenderFormed(boolean disable) {
-        return mutatedCopy(p -> p.setDisableRenderFormed(disable));
     }
 
     /// @return a new multi predicate where any predicate may pass or be present in the multiblock
