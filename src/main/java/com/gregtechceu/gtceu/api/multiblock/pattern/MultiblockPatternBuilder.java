@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import com.google.common.base.Joiner;
@@ -177,15 +178,16 @@ public class MultiblockPatternBuilder {
             if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
             int maxCount = -1;
             for (var basePredicate : predicate.expand()) {
-                if (basePredicate.getMaxCount() == -1) {
+                PredicateSettings settings = basePredicate.getSettings();
+                if (settings.maxCount() == -1) {
                     maxCount = -1;
                     break;
                 }
-                if (basePredicate.getMinCount() == basePredicate.getMaxCount()) {
+                if (settings.minCount() == settings.maxCount()) {
                     if (maxCount == -1) {
-                        maxCount = basePredicate.getMinCount();
+                        maxCount = settings.minCount();
                     } else {
-                        maxCount += basePredicate.getMinCount();
+                        maxCount += settings.minCount();
                     }
                 }
             }
