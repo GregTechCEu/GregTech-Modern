@@ -105,7 +105,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return null;
         }
 
-        if (buf.readBoolean()) {
+        if (!buf.readBoolean()) {
             return null;
         }
 
