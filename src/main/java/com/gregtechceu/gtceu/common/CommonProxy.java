@@ -260,7 +260,7 @@ public class CommonProxy {
                     .ticks(10)
                     .result(Items.DRAGON_EGG)
                     .result(EntityType.PIG)
-                    .multiplyResult(3)
+                    .multiplyLastResult(3)
                     .build()
                     .attachTo(Items.EGG);
         }
