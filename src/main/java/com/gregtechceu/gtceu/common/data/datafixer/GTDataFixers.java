@@ -141,14 +141,14 @@ public class GTDataFixers {
         // separator
 
         // Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
-        // createMaterialRenameFix(builder, v10, "U238",
-        // createRenamer(Pattern.compile("gtceu:(.*)uranium_"), "gtceu:$1uranium_238_"));
-        // createMaterialRenameFix(builder, v10, "Pu239",
-        // createRenamer(Pattern.compile("gtceu:(.*)plutonium_"), "gtceu:$1plutonium_239_"));
-        // createMaterialRenameFix(builder, v10, "Red Granite",
+        // createMaterialRenameFix(builder, v10, "Rename uranium to uranium_238",
+        // createRenamer(Pattern.compile("gtceu:(.*)?uranium"), "gtceu:$1uranium_238"));
+        // createMaterialRenameFix(builder, v10, "Rename uranium_235 to uranium",
+        // createRenamer(Pattern.compile("gtceu:(.*)uranium_235"), "gtceu:$1uranium"));
+        // createMaterialRenameFix(builder, v10, "Fix Red Granite name",
         // createRenamer(Pattern.compile("gtceu:(.*)granite_red"), "gtceu:$1red_granite"));
         //
-        // createMaterialRenameFix(builder, v10, "Oil Variants",
+        // createMaterialRenameFix(builder, v10, "Rename Oil Variants",
         // createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
         //
         // createBlockItemRenameFix(builder, v1, "Rename Palladium Substation Casing",
@@ -157,20 +157,21 @@ public class GTDataFixers {
 
     private static void createBlockItemRenameFix(DataFixerBuilder builder, Schema schema, String name,
                                                  UnaryOperator<String> renamer) {
-        builder.addFixer(ItemRenameFix.create(schema, name, renamer));
+        builder.addFixer(ItemRenameFix.create(schema, name + " for item", renamer));
+        // BlockRenameFix adds the " for block" and " for block_state" parts
         builder.addFixer(BlockRenameFix.create(schema, name, renamer));
     }
 
     private static void createMaterialRenameFix(DataFixerBuilder builder, Schema schema, String name,
                                                 UnaryOperator<String> renamer) {
         createBlockItemRenameFix(builder, schema, name, renamer);
-        builder.addFixer(MaterialRenameFix.create(schema, name, renamer));
+        builder.addFixer(MaterialRenameFix.create(schema, name + " for material", renamer));
     }
 
     private static void createBlockItemEntityRenameFix(DataFixerBuilder builder, Schema schema, String name,
                                                        UnaryOperator<String> renamer) {
         createBlockItemRenameFix(builder, schema, name, renamer);
-        builder.addFixer(BlockEntityRenameFix.create(schema, name, renamer));
+        builder.addFixer(BlockEntityRenameFix.create(schema, name + " for block_entity", renamer));
     }
 
     private static UnaryOperator<String> createRenamer(String oldName, String newName) {
