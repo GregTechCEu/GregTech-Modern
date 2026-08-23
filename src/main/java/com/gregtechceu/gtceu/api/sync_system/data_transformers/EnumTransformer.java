@@ -40,7 +40,7 @@ public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
 
     @Override
     public void writeToPacket(FriendlyByteBuf buf, E value, TransformerContext<E> context) {
-        buf.writeInt(value.ordinal());
+        buf.writeEnum(value);
     }
 
     @Override
