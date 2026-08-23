@@ -57,7 +57,9 @@ class TestablePredicate extends BasePredicate {
 
     @Override
     public List<Component> getRecipeViewerTooltips(MultiPredicate root) {
-        List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
+        List<Component> tooltips = new ArrayList<>(root.getAdditionalTooltips());
+        int minCount = getSettings().minCount();
+        int maxCount = getSettings().maxCount();
         if (minCount == maxCount && maxCount != -1) {
             tooltips.add(Component.translatable("gtceu.multiblock.pattern.exact_count", minCount));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
