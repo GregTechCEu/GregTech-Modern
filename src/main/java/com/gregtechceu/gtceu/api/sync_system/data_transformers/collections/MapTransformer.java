@@ -123,7 +123,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
             if (key == null || value == null) {
                 GTCEu.LOGGER.warn(
-                        "Sync: Skipping null key or field while reading map: [key: {}, value: {}]",
+                        "Sync: Skipping null key or value while reading map: [key: {}, value: {}]",
                         key, value);
                 continue;
             }

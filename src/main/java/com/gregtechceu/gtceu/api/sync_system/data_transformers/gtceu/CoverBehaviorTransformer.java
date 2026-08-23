@@ -27,7 +27,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
 
         var compound = new CompoundTag();
-        compound.putInt("side", value.attachedSide.ordinal());
+        compound.putString("side", value.attachedSide.getSerializedName());
         compound.putString("coverType", value.coverDefinition.getId().toString());
         CompoundTag serializedCover = value.getSyncDataHolder().serializeNBT(context.lookup());
         compound.put("data", serializedCover);
@@ -57,7 +57,16 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             tag.put("data", tag.getCompound("payload").getCompound("d"));
         }
 
-        Direction side = Direction.values()[tag.getInt("side")];
+        Direction side;
+        if (tag.contains("side", Tag.TAG_STRING)) {
+            side = Direction.CODEC.byName(tag.getString("side"));
+        } else if (tag.contains("side", Tag.TAG_ANY_NUMERIC)) {
+            // backwards compat
+            side = Direction.values()[tag.getInt("side")];
+        } else {
+            GTCEu.LOGGER.error("Error during NBT load: invalid side {}", tag.get("side"));
+            return null;
+        }
 
         if (tag.isEmpty() || tag.getString("coverType").isEmpty()) {
             holder.setCoverAtSide(null, side);

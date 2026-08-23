@@ -9,26 +9,33 @@ import net.minecraft.network.FriendlyByteBuf;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.Nullable;
 
-public class CodecTransformer<T> implements ValueTransformer<T> {
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-    private final Codec<T> codec;
+public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyByteBuf, T> writePacket,
+                                  @Nullable Function<FriendlyByteBuf, @Nullable T> readPacket)
+        implements ValueTransformer<T> {
 
     public CodecTransformer(Codec<T> codec) {
-        this.codec = codec;
+        this(codec, null, null);
     }
 
     @Override
-    public Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
+    public Tag serializeNBT(T value, TransformerContext<T> context) {
         return codec.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override
-    public T deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T> context) {
+    public T deserializeNBT(Tag tag, TransformerContext<T> context) {
         return codec.parse(context.nbtOps(), tag).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override
     public void writeToPacket(FriendlyByteBuf buf, T value, TransformerContext<T> context) {
+        if (writePacket != null) {
+            writePacket.accept(buf, value);
+        }
+
         Tag data = codec.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
         if (data instanceof CompoundTag compoundTag) {
             buf.writeNbt(compoundTag);
@@ -41,6 +48,10 @@ public class CodecTransformer<T> implements ValueTransformer<T> {
 
     @Override
     public @Nullable T readFromPacket(FriendlyByteBuf buf, TransformerContext<T> context) {
+        if (readPacket != null) {
+            return readPacket.apply(buf);
+        }
+
         Tag read = buf.readNbt();
         if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains("$$gtceu:value$$")) {
             read = compound.get("$$gtceu:value$$");

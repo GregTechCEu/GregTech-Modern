@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
@@ -115,11 +115,10 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         stream.capacity(stream.readableBytes());
         data.putByteArray("data", stream.array());
 
-        return ClientboundBlockEntityDataPacket.create(this,
-                b -> data);
+        return ClientboundBlockEntityDataPacket.create(this, b -> data);
     }
 
-    private RegistryAccess getHolderLookup() {
+    private HolderLookup.Provider getHolderLookup() {
         Level level = getLevel();
         return level == null ? GTRegistries.builtinRegistry() : level.registryAccess();
     }
