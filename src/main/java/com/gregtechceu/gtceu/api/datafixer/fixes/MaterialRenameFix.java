@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.datafixer.fixes;
 
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
+
 import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
@@ -35,6 +36,7 @@ public abstract class MaterialRenameFix extends DataFix {
 
     public static DataFix create(Schema outputSchema, String name, final Function<String, String> fixer) {
         return new MaterialRenameFix(outputSchema, name) {
+
             protected String fixMaterial(String name) {
                 return fixer.apply(name);
             }
