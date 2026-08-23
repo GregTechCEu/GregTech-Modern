@@ -234,7 +234,7 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerDevSpoilables(RegisterSpoilablesEvent event) {
+    public void registerSpoilables(RegisterSpoilablesEvent event) {
         if (GTCEu.isDev()) {
             event.getBuilder()
                     .ticks(10)
