@@ -472,7 +472,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     @Override
     public Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         var player = context.getPlayer();
-        if (context.getPlayer() == null) return Pair.of(null, InteractionResult.PASS);
+        if (player == null) return Pair.of(null, InteractionResult.PASS);
 
         Pair result = super.onToolClick(context);
         if (result.getSecond() != InteractionResult.PASS) return result;
