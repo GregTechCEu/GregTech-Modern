@@ -7,13 +7,11 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
@@ -106,7 +104,8 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         buf.writeInt(value.size());
         for (var entry : value.entrySet()) {
             getKeyTransformer(context).writeToPacket(buf, entry.getKey(), getInnerKeyContext(entry.getKey(), context));
-            getValueTransformer(context).writeToPacket(buf, entry.getValue(), getInnerValueContext(entry.getValue(), context));
+            getValueTransformer(context).writeToPacket(buf, entry.getValue(),
+                    getInnerValueContext(entry.getValue(), context));
         }
     }
 
@@ -118,7 +117,7 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
         int size = buf.readInt();
 
-        for (int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             K key = getKeyTransformer(context).readFromPacket(buf, getInnerKeyContext(null, context));
             V value = getValueTransformer(context).readFromPacket(buf, getInnerValueContext(null, context));
 
@@ -132,5 +131,4 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
         }
         return current;
     }
-
 }

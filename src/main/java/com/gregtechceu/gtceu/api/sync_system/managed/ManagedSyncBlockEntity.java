@@ -4,12 +4,9 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -21,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -85,7 +83,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         if (tag != null) {
             byte[] data = tag.getByteArray("data");
             getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
-        };
+        } ;
     }
 
     /**

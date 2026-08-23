@@ -88,8 +88,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf buf, @Nullable CoverBehavior value, TransformerContext<CoverBehavior> context) {
-
+    public void writeToPacket(FriendlyByteBuf buf, @Nullable CoverBehavior value,
+                              TransformerContext<CoverBehavior> context) {
         buf.writeBoolean(value == null);
         if (value == null) return;
         buf.writeInt(value.attachedSide.ordinal());
@@ -100,7 +100,6 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
     @Override
     public @Nullable CoverBehavior readFromPacket(FriendlyByteBuf buf, TransformerContext<CoverBehavior> context) {
-
         if (!(context.holder() instanceof ICoverable holder)) {
             GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
             return null;

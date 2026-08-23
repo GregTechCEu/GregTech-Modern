@@ -22,14 +22,10 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListen
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.ChanceCacheTransformer;
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -702,7 +698,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     static {
-        ClassSyncData.getClassData(RecipeLogic.class).setCustomTransformerForField("chanceCaches", new ChanceCacheTransformer());
+        ClassSyncData.getClassData(RecipeLogic.class).setCustomTransformerForField("chanceCaches",
+                new ChanceCacheTransformer());
     }
 
     public static void putFailureReason(Object machine, GTRecipe recipe, Component reason) {

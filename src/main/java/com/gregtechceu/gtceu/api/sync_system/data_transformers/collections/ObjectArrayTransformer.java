@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-
 import net.minecraft.network.FriendlyByteBuf;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
@@ -61,7 +61,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     @Override
     public void writeToPacket(FriendlyByteBuf buf, T[] value, TransformerContext<T[]> context) {
         buf.writeInt(value.length);
-        for (T elem: value) {
+        for (T elem : value) {
             elementTransformer.writeToPacket(buf, elem, getInnerElemContext(elem, context));
         }
     }
@@ -69,7 +69,8 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     @Override
     @SuppressWarnings("unchecked")
     public @Nullable T @Nullable [] readFromPacket(FriendlyByteBuf buf, TransformerContext<T[]> context) {
-        @Nullable T @Nullable [] current = context.currentValue();
+        @Nullable
+        T @Nullable [] current = context.currentValue();
         int length = buf.readInt();
 
         if (current == null) {

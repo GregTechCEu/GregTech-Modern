@@ -20,24 +20,26 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
 
     @Override
     public @Nullable INBTSerializable<CompoundTag> deserializeNBT(Tag tag,
-                                                          ValueTransformer.TransformerContext<INBTSerializable<CompoundTag>> context) {
+                                                                  ValueTransformer.TransformerContext<INBTSerializable<CompoundTag>> context) {
         var currentVal = context.currentValue();
         if (currentVal == null) {
             GTCEu.LOGGER.warn(
                     "Sync: Deserialization of INBTSerializable objects requires an existing object, they cannot be instantiated purely from saved data.");
             return null;
         }
-        currentVal.deserializeNBT((CompoundTag)TagCompatibilityFixer.stripLDLibPayloadWrapper(tag));
+        currentVal.deserializeNBT((CompoundTag) TagCompatibilityFixer.stripLDLibPayloadWrapper(tag));
         return currentVal;
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf buf, INBTSerializable<CompoundTag> value, TransformerContext<INBTSerializable<CompoundTag>> context) {
+    public void writeToPacket(FriendlyByteBuf buf, INBTSerializable<CompoundTag> value,
+                              TransformerContext<INBTSerializable<CompoundTag>> context) {
         buf.writeNbt(value.serializeNBT());
     }
 
     @Override
-    public @Nullable INBTSerializable<CompoundTag> readFromPacket(FriendlyByteBuf buf, TransformerContext<INBTSerializable<CompoundTag>> context) {
+    public @Nullable INBTSerializable<CompoundTag> readFromPacket(FriendlyByteBuf buf,
+                                                                  TransformerContext<INBTSerializable<CompoundTag>> context) {
         var currentVal = context.currentValue();
         CompoundTag data = buf.readNbt();
         if (currentVal == null) {
@@ -45,7 +47,7 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
                     "Sync: Deserialization of INBTSerializable objects requires an existing object, they cannot be instantiated purely from a client packet.");
             return null;
         }
-        currentVal.deserializeNBT((CompoundTag)TagCompatibilityFixer.stripLDLibPayloadWrapper(data));
+        currentVal.deserializeNBT((CompoundTag) TagCompatibilityFixer.stripLDLibPayloadWrapper(data));
         return currentVal;
     }
 }

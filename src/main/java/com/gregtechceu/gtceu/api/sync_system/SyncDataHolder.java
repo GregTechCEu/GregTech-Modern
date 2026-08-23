@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Setter;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -107,11 +107,12 @@ public class SyncDataHolder {
 
     @SuppressWarnings("unchecked")
     public void writeClientPacket(HolderLookup.Provider lookup, FriendlyByteBuf buf) {
-        Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().stream().filter(this::shouldSerializeClientField).collect(Collectors.toSet());
+        Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().stream()
+                .filter(this::shouldSerializeClientField).collect(Collectors.toSet());
 
         buf.writeInt(fieldsToSerialize.size());
 
-        for (var field: fieldsToSerialize) {
+        for (var field : fieldsToSerialize) {
             Object currentValue = field.handle.get(holder);
 
             buf.writeUtf(field.fieldName);
@@ -136,16 +137,16 @@ public class SyncDataHolder {
         resyncAll = false;
         dirtySyncFields.clear();
         hasDirtyChildSyncObject = false;
-
     }
 
     @SuppressWarnings("unchecked")
     public void readClientPacket(HolderLookup.Provider lookup, FriendlyByteBuf buf) {
         int fieldsToRead = buf.readInt();
 
-        for (int fieldIndex=0; fieldIndex<fieldsToRead; fieldIndex++) {
+        for (int fieldIndex = 0; fieldIndex < fieldsToRead; fieldIndex++) {
             String fieldName = buf.readUtf();
-            FieldSyncData field = syncData.getClientSyncFields().stream().filter(f -> f.fieldName.equals(fieldName)).findFirst().orElseThrow();
+            FieldSyncData field = syncData.getClientSyncFields().stream().filter(f -> f.fieldName.equals(fieldName))
+                    .findFirst().orElseThrow();
 
             Object currentValue = field.handle.get(holder);
 
@@ -175,8 +176,9 @@ public class SyncDataHolder {
     }
 
     private boolean shouldSerializeClientField(FieldSyncData field) {
-        return (resyncAll || dirtySyncFields.contains(field.fieldName) || field.handle.get(holder) instanceof ISyncManaged syncManaged &&
-                syncManaged.getSyncDataHolder().needsSync());
+        return (resyncAll || dirtySyncFields.contains(field.fieldName) ||
+                field.handle.get(holder) instanceof ISyncManaged syncManaged &&
+                        syncManaged.getSyncDataHolder().needsSync());
     }
 
     private void executeClientSyncCallbacks(FieldSyncData field) {

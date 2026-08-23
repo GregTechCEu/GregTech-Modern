@@ -7,10 +7,10 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -241,24 +241,27 @@ public final class MachineTraitHolder {
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf buf, MachineTraitHolder value, TransformerContext<MachineTraitHolder> context) {
+        public void writeToPacket(FriendlyByteBuf buf, MachineTraitHolder value,
+                                  TransformerContext<MachineTraitHolder> context) {
             buf.writeInt(value.traitsToSave.size());
-            for (Map.Entry<String, MachineTrait> traitEntry: value.traitsToSave.entrySet()) {
+            for (Map.Entry<String, MachineTrait> traitEntry : value.traitsToSave.entrySet()) {
                 buf.writeUtf(traitEntry.getKey());
                 traitEntry.getValue().getSyncDataHolder().writeClientPacket(context.lookup(), buf);
             }
         }
 
         @Override
-        public @Nullable MachineTraitHolder readFromPacket(FriendlyByteBuf buf, TransformerContext<MachineTraitHolder> context) {
+        public @Nullable MachineTraitHolder readFromPacket(FriendlyByteBuf buf,
+                                                           TransformerContext<MachineTraitHolder> context) {
             var traitHolder = Objects.requireNonNull(context.currentValue());
             int length = buf.readInt();
-            for (int i=0; i<length; i++) {
+            for (int i = 0; i < length; i++) {
                 String name = buf.readUtf();
 
                 var trait = traitHolder.getPersistentTrait(name);
                 if (trait == null) {
-                    GTCEu.LOGGER.warn("Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID",
+                    GTCEu.LOGGER.warn(
+                            "Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID",
                             name);
                     return traitHolder;
                 } else {
