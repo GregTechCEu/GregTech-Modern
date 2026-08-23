@@ -109,7 +109,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return null;
         }
 
-        Direction side = Direction.values()[buf.readInt()];
+        Direction side = buf.readEnum(Direction.class);
         ResourceLocation coverId = buf.readResourceLocation();
         CoverBehavior cover = context.currentValue();
 
