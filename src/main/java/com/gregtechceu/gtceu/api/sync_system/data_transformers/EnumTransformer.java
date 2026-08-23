@@ -45,6 +45,6 @@ public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {
 
     @Override
     public @Nullable E readFromPacket(FriendlyByteBuf buf, TransformerContext<E> context) {
-        return enumClass.getEnumConstants()[buf.readInt()];
+        return buf.readEnum(enumClass);
     }
 }
