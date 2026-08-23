@@ -634,7 +634,7 @@ public class MiscRecipeLoader {
 
         POLARIZER_RECIPES.recipeBuilder("magnetize_golden_carrot")
                 .inputItems(Items.GOLDEN_CARROT)
-                .outputItems(MAGNETIZED_CARROT)
+                .outputItems(MAGNETIC_GOLDEN_CARROT)
                 .duration(100).EUt(8).save(provider);
     }
 }

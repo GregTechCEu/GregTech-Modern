@@ -268,7 +268,7 @@ public class CommonProxy {
                 .ticks(20 * 60 * 30)
                 .result(Items.GOLDEN_CARROT)
                 .build()
-                .attachTo(GTItems.MAGNETIZED_CARROT);
+                .attachTo(GTItems.MAGNETIC_GOLDEN_CARROT);
     }
 
     @SubscribeEvent

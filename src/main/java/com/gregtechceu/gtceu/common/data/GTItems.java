@@ -2596,8 +2596,8 @@ public class GTItems {
         }
     }
 
-    public static ItemEntry<ComponentItem> MAGNETIZED_CARROT = REGISTRATE
-            .item("magnetized_golden_carrot", ComponentItem::create)
+    public static ItemEntry<ComponentItem> MAGNETIC_GOLDEN_CARROT = REGISTRATE
+            .item("magnetic_golden_carrot", ComponentItem::create)
             .lang("Magnetic Golden Carrot")
             .onRegister(attach(new FoodStats(new FoodProperties.Builder()
                     .nutrition(Foods.GOLDEN_CARROT.getNutrition())
