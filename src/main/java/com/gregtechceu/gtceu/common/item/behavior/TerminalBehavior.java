@@ -7,11 +7,15 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.factory.ClientGUI;
 import brachy.modularui.factory.PlayerInventoryGuiData;
@@ -30,7 +35,10 @@ import brachy.modularui.factory.inventory.InventoryTypes;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
-import org.jetbrains.annotations.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import java.util.Optional;
 
@@ -116,16 +124,16 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         }
 
         if (level.isClientSide) {
-            writeMultiblockInfo(itemStack, controller, null);
             player.displayClientMessage(Component.literal("Loaded controller information"), false);
+        } else {
+            writeControllerInfo(itemStack, controller);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override
     public boolean shouldOpenUI() {
-        // return
-        return this.multiblockDefinition != null;
+        return true;
     }
 
     @Override
@@ -135,7 +143,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (level.isClientSide) {
             PlayerInventoryGuiData<?> guiData = PlayerInventoryGuiData.of(player, InventoryTypes.PLAYER, null,
                     usedHand == InteractionHand.OFF_HAND ? Inventory.SLOT_OFFHAND : player.getInventory().selected);
-            Optional<ModularPanel<?>> clientPanel = clientPanel(player.getItemInHand(usedHand));
+            Optional<ModularPanel<?>> clientPanel = clientPanel(player.getItemInHand(usedHand), usedHand);
             if (clientPanel.isEmpty()) {
                 return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
             }
@@ -144,7 +152,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide);
     }
 
-    private Optional<ModularPanel<?>> clientPanel(ItemStack item) {
+    private Optional<ModularPanel<?>> clientPanel(ItemStack item, InteractionHand hand) {
         CompoundTag tag = item.getOrCreateTag();
         if (!tag.contains("controller")) {
             return Optional.empty();
@@ -182,47 +190,69 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                  * })
                  */
                 .child(previewWidget)
-                .onCloseAction(() -> writeMultiblockInfo(item, null, previewWidget)));
+                .onCloseAction(() -> writeMultiblockInfo(hand, previewWidget)));
     }
 
-    private void writeMultiblockInfo(ItemStack item, @Nullable MultiblockControllerMachine controller,
-                                     @Nullable MultiblockPreviewWidget previewWidget) {
+    private void writeMultiblockInfo(InteractionHand hand, MultiblockPreviewWidget previewWidget) {
+        MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
+
+        Long2ObjectMap<BlockState> blockPreferences = new Long2ObjectOpenHashMap<>();
+        for (var entry : schemaInfo.getUserGlobalBlockPreferences().long2ObjectEntrySet()) {
+            blockPreferences.put(entry.getLongKey(), entry.getValue().getBlockState());
+        }
+
+        GTNetwork.sendToServer(new CPacketTerminalSettings(hand, schemaInfo.getUserSliceRepeats(),
+                schemaInfo.getUserDimensions(), blockPreferences));
+    }
+
+    public static void writeControllerInfo(ItemStack item, MultiblockControllerMachine controller) {
         // TODO uuid gathering
 
         CompoundTag tag = item.getOrCreateTag();
-        if (controller != null) {
-            tag.putString("controller", controller.getDefinition().getId().toString());
-            tag.putLong("pos", controller.getBlockPos().asLong());
-            tag.putByte("facing", (byte) controller.getFrontFacing().ordinal());
-            tag.putByte("upFacing", (byte) controller.getUpwardsFacing().ordinal());
-            tag.putBoolean("flipped", controller.isFlipped());
+        tag.putString("controller", controller.getDefinition().getId().toString());
+        tag.putLong("pos", controller.getBlockPos().asLong());
+        tag.putByte("facing", (byte) controller.getFrontFacing().ordinal());
+        tag.putByte("upFacing", (byte) controller.getUpwardsFacing().ordinal());
+        tag.putBoolean("flipped", controller.isFlipped());
+    }
+
+    public static void applyUserPreferences(ItemStack item, Int2IntMap sliceRepeats, IntList dimensions,
+                                            Long2ObjectMap<BlockState> blockPreferences) {
+        CompoundTag tag = item.getOrCreateTag();
+
+        if (sliceRepeats.isEmpty()) {
+            tag.remove("sliceRepeatKeys");
+            tag.remove("sliceRepeatValues");
+        } else {
+            int[] keys = new int[sliceRepeats.size()];
+            int[] values = new int[sliceRepeats.size()];
+            int i = 0;
+            for (var entry : sliceRepeats.int2IntEntrySet()) {
+                keys[i] = entry.getIntKey();
+                values[i] = entry.getIntValue();
+                i++;
+            }
+            tag.putIntArray("sliceRepeatKeys", keys);
+            tag.putIntArray("sliceRepeatValues", values);
         }
 
-        if (previewWidget != null) {
-            var sliceRepeats = previewWidget.getMultiblockSchemaInfo().getUserSliceRepeats();
-            if (!sliceRepeats.isEmpty()) {
-                tag.putInt("sliceRepeatSize", sliceRepeats.size());
-                int[] repeatIndices = new int[sliceRepeats.size()];
-                for (int i = 0; i < sliceRepeats.size(); i++) {
-                    repeatIndices[i] = sliceRepeats.get(i);
-                }
-                tag.putIntArray("sliceRepeatIndices", repeatIndices);
+        if (dimensions.isEmpty()) {
+            tag.remove("dimensions");
+        } else {
+            tag.putIntArray("dimensions", dimensions.toIntArray());
+        }
+
+        if (blockPreferences.isEmpty()) {
+            tag.remove("blockPreferences");
+        } else {
+            ListTag preferences = new ListTag();
+            for (var entry : blockPreferences.long2ObjectEntrySet()) {
+                CompoundTag preference = new CompoundTag();
+                preference.putLong("pos", entry.getLongKey());
+                preference.put("state", NbtUtils.writeBlockState(entry.getValue()));
+                preferences.add(preference);
             }
-            var blockPreferences = previewWidget.getMultiblockSchemaInfo().getUserGlobalBlockPreferences();
-            if (!blockPreferences.isEmpty()) {
-                tag.putInt("preferenceSize", blockPreferences.size());
-                long[] poses = new long[blockPreferences.size()];
-                int[] prefs = new int[blockPreferences.size()];
-                int i = 0;
-                for (var entry : blockPreferences.long2ObjectEntrySet()) {
-                    poses[i] = entry.getLongKey();
-                    // todo convert from block info index to ordinal
-                    prefs[i] = 7;
-                    i++;
-                }
-                tag.putLongArray("preferencePoses", poses);
-                tag.putIntArray("preferenceIndices", prefs);
-            }
+            tag.put("blockPreferences", preferences);
         }
     }
 
