@@ -92,7 +92,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
                               TransformerContext<CoverBehavior> context) {
         buf.writeBoolean(value == null);
         if (value == null) return;
-        buf.writeInt(value.attachedSide.ordinal());
+        buf.writeEnum(value.attachedSide);
         buf.writeResourceLocation(value.coverDefinition.getId());
         if (context.isClientFullSyncUpdate()) value.getSyncDataHolder().resyncAllFields();
         value.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
