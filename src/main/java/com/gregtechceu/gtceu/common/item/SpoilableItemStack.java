@@ -256,8 +256,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     /**
      * This method averages the spoil progress of the two stacks (or, more
-     * accurately, their {@link ISpoilableItem#getCreationTick()}). If {@link SpoilableItemStack#FROZEN_EQUALITY}
-     * is {@code true}, this method will ignore the frozen/not frozen status of stacks.
+     * accurately, their {@link ISpoilableItem#getCreationTick()}).
      *
      * @implNote This implementation may lead to spoil progress averaging in situations other
      *           than stack merging, though I don't think this will lead to any big user-facing bugs.
