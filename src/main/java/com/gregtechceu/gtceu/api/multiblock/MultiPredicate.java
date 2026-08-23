@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
-import dev.latvian.mods.rhino.util.RemapForJS;
 import net.minecraft.network.chat.Component;
 
+import dev.latvian.mods.rhino.util.RemapForJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 public abstract class MultiPredicate {
 
@@ -100,7 +101,11 @@ public abstract class MultiPredicate {
     /// Usually used for testing the global min of predicates
     public final boolean postGlobalTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
-        if (testGlobalMin(ctx)) return true;
+        boolean passed = testGlobalMin(ctx);
+        if (this.settings != null) {
+            passed &= this.settings.testGlobalMin(ctx);
+        }
+        if (passed) return true;
         for (Component content : getDescriptiveContents()) {
             ctx.appendError(PatternStringError.of(content));
         }
@@ -113,7 +118,11 @@ public abstract class MultiPredicate {
     /// Usually used for testing the slice min of predicates
     public final boolean postSliceTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
-        if (testSliceMin(ctx)) return true;
+        boolean passed = testSliceMin(ctx);
+        if (this.settings != null) {
+            passed &= this.settings.testSliceMin(ctx);
+        }
+        if (passed) return true;
         for (Component content : getDescriptiveContents()) {
             ctx.appendError(PatternStringError.of(content));
         }
@@ -125,10 +134,18 @@ public abstract class MultiPredicate {
     /// test against global/slice max counts
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
         context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
-        if (!passedPredicate.testGlobalMax(context))
-            return false;
-        context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
-        return passedPredicate.testSliceMax(context);
+        boolean passed = passedPredicate.testGlobalMax(context);
+        if (this.settings != null) {
+            passed &= this.settings.testGlobalMax(context);
+        }
+        if (passed) {
+            context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
+            passed = passedPredicate.testSliceMax(context);
+            if (this.settings != null) {
+                passed &= this.settings.testSliceMax(context);
+            }
+        }
+        return passed;
     }
 
     public List<List<BlockInfo>> getCandidates() {
@@ -140,6 +157,13 @@ public abstract class MultiPredicate {
             result.addAll(child.getCandidates());
         }
         return Collections.unmodifiableList(result);
+    }
+
+    /// @return a flat list of candidates for filling out the JEI preview
+    public List<BlockInfo> getFlatCandidates() {
+        return getCandidates().stream()
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     public void resetLogic() {
@@ -189,23 +213,6 @@ public abstract class MultiPredicate {
         return copy;
     }
 
-    @CheckReturnValue
-    private MultiPredicate mutatedCopy(Consumer<BasePredicate> mutation) {
-        List<BasePredicate> copiedPredicates = new ArrayList<>(this.predicates.size());
-        for (BasePredicate predicate : this.predicates) {
-            BasePredicate copy = predicate.copy();
-            mutation.accept(copy);
-            copiedPredicates.add(copy);
-        }
-        List<MultiPredicate> copiedChildren = new ArrayList<>(this.children.size());
-        for (MultiPredicate child : this.children) {
-            copiedChildren.add(child.mutatedCopy(mutation));
-        }
-        MultiPredicate copy = this.type.makePredicate(copiedChildren, copiedPredicates, this.hasAir);
-        copy.setController(this.controller);
-        return copy;
-    }
-
     @RemapForJS("addTooltip")
     @CheckReturnValue
     public MultiPredicate addTooltips(Component tooltip) {
@@ -221,9 +228,27 @@ public abstract class MultiPredicate {
         return copy;
     }
 
+    // spotless:off
+    protected List<PredicateSettings> gatherSettings() {
+        if (this.settings != null) {
+            return List.of(this.settings);
+        }
+        return Stream.concat(
+                predicates().stream().map(BasePredicate::getSettings),
+                children().stream().flatMap(mp -> mp.gatherSettings().stream())
+        ).toList();
+    }
+    // spotless:on
+
+    protected PredicateSettings getOrCreateSettings() {
+        if (this.settings == null) {
+            this.settings = PredicateSettings.create();
+        }
+        return this.settings;
+    }
+
     private void updateSettings(UnaryOperator<PredicateSettings> configurator) {
-        PredicateSettings copy = Objects.requireNonNullElseGet(this.settings, PredicateSettings::create);
-        this.settings = configurator.apply(copy);
+        this.settings = configurator.apply(getOrCreateSettings());
     }
 
     @CheckReturnValue
@@ -372,9 +397,9 @@ public abstract class MultiPredicate {
         return of(Logic.XOR, predicates);
     }
 
-    /// @return {@code true} if this multi predicate has only one predicate and has no children
+    /// @return {@code true} if this multi predicate has only one predicate, has no children, and has no parent
     public boolean isSingle() {
-        return predicates.size() == 1 && isLeaf();
+        return predicates.size() == 1 && isLeaf() && isRoot();
     }
 
     /// @return {@code true} if this multi predicate has no parent

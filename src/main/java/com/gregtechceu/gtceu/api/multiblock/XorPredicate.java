@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,8 +22,12 @@ public class XorPredicate extends MultiPredicate {
 
     public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
         super(Logic.XOR, children, predicates, hasAir);
-        this.noneValid = expand().stream()
-                .anyMatch(p -> p.getMinCount() <= 0 && p.getMinSliceCount() <= 0);
+        for (PredicateSettings setting : gatherSettings()) {
+            if (setting.minCount() <= 0 && setting.minSliceCount() <= 0) {
+                this.noneValid = true;
+                break;
+            }
+        }
     }
 
     @Override

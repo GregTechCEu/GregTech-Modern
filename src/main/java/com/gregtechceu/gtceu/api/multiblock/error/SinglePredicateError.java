@@ -45,10 +45,10 @@ public class SinglePredicateError extends PatternError {
     public SinglePredicateError(BasePredicate failingPredicate,
                                 ErrorType type, int actualCount) {
         this(type, actualCount,
-                failingPredicate.getMinCount(),
-                failingPredicate.getMaxCount(),
-                failingPredicate.getMinSliceCount(),
-                failingPredicate.getMaxSliceCount(),
+                failingPredicate.getSettings().minCount(),
+                failingPredicate.getSettings().maxCount(),
+                failingPredicate.getSettings().minSliceCount(),
+                failingPredicate.getSettings().maxSliceCount(),
                 failingPredicate.toString(),
                 failingPredicate.getCandidates());
     }
