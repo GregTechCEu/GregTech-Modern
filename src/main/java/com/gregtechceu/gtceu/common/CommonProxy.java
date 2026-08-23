@@ -259,6 +259,7 @@ public class CommonProxy {
             event.getBuilder()
                     .ticks(10)
                     .result(Items.DRAGON_EGG)
+                    .multiplyLastResult(3)
                     .result(EntityType.PIG)
                     .multiplyLastResult(3)
                     .build()
