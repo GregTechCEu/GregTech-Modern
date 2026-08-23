@@ -95,8 +95,8 @@ public class SimpleClassTransformers {
 
         @Override
         public @Nullable Component deserializeNBT(Tag tag, TransformerContext<Component> context) {
-            if (tag instanceof StringTag strTag) return Component.Serializer.fromJson(strTag.getAsString());
-            return Component.empty();
+            return ExtraCodecs.COMPONENT.parse(context.ops(), tag)
+                    .getOrThrow(true, GTCEu.LOGGER::error);
         }
 
         @Override
