@@ -37,7 +37,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     @Override
     public @Nullable CoverBehavior deserializeNBT(Tag t,
                                                   CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
-        var tag = ValueTransformer.assertTagType(CompoundTag.class, t, context);
+        CompoundTag tag = ValueTransformer.assertTagType(CompoundTag.class, t, context);
         if (tag.getBoolean("null")) {
             return null;
         }
