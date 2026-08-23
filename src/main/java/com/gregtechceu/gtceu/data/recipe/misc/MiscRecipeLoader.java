@@ -631,5 +631,10 @@ public class MiscRecipeLoader {
                 new MaterialEntry(gem, Lazurite));
         VanillaRecipeHelper.addShapelessRecipe(provider, "sodalite_to_dye", new ItemStack(Items.BLUE_DYE),
                 new MaterialEntry(gem, Sodalite));
+
+        POLARIZER_RECIPES.recipeBuilder("magnetize_golden_carrot")
+                .inputItems(Items.GOLDEN_CARROT)
+                .outputItems(MAGNETIZED_CARROT)
+                .duration(100).EUt(8).save(provider);
     }
 }

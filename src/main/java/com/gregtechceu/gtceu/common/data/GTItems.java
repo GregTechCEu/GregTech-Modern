@@ -51,6 +51,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -2563,6 +2564,48 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> GUI_MODULE = REGISTRATE.item("gui_module", ComponentItem::create)
             .onRegister(attach(new GuiModuleBehaviour()))
+            .register();
+
+    public static ItemEntry<Item> SPOILABLE_1;
+    public static ItemEntry<Item> SPOILABLE_2;
+    public static ItemEntry<Item> SPOILABLE_3;
+    public static ItemEntry<Item> SPOILABLE_4;
+    public static ItemEntry<Item> SPOILABLE_5;
+    public static ItemEntry<Item> ENTITY_SPOILABLE;
+
+    static {
+        if (GTCEu.isDev()) {
+            SPOILABLE_1 = REGISTRATE.item("spoilable_1", Item::new)
+                    .lang("Spoilable 1")
+                    .register();
+            SPOILABLE_2 = REGISTRATE.item("spoilable_2", Item::new)
+                    .lang("Spoilable 2")
+                    .register();
+            SPOILABLE_3 = REGISTRATE.item("spoilable_3", Item::new)
+                    .lang("Spoilable 3")
+                    .register();
+            SPOILABLE_4 = REGISTRATE.item("spoilable_4", Item::new)
+                    .lang("Spoilable 4")
+                    .register();
+            SPOILABLE_5 = REGISTRATE.item("spoilable_5", Item::new)
+                    .lang("Spoilable 5")
+                    .register();
+            ENTITY_SPOILABLE = REGISTRATE.item("entity_spoilable", Item::new)
+                    .lang("Entity Spoilable")
+                    .register();
+        }
+    }
+
+    public static ItemEntry<ComponentItem> MAGNETIZED_CARROT = REGISTRATE
+            .item("magnetized_golden_carrot", ComponentItem::create)
+            .lang("Magnetic Golden Carrot")
+            .onRegister(attach(new FoodStats(new FoodProperties.Builder()
+                    .nutrition(Foods.GOLDEN_CARROT.getNutrition())
+                    .saturationMod(Foods.GOLDEN_CARROT.getSaturationModifier())
+                    .effect(() -> new MobEffectInstance(MobEffects.DIG_SPEED, 20 * 60 * 10, 1), 1)
+                    .fast()
+                    .alwaysEat()
+                    .build())))
             .register();
 
     public static void init() {

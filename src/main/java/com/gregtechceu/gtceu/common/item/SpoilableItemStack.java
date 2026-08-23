@@ -287,6 +287,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                 this.setCreationTick(average);
                 spoilable.setCreationTick(average);
             }
+            spoilable.setSpoilContext(this.spoilContext);
         }
     }
 

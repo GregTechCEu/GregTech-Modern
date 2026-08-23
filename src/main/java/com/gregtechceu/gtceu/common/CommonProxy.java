@@ -112,7 +112,6 @@ public class CommonProxy {
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
-        SpoilableBehavior.init(eventBus);
 
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
@@ -173,6 +172,7 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
+        SpoilableBehavior.init(modBus);
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
@@ -235,35 +235,40 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void registerDevSpoilables(RegisterSpoilablesEvent event) {
-        if (GTCEu.isDev()) { // for testing purposes
+        if (GTCEu.isDev()) {
             event.getBuilder()
                     .ticks(10)
-                    .result(Items.DIRT)
+                    .result(GTItems.SPOILABLE_2)
                     .build()
-                    .attachTo(Items.JIGSAW);
-            event.getBuilder()
-                    .ticks(10)
-                    .result(Items.STRUCTURE_BLOCK)
-                    .build()
-                    .attachTo(Items.APPLE);
+                    .attachTo(GTItems.SPOILABLE_1);
             event.getBuilder()
                     .ticks(40)
-                    .result(Items.STRUCTURE_VOID)
+                    .result(GTItems.SPOILABLE_3)
                     .build()
-                    .attachTo(Items.STRUCTURE_BLOCK);
+                    .attachTo(GTItems.SPOILABLE_2);
             event.getBuilder()
                     .ticks(10)
-                    .result(Items.JIGSAW)
+                    .result(GTItems.SPOILABLE_4)
                     .build()
-                    .attachTo(Items.STRUCTURE_VOID);
+                    .attachTo(GTItems.SPOILABLE_3);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(GTItems.SPOILABLE_5)
+                    .build()
+                    .attachTo(GTItems.SPOILABLE_4);
             event.getBuilder()
                     .ticks(10)
                     .result(Items.DRAGON_EGG)
                     .result(EntityType.PIG)
-                    .multiplyResult(3)
+                    .multiplyLastResult(3)
                     .build()
-                    .attachTo(Items.EGG);
+                    .attachTo(GTItems.ENTITY_SPOILABLE);
         }
+        event.getBuilder()
+                .ticks(20 * 60 * 30)
+                .result(Items.GOLDEN_CARROT)
+                .build()
+                .attachTo(GTItems.MAGNETIZED_CARROT);
     }
 
     @SubscribeEvent
