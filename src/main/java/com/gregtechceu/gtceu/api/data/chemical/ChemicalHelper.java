@@ -114,7 +114,7 @@ public class ChemicalHelper {
         return null;
     }
 
-    public static TagPrefix getPrefix(ItemStack itemStack) {
+    public static @Nullable TagPrefix getPrefix(ItemStack itemStack) {
         return getPrefix(itemStack.getItem());
     }
 
@@ -134,7 +134,6 @@ public class ChemicalHelper {
 
     public static ItemStack getDust(MaterialStack materialStack) {
         if (materialStack.isEmpty()) return ItemStack.EMPTY;
-        assert materialStack.material() != null;
         return getDust(materialStack.material(), materialStack.amount());
     }
 
@@ -161,12 +160,12 @@ public class ChemicalHelper {
     }
 
     public static ItemStack getIngotOrDust(MaterialStack materialStack) {
-        if (materialStack.material() == null) return ItemStack.EMPTY;
+        if (materialStack.isEmpty()) return ItemStack.EMPTY;
         return getIngotOrDust(materialStack.material(), materialStack.amount());
     }
 
     public static ItemStack getGem(MaterialStack materialStack) {
-        if (materialStack.material() == null) return ItemStack.EMPTY;
+        if (materialStack.isEmpty()) return ItemStack.EMPTY;
         if (materialStack.material().hasProperty(PropertyKey.GEM) &&
                 !TagPrefix.gem.isIgnored(materialStack.material()) &&
                 materialStack.amount() == TagPrefix.gem.getMaterialAmount(materialStack.material())) {

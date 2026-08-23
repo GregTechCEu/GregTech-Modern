@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 
 public record MaterialStack(@Nullable Material material, long amount) {
@@ -18,6 +19,11 @@ public record MaterialStack(@Nullable Material material, long amount) {
     public MaterialStack copy() {
         if (isEmpty()) return EMPTY;
         return new MaterialStack(material, amount);
+    }
+
+    public Material material() {
+        if (material == null) throw new NoSuchElementException("Cannot get material from empty material stack.");
+        return material;
     }
 
     public MaterialStack add(long amount) {

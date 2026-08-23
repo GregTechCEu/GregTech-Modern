@@ -150,7 +150,7 @@ public class RecyclingRecipes {
         // Handle simple materials separately
         if (prefix != null && prefix.secondaryMaterials().isEmpty()) {
             MaterialStack ms = ChemicalHelper.getMaterialStack(input);
-            if (ms.isEmpty() || ms.material() == null) {
+            if (ms.isEmpty()) {
                 return;
             }
             Material m = ms.material();

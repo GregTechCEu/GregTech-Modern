@@ -22,6 +22,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.ftb.mods.ftbchunks.api.FTBChunksAPI;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapIcon;
 import dev.ftb.mods.ftbchunks.api.client.icon.MapType;
+import dev.ftb.mods.ftbchunks.api.client.waypoint.Waypoint;
 import dev.ftb.mods.ftbchunks.client.gui.LargeMapScreen;
 import dev.ftb.mods.ftbchunks.client.map.MapManager;
 import dev.ftb.mods.ftbchunks.client.map.WaypointImpl;
@@ -93,8 +94,11 @@ public class OreVeinIcon implements MapIcon {
                 Icons.REMOVE,
                 b -> veinMetadata.depleted(!veinMetadata.depleted()));
 
-        var color = Color4I.rgba(getMaterial().getMaterialARGB());
-        var waypointIcon = WaypointType.DEFAULT.getIcon().withColor(color);
+        var waypointIcon = WaypointType.DEFAULT.getIcon();
+        if (getMaterial() != null) {
+            var color = Color4I.rgba(getMaterial().getMaterialARGB());
+            waypointIcon = waypointIcon.withColor(color);
+        }
         ContextMenuItem toggleWaypoint = new ContextMenuItem(
                 Component.translatable("button.gtceu.toggle_waypoint.name"),
                 waypointIcon,
@@ -120,10 +124,9 @@ public class OreVeinIcon implements MapIcon {
         if (waypointManager.getAllWaypoints().contains(waypoint)) {
             waypointManager.removeWaypoint(waypoint);
         } else {
-            int color = getMaterial().getMaterialARGB();
-            waypointManager.addWaypointAt(veinMetadata.center(), getName().getString())
-                    .setColor(color)
+            Waypoint newWaypoint = waypointManager.addWaypointAt(veinMetadata.center(), getName().getString())
                     .setHidden(false);
+            if (getMaterial() != null) newWaypoint.setColor(getMaterial().getMaterialARGB());
         }
         screen.refreshWidgets();
     }
