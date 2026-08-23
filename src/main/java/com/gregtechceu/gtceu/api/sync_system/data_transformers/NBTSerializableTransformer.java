@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -10,17 +9,17 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-public class NBTSerializableTransformer implements ValueTransformer<INBTSerializable<CompoundTag>> {
+public class NBTSerializableTransformer implements ValueTransformer<INBTSerializable<Tag>> {
 
     @Override
-    public Tag serializeNBT(INBTSerializable<CompoundTag> value,
-                            ValueTransformer.TransformerContext<INBTSerializable<CompoundTag>> context) {
+    public Tag serializeNBT(INBTSerializable<Tag> value,
+                            ValueTransformer.TransformerContext<INBTSerializable<Tag>> context) {
         return value.serializeNBT(context.lookup());
     }
 
     @Override
-    public @Nullable INBTSerializable<CompoundTag> deserializeNBT(Tag tag,
-                                                                  ValueTransformer.TransformerContext<INBTSerializable<CompoundTag>> context) {
+    public @Nullable INBTSerializable<Tag> deserializeNBT(Tag tag,
+                                                          ValueTransformer.TransformerContext<INBTSerializable<Tag>> context) {
         var currentVal = context.currentValue();
         if (currentVal == null) {
             GTCEu.LOGGER.warn(
@@ -32,21 +31,32 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf buf, INBTSerializable<CompoundTag> value, TransformerContext<INBTSerializable<CompoundTag>> context) {
-        buf.writeNbt(value.serializeNBT(context.lookup()));
+    public void writeToPacket(FriendlyByteBuf buf, INBTSerializable<Tag> value,
+                              TransformerContext<INBTSerializable<Tag>> context) {
+        Tag data = value.serializeNBT(context.lookup());
+        if (data instanceof CompoundTag compoundTag) {
+            buf.writeNbt(compoundTag);
+        } else {
+            CompoundTag wrapper = new CompoundTag();
+            wrapper.put("$$gtceu:value$$", data);
+            buf.writeNbt(wrapper);
+        }
     }
 
     @Override
-    public @Nullable INBTSerializable<CompoundTag> readFromPacket(FriendlyByteBuf buf,
-                                                                  TransformerContext<INBTSerializable<CompoundTag>> context) {
+    public @Nullable INBTSerializable<Tag> readFromPacket(FriendlyByteBuf buf,
+                                                          TransformerContext<INBTSerializable<Tag>> context) {
         var currentVal = context.currentValue();
-        CompoundTag data = buf.readNbt();
+        Tag read = buf.readNbt();
+        if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains("$$gtceu:value$$")) {
+            read = compound.get("$$gtceu:value$$");
+        }
         if (currentVal == null) {
             GTCEu.LOGGER.warn(
                     "Sync: Deserialization of INBTSerializable objects requires an existing object, they cannot be instantiated purely from a client packet.");
             return null;
         }
-        currentVal.deserializeNBT(context.lookup(), (CompoundTag)TagCompatibilityFixer.stripLDLibPayloadWrapper(data));
+        if (read != null) currentVal.deserializeNBT(context.lookup(), read);
         return currentVal;
     }
 }
