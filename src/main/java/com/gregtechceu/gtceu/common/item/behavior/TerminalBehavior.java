@@ -6,6 +6,12 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
@@ -27,6 +33,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.factory.ClientGUI;
@@ -35,12 +42,19 @@ import brachy.modularui.factory.inventory.InventoryTypes;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
@@ -65,6 +79,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             return InteractionResult.PASS;
         }
 
+        // TODO: Allow survival building and remove this check
         if (!player.isCreative()) {
             return InteractionResult.PASS;
         }
@@ -72,34 +87,70 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (!(MetaMachine.getMachine(level, pos) instanceof MultiblockControllerMachine controller)) {
             return InteractionResult.PASS;
         }
-        if (controller.getDefaultPatternState().isFormed()) {
+        if (!controller.getDefinition().getId().equals(ResourceLocation.parse(tag.getString("controller")))) {
+            // TODO: Log errors in chat
             return InteractionResult.PASS;
         }
-        /*
-        if (controller.getDefinition() == this.multiblockDefinition && this.multiblockSchemaInfo != null) {
-            this.refreshSchema();
-        }
-        if (this.multiblockSchemaInfo == null) {
-            return InteractionResult.PASS;
-        }
-        if (this.multiblockSchemaInfo.getStructureBlocks() == null ||
-                this.multiblockSchemaInfo.getStructureBlocks().isEmpty()) {
-            return InteractionResult.PASS;
-        }
-        */
 
-        BlockPos controllerOffset = controller.getBlockPos()
-                .offset(this.multiblockSchemaInfo.getMapSchema().getControllerPos().multiply(-1));
-        if (context.getPlayer().isCreative()) {
-            for (var entry : this.multiblockSchemaInfo.getStructureBlocks().entrySet()) {
+        PatternState state = controller.getDefaultPatternState();
+        if (state.isFormed()) {
+            return InteractionResult.PASS;
+        }
+
+        if (!tag.contains("facing", CompoundTag.TAG_BYTE) ||
+                !tag.contains("upFacing", CompoundTag.TAG_BYTE) ||
+                !tag.contains("flipped", CompoundTag.TAG_BYTE)) {
+            return InteractionResult.PASS;
+        }
+        Direction frontFacing = Direction.values()[tag.getByte("facing")];
+        Direction upFacing = Direction.values()[tag.getByte("upFacing")];
+        boolean flipped = tag.getBoolean("flipped");
+
+        if (!level.isClientSide) {
+            // Partially copy pasted from MultiblockControllerMachine#onUse.
+            // TODO: Probably extract into helper function
+            Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
+            AbstractStructureHelper structureHelper = null;
+            IBlockPattern pattern = controller.getStructurePatterns().get(DEFAULT_STRUCTURE);
+            if (pattern instanceof BlockPattern blockPattern) {
+                Int2IntMap slices = new Int2IntArrayMap();
+                for (int i = 0; i < blockPattern.getSlices().length; i++) {
+                    slices.put(i, blockPattern.getSlices()[i].getMinRepeats());
+                }
+                structureHelper = AbstractStructureHelper.blockPattern(slices);
+            } else if (pattern instanceof ExpandablePattern expandablePattern) {
+                IntList dims = new IntArrayList();
+                if (expandablePattern.getBoundsConstraints() != null) {
+                    expandablePattern.getBoundsConstraints().apply().stream()
+                            .mapToInt(Pair::left)
+                            .forEach(dims::add);
+                }
+                structureHelper = AbstractStructureHelper.expandable(dims);
+            }
+
+            if (structureHelper != null) {
+                // TODO: ADD BLOCK PREFERENCES
+                structureHelper.populate(resultStructure, pattern, null, frontFacing, upFacing, flipped);
+            }
+
+            // Extract controller block offset
+            Block controllerBlock = controller.getDefinition().getBlock();
+            BlockPos schemaControllerPos = BlockPos.ZERO;
+            for (var entry : resultStructure.entrySet()) {
+                if (entry.getValue().getBlockState().is(controllerBlock)) {
+                    schemaControllerPos = entry.getKey();
+                    break;
+                }
+            }
+
+            BlockPos controllerOffset = controller.getBlockPos().subtract(schemaControllerPos);;
+            for (var entry : resultStructure.entrySet()) {
                 level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
             }
 
-            if (!level.isClientSide()) {
-                // needed to force the multiblock to do a clean check, kinda sus
-                controller.getDefaultPatternState().getCache().clear();
-                controller.checkAndFormStructure();
-            }
+            // needed to force the multiblock to do a clean check, kinda sus
+            controller.getDefaultPatternState().getCache().clear();
+            controller.checkAndFormStructure();
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -113,15 +164,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (!(MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller)) {
             return InteractionResult.PASS;
         }
-        // always load this data (even if shifting); it's required for #useOn to work
-        // if (controller.getDefinition() != this.multiblockDefinition && this.multiblockSchemaInfo != null) {
-        // this.multiblockSchemaInfo = null;
-        // }
-        // this.multiblockDefinition = controller.getDefinition();
-        // this.controllerPos = controller.getBlockPos();
-        // this.frontFacing = controller.getFrontFacing();
-        // this.upFacing = controller.getUpwardsFacing();
-        // this.isFlipped = controller.isFlipped();
 
         if (player == null || player.isShiftKeyDown()) {
             return InteractionResult.PASS;
@@ -142,7 +184,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (!shouldOpenUI(player.getItemInHand(usedHand))) {
-            if(level.isClientSide) player.displayClientMessage(Component.literal("No controller information loaded"), false);
+            if (level.isClientSide)
+                player.displayClientMessage(Component.literal("No controller information loaded"), false);
             return InteractionResultHolder.pass(player.getItemInHand(usedHand));
         }
 
@@ -173,7 +216,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         }
         BlockPos controllerPos = BlockPos.of(tag.getLong("pos"));
 
-        if (!tag.contains("facing") || !tag.contains("upFacing") || !tag.contains("flipped")) {
+        if (!tag.contains("facing", CompoundTag.TAG_BYTE) ||
+                !tag.contains("upFacing", CompoundTag.TAG_BYTE) ||
+                !tag.contains("flipped", CompoundTag.TAG_BYTE)) {
             return Optional.empty();
         }
 
@@ -190,11 +235,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
         return Optional.of(ModularPanel.defaultPanel("terminal")
                 .coverChildren()
-                /*
-                 * .onCloseAction(() -> {
-                 * this.multiblockSchemaInfo = previewWidget.getMultiblockSchemaInfo();
-                 * })
-                 */
                 .child(previewWidget)
                 .onCloseAction(() -> writeMultiblockInfo(hand, previewWidget)));
     }
