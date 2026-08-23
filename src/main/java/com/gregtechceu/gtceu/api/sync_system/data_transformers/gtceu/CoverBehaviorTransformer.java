@@ -90,7 +90,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     @Override
     public void writeToPacket(FriendlyByteBuf buf, @Nullable CoverBehavior value,
                               TransformerContext<CoverBehavior> context) {
-        buf.writeBoolean(value == null);
+        buf.writeBoolean(value != null);
         if (value == null) return;
         buf.writeEnum(value.attachedSide);
         buf.writeResourceLocation(value.coverDefinition.getId());
