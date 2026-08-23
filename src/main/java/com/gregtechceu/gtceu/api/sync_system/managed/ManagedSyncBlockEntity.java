@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -49,7 +51,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     protected final void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.merge(getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), false));
+        tag.merge(getSyncDataHolder().serializeNBT(getHolderLookup()));
     }
 
     /**
@@ -64,7 +66,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @MustBeInvokedByOverriders
     public void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(GTRegistries.builtinRegistry(), tag, false);
+        getSyncDataHolder().deserializeNBT(getHolderLookup(), tag);
     }
 
     /**
@@ -72,7 +74,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @MustBeInvokedByOverriders
     public void clientLoad(CompoundTag tag) {
-        getSyncDataHolder().deserializeNBT(GTRegistries.builtinRegistry(), tag, true);
+        getSyncDataHolder().deserializeClientData(getHolderLookup(), tag);
     }
 
     @Override
@@ -93,7 +95,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), true, true));
+        tag.merge(getSyncDataHolder().serializeClientData(getHolderLookup()));
         return tag;
     }
 
@@ -103,7 +105,12 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this,
-                b -> getSyncDataHolder().serializeNBT(GTRegistries.builtinRegistry(), true));
+                b -> getSyncDataHolder().serializeClientData(getHolderLookup()));
+    }
+
+    private HolderLookup.Provider getHolderLookup() {
+        Level level = getLevel();
+        return level == null ? GTRegistries.builtinRegistry() : level.registryAccess();
     }
 
     @Override
