@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -25,6 +30,9 @@ import net.minecraftforge.fluids.FluidStack;
 import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -161,5 +169,41 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         if (runningTimer > 72000) runningTimer %= 72000; // reset once every hour of running
 
         return value;
+    }
+
+    public static List<IWidget> additionalDisplay (MultiblockControllerMachine controller, PanelSyncManager syncManager){
+        if (!(controller instanceof LargeCombustionEngineMachine lceMachine))
+            return Collections.emptyList();
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(controller::isFormed));
+        BooleanSyncValue isBoostAllowed = syncManager.getOrCreateSyncHandler("canBoost",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(lceMachine::isBoostAllowed));
+        BooleanSyncValue isOxygenBoosted = syncManager.getOrCreateSyncHandler("isOxygenBoosted",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(lceMachine::isOxygenBoosted));
+        BooleanSyncValue isExtreme = syncManager.getOrCreateSyncHandler("isExtreme", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(lceMachine::isExtreme));
+
+        var boostDisallowed = Text.dynamic(() -> Component.translatable(
+                        "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue() && !isBoostAllowed.getBoolValue());
+        var canBoost = Text.dynamic(() -> Component.translatable(
+                        isExtreme.getValue() ?
+                                "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
+                                "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"))
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
+                        !isOxygenBoosted.getBoolValue());
+        var isBoosted = Text.dynamic(() -> Component.translatable(
+                        isExtreme.getValue() ?
+                                "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+                                "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
+                .asWidget()
+                .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
+                        isOxygenBoosted.getBoolValue());
+
+        return Arrays.asList(boostDisallowed, canBoost, isBoosted);
     }
 }

@@ -686,41 +686,7 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingModel(casingTexture, overlayModel)
-                .additionalDisplay((controller, syncManager) -> {
-                    if (!(controller instanceof LargeCombustionEngineMachine lceMachine))
-                        return Collections.emptyList();
-                    BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
-                            () -> new BooleanSyncValue(controller::isFormed));
-                    BooleanSyncValue isBoostAllowed = syncManager.getOrCreateSyncHandler("canBoost",
-                            BooleanSyncValue.class,
-                            () -> new BooleanSyncValue(lceMachine::isBoostAllowed));
-                    BooleanSyncValue isOxygenBoosted = syncManager.getOrCreateSyncHandler("isOxygenBoosted",
-                            BooleanSyncValue.class,
-                            () -> new BooleanSyncValue(lceMachine::isOxygenBoosted));
-                    BooleanSyncValue isExtreme = syncManager.getOrCreateSyncHandler("isExtreme", BooleanSyncValue.class,
-                            () -> new BooleanSyncValue(lceMachine::isExtreme));
-
-                    var boostDisallowed = Text.dynamic(() -> Component.translatable(
-                            "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
-                            .asWidget()
-                            .setEnabledIf(w -> isFormed.getBoolValue() && !isBoostAllowed.getBoolValue());
-                    var canBoost = Text.dynamic(() -> Component.translatable(
-                            isExtreme.getValue() ?
-                                    "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
-                                    "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"))
-                            .asWidget()
-                            .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
-                                    !isOxygenBoosted.getBoolValue());
-                    var isBoosted = Text.dynamic(() -> Component.translatable(
-                            isExtreme.getValue() ?
-                                    "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
-                                    "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
-                            .asWidget()
-                            .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
-                                    isOxygenBoosted.getBoolValue());
-
-                    return Arrays.asList(boostDisallowed, canBoost, isBoosted);
-                })
+                .additionalDisplay(LargeCombustionEngineMachine::additionalDisplay)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant",
