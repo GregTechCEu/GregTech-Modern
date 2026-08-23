@@ -90,7 +90,8 @@ public class SimpleClassTransformers {
 
         @Override
         public Tag serializeNBT(Component value, TransformerContext<Component> context) {
-            return StringTag.valueOf(Component.Serializer.toJson(value));
+            return ExtraCodecs.COMPONENT.encodeStart(context.ops(), value)
+                    .getOrThrow(true, GTCEu.LOGGER::error);
         }
 
         @Override
