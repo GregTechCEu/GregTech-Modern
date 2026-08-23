@@ -260,6 +260,7 @@ public final class MachineTraitHolder {
                 if (trait == null) {
                     GTCEu.LOGGER.warn("Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID",
                             name);
+                    return traitHolder;
                 } else {
                     trait.getSyncDataHolder().readClientPacket(context.lookup(), buf);
                 }
