@@ -260,7 +260,7 @@ public class CommonProxy {
                     .ticks(10)
                     .result(Items.DRAGON_EGG)
                     .result(EntityType.PIG)
-                    .multiplyLastResult(3)
+                    .multiplyResult(3)
                     .build()
                     .attachTo(GTItems.ENTITY_SPOILABLE);
         }
