@@ -130,7 +130,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             }
 
             if (structureHelper != null) {
-                structureHelper.populate(resultStructure, pattern, readBlockPreferences(tag), frontFacing, upFacing, flipped);
+                structureHelper.populate(resultStructure, pattern, readBlockPreferences(tag), frontFacing, upFacing,
+                        flipped);
             }
 
             // Extract controller block offset
