@@ -11,7 +11,9 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 
-public class SimpleClassTransformers {
+public final class SimpleClassTransformers {
+
+    private SimpleClassTransformers() {}
 
     public static class ItemStackTransformer implements ValueTransformer<ItemStack> {
 
