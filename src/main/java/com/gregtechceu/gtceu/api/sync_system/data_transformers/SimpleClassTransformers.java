@@ -24,7 +24,7 @@ public class SimpleClassTransformers {
         @Override
         public @Nullable ItemStack deserializeNBT(Tag tag, TransformerContext<ItemStack> context) {
             if (!(tag instanceof CompoundTag compoundTag) || compoundTag.isEmpty()) return ItemStack.EMPTY;
-            return ItemStack.CODEC.parse(context.lookup().createSerializationContext(NbtOps.INSTANCE), compoundTag)
+            return ItemStack.CODEC.parse(context.nbtOps(), compoundTag)
                     .getOrThrow();
         }
 
