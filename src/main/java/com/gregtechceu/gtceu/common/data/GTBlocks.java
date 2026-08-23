@@ -243,7 +243,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
     public static final BlockEntry<Block> CASING_HSSE_STURDY = createCasingBlock("sturdy_machine_casing",
             GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"));
-    public static final BlockEntry<Block> CASING_PALLADIUM_SUBSTATION = createCasingBlock("palladium_substation_casing",
+    public static final BlockEntry<Block> CASING_PALLADIUM_SUBSTATION = createCasingBlock("palladium_substation",
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<GlassBlock> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);

@@ -113,9 +113,6 @@ public class GTDataFixers {
         builder.addFixer(ItemRenameFix.create(v1, "Fix Advanced Nanomuscle Chestplate name",
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
-        createBlockItemRenameFix(builder, v1, "Rename Palladium Substation Casing",
-                createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
-
         builder.addFixer(ItemRenameFix.create(v1, "Rename Tungstensteel Fluid Cell",
                 createRenamer("gtceu:tungstensteel_fluid_cell", "gtceu:tungsten_steel_fluid_cell")));
 
@@ -153,6 +150,9 @@ public class GTDataFixers {
         //
         // createMaterialRenameFix(builder, v10, "Oil Variants",
         // createRenamer(OilVariantsRenameFix.RENAMED_ITEM_IDS));
+        //
+        // createBlockItemRenameFix(builder, v1, "Rename Palladium Substation Casing",
+        // createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
     }
 
     private static void createBlockItemRenameFix(DataFixerBuilder builder, Schema schema, String name,
