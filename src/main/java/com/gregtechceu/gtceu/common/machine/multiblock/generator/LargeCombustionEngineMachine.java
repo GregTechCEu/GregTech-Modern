@@ -1,9 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -27,12 +23,17 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -171,7 +172,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return value;
     }
 
-    public static List<IWidget> additionalDisplay (MultiblockControllerMachine controller, PanelSyncManager syncManager){
+    public static List<IWidget> additionalDisplay(MultiblockControllerMachine controller,
+                                                  PanelSyncManager syncManager) {
         if (!(controller instanceof LargeCombustionEngineMachine lceMachine))
             return Collections.emptyList();
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
@@ -186,20 +188,20 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 () -> new BooleanSyncValue(lceMachine::isExtreme));
 
         var boostDisallowed = Text.dynamic(() -> Component.translatable(
-                        "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
+                "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && !isBoostAllowed.getBoolValue());
         var canBoost = Text.dynamic(() -> Component.translatable(
-                        isExtreme.getValue() ?
-                                "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
-                                "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"))
+                isExtreme.getValue() ?
+                        "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
+                        "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
                         !isOxygenBoosted.getBoolValue());
         var isBoosted = Text.dynamic(() -> Component.translatable(
-                        isExtreme.getValue() ?
-                                "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
-                                "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
+                isExtreme.getValue() ?
+                        "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+                        "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
                 .asWidget()
                 .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
                         isOxygenBoosted.getBoolValue());
