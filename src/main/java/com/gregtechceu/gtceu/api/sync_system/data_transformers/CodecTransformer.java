@@ -41,6 +41,10 @@ public class CodecTransformer<T> implements ValueTransformer<T> {
 
     @Override
     public @Nullable T readFromPacket(FriendlyByteBuf buf, TransformerContext<T> context) {
-        return codec.parse(context.nbtOps(), buf.readNbt()).getOrThrow(false, GTCEu.LOGGER::error);
+        Tag read = buf.readNbt();
+        if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains("$$gtceu:value$$")) {
+            read = compound.get("$$gtceu:value$$");
+        }
+        return codec.parse(context.nbtOps(), read).getOrThrow(false, GTCEu.LOGGER::error);
     }
 }
