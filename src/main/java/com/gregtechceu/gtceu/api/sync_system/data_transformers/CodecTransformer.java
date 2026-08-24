@@ -34,6 +34,7 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
     public void writeToPacket(FriendlyByteBuf buf, T value, TransformerContext<T> context) {
         if (writePacket != null) {
             writePacket.accept(buf, value);
+            return;
         }
 
         Tag data = codec.encodeStart(context.nbtOps(), value).getOrThrow(false, GTCEu.LOGGER::error);
@@ -56,6 +57,7 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
         if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains("$$gtceu:value$$")) {
             read = compound.get("$$gtceu:value$$");
         }
+        if (read == null) return null;
         return codec.parse(context.nbtOps(), read).getOrThrow(false, GTCEu.LOGGER::error);
     }
 }

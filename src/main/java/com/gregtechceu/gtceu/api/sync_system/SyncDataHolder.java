@@ -74,7 +74,6 @@ public class SyncDataHolder {
 
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
-                return tag;
             }
         }
         return tag;
@@ -166,7 +165,10 @@ public class SyncDataHolder {
                                         field.fieldName,
                                         true, resyncAll, lookup));
 
-                if (result != currentValue) trySetField(field, holder, result);
+                if (result != currentValue) {
+                    trySetField(field, holder, result);
+                    executeClientSyncCallbacks(field);
+                }
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to read client packet on field {}", field.fieldName, e);
                 return;

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.*;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +21,6 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         tag.put("recipe",
                 GTRecipeSerializer.CODEC.encode(value, context.nbtOps(), context.nbtOps().mapBuilder())
                         .build(new CompoundTag()).getOrThrow());
-        tag.putInt("parallels", value.parallels);
         tag.putInt("ocLevel", value.ocLevel);
         return tag;
     }
@@ -36,7 +36,6 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
                     .result().orElse(null);
             if (result != null) {
                 result.id = ResourceLocation.parse(compoundTag.getString("id"));
-                result.parallels = compoundTag.contains("parallels") ? compoundTag.getInt("parallels") : 1;
                 result.ocLevel = compoundTag.getInt("ocLevel");
             }
         }

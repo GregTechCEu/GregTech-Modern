@@ -86,7 +86,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         if (tag != null) {
             byte[] data = tag.getByteArray("data");
             getSyncDataHolder().readClientPacket(lookupProvider, new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
-        };
+        }
     }
 
     /**

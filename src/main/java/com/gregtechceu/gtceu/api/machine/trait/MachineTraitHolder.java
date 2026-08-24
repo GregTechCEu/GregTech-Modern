@@ -246,6 +246,7 @@ public final class MachineTraitHolder {
             buf.writeInt(value.traitsToSave.size());
             for (Map.Entry<String, MachineTrait> traitEntry : value.traitsToSave.entrySet()) {
                 buf.writeUtf(traitEntry.getKey());
+                if (context.isClientFullSyncUpdate()) traitEntry.getValue().getSyncDataHolder().resyncAllFields();
                 traitEntry.getValue().getSyncDataHolder().writeClientPacket(context.lookup(), buf);
             }
         }
@@ -260,10 +261,7 @@ public final class MachineTraitHolder {
 
                 var trait = traitHolder.getPersistentTrait(name);
                 if (trait == null) {
-                    GTCEu.LOGGER.warn(
-                            "Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID",
-                            name);
-                    return traitHolder;
+                    throw new IllegalStateException("Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID".formatted(name));
                 } else {
                     trait.getSyncDataHolder().readClientPacket(context.lookup(), buf);
                 }
