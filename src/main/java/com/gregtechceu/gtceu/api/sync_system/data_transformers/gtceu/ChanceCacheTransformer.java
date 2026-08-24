@@ -8,10 +8,9 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;

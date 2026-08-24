@@ -8,12 +8,11 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Setter;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -85,7 +84,8 @@ public class SyncDataHolder {
         for (var field : syncData.getServerSaveFields()) {
             Tag newValue = tag.get(field.nbtSaveKey);
             if (newValue == null || newValue instanceof CompoundTag compound &&
-                    (compound.isEmpty() || (compound.size() == 1 && compound.getBoolean("null")) )) continue;
+                    (compound.isEmpty() || (compound.size() == 1 && compound.getBoolean("null"))))
+                continue;
 
             if (!confirmTransformerPresent(field, holder)) continue;
 
@@ -258,12 +258,15 @@ public class SyncDataHolder {
         }
 
         @Override
-        public void writeToPacket(RegistryFriendlyByteBuf buf, ISyncManaged value, TransformerContext<ISyncManaged> context) {
+        public void writeToPacket(RegistryFriendlyByteBuf buf, ISyncManaged value,
+                                  TransformerContext<ISyncManaged> context) {
+            if (context.isClientFullSyncUpdate()) value.getSyncDataHolder().resyncAllFields();
             value.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
         }
 
         @Override
-        public @Nullable ISyncManaged readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<ISyncManaged> context) {
+        public @Nullable ISyncManaged readFromPacket(RegistryFriendlyByteBuf buf,
+                                                     TransformerContext<ISyncManaged> context) {
             ISyncManaged syncManaged = context.currentValue();
             var clazz = context.type().getClassValue();
 

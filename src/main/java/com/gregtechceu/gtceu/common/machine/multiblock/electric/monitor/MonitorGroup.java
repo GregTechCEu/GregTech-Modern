@@ -10,9 +10,8 @@ import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
-
 import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
-import com.jcraft.jorbis.Block;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -58,8 +57,7 @@ public class MonitorGroup {
             ByteBufCodecs.optional(BlockPos.STREAM_CODEC), (m) -> Optional.ofNullable(m.getTargetRaw()),
             ByteBufCodecs.optional(Direction.STREAM_CODEC), (m) -> Optional.ofNullable(m.getTargetCoverSide()),
             ByteBufCodecs.INT, MonitorGroup::getDataSlot,
-            MonitorGroup::new
-    );
+            MonitorGroup::new);
 
     @Getter
     private final Set<BlockPos> monitorPositions = new HashSet<>();

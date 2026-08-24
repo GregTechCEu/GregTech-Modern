@@ -29,7 +29,6 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
         return currentVal;
     }
 
-
     @Override
     public void writeToPacket(RegistryFriendlyByteBuf buf, INBTSerializable<Tag> value,
                               TransformerContext<INBTSerializable<Tag>> context) {

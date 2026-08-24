@@ -2,9 +2,8 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-
 import net.minecraft.network.RegistryFriendlyByteBuf;
+
 import org.jetbrains.annotations.Nullable;
 
 public class EnumTransformer<E extends Enum<E>> implements ValueTransformer<E> {

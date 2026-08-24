@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +23,7 @@ public record RegistryReferenceTransformer<T>(ResourceKey<? extends Registry<T>>
         ResourceLocation location = ResourceLocation
                 .parse(ValueTransformer.assertTagType(StringTag.class, tag, context).getAsString());
         ResourceKey<T> elementKey = ResourceKey.create(registryKey, location);
-        return context.lookup().lookupOrThrow(registryKey).getOrThrow(elementKey).value();
+        return context.lookup().holderOrThrow(elementKey).value();
     }
 
     @Override

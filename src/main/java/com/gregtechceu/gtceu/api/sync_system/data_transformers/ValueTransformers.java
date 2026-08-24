@@ -14,11 +14,9 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.*;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -31,9 +29,6 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.codecs.PrimitiveCodec;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -133,56 +128,6 @@ public final class ValueTransformers {
         REGISTERED_SUPPLIERS.put(type, func);
     }
 
-    // MC why doesn't this exist by default
-    private static final PrimitiveCodec<Character> CHAR = new PrimitiveCodec<>() {
-
-        @Override
-        public <T> DataResult<Character> read(final DynamicOps<T> ops, final T input) {
-            return ops.getNumberValue(input)
-                    .map(n -> (char) n.intValue());
-        }
-
-        @Override
-        public <T> T write(final DynamicOps<T> ops, final Character value) {
-            return ops.createShort((short) value.charValue());
-        }
-
-        @Override
-        public String toString() {
-            return "Char";
-        }
-    };
-
-    private static final StreamCodec<ByteBuf, Character> CHAR_STREAM = new StreamCodec<>() {
-        public Character decode(ByteBuf buffer) {
-            return buffer.readChar();
-        }
-
-        public void encode(ByteBuf buffer, Character value) {
-            buffer.writeChar(value);
-        }
-    };
-
-    private static final StreamCodec<FriendlyByteBuf, int[]> INT_ARRAY_STREAM = new StreamCodec<>() {
-        public int[] decode(FriendlyByteBuf buffer) {
-            return buffer.readVarIntArray();
-        }
-
-        public void encode(FriendlyByteBuf buffer, int[] value) {
-            buffer.writeVarIntArray(value);
-        }
-    };
-
-    private static final StreamCodec<FriendlyByteBuf, long[]> LONG_ARRAY_STREAM = new StreamCodec<>() {
-        public long[] decode(FriendlyByteBuf buffer) {
-            return buffer.readLongArray();
-        }
-
-        public void encode(FriendlyByteBuf buffer, long[] value) {
-            buffer.writeLongArray(value);
-        }
-    };
-
     static {
 
         //// Primitives
@@ -195,12 +140,12 @@ public final class ValueTransformers {
         registerCodecTransformer(Double.class, Codec.DOUBLE, ByteBufCodecs.DOUBLE);
         registerCodecTransformer(Short.class, Codec.SHORT, ByteBufCodecs.SHORT);
         registerCodecTransformer(Byte.class, Codec.BYTE, ByteBufCodecs.BYTE);
-        registerCodecTransformer(Character.class, CHAR, CHAR_STREAM);
+        registerCodecTransformer(Character.class, SyncSystemCodecs.CHAR, SyncSystemCodecs.CHAR_STREAM);
         registerCodecTransformer(Boolean.class, Codec.BOOL, ByteBufCodecs.BOOL);
 
         // Primtive arrays
-        registerCodecTransformer(int[].class, Codec.INT_STREAM.xmap(IntStream::toArray, IntStream::of), INT_ARRAY_STREAM);
-        registerCodecTransformer(long[].class, Codec.LONG_STREAM.xmap(LongStream::toArray, LongStream::of), LONG_ARRAY_STREAM);
+        registerCodecTransformer(int[].class, Codec.INT_STREAM.xmap(IntStream::toArray, IntStream::of), SyncSystemCodecs.INT_ARRAY_STREAM);
+        registerCodecTransformer(long[].class, Codec.LONG_STREAM.xmap(LongStream::toArray, LongStream::of), SyncSystemCodecs.LONG_ARRAY_STREAM);
         registerCodecTransformer(byte[].class, Codec.BYTE_BUFFER.xmap(ByteBuffer::array, ByteBuffer::wrap), ByteBufCodecs.BYTE_ARRAY);
 
         //// Java classes and standard minecraft/forge classes
@@ -228,9 +173,9 @@ public final class ValueTransformers {
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
         registerTransformer(GTRecipe.class, new GTRecipeTransformer());
 
-        registerCodecTransformer(MachineRenderState.class, MachineRenderState.CODEC, ByteBufCodecs.fromCodec(MachineRenderState.CODEC));
+        registerCodecTransformer(MachineRenderState.class, MachineRenderState.CODEC, ByteBufCodecs.fromCodecWithRegistries(MachineRenderState.CODEC));
         registerCodecTransformer(MonitorGroup.class, MonitorGroup.CODEC, MonitorGroup.STREAM_CODEC);
-        registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC, ByteBufCodecs.fromCodec(ConsumedInputsData.CODEC));
+        registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC, ByteBufCodecs.fromCodecWithRegistries(ConsumedInputsData.CODEC));
 
         registerTransformer(GTRecipeType.class, new RegistryReferenceTransformer<>(GTRegistries.Keys.RECIPE_TYPE, GTRecipeType::getRegistryName));
         registerTransformer(Material.class, new RegistryReferenceTransformer<>(GTRegistries.Keys.MATERIAL, Material::getResourceLocation));

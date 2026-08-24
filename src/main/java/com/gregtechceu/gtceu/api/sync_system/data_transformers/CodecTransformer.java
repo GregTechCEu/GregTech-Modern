@@ -1,18 +1,10 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
-import com.gregtechceu.gtceu.GTCEu;
-
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-
-import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
-import java.util.function.Function;
+import com.mojang.serialization.Codec;
 
 public record CodecTransformer<T>(Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec)
         implements ValueTransformer<T> {

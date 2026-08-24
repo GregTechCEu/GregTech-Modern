@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.sync_system.managed;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
@@ -9,21 +8,19 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +75,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     @Override
     public final void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         byte[] data = tag.getByteArray("data");
-        var buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), (RegistryAccess)lookupProvider, ConnectionType.NEOFORGE);
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), (RegistryAccess) lookupProvider,
+                ConnectionType.NEOFORGE);
         getSyncDataHolder().readClientPacket(lookupProvider, buffer);
     }
 
@@ -87,7 +85,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
                                    HolderLookup.Provider lookupProvider) {
         CompoundTag tag = pkt.getTag();
         byte[] data = tag.getByteArray("data");
-        var buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), (RegistryAccess)lookupProvider, ConnectionType.NEOFORGE);
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(data), (RegistryAccess) lookupProvider,
+                ConnectionType.NEOFORGE);
         getSyncDataHolder().readClientPacket(lookupProvider, buffer);
     }
 
@@ -108,7 +107,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     }
 
     private CompoundTag writeClientPacket(HolderLookup.Provider lookup, boolean fullSync) {
-        var stream = new RegistryFriendlyByteBuf(Unpooled.buffer(), (RegistryAccess)lookup, ConnectionType.NEOFORGE);
+        var stream = new RegistryFriendlyByteBuf(Unpooled.buffer(), (RegistryAccess) lookup, ConnectionType.NEOFORGE);
         if (fullSync) getSyncDataHolder().resyncAllFields();
         getSyncDataHolder().writeClientPacket(lookup, stream);
 

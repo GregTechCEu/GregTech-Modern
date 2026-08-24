@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -109,7 +108,8 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     }
 
     @Override
-    public @Nullable CoverBehavior readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<CoverBehavior> context) {
+    public @Nullable CoverBehavior readFromPacket(RegistryFriendlyByteBuf buf,
+                                                  TransformerContext<CoverBehavior> context) {
         if (!(context.holder() instanceof ICoverable holder)) {
             GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
             return null;
