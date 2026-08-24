@@ -84,7 +84,8 @@ public class SyncDataHolder {
         for (var field : syncData.getServerSaveFields()) {
             Tag newValue = tag.get(field.nbtSaveKey);
             if (newValue == null || newValue instanceof CompoundTag compound &&
-                    (compound.isEmpty() || (compound.size() == 1 && compound.getBoolean("null")) )) continue;
+                    (compound.isEmpty() || (compound.size() == 1 && compound.getBoolean("null"))))
+                continue;
 
             if (!confirmTransformerPresent(field, holder)) continue;
 
