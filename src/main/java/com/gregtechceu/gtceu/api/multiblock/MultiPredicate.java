@@ -201,6 +201,7 @@ public abstract class MultiPredicate {
                 children().stream().map(MultiPredicate::deepCopy).toList(),
                 predicates().stream().map(BasePredicate::copy).toList(),
                 this.hasAir);
+        copy.setSettings(this.settings);
         copy.additionalTooltips.addAll(this.additionalTooltips);
         copy.setController(this.controller);
         return copy;
@@ -241,7 +242,13 @@ public abstract class MultiPredicate {
     }
 
     private void updateSettings(UnaryOperator<PredicateSettings> configurator) {
-        this.settings = configurator.apply(getOrCreateSettings());
+        setSettings(Objects.requireNonNull(configurator.apply(getOrCreateSettings())));
+    }
+
+    protected void setSettings(@Nullable PredicateSettings settings) {
+        if (settings != null) {
+            this.settings = settings.copy();
+        }
     }
 
     @CheckReturnValue

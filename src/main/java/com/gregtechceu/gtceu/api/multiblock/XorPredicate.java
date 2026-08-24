@@ -22,12 +22,19 @@ public class XorPredicate extends MultiPredicate {
 
     public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
         super(Logic.XOR, children, predicates, hasAir);
+    }
+
+    @Override
+    protected void setSettings(@Nullable PredicateSettings settings) {
+        super.setSettings(settings);
+        boolean noneValid = false;
         for (PredicateSettings setting : gatherSettings()) {
             if (setting.minCount() <= 0 && setting.minSliceCount() <= 0) {
-                this.noneValid = true;
+                noneValid = true;
                 break;
             }
         }
+        this.noneValid = noneValid;
     }
 
     @Override
