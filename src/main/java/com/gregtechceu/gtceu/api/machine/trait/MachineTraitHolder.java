@@ -262,7 +262,7 @@ public final class MachineTraitHolder {
                 var trait = traitHolder.getPersistentTrait(name);
                 if (trait == null) {
                     throw new IllegalStateException(
-                            "Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID"
+                            "Reading packet data for syncable trait '%s', but no client-side syncable trait has that ID"
                                     .formatted(name));
                 } else {
                     trait.getSyncDataHolder().readClientPacket(context.lookup(), buf);

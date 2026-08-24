@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -60,7 +62,7 @@ public class SyncDataHolder {
     @SuppressWarnings("unchecked")
     public CompoundTag serializeNBT(HolderLookup.Provider lookup) {
         CompoundTag tag = new CompoundTag();
-        for (var field : syncData.getServerSaveFields()) {
+        for (var field : syncData.getServerSaveFields().values()) {
             Object currentValue = field.handle.get(holder);
             if (currentValue == null || !confirmTransformerPresent(field, holder)) continue;
 
@@ -81,7 +83,7 @@ public class SyncDataHolder {
 
     @SuppressWarnings("unchecked")
     public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag tag) {
-        for (var field : syncData.getServerSaveFields()) {
+        for (var field : syncData.getServerSaveFields().values()) {
             Tag newValue = tag.get(field.nbtSaveKey);
             if (newValue == null || newValue instanceof CompoundTag compound &&
                     (compound.isEmpty() || (compound.size() == 1 && compound.getBoolean("null"))))
@@ -101,38 +103,47 @@ public class SyncDataHolder {
 
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName, e);
-                return;
             }
         }
     }
 
     @SuppressWarnings("unchecked")
     public void writeClientPacket(HolderLookup.Provider lookup, FriendlyByteBuf buf) {
-        Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().stream()
+        Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().values().stream()
                 .filter(this::shouldSerializeClientField).collect(Collectors.toSet());
 
-        buf.writeVarInt(fieldsToSerialize.size());
+        var fieldData = new FriendlyByteBuf(Unpooled.buffer());
+        boolean hadErrorWritingData = false;
 
         for (var field : fieldsToSerialize) {
             Object currentValue = field.handle.get(holder);
 
-            buf.writeUtf(field.fieldName);
-            buf.writeBoolean(currentValue == null);
+            fieldData.writeUtf(field.fieldName);
+            fieldData.writeBoolean(currentValue == null);
             if (currentValue == null) continue;
 
             if (!confirmTransformerPresent(field, holder)) continue;
 
             try {
                 ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
-                        .writeToPacket(buf, currentValue,
+                        .writeToPacket(fieldData, currentValue,
                                 new ValueTransformer.TransformerContext<>(holder, field.type, currentValue,
                                         field.fieldName,
                                         true, resyncAll, lookup));
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to write client packet on field {}", field.fieldName, e);
-                return;
+                hadErrorWritingData = true;
+                break;
             }
         }
+
+        if (hadErrorWritingData) {
+            buf.writeVarInt(0);
+            return;
+        }
+
+        buf.writeVarInt(fieldsToSerialize.size());
+        buf.writeBytes(fieldData);
 
         resyncAll = false;
         dirtySyncFields.clear();
@@ -145,16 +156,13 @@ public class SyncDataHolder {
 
         for (int fieldIndex = 0; fieldIndex < fieldsToRead; fieldIndex++) {
             String fieldName = buf.readUtf();
-            Optional<FieldSyncData> fieldSyncData = syncData.getClientSyncFields().stream()
-                    .filter(f -> f.fieldName.equals(fieldName))
-                    .findFirst();
+            FieldSyncData field = syncData.getClientSyncFields().get(fieldName);
 
-            if (fieldSyncData.isEmpty()) {
+            if (field == null) {
                 GTCEu.LOGGER.error("Sync: Failed to read client packet: Unknown field {}", fieldName);
                 return;
             }
 
-            FieldSyncData field = fieldSyncData.get();
             Object currentValue = field.handle.get(holder);
 
             boolean isNull = buf.readBoolean();
@@ -175,8 +183,8 @@ public class SyncDataHolder {
 
                 if (result != currentValue) {
                     trySetField(field, holder, result);
-                    executeClientSyncCallbacks(field);
                 }
+                executeClientSyncCallbacks(field);
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to read client packet on field {}", field.fieldName, e);
                 return;

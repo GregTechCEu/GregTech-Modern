@@ -187,7 +187,7 @@ public final class ValueTransformers {
         registerCodecTransformer(FluidStack.class, FluidStack.CODEC, (buf, v) -> v.writeToPacket(buf), FluidStack::readFromPacket);
         registerCodecTransformer(Component.class, ExtraCodecs.COMPONENT, FriendlyByteBuf::writeComponent, FriendlyByteBuf::readComponent);
 
-        registerCodecTransformer(BlockPos.class, BlockPos.CODEC, FriendlyByteBuf::writeBlockPos, FriendlyByteBuf::readBlockPos);
+        registerTransformer(BlockPos.class, new BlockPosTransformer());
         registerCodecTransformer(BlockState.class, BlockState.CODEC, (b, v) -> b.writeId(Block.BLOCK_STATE_REGISTRY, v), b -> b.readById(Block.BLOCK_STATE_REGISTRY));
 
         registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
