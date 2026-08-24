@@ -159,13 +159,6 @@ public abstract class MultiPredicate {
         return Collections.unmodifiableList(result);
     }
 
-    /// @return a flat list of candidates for filling out the JEI preview
-    public List<BlockInfo> getFlatCandidates() {
-        return getCandidates().stream()
-                .flatMap(Collection::stream)
-                .toList();
-    }
-
     public void resetLogic() {
         this.children.forEach(MultiPredicate::resetLogic);
     }
@@ -449,6 +442,7 @@ public abstract class MultiPredicate {
         builder.append('{');
         StringJoiner joiner = new StringJoiner(", ");
         this.forEach(p -> joiner.add(p.toString()));
+        this.forEachChild(mp -> joiner.add(mp.toString()));
         builder.append(joiner);
         builder.append('}');
         return builder.toString();
