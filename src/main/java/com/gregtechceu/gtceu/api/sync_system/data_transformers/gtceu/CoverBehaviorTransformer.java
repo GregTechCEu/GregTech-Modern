@@ -57,13 +57,15 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             tag.put("data", tag.getCompound("payload").getCompound("d"));
         }
 
-        Direction side;
+        Direction side = null;
         if (tag.contains("side", Tag.TAG_STRING)) {
             side = Direction.CODEC.byName(tag.getString("side"));
         } else if (tag.contains("side", Tag.TAG_ANY_NUMERIC)) {
             // backwards compat
             side = Direction.values()[tag.getInt("side")];
-        } else {
+        }
+
+        if (side == null) {
             GTCEu.LOGGER.error("Error during NBT load: invalid side {}", tag.get("side"));
             return null;
         }

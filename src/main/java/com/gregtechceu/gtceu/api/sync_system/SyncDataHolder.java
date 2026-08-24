@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,6 +15,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Setter;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -110,28 +113,38 @@ public class SyncDataHolder {
         Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().values().stream()
                 .filter(this::shouldSerializeClientField).collect(Collectors.toSet());
 
-        buf.writeVarInt(fieldsToSerialize.size());
+        var fieldData = new RegistryFriendlyByteBuf(Unpooled.buffer(), (RegistryAccess) lookup, ConnectionType.NEOFORGE);
+        boolean hadErrorWritingData = false;
 
         for (var field : fieldsToSerialize) {
             Object currentValue = field.handle.get(holder);
 
-            buf.writeUtf(field.fieldName);
-            buf.writeBoolean(currentValue == null);
+            fieldData.writeUtf(field.fieldName);
+            fieldData.writeBoolean(currentValue == null);
             if (currentValue == null) continue;
 
             if (!confirmTransformerPresent(field, holder)) continue;
 
             try {
                 ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
-                        .writeToPacket(buf, currentValue,
+                        .writeToPacket(fieldData, currentValue,
                                 new ValueTransformer.TransformerContext<>(holder, field.type, currentValue,
                                         field.fieldName,
                                         true, resyncAll, lookup));
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to write client packet on field {}", field.fieldName, e);
-                return;
+                hadErrorWritingData = true;
+                break;
             }
         }
+
+        if (hadErrorWritingData) {
+            buf.writeVarInt(0);
+            return;
+        }
+
+        buf.writeVarInt(fieldsToSerialize.size());
+        buf.writeBytes(fieldData);
 
         resyncAll = false;
         dirtySyncFields.clear();
