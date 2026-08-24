@@ -101,21 +101,22 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
     @Override
     public void writeToPacket(FriendlyByteBuf buf, Map<K, V> value, TransformerContext<Map<K, V>> context) {
-        buf.writeInt(value.size());
-        for (var entry : value.entrySet()) {
-            getKeyTransformer(context).writeToPacket(buf, entry.getKey(), getInnerKeyContext(entry.getKey(), context));
-            getValueTransformer(context).writeToPacket(buf, entry.getValue(),
-                    getInnerValueContext(entry.getValue(), context));
-        }
+        buf.writeVarInt(value.size());
+        value.forEach((k, v) -> {
+            getKeyTransformer(context).writeToPacket(buf, k, getInnerKeyContext(k, context));
+            getValueTransformer(context).writeToPacket(buf, v,
+                    getInnerValueContext(v, context));
+        });
     }
 
     @Override
     public @Nullable Map<K, V> readFromPacket(FriendlyByteBuf buf, TransformerContext<Map<K, V>> context) {
         var current = context.currentValue();
-        if (current != null) current.clear();
-        else current = new Object2ObjectOpenHashMap<>();
 
-        int size = buf.readInt();
+        int size = buf.readVarInt();
+
+        if (current != null) current.clear();
+        else current = new Object2ObjectOpenHashMap<>(size);
 
         for (int i = 0; i < size; i++) {
             K key = getKeyTransformer(context).readFromPacket(buf, getInnerKeyContext(null, context));

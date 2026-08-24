@@ -185,7 +185,7 @@ public final class ValueTransformers {
         // spotless:off
 
         registerCodecTransformer(Integer.class, Codec.INT, FriendlyByteBuf::writeVarInt, FriendlyByteBuf::readVarInt);
-        registerCodecTransformer(Long.class, Codec.LONG, FriendlyByteBuf::writeLong, FriendlyByteBuf::readLong);
+        registerCodecTransformer(Long.class, Codec.LONG, FriendlyByteBuf::writeVarLong, FriendlyByteBuf::readVarLong);
         registerCodecTransformer(Float.class, Codec.FLOAT, FriendlyByteBuf::writeFloat, FriendlyByteBuf::readFloat);
         registerCodecTransformer(Double.class, Codec.DOUBLE, FriendlyByteBuf::writeDouble, FriendlyByteBuf::readDouble);
         registerCodecTransformer(Short.class, Codec.SHORT, (buf, s) -> buf.writeShort(s), FriendlyByteBuf::readShort);
