@@ -201,7 +201,7 @@ public final class ValueTransformers {
 
         registerCodecTransformer(String.class, Codec.STRING, FriendlyByteBuf::writeUtf, FriendlyByteBuf::readUtf);
         registerCodecTransformer(UUID.class, UUIDUtil.CODEC, FriendlyByteBuf::writeUUID, FriendlyByteBuf::readUUID);
-        registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, FriendlyByteBuf::writeNbt, FriendlyByteBuf::readNbt, CompoundTag.class);
+        registerCodecTransformer(CompoundTag.class, CompoundTag.CODEC, FriendlyByteBuf::writeNbt, FriendlyByteBuf::readNbt);
 
         registerCodecTransformer(ItemStack.class, ItemStack.CODEC, FriendlyByteBuf::writeItem, FriendlyByteBuf::readItem);
         registerCodecTransformer(FluidStack.class, FluidStack.CODEC, (buf, v) -> v.writeToPacket(buf), FluidStack::readFromPacket);

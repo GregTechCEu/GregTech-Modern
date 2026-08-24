@@ -83,7 +83,8 @@ public class SyncDataHolder {
     public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag tag) {
         for (var field : syncData.getServerSaveFields()) {
             Tag newValue = tag.get(field.nbtSaveKey);
-            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) continue;
+            if (newValue == null || newValue instanceof CompoundTag compound &&
+                    (compound.isEmpty() || (compound.size() == 1 && compound.getBoolean("null")) )) continue;
 
             if (!confirmTransformerPresent(field, holder)) continue;
 
