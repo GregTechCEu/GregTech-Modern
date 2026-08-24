@@ -196,6 +196,7 @@ public abstract class MultiPredicate {
         return this.hasAir;
     }
 
+    @CheckReturnValue
     private MultiPredicate deepCopy() {
         MultiPredicate copy = this.type.makePredicate(
                 children().stream().map(MultiPredicate::deepCopy).toList(),
