@@ -876,14 +876,15 @@ public class MachineLang {
                 "Liquid Oxygen Amount: %sL");
         provider.add("gtceu.multiblock.large_combustion_engine.oxygen_boosted", "§bOxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted",
-                "§bLiquid Oxygen boosted.");
+                "§9Liquid Oxygen boosted.");
         provider.add("gtceu.multiblock.large_combustion_engine.boost_disallowed",
                 "§bUpgrade the Dynamo Hatch to enable Oxygen Boosting.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost",
-                "Supply Oxygen to boost.");
+                "Supply §bOxygen§7 to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
-                "Supply Liquid Oxygen to boost.");
+                "Supply §9Liquid Oxygen§7 to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
+        provider.add("gtceu.multiblock.large_combustion_engine.no_lubricant", "Machine needs Lubricant to run");
         provider.add("gtceu.multiblock.turbine.fuel_amount", "Fuel Amount: %sL (%s)");
         provider.add("gtceu.multiblock.turbine.rotor_speed", "Rotor Speed: %s/%s RPM");
         provider.add("gtceu.multiblock.turbine.rotor_durability", "Rotor Durability: %s%%");
