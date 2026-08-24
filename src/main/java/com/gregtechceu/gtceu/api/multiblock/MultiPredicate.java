@@ -31,15 +31,15 @@ public abstract class MultiPredicate {
     private final List<BasePredicate> predicates;
     private final List<MultiPredicate> children;
     private final boolean hasAir;
+
     @Getter
     private final Logic type;
+
     @Getter
     @Setter
     @Accessors(chain = true)
     private boolean controller;
 
-    // there needs to be a way to know whether to adhere to this settings or predicates/childrens settings
-    // like if this == null, check children, else only check this
     @Nullable
     @Getter
     private PredicateSettings settings = null;
@@ -208,19 +208,22 @@ public abstract class MultiPredicate {
         return copy;
     }
 
+    @CheckReturnValue
+    public MultiPredicate copyWith(Consumer<MultiPredicate> configurator) {
+        MultiPredicate copy = deepCopy();
+        configurator.accept(copy);
+        return copy;
+    }
+
     @RemapForJS("addTooltip")
     @CheckReturnValue
     public MultiPredicate addTooltips(Component tooltip) {
-        MultiPredicate copy = deepCopy();
-        copy.additionalTooltips.add(tooltip);
-        return copy;
+        return copyWith(p -> p.additionalTooltips.add(tooltip));
     }
 
     @CheckReturnValue
     public MultiPredicate addTooltips(Component... tooltip) {
-        MultiPredicate copy = deepCopy();
-        Collections.addAll(copy.additionalTooltips, tooltip);
-        return copy;
+        return copyWith(p -> Collections.addAll(p.additionalTooltips, tooltip));
     }
 
     // spotless:off
@@ -242,6 +245,11 @@ public abstract class MultiPredicate {
         return this.settings;
     }
 
+    @CheckReturnValue
+    public MultiPredicate copyWithSettings(UnaryOperator<PredicateSettings> configurator) {
+        return copyWith(p -> p.updateSettings(configurator));
+    }
+
     private void updateSettings(UnaryOperator<PredicateSettings> configurator) {
         setSettings(Objects.requireNonNull(configurator.apply(getOrCreateSettings())));
     }
@@ -254,51 +262,37 @@ public abstract class MultiPredicate {
 
     @CheckReturnValue
     public MultiPredicate setPriority(int priority) {
-        MultiPredicate copy = deepCopy();
-        copy.updateSettings(s -> s.withPriority(priority));
-        return copy;
+        return copyWithSettings(s -> s.withPriority(priority));
     }
 
     @CheckReturnValue
     public MultiPredicate setMinCount(int min) {
-        MultiPredicate copy = deepCopy();
-        copy.updateSettings(s -> s.withMinCount(min));
-        return copy;
+        return copyWithSettings(s -> s.withMinCount(min));
     }
 
     @CheckReturnValue
     public MultiPredicate setMaxCount(int max) {
-        MultiPredicate copy = deepCopy();
-        copy.updateSettings(s -> s.withMaxCount(max));
-        return copy;
+        return copyWithSettings(s -> s.withMaxCount(max));
     }
 
     @CheckReturnValue
     public MultiPredicate setMinSliceCount(int min) {
-        MultiPredicate copy = deepCopy();
-        copy.updateSettings(s -> s.withMinSliceCount(min));
-        return copy;
+        return copyWithSettings(s -> s.withMinSliceCount(min));
     }
 
     @CheckReturnValue
     public MultiPredicate setMaxSliceCount(int max) {
-        MultiPredicate copy = deepCopy();
-        copy.updateSettings(s -> s.withMaxSliceCount(max));
-        return copy;
+        return copyWithSettings(s -> s.withMaxSliceCount(max));
     }
 
     @CheckReturnValue
     public MultiPredicate setPreviewCount(int previewCount) {
-        MultiPredicate copy = deepCopy();
-        copy.updateSettings(s -> s.withPreviewCount(previewCount));
-        return copy;
+        return copyWithSettings(s -> s.withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
     public MultiPredicate setDisableRenderFormed(boolean disable) {
-        MultiPredicate copy = deepCopy();
-        copy.updateSettings(s -> s.withDisableRenderFormed(disable));
-        return copy;
+        return copyWithSettings(s -> s.withDisableRenderFormed(disable));
     }
 
     @CheckReturnValue
