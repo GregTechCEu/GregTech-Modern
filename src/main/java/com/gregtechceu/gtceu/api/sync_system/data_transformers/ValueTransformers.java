@@ -157,26 +157,6 @@ public final class ValueTransformers {
         REGISTERED_SUPPLIERS.put(type, func);
     }
 
-    // MC why doesn't this exist by default
-    private static final PrimitiveCodec<Character> CHAR = new PrimitiveCodec<>() {
-
-        @Override
-        public <T> DataResult<Character> read(final DynamicOps<T> ops, final T input) {
-            return ops.getNumberValue(input)
-                    .map(n -> (char) n.intValue());
-        }
-
-        @Override
-        public <T> T write(final DynamicOps<T> ops, final Character value) {
-            return ops.createShort((short) value.charValue());
-        }
-
-        @Override
-        public String toString() {
-            return "Char";
-        }
-    };
-
     static {
 
         //// Primitives
@@ -189,7 +169,7 @@ public final class ValueTransformers {
         registerCodecTransformer(Double.class, Codec.DOUBLE, FriendlyByteBuf::writeDouble, FriendlyByteBuf::readDouble);
         registerCodecTransformer(Short.class, Codec.SHORT, (buf, s) -> buf.writeShort(s), FriendlyByteBuf::readShort);
         registerCodecTransformer(Byte.class, Codec.BYTE, (buf, b) -> buf.writeByte(b), FriendlyByteBuf::readByte);
-        registerCodecTransformer(Character.class, CHAR, (buf, c) -> buf.writeChar(c), FriendlyByteBuf::readChar);
+        registerCodecTransformer(Character.class, SyncSystemCodecs.CHAR, (buf, c) -> buf.writeChar(c), FriendlyByteBuf::readChar);
         registerCodecTransformer(Boolean.class, Codec.BOOL, FriendlyByteBuf::writeBoolean, FriendlyByteBuf::readBoolean);
 
         // Primtive arrays
