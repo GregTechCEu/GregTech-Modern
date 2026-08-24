@@ -91,15 +91,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public CompoundTag getUpdateTag() {
-        var data = new CompoundTag();
-
-        var stream = new FriendlyByteBuf(Unpooled.buffer());
-        getSyncDataHolder().resyncAllFields();
-        getSyncDataHolder().writeClientPacket(getHolderLookup(), stream);
-
-        stream.capacity(stream.readableBytes());
-        data.putByteArray("data", stream.array());
-        return data;
+        return writeClientPacket(true);
     }
 
     /**
@@ -107,15 +99,18 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        var data = new CompoundTag();
+        return ClientboundBlockEntityDataPacket.create(this, b -> writeClientPacket(false));
+    }
 
+    private CompoundTag writeClientPacket(boolean fullSync) {
         var stream = new FriendlyByteBuf(Unpooled.buffer());
+        if (fullSync) getSyncDataHolder().resyncAllFields();
         getSyncDataHolder().writeClientPacket(getHolderLookup(), stream);
 
         stream.capacity(stream.readableBytes());
+        CompoundTag data = new CompoundTag();
         data.putByteArray("data", stream.array());
-
-        return ClientboundBlockEntityDataPacket.create(this, b -> data);
+        return data;
     }
 
     private HolderLookup.Provider getHolderLookup() {

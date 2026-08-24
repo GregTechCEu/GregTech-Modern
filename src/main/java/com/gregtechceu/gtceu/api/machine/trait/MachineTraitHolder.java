@@ -243,25 +243,27 @@ public final class MachineTraitHolder {
         @Override
         public void writeToPacket(FriendlyByteBuf buf, MachineTraitHolder value,
                                   TransformerContext<MachineTraitHolder> context) {
-            buf.writeInt(value.traitsToSave.size());
-            for (Map.Entry<String, MachineTrait> traitEntry : value.traitsToSave.entrySet()) {
-                buf.writeUtf(traitEntry.getKey());
-                if (context.isClientFullSyncUpdate()) traitEntry.getValue().getSyncDataHolder().resyncAllFields();
-                traitEntry.getValue().getSyncDataHolder().writeClientPacket(context.lookup(), buf);
-            }
+            buf.writeVarInt(value.traitsToSave.size());
+            value.traitsToSave.forEach((name, trait) -> {
+                buf.writeUtf(name);
+                if (context.isClientFullSyncUpdate()) trait.getSyncDataHolder().resyncAllFields();
+                trait.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
+            });
         }
 
         @Override
         public @Nullable MachineTraitHolder readFromPacket(FriendlyByteBuf buf,
                                                            TransformerContext<MachineTraitHolder> context) {
             var traitHolder = Objects.requireNonNull(context.currentValue());
-            int length = buf.readInt();
+            int length = buf.readVarInt();
             for (int i = 0; i < length; i++) {
                 String name = buf.readUtf();
 
                 var trait = traitHolder.getPersistentTrait(name);
                 if (trait == null) {
-                    throw new IllegalStateException("Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID".formatted(name));
+                    throw new IllegalStateException(
+                            "Reading packet data for syncable trait '{}', but no client-side syncable trait has that ID"
+                                    .formatted(name));
                 } else {
                     trait.getSyncDataHolder().readClientPacket(context.lookup(), buf);
                 }

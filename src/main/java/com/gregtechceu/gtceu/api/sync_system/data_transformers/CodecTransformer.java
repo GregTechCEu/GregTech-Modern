@@ -30,6 +30,8 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
         return codec.parse(context.nbtOps(), tag).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
+    private static final String WRAPPED_TAG_KEY = "$$field$$";
+
     @Override
     public void writeToPacket(FriendlyByteBuf buf, T value, TransformerContext<T> context) {
         if (writePacket != null) {
@@ -42,7 +44,7 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
             buf.writeNbt(compoundTag);
         } else {
             CompoundTag wrapper = new CompoundTag();
-            wrapper.put("$$gtceu:value$$", data);
+            wrapper.put(WRAPPED_TAG_KEY, data);
             buf.writeNbt(wrapper);
         }
     }
@@ -54,8 +56,8 @@ public record CodecTransformer<T>(Codec<T> codec, @Nullable BiConsumer<FriendlyB
         }
 
         Tag read = buf.readNbt();
-        if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains("$$gtceu:value$$")) {
-            read = compound.get("$$gtceu:value$$");
+        if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains(WRAPPED_TAG_KEY)) {
+            read = compound.get(WRAPPED_TAG_KEY);
         }
         if (read == null) return null;
         return codec.parse(context.nbtOps(), read).getOrThrow(false, GTCEu.LOGGER::error);

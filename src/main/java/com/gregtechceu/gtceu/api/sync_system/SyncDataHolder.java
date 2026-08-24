@@ -109,17 +109,16 @@ public class SyncDataHolder {
         Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().stream()
                 .filter(this::shouldSerializeClientField).collect(Collectors.toSet());
 
-        buf.writeInt(fieldsToSerialize.size());
+        buf.writeVarInt(fieldsToSerialize.size());
 
         for (var field : fieldsToSerialize) {
             Object currentValue = field.handle.get(holder);
 
             buf.writeUtf(field.fieldName);
-
-            if (!confirmTransformerPresent(field, holder)) continue;
-
             buf.writeBoolean(currentValue == null);
             if (currentValue == null) continue;
+
+            if (!confirmTransformerPresent(field, holder)) continue;
 
             try {
                 ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
@@ -140,16 +139,21 @@ public class SyncDataHolder {
 
     @SuppressWarnings("unchecked")
     public void readClientPacket(HolderLookup.Provider lookup, FriendlyByteBuf buf) {
-        int fieldsToRead = buf.readInt();
+        int fieldsToRead = buf.readVarInt();
 
         for (int fieldIndex = 0; fieldIndex < fieldsToRead; fieldIndex++) {
             String fieldName = buf.readUtf();
-            FieldSyncData field = syncData.getClientSyncFields().stream().filter(f -> f.fieldName.equals(fieldName))
-                    .findFirst().orElseThrow();
+            Optional<FieldSyncData> fieldSyncData = syncData.getClientSyncFields().stream()
+                    .filter(f -> f.fieldName.equals(fieldName))
+                    .findFirst();
 
+            if (fieldSyncData.isEmpty()) {
+                GTCEu.LOGGER.error("Sync: Failed to read client packet: Unknown field {}", fieldName);
+                return;
+            }
+
+            FieldSyncData field = fieldSyncData.get();
             Object currentValue = field.handle.get(holder);
-
-            if (!confirmTransformerPresent(field, holder)) continue;
 
             boolean isNull = buf.readBoolean();
             if (isNull) {
@@ -157,6 +161,8 @@ public class SyncDataHolder {
                 executeClientSyncCallbacks(field);
                 continue;
             }
+
+            if (!confirmTransformerPresent(field, holder)) continue;
 
             try {
                 Object result = ((ValueTransformer<Object>) Objects.requireNonNull(field.transformer))
@@ -200,6 +206,7 @@ public class SyncDataHolder {
         if (field.triggerClientRerender) holder.scheduleRenderUpdate();
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean confirmTransformerPresent(FieldSyncData field, Object holder) {
         if (field.transformer == null) {
             field.setTransformer(ValueTransformers.get(field.type.getRawType()));

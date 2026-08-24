@@ -8,9 +8,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListTransformer<T> implements ValueTransformer<List<T>> {
@@ -50,7 +50,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         var current = context.currentValue();
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         if (current != null) current.clear();
-        else current = new ObjectArrayList<>();
+        else current = new ArrayList<>(listTag.size());
         List<T> finalCurrent = current;
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(t),
@@ -62,7 +62,7 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
 
     @Override
     public void writeToPacket(FriendlyByteBuf buf, List<T> value, TransformerContext<List<T>> context) {
-        buf.writeInt(value.size());
+        buf.writeVarInt(value.size());
         for (T elem : value) {
             getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
         }
@@ -70,11 +70,11 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
 
     @Override
     public @Nullable List<T> readFromPacket(FriendlyByteBuf buf, TransformerContext<List<T>> context) {
-        var len = buf.readInt();
+        var len = buf.readVarInt();
         var current = context.currentValue();
 
         if (current != null) current.clear();
-        else current = new ObjectArrayList<>();
+        else current = new ArrayList<>(len);
 
         for (int i = 0; i < len; i++) {
             T val = getElemTransformer(context).readFromPacket(buf, getInnerElemContext(null, context));

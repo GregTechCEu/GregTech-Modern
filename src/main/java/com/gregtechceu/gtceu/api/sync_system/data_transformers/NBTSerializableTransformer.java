@@ -30,6 +30,8 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
         return currentVal;
     }
 
+    private static final String WRAPPED_TAG_KEY = "$$field$$";
+
     @Override
     public void writeToPacket(FriendlyByteBuf buf, INBTSerializable<Tag> value,
                               TransformerContext<INBTSerializable<Tag>> context) {
@@ -38,7 +40,7 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
             buf.writeNbt(compoundTag);
         } else {
             CompoundTag wrapper = new CompoundTag();
-            wrapper.put("$$gtceu:value$$", data);
+            wrapper.put(WRAPPED_TAG_KEY, data);
             buf.writeNbt(wrapper);
         }
     }
@@ -48,8 +50,8 @@ public class NBTSerializableTransformer implements ValueTransformer<INBTSerializ
                                                           TransformerContext<INBTSerializable<Tag>> context) {
         var currentVal = context.currentValue();
         Tag read = buf.readNbt();
-        if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains("$$gtceu:value$$")) {
-            read = compound.get("$$gtceu:value$$");
+        if (read instanceof CompoundTag compound && compound.size() == 1 && compound.contains(WRAPPED_TAG_KEY)) {
+            read = compound.get(WRAPPED_TAG_KEY);
         }
         if (currentVal == null) {
             GTCEu.LOGGER.warn(

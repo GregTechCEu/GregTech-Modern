@@ -18,7 +18,8 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    public final ServerLevel serverLevel;
+    @Getter
+    private final ServerLevel serverLevel;
 
     public ManagedSavedData(ServerLevel level) {
         this.serverLevel = level;

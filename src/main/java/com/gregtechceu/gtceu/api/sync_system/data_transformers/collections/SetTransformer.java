@@ -60,7 +60,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
 
     @Override
     public void writeToPacket(FriendlyByteBuf buf, Set<T> value, TransformerContext<Set<T>> context) {
-        buf.writeInt(value.size());
+        buf.writeVarInt(value.size());
         for (T elem : value) {
             getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
         }
@@ -68,11 +68,11 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
 
     @Override
     public @Nullable Set<T> readFromPacket(FriendlyByteBuf buf, TransformerContext<Set<T>> context) {
-        var len = buf.readInt();
+        var len = buf.readVarInt();
         var current = context.currentValue();
 
         if (current != null) current.clear();
-        else current = new ObjectOpenHashSet<>();
+        else current = new ObjectOpenHashSet<>(len);
 
         for (int i = 0; i < len; i++) {
             T val = getElemTransformer(context).readFromPacket(buf, getInnerElemContext(null, context));
