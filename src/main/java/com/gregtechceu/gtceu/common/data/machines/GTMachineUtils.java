@@ -73,9 +73,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -686,6 +684,7 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingModel(casingTexture, overlayModel)
+                .additionalDisplay(LargeCombustionEngineMachine::additionalDisplay)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant",
