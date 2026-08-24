@@ -111,7 +111,7 @@ public class SyncDataHolder {
     @SuppressWarnings("unchecked")
     public void writeClientPacket(HolderLookup.Provider lookup, RegistryFriendlyByteBuf buf) {
         Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().values().stream()
-                .filter(this::shouldSerializeClientField).collect(Collectors.toSet());
+                .filter(this::shouldSyncFieldToClient).collect(Collectors.toSet());
 
         var fieldData = new RegistryFriendlyByteBuf(Unpooled.buffer(), (RegistryAccess) lookup, ConnectionType.NEOFORGE);
         boolean hadErrorWritingData = false;
@@ -169,7 +169,7 @@ public class SyncDataHolder {
             boolean isNull = buf.readBoolean();
             if (isNull) {
                 trySetField(field, holder, null);
-                executeClientSyncCallbacks(field);
+                executeClientsideUpdateCallbacks(field);
                 continue;
             }
 
@@ -185,7 +185,7 @@ public class SyncDataHolder {
                 if (result != currentValue) {
                     trySetField(field, holder, result);
                 }
-                executeClientSyncCallbacks(field);
+                executeClientsideUpdateCallbacks(field);
             } catch (Exception e) {
                 GTCEu.LOGGER.error("Sync: Failed to read client packet on field {}", field.fieldName, e);
                 return;
@@ -194,13 +194,13 @@ public class SyncDataHolder {
         }
     }
 
-    private boolean shouldSerializeClientField(FieldSyncData field) {
+    private boolean shouldSyncFieldToClient(FieldSyncData field) {
         return (resyncAll || dirtySyncFields.contains(field.fieldName) ||
                 field.handle.get(holder) instanceof ISyncManaged syncManaged &&
                         syncManaged.getSyncDataHolder().needsSync());
     }
 
-    private void executeClientSyncCallbacks(FieldSyncData field) {
+    private void executeClientsideUpdateCallbacks(FieldSyncData field) {
         try {
             for (MethodHandle changeListenerHandle : field.changeListenerHandles) {
                 changeListenerHandle.invoke(holder);
