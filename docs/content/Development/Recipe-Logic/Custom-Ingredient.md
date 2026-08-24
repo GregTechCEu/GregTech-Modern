@@ -381,13 +381,11 @@ The following parts, you would do in your main java class and your main GTAddon 
 ```java title="Bonk.java"
 @Mod(Bonk.MOD_ID)
 public class Bonk {
-    // ...
-    private void registerRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
-        BonkRecipeTypes.init();
-    }
 
-    private void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
+    public BonkMod(IEventBus modBus) {
+        BonkRecipeTypes.init();
         BonkMachines.init();
+        BonkRecipeCapabilities.init();
     }
 }
 ```
@@ -403,11 +401,6 @@ public class BonkGTAddon implements IGTAddon {
     @Override
     public void addRecipes(Consumer<FinishedRecipe> provider) {
         BonkRecipes.init(provider);
-    }
-
-    @Override
-    public void registerRecipeCapabilities() {
-        BonkRecipeCapabilities.init();
     }
 }
 
