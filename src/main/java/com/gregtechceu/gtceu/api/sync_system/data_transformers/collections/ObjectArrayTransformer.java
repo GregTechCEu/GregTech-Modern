@@ -78,7 +78,7 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
                     length);
         }
 
-        if (length > current.length) {
+        if (length != current.length) {
             current = Arrays.copyOf(current, length);
         }
         for (int i = 0; i < length; i++) {

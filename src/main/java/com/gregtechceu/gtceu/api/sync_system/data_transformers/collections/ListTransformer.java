@@ -51,11 +51,10 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         if (current != null) current.clear();
         else current = new ArrayList<>(listTag.size());
-        List<T> finalCurrent = current;
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(t),
                     getInnerElemContext(null, context));
-            if (val != null) finalCurrent.add(val);
+            if (val != null) current.add(val);
         }
         return current;
     }
