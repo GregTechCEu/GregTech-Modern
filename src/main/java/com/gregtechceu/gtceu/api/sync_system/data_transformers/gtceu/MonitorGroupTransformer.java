@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.*;
-
 import net.minecraft.network.FriendlyByteBuf;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
