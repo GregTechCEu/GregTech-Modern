@@ -8,6 +8,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
@@ -59,7 +60,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf buf, Set<T> value, TransformerContext<Set<T>> context) {
+    public void writeToPacket(RegistryFriendlyByteBuf buf, Set<T> value, TransformerContext<Set<T>> context) {
         buf.writeVarInt(value.size());
         for (T elem : value) {
             getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
@@ -67,7 +68,7 @@ public class SetTransformer<T> implements ValueTransformer<Set<T>> {
     }
 
     @Override
-    public @Nullable Set<T> readFromPacket(FriendlyByteBuf buf, TransformerContext<Set<T>> context) {
+    public @Nullable Set<T> readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<Set<T>> context) {
         var len = buf.readVarInt();
         var current = context.currentValue();
 

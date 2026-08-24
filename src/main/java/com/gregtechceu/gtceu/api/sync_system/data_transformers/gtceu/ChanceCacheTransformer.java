@@ -11,6 +11,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
@@ -27,7 +28,7 @@ public class ChanceCacheTransformer implements
             ListTag cacheTag = new ListTag();
             cache.forEach((content, chance) -> {
                 CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.contentToNbt(content);
+                var obj = cap.toNbt(content, context.lookup());
                 compoundTag.put("entry", obj);
                 compoundTag.putInt("cached_chance", chance);
                 cacheTag.add(compoundTag);
@@ -55,7 +56,7 @@ public class ChanceCacheTransformer implements
             ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
             for (int i = 0; i < chanceTag.size(); ++i) {
                 CompoundTag chanceKey = chanceTag.getCompound(i);
-                var entry = cap.serializer.fromNbt(chanceKey.get("entry"));
+                var entry = cap.serializer.fromNbt(chanceKey.get("entry"), context.lookup());
                 int value = chanceKey.getInt("cached_chance");
                 // noinspection unchecked
                 map.put(entry, value);
@@ -65,11 +66,11 @@ public class ChanceCacheTransformer implements
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf buf, IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> value,
+    public void writeToPacket(RegistryFriendlyByteBuf buf, IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> value,
                               TransformerContext<IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>>> context) {}
 
     @Override
-    public @Nullable IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> readFromPacket(FriendlyByteBuf buf,
+    public @Nullable IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> readFromPacket(RegistryFriendlyByteBuf buf,
                                                                                            TransformerContext<IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>>> context) {
         // no-op, client sync not required
         return null;

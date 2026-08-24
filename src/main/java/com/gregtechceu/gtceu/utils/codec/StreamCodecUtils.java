@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.utils.codec;
 
+import com.mojang.datafixers.util.*;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
-import com.mojang.datafixers.util.Function12;
-import com.mojang.datafixers.util.Function13;
-import com.mojang.datafixers.util.Function8;
 import io.netty.buffer.ByteBuf;
 
 import java.util.Map;
@@ -42,6 +40,45 @@ public class StreamCodecUtils {
             }
         };
     }
+
+    public static <B, C, T1, T2, T3, T4, T5, T6, T7> StreamCodec<B, C> composite(final StreamCodec<? super B, T1> codec1,
+                                                                                 final Function<C, T1> getter1,
+                                                                                 final StreamCodec<? super B, T2> codec2,
+                                                                                 final Function<C, T2> getter2,
+                                                                                 final StreamCodec<? super B, T3> codec3,
+                                                                                 final Function<C, T3> getter3,
+                                                                                 final StreamCodec<? super B, T4> codec4,
+                                                                                 final Function<C, T4> getter4,
+                                                                                 final StreamCodec<? super B, T5> codec5,
+                                                                                 final Function<C, T5> getter5,
+                                                                                 final StreamCodec<? super B, T6> codec6,
+                                                                                 final Function<C, T6> getter6,
+                                                                                 final StreamCodec<? super B, T7> codec7,
+                                                                                 final Function<C, T7> getter7,
+                                                                                 final Function7<T1, T2, T3, T4, T5, T6, T7, C> factory) {
+        return new StreamCodec<B, C>() {
+            public C decode(B buffer) {
+                T1 t1 = (T1)codec1.decode(buffer);
+                T2 t2 = (T2)codec2.decode(buffer);
+                T3 t3 = (T3)codec3.decode(buffer);
+                T4 t4 = (T4)codec4.decode(buffer);
+                T5 t5 = (T5)codec5.decode(buffer);
+                T6 t6 = (T6)codec6.decode(buffer);
+                T7 t7 = (T7)codec7.decode(buffer);
+                return (C)factory.apply(t1, t2, t3, t4, t5, t6, t7);
+            }
+
+            public void encode(B buffer, C object) {
+                codec1.encode(buffer, getter1.apply(object));
+                codec2.encode(buffer, getter2.apply(object));
+                codec3.encode(buffer, getter3.apply(object));
+                codec4.encode(buffer, getter4.apply(object));
+                codec5.encode(buffer, getter5.apply(object));
+                codec6.encode(buffer, getter6.apply(object));
+            }
+        };
+    }
+
 
     public static <B, C, T1, T2, T3, T4, T5, T6, T7, T8> StreamCodec<B, C> composite(
                                                                                      final StreamCodec<? super B, T1> codec1,

@@ -13,6 +13,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Setter;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -83,7 +84,8 @@ public class SyncDataHolder {
     public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag tag) {
         for (var field : syncData.getServerSaveFields()) {
             Tag newValue = tag.get(field.nbtSaveKey);
-            if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) continue;
+            if (newValue == null || newValue instanceof CompoundTag compound &&
+                    (compound.isEmpty() || (compound.size() == 1 && compound.getBoolean("null")) )) continue;
 
             if (!confirmTransformerPresent(field, holder)) continue;
 
@@ -105,7 +107,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public void writeClientPacket(HolderLookup.Provider lookup, FriendlyByteBuf buf) {
+    public void writeClientPacket(HolderLookup.Provider lookup, RegistryFriendlyByteBuf buf) {
         Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().stream()
                 .filter(this::shouldSerializeClientField).collect(Collectors.toSet());
 
@@ -138,7 +140,7 @@ public class SyncDataHolder {
     }
 
     @SuppressWarnings("unchecked")
-    public void readClientPacket(HolderLookup.Provider lookup, FriendlyByteBuf buf) {
+    public void readClientPacket(HolderLookup.Provider lookup, RegistryFriendlyByteBuf buf) {
         int fieldsToRead = buf.readVarInt();
 
         for (int fieldIndex = 0; fieldIndex < fieldsToRead; fieldIndex++) {
@@ -256,12 +258,12 @@ public class SyncDataHolder {
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf buf, ISyncManaged value, TransformerContext<ISyncManaged> context) {
+        public void writeToPacket(RegistryFriendlyByteBuf buf, ISyncManaged value, TransformerContext<ISyncManaged> context) {
             value.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
         }
 
         @Override
-        public @Nullable ISyncManaged readFromPacket(FriendlyByteBuf buf, TransformerContext<ISyncManaged> context) {
+        public @Nullable ISyncManaged readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<ISyncManaged> context) {
             ISyncManaged syncManaged = context.currentValue();
             var clazz = context.type().getClassValue();
 

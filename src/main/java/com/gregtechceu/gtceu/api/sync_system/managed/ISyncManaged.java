@@ -3,6 +3,10 @@ package com.gregtechceu.gtceu.api.sync_system.managed;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.RegistryOps;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import org.jetbrains.annotations.Nullable;

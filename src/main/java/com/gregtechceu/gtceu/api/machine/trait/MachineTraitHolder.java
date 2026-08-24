@@ -11,6 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -241,7 +242,7 @@ public final class MachineTraitHolder {
         }
 
         @Override
-        public void writeToPacket(FriendlyByteBuf buf, MachineTraitHolder value,
+        public void writeToPacket(RegistryFriendlyByteBuf buf, MachineTraitHolder value,
                                   TransformerContext<MachineTraitHolder> context) {
             buf.writeVarInt(value.traitsToSave.size());
             value.traitsToSave.forEach((name, trait) -> {
@@ -252,7 +253,7 @@ public final class MachineTraitHolder {
         }
 
         @Override
-        public @Nullable MachineTraitHolder readFromPacket(FriendlyByteBuf buf,
+        public @Nullable MachineTraitHolder readFromPacket(RegistryFriendlyByteBuf buf,
                                                            TransformerContext<MachineTraitHolder> context) {
             var traitHolder = Objects.requireNonNull(context.currentValue());
             int length = buf.readVarInt();

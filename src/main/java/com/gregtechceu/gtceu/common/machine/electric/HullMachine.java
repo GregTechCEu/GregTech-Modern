@@ -19,6 +19,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.drawable.GuiTextures;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -107,11 +108,11 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
 
         // No-op as this isn't synced to client
         @Override
-        public void writeToPacket(FriendlyByteBuf buf, Object value, TransformerContext<Object> context) {}
+        public void writeToPacket(RegistryFriendlyByteBuf buf, Object value, TransformerContext<Object> context) {}
 
         // No-op as this isn't synced to client
         @Override
-        public @Nullable Object readFromPacket(FriendlyByteBuf buf, TransformerContext<Object> context) {
+        public @Nullable Object readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<Object> context) {
             return null;
         }
     }

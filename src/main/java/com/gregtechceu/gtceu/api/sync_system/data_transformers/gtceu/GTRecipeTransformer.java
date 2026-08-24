@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,14 +44,12 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf buf, GTRecipe value, TransformerContext<GTRecipe> context) {
-        buf.writeResourceLocation(value.id);
-        GTRecipeSerializer.SERIALIZER.toNetwork(buf, value);
+    public void writeToPacket(RegistryFriendlyByteBuf buf, GTRecipe value, TransformerContext<GTRecipe> context) {
+        GTRecipeSerializer.toNetwork(buf, value);
     }
 
     @Override
-    public @Nullable GTRecipe readFromPacket(FriendlyByteBuf buf, TransformerContext<GTRecipe> context) {
-        ResourceLocation id = buf.readResourceLocation();
-        return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buf);
+    public @Nullable GTRecipe readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<GTRecipe> context) {
+        return GTRecipeSerializer.fromNetwork(buf);
     }
 }

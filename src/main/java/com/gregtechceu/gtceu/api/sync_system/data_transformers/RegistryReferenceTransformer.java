@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
@@ -27,13 +28,13 @@ public record RegistryReferenceTransformer<T>(ResourceKey<? extends Registry<T>>
     }
 
     @Override
-    public void writeToPacket(FriendlyByteBuf buf, T value, TransformerContext<T> context) {
+    public void writeToPacket(RegistryFriendlyByteBuf buf, T value, TransformerContext<T> context) {
         buf.writeResourceKey(ResourceKey.create(registryKey, locationGetter.apply(value)));
     }
 
     @Override
-    public T readFromPacket(FriendlyByteBuf buf, TransformerContext<T> context) {
+    public T readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<T> context) {
         ResourceKey<T> key = buf.readResourceKey(registryKey);
-        return context.lookup().lookupOrThrow(registryKey).getOrThrow(key).value();
+        return buf.registryAccess().holderOrThrow(key).value();
     }
 }
