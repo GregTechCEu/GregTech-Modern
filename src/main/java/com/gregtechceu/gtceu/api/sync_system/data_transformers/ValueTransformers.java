@@ -223,7 +223,7 @@ public final class ValueTransformers {
         registerTransformer(GTRecipe.class, new GTRecipeTransformer());
 
         registerCodecTransformer(MachineRenderState.class, MachineRenderState.CODEC);
-        registerCodecTransformer(MonitorGroup.class, MonitorGroup.CODEC);
+        registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
         registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC);
 
         registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
