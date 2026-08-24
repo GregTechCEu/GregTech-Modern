@@ -11,10 +11,7 @@ import com.gregtechceu.gtceu.common.network.packets.hazard.SPacketSyncHazardZone
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -324,7 +321,8 @@ public class EnvironmentalHazardSavedData extends SavedData {
             float strength = buf.readFloat();
             boolean canSpread = buf.readBoolean();
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS.get(buf.readUtf());
-            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS
+                    .get(buf.readResourceKey(GTRegistries.Keys.MEDICAL_CONDITION));
             return new HazardZone(source, strength, canSpread, trigger, condition);
         }
     }
