@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents an object that provides a set of methods for encoding/decoding a value of type {@code <T>} into a
- * {@link Tag}
+ * {@link Tag} and {@link RegistryFriendlyByteBuf}
  * 
  * @param <T> The type which this transformer can encode
  */
