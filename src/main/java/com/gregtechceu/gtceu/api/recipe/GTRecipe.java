@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.core.HolderLookup;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class GTRecipe implements Recipe<RecipeInput> {
 
@@ -51,6 +53,11 @@ public class GTRecipe implements Recipe<RecipeInput> {
     public int subtickParallels;
     public int batchParallels;
     public int ocLevel = 0;
+    /**
+     * Called for each output before it is inserted into the output container.
+     * Does nothing by default, to be modified with {@link BiConsumer#andThen(BiConsumer)} in {@link RecipeModifier}
+     */
+    public BiConsumer<GTRecipe, Object> outputModifier = (recipe, object) -> {};
     public final GTRecipeCategory recipeCategory;
     // Lazy fields, since we need the recipe EUt very often
     @Getter(lazy = true)
@@ -58,6 +65,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
     @Getter(lazy = true)
     private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
     public int groupColor;
+    public boolean keepSpoilingProgress;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -73,11 +81,12 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     @NotNull CompoundTag data,
                     int duration, int parallels, int subtickParallels, int batchParallels,
                     @NotNull GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    int groupColor,
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels,
-                recipeCategory, groupColor);
+                recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     /**
@@ -93,13 +102,14 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     int duration,
                     GTRecipeSerializer.RecipeParallels allParallels,
                     GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    int groupColor,
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
                 recipeIO.inputChanceLogics(), recipeIO.outputChanceLogics(), recipeIO.tickInputChanceLogics(),
                 recipeIO.tickOutputChanceLogics(),
                 conditions, ingredientActions, data, duration, allParallels.parallels(),
                 allParallels.subtickParallels(),
-                allParallels.batchParallels(), recipeCategory, groupColor);
+                allParallels.batchParallels(), recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     /**
@@ -119,11 +129,12 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     int duration,
                     List<Integer> allParallels,
                     @NotNull GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    int groupColor,
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, List.of(), data, duration, allParallels.get(0), allParallels.get(1),
-                allParallels.get(2), recipeCategory, groupColor);
+                allParallels.get(2), recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     /**
@@ -144,10 +155,12 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     @NotNull CompoundTag data,
                     int duration,
                     @NotNull GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    int groupColor,
+                    boolean keepSpoilingProgress) {
         this(recipeType, id, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor);
+                conditions, ingredientActions, data, duration, 1, 1, 1, recipeCategory, groupColor,
+                keepSpoilingProgress);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -163,10 +176,11 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     @NotNull CompoundTag data,
                     int duration,
                     @NotNull GTRecipeCategory recipeCategory,
-                    int groupColor) {
+                    int groupColor,
+                    boolean keepSpoilingProgress) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, List.of(), data, duration, recipeCategory, groupColor);
+                conditions, List.of(), data, duration, recipeCategory, groupColor, keepSpoilingProgress);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -183,7 +197,8 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration, int parallels, int subtickParallels, int batchParallels,
-                    @NotNull GTRecipeCategory recipeCategory, int groupColor) {
+                    @NotNull GTRecipeCategory recipeCategory, int groupColor,
+                    boolean keepSpoilingProgress) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -206,6 +221,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
         this.batchParallels = batchParallels;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
         this.groupColor = groupColor;
+        this.keepSpoilingProgress = keepSpoilingProgress;
     }
 
     public GTRecipe copy() {
@@ -224,11 +240,12 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
                 new ArrayList<>(ingredientActions), data, duration, parallels, subtickParallels, batchParallels,
-                recipeCategory, groupColor);
+                recipeCategory, groupColor, keepSpoilingProgress);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
         copied.ocLevel = ocLevel;
+        copied.outputModifier = outputModifier;
         return copied;
     }
 
@@ -239,11 +256,12 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor, keepSpoilingProgress);
         copied.ocLevel = ocLevel;
         copied.parallels = parallels;
         copied.batchParallels = batchParallels;
         copied.subtickParallels = subtickParallels;
+        copied.outputModifier = outputModifier;
         return copied;
     }
 
@@ -361,5 +379,9 @@ public class GTRecipe implements Recipe<RecipeInput> {
     @Override
     public String toString() {
         return id != null ? id.toString() : "null id";
+    }
+
+    public void mutateOutput(Object stack) {
+        if (this.outputModifier != null) outputModifier.accept(this, stack);
     }
 }

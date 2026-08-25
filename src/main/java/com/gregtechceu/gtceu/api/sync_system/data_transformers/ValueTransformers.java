@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.recipe.ConsumedInputsData;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -187,5 +188,6 @@ public final class ValueTransformers {
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
 
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
+        registerTransformer(ConsumedInputsData.class, new ConsumedInputsDataTransformer());
     }
 }
