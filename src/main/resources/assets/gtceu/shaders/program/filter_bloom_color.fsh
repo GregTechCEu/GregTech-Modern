@@ -1,6 +1,6 @@
 #version 150
 
-#define MAX_DEPTH_DIFFERENCE 1.0e-5
+#define MAX_DEPTH_DIFFERENCE 1.0e-4
 
 uniform sampler2D DiffuseSampler;
 uniform sampler2D DiffuseDepthSampler;
