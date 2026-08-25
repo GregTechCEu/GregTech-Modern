@@ -110,7 +110,7 @@ public final class ClassSyncData {
                     changeListeners.getOrDefault(field.getName(), List.of()));
             managedFields.put(field.getName(), syncData);
             if (hasClientSync) clientSyncFields.put(field.getName(), syncData);
-            if (hasSaveField) serverSaveFields.put(field.getName(),syncData);
+            if (hasSaveField) serverSaveFields.put(field.getName(), syncData);
         }
 
         Class<?> parent = clazz.getSuperclass();
@@ -131,7 +131,7 @@ public final class ClassSyncData {
      */
     public void setCustomTransformerForField(String fieldName, ValueTransformer<?> transformer) {
         Objects.requireNonNull(managedFields.get(fieldName), "Unknown save/sync field: " + fieldName)
-                        .setTransformer(transformer);
+                .setTransformer(transformer);
     }
 
     /**

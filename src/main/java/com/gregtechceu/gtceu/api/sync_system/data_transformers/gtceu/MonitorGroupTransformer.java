@@ -27,20 +27,24 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
 
         // Backwards compat
 
-        var positions = compoundTag.contains("positions", Tag.TAG_LIST) ? compoundTag.getList("positions", Tag.TAG_COMPOUND) : null;
-        var placeholderItems = compoundTag.contains("placeholderSlots", Tag.TAG_COMPOUND) ? compoundTag.getCompound("placeholderSlots") : null;
-        var targetPos = compoundTag.contains("targetPos", Tag.TAG_COMPOUND) ? compoundTag.getCompound("targetPos") : null;
+        var positions = compoundTag.contains("positions", Tag.TAG_LIST) ?
+                compoundTag.getList("positions", Tag.TAG_COMPOUND) : null;
+        var placeholderItems = compoundTag.contains("placeholderSlots", Tag.TAG_COMPOUND) ?
+                compoundTag.getCompound("placeholderSlots") : null;
+        var targetPos = compoundTag.contains("targetPos", Tag.TAG_COMPOUND) ? compoundTag.getCompound("targetPos") :
+                null;
         var items = compoundTag.contains("items", Tag.TAG_COMPOUND) ? compoundTag.getCompound("items") : null;
 
         if (positions != null && !compoundTag.contains("monitorPositions")) {
             List<BlockPos> posList = new ArrayList<>();
 
-            for (int i=0; i<positions.size(); i++) {
+            for (int i = 0; i < positions.size(); i++) {
                 CompoundTag posTag = positions.getCompound(i);
                 posList.add(NbtUtils.readBlockPos(posTag));
             }
 
-            compoundTag.put("monitorPositions", BlockPos.CODEC.listOf().encodeStart(context.nbtOps(), posList).getOrThrow(false, GTCEu.LOGGER::error));
+            compoundTag.put("monitorPositions", BlockPos.CODEC.listOf().encodeStart(context.nbtOps(), posList)
+                    .getOrThrow(false, GTCEu.LOGGER::error));
         }
 
         if (placeholderItems != null && !compoundTag.contains("placeholderItems")) {
@@ -50,7 +54,8 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
 
         if (targetPos != null) {
             BlockPos pos = NbtUtils.readBlockPos(targetPos);
-            compoundTag.put("targetPos", BlockPos.CODEC.encodeStart(context.nbtOps(), pos).getOrThrow(false, GTCEu.LOGGER::error));
+            compoundTag.put("targetPos",
+                    BlockPos.CODEC.encodeStart(context.nbtOps(), pos).getOrThrow(false, GTCEu.LOGGER::error));
         }
 
         if (items != null) {
@@ -62,7 +67,7 @@ public class MonitorGroupTransformer implements ValueTransformer<MonitorGroup> {
 
     @Override
     public void writeToPacket(FriendlyByteBuf buf, MonitorGroup value, TransformerContext<MonitorGroup> context) {
-        buf.writeNbt((CompoundTag)serializeNBT(value, context));
+        buf.writeNbt((CompoundTag) serializeNBT(value, context));
     }
 
     @Override

@@ -26,5 +26,4 @@ public class SyncSystemCodecs {
             return "Char";
         }
     };
-
 }
