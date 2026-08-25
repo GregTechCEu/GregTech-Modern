@@ -26,8 +26,6 @@ public class ExampleMod {
 }
 ```
 
-1. You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
-
 We will set up a condition that requires that the power buffer of the machine is above a certain Y level.
 ```java
 public class ExampleCondition extends RecipeCondition<ExampleCondition> {
