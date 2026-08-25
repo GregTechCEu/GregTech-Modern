@@ -19,6 +19,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -182,9 +183,8 @@ public final class ValueTransformers {
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
         registerCodecTransformer(ConsumedInputsData.class, ConsumedInputsData.CODEC);
 
-        registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
-        registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(Material::getResourceLocation, GTRegistries.MATERIALS::get));
-
+        registerCodecTransformer(GTRecipeType.class, ResourceLocation.CODEC.xmap(GTRegistries.RECIPE_TYPES::get, GTRecipeType::getRegistryName));
+        registerCodecTransformer(Material.class, ResourceLocation.CODEC.xmap(GTRegistries.MATERIALS::get, Material::getResourceLocation));
         // spotless:on
     }
 }
