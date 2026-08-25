@@ -35,19 +35,18 @@ import java.util.function.UnaryOperator;
 
 public class MonitorGroup {
 
+    // spotless:off
     public static final Codec<MonitorGroup> CODEC = RecordCodecBuilder
             .create(instance -> instance.group(
-                    BlockPos.CODEC.listOf().fieldOf("monitorPositions")
-                            .forGetter(g -> g.monitorPositions.stream().toList()),
-                    Codec.STRING.fieldOf("name").forGetter(MonitorGroup::getName),
-                    ItemStack.CODEC.listOf().fieldOf("items").forGetter(g -> g.getItemStackHandler().toList()),
-                    ItemStack.CODEC.listOf().fieldOf("placeholderItems")
-                            .forGetter(g -> g.getPlaceholderSlotsHandler().toList()),
-                    BlockPos.CODEC.optionalFieldOf("target").forGetter(g -> Optional.ofNullable(g.getTargetRaw())),
-                    Direction.CODEC.optionalFieldOf("targetSide")
-                            .forGetter(g -> Optional.ofNullable(g.getTargetCoverSide())),
-                    Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot))
+                            BlockPos.CODEC.listOf().fieldOf("monitorPositions").forGetter(g -> g.monitorPositions.stream().toList()),
+                            Codec.STRING.fieldOf("name").forGetter(MonitorGroup::getName),
+                            ItemStack.CODEC.listOf().fieldOf("items").forGetter(g -> g.getItemStackHandler().toList()),
+                            ItemStack.CODEC.listOf().fieldOf("placeholderItems").forGetter(g -> g.getPlaceholderSlotsHandler().toList()),
+                            BlockPos.CODEC.optionalFieldOf("targetPos").forGetter(g -> Optional.ofNullable(g.getTargetRaw())),
+                            Direction.CODEC.optionalFieldOf("targetSide").forGetter(g -> Optional.ofNullable(g.getTargetCoverSide())),
+                            Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot))
                     .apply(instance, MonitorGroup::new));
+    // spotless:on
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MonitorGroup> STREAM_CODEC = StreamCodecUtils.composite(
             BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()), (MonitorGroup m) -> m.monitorPositions.stream().toList(),
