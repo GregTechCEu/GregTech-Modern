@@ -27,9 +27,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.codecs.PrimitiveCodec;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -110,27 +107,6 @@ public final class ValueTransformers {
         if (REGISTERED.containsKey(type))
             throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
         REGISTERED.put(type, transformer);
-    }
-
-    /**
-     * Creates and registers a {@link ValueTransformer} for the given class using predefined NBT parsing functions.
-     *
-     * @param type     The class to register this {@link ValueTransformer} for
-     * @param writeNBT A function that writes the value into a specific tag type
-     * @param readNBT  A function that reads the value from a specific tag type
-     * @param tagClass The tag type the value is serialized into
-     */
-    public static <T,
-            TagType extends Tag> void registerSimpleClassTransformer(Class<T> type, Function<T, TagType> writeNBT,
-                                                                     Function<TagType, @Nullable T> readNBT,
-                                                                     BiConsumer<FriendlyByteBuf, T> writePacket,
-                                                                     Function<FriendlyByteBuf, @Nullable T> readPacket,
-                                                                     Class<TagType> tagClass) {
-        if (REGISTERED.containsKey(type))
-            throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
-        ValueTransformer<T> transformer = new SimpleClassTransformer<>(writeNBT, readNBT, writePacket, readPacket,
-                tagClass);
-        REGISTERED.putIfAbsent(type, transformer);
     }
 
     public static <T> void registerCodecTransformer(Class<T> type, Codec<T> codec) {
