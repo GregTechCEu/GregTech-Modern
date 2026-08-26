@@ -69,8 +69,8 @@ public final class SableAssemblyRotation {
             if (moved == null) {
                 continue;
             }
-            CompoundTag data = old.getSyncDataHolder().serializeNBT(registries, false, false);
-            moved.getSyncDataHolder().deserializeNBT(registries, data, false);
+            CompoundTag data = old.getSyncDataHolder().serializeNBT(registries);
+            moved.getSyncDataHolder().deserializeNBT(registries, data);
             covers.setCoverAtSide(moved, newSide);
         }
     }

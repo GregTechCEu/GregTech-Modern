@@ -10,11 +10,15 @@ import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
+import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -31,19 +35,28 @@ import java.util.function.UnaryOperator;
 
 public class MonitorGroup {
 
+    // spotless:off
     public static final Codec<MonitorGroup> CODEC = RecordCodecBuilder
             .create(instance -> instance.group(
-                    BlockPos.CODEC.listOf().fieldOf("monitorPositions")
-                            .forGetter(g -> g.monitorPositions.stream().toList()),
-                    Codec.STRING.fieldOf("name").forGetter(MonitorGroup::getName),
-                    ItemStack.CODEC.listOf().fieldOf("items").forGetter(g -> g.getItemStackHandler().toList()),
-                    ItemStack.CODEC.listOf().fieldOf("placeholderItems")
-                            .forGetter(g -> g.getPlaceholderSlotsHandler().toList()),
-                    BlockPos.CODEC.optionalFieldOf("target").forGetter(g -> Optional.ofNullable(g.getTargetRaw())),
-                    Direction.CODEC.optionalFieldOf("targetSide")
-                            .forGetter(g -> Optional.ofNullable(g.getTargetCoverSide())),
-                    Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot))
+                            BlockPos.CODEC.listOf().fieldOf("monitorPositions").forGetter(g -> g.monitorPositions.stream().toList()),
+                            Codec.STRING.fieldOf("name").forGetter(MonitorGroup::getName),
+                            ItemStack.CODEC.listOf().fieldOf("items").forGetter(g -> g.getItemStackHandler().toList()),
+                            ItemStack.CODEC.listOf().fieldOf("placeholderItems").forGetter(g -> g.getPlaceholderSlotsHandler().toList()),
+                            BlockPos.CODEC.optionalFieldOf("targetPos").forGetter(g -> Optional.ofNullable(g.getTargetRaw())),
+                            Direction.CODEC.optionalFieldOf("targetSide").forGetter(g -> Optional.ofNullable(g.getTargetCoverSide())),
+                            Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot))
                     .apply(instance, MonitorGroup::new));
+    // spotless:on
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, MonitorGroup> STREAM_CODEC = StreamCodecUtils.composite(
+            BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()), (MonitorGroup m) -> m.monitorPositions.stream().toList(),
+            ByteBufCodecs.STRING_UTF8, MonitorGroup::getName,
+            ItemStack.LIST_STREAM_CODEC, (m) -> m.getItemStackHandler().toList(),
+            ItemStack.LIST_STREAM_CODEC, (m) -> m.getPlaceholderSlotsHandler().toList(),
+            ByteBufCodecs.optional(BlockPos.STREAM_CODEC), (m) -> Optional.ofNullable(m.getTargetRaw()),
+            ByteBufCodecs.optional(Direction.STREAM_CODEC), (m) -> Optional.ofNullable(m.getTargetCoverSide()),
+            ByteBufCodecs.INT, MonitorGroup::getDataSlot,
+            MonitorGroup::new);
 
     @Getter
     private final Set<BlockPos> monitorPositions = new HashSet<>();
