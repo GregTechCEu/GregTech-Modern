@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.common.data.GTOreVeins;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.data.loot.GTLootModifications;
 import com.gregtechceu.gtceu.data.loot.GTLootTables;
@@ -43,7 +45,8 @@ public class DataGenerators {
                             .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                             .add(Registries.PLACED_FEATURE, GTPlacedFeatures::bootstrap)
                             .add(Registries.DENSITY_FUNCTION, GTDensityFunctions::bootstrap)
-                            .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
+                            .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap)
+                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap),
                     set));
             generator.addProvider(true,
                     new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
