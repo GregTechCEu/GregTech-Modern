@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
@@ -69,23 +71,19 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         getSyncDataHolder().deserializeNBT(getHolderLookup(), tag);
     }
 
-    /**
-     * Loads BE data from client update packet
-     */
-    @MustBeInvokedByOverriders
-    public void clientLoad(CompoundTag tag) {
-        getSyncDataHolder().deserializeClientData(getHolderLookup(), tag);
-    }
-
     @Override
     public final void handleUpdateTag(CompoundTag tag) {
-        this.clientLoad(tag);
+        byte[] data = tag.getByteArray("data");
+        getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
     }
 
     @Override
     public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         CompoundTag tag = pkt.getTag();
-        if (tag != null) clientLoad(tag);
+        if (tag != null) {
+            byte[] data = tag.getByteArray("data");
+            getSyncDataHolder().readClientPacket(getHolderLookup(), new FriendlyByteBuf(Unpooled.wrappedBuffer(data)));
+        }
     }
 
     /**
@@ -93,10 +91,7 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        getSyncDataHolder().resyncAllFields();
-        tag.merge(getSyncDataHolder().serializeClientData(getHolderLookup()));
-        return tag;
+        return writeClientPacket(true);
     }
 
     /**
@@ -104,8 +99,18 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
      */
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this,
-                b -> getSyncDataHolder().serializeClientData(getHolderLookup()));
+        return ClientboundBlockEntityDataPacket.create(this, b -> writeClientPacket(false));
+    }
+
+    private CompoundTag writeClientPacket(boolean fullSync) {
+        var stream = new FriendlyByteBuf(Unpooled.buffer());
+        if (fullSync) getSyncDataHolder().resyncAllFields();
+        getSyncDataHolder().writeClientPacket(getHolderLookup(), stream);
+
+        stream.capacity(stream.readableBytes());
+        CompoundTag data = new CompoundTag();
+        data.putByteArray("data", stream.array());
+        return data;
     }
 
     private HolderLookup.Provider getHolderLookup() {
