@@ -2,28 +2,29 @@ package com.gregtechceu.gtceu.api.fluids;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.block.GTLiquidBlock;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.base.Preconditions;
@@ -46,6 +47,7 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.fluids.FluidConstants.*;
 
+@SuppressWarnings("unused")
 @Accessors(fluent = true, chain = true)
 public class FluidBuilder {
 
@@ -88,9 +90,12 @@ public class FluidBuilder {
     private boolean hasCustomStill = false;
     @Getter
     private boolean hasCustomFlowing = false;
+    @Setter
+    private @Nullable MaterialIconType customIconType = null;
+    @Setter
+    private @Nullable MaterialIconSet customIconSet = null;
 
-    @Getter
-    private boolean hasFluidBlock = false;
+    private boolean hasFluidBlock = ConfigHolder.INSTANCE.gameplay.allFluidsHaveBlocks;
     private boolean hasBucket = true;
 
     public FluidBuilder() {}
@@ -127,6 +132,16 @@ public class FluidBuilder {
      */
     public FluidBuilder disableColor() {
         this.isColorEnabled = false;
+        return this;
+    }
+
+    /**
+     * Forcibly enables coloring the fluid. Use when you want to use a custom fluid texture and also tint it.
+     *
+     * @return this
+     */
+    public FluidBuilder forceEnableColor() {
+        this.isColorEnabled = true;
         return this;
     }
 
@@ -253,6 +268,16 @@ public class FluidBuilder {
     }
 
     /**
+     * Disables the auto-generated fluid block for the fluid
+     *
+     * @return this
+     */
+    public FluidBuilder disableBlock() {
+        this.hasFluidBlock = false;
+        return this;
+    }
+
+    /**
      * Disables the auto-generated fluid bucket for the fluid
      *
      * @return this
@@ -286,34 +311,41 @@ public class FluidBuilder {
         determineLuminosity(material);
         determineViscosity(material);
 
-        final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
         // noinspection DataFlowIssue
         var builder = registrate.fluid(this.name, this.still, this.flowing,
-                (p, $1, $2) -> makeFluidType(registrate, p, material, key, langKey),
+                (p, $1, $2) -> makeFluidType(registrate, p, material, key),
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop());
+                .properties(p -> this.setupFluidTypeProperties(p, material))
+                .fluidProperties(p -> this.setupFluidProperties(p, material))
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                .renderType(() -> RenderType::translucent);
         if (this.hasFluidBlock) {
-            builder.block()
+            // noinspection Convert2MethodRef
+            builder.block(GTLiquidBlock::new)
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                    .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
+                    .properties(p -> p.liquid())
                     .color(() -> () -> (state, level, pos, index) -> {
-                        return IClientFluidTypeExtensions.of(state.getFluidState())
-                                .getTintColor(state.getFluidState(), level, pos);
+                        if (this.isColorEnabled) {
+                            return index == 0 ? this.color : material.getMaterialARGB(index);
+                        } else {
+                            return INFER_COLOR;
+                        }
                     })
                     .register();
         } else {
-            // noinspection DataFlowIssue
-            builder.noBlock().fluidProperties(p -> p.block(null));
+            builder.noBlock();
         }
         if (this.hasBucket) {
-            builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material, langKey))
+            builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material))
                     .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                     .color(() -> () -> GTBucketItem::color)
                     .register();
         } else {
-            // noinspection DataFlowIssue
-            builder.noBucket().fluidProperties(p -> p.bucket(null));
+            builder.noBucket();
         }
 
         builder.onRegister(fluid -> {
@@ -331,18 +363,42 @@ public class FluidBuilder {
 
     @ApiStatus.Internal
     public void determineTextures(Material material, FluidStorageKey key) {
+        MaterialIconType iconType = customIconType != null ? customIconType : key.getIconType();
+        MaterialIconSet iconSet = customIconSet != null ? customIconSet : material.getMaterialIconSet();
+
+        boolean usesSameTextureForStillAndFlowing = false;
         if (hasCustomStill || material.isNull()) {
-            still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
+            still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name + "_still");
+            if (!GTUtil.resourceExists(MaterialIconType.TEXTURE_ID_CONVERTER.idToFile(still))) {
+                still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
+                usesSameTextureForStillAndFlowing = true;
+            }
         } else {
-            still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
+            still = iconType.getBlockTexturePath(iconSet, "still", true);
+            if (still.equals(GTModels.BLANK_TEXTURE)) {
+                still = iconType.getBlockTexturePath(iconSet, null, true);
+                usesSameTextureForStillAndFlowing = true;
+            }
         }
 
         if (hasCustomFlowing) {
             flowing = ResourceLocation.fromNamespaceAndPath(material.getModid(),
                     "block/fluids/fluid." + name + "_flow");
-        } else {
-            // FIXME this is actually wrong, flowing fluids should have 32x32 textures (double the size of still ones).
+
+            if (!GTUtil.resourceExists(MaterialIconType.TEXTURE_ID_CONVERTER.idToFile(flowing))) {
+                // this is technically wrong, flowing fluids should have 32x32 textures (double the size of still ones)
+                // it'll look weird if the still texture isn't a single color (note: gases are, so those are fine)
+                flowing = still;
+            }
+        } else if (usesSameTextureForStillAndFlowing) {
+            // same note as above
             flowing = still;
+        } else {
+            flowing = iconType.getBlockTexturePath(iconSet, "flow", true);
+            if (flowing.equals(GTModels.BLANK_TEXTURE)) {
+                // same note as above
+                flowing = still;
+            }
         }
     }
 
@@ -381,7 +437,7 @@ public class FluidBuilder {
 
     private void determineColor(Material material) {
         if (color != INFER_COLOR) return;
-        if (isColorEnabled && !material.isNull()) {
+        if (isColorEnabled && !material.isNull() && material.hasFluidColor()) {
             color = GTUtil.convertRGBtoARGB(material.getMaterialRGB());
         }
     }
@@ -427,56 +483,45 @@ public class FluidBuilder {
         };
     }
 
-    private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
-                                    Material material, FluidStorageKey key, String langKey) {
-        properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+    private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material) {
+        final boolean canSwim = this.density >= MIN_SWIMMABLE_DENSITY && this.viscosity <= MAX_SWIMMABLE_VISCOSITY;
+        return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
                 .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
                 .temperature(this.temperature)
                 .density(this.density)
                 .lightLevel(this.luminosity)
-                .viscosity(this.viscosity);
-        FluidType type = new FluidType(properties) {
+                .viscosity(this.viscosity)
+                .motionScale(0.014D * ((double) DEFAULT_LIQUID_VISCOSITY / this.viscosity))
+                .canSwim(canSwim)
+                .supportsBoating(canSwim);
+    }
 
-            @Override
-            public String getDescriptionId() {
-                return material.getUnlocalizedName();
-            }
+    @SuppressWarnings("DataFlowIssue")
+    private BaseFlowingFluid.Properties setupFluidProperties(BaseFlowingFluid.Properties properties,
+                                                             Material material) {
+        if (!this.hasFluidBlock) properties.block(null);
+        if (!this.hasBucket) properties.bucket(null);
 
-            @Override
-            public Component getDescription() {
-                return Component.translatable(langKey, material.getLocalizedName());
-            }
+        // limit flow rate a maximum to 1 tick per step
+        // (0 or negative values don't cause issues AFAIK, but they aren't good either.)
+        return properties.tickRate(Math.max(this.viscosity / 200, 1));
+    }
 
-            @Override
-            public Component getDescription(FluidStack stack) {
-                return this.getDescription();
-            }
+    private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
+                                    Material material, FluidStorageKey key) {
+        // sadly, we have to apply this here instead of in setupFluidTypeProperties because Registrate overwrites
+        // whatever we assign there.
+        final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
+        properties.descriptionId(langKey);
 
-            @Override
-            public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
-                FluidStorage fluidStorage = material.getProperty(PropertyKey.FLUID);
-                // always vaporize plasmas and gases
-                FluidStorage.FluidEntry plasmaEntry = fluidStorage.getEntry(FluidStorageKeys.PLASMA);
-                if (plasmaEntry != null) {
-                    FluidBuilder plasmaBuilder = plasmaEntry.getBuilder();
-                    return plasmaBuilder != null && plasmaBuilder.hasFluidBlock();
-                }
-                FluidStorage.FluidEntry gasEntry = fluidStorage.getEntry(FluidStorageKeys.GAS);
-                if (gasEntry != null) {
-                    var gasBuilder = gasEntry.getBuilder();
-                    return gasBuilder != null && gasBuilder.hasFluidBlock();
-                }
-
-                return false;
-            }
-        };
+        FluidType type = new GTFluidType(properties, material);
         OneTimeEventReceiver.addModListener(owner, RegisterClientExtensionsEvent.class, event -> {
             final int color = isColorEnabled ? this.color : INFER_COLOR;
             if (still == null || flowing == null) {
                 this.determineTextures(material, key);
             }
-            event.registerFluidType(new GTClientFluidTypeExtensions(still, flowing, color), type);
+            event.registerFluidType(new GTClientFluidTypeExtensions(type, still, flowing, color), type);
         });
         return type;
     }

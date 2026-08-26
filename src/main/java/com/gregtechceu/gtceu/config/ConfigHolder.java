@@ -818,6 +818,25 @@ public class ConfigHolder {
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
         @Configurable
+        @Configurable.Comment({
+                "Whether or not low density fluid blocks (such as gases and plasmas) should flow up or not.",
+                "May cause bugs or odd interactions with other mods. Disable this if that happens to you.",
+                "Default: true" })
+        @Configurable.Synchronized
+        public boolean lowDensityFluidsFlowUp = true;
+        @Configurable
+        @Configurable.Comment({
+                "Whether or not gases and plasmas should vaporize when placed from a bucket (like water does in the Nether).",
+                "Default: true" })
+        @Configurable.Synchronized
+        public boolean gasesVaporizeOnPlacement = true;
+        @Configurable
+        @Configurable.Comment({
+                "Whether or not ALL GT fluids have blocks by default. Individual fluids can override this option.",
+                "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean allFluidsHaveBlocks = false;
+        @Configurable
         @Configurable.Comment({ "List of domains that are allowed in the image module" })
         public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
                 "raw.githubusercontent.com" };
@@ -862,6 +881,14 @@ public class ConfigHolder {
         @Configurable.Comment({ "Duration of the multiblock in-world preview (in seconds)", "Default: 10" })
         @Configurable.Range(min = 1, max = 999)
         public int inWorldPreviewDuration = 10;
+        @Configurable
+        @Configurable.Comment({ "If enabled, low density fluid blocks (such as gases and plasmas) render upside down.",
+                "May cause weird visuals or crashes with other mods, so try disabling this if you're having issues.",
+                "This config doesn't do anything if gameplay.lowDensityFluidsFlowUp is disabled.",
+                "Note that things may look especially weird if that config is enabled but this one isn't.",
+                "Default: true" })
+        @Configurable.Synchronized
+        public boolean lowDensityFluidsRenderUpsideDown = true;
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
         @Configurable

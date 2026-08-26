@@ -90,6 +90,7 @@ dependencies {
     clientLocalRuntime(forge.sodium.impl)
     sodiumShellSource(forge.sodium.full)
     clientLocalRuntime(files(tasks.named('stripSodiumShellLib')))
+//    clientLocalRuntime(forge.embeddium)
 
     clientLocalRuntime(forge.fabricApi.base)
     clientLocalRuntime(forge.fabricApi.rendering)

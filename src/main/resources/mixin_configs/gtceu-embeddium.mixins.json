@@ -9,6 +9,7 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
+        "client.embeddium.EmbeddiumFluidRendererMixin",
         "client.bloom.normal.embeddium.BlockRendererMixin",
         "client.bloom.normal.embeddium.DefaultMaterialsMixin",
         "client.bloom.normal.embeddium.DefaultTerrainRenderPassesMixin",

@@ -16,13 +16,16 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
@@ -332,28 +335,56 @@ public class GTModels {
                     MixinHelpers.addFluidTexture(material, fluidEntry);
                 }
 
-                // bucket models.
                 Fluid fluid = storage.get(key);
-                if (fluid instanceof GTFluid gtFluid) {
-                    // read the base bucket model JSON
-                    JsonObject original;
-                    try (BufferedReader reader = Minecraft.getInstance().getResourceManager()
-                            .openAsReader(GTCEu.id("models/item/bucket/bucket.json"))) {
-                        original = GsonHelper.parse(reader, true);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                if (!(fluid instanceof GTFluid gtFluid)) {
+                    continue;
+                }
+                // bucket models
+                // read the base bucket model JSON
+                JsonObject original;
+                try (BufferedReader reader = Minecraft.getInstance().getResourceManager()
+                        .openAsReader(GTCEu.id("models/item/bucket/bucket.json"))) {
+                    original = GsonHelper.parse(reader, true);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
-                    JsonObject newJson = original.deepCopy();
-                    newJson.addProperty("fluid", BuiltInRegistries.FLUID.getKey(gtFluid).toString());
-                    if (gtFluid.getFluidType().isLighterThanAir()) {
-                        newJson.addProperty("flip_gas", true);
-                    }
-                    if (gtFluid.getFluidType().getLightLevel() > 0) {
-                        newJson.addProperty("apply_fluid_luminosity", true);
-                    }
+                JsonObject newJson = original.deepCopy();
+                newJson.addProperty("fluid", BuiltInRegistries.FLUID.getKey(gtFluid).toString());
+                if (gtFluid.getFluidType().isLighterThanAir()) {
+                    newJson.addProperty("flip_gas", true);
+                }
+                if (gtFluid.getFluidType().getLightLevel() > 0) {
+                    newJson.addProperty("apply_fluid_luminosity", true);
+                }
 
-                    GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()), newJson);
+                GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(gtFluid.getBucket()), newJson);
+
+                // --- separator ---
+
+                // block models
+                BlockState fluidBlockState = fluid.defaultFluidState().createLegacyBlock();
+                if (!fluidBlockState.isAir()) {
+                    Block fluidBlock = fluidBlockState.getBlock();
+                    ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(fluidBlock);
+                    ResourceLocation modelId = blockId.withPrefix("block/");
+
+                    GTDynamicResourcePack.addBlockState(blockId,
+                            BlockModelGenerators.createSimpleBlock(fluidBlock, modelId));
+
+                    ResourceLocation stillTexture = IClientFluidTypeExtensions.of(fluid).getStillTexture();
+                    GTDynamicResourcePack.addBlockModel(modelId, () -> {
+                        JsonObject root = new JsonObject();
+
+                        JsonObject textures = new JsonObject();
+                        // noinspection ConstantValue
+                        if (stillTexture != null) {
+                            textures.addProperty("particle", stillTexture.toString());
+                        }
+
+                        root.add("textures", textures);
+                        return root;
+                    });
                 }
             }
         }
