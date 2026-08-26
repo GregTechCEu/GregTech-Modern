@@ -40,7 +40,7 @@ public class MonitorGroup {
                     Codec.STRING.fieldOf("name").forGetter(MonitorGroup::getName),
                     ItemStack.CODEC.listOf().fieldOf("items").forGetter(g -> g.getItemStackHandler().toList()),
                     ItemStack.CODEC.listOf().fieldOf("placeholderItems").forGetter(g -> g.getPlaceholderSlotsHandler().toList()),
-                    BlockPos.CODEC.optionalFieldOf("target").forGetter(g -> Optional.ofNullable(g.getTargetRaw())),
+                    BlockPos.CODEC.optionalFieldOf("targetPos").forGetter(g -> Optional.ofNullable(g.getTargetRaw())),
                     Direction.CODEC.optionalFieldOf("targetSide").forGetter(g -> Optional.ofNullable(g.getTargetCoverSide())),
                     Codec.INT.fieldOf("dataSlot").forGetter(MonitorGroup::getDataSlot))
                     .apply(instance, MonitorGroup::new));

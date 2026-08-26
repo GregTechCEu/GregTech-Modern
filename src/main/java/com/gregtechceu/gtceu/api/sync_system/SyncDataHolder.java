@@ -136,6 +136,10 @@ public class SyncDataHolder {
             }
         }
 
+        resyncAll = false;
+        dirtySyncFields.clear();
+        hasDirtyChildSyncObject = false;
+
         if (hadErrorWritingData) {
             buf.writeVarInt(0);
             return;
@@ -143,10 +147,6 @@ public class SyncDataHolder {
 
         buf.writeVarInt(fieldsToSerialize.size());
         buf.writeBytes(fieldData);
-
-        resyncAll = false;
-        dirtySyncFields.clear();
-        hasDirtyChildSyncObject = false;
     }
 
     @SuppressWarnings("unchecked")
@@ -266,6 +266,7 @@ public class SyncDataHolder {
 
         @Override
         public void writeToPacket(FriendlyByteBuf buf, ISyncManaged value, TransformerContext<ISyncManaged> context) {
+            if (context.isClientFullSyncUpdate()) value.getSyncDataHolder().resyncAllFields();
             value.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
         }
 
