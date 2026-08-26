@@ -157,7 +157,7 @@ public class GTOreVeins {
     /**
      * @deprecated Your ore veins should now be registered as datapack content.<br>
      *             To do this via JSON, see {@link GTOreDefinition#DIRECT_CODEC}.<br>
-     *             To do this via Java, see {@link #bootstrap(BootstapContext)} and {@link DataGenerators}.<br>
+     *             To do this via Java, see {@link #bootstrap(BootstapContext)} and {@link DataGenerators} for a datagen example.<br>
      *             To do this via KubeJS, see {@link GTOreVeinEventJS}
      */
     @Deprecated(since = "8.0.0", forRemoval = true)
@@ -168,7 +168,7 @@ public class GTOreVeins {
     /**
      * @deprecated Your ore veins should now be registered as datapack content.<br>
      *             To do this via JSON, see {@link GTOreDefinition#DIRECT_CODEC}.<br>
-     *             To do this via Java, see {@link #bootstrap(BootstapContext)} and {@link DataGenerators}.<br>
+     *             To do this via Java, see {@link #bootstrap(BootstapContext)} and {@link DataGenerators} for a datagen example.<br>
      *             To do this via KubeJS, see {@link GTOreVeinEventJS}
      */
     @Deprecated(since = "8.0.0", forRemoval = true)
