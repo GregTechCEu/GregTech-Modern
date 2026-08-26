@@ -120,23 +120,18 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                     if (list.isEmpty()) return col.child(Text.lang("gtceu.gui.waiting_list_empty").asWidget());
                     col.child(Text.lang("gtceu.gui.waiting_list").asWidget().margin(0, 2));
                     col.child(new ScrollPreservingGrid(savedScroll)
-                            .size(167, 67)
+                            .size(167, 70)
                             .scrollable(new VerticalScrollData())
-                            .gridOfSizeWidth(list.size(), 1, (x, y, index) -> {
+                            .gridOfSizeWidth(9, 1, (x, y, index) -> {
                                 var widget = new AEStackDisplayWidget(list, index);
                                 var row = Flow.row()
                                         .coverChildrenHeight()
                                         .child(widget);
+                                if (index >= list.size()) return row;
                                 var entry = list.get(index);
                                 return row
-                                        .child(Text.comp(Component
-                                                .translatable("gtceu.universal.liters",
-                                                        FormattingUtil.formatNumbers(entry.amount()))
-                                                .append(CommonComponents.SPACE)
-                                                .append(entry.what().getDisplayName()))
-                                                .asWidget()
-                                                .width(140)
-                                                .marginLeft(3));
+                                        .child(Text.str("%sB %s", FormattingUtil.formatNumbers(entry.amount()),
+                                                entry.what().getDisplayName()).asWidget());
                             }));
                     return col;
                 });
