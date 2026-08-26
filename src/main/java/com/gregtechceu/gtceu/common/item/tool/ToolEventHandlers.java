@@ -5,15 +5,14 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviors;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +21,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -108,25 +107,14 @@ public class ToolEventHandlers {
      * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
      */
     public static List<ItemStack> onHarvestDrops(Player player, ItemStack tool, ServerLevel level,
-                                                 BlockPos pos, BlockState state, boolean isSilkTouch,
-                                                 int fortuneLevel, List<ItemStack> drops,
-                                                 float dropChance) {
-        if (!(tool.getItem() instanceof IGTTool)) {
-            return drops;
-        }
-        if (!isSilkTouch) {
-            ToolHelper.applyHammerDropConversion(level, pos, tool, state, drops, fortuneLevel, dropChance,
-                    player.getRandom());
-        }
-        if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
-
-        ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
-        Block block = state.getBlock();
-        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
-            Item iceBlock = block.asItem();
-            if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
-                drops.add(new ItemStack(iceBlock));
-                level.getServer().tell(new TickTask(0, () -> {
+                                                 BlockPos pos, BlockState state, List<ItemStack> drops) {
+        if (state.is(BlockTags.ICE) &&
+                !EnchantmentHelper.hasTag(tool, EnchantmentTags.PREVENTS_ICE_MELTING) &&
+                ToolHelper.getBehaviorsComponent(tool).hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
+            Item iceBlock = state.getBlock().asItem();
+            if (drops.stream().noneMatch(drop -> drop.is(iceBlock))) {
+                drops.add(iceBlock.getDefaultInstance());
+                level.getServer().execute(() -> {
                     BlockState oldState = level.getBlockState(pos);
                     if (oldState.getFluidState().isSourceOfType(Fluids.WATER)) {
                         // I think it may be a waterlogged block, although the probability is very small
@@ -135,27 +123,31 @@ public class ToolEventHandlers {
                                 Blocks.AIR.defaultBlockState();
                         level.setBlockAndUpdate(pos, newState);
                     }
-                }));
-                ((IGTTool) tool.getItem()).playSound(player);
+                });
+                if (tool.getItem() instanceof IGTTool gtTool) {
+                    gtTool.playSound(player);
+                }
             }
         }
+
         if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
             drops = new ArrayList<>(drops);
             Iterator<ItemStack> dropItr = drops.iterator();
             while (dropItr.hasNext()) {
                 ItemStack dropStack = dropItr.next();
                 // Place close to the player for sanity reasons (Instead of XYZ=0,0,0)
-                ItemEntity drop = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), dropStack);
+                ItemEntity drop = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), dropStack);
 
                 if (isPickupAllowedByEvent(drop, player) && player.addItem(dropStack)) {
                     EventHooks.fireItemPickupPost(drop, player, dropStack.copy());
                     dropItr.remove();
                 }
 
-                // Just in case, destroy it
+                // destroy it just in case
                 drop.discard();
             }
         }
+
         return drops;
     }
 
