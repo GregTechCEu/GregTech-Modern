@@ -1,0 +1,76 @@
+{
+  "biomes": "#minecraft:is_overworld",
+  "cluster_size": {
+    "type": "minecraft:uniform",
+    "value": {
+      "max_inclusive": 40,
+      "min_inclusive": 32
+    }
+  },
+  "density": 0.2,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "type": "gtceu:layer",
+    "layer_patterns": [
+      [
+        {
+          "max_size": 4,
+          "min_size": 2,
+          "targets": [
+            "gtceu:rock_salt"
+          ],
+          "weight": 3
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:salt"
+          ],
+          "weight": 2
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:lepidolite"
+          ],
+          "weight": 1
+        },
+        {
+          "max_size": 1,
+          "min_size": 1,
+          "targets": [
+            "gtceu:spodumene"
+          ],
+          "weight": 1
+        }
+      ]
+    ]
+  },
+  "height_range": {
+    "height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": {
+        "absolute": 70
+      },
+      "min_inclusive": {
+        "absolute": 30
+      }
+    }
+  },
+  "indicators": [
+    {
+      "type": "gtceu:surface",
+      "block": "gtceu:salt",
+      "density": 0.2,
+      "placement": "surface",
+      "radius": 5
+    }
+  ],
+  "layer": "gtceu:stone",
+  "weight": 50
+}

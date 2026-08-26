@@ -1,0 +1,68 @@
+{
+  "biomes": "#minecraft:is_overworld",
+  "cluster_size": {
+    "type": "minecraft:uniform",
+    "value": {
+      "max_inclusive": 64,
+      "min_inclusive": 50
+    }
+  },
+  "density": 0.75,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "type": "gtceu:dike",
+    "blocks": [
+      {
+        "block": "gtceu:grossular",
+        "max_y": -5,
+        "min_y": -50,
+        "weight": 3
+      },
+      {
+        "block": "gtceu:spessartine",
+        "max_y": -15,
+        "min_y": -40,
+        "weight": 2
+      },
+      {
+        "block": "gtceu:pyrolusite",
+        "max_y": -15,
+        "min_y": -40,
+        "weight": 2
+      },
+      {
+        "block": "gtceu:tantalite",
+        "max_y": -5,
+        "min_y": -30,
+        "weight": 1
+      }
+    ],
+    "max_y": 0,
+    "min_y": -30
+  },
+  "height_range": {
+    "height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": {
+        "absolute": 0
+      },
+      "min_inclusive": {
+        "absolute": -30
+      }
+    }
+  },
+  "indicators": [
+    {
+      "type": "gtceu:surface",
+      "block": "gtceu:grossular",
+      "density": 0.15,
+      "placement": "surface",
+      "radius": 3
+    }
+  ],
+  "layer": "gtceu:deepslate",
+  "weight": 20
+}

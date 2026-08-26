@@ -1,0 +1,57 @@
+{
+  "biomes": "#minecraft:is_end",
+  "cluster_size": {
+    "type": "minecraft:uniform",
+    "value": {
+      "max_inclusive": 80,
+      "min_inclusive": 48
+    }
+  },
+  "density": 0.25,
+  "dimension_filter": [
+    "minecraft:the_end"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "type": "gtceu:cuboid",
+    "bottom": {
+      "layers": 2,
+      "targets": "gtceu:naquadah"
+    },
+    "max_y": 90,
+    "middle": {
+      "layers": 3,
+      "targets": "gtceu:naquadah"
+    },
+    "min_y": 10,
+    "spread": {
+      "targets": "gtceu:plutonium"
+    },
+    "top": {
+      "layers": 2,
+      "targets": "gtceu:naquadah"
+    }
+  },
+  "height_range": {
+    "height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": {
+        "absolute": 90
+      },
+      "min_inclusive": {
+        "absolute": 10
+      }
+    }
+  },
+  "indicators": [
+    {
+      "type": "gtceu:surface",
+      "block": "gtceu:naquadah",
+      "density": 0.2,
+      "placement": "above",
+      "radius": 5
+    }
+  ],
+  "layer": "gtceu:endstone",
+  "weight": 30
+}

@@ -78,6 +78,7 @@ public class GTBedrockFluids {
      *             To do this via Java, see {@link #bootstrap(BootstapContext)} and {@link DataGenerators}.<br>
      *             To do this via KubeJS, see {@link GTBedrockFluidVeinEventJS}
      */
+    @Deprecated(since = "8.0.0", forRemoval = true)
     public static BedrockFluidDefinition create(ResourceLocation id,
                                                 Consumer<BedrockFluidDefinition.Builder> consumer) {
         BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME));

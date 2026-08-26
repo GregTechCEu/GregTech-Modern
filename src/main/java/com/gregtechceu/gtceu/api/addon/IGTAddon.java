@@ -2,11 +2,19 @@ package com.gregtechceu.gtceu.api.addon;
 
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.common.data.GTOreVeins;
 
+import com.gregtechceu.gtceu.data.DataGenerators;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockFluidVeinEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -90,19 +98,30 @@ public interface IGTAddon {
     default void removeRecipes(Consumer<ResourceLocation> consumer) {}
 
     /**
-     * Use {@link GTOreVeins#create(ResourceLocation, Consumer)} to register the veins.
+     * @deprecated Your ore veins should now be registered as datapack content.<br>
+     *             To do this via JSON, see {@link GTOreDefinition#DIRECT_CODEC}.<br>
+     *             To do this via Java, see {@link GTOreVeins#bootstrap(BootstapContext)} and {@link DataGenerators}.<br>
+     *             To do this via KubeJS, see {@link GTOreVeinEventJS}
      */
+    @Deprecated(since = "8.0.0", forRemoval = true)
     default void registerOreVeins() {}
 
     /**
-     * Use {@link BedrockFluidDefinition#builder(ResourceLocation)} to register the veins.
+     * @deprecated Your bedrock fluids should now be registered as datapack content.<br>
+     *             To do this via JSON, see {@link BedrockFluidDefinition#DIRECT_CODEC}.<br>
+     *             To do this via Java, see {@link GTBedrockFluids#bootstrap(BootstapContext)} and {@link DataGenerators}.<br>
+     *             To do this via KubeJS, see {@link GTBedrockFluidVeinEventJS}
      */
+    @Deprecated(since = "8.0.0", forRemoval = true)
     default void registerFluidVeins() {}
 
     /**
-     * Use {@link com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition#builder(ResourceLocation)} to
-     * register the veins.
+     * @deprecated Your bedrock ore veins should now be registered as datapack content.<br>
+     *             To do this via JSON, see {@link BedrockOreDefinition#DIRECT_CODEC}.<br>
+     *             To do this via Java, see {@link GTOreVeins#bootstrap(BootstapContext)} and {@link DataGenerators}.<br>
+     *             To do this via KubeJS, see {@link GTBedrockOreVeinEventJS}
      */
+    @Deprecated(since = "8.0.0", forRemoval = true)
     default void registerBedrockOreVeins() {}
 
     /**

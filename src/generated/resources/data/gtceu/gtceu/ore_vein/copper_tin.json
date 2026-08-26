@@ -1,0 +1,72 @@
+{
+  "biomes": "#minecraft:is_overworld",
+  "cluster_size": {
+    "type": "minecraft:uniform",
+    "value": {
+      "max_inclusive": 52,
+      "min_inclusive": 40
+    }
+  },
+  "density": 1.0,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "discard_chance_on_air_exposure": 0.0,
+  "generator": {
+    "type": "gtceu:veined",
+    "edge_roundoff_begin": 3,
+    "filler_block": {
+      "Name": "minecraft:air"
+    },
+    "max_edge_roundoff": 0.10000000149011612,
+    "max_richness": 1.0,
+    "max_richness_threshold": 0.175,
+    "max_y": 160,
+    "min_richness": 0.7,
+    "min_y": -10,
+    "ore_blocks": [
+      {
+        "block": "gtceu:chalcopyrite",
+        "weight": 5
+      },
+      {
+        "block": "gtceu:zeolite",
+        "weight": 2
+      },
+      {
+        "block": "gtceu:cassiterite",
+        "weight": 2
+      }
+    ],
+    "rare_block_chance": 0.1,
+    "rare_blocks": [
+      {
+        "block": "gtceu:realgar",
+        "weight": 1
+      }
+    ],
+    "veininess_threshold": 0.01
+  },
+  "height_range": {
+    "height": {
+      "type": "minecraft:uniform",
+      "max_inclusive": {
+        "absolute": 160
+      },
+      "min_inclusive": {
+        "absolute": -10
+      }
+    }
+  },
+  "indicators": [
+    {
+      "type": "gtceu:surface",
+      "block": "gtceu:chalcopyrite",
+      "density": 0.2,
+      "placement": "surface",
+      "radius": 5
+    }
+  ],
+  "layer": "gtceu:stone",
+  "weight": 50
+}

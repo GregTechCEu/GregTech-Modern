@@ -1,0 +1,28 @@
+{
+  "depleted_yield": 15,
+  "depletion_amount": 1,
+  "depletion_chance": 100,
+  "dimension_filter": [
+    "minecraft:overworld"
+  ],
+  "fluid": "gtceu:salt_water",
+  "weight": 0,
+  "weight_modifier": [
+    {
+      "added_weight": 200,
+      "biomes": [
+        "minecraft:deep_ocean",
+        "minecraft:deep_cold_ocean",
+        "minecraft:deep_frozen_ocean"
+      ]
+    },
+    {
+      "added_weight": 150,
+      "biomes": "#minecraft:is_ocean"
+    }
+  ],
+  "yield": {
+    "max": 100,
+    "min": 50
+  }
+}

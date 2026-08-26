@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.core;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -410,17 +412,20 @@ public class MixinHelpers {
 
         private static void postOreVeinEvent(WritableRegistry<GTOreDefinition> registry) {
             ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>((MappedRegistry<GTOreDefinition>)registry, GTOreDefinition.class));
+            AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
             GTOreVeins.toRegister.forEach((k, v) -> registry.register(ResourceKey.create(GTRegistries.Keys.ORE_VEIN, k), v, Lifecycle.stable()));
             GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(new GTOreVeinEventJS(registry));
         }
 
         private static void postBedrockFluidEvent(WritableRegistry<BedrockFluidDefinition> registry) {
             ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>((MappedRegistry<BedrockFluidDefinition>)registry, BedrockFluidDefinition.class));
+            AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
             GTBedrockFluids.toRegister.forEach((k, v) -> registry.register(ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, k), v, Lifecycle.stable()));
             GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(new GTBedrockFluidVeinEventJS(registry));
         }
 
         private static void postBedrockOreEvent(WritableRegistry<BedrockOreDefinition> registry) {
+            AddonFinder.getAddons().forEach(IGTAddon::registerBedrockOreVeins);
             GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinEventJS(registry));
         }
 

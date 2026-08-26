@@ -4,10 +4,12 @@
     {
       "type": "gtceu:biome_dependent",
       "modifiers": [
-        {
-          "added_weight": 50,
-          "biomes": "#forge:is_swamp"
-        }
+        [
+          {
+            "added_weight": 50,
+            "biomes": "#forge:is_swamp"
+          }
+        ]
       ]
     },
     {
