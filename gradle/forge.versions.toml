@@ -30,11 +30,11 @@ createAeronautics = "1.3.0"
 veil = "4.1.4"
 # TODO update these once there's 1.21 versions
 argonauts = "1.2.4"
+# FIXME for some reason their maven only has versions up to 1.1.10? latest on modrinth is 1.1.13
+heracles = "1.1.10"
 xaerosLib = "1.1.0"
 xaerosWorldMap = "1.40.11"
 xaerosMinimap = "25.3.10"
-# FIXME for some reason their maven only has versions up to 1.1.10? latest on modrinth is 1.1.13
-heracles = "1.1.10"
 embeddium = "1.0.8-beta.367+mc1.21"
 sodium = "0.8.12-beta.1+mc1.21.1"
 fabricApi-base = "0.4.42+d1308ded19"

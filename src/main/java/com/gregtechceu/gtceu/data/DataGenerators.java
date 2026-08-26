@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.tags.DamageTypeTagsLoader;
+import com.gregtechceu.gtceu.data.tags.EnchantmentTagsLoader;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -33,8 +34,6 @@ public class DataGenerators {
             generator.addProvider(true, new SoundEntryBuilder.SoundEntryProvider(packOutput, GTCEu.MOD_ID));
         }
         if (event.includeServer()) {
-            var set = Set.of(GTCEu.MOD_ID);
-            generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
             DatapackBuiltinEntriesProvider provider = generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
@@ -46,9 +45,12 @@ public class DataGenerators {
                             .add(Registries.ENCHANTMENT_PROVIDER, GTEnchantmentProviders::bootstrap)
                             .add(GTRegistries.Keys.BEDROCK_FLUID, GTBedrockFluids::bootstrap)
                             .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap),
-                    set));
-            generator.addProvider(true,
-                    new DamageTypeTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
+                    Set.of(GTCEu.MOD_ID)));
+            registries = provider.getRegistryProvider();
+
+            generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
+            generator.addProvider(true, new DamageTypeTagsLoader(packOutput, registries, existingFileHelper));
+            generator.addProvider(true, new EnchantmentTagsLoader(packOutput, registries, existingFileHelper));
         }
     }
 }
