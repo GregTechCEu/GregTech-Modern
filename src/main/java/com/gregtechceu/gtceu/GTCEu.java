@@ -10,10 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -41,11 +41,11 @@ public class GTCEu {
 
     public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
-    public GTCEu(IEventBus modBus) {
+    public GTCEu(FMLJavaModLoadingContext context) {
         GTCEu.init();
         GTCEuAPI.instance = this;
-        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> CommonProxy.init(modBus));
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientProxy.init(modBus));
+        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> CommonProxy.init(context.getModEventBus()));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientProxy.init(context.getModEventBus()));
     }
 
     public static void init() {

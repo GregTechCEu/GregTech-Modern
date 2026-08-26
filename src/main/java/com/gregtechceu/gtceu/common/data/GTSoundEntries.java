@@ -58,14 +58,13 @@ public class GTSoundEntries {
     public static final SoundEntry PORTAL_CLOSING = REGISTRATE.sound("portal_closing").build();
     public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
 
-    public static void init() {
-        GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
-    }
+    public static void init() {}
 
     @SubscribeEvent
     public static void registerSounds(RegisterEvent registerEvent) {
         if (Objects.equals(registerEvent.getForgeRegistry(), ForgeRegistries.SOUND_EVENTS)) {
             for (SoundEntry entry : GTRegistries.SOUNDS) {
+                entry.prepare();
                 entry.register(soundEvent -> registerEvent.register(Registries.SOUND_EVENT, soundEvent.getLocation(),
                         () -> soundEvent));
             }
