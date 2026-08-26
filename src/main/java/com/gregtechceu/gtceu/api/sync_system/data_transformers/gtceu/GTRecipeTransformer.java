@@ -44,11 +44,11 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
 
     @Override
     public void writeToPacket(RegistryFriendlyByteBuf buf, GTRecipe value, TransformerContext<GTRecipe> context) {
-        GTRecipeSerializer.toNetwork(buf, value);
+        GTRecipeSerializer.STREAM_CODEC.encode(buf, value);
     }
 
     @Override
     public @Nullable GTRecipe readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<GTRecipe> context) {
-        return GTRecipeSerializer.fromNetwork(buf);
+        return GTRecipeSerializer.STREAM_CODEC.decode(buf);
     }
 }

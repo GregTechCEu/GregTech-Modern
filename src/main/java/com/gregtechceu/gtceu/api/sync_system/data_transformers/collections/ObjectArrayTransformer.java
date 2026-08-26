@@ -58,9 +58,11 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
     }
 
     @Override
-    public void writeToPacket(RegistryFriendlyByteBuf buf, T[] value, TransformerContext<T[]> context) {
+    public void writeToPacket(RegistryFriendlyByteBuf buf, @Nullable T[] value, TransformerContext<T[]> context) {
         buf.writeVarInt(value.length);
         for (T elem : value) {
+            buf.writeBoolean(elem != null);
+            if (elem == null) continue;
             elementTransformer.writeToPacket(buf, elem, getInnerElemContext(elem, context));
         }
     }
@@ -81,6 +83,10 @@ public class ObjectArrayTransformer<T> implements ValueTransformer<T[]> {
             current = Arrays.copyOf(current, length);
         }
         for (int i = 0; i < length; i++) {
+            if (!buf.readBoolean()) {
+                current[i] = null;
+                continue;
+            }
             T result = elementTransformer.readFromPacket(buf, getInnerElemContext(current[i], context));
             current[i] = result;
         }

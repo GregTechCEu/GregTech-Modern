@@ -5,17 +5,17 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.neoforged.neoforge.network.connection.ConnectionType;
 
+import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import lombok.Setter;
-import net.neoforged.neoforge.network.connection.ConnectionType;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -113,7 +113,8 @@ public class SyncDataHolder {
         Set<FieldSyncData> fieldsToSerialize = syncData.getClientSyncFields().values().stream()
                 .filter(this::shouldSyncFieldToClient).collect(Collectors.toSet());
 
-        var fieldData = new RegistryFriendlyByteBuf(Unpooled.buffer(), (RegistryAccess) lookup, ConnectionType.NEOFORGE);
+        var fieldData = new RegistryFriendlyByteBuf(Unpooled.buffer(), (RegistryAccess) lookup,
+                ConnectionType.NEOFORGE);
         boolean hadErrorWritingData = false;
 
         for (var field : fieldsToSerialize) {

@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
