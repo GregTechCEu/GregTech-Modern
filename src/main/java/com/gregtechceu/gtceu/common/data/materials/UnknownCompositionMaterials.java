@@ -308,12 +308,14 @@ public class UnknownCompositionMaterials {
                 .flags(STICKY, FLAMMABLE)
                 .buildAndRegister();
 
-        OilHeavy = new Material.Builder(GTCEu.id("oil_heavy"))
+        HeavyOil = new Material.Builder(GTCEu.id("oil_heavy"))
                 .langValue("Heavy Oil")
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
                 .buildAndRegister();
+
+        OilHeavy = HeavyOil;
 
         RawOil = new Material.Builder(GTCEu.id("oil_medium"))
                 .langValue("Raw Oil")
@@ -322,12 +324,14 @@ public class UnknownCompositionMaterials {
                 .flags(STICKY, FLAMMABLE)
                 .buildAndRegister();
 
-        OilLight = new Material.Builder(GTCEu.id("oil_light"))
+        LightOil = new Material.Builder(GTCEu.id("oil_light"))
                 .langValue("Light Oil")
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
                 .buildAndRegister();
+
+        OilLight = LightOil;
 
         NaturalGas = new Material.Builder(GTCEu.id("natural_gas"))
                 .gas(new FluidBuilder().block().customStill())
