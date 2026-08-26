@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.util;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
@@ -28,11 +29,6 @@ public abstract class AbstractStructureHelper {
     public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
             Direction.EAST, Direction.UP, Direction.DOWN };
 
-    @Getter
-    protected final HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
-            .create();
-    protected final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
-            .create();
     protected @Nullable Block controllerBlock;
 
     public static AbstractStructureHelper blockPattern(Int2IntMap sliceRepeats) {
@@ -43,47 +39,31 @@ public abstract class AbstractStructureHelper {
         return new ExpandablePatternHelper(sliceRepeats);
     }
 
-    public Table<MultiPredicate, BasePredicate, IntIntPair> getMinMaxPreferences() {
-        return this.minMaxPreferences;
-    }
-
-    public void populate(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    public void populate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
                          @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
         if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
-            populateWithUserBlockPreferences(resultStructure, pattern, userBlockPreferences, frontFacing, upFacing,
+            populateWithUserBlockPreferences(info, resultStructure, pattern, userBlockPreferences, frontFacing, upFacing,
                     isFlipped);
         }
-        populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
+        populateFromPattern(info, resultStructure, pattern, frontFacing, upFacing, isFlipped);
         fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
     }
 
     protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {}
 
-    protected abstract void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure,
+    protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
                                                              IBlockPattern pattern,
                                                              Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                              Direction frontFacing, Direction upFacing,
                                                              boolean isFlipped);
 
-    protected abstract void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected abstract void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped);
 
     public abstract MultiPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
                                                        Direction frontFacing, Direction upFacing, boolean isFlipped);
-
-    protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getMinCount();
-        return minMaxPreferences.get(predicate, basePredicate).leftInt();
-    }
-
-    protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
-        if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getMaxCount();
-        return minMaxPreferences.get(predicate, basePredicate).rightInt();
-    }
 
     protected static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
         return (int) resultStructure.values().stream()

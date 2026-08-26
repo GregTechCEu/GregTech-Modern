@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui;
 
+import com.google.common.collect.HashBasedTable;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -50,6 +51,12 @@ public class MultiblockSchemaInfo {
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     @Getter
     private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
+    @Getter
+    protected final HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
+            .create();
+    @Getter
+    protected final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
+            .create();
 
     @Getter
     private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
@@ -92,7 +99,7 @@ public class MultiblockSchemaInfo {
             }
         }
 
-        this.structureHelper.populate(resultStructure, pattern, this.userGlobalBlockPreferences,
+        this.structureHelper.populate(this, resultStructure, pattern, this.userGlobalBlockPreferences,
                 frontFacing, upFacing, isFlipped);
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
@@ -115,12 +122,24 @@ public class MultiblockSchemaInfo {
         }
     }
 
+    public int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate))
+            return basePredicate.getMinCount();
+        return minMaxPreferences.get(predicate, basePredicate).leftInt();
+    }
+
+    public int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
+        if (!minMaxPreferences.contains(predicate, basePredicate))
+            return basePredicate.getMaxCount();
+        return minMaxPreferences.get(predicate, basePredicate).rightInt();
+    }
+
     public void clearUserPreferences() {
         this.userSliceRepeats.clear();
         this.userDimensions.clear();
     }
 
     public void putPredicatePreference(MultiPredicate predicate, BasePredicate basePredicate, BlockInfo info) {
-        this.structureHelper.getBlockPreferences().put(predicate, basePredicate, info);
+        this.blockPreferences.put(predicate, basePredicate, info);
     }
 }
