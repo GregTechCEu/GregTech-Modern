@@ -96,10 +96,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    @Override
-    @NotNull
-    public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
+    public static GTRecipe fromNetworkWithoutDatapackSync(@NotNull FriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
+        ResourceLocation id = buf.readResourceLocation();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(
@@ -145,21 +144,32 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
         boolean keepSpoilingProgress = buf.readBoolean();
 
-        GTRecipe recipe = new GTRecipe(type, id,
+        return new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels, category,
                 groupColor, keepSpoilingProgress);
+    }
+
+    /**
+     * Do not call when reading a recipe from the network manually, use
+     * {@link #fromNetworkWithoutDatapackSync(FriendlyByteBuf)} instead
+     */
+    @Override
+    @NotNull
+    public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
+        GTRecipe recipe = fromNetworkWithoutDatapackSync(buf);
 
         recipe.recipeCategory.addRecipe(recipe);
 
         // a little special piece of code for loading all the research entries into the recipe type's list on the
         // client.
-        ResearchCondition researchCondition = conditions.stream().filter(ResearchCondition.class::isInstance).findAny()
+        ResearchCondition researchCondition = recipe.conditions.stream().filter(ResearchCondition.class::isInstance)
+                .findAny()
                 .map(ResearchCondition.class::cast).orElse(null);
         if (researchCondition != null) {
             for (ResearchData.ResearchEntry entry : researchCondition.data) {
-                type.addDataStickEntry(entry.getResearchId(), recipe);
+                recipe.recipeType.addDataStickEntry(entry.getResearchId(), recipe);
             }
         }
         return recipe;
@@ -168,6 +178,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     @Override
     public void toNetwork(FriendlyByteBuf buf, GTRecipe recipe) {
         buf.writeResourceLocation(recipe.recipeType.registryName);
+        buf.writeResourceLocation(recipe.id);
         buf.writeCollection(recipe.inputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.tickInputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.outputs.entrySet(), GTRecipeSerializer::entryWriter);
