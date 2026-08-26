@@ -135,7 +135,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                                                 .append(CommonComponents.SPACE)
                                                 .append(entry.what().getDisplayName()))
                                                 .asWidget()
-                                                .margin(3));
+                                                .width(140)
+                                                .marginLeft(3));
                             }));
                     return col;
                 });
