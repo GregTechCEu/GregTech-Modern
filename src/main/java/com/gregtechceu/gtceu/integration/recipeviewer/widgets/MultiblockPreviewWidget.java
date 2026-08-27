@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
-import brachy.modularui.drawable.DynamicDrawable;
-import brachy.modularui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
@@ -28,6 +26,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
@@ -208,11 +207,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             setFlipped(!isFlipped);
                             refreshSchema();
                             refreshViewWidget();
-                            return;
                         })))
                 .child(new ButtonWidget<>()
-                        .overlay(new DynamicDrawable(() -> Text.dynamic( () ->
-                                Component.literal(yLevel == Integer.MAX_VALUE ? "A" : String.valueOf(yLevel)))
+                        .overlay(new DynamicDrawable(() -> Text.dynamic(
+                                () -> Component.literal(yLevel == Integer.MAX_VALUE ? "A" : String.valueOf(yLevel)))
                                 .asIcon()))
                         .left(45)
                         .onMousePressed((c, b) -> {

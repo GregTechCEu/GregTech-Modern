@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
-import com.google.common.collect.HashBasedTable;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -20,7 +19,6 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
-import it.unimi.dsi.fastutil.ints.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,7 +45,9 @@ import brachy.modularui.factory.inventory.InventoryTypes;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import com.google.common.collect.HashBasedTable;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
@@ -124,7 +124,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             if (structureHelper != null) {
                 MultiblockSchemaInfo schemaInfo = createSchemaInfoFromTag(stack);
 
-                structureHelper.populate(schemaInfo, resultStructure, pattern, readBlockPreferences(tag), frontFacing, upFacing,
+                structureHelper.populate(schemaInfo, resultStructure, pattern, readBlockPreferences(tag), frontFacing,
+                        upFacing,
                         flipped);
             }
 
@@ -235,7 +236,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 .onCloseAction(() -> writeMultiblockInfo(multiblockDefinition, hand, previewWidget, info)));
     }
 
-    private void writeMultiblockInfo(MultiblockMachineDefinition definition, InteractionHand hand, MultiblockPreviewWidget previewWidget, MultiblockSchemaInfo info) {
+    private void writeMultiblockInfo(MultiblockMachineDefinition definition, InteractionHand hand,
+                                     MultiblockPreviewWidget previewWidget, MultiblockSchemaInfo info) {
         MultiblockSchemaInfo schemaInfo = previewWidget.getMultiblockSchemaInfo();
 
         Long2ObjectMap<BlockState> blockPreferences = new Long2ObjectOpenHashMap<>();
@@ -244,7 +246,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         }
 
         GTNetwork.sendToServer(new CPacketTerminalSettings(hand, definition, schemaInfo.getUserSliceRepeats(),
-                schemaInfo.getUserDimensions(), blockPreferences, schemaInfo.getBlockPreferences(), schemaInfo.getMinMaxPreferences()));
+                schemaInfo.getUserDimensions(), blockPreferences, schemaInfo.getBlockPreferences(),
+                schemaInfo.getMinMaxPreferences()));
     }
 
     public static void writeControllerInfo(ItemStack item, MultiblockControllerMachine controller) {
@@ -268,7 +271,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (tag.contains("sliceRepeatKeys") && tag.contains("sliceRepeatValues")) {
             int[] repeatKeys = tag.getIntArray("sliceRepeatKeys");
             int[] repeatValues = tag.getIntArray("sliceRepeatValues");
-            for(int i = 0; i < repeatKeys.length; i++) {
+            for (int i = 0; i < repeatKeys.length; i++) {
                 info.getUserSliceRepeats().put(repeatKeys[i], repeatValues[i]);
             }
         }
@@ -282,7 +285,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             for (int i = 0; i < preferences.size(); i++) {
                 CompoundTag blockTag = preferences.getCompound(i);
                 long pos = blockTag.getLong("pos");
-                BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), blockTag.getCompound("state"));
+                BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(),
+                        blockTag.getCompound("state"));
                 info.getUserGlobalBlockPreferences().put(pos, BlockInfo.fromBlockState(state));
             }
         }
@@ -291,11 +295,11 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (tag.contains("blockPreferences")) {
             ListTag preferences = tag.getList("blockPreferences", CompoundTag.TAG_COMPOUND);
             ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition)GTRegistries.MACHINES.get(controllerLocation);
+            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
             BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
             for (int i = 0; i < preferences.size(); i++) {
                 CompoundTag inner = preferences.getCompound(i);
-                char c = (char)inner.getByte("p");
+                char c = (char) inner.getByte("p");
                 int baseIndex = inner.getInt("b");
                 int candidateIndex = inner.getInt("i");
 
@@ -310,11 +314,11 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (tag.contains("minMaxPreferences")) {
             ListTag minMaxPreferences = tag.getList("minMaxPreferences", CompoundTag.TAG_COMPOUND);
             ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition)GTRegistries.MACHINES.get(controllerLocation);
+            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
             BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
             for (int i = 0; i < minMaxPreferences.size(); i++) {
                 CompoundTag inner = minMaxPreferences.getCompound(i);
-                char c = (char)inner.getByte("p");
+                char c = (char) inner.getByte("p");
                 int baseIndex = inner.getInt("b");
                 int min = inner.getInt("min");
                 int max = inner.getInt("min");
@@ -329,7 +333,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     }
 
     public static void applyUserPreferences(ItemStack item, Int2IntMap sliceRepeats, IntList dimensions,
-                                            Long2ObjectMap<BlockState> globalPreferences, HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences,
+                                            Long2ObjectMap<BlockState> globalPreferences,
+                                            HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences,
                                             HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
         CompoundTag tag = item.getOrCreateTag();
 
@@ -374,7 +379,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         } else {
             ListTag preferences = new ListTag();
             ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition)GTRegistries.MACHINES.get(controllerLocation);
+            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
             BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
             for (var entry : blockPreferences.cellSet()) {
                 CompoundTag preference = new CompoundTag();
@@ -387,7 +392,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                         .findFirst()
                         .get().getCharKey();
 
-                preference.putByte("p", (byte)c);
+                preference.putByte("p", (byte) c);
                 preference.putInt("b", pred.predicates().indexOf(base));
                 preference.putInt("i", base.getCandidates().indexOf(entry.getValue()));
                 preferences.add(preference);
@@ -400,7 +405,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         } else {
             ListTag minMaxs = new ListTag();
             ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
-            var definition = (MultiblockMachineDefinition)GTRegistries.MACHINES.get(controllerLocation);
+            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
             BlockPattern blockPattern = (BlockPattern) definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
             for (var entry : minMaxPreferences.cellSet()) {
                 CompoundTag inner = new CompoundTag();
@@ -413,7 +418,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                         .findFirst()
                         .get().getCharKey();
 
-                inner.putByte("p", (byte)c);
+                inner.putByte("p", (byte) c);
                 inner.putInt("b", pred.predicates().indexOf(base));
                 inner.putInt("min", entry.getValue().firstInt());
                 inner.putInt("max", entry.getValue().secondInt());

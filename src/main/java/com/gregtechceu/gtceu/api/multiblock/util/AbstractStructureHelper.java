@@ -12,14 +12,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -44,7 +40,8 @@ public abstract class AbstractStructureHelper {
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
         if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
-            populateWithUserBlockPreferences(info, resultStructure, pattern, userBlockPreferences, frontFacing, upFacing,
+            populateWithUserBlockPreferences(info, resultStructure, pattern, userBlockPreferences, frontFacing,
+                    upFacing,
                     isFlipped);
         }
         populateFromPattern(info, resultStructure, pattern, frontFacing, upFacing, isFlipped);
@@ -53,13 +50,15 @@ public abstract class AbstractStructureHelper {
 
     protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {}
 
-    protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+    protected abstract void populateWithUserBlockPreferences(MultiblockSchemaInfo info,
+                                                             Map<BlockPos, BlockInfo> resultStructure,
                                                              IBlockPattern pattern,
                                                              Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                              Direction frontFacing, Direction upFacing,
                                                              boolean isFlipped);
 
-    protected abstract void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected abstract void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                                IBlockPattern pattern,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped);
 
     public abstract MultiPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,

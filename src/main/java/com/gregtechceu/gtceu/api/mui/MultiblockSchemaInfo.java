@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui;
 
-import com.google.common.collect.HashBasedTable;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -18,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.widgets.SchemaWidget;
+import com.google.common.collect.HashBasedTable;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;

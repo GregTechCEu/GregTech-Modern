@@ -15,7 +15,6 @@ import net.minecraft.core.Vec3i;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -52,7 +51,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 frontFacing, upFacing, isFlipped);
     }
 
-    protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                                    IBlockPattern pattern,
                                                     Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
@@ -80,7 +80,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
-    protected void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                       IBlockPattern pattern,
                                        Direction frontFacing, Direction upFacing, boolean isFlipped) {
         // spotless:off
         // 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
@@ -131,7 +132,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
-    private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int minCount = info.getMinCount(predicate, basePredicate);
@@ -166,7 +168,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         return false;
     }
 
-    private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicates()) {
             int maxCount = info.getMaxCount(predicate, basePredicate);
@@ -199,7 +202,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         return false;
     }
 
-    private boolean isValidCandidate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean isValidCandidate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                     MultiPredicate predicate,
                                      BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
         // force true because idk what to do with this
         if (newInfo == BlockInfo.EMPTY) return true;

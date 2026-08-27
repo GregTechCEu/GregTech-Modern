@@ -1543,7 +1543,8 @@ public class MachineRecipeLoader {
                 TOOL_DATA_ORB.asStack());
         VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(),
                 TOOL_DATA_MODULE.asStack());
-        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "terminal_nbt", TERMINAL.asStack(), TERMINAL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "terminal_nbt", TERMINAL.asStack(),
+                TERMINAL.asStack());
 
         // Jetpacks
         VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),

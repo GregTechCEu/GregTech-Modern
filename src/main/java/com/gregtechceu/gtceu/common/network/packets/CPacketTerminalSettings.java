@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
-import com.google.common.collect.HashBasedTable;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
@@ -13,8 +12,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
-import it.unimi.dsi.fastutil.ints.*;
-import lombok.Getter;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,6 +21,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 
+import com.google.common.collect.HashBasedTable;
+import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
@@ -39,9 +38,10 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
     private final HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences;
     private final HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences;
 
-
-    public CPacketTerminalSettings(InteractionHand hand, MultiblockMachineDefinition def, Int2IntMap sliceRepeats, IntList dimensions,
-                                   Long2ObjectMap<BlockState> globalPreferences, HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences,
+    public CPacketTerminalSettings(InteractionHand hand, MultiblockMachineDefinition def, Int2IntMap sliceRepeats,
+                                   IntList dimensions,
+                                   Long2ObjectMap<BlockState> globalPreferences,
+                                   HashBasedTable<MultiPredicate, BasePredicate, BlockInfo> blockPreferences,
                                    HashBasedTable<MultiPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
         this.hand = hand;
         this.machineDefinition = def;
@@ -81,7 +81,8 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
 
         blockPreferences = HashBasedTable.create();
         minMaxPreferences = HashBasedTable.create();
-        IBlockPattern pattern = machineDefinition.getStructurePatterns().get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
+        IBlockPattern pattern = machineDefinition.getStructurePatterns()
+                .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
         if (pattern instanceof BlockPattern blockPattern) {
             int preferenceSize = buf.readVarInt();
             for (int i = 0; i < preferenceSize; i++) {
@@ -135,7 +136,8 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
             buf.writeVarInt(Block.getId(entry.getValue()));
         }
 
-        IBlockPattern pattern = machineDefinition.getStructurePatterns().get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
+        IBlockPattern pattern = machineDefinition.getStructurePatterns()
+                .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
         if (pattern instanceof BlockPattern blockPattern) {
             buf.writeVarInt(this.blockPreferences.rowKeySet().size());
             for (var entry : this.blockPreferences.cellSet()) {
@@ -180,6 +182,7 @@ public class CPacketTerminalSettings implements GTNetwork.INetPacket {
         ItemStack held = sender.getItemInHand(this.hand);
         if (!GTItems.TERMINAL.isIn(held)) return;
 
-        TerminalBehavior.applyUserPreferences(held, this.sliceRepeats, this.dimensions, this.globalPreferences, this.blockPreferences, this.minMaxPreferences);
+        TerminalBehavior.applyUserPreferences(held, this.sliceRepeats, this.dimensions, this.globalPreferences,
+                this.blockPreferences, this.minMaxPreferences);
     }
 }
