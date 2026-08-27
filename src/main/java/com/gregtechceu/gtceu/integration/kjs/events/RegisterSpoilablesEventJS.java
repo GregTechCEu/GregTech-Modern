@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
-import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehavior;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
 

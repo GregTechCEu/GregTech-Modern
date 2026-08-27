@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.item.component.SpoilContext;
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilContext;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilUtils;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;

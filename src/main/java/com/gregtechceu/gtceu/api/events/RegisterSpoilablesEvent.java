@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.events;
 
-import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehavior;
 
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;

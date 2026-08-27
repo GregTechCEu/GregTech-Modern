@@ -1,14 +1,9 @@
-package com.gregtechceu.gtceu.common.item.behavior;
+package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
-import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.item.component.SpoilContext;
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.RegisterSpoilablesEventJS;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -46,9 +41,6 @@ public class SpoilableBehavior {
     public static void init() {
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
         ModLoader.postEvent(event);
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSCallWrapper.fireKJSEvent(event);
-        }
     }
 
     private static Builder builder() {
@@ -201,13 +193,6 @@ public class SpoilableBehavior {
         @Tolerate
         public Builder tooltip(Component tooltip) {
             return tooltip(stack -> tooltip);
-        }
-    }
-
-    private static class KJSCallWrapper {
-
-        public static void fireKJSEvent(RegisterSpoilablesEvent event) {
-            GTCEuStartupEvents.REGISTER_SPOILABLES.post(new RegisterSpoilablesEventJS(event));
         }
     }
 }

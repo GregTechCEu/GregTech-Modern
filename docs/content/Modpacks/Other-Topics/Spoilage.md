@@ -28,6 +28,11 @@ It may represent:
 This info is used to spawn entities when the item spoils, or do something more complex.
 The `SpoilableBehavior.builder()` can accept a function as a `result`, so you can do whatever you want there :)
 
+### Attaching spoilage behaviour
+
+Spoilage behavior is attached to an item via a [data map](https://docs.neoforged.net/docs/1.21.1/resources/server/datamaps/), and is contained in the SpoilableBehavior record. 
+Data maps can be generated during datagen. (See `GregTechDatagen.java` and `DataMapsHandler.java` for an example of datamap generation via registrate.)
+
 ### SpoilableBehavior
 `SpoilableBehavior` is a helper class used to make items spoilable.
 
