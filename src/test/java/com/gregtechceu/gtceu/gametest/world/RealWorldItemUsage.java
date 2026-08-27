@@ -40,7 +40,7 @@ public class RealWorldItemUsage {
         var player = helper.makeTickingMockServerPlayerInLevel(GameType.SURVIVAL);
         player.moveTo(helper.absoluteVec(new Vec3(2.5, 2.0, 2.5)));
         player.setItemSlot(EquipmentSlot.MAINHAND,
-                new ItemStack(helper.getLevel().registryAccess().registry(Registries.ITEM).orElseThrow()
+                new ItemStack(helper.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
                         .getOrThrow(ResourceKey.create(Registries.ITEM, GTCEu.id("neutronium_pickaxe")))));
         // Allow player to stand
         helper.setBlock(new BlockPos(2, 1, 2), Blocks.BEDROCK);
