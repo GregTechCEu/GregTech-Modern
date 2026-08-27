@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -28,6 +29,7 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,8 +51,12 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     private boolean isOxygenBoosted = false;
     private int runningTimer = 0;
 
+    @Getter
+    @Setter
+    private boolean hasLubricant = false;
+
     public LargeCombustionEngineMachine(BlockEntityCreationInfo info, int tier) {
-        super(info);
+        super(info, new LargeCombustionEngineRecipeLogic());
         this.tier = tier;
         recipeLogic.setRegressWhenWaiting(false);
     }
@@ -82,6 +88,11 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
+
+    @Override
+    public LargeCombustionEngineMachine.LargeCombustionEngineRecipeLogic getRecipeLogic() {
+        return (LargeCombustionEngineMachine.LargeCombustionEngineRecipeLogic) super.getRecipeLogic();
+    }
 
     @Override
     public long getOverclockVoltage() {
@@ -125,9 +136,11 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                     .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed"));
         }
         if (!RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
+            engineMachine.setHasLubricant(false);
             return ModifierFunction
                     .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.no_lubricant"));
         }
+        engineMachine.setHasLubricant(true);
 
         EnergyStack EUt = recipe.getOutputEUt();
         if (!EUt.isEmpty()) {
@@ -207,5 +220,31 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                         isOxygenBoosted.getBoolValue());
 
         return Arrays.asList(boostDisallowed, canBoost, isBoosted);
+    }
+
+    public static class LargeCombustionEngineRecipeLogic extends RecipeLogic {
+
+        public LargeCombustionEngineRecipeLogic() {
+            super();
+        }
+
+        @Override
+        public LargeCombustionEngineMachine getMachine() {
+            return (LargeCombustionEngineMachine) super.getMachine();
+        }
+
+        @Override
+        protected List<Class<?>> validMachineClasses() {
+            return List.of(LargeCombustionEngineMachine.class);
+        }
+
+        @Override
+        public void serverTick() {
+            super.serverTick();
+            if (!getMachine().isHasLubricant() && subscription != null) {
+                subscription.unsubscribe();
+                subscription = null;
+            }
+        }
     }
 }
