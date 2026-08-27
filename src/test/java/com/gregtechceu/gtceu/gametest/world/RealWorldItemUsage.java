@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.gametest.world;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
