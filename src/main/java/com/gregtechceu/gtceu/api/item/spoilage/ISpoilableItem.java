@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.spoilage;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.common.data.GTDataMaps;
 import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 
 import net.minecraft.core.BlockPos;
@@ -47,7 +48,7 @@ import java.util.Optional;
  * in your own implementation of the {@link ISpoilableItem} interface.
  * </p>
  * <p>
- * To make an item spoilable, you can simply use {@link SpoilableBehavior#attachTo(ItemLike)}.
+ * To make an item spoilable, define a {@link GTDataMaps#SPOILABLE_DATA} entry for the item.
  * <br>
  * If you want to implement this interface yourself, please note that {@link SpoilableItemStack}
  * calls a mixin method in its {@link ISpoilableItem#updateFreshness} implementation.

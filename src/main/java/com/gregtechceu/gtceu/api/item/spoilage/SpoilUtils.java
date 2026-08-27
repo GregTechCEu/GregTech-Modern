@@ -47,12 +47,12 @@ public class SpoilUtils {
         }
     }
 
-    public static void spawnEntity(SpoilContext spoilContext, EntityType<? extends Mob> type, int count) {
+    public static void spawnEntity(SpoilContext spoilContext, EntityType<?> type, int count) {
         if (spoilContext.level() instanceof ServerLevel level) {
             BlockPos pos = null;
             if (spoilContext.entity() != null) pos = spoilContext.entity().blockPosition();
             else if (spoilContext.pos() != null) pos = spoilContext.pos();
-            if (pos != null && type != null) {
+            if (pos != null) {
                 if (level.getBlockState(pos).isSuffocating(level, pos)) {
                     for (Direction direction : Direction.values()) {
                         BlockPos relative = pos.relative(direction);

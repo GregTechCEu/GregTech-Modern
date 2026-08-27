@@ -20,10 +20,11 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
-import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilBehaviour;
+import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehaviourStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
@@ -55,7 +56,6 @@ import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
-import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -78,6 +78,7 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.KubeGTRegistryEventHandler;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -147,7 +148,6 @@ public class CommonProxy {
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
 
         GTGuiTheme.registerThemes();
-        SpoilableBehavior.init();
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
@@ -320,39 +320,6 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public static void registerDevSpoilables(RegisterSpoilablesEvent event) {
-        if (GTCEu.isDev()) { // for testing purposes
-            event.getBuilder()
-                    .ticks(10)
-                    .result(Items.DIRT)
-                    .build()
-                    .attachTo(Items.JIGSAW);
-            event.getBuilder()
-                    .ticks(10)
-                    .result(Items.STRUCTURE_BLOCK)
-                    .build()
-                    .attachTo(Items.APPLE);
-            event.getBuilder()
-                    .ticks(40)
-                    .result(Items.STRUCTURE_VOID)
-                    .build()
-                    .attachTo(Items.STRUCTURE_BLOCK);
-            event.getBuilder()
-                    .ticks(10)
-                    .result(Items.JIGSAW)
-                    .build()
-                    .attachTo(Items.STRUCTURE_VOID);
-            event.getBuilder()
-                    .ticks(10)
-                    .result(Items.DRAGON_EGG)
-                    .result(EntityType.PIG)
-                    .multiplyResult(3)
-                    .build()
-                    .attachTo(Items.EGG);
-        }
-    }
-
-    @SubscribeEvent
     public static void registerRegistries(NewRegistryEvent event) {
         GTRegistries.getRegistries().forEach(event::register);
     }
@@ -489,7 +456,9 @@ public class CommonProxy {
             }
         }
 
-        for (Item item : BuiltInRegistries.ITEM) {
+        for (Holder<Item> holder : BuiltInRegistries.ITEM.asHolderIdMap()) {
+            Item item = holder.value();
+
             if (item instanceof IComponentItem componentItem) {
                 componentItem.attachCapabilities(event);
             } else if (item instanceof IGTTool tool) {
@@ -501,6 +470,12 @@ public class CommonProxy {
                         (stack, ctx) -> new FluidBucketWrapper(stack), item);
             } else if (item instanceof PotionItem) {
                 event.registerItem(Capabilities.FluidHandler.ITEM, PotionItemFluidHandler::new, item);
+            }
+
+            ItemSpoilBehaviour itemSpoilBehaviour = holder.getData(GTDataMaps.SPOILABLE_DATA);
+            if (itemSpoilBehaviour != null) {
+                event.registerItem(GTCapability.CAPABILITY_SPOILABLE_ITEM, (stack, ctx) -> new SpoilableBehaviourStack(stack, itemSpoilBehaviour),
+                        item);
             }
         }
     }

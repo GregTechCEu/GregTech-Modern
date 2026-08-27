@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.item.IMergeableDataComponent;
 import com.gregtechceu.gtceu.api.item.ISpoilableItemStackExtension;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.spoilage.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilBehaviour;
 import com.gregtechceu.gtceu.api.item.spoilage.SpoilContext;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
-import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehavior;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -39,8 +39,7 @@ import java.util.List;
  *
  * @implNote this class uses a mixin in its {@link ISpoilableItem#updateFreshness} implementation
  *
- * @see SpoilableBehavior
- * @see SpoilableBehavior#attachTo(ItemLike)
+ * @see ItemSpoilBehaviour
  */
 public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation, IDurabilityBar {
 

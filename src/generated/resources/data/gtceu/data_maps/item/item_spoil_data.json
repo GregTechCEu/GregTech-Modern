@@ -1,0 +1,84 @@
+{
+  "values": {
+    "minecraft:apple": {
+      "neoforge:conditions": [
+        {
+          "type": "gtceu:is_dev_env"
+        }
+      ],
+      "spoil_actions": [
+        {
+          "type": "gtceu:transform_item",
+          "item_multiplier": 1,
+          "result_item": "minecraft:structure_block"
+        }
+      ],
+      "ticks": 10
+    },
+    "minecraft:egg": {
+      "neoforge:conditions": [
+        {
+          "type": "gtceu:is_dev_env"
+        }
+      ],
+      "spoil_actions": [
+        {
+          "type": "gtceu:transform_item",
+          "item_multiplier": 1,
+          "result_item": "minecraft:dragon_egg"
+        },
+        {
+          "type": "gtceu:spawn_entity",
+          "entity_count": 3,
+          "entity_type": "minecraft:pig"
+        }
+      ],
+      "ticks": 20
+    },
+    "minecraft:jigsaw": {
+      "neoforge:conditions": [
+        {
+          "type": "gtceu:is_dev_env"
+        }
+      ],
+      "spoil_actions": [
+        {
+          "type": "gtceu:transform_item",
+          "item_multiplier": 1,
+          "result_item": "minecraft:dirt"
+        }
+      ],
+      "ticks": 10
+    },
+    "minecraft:structure_block": {
+      "neoforge:conditions": [
+        {
+          "type": "gtceu:is_dev_env"
+        }
+      ],
+      "spoil_actions": [
+        {
+          "type": "gtceu:transform_item",
+          "item_multiplier": 1,
+          "result_item": "minecraft:structure_void"
+        }
+      ],
+      "ticks": 40
+    },
+    "minecraft:structure_void": {
+      "neoforge:conditions": [
+        {
+          "type": "gtceu:is_dev_env"
+        }
+      ],
+      "spoil_actions": [
+        {
+          "type": "gtceu:transform_item",
+          "item_multiplier": 1,
+          "result_item": "minecraft:jigsaw"
+        }
+      ],
+      "ticks": 10
+    }
+  }
+}
