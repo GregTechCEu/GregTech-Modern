@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.value.sync.BooleanSyncValue;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
@@ -82,8 +84,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private @Nullable BlockPos controllerPos;
     private SelectionInfo selectionInfo = SelectionInfo.empty();
 
-    private int yLevel = -1;
-    private int maxHeight = 0;
+    private int yLevel = Integer.MAX_VALUE;
 
     @Setter
     private @Nullable Runnable onSchemaRefresh;
@@ -157,7 +158,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
                 .entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().get())).toList();
 
-        this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, -10,
+        this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, 0,
                 this.multiblockSchemaInfo.getMapSchema().getCenter());
         SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
                 .listenGuiAction(setBlockOnClick)
@@ -176,10 +177,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
         this.multiblockSchemaInfo.setMultiSchema(schema);
         this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().updateRenderFilter((pos, state) -> {
-            if (yLevel == -1) {
+            if (yLevel == Integer.MAX_VALUE) {
                 return true;
             }
-            return pos.getY() >= yLevel;
+            return pos.getY() <= yLevel;
         });
 
         this.coverChildren()
@@ -197,6 +198,37 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().renderFilter(),
                                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                             }
+                            return true;
+                        }))
+                // todo serialize these values as part of the schema nbt
+                .child(new ToggleButton()
+                        .tooltip(r -> r.addLine(Component.literal("Press to flip structure")))
+                        .left(25)
+                        .value(new BoolValue.Dynamic(() -> isFlipped, v -> {
+                            setFlipped(!isFlipped);
+                            refreshSchema();
+                            refreshViewWidget();
+                            return;
+                        })))
+                .child(new ButtonWidget<>()
+                        .overlay(new DynamicDrawable(() -> Text.dynamic( () ->
+                                Component.literal(yLevel == Integer.MAX_VALUE ? "A" : String.valueOf(yLevel)))
+                                .asIcon()))
+                        .left(45)
+                        .onMousePressed((c, b) -> {
+                            var bounds = multiblockSchemaInfo.getMapSchema().getBounds();
+                            int min = bounds.getFirst().getY();
+                            int max = bounds.getSecond().getY();
+                            if (yLevel == Integer.MAX_VALUE) {
+                                yLevel = min;
+                            } else {
+                                yLevel += 1;
+                                if (yLevel > max) {
+                                    yLevel = Integer.MAX_VALUE;
+                                }
+                            }
+                            refreshSchema();
+                            refreshViewWidget();
                             return true;
                         }))
                 .child(Flow.col()
