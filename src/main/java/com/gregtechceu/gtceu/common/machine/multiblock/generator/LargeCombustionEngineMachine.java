@@ -29,7 +29,6 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,7 +51,6 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     private int runningTimer = 0;
 
     @Getter
-    @Setter
     private boolean hasLubricant = false;
 
     public LargeCombustionEngineMachine(BlockEntityCreationInfo info, int tier) {
@@ -136,11 +134,11 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                     .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed"));
         }
         if (!RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
-            engineMachine.setHasLubricant(false);
+            engineMachine.hasLubricant = false;
             return ModifierFunction
                     .cancel(Component.translatable("gtceu.multiblock.large_combustion_engine.no_lubricant"));
         }
-        engineMachine.setHasLubricant(true);
+        engineMachine.hasLubricant = true;
 
         EnergyStack EUt = recipe.getOutputEUt();
         if (!EUt.isEmpty()) {
@@ -241,7 +239,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         @Override
         public void serverTick() {
             super.serverTick();
-            if (!getMachine().isHasLubricant() && subscription != null) {
+            if (!getMachine().hasLubricant && subscription != null) {
                 subscription.unsubscribe();
                 subscription = null;
             }
