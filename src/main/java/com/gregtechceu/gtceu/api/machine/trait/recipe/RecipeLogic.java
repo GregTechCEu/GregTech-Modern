@@ -115,14 +115,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     @Getter
     @SaveField
-    @SyncToClient
     protected int consecutiveRecipes = 0; // Consecutive recipes that have been run
 
     @SaveField
     @Getter
     protected int progress;
     @Getter
-    @SyncToClient
     @SaveField
     protected int duration;
     @Getter(onMethod_ = @VisibleForTesting)
@@ -652,7 +650,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
-            syncDataHolder.markClientSyncFieldDirty("duration");
         }
     }
 
