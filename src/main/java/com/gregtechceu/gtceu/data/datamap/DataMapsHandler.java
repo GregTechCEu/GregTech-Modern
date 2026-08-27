@@ -13,5 +13,6 @@ public class DataMapsHandler {
         final var compostables = provider.builder(NeoForgeDataMaps.COMPOSTABLES);
         ComposterRecipes.addComposterRecipes((item, chance) -> compostables.add(item.builtInRegistryHolder(),
                 new Compostable(chance), false));
+
     }
 }

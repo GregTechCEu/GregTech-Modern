@@ -202,6 +202,8 @@ public class CommonProxy {
         GTRecipeTypes.init();
         GTRecipeCategories.init();
         GTPatternErrors.init();
+        GTSpoilActions.init();
+        GTConditions.init(modBus);
 
         GTFoods.init();
         GTToolTiers.init();
