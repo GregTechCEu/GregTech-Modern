@@ -115,15 +115,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     @Getter
     @SaveField
-    @SyncToClient
     protected int consecutiveRecipes = 0; // Consecutive recipes that have been run
 
     @SaveField
     @Getter
-    @SyncToClient
     protected int progress;
     @Getter
-    @SyncToClient
     @SaveField
     protected int duration;
     @Getter(onMethod_ = @VisibleForTesting)
@@ -237,7 +234,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     public void setProgress(int progress) {
         this.progress = progress;
-        syncDataHolder.markClientSyncFieldDirty("progress");
     }
 
     public void setProgressDelta(int delta) {
@@ -336,7 +332,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 }
                 progress++;
                 totalContinuousRunningTime++;
-                syncDataHolder.markClientSyncFieldDirty("progress");
             } else {
                 setWaiting(handleTick.reason());
 
@@ -378,7 +373,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected void regressRecipe() {
         if (progress > 0 && regressWhenWaiting) {
             this.progress = 1;
-            syncDataHolder.markClientSyncFieldDirty("progress");
         }
     }
 
@@ -656,8 +650,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
-            syncDataHolder.markClientSyncFieldDirty("progress");
-            syncDataHolder.markClientSyncFieldDirty("duration");
         }
     }
 
