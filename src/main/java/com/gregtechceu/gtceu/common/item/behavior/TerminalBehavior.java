@@ -60,6 +60,7 @@ import static com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper.readBloc
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
+    // todo somewhere client panel warning if the structure to be built is invalid
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
