@@ -141,39 +141,11 @@ public class CommonProxy {
         }
         modBus.register(CommonProxy.class);
 
-        // MUI stuff
-        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
-        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
-
-        GTGuiTheme.registerThemes();
-        SpoilableBehavior.init();
-
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
-        REGISTRATE.registerEventListeners(modBus);
-        GTCreativeModeTabs.init();
-        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
-
-        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
-        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
-        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
-
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
-    }
-
-    // Only register everything once.
-    private static boolean didRunRegistration = false;
-
-    @SubscribeEvent
-    public static void onRegister(RegisterEvent event) {
-        if (didRunRegistration) {
-            return;
-        }
-        didRunRegistration = true;
-
-        GTElements.init();
+        REGISTRATE.registerEventListeners(modBus); GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
         initMaterials();
@@ -234,6 +206,22 @@ public class CommonProxy {
         SyncedKeyMappings.init();
         MachineOwner.init();
         ChestGenHooks.init();
+
+        GTCreativeModeTabs.init();
+        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
+
+        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
+        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
+        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
+
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+
+        GTGuiTheme.registerThemes();
+        SpoilableBehavior.init();
+
+        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
     }
 
     @ApiStatus.Internal
