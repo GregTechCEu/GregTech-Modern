@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.gametest.world;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -40,7 +42,7 @@ public class RealWorldItemUsage {
         var player = helper.makeTickingMockServerPlayerInLevel(GameType.SURVIVAL);
         player.moveTo(helper.absoluteVec(new Vec3(2.5, 2.0, 2.5)));
         player.setItemSlot(EquipmentSlot.MAINHAND,
-                new ItemStack(helper.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
+                new ItemStack(BuiltInRegistries.ITEM
                         .getOrThrow(ResourceKey.create(Registries.ITEM, GTCEu.id("neutronium_pickaxe")))));
         // Allow player to stand
         helper.setBlock(new BlockPos(2, 1, 2), Blocks.BEDROCK);
