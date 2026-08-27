@@ -98,8 +98,6 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -127,6 +125,7 @@ import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.script.BindingsEvent;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.ClassFilter;
+import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
@@ -347,7 +346,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (clazz.isInstance(o)) return clazz.cast(o);
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(registry)
+            return UtilsJS.staticRegistryAccess.registryOrThrow(registry)
                     .get(wrapper.wrapped());
         });
     }

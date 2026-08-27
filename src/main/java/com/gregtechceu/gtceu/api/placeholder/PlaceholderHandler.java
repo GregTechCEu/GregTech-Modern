@@ -107,8 +107,7 @@ public class PlaceholderHandler {
                                                         PlaceholderContext context) throws PlaceholderException {
         var id = toId(placeholder.get(0).toString());
         if (id == null) throw new UnknownPlaceholderException(placeholder.get(0).toString());
-        var holder = context.holderLookup().lookupOrThrow(GTRegistries.Keys.PLACEHOLDER)
-                .get(id);
+        var holder = GTRegistries.PLACEHOLDERS.getHolder(id);
         if (holder.isEmpty()) throw new UnknownPlaceholderException(placeholder.get(0).toString());
         if (context.level().isClientSide &&
                 !holder.get().value().isView())
@@ -337,9 +336,7 @@ public class PlaceholderHandler {
                                 .paddingBottom(5)
                                 .excludeAreaInRecipeViewer()
                                 .fullHeight()
-                                .children(ctx.holderLookup()
-                                        .lookupOrThrow(GTRegistries.Keys.PLACEHOLDER)
-                                        .listElements()
+                                .children(GTRegistries.PLACEHOLDERS.holders()
                                         .map(Holder.Reference::value)
                                         .sorted()
                                         .map(p -> (IWidget) Flow.row()
@@ -513,7 +510,7 @@ public class PlaceholderHandler {
                                             s.replaceAll("\\n", "\\\\n")))));
                 }
 
-                var holder = ctx.holderLookup().lookupOrThrow(GTRegistries.Keys.PLACEHOLDER).get(id);
+                var holder = GTRegistries.PLACEHOLDERS.getHolder(id);
 
                 if (holder.isPresent()) {
                     var placeholder = holder.get().value();
