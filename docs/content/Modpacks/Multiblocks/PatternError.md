@@ -9,7 +9,7 @@ Each PatternError also must implement the ui modifier, which is the way to displ
 public class MyPatternError extends PatternError {
 
     // This codec is needed for serialization. It should send all the needed data to display the error on the client. 
-    public static Codec<PlaceholderError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static MapCodec<PlaceholderError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
                     Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
             .apply(instance, MyPatternError::new));
