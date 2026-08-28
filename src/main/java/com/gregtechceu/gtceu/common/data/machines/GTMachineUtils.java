@@ -605,10 +605,10 @@ public class GTMachineUtils {
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
                     MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).withMinGlobalLimited(3)
-                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS).withMinGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS).withMaxGlobalLimited(1)
-                                    .setPreviewCount(1))
+                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS)
+                                    .withMinGlobalLimited(1, 1))
+                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS)
+                                    .withMaxGlobalLimited(1, 1))
                             .and(Predicates.abilities(PartAbility.MUFFLER).withExactLimit(1));
 
                     if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
@@ -623,8 +623,8 @@ public class GTMachineUtils {
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
                             .where('C', blocks(casing.get()).withMinGlobalLimited(20)
-                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS).withMinGlobalLimited(1)
-                                            .setPreviewCount(1)))
+                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS)
+                                            .withMinGlobalLimited(1, 1)))
                             .build();
                 })
                 .recoveryItems(

@@ -158,12 +158,12 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     }
 
     public static MultiPredicate getHatchPredicates() {
-        return abilities(PartAbility.INPUT_ENERGY).setPreviewCount(1)
-                .or(abilities(PartAbility.OUTPUT_ENERGY).setPreviewCount(2))
-                .or(abilities(PartAbility.SUBSTATION_INPUT_ENERGY).setPreviewCount(1))
-                .or(abilities(PartAbility.SUBSTATION_OUTPUT_ENERGY).setPreviewCount(1))
-                .or(abilities(PartAbility.INPUT_LASER).setPreviewCount(1))
-                .or(abilities(PartAbility.OUTPUT_LASER).setPreviewCount(1));
+        return abilities(PartAbility.INPUT_ENERGY).withPreviewCount(1)
+                .or(abilities(PartAbility.OUTPUT_ENERGY).withPreviewCount(2))
+                .or(abilities(PartAbility.SUBSTATION_INPUT_ENERGY).withPreviewCount(1))
+                .or(abilities(PartAbility.SUBSTATION_OUTPUT_ENERGY).withPreviewCount(1))
+                .or(abilities(PartAbility.INPUT_LASER).withPreviewCount(1))
+                .or(abilities(PartAbility.OUTPUT_LASER).withPreviewCount(1));
     }
 
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
