@@ -142,7 +142,7 @@ public class CommonProxy {
         GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
-        REGISTRATE.registerEventListeners(modBus);
+
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
@@ -175,8 +175,8 @@ public class CommonProxy {
         GTFoods.init();
         GTToolTiers.init();
         GTToolBehaviors.init();
-        GTDataComponents.DATA_COMPONENTS.register(modBus);
-        GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
+        GTDataComponents.init(modBus);
+        GTArmorMaterials.init(modBus);
         GTItems.init();
 
         GTMachineUtils.init();
@@ -184,13 +184,12 @@ public class CommonProxy {
         GTMachines.init();
 
         GTEntityTypes.init();
-        GTIngredientTypes.ITEM_INGREDIENT_TYPES.register(modBus);
-        GTIngredientTypes.FLUID_INGREDIENT_TYPES.register(modBus);
-        GTRecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
+        GTIngredientTypes.init(modBus);
+        GTRecipeSerializers.init(modBus);
 
-        GTCommandArguments.COMMAND_ARGUMENT_TYPES.register(modBus);
-        GTMobEffects.MOB_EFFECTS.register(modBus);
-        GTParticleTypes.PARTICLE_TYPES.register(modBus);
+        GTCommandArguments.init(modBus);
+        GTMobEffects.init(modBus);
+        GTParticleTypes.init(modBus);
         WorldGenLayers.init();
 
         GregTechDatagen.initPost();
@@ -206,7 +205,7 @@ public class CommonProxy {
         ChestGenHooks.init();
 
         GTCreativeModeTabs.init();
-        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
+        GTAttachmentTypes.init(modBus);
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
@@ -218,8 +217,6 @@ public class CommonProxy {
 
         GTGuiTheme.registerThemes();
         SpoilableBehavior.init();
-
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
     }
 
     @ApiStatus.Internal
