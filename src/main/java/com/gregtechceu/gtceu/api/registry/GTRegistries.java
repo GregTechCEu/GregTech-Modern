@@ -168,14 +168,15 @@ public final class GTRegistries {
     }
 
     // ignore the generics and hope the registered objects are still correctly typed :3
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     private static void actuallyRegister(RegisterEvent event) {
-        for (Registry reg : TO_REGISTER.rowKeySet()) {
-            event.register(reg.key(), helper -> {
-                TO_REGISTER.row(reg).forEach(helper::register);
-            });
+        if (!TO_REGISTER.containsRow(event.getRegistry())) return;
+
+        for (var entry : TO_REGISTER.row(event.getRegistry()).entrySet()) {
+            event.register((ResourceKey<? extends Registry<Object>>) event.getRegistryKey(), entry.getKey(),
+                    entry::getValue);
         }
-        TO_REGISTER.clear();
+        TO_REGISTER.row(event.getRegistry()).clear();
     }
 
     private static void onUnfreeze(RegisterEvent event) {
