@@ -53,17 +53,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
     /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
 
-    public abstract BasePredicate copy();
-
-    protected void copyTo(BasePredicate other) {
-        other.settings = this.settings.copy();
-        other.additionalTooltips.addAll(this.additionalTooltips);
-    }
-
-    public void addTooltips(Component tooltip) {
-        this.additionalTooltips.add(tooltip);
-    }
-
     /// delegates to {@link MultiPredicate#testMaxCount(BasePredicate, PredicateContext)},
     /// with this predicate as the passing predicate
     public boolean checkMaxCount(PredicateContext context) {
@@ -141,6 +130,15 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
         return this.settings.comparePriority(o.settings);
     }
 
+    // COPY AND MUTATE
+
+    public abstract BasePredicate copy();
+
+    protected void copyTo(BasePredicate other) {
+        other.setSettings(this.settings.copy());
+        other.additionalTooltips.addAll(this.additionalTooltips);
+    }
+
     @Override
     public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
         BasePredicate copy = copy();
@@ -148,12 +146,88 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
         return copy;
     }
 
-    public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
-        setSettings(configurator.apply(getSettings()));
+    @Override
+    public BasePredicate withDisableRenderFormed(boolean disableRenderFormed) {
+        return withSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
+    }
+
+    @Override
+    public BasePredicate withPreviewCount(int previewCount) {
+        return withSettings(s -> s.withPreviewCount(previewCount));
+    }
+
+    @Override
+    public BasePredicate withMaxSliceCount(int maxSliceCount) {
+        return withSettings(s -> s.withMaxSliceCount(maxSliceCount));
+    }
+
+    @Override
+    public BasePredicate withMinSliceCount(int minSliceCount) {
+        return withSettings(s -> s.withMinSliceCount(minSliceCount));
+    }
+
+    @Override
+    public BasePredicate withMaxCount(int maxCount) {
+        return withSettings(s -> s.withMaxCount(maxCount));
+    }
+
+    @Override
+    public BasePredicate withMinCount(int minCount) {
+        return withSettings(s -> s.withMinCount(minCount));
+    }
+
+    @Override
+    public BasePredicate withPriority(int priority) {
+        return withSettings(s -> s.withPriority(priority));
     }
 
     @Override
     public void setSettings(PredicateSettings settings) {
         this.settings = settings;
+    }
+
+    // MUTATE ONLY
+
+    public void addTooltips(Component tooltip) {
+        this.additionalTooltips.add(tooltip);
+    }
+
+    public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
+        setSettings(configurator.apply(getSettings()));
+    }
+
+    @Override
+    public void setDisableRenderFormed(boolean disableRenderFormed) {
+        updateSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
+    }
+
+    @Override
+    public void setPreviewCount(int previewCount) {
+        updateSettings(s -> s.withPreviewCount(previewCount));
+    }
+
+    @Override
+    public void setMaxSliceCount(int maxSliceCount) {
+        updateSettings(s -> s.withMaxSliceCount(maxSliceCount));
+    }
+
+    @Override
+    public void setMinSliceCount(int minSliceCount) {
+        updateSettings(s -> s.withMinSliceCount(minSliceCount));
+    }
+
+    @Override
+    public void setMaxCount(int maxCount) {
+        updateSettings(s -> s.withMaxCount(maxCount));
+    }
+
+    @Override
+    public void setMinCount(int minCount) {
+        updateSettings(s -> s.withMinCount(minCount));
+    }
+
+    @Override
+    public void setPriority(int priority) {
+        updateSettings(s -> s.withPriority(priority));
     }
 }
