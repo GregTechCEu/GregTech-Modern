@@ -3881,7 +3881,7 @@
   "gtceu.tooltip.proxy_bind": "§fBinding to a Pattern Buffer at %s %s %s",
   "gtceu.tooltip.spoil_time_remaining": "Time until spoils: %s",
   "gtceu.tooltip.spoil_time_total": "Total spoil time: %s",
-  "gtceu.tooltip.spoils_into": "Spoils into: %s",
+  "gtceu.tooltip.spoils_into": "Spoils into:",
   "gtceu.tooltip.status.trinary.false": "False",
   "gtceu.tooltip.status.trinary.true": "True",
   "gtceu.tooltip.status.trinary.unknown": "Unknown",

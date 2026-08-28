@@ -3881,7 +3881,7 @@
   "gtceu.tooltip.proxy_bind": "%s %s %s ʇɐ ɹǝɟɟnᗺ uɹǝʇʇɐԀ ɐ oʇ buıpuıᗺɟ§",
   "gtceu.tooltip.spoil_time_remaining": "%s :sןıods ןıʇun ǝɯı⟘",
   "gtceu.tooltip.spoil_time_total": "%s :ǝɯıʇ ןıods ןɐʇo⟘",
-  "gtceu.tooltip.spoils_into": "%s :oʇuı sןıodS",
+  "gtceu.tooltip.spoils_into": ":oʇuı sןıodS",
   "gtceu.tooltip.status.trinary.false": "ǝsןɐℲ",
   "gtceu.tooltip.status.trinary.true": "ǝnɹ⟘",
   "gtceu.tooltip.status.trinary.unknown": "uʍouʞu∩",

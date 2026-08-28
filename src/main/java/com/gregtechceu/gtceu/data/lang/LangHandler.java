@@ -1896,7 +1896,7 @@ public class LangHandler {
         provider.add("gtceu.gui.item_collector.range", "Range: ");
         provider.add("gtceu.tooltip.spoil_time_remaining", "Time until spoils: %s");
         provider.add("gtceu.tooltip.spoil_time_total", "Total spoil time: %s");
-        provider.add("gtceu.tooltip.spoils_into", "Spoils into: %s");
+        provider.add("gtceu.tooltip.spoils_into", "Spoils into:");
         provider.add("gtceu.tooltip.creation_tick", "Created on overworld tick %d");
         provider.add("gtceu.tooltip.location", "Location: %s (%d, %d, %d)");
         provider.add("gtceu.tooltip.location_entity", "Entity: %s");

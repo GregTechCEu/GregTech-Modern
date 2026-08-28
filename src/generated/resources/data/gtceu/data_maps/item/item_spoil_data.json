@@ -13,7 +13,7 @@
           "result_item": "minecraft:structure_block"
         }
       ],
-      "ticks": 10
+      "ticks": 100
     },
     "minecraft:egg": {
       "neoforge:conditions": [
@@ -33,7 +33,7 @@
           "entity_type": "minecraft:pig"
         }
       ],
-      "ticks": 20
+      "ticks": 160
     },
     "minecraft:jigsaw": {
       "neoforge:conditions": [
@@ -48,7 +48,7 @@
           "result_item": "minecraft:dirt"
         }
       ],
-      "ticks": 10
+      "ticks": 40
     },
     "minecraft:structure_block": {
       "neoforge:conditions": [
@@ -63,7 +63,7 @@
           "result_item": "minecraft:structure_void"
         }
       ],
-      "ticks": 40
+      "ticks": 100
     },
     "minecraft:structure_void": {
       "neoforge:conditions": [
@@ -78,7 +78,7 @@
           "result_item": "minecraft:jigsaw"
         }
       ],
-      "ticks": 10
+      "ticks": 100
     }
   }
 }

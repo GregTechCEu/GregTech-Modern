@@ -63,8 +63,8 @@ public class TransformItemSpoilAction extends SpoilAction {
     }
 
     @Override
-    public void getSpoilResult(List<ItemStack> itemResults, ItemStack stack, SpoilContext spoilContext, boolean simulate) {
-        itemResults.add(getResult(stack));
+    public ItemStack getSpoilResult(ItemStack currentSpoilResult, ItemStack stack, SpoilContext spoilContext, boolean simulate) {
+        return getResult(stack);
     }
 
     @Override

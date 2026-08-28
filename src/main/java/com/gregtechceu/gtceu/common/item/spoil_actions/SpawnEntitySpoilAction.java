@@ -7,6 +7,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -53,18 +54,19 @@ public class SpawnEntitySpoilAction extends SpoilAction {
 
 
     @Override
-    public void getSpoilResult(List<ItemStack> itemResults, ItemStack stack, @NotNull SpoilContext spoilContext, boolean simulate) {
+    public ItemStack getSpoilResult(ItemStack currentSpoilResult, ItemStack stack, @NotNull SpoilContext spoilContext, boolean simulate) {
         if (!simulate) {
             EntityType<?> type = entityType.value();
             SpoilUtils.spawnEntity(spoilContext, type, stack.getCount());
         }
+        return currentSpoilResult;
     }
 
     @Override
     public void appendTooltip(List<Component> tooltips, ItemStack stack) {
         EntityType<?> type = entityType.value();
         MutableComponent component = type.getDescription().copy();
-        tooltips.add(component);
+        tooltips.add(Component.literal(entityCount + "x ").withStyle(ChatFormatting.GREEN).append(component));
     }
 
     @Override

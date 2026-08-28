@@ -19,14 +19,14 @@ public abstract class SpoilAction {
 
     /**
      * Called when an item stack spoils.
-     * @param itemResults A modifiable list containing the item results to be produced by this item stack spoiling.
+     * @param currentSpoilResult The current item stack to be produced.
      * @param stack The item stack which has spoiled.
      * @param spoilContext The spoil context.
      * @param simulate If side effects should be performed (e.g. spawning an entity should only be performed when simulate = false).
      */
-    public abstract void getSpoilResult(List<ItemStack> itemResults, ItemStack stack, SpoilContext spoilContext, boolean simulate);
+    public abstract ItemStack getSpoilResult(ItemStack currentSpoilResult, ItemStack stack, SpoilContext spoilContext, boolean simulate);
 
-    public abstract void appendTooltip(List<Component> tooltip, ItemStack stack);
+    public abstract void appendTooltip(List<Component> tooltips, ItemStack stack);
 
     public abstract MapCodec<? extends SpoilAction> codec();
 }

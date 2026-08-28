@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data.datamap;
 
 import com.gregtechceu.gtceu.api.item.spoilage.SpoilAction;
-import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilBehaviour;
+import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilageData;
 import com.gregtechceu.gtceu.common.condition.IsDevEnvironmentCondition;
 import com.gregtechceu.gtceu.common.data.GTDataMaps;
 import com.gregtechceu.gtceu.common.item.spoil_actions.SpawnEntitySpoilAction;
@@ -31,14 +31,14 @@ public class DataMapsHandler {
     public static void attachDevSpoilables(RegistrateDataMapProvider provider) {
         var datamap = provider.builder(GTDataMaps.SPOILABLE_DATA);
 
-        registerDevSpoilable(datamap, Items.JIGSAW, 10, new TransformItemSpoilAction(Items.DIRT));
-        registerDevSpoilable(datamap, Items.APPLE, 10, new TransformItemSpoilAction(Items.STRUCTURE_BLOCK));
-        registerDevSpoilable(datamap, Items.STRUCTURE_BLOCK, 40, new TransformItemSpoilAction(Items.STRUCTURE_VOID));
-        registerDevSpoilable(datamap, Items.STRUCTURE_VOID, 10, new TransformItemSpoilAction(Items.JIGSAW));
-        registerDevSpoilable(datamap, Items.EGG, 20, new TransformItemSpoilAction(Items.DRAGON_EGG), new SpawnEntitySpoilAction(EntityType.PIG, 3));
+        registerDevSpoilable(datamap, Items.JIGSAW, 40, new TransformItemSpoilAction(Items.DIRT));
+        registerDevSpoilable(datamap, Items.APPLE, 100, new TransformItemSpoilAction(Items.STRUCTURE_BLOCK));
+        registerDevSpoilable(datamap, Items.STRUCTURE_BLOCK, 100, new TransformItemSpoilAction(Items.STRUCTURE_VOID));
+        registerDevSpoilable(datamap, Items.STRUCTURE_VOID, 100, new TransformItemSpoilAction(Items.JIGSAW));
+        registerDevSpoilable(datamap, Items.EGG, 160, new TransformItemSpoilAction(Items.DRAGON_EGG), new SpawnEntitySpoilAction(EntityType.PIG, 3));
     }
 
-    private static void registerDevSpoilable(DataMapProvider.Builder<ItemSpoilBehaviour, Item> datamapBuilder, Item item, long ticks, SpoilAction... spoilActions) {
-        datamapBuilder.add(item.builtInRegistryHolder(), new ItemSpoilBehaviour(ticks, spoilActions), false, new IsDevEnvironmentCondition());
+    private static void registerDevSpoilable(DataMapProvider.Builder<ItemSpoilageData, Item> datamapBuilder, Item item, long ticks, SpoilAction... spoilActions) {
+        datamapBuilder.add(item.builtInRegistryHolder(), new ItemSpoilageData(ticks, spoilActions), false, new IsDevEnvironmentCondition());
     }
 }

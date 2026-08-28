@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.IMergeableDataComponent;
 import com.gregtechceu.gtceu.api.item.ISpoilableItemStackExtension;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.spoilage.ISpoilableItem;
-import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilBehaviour;
+import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilageData;
 import com.gregtechceu.gtceu.api.item.spoilage.SpoilContext;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -19,7 +19,6 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
@@ -39,7 +38,7 @@ import java.util.List;
  *
  * @implNote this class uses a mixin in its {@link ISpoilableItem#updateFreshness} implementation
  *
- * @see ItemSpoilBehaviour
+ * @see ItemSpoilageData
  */
 public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformation, IDurabilityBar {
 
@@ -199,7 +198,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
             long timeDifference = level.getGameTime() - getCreationTick() - spoilTicks;
             if (timeDifference >= 0) {
                 ItemStack newStack = this.spoilResult(getSpoilContext(), GTCEu.isClientThread());
-                ((ISpoilableItemStackExtension) (Object) stack).gtceu$forceContentTo(newStack);
+                ((ISpoilableItemStackExtension)stack).gtceu$forceContentTo(newStack);
                 onItemChanged();
                 ISpoilableItem newSpoilable = GTCapabilityHelper.getSpoilable(stack);
                 if (newSpoilable != null) {
@@ -271,7 +270,8 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                 Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
                         .withStyle(ChatFormatting.DARK_AQUA)));
         tooltipComponents.add(Component.translatable(
-                "gtceu.tooltip.spoils_into", getSpoilResultTooltip()));
+                "gtceu.tooltip.spoils_into"));
+        appendSpoilResultTooltips(tooltipComponents);
         if (isAdvanced.isAdvanced()) {
             tooltipComponents.add(Component.translatable(
                     "gtceu.tooltip.spoil_time_total",
@@ -297,8 +297,8 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
         }
     }
 
-    protected Component getSpoilResultTooltip() {
-        return spoilResult(new SpoilContext(), false).getDisplayName();
+    protected void appendSpoilResultTooltips(List<Component> tooltips) {
+        tooltips.add(spoilResult(new SpoilContext(), false).getDisplayName());
     }
 
     @Override

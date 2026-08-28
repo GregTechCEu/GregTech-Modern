@@ -23,7 +23,7 @@ import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilBehaviour;
+import com.gregtechceu.gtceu.api.item.spoilage.ItemSpoilageData;
 import com.gregtechceu.gtceu.api.item.spoilage.SpoilableBehaviourStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
@@ -83,7 +83,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -472,9 +471,9 @@ public class CommonProxy {
                 event.registerItem(Capabilities.FluidHandler.ITEM, PotionItemFluidHandler::new, item);
             }
 
-            ItemSpoilBehaviour itemSpoilBehaviour = holder.getData(GTDataMaps.SPOILABLE_DATA);
-            if (itemSpoilBehaviour != null) {
-                event.registerItem(GTCapability.CAPABILITY_SPOILABLE_ITEM, (stack, ctx) -> new SpoilableBehaviourStack(stack, itemSpoilBehaviour),
+            ItemSpoilageData itemSpoilageData = holder.getData(GTDataMaps.SPOILABLE_DATA);
+            if (itemSpoilageData != null) {
+                event.registerItem(GTCapability.CAPABILITY_SPOILABLE_ITEM, (stack, ctx) -> new SpoilableBehaviourStack(stack, itemSpoilageData),
                         item);
             }
         }
