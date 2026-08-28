@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.WorldGenLayerEventJS;
 
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
@@ -29,15 +27,5 @@ public class WorldGenLayers {
             Set.of(Level.END));
 
     public static void init() {
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSCallWrapper.postEvent();
-        }
-    }
-
-    private static final class KJSCallWrapper {
-
-        private static void postEvent() {
-            GTCEuStartupEvents.WORLD_GEN_LAYERS.post(new WorldGenLayerEventJS());
-        }
     }
 }
