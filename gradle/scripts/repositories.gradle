@@ -81,6 +81,12 @@ repositories {
         forRepository { maven { url = "https://maven.terraformersmc.com/releases/" } }
         filter { includeGroup("dev.emi") }
     }
+    exclusiveContent { // architectury
+        forRepository { maven { url = "https://maven.shedaniel.me/" } }
+        filter {
+            includeGroup("dev.architectury")
+        }
+    }
     exclusiveContent { // tterrag - registrate
         forRepository { maven { url = "https://mvn.devos.one/snapshots/" } }
         filter { includeGroup("com.tterrag.registrate") }
