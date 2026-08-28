@@ -14,8 +14,6 @@ architectury = "9.2.14"
 clothmath = "+"
 clothconfig = "11.1.136"
 curios = "5.9.1+1.20.1"
-kotlinforforge = "4.11.0"
-shimmer = "1.20.1-0.2.4"
 journeyMapApi = "1.20-1.9-SNAPSHOT"
 ftblibrary = "2001.2.4"
 ftbteams = "2001.3.0"
@@ -48,10 +46,6 @@ spark = "4738952"
 observable = "5643037"
 gamestages = "15.0.2"
 bookshelf = "20.2.13"
-ftblibrary-cm = "5567591"
-ftbteams-cm = "5267190"
-ftbquests-cm = "6167056"
-ftbchunks-cm = "5956390"
 
 [libraries]
 registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
@@ -80,9 +74,7 @@ architectury        = { module = "dev.architectury:architectury-forge", version.
 clothmath           = { module = "me.shedaniel.cloth:basic-math", version.ref = "clothmath" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-forge", version.ref = "clothconfig" }
 curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
-kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api", version.ref = "journeyMapApi" }
-shimmer             = { module = "com.lowdragmc.shimmer:Shimmer-forge", version.ref = "shimmer" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
 ftbquests           = { module = "dev.ftb.mods:ftb-quests-forge", version.ref = "ftbquests" }
@@ -112,11 +104,6 @@ spark               = { module = "curse.maven:spark-361579", version.ref = "spar
 observable          = { module = "curse.maven:observable-509575", version.ref = "observable" }
 gamestages          = { module = "net.darkhax.gamestages:GameStages-Forge-1.20.1", version.ref = "gamestages" }
 bookshelf           = { module = "net.darkhax.bookshelf:Bookshelf-Forge-1.20.1", version.ref = "bookshelf" }
-## cursemaven as a backup ##
-ftblibrary-cm       = { module = "curse.maven:ftb-library-forge-404465", version.ref = "ftblibrary-cm" }
-ftbteams-cm         = { module = "curse.maven:ftb-teams-forge-404468", version.ref = "ftbteams-cm" }
-ftbquests-cm        = { module = "curse.maven:ftb-quests-forge-289412", version.ref = "ftbquests-cm" }
-ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.ref = "ftbchunks-cm" }
 
 [bundles]
 jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]

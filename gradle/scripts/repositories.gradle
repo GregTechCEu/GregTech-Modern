@@ -36,12 +36,6 @@ repositories {
         url = "https://modmaven.dev"
     }
 
-    maven { // LDLib, Shimmer
-        name = "FirstDarkDev Maven"
-        url = "https://maven.firstdark.dev/snapshots"
-    }
-
-
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
         filter {
@@ -95,10 +89,6 @@ repositories {
     exclusiveContent { // Curios
         forRepository { maven { url = "https://maven.theillusivec4.top/" } }
         filter { includeGroup('top.theillusivec4.curios')}
-    }
-    exclusiveContent { // KotlinForForge
-        forRepository { maven { url = "https://thedarkcolour.github.io/KotlinForForge/" } }
-        filter { includeGroup("thedarkcolour") }
     }
     exclusiveContent { // CC: Tweaked
         forRepository { maven { url = "https://maven.squiddev.cc" } }
