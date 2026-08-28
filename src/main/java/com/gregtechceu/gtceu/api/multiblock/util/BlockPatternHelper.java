@@ -222,8 +222,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, sliceDir, sliceCoord);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
-            if (basePredicate.getSettings().maxSliceCount() == -1 ||
-                    layerAlreadyPopulated < basePredicate.getSettings().maxSliceCount()) {
+            if (basePredicate.getMaxSliceCount() == -1 || layerAlreadyPopulated < basePredicate.getMaxSliceCount()) {
                 return true;
             }
         }

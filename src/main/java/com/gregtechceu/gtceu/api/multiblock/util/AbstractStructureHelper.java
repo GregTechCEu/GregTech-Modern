@@ -75,13 +75,13 @@ public abstract class AbstractStructureHelper {
 
     protected int getMinCount(MultiPredicate predicate, BasePredicate basePredicate) {
         if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getSettings().minCount();
+            return basePredicate.getMinCount();
         return minMaxPreferences.get(predicate, basePredicate).leftInt();
     }
 
     protected int getMaxCount(MultiPredicate predicate, BasePredicate basePredicate) {
         if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.getSettings().maxCount();
+            return basePredicate.getMaxCount();
         return minMaxPreferences.get(predicate, basePredicate).rightInt();
     }
 
