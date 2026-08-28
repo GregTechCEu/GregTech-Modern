@@ -269,9 +269,9 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.OUTPUT_ENERGY)
-                                    .withGlobalMinMax(1, 2)
-                                    .withPreviewCount(1)
-                                    .withPriority(1));
+                            .withGlobalMinMax(1, 2)
+                            .withPreviewCount(1)
+                            .withPriority(1));
                     break;
                 }
             }

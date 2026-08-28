@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.With;
@@ -23,7 +21,6 @@ public record PredicateSettings(int priority,
             Codec.BOOL.fieldOf("disable_render_formed").forGetter(PredicateSettings::disableRenderFormed)
     ).apply(instance, PredicateSettings::new));
     // spotless:on
-
 
     // helper for xor
     public boolean isNoneValid() {
