@@ -130,10 +130,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class CommonProxy {
 
-    private static IEventBus modBus;
-
     public static void init(final IEventBus modBus) {
-        CommonProxy.modBus = modBus;
         if (GTCEu.Mods.isKubeJSLoaded()) {
             // initialize this before the class's static listeners
             // so KubeJS materials are registered before the material registry is closed.
@@ -145,7 +142,7 @@ public class CommonProxy {
         GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
-        REGISTRATE.registerEventListeners(modBus); 
+        REGISTRATE.registerEventListeners(modBus);
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();

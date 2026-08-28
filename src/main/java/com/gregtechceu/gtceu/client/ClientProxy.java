@@ -82,7 +82,7 @@ public class ClientProxy {
 
         NeoForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
         GTGuiTextures.init();
-        ModLoadingContext.get().getActiveContainer().getEventBus().addListener(GTGuiTheme::onReloadThemes);
+        modBus.addListener(GTGuiTheme::onReloadThemes);
     }
 
     @SubscribeEvent
