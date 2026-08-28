@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
+import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -20,7 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-public abstract class MultiPredicate {
+public abstract class MultiPredicate implements SettingsHolder {
 
     private static final MultiPredicate EMPTY = of(Logic.OR, List.of());
 
@@ -40,6 +42,21 @@ public abstract class MultiPredicate {
     @Accessors(chain = true)
     private boolean controller;
 
+    /*
+       I was curious on your opinion on how recursiveness of setting mins on multipredicates should be done, if at all
+
+        a.setmin(4).and(b.setmin(4) -> at least 4 of a and 4 of b
+
+        a.and(b).setmin(4) -> at least 4 of a and b combined
+
+        should we allow something like
+        a.and(b).setmin(4,true) or .setminRecursive(4) -> at least 4 of a and 4 of b
+
+        for the case where the user doesn't have access to the original a and b predicates?
+        how do we see this "recursive" idea for the difference between children and predicates? and what about when you have multiple nested children?
+        or should we just not bother?
+        I'm leaning to not bother, just make the predicates yourself and edit them acordingly, but wanna discuss it at least
+     */
     @Nullable
     @Getter
     private PredicateSettings settings = null;
@@ -51,15 +68,6 @@ public abstract class MultiPredicate {
     @Getter
     @Setter
     private MultiPredicate parent;
-
-    public static MultiPredicate of(BasePredicate predicate) {
-        return Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
-    }
-
-    /// @param predicates list must be modifiable
-    private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
-        return type.makePredicate(List.of(), predicates, predicates.stream().anyMatch(p -> p == BasePredicate.AIR));
-    }
 
     /// @param children list of multi predicate children
     /// @param predicates list of testable predicates, should be sorted already
@@ -103,7 +111,7 @@ public abstract class MultiPredicate {
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         boolean passed = testGlobalMin(ctx);
         if (this.settings != null) {
-            passed &= this.settings.testGlobalMin(ctx);
+            passed &= SettingsHolder.super.testGlobalMin(ctx.getGlobalCount(this));
         }
         if (passed) return true;
         for (Component content : getDescriptiveContents()) {
@@ -120,7 +128,7 @@ public abstract class MultiPredicate {
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
         boolean passed = testSliceMin(ctx);
         if (this.settings != null) {
-            passed &= this.settings.testSliceMin(ctx);
+            passed &= SettingsHolder.super.testSliceMin(ctx.getSliceCount(this));
         }
         if (passed) return true;
         for (Component content : getDescriptiveContents()) {
@@ -136,13 +144,13 @@ public abstract class MultiPredicate {
         context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
         boolean passed = passedPredicate.testGlobalMax(context);
         if (this.settings != null) {
-            passed &= this.settings.testGlobalMax(context);
+            passed &= this.testGlobalMax(context.incrementGlobalCount(this));
         }
         if (passed) {
             context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
             passed = passedPredicate.testSliceMax(context);
             if (this.settings != null) {
-                passed &= this.settings.testSliceMax(context);
+                passed &= this.testSliceMax(context.incrementSliceCount(this));
             }
         }
         return passed;
@@ -196,6 +204,159 @@ public abstract class MultiPredicate {
         return this.hasAir;
     }
 
+    /// @return {@code true} if this multi predicate has only one predicate, has no children, and has no parent
+    public boolean isSingle() {
+        return predicates.size() == 1 && isLeaf() && isRoot();
+    }
+
+    /// @return {@code true} if this multi predicate has no parent
+    public boolean isRoot() {
+        return getParent() == null;
+    }
+
+    /// @return {@code true} if this multi predicate has children and is not a root predicate
+    public boolean isBranch() {
+        return !isLeaf() && !isRoot();
+    }
+
+    /// @return {@code true} if this multi predicate has no children multi predicates
+    public boolean isLeaf() {
+        return this.children.isEmpty();
+    }
+
+    public List<Component> getDescriptiveContents() {
+        List<Component> list = new ArrayList<>();
+        Component logicLine = switch (this.type) {
+            case OR -> Component.literal("any of:");
+            case AND -> Component.literal("all of:");
+            case XOR -> Component.literal("one of:");
+        };
+        list.add(logicLine);
+        for (BasePredicate predicate : predicates()) {
+            // todo prettier string?
+            list.add(Component.literal(predicate.toString()));
+        }
+        for (MultiPredicate child : children()) {
+            list.addAll(child.getDescriptiveContents());
+        }
+        return list;
+    }
+
+    protected void forEach(Consumer<BasePredicate> action) {
+        this.predicates.forEach(action);
+    }
+
+    public List<BasePredicate> predicates() {
+        return this.predicates;
+    }
+
+    public void forEachChild(Consumer<MultiPredicate> action) {
+        this.children.forEach(action);
+    }
+
+    public List<MultiPredicate> children() {
+        return this.children;
+    }
+
+    /// @return a flattened list of all base predicates
+    public List<BasePredicate> expand() {
+        if (isLeaf()) return this.predicates;
+        List<BasePredicate> expanded = new ArrayList<>(this.predicates);
+        forEachChild(mp -> expanded.addAll(mp.expand()));
+        return expanded;
+    }
+
+    /*
+     * MUTATE AND DO NOT COPY
+     */
+
+    protected PredicateSettings getOrCreateSettings() {
+        if (this.settings == null) {
+            this.settings = PredicateSettings.create();
+        }
+        return this.settings;
+    }
+
+    @RemapForJS("addTooltip")
+    @Contract(mutates = "this")
+    public MultiPredicate addTooltips(Component tooltip) {
+        this.additionalTooltips.add(tooltip);
+        return this;
+    }
+
+    @CheckReturnValue
+    @Contract(mutates = "this")
+    public MultiPredicate addTooltips(Component... tooltip) {
+        Collections.addAll(this.additionalTooltips, tooltip);
+        return this;
+    }
+
+    private void updateSettings(UnaryOperator<PredicateSettings> configurator) {
+        if (isSingle()) {
+            predicates().get(0).updateSettings(configurator);
+        }
+        setSettings(Objects.requireNonNull(configurator.apply(getOrCreateSettings())));
+    }
+
+    public void setSettings(@Nullable PredicateSettings settings) {
+        if (settings != null) {
+            this.settings = settings.copy();
+        }
+    }
+
+    @Override
+    public void setPriority(int priority) {
+        if (this.settings != null) {
+            updateSettings(s -> s.withPriority(priority));
+        }
+    }
+
+    @Override
+    public void setMinCount(int minCount) {
+        if (this.settings != null) {
+            updateSettings(s -> s.withMinCount(minCount));
+        }
+    }
+
+    @Override
+    public void setMaxCount(int maxCount) {
+        if (this.settings != null) {
+            updateSettings(s -> s.withMaxCount(maxCount));
+        }
+    }
+
+    @Override
+    public void setMinSliceCount(int minSliceCount) {
+        if (this.settings != null) {
+            updateSettings(s -> s.withMinSliceCount(minSliceCount));
+        }
+    }
+
+    @Override
+    public void setMaxSliceCount(int maxSliceCount) {
+        if (this.settings != null) {
+            updateSettings(s -> s.withMaxSliceCount(maxSliceCount));
+        }
+    }
+
+    @Override
+    public void setPreviewCount(int previewCount) {
+        if (this.settings != null) {
+            updateSettings(s -> s.withPreviewCount(previewCount));
+        }
+    }
+
+    @Override
+    public void setDisableRenderFormed(boolean disableRenderFormed) {
+        if (this.settings != null) {
+            updateSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
+        }
+    }
+
+    /*
+     * MUTATE AND COPY
+     */
+
     @CheckReturnValue
     private MultiPredicate deepCopy() {
         MultiPredicate copy = this.type.makePredicate(
@@ -215,134 +376,95 @@ public abstract class MultiPredicate {
         return copy;
     }
 
-    @RemapForJS("addTooltip")
+    @Override
     @CheckReturnValue
-    public MultiPredicate addTooltips(Component tooltip) {
-        return copyWith(p -> p.additionalTooltips.add(tooltip));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate addTooltips(Component... tooltip) {
-        return copyWith(p -> Collections.addAll(p.additionalTooltips, tooltip));
-    }
-
-    // spotless:off
-    protected List<PredicateSettings> gatherSettings() {
-        if (this.settings != null) {
-            return List.of(this.settings);
-        }
-        return Stream.concat(
-                predicates().stream().map(BasePredicate::getSettings),
-                children().stream().flatMap(mp -> mp.gatherSettings().stream())
-        ).toList();
-    }
-    // spotless:on
-
-    protected PredicateSettings getOrCreateSettings() {
-        if (this.settings == null) {
-            this.settings = PredicateSettings.create();
-        }
-        return this.settings;
+    public MultiPredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
+        return copyWith(p -> p.setSettings(configurator.apply(getOrCreateSettings())));
     }
 
     @CheckReturnValue
-    public MultiPredicate copyWithSettings(UnaryOperator<PredicateSettings> configurator) {
-        return copyWith(p -> p.updateSettings(configurator));
-    }
-
-    private void updateSettings(UnaryOperator<PredicateSettings> configurator) {
-        setSettings(Objects.requireNonNull(configurator.apply(getOrCreateSettings())));
-    }
-
-    protected void setSettings(@Nullable PredicateSettings settings) {
-        if (settings != null) {
-            this.settings = settings.copy();
-        }
+    public MultiPredicate withPriority(int priority) {
+        return withSettings(s -> s.withPriority(priority));
     }
 
     @CheckReturnValue
-    public MultiPredicate setPriority(int priority) {
-        return copyWithSettings(s -> s.withPriority(priority));
+    public MultiPredicate withMinCount(int min) {
+        return withSettings(s -> s.withMinCount(min));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinCount(int min) {
-        return copyWithSettings(s -> s.withMinCount(min));
+    public MultiPredicate withMaxCount(int max) {
+        return withSettings(s -> s.withMaxCount(max));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxCount(int max) {
-        return copyWithSettings(s -> s.withMaxCount(max));
+    public MultiPredicate withMinSliceCount(int min) {
+        return withSettings(s -> s.withMinSliceCount(min));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinSliceCount(int min) {
-        return copyWithSettings(s -> s.withMinSliceCount(min));
+    public MultiPredicate withMaxSliceCount(int max) {
+        return withSettings(s -> s.withMaxSliceCount(max));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxSliceCount(int max) {
-        return copyWithSettings(s -> s.withMaxSliceCount(max));
+    public MultiPredicate withPreviewCount(int previewCount) {
+        return withSettings(s -> s.withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate setPreviewCount(int previewCount) {
-        return copyWithSettings(s -> s.withPreviewCount(previewCount));
+    public MultiPredicate withDisableRenderFormed(boolean disable) {
+        return withSettings(s -> s.withDisableRenderFormed(disable));
     }
 
     @CheckReturnValue
-    public MultiPredicate setDisableRenderFormed(boolean disable) {
-        return copyWithSettings(s -> s.withDisableRenderFormed(disable));
+    public MultiPredicate withMinGlobalLimited(int min) {
+        return this.withMinCount(min);
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinGlobalLimited(int min) {
-        return this.setMinCount(min);
+    public MultiPredicate withMinGlobalLimited(int min, int previewCount) {
+        return withSettings(s -> s.withMinCount(min).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinGlobalLimited(int min, int previewCount) {
-        return this.setMinCount(min).setPreviewCount(previewCount);
+    public MultiPredicate withMaxGlobalLimited(int max) {
+        return this.withMaxCount(max);
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxGlobalLimited(int max) {
-        return this.setMaxCount(max);
+    public MultiPredicate withMaxGlobalLimited(int max, int previewCount) {
+        return withSettings(s -> s.withMaxCount(max).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxGlobalLimited(int max, int previewCount) {
-        return this.setMaxCount(max).setPreviewCount(previewCount);
+    public MultiPredicate withGlobalMinMax(int min, int max) {
+        return withSettings(s -> s.withMinCount(min).withMaxCount(max));
     }
 
     @CheckReturnValue
-    public MultiPredicate ranged(int min, int max) {
-        return this.setMinCount(min).setMaxCount(max);
+    public MultiPredicate withMinLayerLimited(int min) {
+        return this.withMinSliceCount(min);
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinLayerLimited(int min) {
-        return this.setMinSliceCount(min);
+    public MultiPredicate withMinLayerLimited(int min, int previewCount) {
+        return withSettings(s -> s.withMinSliceCount(min).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMinLayerLimited(int min, int previewCount) {
-        return this.setMinSliceCount(min).setPreviewCount(previewCount);
+    public MultiPredicate withMaxLayerLimited(int max) {
+        return this.withMaxSliceCount(max);
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxLayerLimited(int max) {
-        return this.setMaxSliceCount(max);
+    public MultiPredicate withMaxLayerLimited(int max, int previewCount) {
+        return withSettings(s -> s.withMaxSliceCount(max).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate setMaxLayerLimited(int max, int previewCount) {
-        return this.setMaxSliceCount(max).setPreviewCount(previewCount);
-    }
-
-    @CheckReturnValue
-    public MultiPredicate sliceRanged(int min, int max) {
-        return this.setMinSliceCount(min).setMaxSliceCount(max);
+    public MultiPredicate withLayerMinMax(int min, int max) {
+        return withSettings(s -> s.withMinSliceCount(min).withMaxSliceCount(max));
     }
 
     /**
@@ -351,14 +473,39 @@ public abstract class MultiPredicate {
      * @param limit The Maximum and Minimum limit
      */
     @CheckReturnValue
-    public MultiPredicate setExactLimit(int limit) {
-        return this.ranged(limit, limit);
+    public MultiPredicate withExactLimit(int limit) {
+        return this.withGlobalMinMax(limit, limit);
     }
 
+    /// @return a copy of this multi predicate with render formed disabled
     @CheckReturnValue
     public MultiPredicate disabledRenderFormed() {
-        return setDisableRenderFormed(true);
+        return withDisableRenderFormed(true);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("MultiPredicate");
+        builder.append('[');
+        if (isController()) builder.append("Controller=true, ");
+        switch (this.type) {
+            case OR -> builder.append("Logic=OR");
+            case AND -> builder.append("Logic=AND");
+            case XOR -> builder.append("Logic=XOR");
+        }
+        builder.append(']');
+        builder.append('{');
+        StringJoiner joiner = new StringJoiner(", ");
+        this.forEach(p -> joiner.add(p.toString()));
+        this.forEachChild(mp -> joiner.add(mp.toString()));
+        builder.append(joiner);
+        builder.append('}');
+        return builder.toString();
+    }
+
+    /*
+     * LOGIC AND COMBINATION
+     */
 
     /// @return a new multi predicate where any predicate may pass or be present in the multiblock
     public MultiPredicate or(@Nullable MultiPredicate other) {
@@ -392,92 +539,6 @@ public abstract class MultiPredicate {
         return of(Logic.XOR, predicates);
     }
 
-    /// @return {@code true} if this multi predicate has only one predicate, has no children, and has no parent
-    public boolean isSingle() {
-        return predicates.size() == 1 && isLeaf() && isRoot();
-    }
-
-    /// @return {@code true} if this multi predicate has no parent
-    public boolean isRoot() {
-        return getParent() == null;
-    }
-
-    /// @return {@code true} if this multi predicate has children and is not a root predicate
-    public boolean isBranch() {
-        return !isLeaf() && !isRoot();
-    }
-
-    /// @return {@code true} if this multi predicate has no children multi predicates
-    public boolean isLeaf() {
-        return this.children.isEmpty();
-    }
-
-    public List<Component> getDescriptiveContents() {
-        List<Component> list = new ArrayList<>();
-        Component logicLine = switch (this.type) {
-            case OR -> Component.literal("any of:");
-            case AND -> Component.literal("all of:");
-            case XOR -> Component.literal("one of:");
-        };
-        list.add(logicLine);
-        for (BasePredicate predicate : this.predicates) {
-            // todo prettier string?
-            list.add(Component.literal(predicate.toString()));
-        }
-        for (MultiPredicate child : children()) {
-            list.addAll(child.getDescriptiveContents());
-        }
-        return list;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("MultiPredicate");
-        builder.append('[');
-        if (isController()) builder.append("Controller=true, ");
-        switch (this.type) {
-            case OR -> builder.append("Logic=OR");
-            case AND -> builder.append("Logic=AND");
-            case XOR -> builder.append("Logic=XOR");
-        }
-        builder.append(']');
-        builder.append('{');
-        StringJoiner joiner = new StringJoiner(", ");
-        this.forEach(p -> joiner.add(p.toString()));
-        this.forEachChild(mp -> joiner.add(mp.toString()));
-        builder.append(joiner);
-        builder.append('}');
-        return builder.toString();
-    }
-
-    protected void forEach(Consumer<BasePredicate> action) {
-        this.predicates.forEach(action);
-    }
-
-    public List<BasePredicate> predicates() {
-        return this.predicates;
-    }
-
-    public void forEachChild(Consumer<MultiPredicate> action) {
-        this.children.forEach(action);
-    }
-
-    public List<MultiPredicate> children() {
-        return this.children;
-    }
-
-    /// @return a flattened list of all base predicates
-    public List<BasePredicate> expand() {
-        if (isLeaf()) return this.predicates;
-        List<BasePredicate> expanded = new ArrayList<>(this.predicates);
-        forEachChild(mp -> expanded.addAll(mp.expand()));
-        return expanded;
-    }
-
-    public static MultiPredicate empty() {
-        return EMPTY;
-    }
-
     /// @param a left operand
     /// @param type logic of the new predicate
     /// @param b right operand, may be null
@@ -503,6 +564,19 @@ public abstract class MultiPredicate {
         } else {
             children.add(multiPredicate);
         }
+    }
+
+    public static MultiPredicate empty() {
+        return EMPTY;
+    }
+
+    public static MultiPredicate of(BasePredicate predicate) {
+        return Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
+    }
+
+    /// @param predicates list must be modifiable
+    private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
+        return type.makePredicate(List.of(), predicates, predicates.stream().anyMatch(p -> p == BasePredicate.AIR));
     }
 
     protected enum Logic {

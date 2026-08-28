@@ -25,16 +25,26 @@ public class XorPredicate extends MultiPredicate {
     }
 
     @Override
-    protected void setSettings(@Nullable PredicateSettings settings) {
+    public void setSettings(@Nullable PredicateSettings settings) {
         super.setSettings(settings);
-        boolean noneValid = false;
-        for (PredicateSettings setting : gatherSettings()) {
-            if (setting.minCount() <= 0 && setting.minSliceCount() <= 0) {
-                noneValid = true;
-                break;
+        this.noneValid = isNoneValid(this);
+    }
+
+    private static boolean isNoneValid(MultiPredicate multiPredicate) {
+        PredicateSettings settings = multiPredicate.getSettings();
+        if (settings != null) return settings.isNoneValid();
+
+        for (BasePredicate predicate : multiPredicate.predicates()) {
+            if (predicate.getSettings().isNoneValid()) {
+                return true;
             }
         }
-        this.noneValid = noneValid;
+        for (MultiPredicate child : multiPredicate.children()) {
+            if (isNoneValid(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

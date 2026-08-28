@@ -24,6 +24,12 @@ public record PredicateSettings(int priority,
     ).apply(instance, PredicateSettings::new));
     // spotless:on
 
+
+    // helper for xor
+    public boolean isNoneValid() {
+        return minCount <= 0 && minSliceCount <= 0;
+    }
+
     public PredicateSettings copy() {
         return new PredicateSettings(
                 this.priority,
@@ -37,46 +43,6 @@ public record PredicateSettings(int priority,
 
     public int comparePriority(PredicateSettings other) {
         return Integer.compare(this.priority, other.priority);
-    }
-
-    /// simple test against global min count
-    public boolean testGlobalMin(int count) {
-        return minCount == -1 || count >= minCount;
-    }
-
-    /// simple test against slice min count
-    public boolean testSliceMin(int count) {
-        return minSliceCount == -1 || count >= minSliceCount;
-    }
-
-    /// simple test against global max count
-    public boolean testGlobalMax(int count) {
-        return maxCount == -1 || count <= maxCount;
-    }
-
-    /// simple test against slice max count
-    public boolean testSliceMax(int count) {
-        return maxSliceCount == -1 || count <= maxSliceCount;
-    }
-
-    /// simple test against global min count
-    public boolean testGlobalMin(PredicateContext ctx) {
-        return testGlobalMin(ctx.getGlobalCount(this));
-    }
-
-    /// simple test against slice min count
-    public boolean testSliceMin(PredicateContext ctx) {
-        return testSliceMin(ctx.getSliceCount(this));
-    }
-
-    /// simple test against global max count, increments global count
-    public boolean testGlobalMax(PredicateContext ctx) {
-        return testGlobalMax(ctx.incrementGlobalCount(this));
-    }
-
-    /// simple test against slice max count, increments slice count
-    public boolean testSliceMax(PredicateContext ctx) {
-        return testSliceMax(ctx.incrementSliceCount(this));
     }
 
     public static PredicateSettings create() {

@@ -13,8 +13,9 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 
-public abstract class BasePredicate implements Comparable<BasePredicate> {
+public abstract class BasePredicate implements Comparable<BasePredicate>, SettingsHolder {
 
     public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
@@ -71,8 +72,8 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
-        int count = ctx.incrementGlobalCount(getSettings());
-        if (getSettings().testGlobalMax(count)) return true;
+        int count = ctx.incrementGlobalCount(this);
+        if (testGlobalMax(count)) return true;
         ctx.appendError(SinglePredicateError.maxCount(this, count));
         return false;
     }
@@ -80,8 +81,8 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     /// test against slice max count
     public boolean testSliceMax(PredicateContext ctx) {
         if (!ctx.isCheckLayer()) return true;
-        int count = ctx.incrementSliceCount(getSettings());
-        if (getSettings().testSliceMax(count)) return true;
+        int count = ctx.incrementSliceCount(this);
+        if (testSliceMax(count)) return true;
         ctx.appendError(SinglePredicateError.maxLayerCount(this, count));
         return false;
     }
@@ -89,21 +90,17 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     /// test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         if (getMinCount() == -1) return true;
-        int count = ctx.getGlobalCount(getSettings());
-        if (getSettings().testGlobalMin(count)) return true;
+        int count = ctx.getGlobalCount(this);
+        if (testGlobalMin(count)) return true;
         ctx.appendError(SinglePredicateError.minCount(this, count));
         return false;
-    }
-
-    private int getMinCount() {
-        return getSettings().minCount();
     }
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
         if (!ctx.isCheckLayer()) return true;
-        int count = ctx.getSliceCount(getSettings());
-        if (getSettings().testSliceMin(count)) return true;
+        int count = ctx.getSliceCount(this);
+        if (testSliceMin(count)) return true;
         ctx.appendError(SinglePredicateError.minLayerCount(this, count));
         return false;
     }
@@ -142,5 +139,21 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     @Override
     public int compareTo(BasePredicate o) {
         return this.settings.comparePriority(o.settings);
+    }
+
+    @Override
+    public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
+        BasePredicate copy = copy();
+        copy.updateSettings(configurator);
+        return copy;
+    }
+
+    public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
+        setSettings(configurator.apply(getSettings()));
+    }
+
+    @Override
+    public void setSettings(PredicateSettings settings) {
+        this.settings = settings;
     }
 }
