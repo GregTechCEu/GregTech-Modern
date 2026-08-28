@@ -58,9 +58,10 @@ public abstract class MultiPredicate implements SettingsHolder {
      * I'm leaning to not bother, just make the predicates yourself and edit them acordingly, but wanna discuss it at
      * least
      */
+    /// Nonnull by default, see {@link #recursive()}
     @Nullable
     @Getter
-    private PredicateSettings settings = null;
+    private PredicateSettings settings = PredicateSettings.create();
 
     @Getter
     private final List<Component> additionalTooltips = new ArrayList<>();
@@ -300,7 +301,9 @@ public abstract class MultiPredicate implements SettingsHolder {
         return this;
     }
 
-    private void updateSettings(UnaryOperator<PredicateSettings> configurator) {
+    /// If single, mutates the only predicate <br/>
+    /// Otherwise mutates this multipredicate, adds setting if it was null
+    public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
         if (isSingle()) {
             predicates().get(0).updateSettings(configurator);
         }
@@ -385,10 +388,25 @@ public abstract class MultiPredicate implements SettingsHolder {
         return copy;
     }
 
+    /// Mark this multipredicate as recursive (`this.settings = null`),
+    /// meaning that settings are applied to children instead of itself
+    /// @return a copy of this multipredicate with `this.settings = null`
+    @CheckReturnValue
+    public MultiPredicate recursive() {
+        return copyWith(mp -> mp.settings = null);
+    }
+
     @Override
     @CheckReturnValue
     public MultiPredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
-        return copyWith(p -> p.setSettings(configurator.apply(getOrCreateSettings())));
+        if (this.settings == null) {
+            return copyWith(mp -> {
+                // only one level deep
+                mp.forEach(p -> p.updateSettings(configurator));
+                mp.forEachChild(p -> p.updateSettings(configurator));
+            });
+        }
+        return copyWith(p -> p.updateSettings(configurator));
     }
 
     @CheckReturnValue
