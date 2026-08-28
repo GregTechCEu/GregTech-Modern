@@ -259,8 +259,8 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.INPUT_ENERGY)
-                            .setMinCount(1).setMaxCount(2)
-                            .setPreviewCount(1).setPriority(1));
+                            .withGlobalMinMax(1, 2)
+                            .withPreviewCount(1).withPriority(1));
                     break;
                 }
             }
@@ -269,8 +269,9 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.OUTPUT_ENERGY)
-                            .setMinCount(1).setMaxCount(2)
-                            .setPreviewCount(1).setPriority(1));
+                                    .withGlobalMinMax(1, 2)
+                                    .withPreviewCount(1)
+                                    .withPriority(1));
                     break;
                 }
             }
@@ -279,7 +280,7 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.IMPORT_ITEMS)
-                            .setPreviewCount(1).setPriority(2));
+                            .withPreviewCount(1).withPriority(2));
                     break;
                 }
             }
@@ -288,7 +289,7 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.EXPORT_ITEMS)
-                            .setPreviewCount(1).setPriority(2));
+                            .withPreviewCount(1).withPriority(2));
                     break;
                 }
             }
@@ -297,7 +298,7 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.IMPORT_FLUIDS)
-                            .setPreviewCount(1).setPriority(3));
+                            .withPreviewCount(1).withPriority(3));
                     break;
                 }
             }
@@ -306,7 +307,7 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.EXPORT_FLUIDS)
-                            .setPreviewCount(1).setPriority(3));
+                            .withPreviewCount(1).withPriority(3));
                     break;
                 }
             }
@@ -319,20 +320,19 @@ public class Predicates {
         MultiPredicate predicate = MultiPredicate.empty();
         if (checkMaintenance) {
             predicate = predicate.and(abilities(PartAbility.MAINTENANCE)
-                    .setMinCount(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
-                    .setMaxCount(1)
-                    .setPriority(1));
+                    .withMinCount(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
+                    .withMaxCount(1)
+                    .withPriority(1));
         }
         if (checkMuffler) {
             predicate = predicate.and(abilities(PartAbility.MUFFLER)
-                    .setExactLimit(1)
-                    .setPriority(2));
+                    .withExactLimit(1)
+                    .withPriority(2));
         }
         if (checkParallel) {
             predicate = predicate.and(abilities(PartAbility.PARALLEL_HATCH)
-                    .setMaxCount(1)
-                    .setPreviewCount(1)
-                    .setPriority(3));
+                    .withMaxGlobalLimited(1, 1)
+                    .withPriority(3));
         }
         return predicate;
     }
@@ -345,7 +345,7 @@ public class Predicates {
                         .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                         .map(e -> e.getValue().get()))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
-                .setPriority(0);
+                .withPriority(0);
     }
 
     public static MultiPredicate cleanroomFilters() {
@@ -373,8 +373,8 @@ public class Predicates {
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
             return abilities(PartAbility.DATA_ACCESS)
                     .xor(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
-                    .setExactLimit(1)
-                    .setPriority(1);
+                    .withExactLimit(1)
+                    .withPriority(1);
         }
         return null;
     }

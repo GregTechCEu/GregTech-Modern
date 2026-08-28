@@ -178,16 +178,15 @@ public class MultiblockPatternBuilder {
             if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
             int maxCount = -1;
             for (var basePredicate : predicate.expand()) {
-                PredicateSettings settings = basePredicate.getSettings();
-                if (settings.maxCount() == -1) {
+                if (basePredicate.getMaxCount() == -1) {
                     maxCount = -1;
                     break;
                 }
-                if (settings.minCount() == settings.maxCount()) {
+                if (basePredicate.getMinCount() == basePredicate.getMaxCount()) {
                     if (maxCount == -1) {
-                        maxCount = settings.minCount();
+                        maxCount = basePredicate.getMinCount();
                     } else {
-                        maxCount += settings.minCount();
+                        maxCount += basePredicate.getMinCount();
                     }
                 }
             }

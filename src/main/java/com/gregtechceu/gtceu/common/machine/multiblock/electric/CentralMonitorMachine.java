@@ -75,12 +75,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         if (MULTI_PREDICATE == null) {
             MULTI_PREDICATE = Predicates.machines(GTMachines.MONITOR)
                     .and(Predicates.abilities(PartAbility.INPUT_ENERGY)
-                            .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1))
-                    .and(Predicates.abilities(PartAbility.DATA_ACCESS).setPreviewCount(1)
-                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).setPreviewCount(0))
-                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).setPreviewCount(0))
-                            .setMaxGlobalLimited(4))
-                    .and(Predicates.machines(GTMachines.HULL).setPreviewCount(0))
+                            .withGlobalMinMax(1, 2).withPreviewCount(1))
+                    .and(Predicates.abilities(PartAbility.DATA_ACCESS).withPreviewCount(1)
+                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).withPreviewCount(0))
+                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
+                            .withMaxGlobalLimited(4, 0))
+                    .and(Predicates.machines(GTMachines.HULL).withPreviewCount(0))
                     .and(Predicates.machines(GTMachines.ADVANCED_MONITOR))
                     .and(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));
         }
