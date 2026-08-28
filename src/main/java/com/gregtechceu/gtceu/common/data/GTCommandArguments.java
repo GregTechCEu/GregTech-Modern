@@ -12,7 +12,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 @SuppressWarnings("unused")
 public class GTCommandArguments {
 
-    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister
+    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister
             .create(Registries.COMMAND_ARGUMENT_TYPE, GTCEu.MOD_ID);
 
     @SuppressWarnings({ "SameParameterValue", "unchecked" })
