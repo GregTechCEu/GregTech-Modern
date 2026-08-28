@@ -36,12 +36,6 @@ repositories {
         url = "https://modmaven.dev/"
     }
 
-    maven { // LDLib, Shimmer
-        name = "FirstDarkDev Maven"
-        url = "https://maven.firstdark.dev/snapshots"
-    }
-
-
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository {
             maven { url = "https://maven.createmod.net" }
@@ -87,13 +81,6 @@ repositories {
         forRepository { maven { url = "https://maven.terraformersmc.com/releases/" } }
         filter { includeGroup("dev.emi") }
     }
-    exclusiveContent { // shedaniel - REI, architectury, cloth-config
-        forRepository { maven { url = "https://maven.shedaniel.me/" } }
-        filter {
-            includeGroupAndSubgroups("me.shedaniel")
-            includeGroup("dev.architectury")
-        }
-    }
     exclusiveContent { // tterrag - registrate
         forRepository { maven { url = "https://mvn.devos.one/snapshots/" } }
         filter { includeGroup("com.tterrag.registrate") }
@@ -101,10 +88,6 @@ repositories {
     exclusiveContent { // Curios
         forRepository { maven { url = "https://maven.theillusivec4.top/" } }
         filter { includeGroup('top.theillusivec4.curios')}
-    }
-    exclusiveContent { // KotlinForForge
-        forRepository { maven { url = "https://thedarkcolour.github.io/KotlinForForge/" } }
-        filter { includeGroup("thedarkcolour") }
     }
     exclusiveContent { // Argonauts, Heracles
         forRepository { maven { url = "https://maven.teamresourceful.com/repository/maven-public/" } }
