@@ -52,7 +52,6 @@ public interface SettingsHolder {
 
     void setDisableRenderFormed(boolean disableRenderFormed);
 
-
     // copy and mutate
     /// @return a copy with these settings applied
     SettingsHolder withSettings(UnaryOperator<PredicateSettings> configurator);
