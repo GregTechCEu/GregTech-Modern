@@ -89,7 +89,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
     IGTToolDefinition getToolStats();
 
     @Nullable
-    SoundEntry getSound();
+    Holder<SoundEntry> getSound();
 
     boolean playSoundOnBlockDestroy();
 

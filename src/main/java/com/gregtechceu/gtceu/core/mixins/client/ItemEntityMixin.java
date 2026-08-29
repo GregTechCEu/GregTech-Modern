@@ -25,7 +25,7 @@ public class ItemEntityMixin {
         ItemEntity entity = (ItemEntity) (Object) this;
         if (GTValues.FOOLS.getAsBoolean() && !gtceu$wasOnGround && entity.onGround() &&
                 ChemicalHelper.getPrefix(entity.getItem().getItem()) == TagPrefix.rodLong) {
-            GTSoundEntries.METAL_PIPE.playFrom(entity, 10, 1);
+            GTSoundEntries.METAL_PIPE.value().playFrom(entity, 10, 1);
         }
         gtceu$wasOnGround = entity.onGround();
     }

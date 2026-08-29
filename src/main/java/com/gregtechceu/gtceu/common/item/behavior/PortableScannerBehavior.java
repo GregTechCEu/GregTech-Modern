@@ -108,7 +108,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 player.sendSystemMessage(line);
             }
 
-            GTSoundEntries.PORTABLE_SCANNER.play(level, null, player.position(), 1.0f, 1.0f);
+            GTSoundEntries.PORTABLE_SCANNER.value().play(level, null, player.position(), 1.0f, 1.0f);
 
             return InteractionResult.CONSUME;
         }

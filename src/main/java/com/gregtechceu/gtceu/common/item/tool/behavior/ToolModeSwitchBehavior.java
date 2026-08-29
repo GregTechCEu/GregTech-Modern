@@ -80,7 +80,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehav
                         .forEach(stack -> player.getInventory().placeItemBackInInventory(stack));
             state.spawnAfterBreak(serverLevel, pos, ItemStack.EMPTY, true);
             world.destroyBlock(pos, false);
-            GTSoundEntries.WRENCH_TOOL.playOnServer(serverLevel, pos, 1, GTValues.RNG.nextFloat() * .5f + .5f);
+            GTSoundEntries.WRENCH_TOOL.value().playOnServer(serverLevel, pos, 1, GTValues.RNG.nextFloat() * .5f + .5f);
             return InteractionResult.SUCCESS;
         }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.sound;
 
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -20,7 +21,9 @@ import java.util.function.Consumer;
 
 public abstract class SoundEntry {
 
+    @Getter
     protected ResourceLocation id;
+    @Getter
     protected String subtitle;
     protected SoundSource category;
     protected int attenuationDistance;
@@ -41,19 +44,11 @@ public abstract class SoundEntry {
     public abstract SoundEvent getMainEvent();
 
     public String getSubtitleKey() {
-        return id.getNamespace() + ".subtitle." + id.getPath();
-    }
-
-    public ResourceLocation getId() {
-        return id;
+        return id.toLanguageKey("subtitle");
     }
 
     public boolean hasSubtitle() {
         return subtitle != null;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
     }
 
     public void playOnServer(Level world, Vec3i pos) {

@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import lombok.experimental.Tolerate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -25,7 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -60,7 +61,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Nullable
     @Setter
     @Getter
-    protected SoundEntry sound;
+    protected Holder<SoundEntry> sound;
     @Getter
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
     @Getter
@@ -137,6 +138,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
+    @Tolerate
+    public GTRecipeType setSound(SoundEntry sound) {
+        return setSound(Holder.direct(sound));
+    }
+
     public GTRecipeType UI(UnaryOperator<GTRecipeTypeUILayout.Builder> builder) {
         uiLayout = builder.apply(new GTRecipeTypeUILayout.Builder(this)).build();
         return this;
@@ -170,7 +176,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return registryName.toString();
     }
 
-    public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
+    public Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
         if (!holder.hasCapabilityProxies()) return Collections.emptyIterator();
         var iterator = db.iterator(holder, canHandle);
         if (iterator == null) {
@@ -251,17 +257,17 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public void addDataStickEntry(@NotNull String researchId, @NotNull GTRecipe recipe) {
+    public void addDataStickEntry(String researchId, GTRecipe recipe) {
         Collection<GTRecipe> collection = researchEntries.computeIfAbsent(researchId, (k) -> new ObjectOpenHashSet<>());
         collection.add(recipe);
     }
 
     @Nullable
-    public Collection<GTRecipe> getDataStickEntry(@NotNull String researchId) {
+    public Collection<GTRecipe> getDataStickEntry(String researchId) {
         return researchEntries.get(researchId);
     }
 
-    public boolean removeDataStickEntry(@NotNull String researchId, @NotNull GTRecipe recipe) {
+    public boolean removeDataStickEntry(String researchId, GTRecipe recipe) {
         Collection<GTRecipe> collection = researchEntries.get(researchId);
         if (collection == null) return false;
         if (collection.remove(recipe)) {
@@ -317,7 +323,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return Component.translatable(getTranslationKey());
     }
 
-    public @NotNull RecipeDB db() {
+    public RecipeDB db() {
         return db;
     }
 
