@@ -25,8 +25,6 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
         this.id = id;
         this.target = target;
         this.levels = levels;
-
-        GTRegistries.register(GTRegistries.WORLD_GEN_LAYERS, id, this);
     }
 
     @Override
