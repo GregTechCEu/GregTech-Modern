@@ -61,7 +61,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// Nonnull by default, see {@link #recursive()}
     @Nullable
     @Getter
-    private PredicateSettings settings = PredicateSettings.create();
+    private PredicateSettings settings;
 
     @Getter
     private final List<Component> additionalTooltips = new ArrayList<>();
@@ -74,13 +74,14 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// @param children list of multi predicate children
     /// @param predicates list of testable predicates, should be sorted already
     protected MultiPredicate(Logic type, List<MultiPredicate> children, List<BasePredicate> predicates,
-                             boolean hasAir) {
+                             boolean hasAir, @Nullable PredicateSettings settings) {
         predicates.forEach(p -> p.setParent(this));
         children.forEach(mp -> mp.setParent(this));
         this.predicates = Collections.unmodifiableList(predicates);
         this.children = Collections.unmodifiableList(children);
         this.type = type;
         this.hasAir = hasAir;
+        this.settings = Objects.requireNonNullElseGet(settings, PredicateSettings::create);
     }
 
     /// @return innermost base predicate that passes state check at given pos
@@ -330,12 +331,11 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
      */
 
     @CheckReturnValue
-    private MultiPredicate deepCopy() {
+    protected MultiPredicate deepCopy() {
         MultiPredicate copy = this.type.makePredicate(
                 children().stream().map(MultiPredicate::deepCopy).toList(),
                 predicates().stream().map(BasePredicate::copy).toList(),
-                this.hasAir);
-        copy.setSettings(this.settings);
+                this.hasAir, this.settings);
         copy.additionalTooltips.addAll(this.additionalTooltips);
         copy.setController(this.controller);
         return copy;
@@ -509,7 +509,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         appendPredicates(type, a, predicates, children);
         appendPredicates(type, b, predicates, children);
         predicates.sort(BasePredicate::compareTo);
-        return type.makePredicate(children, predicates, a.hasAir || b.hasAir);
+        return type.makePredicate(children, predicates, a.hasAir || b.hasAir, null);
     }
 
     private static void appendPredicates(Logic type, MultiPredicate multiPredicate,
@@ -532,7 +532,8 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     /// @param predicates list must be modifiable
     private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
-        return type.makePredicate(List.of(), predicates, predicates.stream().anyMatch(p -> p == BasePredicate.AIR));
+        return type.makePredicate(List.of(), predicates, predicates.stream()
+                .anyMatch(p -> p == BasePredicate.AIR), null);
     }
 
     protected enum Logic {
@@ -542,16 +543,16 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         XOR;
 
         public MultiPredicate makePredicate(List<MultiPredicate> children, List<BasePredicate> predicates,
-                                            boolean hasAir) {
+                                            boolean hasAir, @Nullable PredicateSettings settings) {
             return switch (this) {
-                case OR -> new OrPredicate(children, predicates, hasAir);
-                case AND -> new AndPredicate(children, predicates, hasAir);
-                case XOR -> new XorPredicate(children, predicates, hasAir);
+                case OR -> new OrPredicate(children, predicates, hasAir, settings);
+                case AND -> new AndPredicate(children, predicates, hasAir, settings);
+                case XOR -> new XorPredicate(children, predicates, hasAir, settings);
             };
         }
 
         public MultiPredicate makePredicate(BasePredicate predicate, boolean hasAir) {
-            return makePredicate(List.of(), List.of(predicate), hasAir);
+            return makePredicate(List.of(), List.of(predicate), hasAir, null);
         }
     }
 }
