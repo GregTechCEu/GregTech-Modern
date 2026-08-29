@@ -1,13 +1,17 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class AndPredicate extends MultiPredicate {
 
-    public AndPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
-        super(Logic.AND, children, predicates, hasAir);
+    public AndPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir,
+                        @Nullable PredicateSettings settings) {
+        super(Logic.AND, children, predicates, hasAir, settings);
     }
 
     @Override
