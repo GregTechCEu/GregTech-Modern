@@ -29,8 +29,8 @@ public class PredicateContext {
     private final PatternState state;
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
-    protected final Object2IntMap<SettingsHolder> globalCount = new Object2IntOpenHashMap<>();
-    protected final Object2IntMap<SettingsHolder> layerCount = new Object2IntOpenHashMap<>();
+    protected final Object2IntMap<SettingsHolder<?>> globalCount = new Object2IntOpenHashMap<>();
+    protected final Object2IntMap<SettingsHolder<?>> layerCount = new Object2IntOpenHashMap<>();
 
     private final Int2ObjectMap<List<PatternError>> sliceErrors = new Int2ObjectAVLTreeMap<>(
             IntComparators.NATURAL_COMPARATOR);
@@ -131,20 +131,20 @@ public class PredicateContext {
         this.layerCount.clear();
     }
 
-    public int incrementGlobalCount(SettingsHolder predicate) {
+    public int incrementGlobalCount(SettingsHolder<?> predicate) {
         return this.globalCount.mergeInt(predicate, 1, Integer::sum);
     }
 
-    public int incrementSliceCount(SettingsHolder predicate) {
+    public int incrementSliceCount(SettingsHolder<?> predicate) {
         if (!checkLayer) return 0;
         return this.layerCount.mergeInt(predicate, 1, Integer::sum);
     }
 
-    public int getGlobalCount(SettingsHolder predicate) {
+    public int getGlobalCount(SettingsHolder<?> predicate) {
         return this.globalCount.getInt(predicate);
     }
 
-    public int getSliceCount(SettingsHolder predicate) {
+    public int getSliceCount(SettingsHolder<?> predicate) {
         if (!checkLayer) return 0;
         return this.layerCount.getInt(predicate);
     }
