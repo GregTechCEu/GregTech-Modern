@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -32,7 +32,8 @@ public class WorldGenLayers {
 
     private static Holder<IWorldGenLayer> register(String name, IWorldGenLayer.RuleTestSupplier target,
                                                    Set<ResourceKey<Level>> levels) {
-        return GTRegistration.REGISTRATE.simple(name, GTRegistries.Keys.WORLD_GEN_LAYER, () -> new SimpleWorldGenLayer(GTCEu.id(name), target, levels));
+        return GTRegistration.REGISTRATE.simple(name, GTRegistries.Keys.WORLD_GEN_LAYER,
+                () -> new SimpleWorldGenLayer(GTCEu.id(name), target, levels));
     }
 
     public static void init() {}

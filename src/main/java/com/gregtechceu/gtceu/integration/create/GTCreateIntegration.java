@@ -46,18 +46,20 @@ public class GTCreateIntegration {
                 return processRedstonePlaceholder(ctx, args);
             }
         });
-        GTRegistration.REGISTRATE.simple("display_target", GTRegistries.Keys.PLACEHOLDER, () -> new Placeholder("display_target") {
+        GTRegistration.REGISTRATE.simple("display_target", GTRegistries.Keys.PLACEHOLDER,
+                () -> new Placeholder("display_target") {
 
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
-                if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover)) throw new NotSupportedException();
-                int i = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("line number", 1, 100, i);
-                return MultiLineComponent.of(cover.getCreateDisplayTargetBuffer().get(i - 1));
-            }
-        });
+                    @Override
+                    public MultiLineComponent apply(PlaceholderContext ctx,
+                                                    List<MultiLineComponent> args) throws PlaceholderException {
+                        PlaceholderUtils.checkArgs(args, 1);
+                        if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover))
+                            throw new NotSupportedException();
+                        int i = PlaceholderUtils.toInt(args.get(0));
+                        PlaceholderUtils.checkRange("line number", 1, 100, i);
+                        return MultiLineComponent.of(cover.getCreateDisplayTargetBuffer().get(i - 1));
+                    }
+                });
     }
 
     private static int getRedstoneLinkPower(PlaceholderContext ctx,

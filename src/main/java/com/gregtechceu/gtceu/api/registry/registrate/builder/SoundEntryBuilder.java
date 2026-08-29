@@ -7,10 +7,6 @@ import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 
-import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BuilderCallback;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
@@ -21,6 +17,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 import com.google.gson.JsonObject;
+import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -120,10 +120,13 @@ public class SoundEntryBuilder<P> extends AbstractBuilder<SoundEntry, SoundEntry
     @Override
     protected SoundEntry createEntry() {
         SoundEntry entry = wrappedEvents.isEmpty() ?
-                new CustomSoundEntry(ResourceLocation.fromNamespaceAndPath(getOwner().getModid(), getName()), variants, subtitle, category, attenuationDistance) :
-                new WrappedSoundEntry(ResourceLocation.fromNamespaceAndPath(getOwner().getModid(), getName()), subtitle, wrappedEvents, category, attenuationDistance);
+                new CustomSoundEntry(ResourceLocation.fromNamespaceAndPath(getOwner().getModid(), getName()), variants,
+                        subtitle, category, attenuationDistance) :
+                new WrappedSoundEntry(ResourceLocation.fromNamespaceAndPath(getOwner().getModid(), getName()), subtitle,
+                        wrappedEvents, category, attenuationDistance);
         entry.prepare();
-        entry.register(soundEvent -> Registry.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
+        entry.register(
+                soundEvent -> Registry.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
         return entry;
     }
 

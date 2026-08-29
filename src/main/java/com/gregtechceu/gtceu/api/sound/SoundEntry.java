@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.sound;
 
-import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -15,6 +14,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import com.google.gson.JsonObject;
+import lombok.Getter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;

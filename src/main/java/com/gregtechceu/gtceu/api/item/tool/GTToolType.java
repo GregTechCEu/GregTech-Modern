@@ -738,7 +738,6 @@ public class GTToolType {
             return this;
         }
 
-
         public Builder electric(int tier) {
             return tier(tier);
         }
