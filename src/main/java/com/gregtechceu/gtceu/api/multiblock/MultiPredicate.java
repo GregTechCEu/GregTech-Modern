@@ -311,6 +311,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
         if (isSingle()) {
             predicates().get(0).updateSettings(configurator);
+            return;
         }
         PredicateSettings settings = shouldCreate ? getOrCreateSettings() : getSettings();
         if (settings != null) {
