@@ -47,13 +47,11 @@ public class MedicalCondition {
      * condition.
      */
     @Getter
-    @Setter
-    @NotNull
-    public Consumer<GTRecipeBuilder> recipeModifier = builder -> {};
+    public final Consumer<GTRecipeBuilder> recipeModifier;
 
     public MedicalCondition(ResourceLocation id, int color,
                             int maxProgression, IdleProgressionType progressionType, float progressionRate,
-                            boolean canBePermanent,
+                            boolean canBePermanent, Consumer<GTRecipeBuilder> recipeModifier,
                             Symptom.ConfiguredSymptom... symptoms) {
         this.id = id;
         this.color = color;
@@ -67,6 +65,14 @@ public class MedicalCondition {
         this.idleProgressionType = progressionType;
         this.idleProgressionRate = progressionRate;
         this.canBePermanent = canBePermanent;
+        this.recipeModifier = recipeModifier;
+    }
+
+    public MedicalCondition(ResourceLocation id, int color,
+                            int maxProgression, IdleProgressionType progressionType, float progressionRate,
+                            boolean canBePermanent,
+                            Symptom.ConfiguredSymptom... symptoms) {
+        this(id, color, maxProgression, progressionType, progressionRate, canBePermanent, $ -> {}, symptoms);
     }
 
     public ResourceKey<DamageType> getDamageType() {

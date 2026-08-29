@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -1488,7 +1489,7 @@ public final class Material {
          * @param trigger   The trigger type for this hazard.
          * @param condition The condition applied by this hazard.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+        public Builder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition) {
             properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, false));
             return this;
         }
@@ -1504,7 +1505,7 @@ public final class Material {
          * @param condition             The condition applied by this hazard.
          * @param progressionMultiplier Multiplier for how quickly the condition will progress.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+        public Builder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
                               float progressionMultiplier) {
             properties.setProperty(PropertyKey.HAZARD,
                     new HazardProperty(trigger, condition, progressionMultiplier, false));
@@ -1521,7 +1522,7 @@ public final class Material {
          * @param applyToDerivatives    Whether the Hazard should be applied to materials with this Material in its
          *                              components list.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+        public Builder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
                               float progressionMultiplier, boolean applyToDerivatives) {
             properties.setProperty(PropertyKey.HAZARD,
                     new HazardProperty(trigger, condition, progressionMultiplier, applyToDerivatives));
@@ -1540,7 +1541,7 @@ public final class Material {
          * @param applyToDerivatives Whether the Hazard should be applied to materials with this Material in its
          *                           components list.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+        public Builder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
                               boolean applyToDerivatives) {
             properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
             return this;

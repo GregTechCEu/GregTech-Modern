@@ -562,7 +562,7 @@ public class GTUtil {
 
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description_shift"));
-            tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
+            tooltipComponents.add(material.getProperty(HAZARD).condition.value().getTranslatableName());
             tooltipComponents.add(Component.translatable("tooltip.gtceu.hazard_trigger"));
             tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;

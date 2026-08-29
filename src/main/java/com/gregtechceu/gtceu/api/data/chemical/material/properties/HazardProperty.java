@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
@@ -31,12 +32,12 @@ import java.util.*;
 
 public class HazardProperty implements IMaterialProperty {
 
-    public final MedicalCondition condition;
+    public final Holder<MedicalCondition> condition;
     public final HazardTrigger hazardTrigger;
     public final boolean applyToDerivatives;
     public final float progressionMultiplier;
 
-    public HazardProperty(HazardTrigger hazardTrigger, MedicalCondition condition, float progressionMultiplier,
+    public HazardProperty(HazardTrigger hazardTrigger, Holder<MedicalCondition> condition, float progressionMultiplier,
                           boolean applyToDerivatives) {
         this.hazardTrigger = hazardTrigger;
         this.condition = condition;
