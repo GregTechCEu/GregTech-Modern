@@ -195,11 +195,12 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                     "gtceu.tooltip.spoiled_time_ago",
                     Component.literal(FormattingUtil.formatTime(-getTicksUntilSpoiled()))
                             .withStyle(ChatFormatting.RED)));
+        } else {
+            tooltipComponents.add(Component.translatable(
+                    "gtceu.tooltip.spoil_time_remaining",
+                    Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
+                            .withStyle(ChatFormatting.DARK_AQUA)));
         }
-        tooltipComponents.add(Component.translatable(
-                "gtceu.tooltip.spoil_time_remaining",
-                Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
-                        .withStyle(ChatFormatting.DARK_AQUA)));
         tooltipComponents.add(Component.translatable(
                 "gtceu.tooltip.spoils_into", getSpoilResultTooltip()));
         if (isAdvanced.isAdvanced()) {
