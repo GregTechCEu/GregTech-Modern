@@ -610,7 +610,7 @@ public class LangHandler {
         provider.add("cover.shutter.message.enabled", "Closed shutter");
         provider.add("cover.shutter.message.disabled", "Opened shutter");
 
-        replace(provider, "item.gtceu.bucket", "%s Bucket");
+        provider.add("item.gtceu.bucket", "%s Bucket");
 
         replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
         replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
