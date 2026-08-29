@@ -23,17 +23,20 @@ public class GTFluidType extends FluidType {
 
     @Override
     public String getDescriptionId() {
+        // override getDescriptionId() to return the material's name plainly so someone misusing these methods won't
+        // show "%s"/"%s Gas"/whatever to the player.
         return material.getUnlocalizedName();
     }
 
     @Override
     public Component getDescription() {
+        // super.getDescriptionId() returns the GT fluid builder's translation key ("%s Gas", "Molten %s", etc.)
         return Component.translatable(super.getDescriptionId(), material.getLocalizedName());
     }
 
     @Override
     public Component getDescription(FluidStack stack) {
-        return Component.translatable(super.getDescriptionId(stack), material.getLocalizedName());
+        return this.getDescription();
     }
 
     @Override

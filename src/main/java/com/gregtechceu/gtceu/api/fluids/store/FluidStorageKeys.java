@@ -8,8 +8,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import org.jetbrains.annotations.NotNull;
-
 public final class FluidStorageKeys {
 
     public static final FluidStorageKey LIQUID = new FluidStorageKey(GTCEu.id("liquid"),
@@ -49,8 +47,8 @@ public final class FluidStorageKeys {
 
     private FluidStorageKeys() {}
 
-    private static @NotNull String prefixedRegisteredName(@NotNull String prefix, @NotNull FluidStorageKey key,
-                                                          @NotNull Material material) {
+    @SuppressWarnings("SameParameterValue")
+    private static String prefixedRegisteredName(String prefix, FluidStorageKey key, Material material) {
         FluidProperty property = material.getProperty(PropertyKey.FLUID);
         if (property != null && property.getPrimaryKey() != key) {
             return prefix + material.getName();
@@ -58,8 +56,8 @@ public final class FluidStorageKeys {
         return material.getName();
     }
 
-    private static @NotNull String postfixedRegisteredName(@NotNull String postfix, @NotNull FluidStorageKey key,
-                                                           @NotNull Material material) {
+    @SuppressWarnings("SameParameterValue")
+    private static String postfixedRegisteredName(String postfix, FluidStorageKey key, Material material) {
         FluidProperty property = material.getProperty(PropertyKey.FLUID);
         if (property != null && property.getPrimaryKey() != key) {
             return material.getName() + postfix;
