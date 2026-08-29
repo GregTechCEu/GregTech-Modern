@@ -5,25 +5,22 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.block.MaterialFluidBlock;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.base.Preconditions;
@@ -286,34 +283,34 @@ public class FluidBuilder {
         determineLuminosity(material);
         determineViscosity(material);
 
-        final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
         // noinspection DataFlowIssue
         var builder = registrate.fluid(this.name, this.still, this.flowing,
-                (p, $1, $2) -> makeFluidType(registrate, p, material, key, langKey),
+                (p, $1, $2) -> makeFluidType(registrate, p, material, key),
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
+                .properties(this::setupFluidTypeProperties)
+                .fluidProperties(this::setupFluidProperties)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
-            builder.block()
+            builder.block(MaterialFluidBlock::new)
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .color(() -> () -> (state, level, pos, index) -> {
                         return IClientFluidTypeExtensions.of(state.getFluidState())
                                 .getTintColor(state.getFluidState(), level, pos);
                     })
                     .register();
         } else {
-            // noinspection DataFlowIssue
-            builder.noBlock().fluidProperties(p -> p.block(null));
+            builder.noBlock();
         }
         if (this.hasBucket) {
-            builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material, langKey))
+            builder.bucket(GTBucketItem::new)
                     .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                     .color(() -> () -> GTBucketItem::color)
                     .register();
         } else {
-            // noinspection DataFlowIssue
-            builder.noBucket().fluidProperties(p -> p.bucket(null));
+            builder.noBucket();
         }
 
         builder.onRegister(fluid -> {
@@ -427,50 +424,34 @@ public class FluidBuilder {
         };
     }
 
-    private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
-                                    Material material, FluidStorageKey key, String langKey) {
-        properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+    private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties) {
+        return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
                 .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
                 .temperature(this.temperature)
                 .density(this.density)
                 .lightLevel(this.luminosity)
                 .viscosity(this.viscosity);
-        FluidType type = new FluidType(properties) {
+    }
 
-            @Override
-            public String getDescriptionId() {
-                return material.getUnlocalizedName();
-            }
+    @SuppressWarnings("DataFlowIssue")
+    private BaseFlowingFluid.Properties setupFluidProperties(BaseFlowingFluid.Properties properties) {
+        if (!this.hasFluidBlock) properties.block(null);
+        if (!this.hasBucket) properties.bucket(null);
 
-            @Override
-            public Component getDescription() {
-                return Component.translatable(langKey, material.getLocalizedName());
-            }
+        // limit flow rate a maximum to 1 tick per step
+        // (0 or negative values don't cause issues AFAIK, but they aren't good either.)
+        return properties.tickRate(Math.max(this.viscosity / 200, 1));
+    }
 
-            @Override
-            public Component getDescription(FluidStack stack) {
-                return this.getDescription();
-            }
+    private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
+                                    Material material, FluidStorageKey key) {
+        // sadly, we have to apply this here instead of in setupFluidTypeProperties because Registrate overwrites
+        // whatever we assign there.
+        final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
+        properties.descriptionId(langKey);
 
-            @Override
-            public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
-                FluidStorage fluidStorage = material.getProperty(PropertyKey.FLUID);
-                // always vaporize plasmas and gases
-                FluidStorage.FluidEntry plasmaEntry = fluidStorage.getEntry(FluidStorageKeys.PLASMA);
-                if (plasmaEntry != null) {
-                    FluidBuilder plasmaBuilder = plasmaEntry.getBuilder();
-                    return plasmaBuilder != null && plasmaBuilder.hasFluidBlock();
-                }
-                FluidStorage.FluidEntry gasEntry = fluidStorage.getEntry(FluidStorageKeys.GAS);
-                if (gasEntry != null) {
-                    var gasBuilder = gasEntry.getBuilder();
-                    return gasBuilder != null && gasBuilder.hasFluidBlock();
-                }
-
-                return false;
-            }
-        };
+        FluidType type = new GTFluidType(properties, material);
         OneTimeEventReceiver.addModListener(owner, RegisterClientExtensionsEvent.class, event -> {
             final int color = isColorEnabled ? this.color : INFER_COLOR;
             if (still == null || flowing == null) {
