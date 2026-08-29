@@ -1,19 +1,19 @@
 package com.gregtechceu.gtceu.api.recipe.chance.logic;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +31,7 @@ public abstract class ChanceLogic {
     /**
      * Chanced Output Logic where any ingredients succeeding their roll will be produced
      */
-    public static final ChanceLogic OR = new ChanceLogic("or") {
+    public static final DeferredHolder<ChanceLogic, ChanceLogic> OR = register("or", new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -71,12 +71,12 @@ public abstract class ChanceLogic {
         public String toString() {
             return "ChanceLogic{OR}";
         }
-    };
+    });
 
     /**
      * Chanced Output Logic where all ingredients must succeed their roll in order for any to be produced
      */
-    public static final ChanceLogic AND = new ChanceLogic("and") {
+    public static final DeferredHolder<ChanceLogic, ChanceLogic> AND = register("and", new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -108,14 +108,14 @@ public abstract class ChanceLogic {
         public String toString() {
             return "ChanceLogic{AND}";
         }
-    };
+    });
 
     /**
      * Chanced Output Logic where only the first ingredient succeeding its roll will be produced
      * Deprecated following the rewrite of XOR
      */
     @Deprecated
-    public static final ChanceLogic FIRST = new ChanceLogic("first") {
+    public static final DeferredHolder<ChanceLogic, ChanceLogic> FIRST = register("first", new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -149,12 +149,12 @@ public abstract class ChanceLogic {
         public String toString() {
             return "ChanceLogic{FIRST}";
         }
-    };
+    });
 
     /**
      * Chanced Output Logic where only one of the ingredients will be output, in a manner weighted to the input chances
      */
-    public static final ChanceLogic XOR = new ChanceLogic("xor") {
+    public static final DeferredHolder<ChanceLogic, ChanceLogic> XOR = register("xor", new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -245,12 +245,12 @@ public abstract class ChanceLogic {
         public String toString() {
             return "ChanceLogic{XOR}";
         }
-    };
+    });
 
     /**
      * Chanced Output Logic where nothing is produced
      */
-    public static final ChanceLogic NONE = new ChanceLogic("none") {
+    public static final DeferredHolder<ChanceLogic, ChanceLogic> NONE = register("none", new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -268,15 +268,7 @@ public abstract class ChanceLogic {
         public String toString() {
             return "ChanceLogic{NONE}";
         }
-    };
-
-    public ChanceLogic(ResourceLocation id) {
-        GTRegistries.register(GTRegistries.CHANCE_LOGICS, id, this);
-    }
-
-    private ChanceLogic(String id) {
-        this(GTCEu.id(id));
-    }
+    });
 
     /**
      * @param entry the entry to get the complete chance for
@@ -353,6 +345,10 @@ public abstract class ChanceLogic {
 
     @NotNull
     public abstract Component getTranslation();
+
+    private static DeferredHolder<ChanceLogic, ChanceLogic> register(String name, ChanceLogic logic) {
+        return GTRegistration.REGISTRATE.simple(name, GTRegistries.Keys.CHANCE_LOGIC, () -> logic);
+    }
 
     @ApiStatus.Internal
     public static void init() {}
