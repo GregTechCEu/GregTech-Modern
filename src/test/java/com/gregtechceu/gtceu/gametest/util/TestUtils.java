@@ -21,10 +21,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -248,7 +245,7 @@ public class TestUtils {
                 .setEUIO(IO.IN)
                 .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
 
-        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
+        Registry.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
         GTRegistries.RECIPE_CATEGORIES.freeze();
         BuiltInRegistries.RECIPE_TYPE.freeze();
         return type;

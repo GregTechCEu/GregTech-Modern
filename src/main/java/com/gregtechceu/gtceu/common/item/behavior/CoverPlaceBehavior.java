@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -35,7 +34,8 @@ public record CoverPlaceBehavior(Holder<CoverDefinition> coverDefinition) implem
             if (coverSide != null && coverable.getCoverAtSide(coverSide) == null &&
                     coverable.canPlaceCoverOnSide(coverDefinition.value(), coverSide)) {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    boolean result = coverable.placeCoverOnSide(coverSide, itemStack, coverDefinition.value(), serverPlayer);
+                    boolean result = coverable.placeCoverOnSide(coverSide, itemStack, coverDefinition.value(),
+                            serverPlayer);
                     if (result && !player.isCreative()) {
                         itemStack.shrink(1);
                     }

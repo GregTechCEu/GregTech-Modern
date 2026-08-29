@@ -26,6 +26,5 @@ public class WorldGenLayers {
             GTCEu.id("endstone"), () -> WorldGeneratorUtils.END_ORE_REPLACEABLES,
             Set.of(Level.END));
 
-    public static void init() {
-    }
+    public static void init() {}
 }

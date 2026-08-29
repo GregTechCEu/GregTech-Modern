@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.loot;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -23,9 +22,12 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
@@ -49,9 +51,9 @@ public final class ChestGenHooks {
 
     private ChestGenHooks() {}
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         NeoForge.EVENT_BUS.register(ChestGenHooks.class);
-        RandomWeightLootFunction.init();
+        RandomWeightLootFunction.init(modBus);
     }
 
     @SubscribeEvent
@@ -138,8 +140,12 @@ public final class ChestGenHooks {
                         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max").forGetter(val -> val.maxAmount))
                 .apply(instance, RandomWeightLootFunction::new));
 
-        public static final LootItemFunctionType<RandomWeightLootFunction> TYPE = GTRegistries.register(
-                BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType<>(CODEC));
+        private static final DeferredRegister<LootItemFunctionType<?>> LOOT_ITEM_FUNCTION_TYPES = DeferredRegister
+                .create(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.MOD_ID);
+
+        public static final DeferredHolder<LootItemFunctionType<?>, LootItemFunctionType<RandomWeightLootFunction>> TYPE = LOOT_ITEM_FUNCTION_TYPES
+                .register(
+                        "random_weight", () -> new LootItemFunctionType<>(CODEC));
 
         private final ItemStack stack;
         @Getter
@@ -155,11 +161,13 @@ public final class ChestGenHooks {
             this.maxAmount = maxAmount;
         }
 
-        public static void init() {}
+        public static void init(IEventBus modBus) {
+            LOOT_ITEM_FUNCTION_TYPES.register(modBus);
+        }
 
         @Override
         public @NotNull LootItemFunctionType<RandomWeightLootFunction> getType() {
-            return TYPE;
+            return TYPE.value();
         }
 
         @Override

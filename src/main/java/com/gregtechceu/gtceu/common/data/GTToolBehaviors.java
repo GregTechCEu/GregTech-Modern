@@ -1,15 +1,16 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.tool.behavior.*;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.mojang.serialization.Codec;
-import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+
+import com.mojang.serialization.Codec;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 
 public class GTToolBehaviors {
 
@@ -35,8 +36,12 @@ public class GTToolBehaviors {
     public static final RegistryEntry<ToolBehaviorType<?>, ToolBehaviorType<ProspectingBehavior>> PROSPECTING = register("prospecting", ProspectingBehavior.CODEC, ProspectingBehavior.STREAM_CODEC);
     // spotless:on
     public static void init() {}
-    
-    private static <T extends IToolBehavior<T>> RegistryEntry<ToolBehaviorType<?>, ToolBehaviorType<T>> register(String name, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
-        return GTRegistration.REGISTRATE.simple(name, GTRegistries.Keys.TOOL_BEHAVIOR, () -> new ToolBehaviorType<>(codec, streamCodec));
+
+    private static <
+            T extends IToolBehavior<T>> RegistryEntry<ToolBehaviorType<?>, ToolBehaviorType<T>> register(String name,
+                                                                                                         Codec<T> codec,
+                                                                                                         StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
+        return GTRegistration.REGISTRATE.simple(name, GTRegistries.Keys.TOOL_BEHAVIOR,
+                () -> new ToolBehaviorType<>(codec, streamCodec));
     }
 }

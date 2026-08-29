@@ -200,7 +200,7 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-        ChestGenHooks.init();
+        ChestGenHooks.init(modBus);
 
         GTCreativeModeTabs.init();
         GTAttachmentTypes.init(modBus);

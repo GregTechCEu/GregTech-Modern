@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -197,13 +196,17 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     ///// Covers
 
-    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name, CoverDefinition.CoverBehaviourProvider behaviorCreator,
+    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name,
+                                                                 CoverDefinition.CoverBehaviourProvider behaviorCreator,
                                                                  Supplier<Supplier<ICoverRenderer>> coverRenderer) {
-        return simple(name, GTRegistries.Keys.COVER, () -> new CoverDefinition(makeResourceLocation(name), behaviorCreator, coverRenderer));
+        return simple(name, GTRegistries.Keys.COVER,
+                () -> new CoverDefinition(makeResourceLocation(name), behaviorCreator, coverRenderer));
     }
 
-    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name, CoverDefinition.CoverBehaviourProvider behaviorCreator) {
-        return cover(name, behaviorCreator, () -> () -> new SimpleCoverRenderer(ResourceLocation.fromNamespaceAndPath(getModid(), "block/cover/" + name)));
+    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name,
+                                                                 CoverDefinition.CoverBehaviourProvider behaviorCreator) {
+        return cover(name, behaviorCreator, () -> () -> new SimpleCoverRenderer(
+                ResourceLocation.fromNamespaceAndPath(getModid(), "block/cover/" + name)));
     }
 
     ///// Sound Builders

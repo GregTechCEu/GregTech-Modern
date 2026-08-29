@@ -52,7 +52,7 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
 
     @Override
     public RecipeConditionType<DimensionCondition> getType() {
-        return GTRecipeConditions.DIMENSION;
+        return GTRecipeConditions.DIMENSION.value();
     }
 
     @Override

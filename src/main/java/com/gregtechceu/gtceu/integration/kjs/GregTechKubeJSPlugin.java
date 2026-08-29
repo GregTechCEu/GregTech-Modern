@@ -161,7 +161,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
 
-        registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilderJS.class, WorldGenLayerBuilderJS::new);
+        registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilderJS.class,
+                WorldGenLayerBuilderJS::new);
 
         registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilderJS.class,
                 OreVeinDefinitionBuilderJS::new);
