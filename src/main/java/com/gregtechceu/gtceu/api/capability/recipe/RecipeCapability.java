@@ -63,15 +63,6 @@ public abstract class RecipeCapability<T> {
         this.serializer = serializer;
     }
 
-    /**
-     * @deprecated Use {@link #RecipeCapability(ResourceLocation, int, boolean, int, IContentSerializer)}
-     */
-    @Deprecated(forRemoval = true, since = "8.0.0")
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
-                               IContentSerializer<T> serializer) {
-        this(GTCEu.id(name), color, doRenderSlot, sortIndex, serializer);
-    }
-
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
         return Content.codec(capability).listOf().xmap(ArrayList::new, Function.identity());
     }
