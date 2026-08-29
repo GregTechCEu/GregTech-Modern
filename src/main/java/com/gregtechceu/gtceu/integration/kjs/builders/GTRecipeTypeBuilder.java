@@ -51,6 +51,8 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         this.maxTooltips = 4;
         this.smallRecipeMap = null;
         this.iconSupplier = null;
+
+        this.dummyBuilder = true;
     }
 
     public GTRecipeTypeBuilder category(String category) {
