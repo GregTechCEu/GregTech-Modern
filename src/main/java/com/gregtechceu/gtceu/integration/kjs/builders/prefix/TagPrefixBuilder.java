@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.typings.Info;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -111,43 +112,101 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
+    @Info("""
+            Deprecated. Use `defaultTag(path)` instead.
+            """)
     public TagPrefixBuilder defaultTagPath(String path) {
-        base.defaultTagPath(path);
+        return defaultTag(path);
+    }
+
+    public TagPrefixBuilder defaultTag(String path) {
+        base.defaultTag(path);
         return this;
     }
 
+    @Info("""
+            Deprecated. Use `defaultTag(path, isVanilla)` instead.
+            """)
     public TagPrefixBuilder defaultTagPath(String path, boolean isVanilla) {
-        base.defaultTagPath(path, isVanilla);
+        return defaultTag(path, isVanilla);
+    }
+
+    public TagPrefixBuilder defaultTag(String path, boolean isVanilla) {
+        base.defaultTag(path, isVanilla);
         return this;
     }
 
     public TagPrefixBuilder prefixTagPath(String path) {
-        base.prefixTagPath(path);
+        return prefixTag(path);
+    }
+
+    public TagPrefixBuilder prefixTag(String path) {
+        base.prefixTag(path);
         return this;
     }
 
     public TagPrefixBuilder prefixOnlyTagPath(String path) {
-        base.prefixOnlyTagPath(path);
+        return prefixOnlyTag(path);
+    }
+
+    public TagPrefixBuilder prefixOnlyTag(String path) {
+        base.prefixOnlyTag(path);
         return this;
     }
 
     public TagPrefixBuilder unformattedTagPath(String path) {
-        base.unformattedTagPath(path);
+        return unformattedTag(path);
+    }
+
+    public TagPrefixBuilder unformattedTag(String path) {
+        base.unformattedTag(path);
         return this;
     }
 
+    @Info("""
+            Deprecated. Use `unformattedTag(path, isVanilla)` instead.
+            """)
     public TagPrefixBuilder unformattedTagPath(String path, boolean isVanilla) {
-        base.unformattedTagPath(path, isVanilla);
+        return unformattedTag(path, isVanilla);
+    }
+
+    public TagPrefixBuilder unformattedTag(String path, boolean isVanilla) {
+        base.unformattedTag(path, isVanilla);
         return this;
     }
 
+    @Info("""
+            Deprecated. Use `customFormattedTag(path, (path, mat) => ...)` instead.
+            """)
+    @SuppressWarnings("removal")
     public TagPrefixBuilder customTagPath(String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
         base.customTagPath(path, formatter);
         return this;
     }
 
+    public TagPrefixBuilder customFormattedTag(String path, BiFunction<String, Material, TagKey<Item>> formatter) {
+        base.customFormattedTag(path, formatter);
+        return this;
+    }
+
+    @Info("""
+            Deprecated. Use `filteredUnformattedTag(path, isVanilla, (mat) => ...shouldAdd...)` instead.
+            """)
+    @SuppressWarnings("removal")
     public TagPrefixBuilder customTagPredicate(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
         base.customTagPredicate(path, isVanilla, materialPredicate);
+        return this;
+    }
+
+    public TagPrefixBuilder filteredUnformattedTag(String path, boolean isVanilla,
+                                                   Predicate<Material> materialPredicate) {
+        base.filteredUnformattedTag(path, isVanilla, materialPredicate);
+        return this;
+    }
+
+    public TagPrefixBuilder filteredCustomTag(String path, Predicate<Material> materialPredicate,
+                                              BiFunction<String, Material, TagKey<Item>> formatter) {
+        base.filteredCustomTag(path, materialPredicate, formatter);
         return this;
     }
 

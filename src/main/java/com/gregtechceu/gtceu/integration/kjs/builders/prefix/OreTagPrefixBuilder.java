@@ -43,9 +43,9 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Override
     public TagPrefix create(String id) {
         return new TagPrefix(id)
-                .defaultTagPath("ores/%s")
-                .prefixOnlyTagPath("ores_in_ground/%s")
-                .unformattedTagPath("ores")
+                .defaultTag("ores/%s")
+                .prefixOnlyTag("ores_in_ground/%s")
+                .unformattedTag("ores")
                 .materialIconType(MaterialIconType.ore)
                 .unificationEnabled(true)
                 .blockConstructor(OreBlock::new)
