@@ -110,7 +110,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior<ToolModeSwitchBehav
 
     @Override
     public ToolBehaviorType<ToolModeSwitchBehavior> getType() {
-        return GTToolBehaviors.MODE_SWITCH;
+        return GTToolBehaviors.MODE_SWITCH.value();
     }
 
     @Override

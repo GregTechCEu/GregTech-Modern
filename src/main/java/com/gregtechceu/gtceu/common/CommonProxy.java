@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
@@ -119,7 +117,6 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -146,7 +143,7 @@ public class CommonProxy {
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        initMaterials();
+        GTMaterials.init();
         GTMedicalConditions.init();
         TagPrefix.init();
 
@@ -216,12 +213,6 @@ public class CommonProxy {
 
         GTGuiTheme.registerThemes();
         SpoilableBehavior.init();
-    }
-
-    @ApiStatus.Internal
-    public static void initMaterials() {
-        GTCEu.LOGGER.info("Registering GTCEu Materials");
-        GTMaterials.init();
     }
 
     // Fire post material events after all other material registry events.

@@ -283,7 +283,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return;
         }
         if (!areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING);
+            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING.value());
             if (behavior != null && behavior.isEnabled() && state.is(BlockTags.LOGS)) {
                 TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
             }
