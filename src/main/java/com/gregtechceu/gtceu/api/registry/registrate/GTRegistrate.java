@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
@@ -249,6 +251,15 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return (GTBlockBuilder<T, P>) entry(name,
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
+    }
+
+    /// Medical Conditions
+
+    public RegistryEntry<MedicalCondition, MedicalCondition> medicalCondition(String name, int color,
+                                                                              int maxProgression, MedicalCondition.IdleProgressionType progressionType,
+                                                                              float progressionRate, boolean canBePermanent,
+                                                                              Symptom.ConfiguredSymptom... symptoms) {
+        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms));
     }
 
     /// Creative Mode Tabs
