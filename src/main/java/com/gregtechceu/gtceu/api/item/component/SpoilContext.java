@@ -117,7 +117,8 @@ public record SpoilContext(@Nullable Level level,
         if (pos != null) tag.putLong("pos", pos.asLong());
         if (entity != null) tag.putInt("entity", entity.getId());
         if (slot != -1) tag.putInt("slot", slot);
-        if (itemHandlerSource != null) tag.putString("handlerSource", itemHandlerSource.getId().toString());
+        if (itemHandlerSource != null && itemHandlerSource.getId() != null)
+            tag.putString("handlerSource", itemHandlerSource.getId().toString());
         if (itemHandlerData != null) tag.put("handlerData", itemHandlerData);
         return tag;
     }
@@ -225,7 +226,7 @@ public record SpoilContext(@Nullable Level level,
         abstract protected @Nullable IItemHandler getHandler(SpoilContext ctx);
 
         public static ItemHandlerSource temp(IItemHandler handler) {
-            return new ItemHandlerSource(GTCEu.id("temp")) {
+            return new ItemHandlerSource(null) {
 
                 @Override
                 protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
