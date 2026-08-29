@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.NotSupportedException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.integration.cctweaked.peripherals.*;
 
 import dan200.computercraft.api.ComputerCraftAPI;
@@ -28,7 +30,7 @@ public class CCTweakedPlugin {
     }
 
     public static void initPlaceholders() {
-        PlaceholderHandler.addPlaceholder(new Placeholder("bufferText") {
+        GTRegistration.REGISTRATE.simple("buffer_text", GTRegistries.Keys.PLACEHOLDER, () -> new Placeholder("buffer_text") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,

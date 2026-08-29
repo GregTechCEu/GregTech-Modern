@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 
 import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
@@ -24,8 +25,9 @@ public abstract class Placeholder {
     public abstract MultiLineComponent apply(PlaceholderContext ctx,
                                              List<MultiLineComponent> args) throws PlaceholderException;
 
+    @ApiStatus.Internal
     public Placeholder(String str) {
-        this(GTCEu.id(FormattingUtil.toLowerCaseUnderscore(str)));
+        this(GTCEu.id(str));
     }
 
     public Placeholder(ResourceLocation id) {
