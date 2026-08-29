@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ItemLike;
@@ -13,6 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -26,28 +29,15 @@ public class GTDimensionMarkers {
         REGISTRATE.resetCreativeModeTab();
     }
 
+    private static final DeferredRegister<DimensionMarker> BASE_MC_DIMENSION_MARKERS = DeferredRegister.create(GTRegistries.Keys.DIMENSION_MARKER, "minecraft");
+
     public static final BlockEntry<Block> OVERWORLD_MARKER = createMarker("overworld");
     public static final BlockEntry<Block> NETHER_MARKER = createMarker("the_nether");
     public static final BlockEntry<Block> END_MARKER = createMarker("the_end");
 
-    public static final DimensionMarker OVERWORLD = createAndRegister(Level.OVERWORLD, 0,
-            () -> OVERWORLD_MARKER, null);
-    public static final DimensionMarker NETHER = createAndRegister(Level.NETHER, 0,
-            () -> NETHER_MARKER, null);
-    public static final DimensionMarker END = createAndRegister(Level.END, 0,
-            () -> END_MARKER, null);
-
-    public static DimensionMarker createAndRegister(ResourceKey<Level> dimension, int tier, Supplier<ItemLike> supplier,
-                                                    @Nullable Component overrideName) {
-        if (overrideName == null) {
-            // if a special name hasn't been set, use the dimension's 'translated' name as a default
-            overrideName = DimensionCondition.getDimensionName(dimension);
-        }
-
-        DimensionMarker marker = new DimensionMarker(tier, supplier, overrideName);
-        GTRegistries.register(GTRegistries.DIMENSION_MARKERS, dimension.location(), marker);
-        return marker;
-    }
+    public static final Holder<DimensionMarker> OVERWORLD = BASE_MC_DIMENSION_MARKERS.register("overworld", () -> new DimensionMarker(0, () -> OVERWORLD_MARKER, null));
+    public static final Holder<DimensionMarker> NETHER = BASE_MC_DIMENSION_MARKERS.register("nether", () -> new DimensionMarker(0, () -> NETHER_MARKER, null));
+    public static final Holder<DimensionMarker> END = BASE_MC_DIMENSION_MARKERS.register("end", () -> new DimensionMarker(0, () -> END_MARKER, null));
 
     private static BlockEntry<Block> createMarker(String name) {
         return REGISTRATE.block("%s_marker".formatted(name), Block::new)
@@ -65,5 +55,7 @@ public class GTDimensionMarkers {
                 .register();
     }
 
-    public static void init() {}
+    public static void init(IEventBus modBus) {
+        BASE_MC_DIMENSION_MARKERS.register(modBus);
+    }
 }

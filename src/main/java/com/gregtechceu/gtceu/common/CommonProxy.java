@@ -162,7 +162,7 @@ public class CommonProxy {
         GTBlocks.init();
         GTFluids.init();
 
-        GTDimensionMarkers.init();
+        GTDimensionMarkers.init(modBus);
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         ChanceLogic.init();
