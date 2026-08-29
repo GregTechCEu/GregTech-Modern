@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.events;
 
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
