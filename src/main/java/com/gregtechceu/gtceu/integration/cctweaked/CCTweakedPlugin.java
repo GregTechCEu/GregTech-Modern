@@ -30,17 +30,19 @@ public class CCTweakedPlugin {
     }
 
     public static void initPlaceholders() {
-        GTRegistration.REGISTRATE.simple("buffer_text", GTRegistries.Keys.PLACEHOLDER, () -> new Placeholder("buffer_text") {
+        GTRegistration.REGISTRATE.simple("buffer_text", GTRegistries.Keys.PLACEHOLDER,
+                () -> new Placeholder("buffer_text") {
 
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
-                if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover)) throw new NotSupportedException();
-                int i = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("line number", 1, 100, i);
-                return MultiLineComponent.of(cover.getComputerCraftTextBuffer().get(i - 1));
-            }
-        });
+                    @Override
+                    public MultiLineComponent apply(PlaceholderContext ctx,
+                                                    List<MultiLineComponent> args) throws PlaceholderException {
+                        PlaceholderUtils.checkArgs(args, 1);
+                        if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover))
+                            throw new NotSupportedException();
+                        int i = PlaceholderUtils.toInt(args.get(0));
+                        PlaceholderUtils.checkRange("line number", 1, 100, i);
+                        return MultiLineComponent.of(cover.getComputerCraftTextBuffer().get(i - 1));
+                    }
+                });
     }
 }

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.placeholder;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.common.capability.PlaceholderSavedData;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
