@@ -563,7 +563,7 @@ public class ToolHelper {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
-            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().getMainEvent(),
+            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().value().getMainEvent(),
                     SoundSource.PLAYERS, 1.0F, 1.0F);
         }
     }
