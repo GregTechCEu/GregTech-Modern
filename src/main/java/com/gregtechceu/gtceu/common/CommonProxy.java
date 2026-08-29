@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifierTypes;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -190,7 +191,8 @@ public class CommonProxy {
 
         GregTechDatagen.initPost();
         GTValueProviderTypes.init(modBus);
-        GTFeatures.register(modBus);
+        GTFeatures.init(modBus);
+        GTPlacementModifierTypes.init(modBus);
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
         WaypointManager.init();

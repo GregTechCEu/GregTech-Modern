@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.worldgen.modifier;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifierTypes;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -15,10 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class RubberTreeChancePlacement extends RepeatingPlacement {
 
-    public static final PlacementModifierType<RubberTreeChancePlacement> RUBBER_TREE_CHANCE_PLACEMENT = GTRegistries
-            .register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("rubber_tree_chance"),
-                    () -> RubberTreeChancePlacement.CODEC);
-
     public static final RubberTreeChancePlacement INSTANCE = new RubberTreeChancePlacement();
     public static final MapCodec<RubberTreeChancePlacement> CODEC = MapCodec.unit(INSTANCE);
 
@@ -29,6 +26,6 @@ public class RubberTreeChancePlacement extends RepeatingPlacement {
 
     @Override
     public PlacementModifierType<?> type() {
-        return RUBBER_TREE_CHANCE_PLACEMENT;
+        return GTPlacementModifierTypes.RUBBER_TREE_CHANCE_PLACEMENT.value();
     }
 }

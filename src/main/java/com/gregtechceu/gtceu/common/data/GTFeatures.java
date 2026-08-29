@@ -1,12 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.common.worldgen.feature.FluidSproutFeature;
 import com.gregtechceu.gtceu.common.worldgen.feature.StoneBlobFeature;
-import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -26,15 +22,7 @@ public class GTFeatures {
             "fluid_sprout",
             FluidSproutFeature::new);
 
-    private static void init() {
-        Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
-        inst = DimensionFilter.DIMENSION_FILTER;
-        inst = BiomePlacement.BIOME_PLACEMENT;
-        inst = RubberTreeChancePlacement.RUBBER_TREE_CHANCE_PLACEMENT;
-    }
-
-    public static void register(IEventBus modEventBus) {
-        init();
+    public static void init(IEventBus modEventBus) {
         FEATURES.register(modEventBus);
     }
 }

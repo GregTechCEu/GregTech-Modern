@@ -19,9 +19,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class DimensionFilter extends PlacementFilter {
 
-    public static final PlacementModifierType<DimensionFilter> DIMENSION_FILTER = GTRegistries
-            .register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("dimension"), () -> DimensionFilter.CODEC);
-
     public static final MapCodec<DimensionFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE).fieldOf("dimension_id")
                     .forGetter(filter -> filter.dimensionId))
@@ -40,6 +37,6 @@ public class DimensionFilter extends PlacementFilter {
 
     @Override
     public PlacementModifierType<?> type() {
-        return DIMENSION_FILTER;
+        return GTPlacementModifierTypes.DIMENSION_FILTER.value();
     }
 }
