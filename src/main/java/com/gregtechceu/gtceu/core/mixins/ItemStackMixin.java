@@ -3,24 +3,20 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.ISpoilableItemStackExtension;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.*;
@@ -32,39 +28,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 @Mixin(ItemStack.class)
-public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
+public abstract class ItemStackMixin {
 
-    // ************************* //
-    // Shadow fields and methods //
-    // ************************* //
-
-    @Shadow
-    @Mutable
-    @Final
-    @Nullable
-    private Item item;
-
-    @Shadow(remap = false)
-    @Mutable
-    @Final
-    @Nullable
-    private Holder.Reference<Item> delegate;
-
-    @Shadow(remap = false)
-    protected abstract void forgeInit();
-
-    // ************* //
-    // Unique fields //
-    // ************* //
-
-    @Shadow
-    @Nullable
-    private CompoundTag tag;
-    @Shadow
-    private int count;
     /**
      * Whether {@link ItemStackMixin#gtceu$updateFreshness(SpoilContext, boolean)}
      * was called and did not return yet.
@@ -88,20 +54,6 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
         return (ItemStack) (Object) this;
     }
 
-    // ************************* //
-    // Interface implementations //
-    // ************************* //
-
-    @Unique
-    @Override
-    public void gtceu$setStack(ItemStack newStack) {
-        item = newStack.getItem();
-        delegate = ForgeRegistries.ITEMS.getDelegateOrThrow(item);
-        count = newStack.getCount();
-        tag = newStack.getTag();
-        forgeInit();
-    }
-
     @Unique
     public void gtceu$updateFreshness(@NotNull SpoilContext spoilContext, boolean createTag) {
         if (!gtceu$isUpdating) {
@@ -110,17 +62,6 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
                     .ifPresent(spoilable -> spoilable.updateFreshness(spoilContext, createTag));
             gtceu$isUpdating = false;
         }
-    }
-
-    // ********* //
-    // Injectors //
-    // ********* //
-
-    @Inject(at = @At("HEAD"), method = { "getItem", "getCount" })
-    private void gtceu$injectedFreshnessUpdate(CallbackInfoReturnable<Item> cir) {
-        if (gtceu$self().getEntityRepresentation() != null)
-            gtceu$updateFreshness(new SpoilContext(gtceu$self().getEntityRepresentation()), true);
-        else gtceu$updateFreshness(SpoilContext.EMPTY, false);
     }
 
     @Inject(at = @At("HEAD"), method = "inventoryTick")
