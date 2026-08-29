@@ -91,7 +91,7 @@ public class TreeFellingHelper {
                 if (event.getLevel() == helper.player.level()) {
                     ItemStack held = helper.player.getMainHandItem();
                     if (helper.player.isRemoved() || helper.orderedBlocks.isEmpty() || helper.tool.isEmpty() ||
-                            !getBehaviorsComponent(held).hasBehavior(GTToolBehaviors.TREE_FELLING)) {
+                            !getBehaviorsComponent(held).hasBehavior(GTToolBehaviors.TREE_FELLING.value())) {
                         iterator.remove();
                         continue;
                     }

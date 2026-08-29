@@ -122,6 +122,6 @@ public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior>
 
     @Override
     public ToolBehaviorType<HarvestCropsBehavior> getType() {
-        return GTToolBehaviors.HARVEST_CROPS;
+        return GTToolBehaviors.HARVEST_CROPS.value();
     }
 }
