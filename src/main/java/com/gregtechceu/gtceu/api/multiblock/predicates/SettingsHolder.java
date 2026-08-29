@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import java.util.function.UnaryOperator;
 
-public interface SettingsHolder {
+public interface SettingsHolder<S extends SettingsHolder<S>> {
 
     // getters
     PredicateSettings getSettings();
@@ -38,37 +38,70 @@ public interface SettingsHolder {
     // mutate only
     void setSettings(PredicateSettings settings);
 
-    void setPriority(int priority);
+    /// mutates this object with the configured setting
+    default void updateSettings(UnaryOperator<PredicateSettings> configurator) {
+        setSettings(configurator.apply(getSettings()));
+    }
 
-    void setMinCount(int minCount);
+    default void setPriority(int priority) {
+        updateSettings(s -> s.withPriority(priority));
+    }
 
-    void setMaxCount(int maxCount);
+    default void setMinCount(int minCount) {
+        updateSettings(s -> s.withMinCount(minCount));
+    }
 
-    void setMinSliceCount(int minSliceCount);
+    default void setMaxCount(int maxCount) {
+        updateSettings(s -> s.withMaxCount(maxCount));
+    }
 
-    void setMaxSliceCount(int maxSliceCount);
+    default void setMinSliceCount(int minSliceCount) {
+        updateSettings(s -> s.withMinSliceCount(minSliceCount));
+    }
 
-    void setPreviewCount(int previewCount);
+    default void setMaxSliceCount(int maxSliceCount) {
+        updateSettings(s -> s.withMaxSliceCount(maxSliceCount));
+    }
 
-    void setDisableRenderFormed(boolean disableRenderFormed);
+    default void setPreviewCount(int previewCount) {
+        updateSettings(s -> s.withPreviewCount(previewCount));
+    }
+
+    default void setDisableRenderFormed(boolean disableRenderFormed) {
+        updateSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
+    }
 
     // copy and mutate
     /// @return a copy with these settings applied
-    SettingsHolder withSettings(UnaryOperator<PredicateSettings> configurator);
+    S withSettings(UnaryOperator<PredicateSettings> configurator);
 
-    SettingsHolder withPriority(int priority);
+    default S withPriority(int priority) {
+        return withSettings(s -> s.withPriority(priority));
+    }
 
-    SettingsHolder withMinCount(int minCount);
+    default S withMinCount(int minCount) {
+        return withSettings(s -> s.withMinCount(minCount));
+    }
 
-    SettingsHolder withMaxCount(int maxCount);
+    default S withMaxCount(int maxCount) {
+        return withSettings(s -> s.withMaxCount(maxCount));
+    }
 
-    SettingsHolder withMinSliceCount(int minSliceCount);
+    default S withMinSliceCount(int minSliceCount) {
+        return withSettings(s -> s.withMinSliceCount(minSliceCount));
+    }
 
-    SettingsHolder withMaxSliceCount(int maxSliceCount);
+    default S withMaxSliceCount(int maxSliceCount) {
+        return withSettings(s -> s.withMaxSliceCount(maxSliceCount));
+    }
 
-    SettingsHolder withPreviewCount(int previewCount);
+    default S withPreviewCount(int previewCount) {
+        return withSettings(s -> s.withPreviewCount(previewCount));
+    }
 
-    SettingsHolder withDisableRenderFormed(boolean disableRenderFormed);
+    default S withDisableRenderFormed(boolean disableRenderFormed) {
+        return withSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
+    }
 
     // test methods
     /// simple test against global min count

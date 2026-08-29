@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-public abstract class MultiPredicate implements SettingsHolder {
+public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     private static final MultiPredicate EMPTY = of(Logic.OR, List.of());
 
@@ -303,65 +303,24 @@ public abstract class MultiPredicate implements SettingsHolder {
 
     /// If single, mutates the only predicate <br/>
     /// Otherwise mutates this multipredicate, adds setting if it was null
+    @Override
     public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
+        this.updateSettings(configurator, false);
+    }
+
+    public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
         if (isSingle()) {
             predicates().get(0).updateSettings(configurator);
         }
-        setSettings(Objects.requireNonNull(configurator.apply(getOrCreateSettings())));
+        PredicateSettings settings = shouldCreate ? getOrCreateSettings() : getSettings();
+        if (settings != null) {
+            setSettings(Objects.requireNonNull(configurator.apply(settings)));
+        }
     }
 
     public void setSettings(@Nullable PredicateSettings settings) {
         if (settings != null) {
             this.settings = settings.copy();
-        }
-    }
-
-    @Override
-    public void setPriority(int priority) {
-        if (this.settings != null) {
-            updateSettings(s -> s.withPriority(priority));
-        }
-    }
-
-    @Override
-    public void setMinCount(int minCount) {
-        if (this.settings != null) {
-            updateSettings(s -> s.withMinCount(minCount));
-        }
-    }
-
-    @Override
-    public void setMaxCount(int maxCount) {
-        if (this.settings != null) {
-            updateSettings(s -> s.withMaxCount(maxCount));
-        }
-    }
-
-    @Override
-    public void setMinSliceCount(int minSliceCount) {
-        if (this.settings != null) {
-            updateSettings(s -> s.withMinSliceCount(minSliceCount));
-        }
-    }
-
-    @Override
-    public void setMaxSliceCount(int maxSliceCount) {
-        if (this.settings != null) {
-            updateSettings(s -> s.withMaxSliceCount(maxSliceCount));
-        }
-    }
-
-    @Override
-    public void setPreviewCount(int previewCount) {
-        if (this.settings != null) {
-            updateSettings(s -> s.withPreviewCount(previewCount));
-        }
-    }
-
-    @Override
-    public void setDisableRenderFormed(boolean disableRenderFormed) {
-        if (this.settings != null) {
-            updateSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
         }
     }
 
@@ -403,45 +362,10 @@ public abstract class MultiPredicate implements SettingsHolder {
             return copyWith(mp -> {
                 // only one level deep
                 mp.forEach(p -> p.updateSettings(configurator));
-                mp.forEachChild(p -> p.updateSettings(configurator));
+                mp.forEachChild(p -> p.updateSettings(configurator, true));
             });
         }
         return copyWith(p -> p.updateSettings(configurator));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate withPriority(int priority) {
-        return withSettings(s -> s.withPriority(priority));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate withMinCount(int min) {
-        return withSettings(s -> s.withMinCount(min));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate withMaxCount(int max) {
-        return withSettings(s -> s.withMaxCount(max));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate withMinSliceCount(int min) {
-        return withSettings(s -> s.withMinSliceCount(min));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate withMaxSliceCount(int max) {
-        return withSettings(s -> s.withMaxSliceCount(max));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate withPreviewCount(int previewCount) {
-        return withSettings(s -> s.withPreviewCount(previewCount));
-    }
-
-    @CheckReturnValue
-    public MultiPredicate withDisableRenderFormed(boolean disable) {
-        return withSettings(s -> s.withDisableRenderFormed(disable));
     }
 
     @CheckReturnValue
