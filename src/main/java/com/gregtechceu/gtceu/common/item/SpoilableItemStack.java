@@ -72,7 +72,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     private long creationTick = 0;
     @Getter
     @Setter
-    private SpoilContext spoilContext = new SpoilContext();
+    private SpoilContext spoilContext = SpoilContext.EMPTY;
 
     public SpoilableItemStack(ItemStack stack) {
         this.stack = stack;
@@ -133,7 +133,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public long getTicksUntilSpoiled() {
-        updateFreshness(new SpoilContext(), false);
+        updateFreshness(SpoilContext.EMPTY, false);
         if (!initialized) return this.getSpoilTicks();
         if (frozen) return frozenTicks;
         Level level = SpoilContext.getDefaultLevel();
@@ -146,7 +146,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public void setTicksUntilSpoiled(long value) {
-        updateFreshness(new SpoilContext(), false);
+        updateFreshness(SpoilContext.EMPTY, false);
         Level level = SpoilContext.getDefaultLevel();
         if (level != null && initialized)
             setCreationTick(level.getGameTime() - this.getSpoilTicks() + value);
@@ -154,7 +154,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     private void setFreezeSpoiling(boolean freeze) {
         if (freeze) {
-            updateFreshness(new SpoilContext(), true);
+            updateFreshness(SpoilContext.EMPTY, true);
             frozenTicks = getTicksUntilSpoiled();
             frozen = true;
         } else {
@@ -214,7 +214,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     protected Component getSpoilResultTooltip() {
-        return spoilResult(new SpoilContext(), false).getDisplayName();
+        return spoilResult(SpoilContext.EMPTY, false).getDisplayName();
     }
 
     @Override

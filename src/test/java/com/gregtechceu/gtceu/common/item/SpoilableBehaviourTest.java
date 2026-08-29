@@ -200,7 +200,7 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         BusHolder busHolder = getBussesAndForm(helper);
         ItemStack input = new ItemStack(Items.JIGSAW);
-        SpoilUtils.update(input, new SpoilContext());
+        SpoilUtils.update(input, SpoilContext.EMPTY);
         Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
         busHolder.inputBus1.getInventory().setStackInSlot(0, input);
         helper.runAtTickTime(21, () -> {
@@ -222,7 +222,7 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         BusHolder busHolder = getBussesAndForm(helper);
         ItemStack input = new ItemStack(Items.APPLE);
-        SpoilUtils.update(input, new SpoilContext());
+        SpoilUtils.update(input, SpoilContext.EMPTY);
         Objects.requireNonNull(GTCapabilityHelper.getSpoilable(input)).setTicksUntilSpoiled(8);
         busHolder.inputBus1.getInventory().setStackInSlot(0, input);
         helper.runAtTickTime(21, () -> {
@@ -291,8 +291,8 @@ public class SpoilableBehaviourTest {
         TestUtils.succeedAfterTest(helper);
         ItemStack stack1 = Items.JIGSAW.getDefaultInstance().copyWithCount(9);
         ItemStack stack2 = Items.JIGSAW.getDefaultInstance().copyWithCount(5);
-        SpoilUtils.update(stack1, new SpoilContext());
-        SpoilUtils.update(stack2, new SpoilContext());
+        SpoilUtils.update(stack1, SpoilContext.EMPTY);
+        SpoilUtils.update(stack2, SpoilContext.EMPTY);
         ISpoilableItem spoilable1 = GTCapabilityHelper.getSpoilable(stack1);
         ISpoilableItem spoilable2 = GTCapabilityHelper.getSpoilable(stack2);
         TestUtils.assertNotNull(helper, spoilable1, "spoilable1 was null");

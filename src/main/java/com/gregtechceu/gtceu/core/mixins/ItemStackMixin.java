@@ -120,7 +120,7 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
     private void gtceu$injectedFreshnessUpdate(CallbackInfoReturnable<Item> cir) {
         if (gtceu$self().getEntityRepresentation() != null)
             gtceu$updateFreshness(new SpoilContext(gtceu$self().getEntityRepresentation()), true);
-        else gtceu$updateFreshness(new SpoilContext(), false);
+        else gtceu$updateFreshness(SpoilContext.EMPTY, false);
     }
 
     @Inject(at = @At("HEAD"), method = "inventoryTick")

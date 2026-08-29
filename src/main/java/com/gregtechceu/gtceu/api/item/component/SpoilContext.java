@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -43,15 +44,26 @@ public record SpoilContext(@Nullable Level level,
                            @Nullable CompoundTag itemHandlerData,
                            int slot) {
 
+    public static final SpoilContext EMPTY = new SpoilContext();
+
     /**
      * @return the {@link Level} used to determine time to calculate spoilage progress (using
      *         {@link Level#getGameTime()}).
      *         This is usually the Overworld. If it is {@code null}, all spoilage updates are ignored.
      */
     public static @Nullable Level getDefaultLevel() {
+        if (GTCEu.isClientThread())
+            return ClientLevelGetterWrapper.getLevel();
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return null;
         return server.overworld();
+    }
+
+    private static final class ClientLevelGetterWrapper {
+
+        public static @Nullable Level getLevel() {
+            return Minecraft.getInstance().level;
+        }
     }
 
     public SpoilContext() {
@@ -111,11 +123,20 @@ public record SpoilContext(@Nullable Level level,
     }
 
     public static SpoilContext deserializeNBT(CompoundTag tag) {
-        SpoilContext ctx = new SpoilContext();
+        SpoilContext ctx = SpoilContext.EMPTY;
         if (tag.contains("level")) {
-            ctx = ctx.withLevel(ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(
-                    Registries.DIMENSION,
-                    new ResourceLocation(tag.getString("level")))));
+            if (GTCEu.isClientThread()) {
+                Level level = ClientLevelGetterWrapper.getLevel();
+                if (level != null) {
+                    String dimension = level.dimensionTypeId().location().toString();
+                    if (dimension.equals(tag.getString("level")))
+                        ctx = ctx.withLevel(level);
+                }
+            } else {
+                ctx = ctx.withLevel(ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(
+                        Registries.DIMENSION,
+                        ResourceLocation.parse(tag.getString("level")))));
+            }
         }
         if (tag.contains("pos")) {
             ctx = ctx.withPos(BlockPos.of(tag.getLong("pos")));
@@ -128,7 +149,7 @@ public record SpoilContext(@Nullable Level level,
         }
         if (tag.contains("handlerSource")) {
             ctx = ctx.withItemHandlerSource(
-                    ItemHandlerSource.getById(new ResourceLocation(tag.getString("handlerSource"))));
+                    ItemHandlerSource.getById(ResourceLocation.parse(tag.getString("handlerSource"))));
         }
         if (tag.contains("handlerData")) {
             ctx = ctx.withItemHandlerData(tag.getCompound("handlerData"));
