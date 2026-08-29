@@ -1,7 +1,7 @@
 {
-    "parent": "minecraft:item/generated",
-    "textures": {
-        "layer0": "gtceu:item/armor/chestplate",
-        "layer1": "minecraft:trims/items/chestplate_trim_emerald"
-    }
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtceu:item/armor/chestplate",
+    "layer1": "minecraft:trims/items/chestplate_trim_emerald"
+  }
 }

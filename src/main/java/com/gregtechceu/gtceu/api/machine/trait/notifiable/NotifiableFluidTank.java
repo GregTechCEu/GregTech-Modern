@@ -4,7 +4,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
@@ -12,6 +15,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
@@ -92,26 +96,27 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
     protected void onLockedFluidChanged() {
         syncDataHolder.markClientSyncFieldDirty("lockedFluid");
-        var newFluid = this.lockedFluid.getFluid();
+        FluidStack newFluid = this.lockedFluid.getFluid();
         if (newFluid.isEmpty()) {
             this.setFilter(stack -> true);
             this.onContentsChanged();
             return;
         }
-        for (int i = 0; i < this.getTanks(); i++) {
-            if (this.getFluidInTank(i).isEmpty()) continue;
-            if (!this.getFluidInTank(i).isFluidEqual(newFluid)) {
+        for (int tank = 0; tank < this.getTanks(); tank++) {
+            FluidStack fluid = this.getFluidInTank(tank);
+            if (fluid.isEmpty()) continue;
+            if (!FluidStack.isSameFluidSameComponents(fluid, newFluid)) {
                 // Fluid in a tank that doesn't equal the new locked fluid
                 this.lockedFluid.setFluid(FluidStack.EMPTY);
                 return;
             }
         }
-        this.setFilter(stack -> stack.isFluidEqual(newFluid));
+        this.setFilter(stack -> FluidStack.isSameFluidSameComponents(stack, newFluid));
         this.onContentsChanged();
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe,
                                                         List<SizedFluidIngredient> left,
                                                         boolean simulate) {
         if (io != handlerIO) return left;
@@ -191,11 +196,30 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
                         if (!drained.isEmpty()) {
                             visited[tank] = drained.copyWithAmount(count - drained.getAmount());
                             changed = true;
+                            if (!simulate) {
+                                FluidStack copied = drained.copy();
+                                if (getMachine() instanceof MultiblockPartMachine partMachine) {
+                                    for (MultiblockControllerMachine controller : partMachine.getControllers()) {
+                                        RecipeLogic logic = controller.getTrait(RecipeLogic.class);
+                                        if (logic != null && logic.getStartingRecipe() == recipe) {
+                                            logic.getConsumedInputs().addConsumedInput(GTRecipeCapabilities.FLUID,
+                                                    SizedFluidIngredient.of(copied));
+                                        }
+                                    }
+                                } else {
+                                    getMachine().getTraitOptional(RecipeLogic.class)
+                                            .map(RecipeLogic::getConsumedInputs)
+                                            .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.FLUID,
+                                                    SizedFluidIngredient.of(copied)));
+                                }
+                            }
                         }
                         amount -= drained.getAmount();
                     }
                 } else { // IO.OUT && allow same fluids
-                    FluidStack output = fluids[0].copyWithAmount(amount);
+                    FluidStack output = fluids[0].copy();
+                    if (recipe != null) recipe.mutateOutput(output);
+                    output.setAmount(amount);
                     if (visited[tank] == null || FluidStack.isSameFluidSameComponents(visited[tank], output)) {
                         if (count < storages[tank].getCapacity()) {
                             int filled = storages[tank].fill(output, action);

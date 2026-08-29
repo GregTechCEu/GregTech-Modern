@@ -1,7 +1,7 @@
 {
-    "apply_fluid_luminosity": false,
-    "flip_gas": false,
-    "fluid": "minecraft:water",
-    "loader": "neoforge:fluid_container",
-    "parent": "neoforge:item/bucket_drip"
+  "parent": "neoforge:item/bucket_drip",
+  "loader": "neoforge:fluid_container",
+  "fluid": "minecraft:water",
+  "flip_gas": false,
+  "apply_fluid_luminosity": false
 }

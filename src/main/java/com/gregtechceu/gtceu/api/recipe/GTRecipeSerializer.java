@@ -26,6 +26,7 @@ import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionHolder;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -70,6 +71,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     public static final MapCodec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
     public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipe> STREAM_CODEC = StreamCodec
             .of(GTRecipeSerializer::toNetwork, GTRecipeSerializer::fromNetwork);
+    public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipe> DATAPACK_SYNC_STREAM_CODEC = StreamCodec
+            .of(GTRecipeSerializer::toNetwork, GTRecipeSerializer::datapackSyncFromNetwork);
     // spotless:on
 
     @Override
@@ -79,7 +82,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     @Override
     public @NotNull StreamCodec<RegistryFriendlyByteBuf, GTRecipe> streamCodec() {
-        return STREAM_CODEC;
+        return DATAPACK_SYNC_STREAM_CODEC;
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(RegistryFriendlyByteBuf buf) {
@@ -128,8 +131,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
-        if (!buf.readBoolean()) return null;
+    public static GTRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
         ResourceLocation id = buf.readResourceLocation();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
@@ -171,29 +173,34 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
 
-        GTRecipe recipe = new GTRecipe(type, id,
+        boolean keepSpoilingProgress = buf.readBoolean();
+
+        return new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels, category,
-                groupColor);
+                groupColor, keepSpoilingProgress);
+    }
+
+    public static GTRecipe datapackSyncFromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
+        GTRecipe recipe = fromNetwork(buf);
 
         recipe.recipeCategory.addRecipe(recipe);
 
         // a little special piece of code for loading all the research entries into the recipe type's list on the
         // client.
-        ResearchCondition researchCondition = conditions.stream().filter(ResearchCondition.class::isInstance).findAny()
+        ResearchCondition researchCondition = recipe.conditions.stream().filter(ResearchCondition.class::isInstance)
+                .findAny()
                 .map(ResearchCondition.class::cast).orElse(null);
         if (researchCondition != null) {
             for (ResearchData.ResearchEntry entry : researchCondition.data) {
-                type.addDataStickEntry(entry.researchId(), recipe);
+                recipe.recipeType.addDataStickEntry(entry.researchId(), recipe);
             }
         }
         return recipe;
     }
 
-    public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
-        buf.writeBoolean(recipe != null);
-        if (recipe == null) return;
+    public static void toNetwork(RegistryFriendlyByteBuf buf, @Nullable GTRecipe recipe) {
         buf.writeResourceLocation(recipe.recipeType.registryName);
         buf.writeResourceLocation(recipe.id);
         writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
@@ -221,6 +228,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeVarInt(recipe.batchParallels);
         buf.writeInt(recipe.groupColor);
         buf.writeResourceLocation(recipe.recipeCategory.registryKey);
+        buf.writeBoolean(recipe.keepSpoilingProgress);
     }
 
     public static <T> ArrayList<T> readCollection(RegistryFriendlyByteBuf buf,
@@ -269,12 +277,13 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", false).forGetter(val -> val.duration),
                             RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
-                            Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
+                            Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
+                            Codec.BOOL.optionalFieldOf("keepSpoilingProgress", true).forGetter(val -> val.keepSpoilingProgress))
                     .apply(instance, (type,
                                       recipeIO,
-                                      conditions, data, duration, allParallels, recipeCategory, groupColor) ->
+                                      conditions, data, duration, allParallels, recipeCategory, groupColor, keepSpoilingProgress) ->
                             new GTRecipe(type, recipeIO,
-                                    conditions, List.of(), data, duration, allParallels, recipeCategory, groupColor)));
+                                    conditions, List.of(), data, duration, allParallels, recipeCategory, groupColor, keepSpoilingProgress)));
         } else {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                     GT_RECIPE_TYPE_CODEC.fieldOf("type").forGetter(val -> val.recipeType),
@@ -285,8 +294,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     quietExceptionCodec(ExtraCodecs.NON_NEGATIVE_INT, "duration", true).forGetter(val -> val.duration),
                     RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
                     GTRegistries.RECIPE_CATEGORIES.byNameCodec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
-                    Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor))
-            .apply(instance, GTRecipe::new));
+                    Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
+            Codec.BOOL.optionalFieldOf("keepSpoilingProgress", true).forGetter(val -> val.keepSpoilingProgress))
+                    .apply(instance, GTRecipe::new));
         }
         // spotless:on
     }
