@@ -2564,7 +2564,7 @@ public class GTItems {
     public static ItemEntry<Item> SUS_RECORD = REGISTRATE
             .item("sus_record", Item::new)
             .lang("Music Disc")
-            .properties(p -> p.jukeboxPlayable(GTJukeboxSongs.SUS))
+            .properties(p -> p.jukeboxPlayable(GTJukeboxSongs.SUS).stacksTo(1).rarity(Rarity.RARE))
             .register();
     public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new)
             .lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC))
