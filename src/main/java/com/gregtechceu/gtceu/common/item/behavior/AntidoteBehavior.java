@@ -4,10 +4,13 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -18,10 +21,7 @@ import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Defines an antidote for a hazard (e.g. poisoning)
@@ -30,12 +30,12 @@ import java.util.Set;
  * @param removePercent how many 'counts' should be removed from the chosen condition(s),
  *                      as a percentage of the current 'counts' in the range [0, 100]. -1 for all.
  */
-public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
+public record AntidoteBehavior(HolderSet<MedicalCondition> types, int removePercent)
         implements IInteractionItem, IAddInformation {
 
-    public AntidoteBehavior(int removePercent, MedicalCondition... types) {
-        this(new HashSet<>(), removePercent);
-        this.types.addAll(Arrays.asList(types));
+    @SafeVarargs
+    public AntidoteBehavior(int removePercent, Holder<MedicalCondition>... types) {
+        this(HolderSet.direct(types), removePercent);
     }
 
     @Override
@@ -53,7 +53,7 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
             if (condition == null) {
                 continue;
             }
-            if (!this.types.contains(condition)) {
+            if (!this.types.contains(GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition))) {
                 continue;
             }
             if (removePercent == -1) {
@@ -76,7 +76,7 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.gtceu.antidote.description_shift"));
             for (var type : types) {
-                tooltipComponents.add(type.getAffectedName());
+                tooltipComponents.add(type.value().getAffectedName());
             }
             if (removePercent == -1) {
                 tooltipComponents
