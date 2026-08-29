@@ -135,6 +135,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
 
+        registry.of(Registries.RECIPE_TYPE, reg -> {
+            reg.add(GTCEu.id("machine"), GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+        });
         registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
         registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
                 GTRecipeCategoryBuilder::new);
