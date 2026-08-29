@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
@@ -275,9 +276,8 @@ public class TestUtils {
         CoverDefinition coverDefinition = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
-                if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
-                    helper.assertTrue(coverDefinition == null, "stack has multiple coverPlaceBehaviours");
-                    coverDefinition = coverPlaceBehavior.coverDefinition();
+                if (component instanceof CoverPlaceBehavior(Holder<CoverDefinition> definition)) {
+                    coverDefinition = definition.value();
                 }
             }
         }

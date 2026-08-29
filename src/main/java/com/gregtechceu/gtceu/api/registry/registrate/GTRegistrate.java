@@ -2,14 +2,19 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -40,6 +45,7 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -157,16 +163,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
-    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
-                                                                                             Consumer<CreativeModeTab.Builder> config) {
-        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
-            var builder = CreativeModeTab.builder()
-                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
-                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
-            config.accept(builder);
-            return builder.build();
-        });
-    }
+    ///// Machine Builders
 
     public <DEFINITION extends MachineDefinition,
             MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
@@ -198,6 +195,19 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 blockEntityFactory);
     }
 
+    ///// Covers
+
+    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name, CoverDefinition.CoverBehaviourProvider behaviorCreator,
+                                                                 Supplier<Supplier<ICoverRenderer>> coverRenderer) {
+        return simple(name, GTRegistries.Keys.COVER, () -> new CoverDefinition(makeResourceLocation(name), behaviorCreator, coverRenderer));
+    }
+
+    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name, CoverDefinition.CoverBehaviourProvider behaviorCreator) {
+        return cover(name, behaviorCreator, () -> () -> new SimpleCoverRenderer(ResourceLocation.fromNamespaceAndPath(getModid(), "block/cover/" + name)));
+    }
+
+    ///// Sound Builders
+
     public SoundEntryBuilder sound(String name) {
         return new SoundEntryBuilder(GTCEu.id(name));
     }
@@ -206,7 +216,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return new SoundEntryBuilder(name);
     }
 
-    // Blocks
+    ///// Block Builders
+
     @Override
     public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return block(this, factory);
@@ -219,20 +230,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     @Override
-    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent,
+    @SuppressWarnings("NullableProblems")
+    public <T extends Block, P> GTBlockBuilder<T, P> block(@NotNull P parent,
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return block(parent, currentName(), factory);
     }
 
     @Override
-    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent, String name,
+    @SuppressWarnings("NullableProblems")
+    public <T extends Block, P> GTBlockBuilder<T, P> block(@NotNull P parent, String name,
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return (GTBlockBuilder<T, P>) entry(name,
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
+    ///// Creative Mode Tabs
+
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private static final Map<RegistryEntry<?, ?>, @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
     public @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
         return this.currentTab;
@@ -273,7 +288,20 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return entry;
     }
 
-    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
+                                                                                             Consumer<CreativeModeTab.Builder> config) {
+        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
+            var builder = CreativeModeTab.builder()
+                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
+                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
+            config.accept(builder);
+            return builder.build();
+        });
+    }
+
+    @Override
+    @SuppressWarnings("NullableProblems")
+    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(@NotNull P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
     }
