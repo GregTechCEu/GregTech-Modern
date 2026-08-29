@@ -211,7 +211,8 @@ public record SpoilContext(@Nullable Level level,
 
         public ItemHandlerSource(ResourceLocation id) {
             this.id = id;
-            HANDLER_SOURCES.put(id, this);
+            if (id != null)
+                HANDLER_SOURCES.put(id, this);
         }
 
         private ResourceLocation getId() {
