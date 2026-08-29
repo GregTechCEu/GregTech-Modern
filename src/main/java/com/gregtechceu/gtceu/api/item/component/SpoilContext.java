@@ -176,11 +176,11 @@ public record SpoilContext(@Nullable Level level,
 
             @Override
             protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
-                if (ctx.level() == null || ctx.pos() == null || ctx.itemHandlerData() == null) return null;
+                if (ctx.level() == null || ctx.pos() == null) return null;
                 CompoundTag tag = ctx.itemHandlerData();
                 BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
                 if (blockEntity == null) return null;
-                if (!tag.contains("side"))
+                if (tag == null || !tag.contains("side"))
                     return blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
                 return blockEntity
                         .getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.byName(tag.getString("side")))

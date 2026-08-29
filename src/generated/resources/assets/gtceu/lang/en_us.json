@@ -3986,6 +3986,7 @@
   "gtceu.tooltip.proxy_bind": "§fBinding to a Pattern Buffer at %s %s %s",
   "gtceu.tooltip.spoil_time_remaining": "Time until spoils: %s",
   "gtceu.tooltip.spoil_time_total": "Total spoil time: %s",
+  "gtceu.tooltip.spoiled_time_ago": "This item will transform upon entering a supported inventory!\nSpoiled %s ago.",
   "gtceu.tooltip.spoils_into": "Spoils into: %s",
   "gtceu.tooltip.status.trinary.false": "False",
   "gtceu.tooltip.status.trinary.true": "True",
