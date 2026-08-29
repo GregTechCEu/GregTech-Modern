@@ -187,7 +187,6 @@ public class CommonProxy {
         GTIngredientTypes.init(modBus);
         GTRecipeSerializers.init(modBus);
 
-        GTCommandArguments.init(modBus);
         GTMobEffects.init(modBus);
         GTParticleTypes.init(modBus);
         WorldGenLayers.init();

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.component.SpoilContext;
@@ -70,7 +71,7 @@ public class GTRecipeModifiers {
                 ConsumedInputsData inputs = machine.getTraitOptional(RecipeLogic.class)
                         .map(RecipeLogic::getConsumedInputs).orElse(null);
                 if (inputs == null) return;
-                for (Object inObject : inputs.getConsumedInputs(GTRecipeCapabilities.ITEM)) {
+                for (Object inObject : inputs.getConsumedInputs(ItemRecipeCapability.CAP)) {
                     if (!(inObject instanceof SizedIngredient ingredient)) continue;
                     if (ingredient.getItems().length == 0) continue;
                     ItemStack in = ingredient.getItems()[0];

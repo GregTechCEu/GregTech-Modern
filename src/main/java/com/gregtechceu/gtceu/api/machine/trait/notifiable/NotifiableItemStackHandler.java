@@ -153,13 +153,13 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                                     for (MultiblockControllerMachine controller : partMachine.getControllers()) {
                                         RecipeLogic logic = controller.getTrait(RecipeLogic.class);
                                         if (logic != null && logic.getStartingRecipe() == recipe) {
-                                            logic.getConsumedInputs().addConsumedInput(GTRecipeCapabilities.ITEM,
+                                            logic.getConsumedInputs().addConsumedInput(ItemRecipeCapability.CAP,
                                                     new SizedIngredient(Ingredient.of(copied), 1));
                                         }
                                     }
                                 } else if (machine != null) machine.getTraitOptional(RecipeLogic.class)
                                         .map(RecipeLogic::getConsumedInputs)
-                                        .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.ITEM,
+                                        .ifPresent(inputs -> inputs.addConsumedInput(ItemRecipeCapability.CAP,
                                                 new SizedIngredient(Ingredient.of(copied), 1)));
                             }
                         }
