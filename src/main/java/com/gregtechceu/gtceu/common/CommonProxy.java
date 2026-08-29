@@ -148,7 +148,7 @@ public class CommonProxy {
         GTMedicalConditions.init();
         TagPrefix.init();
 
-        GTSoundEntries.init(modBus);
+        GTSoundEntries.init();
         GTDamageTypes.init();
         GTPlaceholders.init();
 

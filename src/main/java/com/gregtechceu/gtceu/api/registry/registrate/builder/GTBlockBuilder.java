@@ -16,8 +16,10 @@ import com.tterrag.registrate.providers.*;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.nullness.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
 
+@ParametersAreNonnullByDefault
 public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     // spotless:off

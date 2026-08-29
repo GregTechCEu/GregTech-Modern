@@ -166,7 +166,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
-    ///// Machine Builders
+    /// Machine Builders
 
     public <DEFINITION extends MachineDefinition,
             MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
@@ -198,7 +198,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 blockEntityFactory);
     }
 
-    ///// Covers
+    /// Cover Registration
 
     public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name,
                                                                  CoverDefinition.CoverBehaviourProvider behaviorCreator,
@@ -213,17 +213,17 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 ResourceLocation.fromNamespaceAndPath(getModid(), "block/cover/" + name)));
     }
 
-    ///// Sound Builders
+    /// Sound Builder
 
-    public SoundEntryBuilder sound(String name) {
-        return new SoundEntryBuilder(GTCEu.id(name));
+    public SoundEntryBuilder<GTRegistrate> sound(String name) {
+        return sound(this, name);
     }
 
-    public SoundEntryBuilder sound(ResourceLocation name) {
-        return new SoundEntryBuilder(name);
+    public <P> SoundEntryBuilder<P> sound(P parent, String name) {
+        return entry(name, callback -> new SoundEntryBuilder<>(this, parent, name, callback));
     }
 
-    ///// Block Builders
+    /// Block Builder
 
     @Override
     public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(NonNullFunction<BlockBehaviour.Properties, T> factory) {
@@ -251,7 +251,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
-    ///// Creative Mode Tabs
+    /// Creative Mode Tabs
 
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
     private static final Map<RegistryEntry<?, ?>, @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();

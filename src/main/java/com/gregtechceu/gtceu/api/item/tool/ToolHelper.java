@@ -212,7 +212,7 @@ public class ToolHelper {
 
     public static void playToolSound(@Nullable GTToolType toolType, ServerPlayer player) {
         if (toolType != null && toolType.soundEntry != null) {
-            toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
+            toolType.soundEntry.value().playOnServer(player.level(), player.blockPosition());
         }
     }
 
