@@ -223,5 +223,15 @@ public record SpoilContext(@Nullable Level level,
         }
 
         abstract protected @Nullable IItemHandler getHandler(SpoilContext ctx);
+
+        public static ItemHandlerSource temp(IItemHandler handler) {
+            return new ItemHandlerSource(GTCEu.id("temp")) {
+
+                @Override
+                protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
+                    return handler;
+                }
+            };
+        }
     }
 }
