@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.worldgen.modifier;
 
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifierTypes;
+import com.gregtechceu.gtceu.common.data.GTPlacementModifierTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;

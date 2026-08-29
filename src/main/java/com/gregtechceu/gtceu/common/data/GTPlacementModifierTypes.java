@@ -1,6 +1,9 @@
-package com.gregtechceu.gtceu.api.data.worldgen.modifier;
+package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 
 import net.minecraft.core.registries.BuiltInRegistries;
