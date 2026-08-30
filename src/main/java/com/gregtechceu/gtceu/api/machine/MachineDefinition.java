@@ -38,12 +38,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.*;
 
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<MetaMachineBlock> {
+public class MachineDefinition {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -171,7 +172,6 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return this.cache.computeIfAbsent(direction, dir -> GTUtil.rotateVoxelShape(shape, dir));
     }
 
-    @Override
     public MetaMachineBlock get() {
         return blockHolder.value();
     }
@@ -208,10 +208,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return id.hashCode();
     }
 
-    static final ThreadLocal<MachineDefinition> STATE = new ThreadLocal<>();
+    static final ThreadLocal<@Nullable MachineDefinition> STATE = new ThreadLocal<>();
 
     public static MachineDefinition getBuilt() {
-        return STATE.get();
+        return Objects.requireNonNull(STATE.get());
     }
 
     public static void setBuilt(MachineDefinition state) {

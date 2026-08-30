@@ -535,7 +535,7 @@ public class GTMachineUtils {
     public static MultiblockMachineDefinition registerMultiblockTank(GTRegistrate registrate, String name,
                                                                      String displayName, int capacity,
                                                                      Supplier<Block> casing,
-                                                                     Supplier<MetaMachineBlock> valve,
+                                                                     MachineDefinition valve,
                                                                      @Nullable PropertyFluidFilter filter,
                                                                      BiConsumer<MultiblockMachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
         MultiblockMachineBuilder<?, ?> builder = registrate
@@ -552,9 +552,9 @@ public class GTMachineUtils {
                         .slice("CCC", "CCC", "CCC")
                         .slice("CCC", "C#C", "CCC")
                         .slice("CCC", "CSC", "CCC")
-                        .where('S', controller(blocks(definition.get())))
+                        .where('S', controller(definition))
                         .where('C', blocks(casing.get())
-                                .and(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
+                                .and(machines(valve).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
                         .build())
                 .appearanceBlock(casing);

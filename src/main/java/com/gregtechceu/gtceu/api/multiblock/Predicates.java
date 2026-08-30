@@ -150,7 +150,7 @@ public class Predicates {
         List<Block> blocks = new ArrayList<>();
         for (MachineDefinition definition : definitions) {
             if (definition != null) {
-                blocks.add(definition.get());
+                blocks.add(definition.getBlock());
             }
         }
         if (blocks.isEmpty()) {

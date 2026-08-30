@@ -268,7 +268,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return MultiblockPatternBuilder.start()
                 .slice(slice)
                 .where('B', getMultiPredicate())
-                .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
+                .where('C', Predicates.controller(this.getDefinition()))
                 .build();
     }
 
