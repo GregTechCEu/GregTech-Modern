@@ -269,25 +269,27 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             return quads;
         }
 
-        // render output overlays
-        var outputTrait = machine.getTrait(AutoOutputTrait.class);
-        if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
-            var itemFace = outputTrait.getItemOutputDirection();
-            if (itemFace != null && side == itemFace) {
-                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (outputTrait.isAutoOutputItems()) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            itemOutputOverlaySprite));
+        if (renderType == null || renderType == RenderType.solid()) {
+            // render output overlays
+            var outputTrait = machine.getTrait(AutoOutputTrait.class);
+            if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
+                var itemFace = outputTrait.getItemOutputDirection();
+                if (itemFace != null && side == itemFace) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
+                    if (outputTrait.isAutoOutputItems()) {
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                                itemOutputOverlaySprite));
+                    }
                 }
             }
-        }
-        if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
-            var fluidFace = outputTrait.getFluidOutputDirection();
-            if (fluidFace != null && side == fluidFace) {
-                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (outputTrait.isAutoOutputFluids()) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            fluidOutputOverlaySprite));
+            if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
+                var fluidFace = outputTrait.getFluidOutputDirection();
+                if (fluidFace != null && side == fluidFace) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
+                    if (outputTrait.isAutoOutputFluids()) {
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                                fluidOutputOverlaySprite));
+                    }
                 }
             }
         }
@@ -331,7 +333,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                     side, rand, modelData, renderType));
         }
         if (modelsByState.containsKey(renderState)) {
-            quads.addAll(modelsByState.get(renderState).getQuads(blockState, side, rand, modelData, renderType));
+            BakedModel model = modelsByState.get(renderState);
+            if (renderType == null || blockState == null ||
+                    model.getRenderTypes(blockState, rand, modelData).contains(renderType)) {
+                quads.addAll(model.getQuads(blockState, side, rand, modelData, renderType));
+            }
         }
     }
 

@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
@@ -49,27 +48,28 @@ import java.util.*;
 public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRenderer {
 
     private static final double FACADE_PLANE_BACK = 1.0 / 16;
+    // Offset full-block facades only to avoid Z-fighting issues
     private static final double SOLID_HOLDER_FACADE_OFFSET = 0.002;
 
     // spotless:off
-    private static final Map<Direction, QuadTransform> FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(0);
-    private static final Map<Direction, QuadTransform> SOLID_HOLDER_FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(SOLID_HOLDER_FACADE_OFFSET);
+    private static final Map<Direction, QuadTransform> FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(FACADE_PLANE_BACK, 0);
+    private static final Map<Direction, QuadTransform> SOLID_HOLDER_FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(0, SOLID_HOLDER_FACADE_OFFSET);
 
-    private static Map<Direction, QuadTransform> createFacadePlaneTransformers(double outwardOffset) {
-        return Util.make(new EnumMap<>(Direction.class), map -> {
-            for (Direction dir : GTUtil.DIRECTIONS) {
-                AABB facadePlane = switch (dir) {
-                    case DOWN -> new AABB(0, -outwardOffset, 0, 1, FACADE_PLANE_BACK, 1);
-                    case UP -> new AABB(0, 1.0 - FACADE_PLANE_BACK, 0, 1, 1.0 + outwardOffset, 1);
-                    case NORTH -> new AABB(0, 0, -outwardOffset, 1, 1, FACADE_PLANE_BACK);
-                    case SOUTH -> new AABB(0, 0, 1.0 - FACADE_PLANE_BACK, 1, 1, 1.0 + outwardOffset);
-                    case WEST -> new AABB(-outwardOffset, 0, 0, FACADE_PLANE_BACK, 1, 1);
-                    case EAST -> new AABB(1.0 - FACADE_PLANE_BACK, 0, 0, 1.0 + outwardOffset, 1, 1);
-                };
+    private static Map<Direction, QuadTransform> createFacadePlaneTransformers(double thickness, double outwardOffset) {
+        Map<Direction, QuadTransform> transformers = new EnumMap<>(Direction.class);
+        for (Direction dir : GTUtil.DIRECTIONS) {
+            AABB facadePlane = switch (dir) {
+                case DOWN -> new AABB(0, -outwardOffset, 0, 1, thickness - outwardOffset, 1);
+                case UP -> new AABB(0, 1.0 - thickness + outwardOffset, 0, 1, 1.0 + outwardOffset, 1);
+                case NORTH -> new AABB(0, 0, -outwardOffset, 1, 1, thickness - outwardOffset);
+                case SOUTH -> new AABB(0, 0, 1.0 - thickness + outwardOffset, 1, 1, 1.0 + outwardOffset);
+                case WEST -> new AABB(-outwardOffset, 0, 0, thickness - outwardOffset, 1, 1);
+                case EAST -> new AABB(1.0 - thickness + outwardOffset, 0, 0, 1.0 + outwardOffset, 1, 1);
+            };
 
-                map.put(dir, new QuadPositionForcer(facadePlane));
-            }
-        });
+            transformers.put(dir, new QuadPositionForcer(facadePlane));
+        }
+        return transformers;
     }
     // spotless:on
 
@@ -148,8 +148,9 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();
 
-        Map<Direction, QuadTransform> facadePlaneTransformers = coverBehavior.coverHolder.getCoverPlateThickness() > 0 ?
-                FACADE_PLANE_TRANSFORMERS : SOLID_HOLDER_FACADE_PLANE_TRANSFORMERS;
+        boolean fullBlockHolder = coverBehavior.coverHolder.getCoverPlateThickness() <= 0;
+        Map<Direction, QuadTransform> facadePlaneTransformers = fullBlockHolder ?
+                SOLID_HOLDER_FACADE_PLANE_TRANSFORMERS : FACADE_PLANE_TRANSFORMERS;
         QuadTransform clamper = facadePlaneTransformers.get(attachedSide);
         QuadReInterpolator interpolator = new QuadReInterpolator();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
@@ -174,7 +175,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
             for (BakedQuad quad : cullfaceQuads) {
                 // skip quads that aren't oriented correctly
-                if (quad.getDirection() != attachedSide && (coverBehavior.shouldRenderPlate() ||
+                if (quad.getDirection() != attachedSide && (fullBlockHolder || coverBehavior.shouldRenderPlate() ||
                         !coverBehavior.coverHolder.shouldRenderBackSide())) {
                     continue;
                 }
