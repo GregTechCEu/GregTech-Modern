@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
+import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -772,8 +773,8 @@ public class GTMachineUtils {
     }
 
     public static Component environmentRequirement(Holder<MedicalCondition> condition) {
-        return Text.dynamic(() -> Component.translatable("gtceu.recipe.environmental_hazard.reverse",
-                condition.value().getTranslatableName()));
+        // Dynamic to avoid resolving the medical condition holder until the component is actually used.
+        return Text.dynamic(() -> Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.value().getTranslatableName()));
     }
 
     public static Component defaultEnvironmentRequirement() {
