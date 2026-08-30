@@ -55,11 +55,9 @@ public class MultiblockMachineBuilder<
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                    BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                     MachineInstanceFactory<MACHINE> blockEntityFactory) {
         super(registrate, name, (MultiblockMachineDefinition::new),
-                blockFactory,
-                itemFactory, blockEntityFactory);
+                blockFactory, blockEntityFactory);
         patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);

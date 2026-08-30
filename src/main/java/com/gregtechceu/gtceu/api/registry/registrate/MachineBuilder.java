@@ -87,10 +87,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     protected final String name;
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
-    protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected MachineInstanceFactory<MACHINE> instanceFactory;
     @Setter(onMethod_ = @ApiStatus.Internal)
     public Function<ResourceLocation, DEFINITION> definitionFactory;
+
+    private @Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
+    private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
+
+    private @Nullable ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> itemBuilder;
 
     @Nullable
     @Getter
@@ -110,9 +114,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private boolean renderMultiblockWorldPreview = true;
     private boolean renderMultiblockXEIPreview = true;
     private NonNullUnaryOperator<BlockBehaviour.Properties> blockProp = p -> p;
-    private NonNullUnaryOperator<Item.Properties> itemProp = p -> p;
-    private @Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
-    private @Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
     private GTRecipeType[] recipeTypes = new GTRecipeType[0];
@@ -120,8 +121,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private int tier = -1;
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
     private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
-    private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?
-            GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
     private final List<Component> tooltips = new ArrayList<>();
     private @Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder;
@@ -151,12 +150,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public MachineBuilder(GTRegistrate registrate, String name,
                           Function<ResourceLocation, DEFINITION> definitionFactory,
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
-                          BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
         this.registrate = registrate;
         this.name = name;
         this.blockFactory = blockFactory;
-        this.itemFactory = itemFactory;
         this.instanceFactory = instanceFactory;
         this.definitionFactory = definitionFactory;
 
@@ -217,19 +214,52 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
-        this.itemProp = itemProp;
-        return getThis();
-    }
-
     public SELF blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
         this.blockBuilder = blockBuilder;
         return getThis();
     }
 
-    public SELF itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
-        this.itemBuilder = itemBuilder;
-        return getThis();
+
+    /**
+     * Gets the {@link MetaMachineItem} for this machine, and returns the builder for it so that further customization can be done.<br>
+     * If the {@link ItemBuilder} has not been created yet, then the default one is created.
+     *
+     * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
+     */
+    public ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> item() {
+        if (itemBuilder != null) return itemBuilder;
+        return item(MetaMachineItem::new);
+    }
+
+    /**
+     * Create a {@link MetaMachineItem} for this machine, which is created by the given factory, and return the builder for it so that further customization can be done.<br>
+     * Cannot be called if {@link #item()} has already been called.
+     *
+     * @param <I> The type of the item .
+     * @param factory A factory for the item, which accepts the block and item properties and returns a new item.
+     * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
+     */
+    public <I extends MetaMachineItem> ItemBuilder<I, MachineBuilder<DEFINITION, MACHINE, SELF>> item(BiFunction<MetaMachineBlock, Item.Properties, I> factory) {
+        if (itemBuilder != null) throw new IllegalStateException("Item builder for machine %s has already been initialized".formatted(name));
+
+        var newItemBuilder = this.registrate
+                .item(this, name, properties -> factory.apply(Objects.requireNonNull(blockEntry, "Item factory called before block resolved.").get(), properties))
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
+                // copied from BlockBuilder#item
+                .model((ctx, prov) -> {
+                    prov.withExistingParent(ctx.getName(), registrate.makeResourceLocation("block/machine/" + ctx.getName()));
+                })
+                .color(() -> () -> ((itemStack, tintIndex) -> tintIndex == 2 ?
+                        GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1))
+                .clientExtension(() -> () -> new IClientItemExtensions() {
+                    @Override
+                    public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                        return ItemWithBERModelRenderer.INSTANCE;
+                    }
+                });
+
+        itemBuilder = newItemBuilder;
+        return newItemBuilder;
     }
 
     public SELF onBlockEntityRegister(NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister) {
@@ -249,11 +279,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF paintingColor(int paintingColor) {
         this.paintingColor = paintingColor;
-        return getThis();
-    }
-
-    public SELF itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
-        this.itemColor = itemColor;
         return getThis();
     }
 
@@ -643,6 +668,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.registerDefaultState(defaultState);
     }
 
+    public DEFINITION createEntry() {
+        DEFINITION definition = createDefinition();
+
+
+        return definition;
+    }
+
+    /**
+     * Finalise the builder for registration (does not actually register the machine, registration is performed during the register event in {@link #createEntry()}
+     */
     @HideFromJS
     public DEFINITION register() {
         ModifyMachineEvent event = new ModifyMachineEvent(this);
@@ -668,12 +703,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         }
         BlockEntry<? extends MetaMachineBlock> block = blockBuilder.register();
 
-        ItemBuilder<MetaMachineItem, GTRegistrate> itemBuilder = makeItemBuilder(block);
-        if (this.itemBuilder != null) {
-            this.itemBuilder.accept(itemBuilder);
-        }
-        var item = itemBuilder.register();
-
         var blockEntityBuilder = registrate
                 .<MACHINE>blockEntity(
                         (type, pos, state) -> instanceFactory
@@ -689,8 +718,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         }
         definition.setThemeId(themeId);
         definition.setRecipeTypes(recipeTypes);
+
         definition.setBlockHolder(block);
-        definition.setItemHolder(item);
+        definition.setItemHolder(item().register());
         definition.setTier(tier);
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
@@ -781,27 +811,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         var b = this.blockFactory.apply(properties, definition);
         MachineDefinition.clearBuilt();
         return b;
-    }
-
-    private ItemBuilder<MetaMachineItem, GTRegistrate> makeItemBuilder(BlockEntry<? extends MetaMachineBlock> block) {
-            return this.registrate
-                    .item(properties -> this.itemFactory.apply(block.get(), properties))
-                    .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
-                    // copied from BlockBuilder#item
-                    .model((ctx, prov) -> {
-                        prov.withExistingParent(ctx.getName(),
-                                ResourceLocation.fromNamespaceAndPath(this.registrate.getModid(),
-                                        "block/machine/" + ctx.getName()));
-                    })
-                    .clientExtension(() -> () -> new IClientItemExtensions() {
-
-                        @Override
-                        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                            return ItemWithBERModelRenderer.INSTANCE;
-                        }
-                    })
-                    .color(() -> () -> this.itemColor::apply)
-                    .properties(this.itemProp);
     }
     // spotless:on
 

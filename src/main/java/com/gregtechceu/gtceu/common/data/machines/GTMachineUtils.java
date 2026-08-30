@@ -267,12 +267,12 @@ public class GTMachineUtils {
                 (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .itemColor((itemStack, index) -> switch (index) {
+                        .item().color(() -> () -> (itemStack, index) -> switch (index) {
                             case 1 -> ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
                             case 2 -> VC[tier + 1];
                             case 3 -> VC[tier];
                             default -> -1;
-                        })
+                        }).build()
                         .modelProperty(GTMachineModelProperties.IS_TRANSFORM_UP, false)
                         .model(createTransformerModel(baseAmp))
                         .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
@@ -447,7 +447,7 @@ public class GTMachineUtils {
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .item().color(() -> () -> (s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .register();
     }
 
@@ -457,8 +457,8 @@ public class GTMachineUtils {
         var definition = registrate
                 .machine(material.getName() + "_drum", MachineDefinition::new,
                         MetaMachineBlock::new,
-                        (holder, prop) -> DrumMachineItem.create(holder, prop, material),
                         info -> new DrumMachine(info, material, capacity))
+                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material)).build()
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
@@ -473,7 +473,7 @@ public class GTMachineUtils {
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .item().color(() -> () -> (s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .register();
         DRUM_CAPACITY.put(definition, capacity);
         return definition;
@@ -486,9 +486,10 @@ public class GTMachineUtils {
             var register = registrate.machine(
                     GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
                     MachineDefinition::new,
-                    MetaMachineBlock::new, QuantumTankMachineItem::new,
+                    MetaMachineBlock::new,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount))
                     .langValue(toEnglishName(name) + " " + LVT[tier])
+                    .item(QuantumTankMachineItem::new).build()
                     .blockProp(Block.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
