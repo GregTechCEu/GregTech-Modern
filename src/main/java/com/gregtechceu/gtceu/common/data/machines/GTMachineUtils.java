@@ -4,7 +4,6 @@ import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -68,6 +67,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
@@ -455,9 +455,7 @@ public class GTMachineUtils {
                                                  String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate
-                .machine(material.getName() + "_drum", MachineDefinition::new,
-                        MetaMachineBlock::new,
-                        info -> new DrumMachine(info, material, capacity))
+                .machine(material.getName() + "_drum", info -> new DrumMachine(info, material, capacity))
                 .item((holder, prop) -> DrumMachineItem.create(holder, prop, material)).build()
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
@@ -485,12 +483,10 @@ public class GTMachineUtils {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = registrate.machine(
                     GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
-                    MachineDefinition::new,
-                    MetaMachineBlock::new,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount))
                     .langValue(toEnglishName(name) + " " + LVT[tier])
                     .item(QuantumTankMachineItem::new).build()
-                    .blockProp(Block.Properties::dynamicShape)
+                    .block().properties(Block.Properties::dynamicShape).build()
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
@@ -513,7 +509,7 @@ public class GTMachineUtils {
                 (holder, tier) -> new QuantumChestMachine(holder, tier,
                         tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
                 (tier, builder) -> builder.langValue(toEnglishName(name) + " " + LVT[tier])
-                        .blockProp(Block.Properties::dynamicShape)
+                        .block().properties(BlockBehaviour.Properties::dynamicShape).build()
                         .rotationState(RotationState.ALL)
                         .allowExtendedFacing(true)
                         .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_chest"))
