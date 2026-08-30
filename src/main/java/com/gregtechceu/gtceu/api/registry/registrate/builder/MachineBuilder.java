@@ -33,7 +33,7 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import lombok.Setter;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -54,7 +54,6 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 
 import brachy.modularui.theme.ThemeAPI;
-import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
@@ -64,26 +63,22 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-@RemapPrefixForJS("kjs$")
+@SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine,
         SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>> {
@@ -94,9 +89,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected MachineInstanceFactory<MACHINE> instanceFactory;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    public Function<ResourceLocation, DEFINITION> definitionFactory;
 
-    @Setter
-    protected Function<ResourceLocation, DEFINITION> definition;
     @Nullable
     @Getter
     private MachineBuilder.ModelInitializer model = null;
@@ -154,7 +149,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private String langValue = null;
 
     public MachineBuilder(GTRegistrate registrate, String name,
-                          Function<ResourceLocation, DEFINITION> definition,
+                          Function<ResourceLocation, DEFINITION> definitionFactory,
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
@@ -163,7 +158,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         this.blockFactory = blockFactory;
         this.itemFactory = itemFactory;
         this.instanceFactory = instanceFactory;
-        this.definition = definition;
+        this.definitionFactory = definitionFactory;
     }
 
     @SuppressWarnings("unchecked")
@@ -330,19 +325,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @Tolerate
     public SELF recipeTypes(GTRecipeType... types) {
+        Validate.noNullElements(types, "Cannot add null recipe type to machine.");
+
         List<GTRecipeType> typeList = new ArrayList<>();
         Collections.addAll(typeList, this.recipeTypes);
 
-        for (int i = 0; i < types.length; i++) {
-            GTRecipeType type = types[i];
-            if (type != null) {
-                initRecipeMachineModelProperties(type);
-                typeList.add(type);
-            } else {
-                GTCEu.LOGGER.error(
-                        "Tried to set null recipe type on machine {} (index {}). Did you create the recipe type before this machine?",
-                        this.registrate.makeResourceLocation(this.name), i);
-            }
+        for (GTRecipeType type : types) {
+            initRecipeMachineModelProperties(type);
+            typeList.add(type);
         }
         this.recipeTypes = typeList.toArray(GTRecipeType[]::new);
         return getThis();
@@ -546,22 +536,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    // KJS helpers for model property defaults
-    // These don't need to be copied to the multiblock builder because KJS doesn't care about the return type downgrade
-
-    public SELF kjs$modelPropertyBool(Property<Boolean> property, boolean defaultValue) {
-        return modelProperty(property, defaultValue);
-    }
-
-    public SELF kjs$modelPropertyInt(Property<Integer> property, int defaultValue) {
-        return modelProperty(property, defaultValue);
-    }
-
-    public <T extends Enum<T> & Comparable<T>> SELF kjs$modelPropertyEnum(Property<T> property,
-                                                                          T defaultValue) {
-        return modelProperty(property, defaultValue);
-    }
-
     @Tolerate
     public SELF modelProperties(Property<?>... properties) {
         return this.modelProperties(List.of(properties));
@@ -640,7 +614,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     protected DEFINITION createDefinition() {
-        return definition.apply(registrate.makeResourceLocation(name));
+        return definitionFactory.apply(registrate.makeResourceLocation(name));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -674,7 +648,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         if (model == null && blockModel == null) {
             simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
         }
-        var blockBuilder = BlockBuilderWrapper.makeBlockBuilder(getThis(), definition);
+        var blockBuilder = makeBlockBuilder(definition);
         if (this.langValue != null) {
             blockBuilder.lang(langValue);
             definition.setLangValue(langValue);
@@ -682,9 +656,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         if (this.blockBuilder != null) {
             this.blockBuilder.accept(blockBuilder);
         }
-        var block = blockBuilder.register();
+        BlockEntry<? extends MetaMachineBlock> block = blockBuilder.register();
 
-        var itemBuilder = ItemBuilderWrapper.makeItemBuilder(getThis(), block);
+        ItemBuilder<MetaMachineItem, GTRegistrate> itemBuilder = makeItemBuilder(block);
         if (this.itemBuilder != null) {
             this.itemBuilder.accept(itemBuilder);
         }
@@ -705,8 +679,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         }
         definition.setThemeId(themeId);
         definition.setRecipeTypes(recipeTypes);
-        definition.setBlockSupplier(block);
-        definition.setItemSupplier(item);
+        definition.setBlockHolder(block);
+        definition.setItemHolder(item);
         definition.setTier(tier);
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
@@ -738,6 +712,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
         GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
+
         return definition;
     }
 
@@ -779,40 +754,33 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     // spotless:off
-    protected static class BlockBuilderWrapper {
 
-        public static <DEFINITION extends MachineDefinition> BlockBuilder<Block, ? extends AbstractRegistrate<?>> makeBlockBuilder(MachineBuilder<DEFINITION, ?, ?> builder,
-                                                                                                                                   DEFINITION definition) {
-            return builder.registrate.block(properties -> makeBlock(builder, definition, properties))
-                    .color(() -> () -> MetaMachineBlock::colorTinted)
-                    .initialProperties(() -> Blocks.DISPENSER)
-                    .properties(BlockBehaviour.Properties::noLootTable)
-                    .addLayer(() -> RenderType::cutout)
-                    .exBlockstate(builder.blockModel != null ? builder.blockModel : createMachineModel(builder.model))
-                    .properties(builder.blockProp)
-                    .onRegister(b -> Arrays.stream(builder.abilities).forEach(a -> a.register(builder.tier, b)));
-        }
-
-        private static <DEFINITION extends MachineDefinition> Block makeBlock(MachineBuilder<DEFINITION, ?, ?> builder, DEFINITION definition,
-                                                                              BlockBehaviour.Properties properties) {
-            MachineDefinition.setBuilt(definition);
-            var b = builder.blockFactory.apply(properties, definition);
-            MachineDefinition.clearBuilt();
-            return b;
-        }
+    private BlockBuilder<? extends MetaMachineBlock, GTRegistrate> makeBlockBuilder(DEFINITION definition) {
+        return this.registrate.block(properties -> makeBlock(definition, properties))
+                .color(() -> () -> MetaMachineBlock::colorTinted)
+                .initialProperties(() -> Blocks.DISPENSER)
+                .properties(BlockBehaviour.Properties::noLootTable)
+                .addLayer(() -> RenderType::cutout)
+                .exBlockstate(this.blockModel != null ? this.blockModel : createMachineModel(this.model))
+                .properties(this.blockProp)
+                .onRegister(b -> Arrays.stream(this.abilities).forEach(a -> a.register(this.tier, b)));
     }
 
-    protected static class ItemBuilderWrapper {
+    private MetaMachineBlock makeBlock(DEFINITION definition, BlockBehaviour.Properties properties) {
+        MachineDefinition.setBuilt(definition);
+        var b = this.blockFactory.apply(properties, definition);
+        MachineDefinition.clearBuilt();
+        return b;
+    }
 
-        public static <DEFINITION extends MachineDefinition> ItemBuilder<MetaMachineItem, ? extends AbstractRegistrate<?>> makeItemBuilder(MachineBuilder<DEFINITION, ?, ?> builder,
-                                                                                                                                           BlockEntry<Block> block) {
-            return builder.registrate
-                    .item(properties -> builder.itemFactory.apply((MetaMachineBlock) block.get(), properties))
+    private ItemBuilder<MetaMachineItem, GTRegistrate> makeItemBuilder(BlockEntry<? extends MetaMachineBlock> block) {
+            return this.registrate
+                    .item(properties -> this.itemFactory.apply(block.get(), properties))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                     // copied from BlockBuilder#item
                     .model((ctx, prov) -> {
                         prov.withExistingParent(ctx.getName(),
-                                ResourceLocation.fromNamespaceAndPath(builder.registrate.getModid(),
+                                ResourceLocation.fromNamespaceAndPath(this.registrate.getModid(),
                                         "block/machine/" + ctx.getName()));
                     })
                     .clientExtension(() -> () -> new IClientItemExtensions() {
@@ -822,9 +790,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                             return ItemWithBERModelRenderer.INSTANCE;
                         }
                     })
-                    .color(() -> () -> builder.itemColor::apply)
-                    .properties(builder.itemProp);
-        }
+                    .color(() -> () -> this.itemColor::apply)
+                    .properties(this.itemProp);
     }
     // spotless:on
 
