@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.Setter;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -94,6 +95,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
 
     private @Nullable ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> itemBuilder;
+
+    private @Nullable BlockEntityEntry<MACHINE> blockEntityEntry;
 
     @Nullable
     @Getter
@@ -255,7 +258,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * Gets the {@link MetaMachineItem} builder for this machine so that further customization can be done.<br>
      * If the {@link ItemBuilder} has not been created yet, then the default one is created.
      *
-     * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
+     * @return The {@link ItemBuilder} for the {@link MetaMachineItem}
      */
     public ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> item() {
         if (itemBuilder != null) return itemBuilder;
@@ -699,59 +702,25 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.registerDefaultState(defaultState);
     }
 
-    public DEFINITION createEntry() {
+    protected DEFINITION createEntry() {
         DEFINITION definition = createDefinition();
-
-
-        return definition;
-    }
-
-    /**
-     * Finalise the builder for registration (does not actually register the machine, registration is performed during the register event in {@link #createEntry()}
-     */
-    @HideFromJS
-    public DEFINITION register() {
-        ModifyMachineEvent event = new ModifyMachineEvent(this);
-        ModLoader.postEvent(event);
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSCallWrapper.fireKJSEvent(event);
-        }
-        this.registrate.object(name);
-        var definition = createDefinition();
-
         definition.setRotationState(rotationState);
         setupStateDefinition(definition);
-        if (model == null && blockModel == null) {
-            simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
-        }
         if (this.langValue != null) {
-            block().lang(langValue);
             definition.setLangValue(langValue);
         }
 
-        blockEntry = block().register();
-
-        var blockEntityBuilder = registrate
-                .<MACHINE>blockEntity(
-                        (type, pos, state) -> instanceFactory
-                                .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
-                .onRegister(onBlockEntityRegister)
-                .validBlock(blockEntry);
-        if (hasBER) {
-            blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
-        }
-        var blockEntity = blockEntityBuilder.register();
         if (this.ui != null) {
             definition.setUI(ui);
         }
         definition.setThemeId(themeId);
         definition.setRecipeTypes(recipeTypes);
 
-        definition.setBlockHolder(blockEntry);
+        definition.setBlockHolder(Objects.requireNonNull(blockEntry));
         definition.setItemHolder(item().register());
         definition.setTier(tier);
         definition.setRecipeOutputLimits(recipeOutputLimits);
-        definition.setBlockEntityTypeSupplier(blockEntity::get);
+        definition.setBlockEntityTypeSupplier(Objects.requireNonNull(blockEntityEntry)::get);
         definition.setTooltipBuilder((itemStack, components) -> {
             components.addAll(tooltips);
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
@@ -779,8 +748,44 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setDefaultPaintingColor(paintingColor);
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
-        GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
 
+        return definition;
+    }
+
+    /**
+     * Finalise the builder for registration (does not actually register the machine, registration is performed during the register event in {@link #createEntry()}
+     */
+    @HideFromJS
+    public DEFINITION register() {
+        ModifyMachineEvent event = new ModifyMachineEvent(this);
+        ModLoader.postEvent(event);
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            KJSCallWrapper.fireKJSEvent(event);
+        }
+
+        if (model == null && blockModel == null) {
+            simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
+        }
+        if (this.langValue != null) {
+            block().lang(langValue);
+        }
+
+        blockEntry = block().register();
+
+        var blockEntityBuilder = registrate
+                .<MACHINE, MachineBuilder<DEFINITION, MACHINE, SELF>>blockEntity(this, name,
+                        (type, pos, state) -> instanceFactory
+                                .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
+                .onRegister(onBlockEntityRegister)
+                .validBlock(blockEntry);
+        if (hasBER) {
+            blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
+        }
+        blockEntityEntry = blockEntityBuilder.register();
+
+        // TODO remove once this is a registrate builder
+        var definition = createEntry();
+        GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
         return definition;
     }
 
