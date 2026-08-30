@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -30,6 +31,7 @@ import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,10 +54,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Setter
     @Nullable
     private String langValue;
-    @Setter
-    private Supplier<? extends Block> blockSupplier;
-    @Setter
-    private Supplier<? extends MetaMachineItem> itemSupplier;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
     @Setter
     private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
     @Getter
@@ -144,12 +146,12 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         this.defaultRenderState = state;
     }
 
-    public Block getBlock() {
-        return blockSupplier.get();
+    public MetaMachineBlock getBlock() {
+        return blockHolder.get();
     }
 
     public MetaMachineItem getItem() {
-        return itemSupplier.get();
+        return itemHolder.get();
     }
 
     public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
@@ -171,7 +173,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     @Override
     public MetaMachineBlock get() {
-        return (MetaMachineBlock) blockSupplier.get();
+        return blockHolder.value();
     }
 
     public String getName() {

@@ -36,10 +36,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
+public class MultiblockMachineBuilder<
         MACHINE extends MultiblockControllerMachine,
-        SELF extends MultiblockMachineBuilder<DEFINITION, MACHINE, SELF>>
-                                     extends MachineBuilder<DEFINITION, MACHINE, SELF> {
+        SELF extends MultiblockMachineBuilder<MACHINE, SELF>>
+                                     extends MachineBuilder<MultiblockMachineDefinition, MACHINE, SELF> {
 
     private boolean generator;
     private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
@@ -54,10 +54,10 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
                                                                                                                   .emptyList();
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
-                                    BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
+                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                     MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
+        super(registrate, name, (MultiblockMachineDefinition::new),
                 blockFactory,
                 itemFactory, blockEntityFactory);
         patterns = new Object2ReferenceOpenHashMap<>();
@@ -121,7 +121,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
 
     @Override
     @HideFromJS
-    public DEFINITION register() {
+    public MultiblockMachineDefinition register() {
         var definition = super.register();
         definition.setGenerator(generator);
         if (patterns.isEmpty()) {
