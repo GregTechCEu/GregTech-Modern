@@ -11,11 +11,7 @@
         {
             "name": "gtceu:filter_bloom_color",
             "intarget": "final",
-            "outtarget": "filter",
-            "auxtargets": [
-                { "id": "final:depth",          "name": "DiffuseDepthSampler" },
-                { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
-            ]
+            "outtarget": "filter"
         },
         {
             "name": "blit",
