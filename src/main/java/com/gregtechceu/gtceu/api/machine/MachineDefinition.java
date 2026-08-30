@@ -41,6 +41,8 @@ import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -58,10 +60,13 @@ public class MachineDefinition {
     // This is only stored here for KJS use.
     @Getter
     @Nullable
-    private final String langValue;
-    private final DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
-    private final DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
-    private final Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
+    private String langValue;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
+    @Setter
+    private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
     @Getter
     private final GTRecipeType[] recipeTypes;
     @Getter
