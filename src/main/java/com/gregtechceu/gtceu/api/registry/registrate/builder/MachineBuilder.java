@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
@@ -33,7 +34,6 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.Setter;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -53,9 +53,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import brachy.modularui.theme.ThemeAPI;
+import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
@@ -64,7 +67,6 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
@@ -75,6 +77,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.*;
@@ -84,10 +87,8 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 @SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine,
-        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>> {
-
-    protected final GTRegistrate registrate;
-    protected final String name;
+        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>>
+                           extends AbstractBuilder<MachineDefinition, DEFINITION, GTRegistrate, SELF> {
 
     protected MachineInstanceFactory<MACHINE> instanceFactory;
     @Setter(onMethod_ = @ApiStatus.Internal)
@@ -151,14 +152,19 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private String langValue = null;
 
     public MachineBuilder(GTRegistrate registrate, String name,
+                          BuilderCallback callback,
                           Function<ResourceLocation, DEFINITION> definitionFactory,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
-        this.registrate = registrate;
-        this.name = name;
+        super(registrate, registrate, name, callback, GTRegistries.Keys.MACHINE);
         this.instanceFactory = instanceFactory;
         this.definitionFactory = definitionFactory;
 
         this.defaultLang();
+    }
+
+    @Override
+    public GTRegistrate getOwner() {
+        return (GTRegistrate) super.getOwner();
     }
 
     @SuppressWarnings("unchecked")
@@ -221,13 +227,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return block(MetaMachineBlock::new);
     }
 
-    @SuppressWarnings("unchecked")
-    public NonNullSupplier<DEFINITION> asSupplier() {
-        // TODO replace with better method once this is converted to an actual registrate builder
-        return () -> (DEFINITION) Objects
-                .requireNonNull(GTRegistries.MACHINES.get(registrate.makeResourceLocation(name)));
-    }
-
     /**
      * Create a {@link MetaMachineBlock} for this machine, which is created by the given factory, and return the builder
      * for it so that further customization can be done.<br>
@@ -240,9 +239,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      */
     public <B extends MetaMachineBlock> BlockBuilder<B, MachineBuilder<DEFINITION, MACHINE, SELF>> block(BiFunction<BlockBehaviour.Properties, DEFINITION, B> factory) {
         if (blockBuilder != null) throw new IllegalStateException(
-                "Block builder for machine %s has already been initialized.".formatted(name));
+                "Block builder for machine %s has already been initialized.".formatted(getName()));
 
-        var newBlockBuilder = this.registrate.block(this, name, properties -> {
+        var newBlockBuilder = this.getOwner().block(this, getName(), properties -> {
             MachineDefinition.setBuilt(this.asSupplier().get());
             var b = factory.apply(properties, this.asSupplier().get());
             MachineDefinition.clearBuilt();
@@ -281,19 +280,17 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      */
     public <I extends MetaMachineItem> ItemBuilder<I, MachineBuilder<DEFINITION, MACHINE, SELF>> item(BiFunction<MetaMachineBlock, Item.Properties, I> factory) {
         if (itemBuilder != null) throw new IllegalStateException(
-                "Item builder for machine %s has already been initialized.".formatted(name));
+                "Item builder for machine %s has already been initialized.".formatted(getName()));
 
-        var newItemBuilder = this.registrate
-                .item(this, name,
+        var newItemBuilder = getOwner()
+                .item(this, getName(),
                         properties -> factory.apply(
                                 Objects.requireNonNull(blockEntry, "Item factory called before block resolved.").get(),
                                 properties))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 // copied from BlockBuilder#item
-                .model((ctx, prov) -> {
-                    prov.withExistingParent(ctx.getName(),
-                            registrate.makeResourceLocation("block/machine/" + ctx.getName()));
-                })
+                .model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+                        getOwner().makeResourceLocation("block/machine/" + ctx.getName())))
                 .color(() -> () -> ((itemStack, tintIndex) -> tintIndex == 2 ?
                         GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1))
                 .clientExtension(() -> () -> new IClientItemExtensions() {
@@ -379,7 +376,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF defaultLang() {
-        return lang(RegistrateLangProvider.toEnglishName(name));
+        return lang(RegistrateLangProvider.toEnglishName(getName()));
     }
 
     public SELF lang(String name) {
@@ -396,7 +393,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         if (type == null) {
             GTCEu.LOGGER.error(
                     "Tried to set null recipe type on machine {}. Did you create the recipe type before this machine?",
-                    this.registrate.makeResourceLocation(this.name));
+                    getOwner().makeResourceLocation(getName()));
             return getThis();
         }
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
@@ -438,7 +435,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF defaultModel() {
-        return simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
+        return simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
     }
 
     public SELF tieredHullModel(ResourceLocation model) {
@@ -448,7 +445,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public SELF overlayTieredHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlayTieredHullModel(
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name));
+                getOwner().makeResourceLocation("block/machine/part/" + name));
     }
 
     public SELF overlayTieredHullModel(ResourceLocation overlayModel) {
@@ -463,12 +460,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                             @Nullable String pipeOverlay,
                                             @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
-                "block/overlay/machine/" + overlay);
+        ResourceLocation overlayTex = getOwner().makeResourceLocation("block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
         return colorOverlayTieredHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -487,7 +483,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public SELF overlaySteamHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlaySteamHullModel(
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name));
+                getOwner().makeResourceLocation("block/machine/part/" + name));
     }
 
     public SELF overlaySteamHullModel(ResourceLocation overlayModel) {
@@ -503,13 +499,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                            @Nullable String pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
-                "block/overlay/machine/" + overlay);
+        ResourceLocation overlayTex = getOwner().makeResourceLocation("block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
-                        "block/overlay/machine/" + emissiveOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -517,12 +511,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                            @Nullable ResourceLocation pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
+        ResourceLocation overlayTex = getOwner().makeResourceLocation(
                 "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
+                getOwner().makeResourceLocation(("block/overlay/machine/" + pipeOverlay));
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
+                getOwner().makeResourceLocation(("block/overlay/machine/" + emissiveOverlay));
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -577,6 +571,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return tooltips(Arrays.asList(components));
     }
 
+    @SuppressWarnings("NullableProblems")
     public SELF tooltips(List<? extends @Nullable Component> components) {
         tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
         return getThis();
@@ -695,7 +690,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     protected DEFINITION createDefinition() {
-        return definitionFactory.apply(registrate.makeResourceLocation(name));
+        return definitionFactory.apply(getOwner().makeResourceLocation(getName()));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -714,7 +709,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.registerDefaultState(defaultState);
     }
 
-    protected DEFINITION createEntry() {
+    @SuppressWarnings("NullableProblems")
+    protected @NonNull DEFINITION createEntry() {
         DEFINITION definition = createDefinition();
         definition.setRotationState(rotationState);
         setupStateDefinition(definition);
@@ -769,7 +765,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * the register event in {@link #createEntry()}
      */
     @HideFromJS
-    public DEFINITION register() {
+    public MachineEntry<DEFINITION> register() {
         ModifyMachineEvent event = new ModifyMachineEvent(this);
         ModLoader.postEvent(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
@@ -777,7 +773,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         }
 
         if (model == null && blockModel == null) {
-            simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
+            simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
         }
         if (this.langValue != null) {
             block().lang(langValue);
@@ -785,8 +781,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
         blockEntry = block().register();
 
-        var blockEntityBuilder = registrate
-                .<MACHINE, MachineBuilder<DEFINITION, MACHINE, SELF>>blockEntity(this, name,
+        var blockEntityBuilder = getOwner()
+                .<MACHINE, MachineBuilder<DEFINITION, MACHINE, SELF>>blockEntity(this, getName(),
                         (type, pos, state) -> instanceFactory
                                 .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
@@ -795,12 +791,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
         }
         blockEntityEntry = blockEntityBuilder.register();
+        return (MachineEntry<DEFINITION>) super.register();
+    }
 
-        // TODO remove once this is a registrate builder
-        var definition = createEntry();
-        GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
-
-        return definition;
+    @Override
+    protected MachineEntry<DEFINITION> createEntryWrapper(DeferredHolder<MachineDefinition, DEFINITION> delegate) {
+        return new MachineEntry<>(getOwner(), delegate);
     }
 
     @FunctionalInterface

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
@@ -284,9 +285,14 @@ public class TestUtils {
         return machine.getCoverContainer().getCoverAtSide(direction);
     }
 
+    public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineEntry<MachineDefinition> entry) {
+        helper.setBlock(pos, entry.getBlock());
+        return Objects.requireNonNull(helper.getBlockEntity(pos));
+    }
+
     public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
-        return ((MetaMachine) Objects.requireNonNull(helper.getBlockEntity(pos)));
+        return Objects.requireNonNull(helper.getBlockEntity(pos));
     }
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
