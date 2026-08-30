@@ -62,15 +62,13 @@ public interface ICoverableRenderer {
 
             if (renderType == RenderType.cutoutMipped() && thickness > 0 &&
                     cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
-                // All faces are slightly under a full block's size to never show the beginning of
-                // the second row of pixels of the block's texture and to combat Z-fighting.
                 AABB cube = switch (face) {
-                    case DOWN -> StaticFaceBakery.COVER_OVERLAY.setMaxY(thickness);
-                    case UP -> StaticFaceBakery.COVER_OVERLAY.setMinY(1.0 - thickness);
-                    case NORTH -> StaticFaceBakery.COVER_OVERLAY.setMaxZ(thickness);
-                    case SOUTH -> StaticFaceBakery.COVER_OVERLAY.setMinZ(1.0 - thickness);
-                    case WEST -> StaticFaceBakery.COVER_OVERLAY.setMaxX(thickness);
-                    case EAST -> StaticFaceBakery.COVER_OVERLAY.setMinX(1.0 - thickness);
+                    case DOWN -> StaticFaceBakery.BLOCK.setMaxY(thickness);
+                    case UP -> StaticFaceBakery.BLOCK.setMinY(1.0 - thickness);
+                    case NORTH -> StaticFaceBakery.BLOCK.setMaxZ(thickness);
+                    case SOUTH -> StaticFaceBakery.BLOCK.setMinZ(1.0 - thickness);
+                    case WEST -> StaticFaceBakery.BLOCK.setMaxX(thickness);
+                    case EAST -> StaticFaceBakery.BLOCK.setMinX(1.0 - thickness);
                 };
 
                 if (side == null) { // render back
