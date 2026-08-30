@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -159,6 +160,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
         this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, -10,
                 this.multiblockSchemaInfo.getMapSchema().getCenter());
+        PredicateContext context = new PredicateContext(null);
         SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
                 .listenGuiAction(setBlockOnClick)
                 .tooltipDynamic(text -> {
@@ -170,6 +172,16 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                 this.getMultiblockSchemaInfo().getMapSchema().getLevel(), hit.getBlockPos(),
                                 this.getContext().getMC().player);
                         text.addFromItem(pickedItem);
+                        IBlockPattern value = patterns.get(0).getValue();
+                        context.updateLevel(this.multiblockSchemaInfo.getMapSchema().getLevel());
+                        context.updatePos(hit.getBlockPos());
+                        MultiPredicate root = Objects.requireNonNull(this.multiblockSchemaInfo.getStructureHelper())
+                                .getPredicateFromPos(value, hit.getBlockPos(), frontFacing, upFacing, isFlipped);
+                        root.resetLogic();
+                        BasePredicate predicate = root.getPredicateAtPos(context);
+                        if (predicate != null) {
+                            predicate.getRecipeViewerTooltips(root).forEach(t -> text.add(t).newLine());
+                        }
                     }
                 }).tooltipAutoUpdate(true)
                 .size(width, height);
