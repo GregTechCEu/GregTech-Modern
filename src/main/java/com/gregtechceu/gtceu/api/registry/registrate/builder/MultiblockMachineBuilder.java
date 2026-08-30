@@ -114,9 +114,8 @@ public class MultiblockMachineBuilder<
     }
 
     @Override
-    @HideFromJS
-    public MultiblockMachineDefinition register() {
-        var definition = super.register();
+    protected MultiblockMachineDefinition createEntry() {
+        var definition = super.createEntry();
         definition.setGenerator(generator);
         if (patterns.isEmpty()) {
             throw new IllegalStateException("Missing default structure pattern for " + name);
