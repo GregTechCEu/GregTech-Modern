@@ -135,18 +135,8 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
-        internal.itemProp(itemProp);
-        return this;
-    }
-
     public MultiblockMachineBuilderWrapper blockBuilder(@Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
         internal.blockBuilder(blockBuilder);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper itemBuilder(@Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
-        internal.itemBuilder(itemBuilder);
         return this;
     }
 
@@ -172,11 +162,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public MultiblockMachineBuilderWrapper addOutputLimit(RecipeCapability<?> capability, int limit) {
         internal.addOutputLimit(capability, limit);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
-        internal.itemColor(itemColor);
         return this;
     }
 
@@ -396,7 +381,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
                 MetaMachineBlock::new,
-                MetaMachineItem::new,
                 WorkableElectricMultiblockMachine::new);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
@@ -406,7 +390,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
                 MetaMachineBlock::new,
-                MetaMachineItem::new,
                 machine::create);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
