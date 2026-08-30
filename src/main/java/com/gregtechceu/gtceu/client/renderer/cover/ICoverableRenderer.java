@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -45,6 +46,10 @@ public interface ICoverableRenderer {
         Map<Direction, ModelData> coverModelData = modelData.get(GTModelProperties.COVER_MODEL_DATA);
         double thickness = coverable.getCoverPlateThickness();
 
+        if (thickness <= 0) {
+            removeOpaqueFullBlockFacadeBacking(quads, coverable, pos, level, rand, coverModelData);
+        }
+
         byte coverMask = 0;
         for (Direction face : GTUtil.DIRECTIONS) {
             if (coverable.hasCover(face)) {
@@ -76,8 +81,40 @@ public interface ICoverableRenderer {
             ModelData coverData = coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) :
                     ModelData.EMPTY;
             ChunkRenderTypeSet coverRenderTypes = coverRenderer.getRenderTypes(cover, pos, level, rand, coverData);
+            if (thickness <= 0 && cover instanceof FacadeCover facade &&
+                    FacadeCoverRenderer.rendersDynamically(facade, coverRenderTypes)) {
+                continue;
+            }
             if (renderType == null || coverRenderTypes.contains(renderType)) {
                 coverRenderer.renderCover(quads, side, rand, cover, pos, level, coverData, renderType);
+            }
+        }
+    }
+
+    private static void removeOpaqueFullBlockFacadeBacking(List<BakedQuad> quads, ICoverable coverable, BlockPos pos,
+                                                           BlockAndTintGetter level, RandomSource rand,
+                                                           @Nullable Map<Direction, ModelData> coverModelData) {
+        EnumSet<Direction> opaqueFacadeFaces = EnumSet.noneOf(Direction.class);
+        for (Direction face : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = coverable.getCoverAtSide(face);
+            if (!(cover instanceof FacadeCover facade)) continue;
+
+            ModelData coverData = coverModelData != null ?
+                    coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY;
+            ChunkRenderTypeSet facadeRenderTypes = cover.getCoverRenderer().get()
+                    .getRenderTypes(cover, pos, level, rand, coverData);
+            if (FacadeCoverRenderer.occludesFullBlockFace(facade, facadeRenderTypes)) {
+                opaqueFacadeFaces.add(face);
+            }
+        }
+
+        if (opaqueFacadeFaces.isEmpty()) return;
+
+        ListIterator<BakedQuad> iterator = quads.listIterator();
+        while (iterator.hasNext()) {
+            BakedQuad quad = iterator.next();
+            if (opaqueFacadeFaces.contains(quad.getDirection())) {
+                iterator.remove();
             }
         }
     }
@@ -88,6 +125,10 @@ public interface ICoverableRenderer {
         ICoverable coverable = machine.getCoverContainer();
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(face);
+            if (cover != null && coverable.getCoverPlateThickness() <= 0) {
+                FacadeCoverRenderer.INSTANCE.renderDynamicFullBlockFacade(cover, machine.getBlockPos(),
+                        machine.getLevel(), poseStack, buffer, packedOverlay);
+            }
             IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRenderer().get() : null;
             if (renderer != null) {
                 poseStack.pushPose();
@@ -116,6 +157,10 @@ public interface ICoverableRenderer {
             // noinspection DataFlowIssue
             ChunkRenderTypeSet renderTypes = cover.getCoverRenderer().get()
                     .getRenderTypes(cover, pos, level, rand, coverModelData.get(side));
+            if (coverable.getCoverPlateThickness() <= 0 && cover instanceof FacadeCover facade &&
+                    FacadeCoverRenderer.rendersDynamically(facade, renderTypes)) {
+                continue;
+            }
             renderTypeSets.add(renderTypes);
         }
 

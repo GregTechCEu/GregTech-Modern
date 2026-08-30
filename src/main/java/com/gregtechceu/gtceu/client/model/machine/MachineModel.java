@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.ctm.CTMMeshBuilder;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
@@ -495,6 +496,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public boolean shouldRender(MetaMachine machine, Vec3 cameraPos) {
         if (machine.getDefinition() != getDefinition()) return false;
         if (machine.getCoverContainer().hasDynamicCovers()) return true;
+        if (FacadeCoverRenderer.hasDynamicFullBlockFacade(machine)) return true;
         if (dynamicRenders.isEmpty()) return false;
 
         for (DynamicRender model : dynamicRenders) {
