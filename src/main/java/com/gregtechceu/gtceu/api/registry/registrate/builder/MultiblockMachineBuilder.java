@@ -52,7 +52,7 @@ public class MultiblockMachineBuilder<
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        super(registrate, name, (MultiblockMachineDefinition::new), blockEntityFactory);
+        super(registrate, name, MultiblockMachineDefinition::new, blockEntityFactory);
         patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);

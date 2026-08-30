@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
+import lombok.Setter;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -67,7 +68,6 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
@@ -798,6 +798,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         // TODO remove once this is a registrate builder
         var definition = createEntry();
         GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
+
         return definition;
     }
 
