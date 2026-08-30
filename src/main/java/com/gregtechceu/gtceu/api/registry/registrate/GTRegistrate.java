@@ -156,7 +156,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     /// Machine Builders
 
-    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name, MachineInstanceFactory<MACHINE> blockEntityFactory) {
+    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
+                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MachineBuilder<>(this, name, MachineDefinition::new, blockEntityFactory);
     }
 
