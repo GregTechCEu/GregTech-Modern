@@ -27,7 +27,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     private boolean generator;
     @Getter
-    private Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
+    private final Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
     @Getter
     @Setter
     private boolean allowFlip;

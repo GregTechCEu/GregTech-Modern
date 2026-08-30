@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.SoundEntryBuilder;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
-
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -165,14 +165,18 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     /// Machine Builders
 
-    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
-                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new, blockEntityFactory);
+    @SuppressWarnings("unchecked")
+    public <MACHINE extends MetaMachine, S extends MachineBuilder<MachineDefinition, MACHINE, S>> S machine(String name,
+                                                                                                            MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return entry(name,
+                callback -> (S) new MachineBuilder<>(this, name, callback, MachineDefinition::new, blockEntityFactory));
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE, ?> multiblock(String name,
-                                                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, blockEntityFactory);
+    @SuppressWarnings("unchecked")
+    public <MACHINE extends MultiblockControllerMachine,
+            S extends MultiblockMachineBuilder<MACHINE, S>> S multiblock(String name,
+                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return entry(name, callback -> (S) new MultiblockMachineBuilder<>(this, name, callback, blockEntityFactory));
     }
 
     /// Cover Registration
@@ -231,17 +235,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     /// Medical Conditions
 
     public RegistryEntry<MedicalCondition, MedicalCondition> medicalCondition(String name, int color,
-                                                                              int maxProgression, MedicalCondition.IdleProgressionType progressionType,
-                                                                              float progressionRate, boolean canBePermanent, Consumer<GTRecipeBuilder> recipeModifier,
+                                                                              int maxProgression,
+                                                                              MedicalCondition.IdleProgressionType progressionType,
+                                                                              float progressionRate,
+                                                                              boolean canBePermanent,
+                                                                              Consumer<GTRecipeBuilder> recipeModifier,
                                                                               Symptom.ConfiguredSymptom... symptoms) {
-        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType, progressionRate, canBePermanent, recipeModifier, symptoms));
+        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name),
+                color, maxProgression, progressionType, progressionRate, canBePermanent, recipeModifier, symptoms));
     }
 
     public RegistryEntry<MedicalCondition, MedicalCondition> medicalCondition(String name, int color,
-                                                                              int maxProgression, MedicalCondition.IdleProgressionType progressionType,
-                                                                              float progressionRate, boolean canBePermanent,
+                                                                              int maxProgression,
+                                                                              MedicalCondition.IdleProgressionType progressionType,
+                                                                              float progressionRate,
+                                                                              boolean canBePermanent,
                                                                               Symptom.ConfiguredSymptom... symptoms) {
-        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms));
+        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name),
+                color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms));
     }
 
     /// Creative Mode Tabs

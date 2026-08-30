@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
-import dev.latvian.mods.rhino.util.HideFromJS;
+import com.tterrag.registrate.builders.BuilderCallback;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -52,8 +53,9 @@ public class MultiblockMachineBuilder<
                                                                                                                   .emptyList();
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
+                                    BuilderCallback callback,
                                     MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        super(registrate, name, (MultiblockMachineDefinition::new), blockEntityFactory);
+        super(registrate, name, callback, MultiblockMachineDefinition::new, blockEntityFactory);
         patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);
@@ -118,7 +120,7 @@ public class MultiblockMachineBuilder<
         var definition = super.createEntry();
         definition.setGenerator(generator);
         if (patterns.isEmpty()) {
-            throw new IllegalStateException("Missing default structure pattern for " + name);
+            throw new IllegalStateException("Missing default structure pattern for " + getName());
         }
         for (Map.Entry<String, Function<MultiblockMachineDefinition, IBlockPattern>> entry : patterns.entrySet()) {
             definition.setPattern(entry.getKey(), GTMemoizer.memoize(() -> entry.getValue().apply(definition)));
@@ -136,5 +138,10 @@ public class MultiblockMachineBuilder<
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
         return definition;
+    }
+
+    @Override
+    public MachineEntry<MultiblockMachineDefinition> register() {
+        return super.register();
     }
 }

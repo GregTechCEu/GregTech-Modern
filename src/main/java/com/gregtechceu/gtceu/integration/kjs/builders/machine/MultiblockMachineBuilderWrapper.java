@@ -356,21 +356,21 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         }
     }
 
-    public MultiblockMachineDefinition createObject() {
-        return internal.register();
+    public @Nullable MultiblockMachineDefinition createObject() {
+        internal.register();
+        return null;
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
-        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
+        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace()).multiblock(id.getPath(),
                 WorkableElectricMultiblockMachine::new);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
-                                                                 KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(), machine::create);
+                                                                 MachineInstanceFactory<? extends MultiblockControllerMachine> machine) {
+        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace()).multiblock(id.getPath(),
+                machine);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 }

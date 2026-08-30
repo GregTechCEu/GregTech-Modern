@@ -136,9 +136,9 @@ public class DualHatchPartMachine extends ItemBusPartMachine {
         MachineDefinition newDefinition = null;
 
         if (io == IO.IN) {
-            newDefinition = GTMachines.DUAL_EXPORT_HATCH[this.getTier()];
+            newDefinition = GTMachines.DUAL_EXPORT_HATCH[this.getTier()].value();
         } else if (io == IO.OUT) {
-            newDefinition = GTMachines.DUAL_IMPORT_HATCH[this.getTier()];
+            newDefinition = GTMachines.DUAL_IMPORT_HATCH[this.getTier()].value();
         }
         if (newDefinition == null) return false;
 

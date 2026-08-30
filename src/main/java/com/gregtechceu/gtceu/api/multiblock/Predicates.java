@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateBuilder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -144,6 +145,15 @@ public class Predicates {
         return BuiltInRegistries.BLOCK.getHolder(BuiltInRegistries.BLOCK.getResourceKey(block).orElseThrow())
                 .map(r -> r.key().location().toString())
                 .orElse("unknown block");
+    }
+
+    public static MultiPredicate machines(MachineEntry<MachineDefinition> definition) {
+        return machines(definition.value());
+    }
+
+    @SafeVarargs
+    public static MultiPredicate machines(MachineEntry<MachineDefinition>... definitions) {
+        return machines(Arrays.stream(definitions).map(Holder::value).toArray(MachineDefinition[]::new));
     }
 
     public static MultiPredicate machines(@Nullable MachineDefinition... definitions) {
