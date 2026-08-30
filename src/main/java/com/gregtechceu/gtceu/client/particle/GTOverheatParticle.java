@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.AABB;
@@ -16,7 +17,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 
@@ -267,10 +267,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         @Override
         @OnlyIn(Dist.CLIENT)
         public BufferBuilder preDraw() {
-            RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(
-                    GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                    GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderStateShard.TRANSLUCENT_TRANSPARENCY.setupRenderState();
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1, 1, 1, 1);
 
@@ -281,8 +278,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         @OnlyIn(Dist.CLIENT)
         public void postDraw(BufferBuilder buffer) {
             IRenderSetup.super.postDraw(buffer);
-            RenderSystem.disableBlend();
-            RenderSystem.defaultBlendFunc();
+            RenderStateShard.TRANSLUCENT_TRANSPARENCY.clearRenderState();
         }
     };
 

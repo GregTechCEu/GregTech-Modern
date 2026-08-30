@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.phys.AABB;
@@ -32,7 +32,7 @@ public class AABBHighlightRenderer {
 
     private final List<AABBHighlight> highlights = new ObjectArrayList<>();
 
-    public void tick(PoseStack stack, MultiBufferSource.BufferSource multiBuf, Camera camera) {
+    public void tick(PoseStack stack, MultiBufferSource.BufferSource bufferSource, Camera camera) {
         if (GameRenderer.getPositionColorShader() == null || !camera.isInitialized()) return;
         Vec3 offset = camera.getPosition().reverse();
 
@@ -44,13 +44,12 @@ public class AABBHighlightRenderer {
 
         stack.pushPose();
         stack.translate(offset.x, offset.y, offset.z);
-        VertexConsumer buffer = multiBuf.getBuffer(GTRenderTypes.blockHighlightQuads());
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.lines());
 
         long time = System.currentTimeMillis();
         highlights.forEach(h -> h.render(buffer, stack, time));
 
         stack.popPose();
-        multiBuf.endBatch();
 
         RenderSystem.enableCull();
         RenderSystem.enableDepthTest();
@@ -62,10 +61,11 @@ public class AABBHighlightRenderer {
         highlights.add(highlight);
     }
 
-    public record AABBHighlight(AABB aabb, int colorARGB, long startMillis, long durationMillis, long phaseMillis,
+    public record AABBHighlight(AABB aabb, int colorARGB,
+                                long startMillis, long durationMillis, long phaseMillis,
                                 double thickness) {
 
-        public void render(VertexConsumer buf, PoseStack pose, long currentTimeMillis) {
+        public void render(VertexConsumer buffer, PoseStack poseStack, long currentTimeMillis) {
             if (currentTimeMillis - startMillis >= durationMillis) {
                 this.remove();
                 return;
@@ -73,7 +73,11 @@ public class AABBHighlightRenderer {
             if (currentTimeMillis < startMillis) return;
             if ((currentTimeMillis - startMillis) / phaseMillis % 2 == 1) return;
 
-            RenderBufferHelper.renderAABBOutline(buf, pose, aabb(), thickness, colorARGB());
+            LevelRenderer.renderLineBox(poseStack, buffer, aabb,
+                    FastColor.ARGB32.red(colorARGB),
+                    FastColor.ARGB32.green(colorARGB),
+                    FastColor.ARGB32.blue(colorARGB),
+                    FastColor.ARGB32.alpha(colorARGB));
         }
 
         public void remove() {

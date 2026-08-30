@@ -298,6 +298,7 @@ public class FluidBuilder {
                         return IClientFluidTypeExtensions.of(state.getFluidState())
                                 .getTintColor(state.getFluidState(), level, pos);
                     })
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .register();
         } else {
             builder.noBlock();
