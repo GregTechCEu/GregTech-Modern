@@ -1,7 +1,6 @@
 {
     "targets": [
         "final",
-        "filter",
         "swap_a2",
         "swap_a4",
         "swap_1",
@@ -9,13 +8,8 @@
     ],
     "passes": [
         {
-            "name": "gtceu:filter_bloom_color",
-            "intarget": "final",
-            "outtarget": "filter"
-        },
-        {
             "name": "blit",
-            "intarget": "filter",
+            "intarget": "final",
             "outtarget": "swap_a2"
         },
         {
@@ -60,8 +54,14 @@
             "outtarget": "swap_1",
             "use_linear_filter": true,
             "auxtargets": [
-                { "id": "filter", "name": "DownTexture" }
+                { "id": "final", "name": "DownTexture" }
             ]
+        },
+        {
+            "__comment": "Copy the original buffer to a temporary one so we can output to the actual one in composite",
+            "name": "blit",
+            "intarget": "final",
+            "outtarget": "swap_2"
         },
         {
             "name": "gtceu:unity_composite",
@@ -69,7 +69,7 @@
             "outtarget": "final",
             "use_linear_filter": true,
             "auxtargets": [
-                { "id": "filter",         "name": "HighlightSampler" },
+                { "id": "swap_2",         "name": "HighlightSampler" },
                 { "id": "minecraft:main", "name": "MainSampler" }
             ]
         }
