@@ -1,24 +1,14 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
-import brachy.modularui.api.widget.IWidget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.core.mixins.mui.ModularUIEmiRecipeAccessor;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
@@ -26,16 +16,9 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
@@ -85,7 +68,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
         @Override
         public List<EmiIngredient> getInputs() {
-            var recipeUI = ((MultiblockPreviewWidget)((ModularUIEmiRecipeAccessor)this).getRecipeUI().get());
+            var recipeUI = ((MultiblockPreviewWidget) ((ModularUIEmiRecipeAccessor) this).getRecipeUI().get());
             if (recipeUI.getMultiblockSchemaInfo() == null) return Collections.emptyList();
             var blockCounts = recipeUI.getMultiblockSchemaInfo().getBlockCounts();
             List<EmiIngredient> inputs = new ArrayList<>();

@@ -3,12 +3,13 @@ package com.gregtechceu.gtceu.api.multiblock.util;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +17,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 
+import java.util.Comparator;
 import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
@@ -57,8 +60,9 @@ public class AutobuildHelper {
      * - if the candidate does not exist, add to blocksMissing(for later reporting)
      */
 
-    public static void autobuild(Player player, ItemStack item, MultiblockMachineDefinition definition,
-                                 MultiblockControllerMachine controller, Map<BlockPos, BlockInfo> blocksToPlace, AbstractStructureHelper structureHelper) {
+    public static void autobuild(ServerPlayer player, ItemStack item, MultiblockMachineDefinition definition,
+                                 MultiblockControllerMachine controller, Map<BlockPos, BlockInfo> blocksToPlace,
+                                 AbstractStructureHelper structureHelper) {
         Long2ObjectOpenHashMap<BlockState> alreadyValidPlaced = new Long2ObjectOpenHashMap<>();
         Long2ObjectOpenHashMap<BlockState> replaceableBlocks = new Long2ObjectOpenHashMap<>();
         Long2ObjectOpenHashMap<BlockState> canNotPlaceBlocks = new Long2ObjectOpenHashMap<>();
@@ -83,7 +87,8 @@ public class AutobuildHelper {
             BlockPos pos = entry.getKey().offset(controllerOffset);
             var blockState = level.getBlockState(pos);
 
-            var predicate = structureHelper.getPredicateFromPos(definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get(),
+            var predicate = structureHelper.getPredicateFromPos(
+                    definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get(),
                     entry.getKey(), controller.getFrontFacing(), controller.getUpwardsFacing(), controller.isFlipped());
 
             cxt.updatePos(pos);
@@ -103,10 +108,35 @@ public class AutobuildHelper {
             }
         }
 
-        for (var entry : replaceableBlocks.entrySet()) {
-            // inventory check
-
+        // Step 1. Making the "what we want" list
+        Map<Item, Integer> whatWeWant = new Object2IntArrayMap<>();
+        for (var entry : replaceableBlocks.long2ObjectEntrySet()) {
+            whatWeWant.merge(entry.getValue().getBlock().asItem(), 1, Integer::sum);
         }
 
+        // Step 2. Try to fetch
+        Map<Item, Integer> whatWeHave = new Object2IntArrayMap<>();
+        for (var entry : whatWeWant.entrySet()) {
+            Item desiredItem = entry.getKey();
+            int desiredAmount = entry.getValue();
+            var slotIndex = player.getInventory().findSlotMatchingItem(new ItemStack(desiredItem));
+            if (slotIndex == -1) continue;
+            var playerSlotStack = player.getInventory().getItem(slotIndex);
+            int toDeduct = Math.min(playerSlotStack.getCount(), desiredAmount);
+            playerSlotStack.shrink(toDeduct);
+            whatWeHave.put(desiredItem, toDeduct);
+        }
+
+        // Step 3. Place what was fetched
+        for (var entry : replaceableBlocks.long2ObjectEntrySet()
+                .stream()
+                .sorted(Comparator.comparingLong(Long2ObjectMap.Entry::getLongKey))
+                .toList()) {
+            var blockState = entry.getValue();
+            var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
+            if (blocksLeft < 0) continue;
+
+            level.setBlockAndUpdate(BlockPos.of(entry.getLongKey()), blockState);
+        }
     }
 }

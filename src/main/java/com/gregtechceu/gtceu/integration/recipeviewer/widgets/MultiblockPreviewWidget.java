@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
-import brachy.modularui.widgets.menu.Menu;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;

@@ -28,6 +28,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -97,6 +98,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         boolean flipped = tag.getBoolean("flipped");
 
         if (!level.isClientSide) {
+            ServerPlayer serverPlayer = (ServerPlayer) player;
             // Partially copy pasted from MultiblockControllerMachine#onUse.
             // TODO: Probably extract into helper function
             Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
@@ -106,6 +108,14 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 Int2IntMap slices = new Int2IntArrayMap();
                 for (int i = 0; i < blockPattern.getSlices().length; i++) {
                     slices.put(i, blockPattern.getSlices()[i].getMinRepeats());
+                }
+                if (tag.contains("sliceRepeatKeys") && tag.contains("sliceRepeatValues")) {
+                    var sliceRepeatKeys = tag.getIntArray("sliceRepeatKeys");
+                    var sliceRepeatValues = tag.getIntArray("sliceRepeatValues");
+                    var length = Math.min(sliceRepeatKeys.length, sliceRepeatValues.length);
+                    for (int i = 0; i < length; i++) {
+                        slices.put(sliceRepeatKeys[i], sliceRepeatValues[i]);
+                    }
                 }
                 structureHelper = AbstractStructureHelper.blockPattern(slices);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
@@ -142,9 +152,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                     level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
                 }
             } else if (structureHelper != null) {
-                AutobuildHelper.autobuild(player, context.getItemInHand(), controller.getDefinition(), controller, resultStructure, structureHelper);
+                AutobuildHelper.autobuild(serverPlayer, context.getItemInHand(), controller.getDefinition(), controller,
+                        resultStructure, structureHelper);
             }
-
 
             // needed to force the multiblock to do a clean check, kinda sus
             controller.getDefaultPatternState().getCache().clear();
