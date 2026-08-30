@@ -116,6 +116,7 @@ dependencies {
     modExtraLocalRuntime(forge.gamestages)
     modExtraLocalRuntime(forge.bookshelf)
 
+    modExtraLocalRuntime(forge.kotlinforforge)
     modExtraLocalRuntime(forge.observable)
 
     modExtraLocalRuntime(forge.ponder)

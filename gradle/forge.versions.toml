@@ -14,6 +14,7 @@ architectury = "9.2.14"
 clothmath = "+"
 clothconfig = "11.1.136"
 curios = "5.9.1+1.20.1"
+kotlinforforge = "4.11.0"
 journeyMapApi = "1.20-1.9-SNAPSHOT"
 ftblibrary = "2001.2.4"
 ftbteams = "2001.3.0"
@@ -74,6 +75,7 @@ architectury        = { module = "dev.architectury:architectury-forge", version.
 clothmath           = { module = "me.shedaniel.cloth:basic-math", version.ref = "clothmath" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-forge", version.ref = "clothconfig" }
 curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
+kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api", version.ref = "journeyMapApi" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-forge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "ftbteams" }
