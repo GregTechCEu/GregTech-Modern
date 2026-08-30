@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -70,11 +71,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         CompoundTag tag = stack.getOrCreateTag();
 
         if (player == null || !player.isShiftKeyDown()) {
-            return InteractionResult.PASS;
-        }
-
-        // TODO: Allow survival building and remove this check
-        if (!player.isCreative()) {
             return InteractionResult.PASS;
         }
 
@@ -140,10 +136,15 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 }
             }
 
-            BlockPos controllerOffset = controller.getBlockPos().subtract(schemaControllerPos);;
-            for (var entry : resultStructure.entrySet()) {
-                level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
+            BlockPos controllerOffset = controller.getBlockPos().subtract(schemaControllerPos);
+            if (player.isCreative()) {
+                for (var entry : resultStructure.entrySet()) {
+                    level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
+                }
+            } else if (structureHelper != null) {
+                AutobuildHelper.autobuild(player, context.getItemInHand(), controller.getDefinition(), controller, resultStructure, structureHelper);
             }
+
 
             // needed to force the multiblock to do a clean check, kinda sus
             controller.getDefaultPatternState().getCache().clear();

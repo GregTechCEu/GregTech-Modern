@@ -48,7 +48,8 @@ public class MultiblockSchemaInfo {
     @Setter
     private SchemaRenderer renderer;
     @Getter
-    private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
+    @Setter
+    private Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     @Getter
     private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
     @Getter

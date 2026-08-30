@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import brachy.modularui.widgets.menu.Menu;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
@@ -217,15 +218,30 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             var bounds = multiblockSchemaInfo.getMapSchema().getBounds();
                             int min = bounds.getFirst().getY();
                             int max = bounds.getSecond().getY();
-                            if (yLevel == Integer.MAX_VALUE) {
-                                yLevel = min;
-                            } else {
+
+                            if (b == InputConstants.MOUSE_BUTTON_LEFT) {
+                                if (yLevel == Integer.MAX_VALUE) yLevel = min - 1;
                                 yLevel += 1;
-                                if (yLevel > max) {
-                                    yLevel = Integer.MAX_VALUE;
-                                }
+                            } else if (b == InputConstants.MOUSE_BUTTON_RIGHT) {
+                                if (yLevel == Integer.MAX_VALUE) yLevel = max;
+                                yLevel -= 1;
+                            } else if (b == InputConstants.MOUSE_BUTTON_MIDDLE) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            if (yLevel >= max) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            if (yLevel < min) {
+                                yLevel = Integer.MAX_VALUE;
                             }
                             refreshSchema();
+                            Reference2IntMap<Block> newBlockCounts = new Reference2IntOpenHashMap<>();
+                            for (var entry : this.multiblockSchemaInfo.getStructureBlocks().entrySet()) {
+                                if (entry.getKey().getY() <= yLevel) {
+                                    newBlockCounts.merge(entry.getValue().getBlockState().getBlock(), 1, Integer::sum);
+                                }
+                            }
+                            this.multiblockSchemaInfo.setBlockCounts(newBlockCounts);
                             refreshViewWidget();
                             return true;
                         }))
