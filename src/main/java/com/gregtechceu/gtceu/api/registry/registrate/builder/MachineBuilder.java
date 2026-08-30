@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import lombok.Setter;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -61,7 +62,6 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
@@ -86,12 +86,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     protected final GTRegistrate registrate;
     protected final String name;
 
-    protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected MachineInstanceFactory<MACHINE> instanceFactory;
     @Setter(onMethod_ = @ApiStatus.Internal)
     public Function<ResourceLocation, DEFINITION> definitionFactory;
 
-    private @Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
+    private @Nullable BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> blockBuilder;
     private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
 
     private @Nullable ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> itemBuilder;
@@ -113,7 +112,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
     private boolean renderMultiblockWorldPreview = true;
     private boolean renderMultiblockXEIPreview = true;
-    private NonNullUnaryOperator<BlockBehaviour.Properties> blockProp = p -> p;
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
     private GTRecipeType[] recipeTypes = new GTRecipeType[0];
@@ -149,11 +147,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public MachineBuilder(GTRegistrate registrate, String name,
                           Function<ResourceLocation, DEFINITION> definitionFactory,
-                          BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
         this.registrate = registrate;
         this.name = name;
-        this.blockFactory = blockFactory;
         this.instanceFactory = instanceFactory;
         this.definitionFactory = definitionFactory;
     }
@@ -207,19 +203,52 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
-        this.blockProp = blockProp;
-        return getThis();
+    /**
+     * Gets the {@link MetaMachineBlock} builder for this machine so that further customization can be done.<br>
+     * If the {@link BlockBuilder} has not been created yet, then the default one is created.
+     *
+     * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
+     */
+    public BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> block() {
+        if (blockBuilder != null) return blockBuilder;
+        return block(MetaMachineBlock::new);
     }
 
-    public SELF blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
-        this.blockBuilder = blockBuilder;
-        return getThis();
+    public NonNullSupplier<DEFINITION> asSupplier() {
+        return null; // TODO
+    }
+
+    /**
+     * Create a {@link MetaMachineBlock} for this machine, which is created by the given factory, and return the builder for it so that further customization can be done.<br>
+     * Cannot be called if {@link #block()} has already been called.
+     *
+     * @param <B> The type of the block.
+     * @param factory A factory for the block, which accepts the block properties and machine definition and returns a new block.
+     * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
+     */
+    public <B extends MetaMachineBlock> BlockBuilder<B, MachineBuilder<DEFINITION, MACHINE, SELF>> block(BiFunction<BlockBehaviour.Properties, DEFINITION, B> factory) {
+        if (blockBuilder == null) throw new IllegalStateException("Block builder for machine %s has already been initialized.".formatted(name));
+
+        var newBlockBuilder = this.registrate.block(this, name, properties -> {
+                    MachineDefinition.setBuilt(this.asSupplier().get());
+                    var b = factory.apply(properties, this.asSupplier().get());
+                    MachineDefinition.clearBuilt();
+                    return b;
+                })
+                .color(() -> () -> MetaMachineBlock::colorTinted)
+                .initialProperties(() -> Blocks.DISPENSER)
+                .properties(BlockBehaviour.Properties::noLootTable)
+                .addLayer(() -> RenderType::cutout)
+                .exBlockstate(this.blockModel != null ? this.blockModel : createMachineModel(this.model))
+                .onRegister(b -> Arrays.stream(this.abilities).forEach(a -> a.register(this.tier, b)));
+
+        blockBuilder = newBlockBuilder;
+        return newBlockBuilder;
     }
 
 
     /**
-     * Gets the {@link MetaMachineItem} for this machine, and returns the builder for it so that further customization can be done.<br>
+     * Gets the {@link MetaMachineItem} builder for this machine so that further customization can be done.<br>
      * If the {@link ItemBuilder} has not been created yet, then the default one is created.
      *
      * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
@@ -233,12 +262,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * Create a {@link MetaMachineItem} for this machine, which is created by the given factory, and return the builder for it so that further customization can be done.<br>
      * Cannot be called if {@link #item()} has already been called.
      *
-     * @param <I> The type of the item .
+     * @param <I> The type of the item.
      * @param factory A factory for the item, which accepts the block and item properties and returns a new item.
      * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
      */
     public <I extends MetaMachineItem> ItemBuilder<I, MachineBuilder<DEFINITION, MACHINE, SELF>> item(BiFunction<MetaMachineBlock, Item.Properties, I> factory) {
-        if (itemBuilder != null) throw new IllegalStateException("Item builder for machine %s has already been initialized".formatted(name));
+        if (itemBuilder != null) throw new IllegalStateException("Item builder for machine %s has already been initialized.".formatted(name));
 
         var newItemBuilder = this.registrate
                 .item(this, name, properties -> factory.apply(Objects.requireNonNull(blockEntry, "Item factory called before block resolved.").get(), properties))
@@ -683,22 +712,19 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         if (model == null && blockModel == null) {
             simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
         }
-        var blockBuilder = makeBlockBuilder(definition);
         if (this.langValue != null) {
-            blockBuilder.lang(langValue);
+            block().lang(langValue);
             definition.setLangValue(langValue);
         }
-        if (this.blockBuilder != null) {
-            this.blockBuilder.accept(blockBuilder);
-        }
-        BlockEntry<? extends MetaMachineBlock> block = blockBuilder.register();
+
+        blockEntry = block().register();
 
         var blockEntityBuilder = registrate
                 .<MACHINE>blockEntity(
                         (type, pos, state) -> instanceFactory
                                 .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
-                .validBlock(block);
+                .validBlock(blockEntry);
         if (hasBER) {
             blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
         }
@@ -709,7 +735,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setThemeId(themeId);
         definition.setRecipeTypes(recipeTypes);
 
-        definition.setBlockHolder(block);
+        definition.setBlockHolder(blockEntry);
         definition.setItemHolder(item().register());
         definition.setTier(tier);
         definition.setRecipeOutputLimits(recipeOutputLimits);
@@ -733,7 +759,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             }
         }
         if (appearance == null) {
-            appearance = block::getDefaultState;
+            appearance = blockEntry::getDefaultState;
         }
         definition.setAppearance(appearance);
         definition.setAllowExtendedFacing(allowExtendedFacing);
@@ -782,27 +808,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             return (ctx, prov, builder) -> this.configureModel(ctx, prov, before.apply(builder));
         }
     }
-
-    // spotless:off
-
-    private BlockBuilder<? extends MetaMachineBlock, GTRegistrate> makeBlockBuilder(DEFINITION definition) {
-        return this.registrate.block(properties -> makeBlock(definition, properties))
-                .color(() -> () -> MetaMachineBlock::colorTinted)
-                .initialProperties(() -> Blocks.DISPENSER)
-                .properties(BlockBehaviour.Properties::noLootTable)
-                .addLayer(() -> RenderType::cutout)
-                .exBlockstate(this.blockModel != null ? this.blockModel : createMachineModel(this.model))
-                .properties(this.blockProp)
-                .onRegister(b -> Arrays.stream(this.abilities).forEach(a -> a.register(this.tier, b)));
-    }
-
-    private MetaMachineBlock makeBlock(DEFINITION definition, BlockBehaviour.Properties properties) {
-        MachineDefinition.setBuilt(definition);
-        var b = this.blockFactory.apply(properties, definition);
-        MachineDefinition.clearBuilt();
-        return b;
-    }
-    // spotless:on
 
     protected static final class KJSCallWrapper {
 
