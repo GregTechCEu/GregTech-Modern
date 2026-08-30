@@ -18,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
@@ -62,14 +61,9 @@ public interface ICoverableRenderer {
 
             if (renderType == RenderType.cutoutMipped() && thickness > 0 &&
                     cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
-                AABB cube = switch (face) {
-                    case DOWN -> StaticFaceBakery.BLOCK.setMaxY(thickness);
-                    case UP -> StaticFaceBakery.BLOCK.setMinY(1.0 - thickness);
-                    case NORTH -> StaticFaceBakery.BLOCK.setMaxZ(thickness);
-                    case SOUTH -> StaticFaceBakery.BLOCK.setMinZ(1.0 - thickness);
-                    case WEST -> StaticFaceBakery.BLOCK.setMaxX(thickness);
-                    case EAST -> StaticFaceBakery.BLOCK.setMinX(1.0 - thickness);
-                };
+                // All faces are slightly under a full block's size to never show the beginning of
+                // the second row of pixels of the block's texture and to combat Z-fighting.
+                var cube = StaticFaceBakery.createFaceCube(face, thickness, 0);
 
                 if (side == null) { // render back
                     quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0], true));

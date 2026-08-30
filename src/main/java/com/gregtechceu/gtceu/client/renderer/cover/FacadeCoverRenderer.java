@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.model.quad.transform.QuadTransform;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.transformers.QuadPositionForcer;
@@ -30,7 +31,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
@@ -58,16 +58,10 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     private static Map<Direction, QuadTransform> createFacadePlaneTransformers(double thickness, double outwardOffset) {
         Map<Direction, QuadTransform> transformers = new EnumMap<>(Direction.class);
         for (Direction dir : GTUtil.DIRECTIONS) {
-            AABB facadePlane = switch (dir) {
-                case DOWN -> new AABB(0, -outwardOffset, 0, 1, thickness - outwardOffset, 1);
-                case UP -> new AABB(0, 1.0 - thickness + outwardOffset, 0, 1, 1.0 + outwardOffset, 1);
-                case NORTH -> new AABB(0, 0, -outwardOffset, 1, 1, thickness - outwardOffset);
-                case SOUTH -> new AABB(0, 0, 1.0 - thickness + outwardOffset, 1, 1, 1.0 + outwardOffset);
-                case WEST -> new AABB(-outwardOffset, 0, 0, thickness - outwardOffset, 1, 1);
-                case EAST -> new AABB(1.0 - thickness + outwardOffset, 0, 0, 1.0 + outwardOffset, 1, 1);
-            };
-
-            transformers.put(dir, new QuadPositionForcer(facadePlane));
+            // All faces are slightly under a full block's size to never show the beginning of
+            // the second row of pixels of the block's texture and to combat Z-fighting.
+            transformers.put(dir,
+                    new QuadPositionForcer(StaticFaceBakery.createFaceCube(dir, thickness, outwardOffset)));
         }
         return transformers;
     }
