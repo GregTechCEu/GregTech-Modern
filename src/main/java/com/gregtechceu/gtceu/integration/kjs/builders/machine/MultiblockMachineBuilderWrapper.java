@@ -50,10 +50,10 @@ import java.util.function.*;
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
                                              implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
+    private final MultiblockMachineBuilder<?, ?> internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id,
-                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal) {
+                                           MultiblockMachineBuilder<?, ?> internal) {
         super(id);
         this.internal = internal;
         this.dummyBuilder = true;
@@ -95,7 +95,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public MultiblockMachineBuilderWrapper definition(Function<ResourceLocation, MultiblockMachineDefinition> definition) {
-        internal.definition(definition);
+        internal.definitionFactory(definition);
         return this;
     }
 
