@@ -165,14 +165,18 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     /// Machine Builders
 
-    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
-                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new, blockEntityFactory);
+    @SuppressWarnings("unchecked")
+    public <MACHINE extends MetaMachine, S extends MachineBuilder<MachineDefinition, MACHINE, S>> S machine(String name,
+                                                                                                            MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return entry(name,
+                callback -> (S) new MachineBuilder<>(this, name, callback, MachineDefinition::new, blockEntityFactory));
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE, ?> multiblock(String name,
-                                                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, blockEntityFactory);
+    @SuppressWarnings("unchecked")
+    public <MACHINE extends MultiblockControllerMachine,
+            S extends MultiblockMachineBuilder<MACHINE, S>> S multiblock(String name,
+                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return entry(name, callback -> (S) new MultiblockMachineBuilder<>(this, name, callback, blockEntityFactory));
     }
 
     /// Cover Registration
