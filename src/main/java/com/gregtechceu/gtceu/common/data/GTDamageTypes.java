@@ -21,10 +21,6 @@ public class GTDamageTypes {
 
     public static void init() {}
 
-    private static ResourceKey<DamageType> create(String path) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, GTCEu.id(path));
-    }
-
     public static void bootstrap(BootstrapContext<DamageType> ctx) {
         ctx.register(HEAT, new DamageType("gtceu.heat", 0, DamageEffects.BURNING));
         ctx.register(CHEMICAL, new DamageType("gtceu.chemical", 0));
@@ -37,5 +33,9 @@ public class GTDamageTypes {
             ctx.register(condition.getDamageType(),
                     new DamageType("gtceu.medical_condition." + name, DamageScaling.NEVER, 0));
         }
+    }
+
+    private static ResourceKey<DamageType> create(String path) {
+        return ResourceKey.create(Registries.DAMAGE_TYPE, GTCEu.id(path));
     }
 }

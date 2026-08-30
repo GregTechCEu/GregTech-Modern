@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
@@ -46,17 +47,14 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
 
     private ValueTransformer.TransformerContext<K> getInnerKeyContext(@Nullable K key,
                                                                       ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
-        return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[0], key, parentContext.fieldName() + "[key]",
-                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate(), parentContext.lookup());
+        return parentContext.createChildContext(parentContext.type().getGenericTypeArgs()[0], key,
+                parentContext.fieldName() + "[key]");
     }
 
     private ValueTransformer.TransformerContext<V> getInnerValueContext(@Nullable V value,
                                                                         ValueTransformer.TransformerContext<Map<K, V>> parentContext) {
-        return new TransformerContext<>(parentContext.holder(),
-                parentContext.type().getGenericTypeArgs()[1], value,
-                parentContext.fieldName() + "[value]",
-                parentContext.isClientSync(), parentContext.isClientFullSyncUpdate(), parentContext.lookup());
+        return parentContext.createChildContext(parentContext.type().getGenericTypeArgs()[1], value,
+                parentContext.fieldName() + "[value]");
     }
 
     @Override
@@ -95,7 +93,41 @@ public class MapTransformer<K, V> implements ValueTransformer<Map<K, V>> {
                         "Sync: Skipping null key or field while deserializing map: [key: {}, value: {}] [nbt key: {}, nbt value: {}]",
                         key, value, keyTag, valueTag);
                 continue;
-            } ;
+            }
+            current.put(key, value);
+        }
+        return current;
+    }
+
+    @Override
+    public void writeToPacket(RegistryFriendlyByteBuf buf, Map<K, V> value, TransformerContext<Map<K, V>> context) {
+        buf.writeVarInt(value.size());
+        value.forEach((k, v) -> {
+            getKeyTransformer(context).writeToPacket(buf, k, getInnerKeyContext(k, context));
+            getValueTransformer(context).writeToPacket(buf, v,
+                    getInnerValueContext(v, context));
+        });
+    }
+
+    @Override
+    public @Nullable Map<K, V> readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<Map<K, V>> context) {
+        var current = context.currentValue();
+
+        int size = buf.readVarInt();
+
+        if (current != null) current.clear();
+        else current = new Object2ObjectOpenHashMap<>(size);
+
+        for (int i = 0; i < size; i++) {
+            K key = getKeyTransformer(context).readFromPacket(buf, getInnerKeyContext(null, context));
+            V value = getValueTransformer(context).readFromPacket(buf, getInnerValueContext(null, context));
+
+            if (key == null || value == null) {
+                GTCEu.LOGGER.warn(
+                        "Sync: Skipping null key or value while reading map: [key: {}, value: {}]",
+                        key, value);
+                continue;
+            }
             current.put(key, value);
         }
         return current;

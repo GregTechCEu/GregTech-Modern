@@ -94,7 +94,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     }
 
     @Override
-    public void onNeighborChanged(net.minecraft.world.level.block.Block block, BlockPos fromPos, boolean isMoving) {
+    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
         updateAutoOutputSubscription();
         getRecipeLogic().updateTickSubscription();

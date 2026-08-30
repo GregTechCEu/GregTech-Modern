@@ -1,25 +1,31 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import com.mojang.serialization.Codec;
 
-public class CodecTransformer<T> implements ValueTransformer<T> {
-
-    private final Codec<T> codec;
-
-    public CodecTransformer(Codec<T> codec) {
-        this.codec = codec;
-    }
+public record CodecTransformer<T>(Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec)
+        implements ValueTransformer<T> {
 
     @Override
     public Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
-        return codec.encodeStart(NbtOps.INSTANCE, value).getOrThrow();
+        return codec.encodeStart(context.nbtOps(), value).getOrThrow();
     }
 
     @Override
     public T deserializeNBT(Tag tag, ValueTransformer.TransformerContext<T> context) {
-        return codec.parse(NbtOps.INSTANCE, tag).getOrThrow();
+        return codec.parse(context.nbtOps(), tag).getOrThrow();
+    }
+
+    @Override
+    public void writeToPacket(RegistryFriendlyByteBuf buf, T value, TransformerContext<T> context) {
+        streamCodec.encode(buf, value);
+    }
+
+    @Override
+    public T readFromPacket(RegistryFriendlyByteBuf buf, TransformerContext<T> context) {
+        return streamCodec.decode(buf);
     }
 }
