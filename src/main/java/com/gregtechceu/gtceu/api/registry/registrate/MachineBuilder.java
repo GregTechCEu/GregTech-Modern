@@ -216,8 +216,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return block(MetaMachineBlock::new);
     }
 
+    @SuppressWarnings("unchecked")
     public NonNullSupplier<DEFINITION> asSupplier() {
-        return null; // TODO
+        // TODO replace with better method once this is converted to an actual registrate builder
+        return () -> (DEFINITION)Objects.requireNonNull(GTRegistries.MACHINES.get(registrate.makeResourceLocation(name)));
     }
 
     /**
@@ -229,7 +231,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
      */
     public <B extends MetaMachineBlock> BlockBuilder<B, MachineBuilder<DEFINITION, MACHINE, SELF>> block(BiFunction<BlockBehaviour.Properties, DEFINITION, B> factory) {
-        if (blockBuilder == null) throw new IllegalStateException("Block builder for machine %s has already been initialized.".formatted(name));
+        if (blockBuilder != null) throw new IllegalStateException("Block builder for machine %s has already been initialized.".formatted(name));
 
         var newBlockBuilder = this.registrate.block(this, name, properties -> {
                     MachineDefinition.setBuilt(this.asSupplier().get());
