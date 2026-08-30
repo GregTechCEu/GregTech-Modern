@@ -2,9 +2,10 @@
     "parent": "gtceu:block/machine/template/part/hatch_machine_emissive",
     "textures": {
         "bottom": "gtceu:block/casings/pump_deck/bottom",
-        "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
-        "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive",
+        "top": "gtceu:block/casings/pump_deck/top",
         "side": "#top",
-        "top": "gtceu:block/casings/pump_deck/top"
+
+        "overlay": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
+        "overlay_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive"
     }
 }

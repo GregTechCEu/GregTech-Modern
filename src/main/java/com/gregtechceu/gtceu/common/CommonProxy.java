@@ -19,6 +19,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
+import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -44,15 +46,17 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.item.*;
+import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
+import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -62,7 +66,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
-import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -79,6 +82,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -142,6 +146,7 @@ public class CommonProxy {
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
 
         GTGuiTheme.registerThemes();
+        SpoilableBehavior.init();
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
@@ -220,7 +225,10 @@ public class CommonProxy {
 
         GregTechDatagen.initPost();
         GTValueProviderTypes.init(modBus);
-        GTFeatures.register(modBus);
+        GTFeatures.init(modBus);
+        GTPlacementModifiers.init(modBus);
+        GTLootConditions.init(modBus);
+        GTLootFunctions.init(modBus);
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
         WaypointManager.init();
@@ -228,7 +236,6 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-        ChestGenHooks.init();
     }
 
     @ApiStatus.Internal
@@ -298,6 +305,44 @@ public class CommonProxy {
             GTFluids.registerMaterialFluids();
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
+        }
+    }
+
+    @SubscribeEvent
+    public static void addSpoilTransferModifier(ModifyMachineEvent event) {
+        event.getBuilder().addRecipeModifier(GTRecipeModifiers.SPOILAGE_TRANSFER);
+    }
+
+    @SubscribeEvent
+    public static void registerDevSpoilables(RegisterSpoilablesEvent event) {
+        if (GTCEu.isDev()) { // for testing purposes
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.DIRT)
+                    .build()
+                    .attachTo(Items.JIGSAW);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.STRUCTURE_BLOCK)
+                    .build()
+                    .attachTo(Items.APPLE);
+            event.getBuilder()
+                    .ticks(40)
+                    .result(Items.STRUCTURE_VOID)
+                    .build()
+                    .attachTo(Items.STRUCTURE_BLOCK);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.JIGSAW)
+                    .build()
+                    .attachTo(Items.STRUCTURE_VOID);
+            event.getBuilder()
+                    .ticks(10)
+                    .result(Items.DRAGON_EGG)
+                    .result(EntityType.PIG)
+                    .multiplyResult(3)
+                    .build()
+                    .attachTo(Items.EGG);
         }
     }
 

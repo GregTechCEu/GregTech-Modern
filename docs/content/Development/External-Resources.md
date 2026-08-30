@@ -45,12 +45,7 @@ as other resources you might find helpful.
     Unofficial documentation for Mojang's DataFixerUpper library.
 
 
-## Registrate & Architectury
+## Registrate
 
 !!! link "Using Registrate"
     [:material-github: Registrate](https://github.com/tterrag1098/Registrate)
-
-!!! link "Architectury Gradle Plugin"
-    [Architectury-Wiki :material-arrow-right: Gradle Plugin](https://docs.architectury.dev/plugin/introduction)
-
-    Note that we're only using Architectury's build system, not the library itself.

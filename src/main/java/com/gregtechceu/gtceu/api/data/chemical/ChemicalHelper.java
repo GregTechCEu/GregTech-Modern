@@ -19,6 +19,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -124,6 +125,10 @@ public class ChemicalHelper {
         MaterialEntry entry = getMaterialEntry(itemLike);
         if (!entry.isEmpty()) return entry.tagPrefix();
         return TagPrefix.NULL_PREFIX;
+    }
+
+    public static TagPrefix getPrefix(ItemStack itemStack) {
+        return getPrefix(itemStack.getItem());
     }
 
     public static ItemStack getDust(Material material, long materialAmount) {
@@ -245,6 +250,16 @@ public class ChemicalHelper {
         }).stream().map(Supplier::get).collect(Collectors.toList());
     }
 
+    public static Item getItem(MaterialEntry materialEntry) {
+        List<ItemLike> items = getItems(materialEntry);
+        if (items.isEmpty()) return Items.AIR;
+        return items.get(0).asItem();
+    }
+
+    public static Item getItem(TagPrefix tagPrefix, Material material) {
+        return getItem(new MaterialEntry(tagPrefix, material));
+    }
+
     public static ItemStack get(MaterialEntry materialEntry, int size) {
         var list = getItems(materialEntry);
         if (list.isEmpty()) return ItemStack.EMPTY;
@@ -253,12 +268,12 @@ public class ChemicalHelper {
         return stack;
     }
 
-    public static ItemStack get(TagPrefix orePrefix, Material material, int stackSize) {
-        return get(new MaterialEntry(orePrefix, material), stackSize);
+    public static ItemStack get(TagPrefix tagPrefix, Material material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
     }
 
-    public static ItemStack get(TagPrefix orePrefix, Material material) {
-        return get(orePrefix, material, 1);
+    public static ItemStack get(TagPrefix tagPrefix, Material material) {
+        return get(tagPrefix, material, 1);
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {

@@ -407,13 +407,11 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({
                 "Whether to increase number of rolls for dungeon chests. Increases dungeon loot drastically.",
-                "Default: true", "WARNING: Currently unimplemented." })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
+                "Default: true" })
         public boolean increaseDungeonLoot = true;
         @Configurable
         @Configurable.Comment({ "Allow GregTech to add additional GregTech Items as loot in various structures.",
                 "Default: true" })
-        @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean addLoot = true;
 
         @Configurable
@@ -836,6 +834,9 @@ public class ConfigHolder {
                 "Whether most machines will have block entity renderers, mainly used for rendering certain covers. (Restart required)",
                 "Disable if experiencing performance issues.", "Default: true" })
         public boolean machinesHaveBERsByDefault = true;
+        @Configurable
+        @Configurable.Comment({ "Whether april fools \"features\" should always be enabled.", "Default: false" })
+        public boolean aprilFoolsMode = false;
         @Configurable
         @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.",
                 "Default: true" })
