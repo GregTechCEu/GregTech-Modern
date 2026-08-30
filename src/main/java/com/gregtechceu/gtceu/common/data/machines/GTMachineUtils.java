@@ -778,8 +778,8 @@ public class GTMachineUtils {
     }
 
     public static Component defaultEnvironmentRequirement() {
-        //TODO fix
-        return Component.empty();//environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
+        // TODO fix
+        return Component.empty();// environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
     }
 
     public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {

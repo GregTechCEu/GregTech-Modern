@@ -12,7 +12,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +35,10 @@ public class CTMMeshBuilder {
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();
 
-        for (BakedQuad originalQuad : base) {
+        // this is critical code; a C-style for loop has better performance
+        // noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < base.size(); i++) {
+            BakedQuad originalQuad = base.get(i);
             TextureAtlasSprite originalSprite = originalQuad.getSprite();
 
             TextureAtlasSprite connectionSprite = CTM_SPRITE_CACHE.get(originalSprite.contents().name());
@@ -51,14 +53,13 @@ public class CTMMeshBuilder {
                     TextureAtlasSprite ctmSprite = defaultTexture ? originalSprite : connectionSprite;
 
                     emitter.fromVanilla(originalQuad, cullFace);
-                    emitter.spriteUnbake(originalSprite, BAKE_NORMALIZED | BAKE_DEROTATE_UV);
-                    canonicalizeWinding(emitter);
+                    emitter.spriteUnbake(originalSprite, UNBAKE_DEROTATE_UV | UNBAKE_CANONICALIZE_WINDING);
 
                     // slice quad into the current quadrant
                     subsect(emitter, Submap.X2[xQuadrant][yQuadrant]);
                     remapUVs(emitter, connections.getSubmapFor(xQuadrant, yQuadrant));
 
-                    emitter.spriteBake(ctmSprite, BAKE_NORMALIZED);
+                    emitter.spriteBake(ctmSprite, 0);
 
                     emitter.computeGeometry();
                     emitter.populateMissingNormals();
@@ -80,7 +81,6 @@ public class CTMMeshBuilder {
         return new Vector2f[] { new Vector2f(), new Vector2f() };
     });
     // set in copyPos() calls
-    private static final ThreadLocal<Vector3f> position = ThreadLocal.withInitial(Vector3f::new);
     private static final ThreadLocal<Vector2f[]> xy = ThreadLocal.withInitial(() -> {
         return new Vector2f[] { new Vector2f(), new Vector2f(), new Vector2f(), new Vector2f() };
     });
@@ -125,49 +125,6 @@ public class CTMMeshBuilder {
         quad.uv(3, uvs[3].x <= minUV.x ? minU : maxU, uvs[3].y <= minUV.y ? minV : maxV);
     }
 
-    private static void canonicalizeWinding(MutableQuadView emitter) {
-        Direction face = emitter.nominalFace();
-        if (face == null) return;
-
-        int target = anchorIndex(emitter, face);
-        if (target <= 0) return;
-
-        Vector3f[] pos = new Vector3f[4];
-        int[] color = new int[4];
-        int[] light = new int[4];
-        for (int i = 0; i < 4; i++) {
-            pos[i] = emitter.copyPos(i, new Vector3f());
-            color[i] = emitter.color(i);
-            light[i] = emitter.lightmap(i);
-        }
-        for (int i = 0; i < 4; i++) {
-            int s = (i + target) & 3;
-            emitter.pos(i, pos[s].x, pos[s].y, pos[s].z);
-            emitter.color(i, color[s]);
-            emitter.lightmap(i, light[s]);
-        }
-    }
-
-    private static int anchorIndex(MutableQuadView emitter, Direction face) {
-        for (int i = 0; i < 4; i++) {
-            float x = emitter.x(i), y = emitter.y(i), z = emitter.z(i);
-            boolean hit = switch (face) {
-                case UP -> near(x, 0.0F) && near(z, 0.0F);
-                case DOWN -> near(x, 0.0F) && near(z, 1.0F);
-                case NORTH -> near(x, 1.0F) && near(y, 1.0F);
-                case SOUTH -> near(x, 0.0F) && near(y, 1.0F);
-                case EAST -> near(y, 1.0F) && near(z, 1.0F);
-                case WEST -> near(y, 1.0F) && near(z, 0.0F);
-            };
-            if (hit) return i;
-        }
-        return -1;
-    }
-
-    private static boolean near(float a, float b) {
-        return Math.abs(a - b) < 0.01F;
-    }
-
     // TODO simplify, this is quite long
     public static MutableQuadView subsect(final MutableQuadView quad, ISubmap submap) {
         Direction normal = quad.nominalFace();
@@ -176,15 +133,11 @@ public class CTMMeshBuilder {
 
         Vector2f[] xy = CTMMeshBuilder.xy.get();
         Vector2f[] newXy = CTMMeshBuilder.newXy.get();
-        Vector3f position = CTMMeshBuilder.position.get();
         for (int i = 0; i < 4; i++) {
-            // updates position
-            quad.copyPos(i, position);
-
             switch (normal.getAxis()) {
-                case X -> xy[i].set(position.z, position.y);
-                case Y -> xy[i].set(position.x, position.z);
-                case Z -> xy[i].set(position.x, position.y);
+                case X -> xy[i].set(quad.z(i), quad.y(i));
+                case Y -> xy[i].set(quad.x(i), quad.z(i));
+                case Z -> xy[i].set(quad.x(i), quad.y(i));
             }
         }
 

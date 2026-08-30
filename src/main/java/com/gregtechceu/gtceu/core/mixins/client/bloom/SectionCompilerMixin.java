@@ -50,8 +50,7 @@ public abstract class SectionCompilerMixin {
                 return BloomRenderer.SafeMode.getOrStartBloomBuffer(sectionPos);
             }
         };
-        // intentionally no try-with-resource statement; closed in 'gtceu$clearBloomContextData'
-        // noinspection resource
+        // intentionally no 'try'-with-resources statement; closed in 'gtceu$clearBloomContextData'
         BloomRenderer.bloomChunkContext().with(provider);
     }
 
@@ -67,7 +66,6 @@ public abstract class SectionCompilerMixin {
             BloomRenderer.SafeMode.bakeBloomChunkBuffers(sectionPos, vertexSorting);
         }
 
-        // noinspection resource
         BloomRenderer.bloomChunkContext().close();
     }
 }

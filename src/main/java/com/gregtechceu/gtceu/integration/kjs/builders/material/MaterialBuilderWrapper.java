@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.Collection;
 import java.util.function.UnaryOperator;
@@ -552,7 +551,8 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                                          float progressionMultiplier, boolean applyToDerivatives) {
-        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier, applyToDerivatives);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier,
+                applyToDerivatives);
         return this;
     }
 

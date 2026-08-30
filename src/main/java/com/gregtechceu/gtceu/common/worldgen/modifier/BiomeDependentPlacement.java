@@ -1,8 +1,8 @@
-package com.gregtechceu.gtceu.api.data.worldgen.modifier;
+package com.gregtechceu.gtceu.common.worldgen.modifier;
 
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
 
-import com.gregtechceu.gtceu.common.data.GTPlacementModifierTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
@@ -14,14 +14,14 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BiomePlacement extends PlacementModifier {
+public class BiomeDependentPlacement extends PlacementModifier {
 
-    public static final MapCodec<BiomePlacement> CODEC = BiomeWeightModifier.CODEC.listOf().fieldOf("modifiers")
-            .xmap(BiomePlacement::new, placement -> placement.modifiers);
+    public static final MapCodec<BiomeDependentPlacement> CODEC = BiomeWeightModifier.CODEC.listOf()
+            .fieldOf("modifiers").xmap(BiomeDependentPlacement::new, placement -> placement.modifiers);
 
     public final List<BiomeWeightModifier> modifiers;
 
-    public BiomePlacement(List<BiomeWeightModifier> modifiers) {
+    public BiomeDependentPlacement(List<BiomeWeightModifier> modifiers) {
         this.modifiers = modifiers;
     }
 
@@ -40,6 +40,6 @@ public class BiomePlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return GTPlacementModifierTypes.BIOME_PLACEMENT.value();
+        return GTPlacementModifiers.BIOME_DEPENDENT.get();
     }
 }

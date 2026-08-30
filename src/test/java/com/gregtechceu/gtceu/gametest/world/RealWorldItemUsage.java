@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.gametest.world;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -40,9 +40,7 @@ public class RealWorldItemUsage {
     public static void testPickaxeInstantPickup(ExtendedGameTestHelper helper) {
         var player = helper.makeTickingMockServerPlayerInLevel(GameType.SURVIVAL);
         player.moveTo(helper.absoluteVec(new Vec3(2.5, 2.0, 2.5)));
-        player.setItemSlot(EquipmentSlot.MAINHAND,
-                new ItemStack(BuiltInRegistries.ITEM
-                        .getOrThrow(ResourceKey.create(Registries.ITEM, GTCEu.id("neutronium_pickaxe")))));
+        player.setItemSlot(EquipmentSlot.MAINHAND, ToolHelper.get(GTToolType.PICKAXE, GTMaterials.Neutronium));
         // Allow player to stand
         helper.setBlock(new BlockPos(2, 1, 2), Blocks.BEDROCK);
         // Blocks to break

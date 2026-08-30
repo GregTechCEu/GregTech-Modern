@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.data.tags.EntityTypeTagLoader;
 import com.gregtechceu.gtceu.data.tags.FluidTagLoader;
 import com.gregtechceu.gtceu.data.tags.ItemTagLoader;
 
-import net.minecraft.data.DataProvider;
-
 import com.tterrag.registrate.providers.ProviderType;
 
 public class GregTechDatagen {

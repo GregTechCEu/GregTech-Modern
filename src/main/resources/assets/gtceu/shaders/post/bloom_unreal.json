@@ -2,11 +2,11 @@
     "targets": [
         "final",
         "filter",
-        { "name": "swap_b0", "bilinear": true },
-        { "name": "swap_b1", "bilinear": true },
-        { "name": "swap_b2", "bilinear": true },
-        { "name": "swap_b3", "bilinear": true },
-        { "name": "swap_b4", "bilinear": true }
+        "swap_b0",
+        "swap_b1",
+        "swap_b2",
+        "swap_b3",
+        "swap_b4"
     ],
     "passes": [
         {
@@ -22,126 +22,87 @@
             "name": "gtceu:blur",
             "intarget": "filter",
             "outtarget": "swap_b0",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 1.0, 0.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [3]
-                }
+                { "name": "BlurDir", "values": [ 1.0, 0.0 ] },
+                { "name": "Radius", "values": [3] }
             ]
         },
         {
             "name": "gtceu:blur",
             "intarget": "swap_b0",
             "outtarget": "swap_b1",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.0, 1.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [3]
-                }
+                { "name": "BlurDir", "values": [ 0.0, 1.0 ] },
+                { "name": "Radius", "values": [3] }
             ]
         },
         {
             "name": "gtceu:blur",
             "intarget": "swap_b1",
             "outtarget": "swap_b0",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 1.0, 0.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [5]
-                }
+                { "name": "BlurDir", "values": [ 1.0, 0.0 ] },
+                { "name": "Radius", "values": [5] }
             ]
         },
         {
             "name": "gtceu:blur",
             "intarget": "swap_b0",
             "outtarget": "swap_b2",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.0, 1.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [5]
-                }
+                { "name": "BlurDir", "values": [ 0.0, 1.0 ] },
+                { "name": "Radius", "values": [5] }
             ]
         },
         {
             "name": "gtceu:blur",
             "intarget": "swap_b2",
             "outtarget": "swap_b0",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 1.0, 0.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [7]
-                }
+                { "name": "BlurDir", "values": [ 1.0, 0.0 ] },
+                { "name": "Radius", "values": [7] }
             ]
         },
         {
             "name": "gtceu:blur",
             "intarget": "swap_b0",
             "outtarget": "swap_b3",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.0, 1.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [7]
-                }
+                { "name": "BlurDir", "values": [ 0.0, 1.0 ] },
+                { "name": "Radius", "values": [7] }
             ]
         },
         {
             "name": "gtceu:blur",
             "intarget": "swap_b3",
             "outtarget": "swap_b0",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 1.0, 0.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [9]
-                }
+                { "name": "BlurDir", "values": [ 1.0, 0.0 ] },
+                { "name": "Radius", "values": [9] }
             ]
         },
         {
             "name": "gtceu:blur",
             "intarget": "swap_b0",
             "outtarget": "swap_b4",
+            "use_linear_filter": true,
             "uniforms": [
-                {
-                    "name": "BlurDir",
-                    "values": [ 0.0, 1.0 ]
-                },
-                {
-                    "name": "Radius",
-                    "values": [9]
-                }
+                { "name": "BlurDir", "values": [ 0.0, 1.0 ] },
+                { "name": "Radius", "values": [9] }
             ]
         },
         {
             "name": "gtceu:unreal_composite",
             "intarget": "minecraft:main",
             "outtarget": "final",
+            "use_linear_filter": true,
             "auxtargets": [
                 { "id": "filter",  "name": "HighlightSampler" },
                 { "id": "swap_b1", "name": "BlurTexture1" },
