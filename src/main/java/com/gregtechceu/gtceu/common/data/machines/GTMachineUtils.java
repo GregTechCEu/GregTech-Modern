@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
+import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
