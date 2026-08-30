@@ -59,7 +59,6 @@ public final class RecipeManagerHandler {
                 continue;
             }
             if (r.value() instanceof GTRecipe recipe) {
-                recipe.setId(r.id());
                 lookup.addStaging(recipe);
             }
         }
