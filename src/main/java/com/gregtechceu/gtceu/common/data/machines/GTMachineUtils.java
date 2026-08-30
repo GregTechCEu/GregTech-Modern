@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
-import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -61,7 +60,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -773,9 +771,8 @@ public class GTMachineUtils {
         return null;
     }
 
-    public static Component environmentRequirement(Holder<MedicalCondition> condition) {
-        // Dynamic to avoid resolving the medical condition holder until the component is actually used.
-        return Text.dynamic(() -> Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.value().getTranslatableName()));
+    public static Component environmentRequirement(MedicalCondition condition) {
+        return Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.getTranslatableName());
     }
 
     public static Component defaultEnvironmentRequirement() {
