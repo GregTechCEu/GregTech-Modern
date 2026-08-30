@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -16,7 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
@@ -55,10 +52,8 @@ public class MultiblockMachineBuilder<
                                                                                                                   .emptyList();
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
-                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
                                     MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        super(registrate, name, (MultiblockMachineDefinition::new),
-                blockFactory, blockEntityFactory);
+        super(registrate, name, (MultiblockMachineDefinition::new), blockEntityFactory);
         patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);
