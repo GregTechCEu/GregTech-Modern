@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.EntitySlotInvWrapper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -200,6 +201,16 @@ public record SpoilContext(@Nullable Level level,
                 if (ctx.entity instanceof Player player) {
                     return new CustomItemStackHandler(player.getInventory().items);
                 } else return null;
+            }
+        };
+
+        public static final ItemHandlerSource ENTITY_INVENTORY = new ItemHandlerSource(GTCEu.id("entity_inventory")) {
+
+            @Override
+            protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
+                if (ctx.entity != null)
+                    return new EntitySlotInvWrapper(ctx.entity);
+                return null;
             }
         };
 

@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
@@ -28,9 +29,14 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 
+    @Shadow
+    @Nullable
+    private Entity entityRepresentation;
     /**
      * Whether {@link ItemStackMixin#gtceu$updateFreshness(SpoilContext, boolean)}
      * was called and did not return yet.
@@ -61,6 +67,16 @@ public abstract class ItemStackMixin {
             gtceu$self().getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM)
                     .ifPresent(spoilable -> spoilable.updateFreshness(spoilContext, createTag));
             gtceu$isUpdating = false;
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "getItem")
+    private void gtceu$updateFreshnessOnGet(CallbackInfoReturnable<Item> cir) {
+        if (entityRepresentation != null) {
+            gtceu$updateFreshness(new SpoilContext(entityRepresentation)
+                    .withItemHandlerSource(SpoilContext.ItemHandlerSource.ENTITY_INVENTORY), true);
+        } else {
+            gtceu$updateFreshness(SpoilContext.EMPTY, false);
         }
     }
 
