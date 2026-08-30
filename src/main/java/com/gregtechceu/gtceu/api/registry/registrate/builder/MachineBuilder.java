@@ -52,6 +52,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
@@ -70,6 +71,8 @@ import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.ApiStatus;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
@@ -85,6 +88,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                            extends AbstractBuilder<MachineDefinition, DEFINITION, GTRegistrate, SELF> {
 
     protected MachineInstanceFactory<MACHINE> instanceFactory;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    public Function<ResourceLocation, DEFINITION> definitionFactory;
 
     @Getter
     private final MachineDefinition.Properties properties;
