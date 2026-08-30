@@ -33,9 +33,6 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
-import com.tterrag.registrate.util.entry.BlockEntityEntry;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import lombok.Setter;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -61,13 +58,16 @@ import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
@@ -223,26 +223,30 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @SuppressWarnings("unchecked")
     public NonNullSupplier<DEFINITION> asSupplier() {
         // TODO replace with better method once this is converted to an actual registrate builder
-        return () -> (DEFINITION)Objects.requireNonNull(GTRegistries.MACHINES.get(registrate.makeResourceLocation(name)));
+        return () -> (DEFINITION) Objects
+                .requireNonNull(GTRegistries.MACHINES.get(registrate.makeResourceLocation(name)));
     }
 
     /**
-     * Create a {@link MetaMachineBlock} for this machine, which is created by the given factory, and return the builder for it so that further customization can be done.<br>
+     * Create a {@link MetaMachineBlock} for this machine, which is created by the given factory, and return the builder
+     * for it so that further customization can be done.<br>
      * Cannot be called if {@link #block()} has already been called.
      *
-     * @param <B> The type of the block.
-     * @param factory A factory for the block, which accepts the block properties and machine definition and returns a new block.
+     * @param <B>     The type of the block.
+     * @param factory A factory for the block, which accepts the block properties and machine definition and returns a
+     *                new block.
      * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
      */
     public <B extends MetaMachineBlock> BlockBuilder<B, MachineBuilder<DEFINITION, MACHINE, SELF>> block(BiFunction<BlockBehaviour.Properties, DEFINITION, B> factory) {
-        if (blockBuilder != null) throw new IllegalStateException("Block builder for machine %s has already been initialized.".formatted(name));
+        if (blockBuilder != null) throw new IllegalStateException(
+                "Block builder for machine %s has already been initialized.".formatted(name));
 
         var newBlockBuilder = this.registrate.block(this, name, properties -> {
-                    MachineDefinition.setBuilt(this.asSupplier().get());
-                    var b = factory.apply(properties, this.asSupplier().get());
-                    MachineDefinition.clearBuilt();
-                    return b;
-                })
+            MachineDefinition.setBuilt(this.asSupplier().get());
+            var b = factory.apply(properties, this.asSupplier().get());
+            MachineDefinition.clearBuilt();
+            return b;
+        })
                 .color(() -> () -> MetaMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
                 .properties(BlockBehaviour.Properties::noLootTable)
@@ -253,7 +257,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         blockBuilder = newBlockBuilder;
         return newBlockBuilder;
     }
-
 
     /**
      * Gets the {@link MetaMachineItem} builder for this machine so that further customization can be done.<br>
@@ -267,26 +270,33 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     /**
-     * Create a {@link MetaMachineItem} for this machine, which is created by the given factory, and return the builder for it so that further customization can be done.<br>
+     * Create a {@link MetaMachineItem} for this machine, which is created by the given factory, and return the builder
+     * for it so that further customization can be done.<br>
      * Cannot be called if {@link #item()} has already been called.
      *
-     * @param <I> The type of the item.
+     * @param <I>     The type of the item.
      * @param factory A factory for the item, which accepts the block and item properties and returns a new item.
      * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
      */
     public <I extends MetaMachineItem> ItemBuilder<I, MachineBuilder<DEFINITION, MACHINE, SELF>> item(BiFunction<MetaMachineBlock, Item.Properties, I> factory) {
-        if (itemBuilder != null) throw new IllegalStateException("Item builder for machine %s has already been initialized.".formatted(name));
+        if (itemBuilder != null) throw new IllegalStateException(
+                "Item builder for machine %s has already been initialized.".formatted(name));
 
         var newItemBuilder = this.registrate
-                .item(this, name, properties -> factory.apply(Objects.requireNonNull(blockEntry, "Item factory called before block resolved.").get(), properties))
+                .item(this, name,
+                        properties -> factory.apply(
+                                Objects.requireNonNull(blockEntry, "Item factory called before block resolved.").get(),
+                                properties))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 // copied from BlockBuilder#item
                 .model((ctx, prov) -> {
-                    prov.withExistingParent(ctx.getName(), registrate.makeResourceLocation("block/machine/" + ctx.getName()));
+                    prov.withExistingParent(ctx.getName(),
+                            registrate.makeResourceLocation("block/machine/" + ctx.getName()));
                 })
                 .color(() -> () -> ((itemStack, tintIndex) -> tintIndex == 2 ?
                         GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1))
                 .clientExtension(() -> () -> new IClientItemExtensions() {
+
                     @Override
                     public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                         return ItemWithBERModelRenderer.INSTANCE;
@@ -754,7 +764,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     /**
-     * Finalise the builder for registration (does not actually register the machine, registration is performed during the register event in {@link #createEntry()}
+     * Finalise the builder for registration (does not actually register the machine, registration is performed during
+     * the register event in {@link #createEntry()}
      */
     @HideFromJS
     public DEFINITION register() {
