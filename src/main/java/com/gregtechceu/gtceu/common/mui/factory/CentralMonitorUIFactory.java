@@ -136,7 +136,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 .draggable(true)
                 .padding(5)
                 .excludeAreaInRecipeViewer()
-                .child(GTMuiWidgets.createTitleBar(GTMultiMachines.CENTRAL_MONITOR, 176))
+                .child(GTMuiWidgets.createTitleBar(GTMultiMachines.CENTRAL_MONITOR.value(), 176))
                 .child(new Flow(GuiAxis.Y)
                         .heightRel(1)
                         .widthRel(1)
