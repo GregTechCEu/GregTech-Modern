@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketTerminalSettings;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,6 +38,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -52,15 +55,17 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 import static com.gregtechceu.gtceu.api.multiblock.util.AutobuildHelper.readBlockPreferences;
 
-public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
+public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddInformation {
 
     // todo somewhere client panel warning if the structure to be built is invalid
     @Override
@@ -443,5 +448,22 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         return null;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        CompoundTag tag = stack.getOrCreateTag();
+
+        if (tag.contains("pos")) {
+            long blockPos = tag.getLong("pos");
+            BlockPos pos = BlockPos.of(blockPos);
+            tooltipComponents.add(Component.translatable("gtceu.top.buffer_bound_pos", pos.getX(), pos.getY(), pos.getZ())
+                    .withStyle(ChatFormatting.GOLD));
+        }
+        if (tag.contains("controller")) {
+            ResourceLocation controllerLocation = ResourceLocation.parse(tag.getString("controller"));
+            var definition = (MultiblockMachineDefinition) GTRegistries.MACHINES.get(controllerLocation);
+            tooltipComponents.add(definition.get().getName());
+        }
     }
 }

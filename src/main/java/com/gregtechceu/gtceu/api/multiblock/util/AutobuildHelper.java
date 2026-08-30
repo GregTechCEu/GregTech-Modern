@@ -4,10 +4,13 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 
+import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -135,8 +138,27 @@ public class AutobuildHelper {
             var blockState = entry.getValue();
             var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             if (blocksLeft < 0) continue;
-
+            whatWeWant.merge(blockState.getBlock().asItem(), -1, Integer::sum);
             level.setBlockAndUpdate(BlockPos.of(entry.getLongKey()), blockState);
+        }
+
+        if (!whatWeWant.isEmpty()) {
+            player.displayClientMessage(Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED), false);
+        }
+        for (var entry : whatWeWant.entrySet()) {
+            if (entry.getValue() > 0) {
+                player.displayClientMessage(Component.literal(entry.getKey().toString() + " " + entry.getValue()), false);
+            }
+        }
+
+        for (var entry : canNotPlaceBlocks.long2ObjectEntrySet()) {
+            AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
+                    .aabb(BlockPos.of(entry.getLongKey()))
+                    .colorARGB(255, 180, 0, 0)
+                    .thickness(0.025)
+                    .durationMillis(10000)
+                    .phaseMillis(750)
+                    .build());
         }
     }
 }
