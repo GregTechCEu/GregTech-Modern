@@ -87,6 +87,11 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
+    public MultiblockMachineBuilderWrapper definition(Function<ResourceLocation, MultiblockMachineDefinition> definition) {
+        internal.definitionFactory(definition);
+        return this;
+    }
+
     public MultiblockMachineBuilderWrapper blockEntityFactory(MachineInstanceFactory machine) {
         internal.instanceFactory(machine);
         return this;
