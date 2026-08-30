@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -215,13 +216,7 @@ public final class MachineTraitHolder {
         public Tag serializeNBT(MachineTraitHolder value, TransformerContext<MachineTraitHolder> context) {
             CompoundTag tag = new CompoundTag();
 
-            if (context.isClientSync()) {
-                value.traitsToSave.forEach((k, v) -> tag.put(k,
-                        v.getSyncDataHolder().serializeClientData(context.lookup(), context.isClientFullSyncUpdate())));
-            } else {
-                value.traitsToSave.forEach((k, v) -> tag.put(k,
-                        v.getSyncDataHolder().serializeNBT(context.lookup())));
-            }
+            value.traitsToSave.forEach((k, v) -> tag.put(k, v.getSyncDataHolder().serializeNBT(context.lookup())));
 
             return tag;
         }
@@ -238,10 +233,39 @@ public final class MachineTraitHolder {
                             key);
                     continue;
                 }
-                if (context.isClientSync()) {
-                    trait.getSyncDataHolder().deserializeClientData(context.lookup(), compoundTag.getCompound(key));
+
+                trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key));
+            }
+
+            return traitHolder;
+        }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf buf, MachineTraitHolder value,
+                                  TransformerContext<MachineTraitHolder> context) {
+            buf.writeVarInt(value.traitsToSave.size());
+            value.traitsToSave.forEach((name, trait) -> {
+                buf.writeUtf(name);
+                if (context.isClientFullSyncUpdate()) trait.getSyncDataHolder().resyncAllFields();
+                trait.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
+            });
+        }
+
+        @Override
+        public @Nullable MachineTraitHolder readFromPacket(FriendlyByteBuf buf,
+                                                           TransformerContext<MachineTraitHolder> context) {
+            var traitHolder = Objects.requireNonNull(context.currentValue());
+            int length = buf.readVarInt();
+            for (int i = 0; i < length; i++) {
+                String name = buf.readUtf();
+
+                var trait = traitHolder.getPersistentTrait(name);
+                if (trait == null) {
+                    throw new IllegalStateException(
+                            "Reading packet data for syncable trait '%s', but no client-side syncable trait has that ID"
+                                    .formatted(name));
                 } else {
-                    trait.getSyncDataHolder().deserializeNBT(context.lookup(), compoundTag.getCompound(key));
+                    trait.getSyncDataHolder().readClientPacket(context.lookup(), buf);
                 }
             }
 
