@@ -169,7 +169,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public <MACHINE extends MetaMachine, S extends MachineBuilder<MachineDefinition, MACHINE, S>> S machine(String name,
                                                                                                             MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return entry(name,
-                callback -> (S) new MachineBuilder<>(this, name, callback, MachineDefinition::new, blockEntityFactory));
+                callback -> (S) new MachineBuilder<>(this, name, callback, blockEntityFactory));
     }
 
     @SuppressWarnings("unchecked")
