@@ -44,9 +44,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
     /// the main testing method
     public abstract boolean test(PredicateContext ctx);
 
-    // this is called after calling getPredicateAtPos()
-    public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
-
     public abstract void onError(PredicateContext ctx);
 
     /// @param root the top-most multi predicate for this multi predicate
