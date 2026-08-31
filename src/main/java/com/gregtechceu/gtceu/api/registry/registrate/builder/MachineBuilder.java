@@ -70,12 +70,10 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
@@ -91,8 +89,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                            extends AbstractBuilder<MachineDefinition, DEFINITION, GTRegistrate, SELF> {
 
     protected MachineInstanceFactory<MACHINE> instanceFactory;
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    public Function<ResourceLocation, DEFINITION> definitionFactory;
+
+    private final MachineDefinition.Properties properties;
 
     private @Nullable BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> blockBuilder;
     private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
@@ -116,8 +114,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      */
     private boolean allowExtendedFacing = false;
     private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
-    private boolean renderMultiblockWorldPreview = true;
-    private boolean renderMultiblockXEIPreview = true;
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
     private GTRecipeType[] recipeTypes = new GTRecipeType[0];
@@ -153,13 +149,19 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public MachineBuilder(GTRegistrate registrate, String name,
                           BuilderCallback callback,
-                          Function<ResourceLocation, DEFINITION> definitionFactory,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
         super(registrate, registrate, name, callback, GTRegistries.Keys.MACHINE);
         this.instanceFactory = instanceFactory;
-        this.definitionFactory = definitionFactory;
-
+        this.properties = createProperties();
         this.defaultLang();
+    }
+
+    protected MachineDefinition.Properties createProperties() {
+        return new MachineDefinition.Properties();
+    }
+
+    protected MachineDefinition.Properties getProperties() {
+        return properties;
     }
 
     @Override
@@ -203,16 +205,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF hasBER(boolean hasBER) {
         this.hasBER = hasBER;
-        return getThis();
-    }
-
-    public SELF renderMultiblockWorldPreview(boolean renderMultiblockWorldPreview) {
-        this.renderMultiblockWorldPreview = renderMultiblockWorldPreview;
-        return getThis();
-    }
-
-    public SELF renderMultiblockXEIPreview(boolean renderMultiblockXEIPreview) {
-        this.renderMultiblockXEIPreview = renderMultiblockXEIPreview;
         return getThis();
     }
 
@@ -682,15 +674,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF multiblockPreviewRenderer(boolean multiBlockWorldPreview,
-                                          boolean multiBlockXEIPreview) {
-        this.renderMultiblockWorldPreview = multiBlockWorldPreview;
-        this.renderMultiblockXEIPreview = multiBlockXEIPreview;
-        return getThis();
-    }
-
+    @SuppressWarnings("unchecked")
     protected DEFINITION createDefinition() {
-        return definitionFactory.apply(getOwner().makeResourceLocation(getName()));
+        return (DEFINITION)new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -754,8 +740,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setAllowExtendedFacing(allowExtendedFacing);
         definition.setShape(shape);
         definition.setDefaultPaintingColor(paintingColor);
-        definition.setRenderXEIPreview(renderMultiblockXEIPreview);
-        definition.setRenderWorldPreview(renderMultiblockWorldPreview);
 
         return definition;
     }

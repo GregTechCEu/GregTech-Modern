@@ -101,12 +101,6 @@ public class MachineDefinition {
     private RotationState rotationState;
     @Setter
     private VoxelShape shape;
-    @Getter
-    @Setter
-    private boolean renderWorldPreview;
-    @Getter
-    @Setter
-    private boolean renderXEIPreview;
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
     @Getter
     @Setter
@@ -135,7 +129,7 @@ public class MachineDefinition {
     @Getter
     private MachineRenderState defaultRenderState;
 
-    public MachineDefinition(ResourceLocation id) {
+    public MachineDefinition(ResourceLocation id, Properties properties) {
         this.id = id;
     }
 
@@ -240,4 +234,9 @@ public class MachineDefinition {
         int machineTypeOutputLimit = this.getRecipeOutputLimits().getOrDefault(cap, recipeTypeOutputSize);
         return Math.min(recipeTypeOutputSize, machineTypeOutputLimit);
     }
+
+    @Accessors(fluent = true)
+    @Getter
+    @Setter
+    public static class Properties {}
 }
