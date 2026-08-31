@@ -59,7 +59,7 @@ class TestablePredicate extends BasePredicate {
     /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     @Override
     public List<Component> getRecipeViewerTooltips(MultiPredicate root) {
-        List<Component> tooltips = new ArrayList<>(root.getAdditionalTooltips());
+        List<Component> tooltips = new ArrayList<>();
         int minCount = getMinCount();
         int maxCount = getMaxCount();
         if (minCount == maxCount && maxCount != -1) {
