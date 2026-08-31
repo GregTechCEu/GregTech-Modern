@@ -2615,6 +2615,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#standard-coils" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Coils
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4836,6 +4847,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#standard-coils" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Standard Coils
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4867,6 +4889,8 @@
   <h1>Custom Coils</h1>
 
 <h2 id="coil-creation">Coil Creation</h2>
+<p>Certain multiblock machines such as the Electric Blast Furnace, Alloy Blast Smelter, Multi-Smelter, Pyrolyze Oven, and 
+Cracker use Heating Coils as part of their structure. The following code is used to define a custom Heating Coil block:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nx">StartupEvents</span><span class="p">.</span><span class="nx">registry</span><span class="p">(</span><span class="s1">'block'</span><span class="p">,</span><span class="w"> </span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'infinity_coil_block'</span><span class="p">,</span><span class="w"> </span><span class="s1">'gtceu:coil'</span><span class="p">)</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="p">.</span><span class="nx">temperature</span><span class="p">(</span><span class="mf">100</span><span class="p">)</span>
@@ -4880,9 +4904,33 @@
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="p">.</span><span class="nx">material</span><span class="p">(</span><span class="s1">'metal'</span><span class="p">)</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">})</span>
 </code></pre></div>
-<ol>
-<li>The Energy Discount must be at least 1.</li>
-</ol>
+<p><code>temperature</code>, <code>level</code>, <code>energyDiscount</code>, and <code>tier</code> all must be integers
+* <code>temperature</code>: Used by Electric Blast Furnace recipes.
+* <code>level</code>: Used to determine Multi-Smelter Parallels, at 32<em>level.
+* <code>energyDiscount</code>: Used to determine Multi-Smelter power usage. EU/t = (4 * Parallels) / (8 * Discount), before overclocks.
+*Must be greater than 0.</em>
+* <code>tier</code>: Used for Speed Bonus in the Pyrolyze Oven, and Energy Discount in the Cracking Unit. +50% Speed, 
+-10% Energy per tier. <em>(Tiers above 10 will not cause the Cracker to consume negative energy.)</em></p>
+<h2 id="standard-coils">Standard Coils</h2>
+<p>For reference, the standard GregTech Modern coils use the following stats:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nx">Coil</span><span class="p">,</span><span class="w"> </span><span class="nx">Temperature</span><span class="p">,</span><span class="w"> </span><span class="nx">Level</span><span class="p">,</span><span class="w"> </span><span class="nx">Discount</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nx">CUPRONICKEL</span><span class="p">,</span><span class="w"> </span><span class="mf">1800</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nx">KANTHAL</span><span class="p">,</span><span class="w"> </span><span class="mf">2700</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">1</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nx">NICHROME</span><span class="p">,</span><span class="w"> </span><span class="mf">3600</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="w">    </span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nx">RTM_ALLOY</span><span class="p">,</span><span class="w"> </span><span class="mf">4500</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">2</span><span class="w">   </span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nx">HSS_G</span><span class="p">,</span><span class="w"> </span><span class="mf">5400</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nx">NAQUADAH</span><span class="p">,</span><span class="w"> </span><span class="mf">7200</span><span class="p">,</span><span class="w"> </span><span class="mf">8</span><span class="p">,</span><span class="w"> </span><span class="mf">4</span><span class="w">    </span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nx">TRINIUM</span><span class="p">,</span><span class="w"> </span><span class="mf">9001</span><span class="p">,</span><span class="w"> </span><span class="mf">8</span><span class="p">,</span><span class="w"> </span><span class="mf">8</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nx">TRITANIUM</span><span class="p">,</span><span class="w"> </span><span class="mf">10800</span><span class="p">,</span><span class="w"> </span><span class="mf">16</span><span class="p">,</span><span class="w"> </span><span class="mf">8</span><span class="w"> </span>
+</code></pre></div>
+This creates a pattern of each coil tier adding either 900 or 1800 temperature, and doubling either the Level or the  <br />
+Energy Discount. This is significant because  <br />
+* For the Electric Blast Furnace, each coil tier unlocks new recipes, and adds either <br />
+  * A 5% EU/t discount <em>(multiplicative)</em> to lower recipes <em>(from +900 temp)</em> <br />
+  * A Perfect Overclock to lower recipes <em>(from +1800 temp)</em>  <br />
+* For the Multi-Smelter, there are effectively two stats: work-per-time, and work-per-EU. <br />
+  * For tiers that double the Level, the Multi-Smelter gains 2x the work-per-time, at the same work-per-EU<br />
+  * For tiers that double the Energy Discount, the Multi-Smelter gains 2x the work-per-EU, at the same work-per-time</p>
 
 
 
