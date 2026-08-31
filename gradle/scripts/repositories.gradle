@@ -95,6 +95,10 @@ repositories {
         forRepository { maven { url = "https://maven.theillusivec4.top/" } }
         filter { includeGroup('top.theillusivec4.curios')}
     }
+    exclusiveContent { // KotlinForForge
+        forRepository { maven { url = "https://thedarkcolour.github.io/KotlinForForge/" } }
+        filter { includeGroup("thedarkcolour") }
+    }
     exclusiveContent { // Argonauts, Heracles
         forRepository { maven { url = "https://maven.teamresourceful.com/repository/maven-public/" } }
         filter {

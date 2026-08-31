@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -59,6 +60,8 @@ public class GTSoundEntries {
 
     @SubscribeEvent
     private static void registerSounds(RegisterEvent event) {
+        if (event.getRegistryKey() != Registries.SOUND_EVENT) return;
+
         for (SoundEntry entry : GTRegistries.SOUNDS) {
             entry.prepare();
             entry.register(soundEvent -> GTRegistries.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(),

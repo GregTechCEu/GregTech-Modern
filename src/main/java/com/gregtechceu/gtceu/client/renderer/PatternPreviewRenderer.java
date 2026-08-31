@@ -52,12 +52,7 @@ public class PatternPreviewRenderer {
 
     public static final PatternPreviewRenderer INSTANCE = new PatternPreviewRenderer();
 
-    private static final Map<RenderLevelStageEvent.Stage, RenderType> STAGE_RENDER_TYPES = Util
-            .make(new IdentityHashMap<>(), map -> {
-                for (RenderType renderType : RenderType.chunkBufferLayers()) {
-                    map.put(RenderLevelStageEvent.Stage.fromRenderType(renderType), renderType);
-                }
-            });
+    private static final Map<RenderLevelStageEvent.Stage, List<RenderType>> STAGE_RENDER_TYPES = createStageRenderTypes();
 
     private @Nullable MutableSchema schema;
     private @Nullable RenderLevel renderLevel;
@@ -121,22 +116,40 @@ public class PatternPreviewRenderer {
         if (this.schema == null || this.controllerPos == null) return;
         if (!camera.isInitialized()) return;
 
-        RenderType renderType = STAGE_RENDER_TYPES.get(stage);
-        if (renderType == null && stage != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
+        List<RenderType> renderTypes = STAGE_RENDER_TYPES.get(stage);
+        if (renderTypes == null && stage != RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) return;
 
         poseStack.pushPose();
         poseStack.translate(controllerPos.getX(), controllerPos.getY(), controllerPos.getZ());
 
         Vec3 cameraPos = camera.getPosition();
-        if (renderType != null) {
-            // render the appropriate chunk layer if renderType is a chunk render layer
-            renderBlocks(renderType, cameraPos, modelViewMatrix);
+        if (renderTypes != null) {
+            for (RenderType renderType : renderTypes) {
+                renderBlocks(renderType, cameraPos, modelViewMatrix);
+            }
         } else {
-            // render block entities if renderType==null
             renderBlockEntities(poseStack, bufferSource, partialTick, cameraPos);
         }
 
         poseStack.popPose();
+    }
+
+    private static Map<RenderLevelStageEvent.Stage, List<RenderType>> createStageRenderTypes() {
+        Map<RenderLevelStageEvent.Stage, List<RenderType>> renderTypes = new IdentityHashMap<>();
+        for (RenderType renderType : RenderType.chunkBufferLayers()) {
+            if (CustomChunkRenderPassRegistry.getPass(renderType) != null) continue;
+
+            RenderLevelStageEvent.Stage stage = RenderLevelStageEvent.Stage.fromRenderType(renderType);
+            if (stage != null) {
+                renderTypes.computeIfAbsent(stage, ignored -> new ArrayList<>()).add(renderType);
+            }
+        }
+        List<RenderType> afterCutout = renderTypes.computeIfAbsent(
+                RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS, ignored -> new ArrayList<>());
+        for (CustomChunkRenderPass pass : CustomChunkRenderPassRegistry.afterCutoutPasses()) {
+            afterCutout.add(pass.renderType());
+        }
+        return renderTypes;
     }
 
     public void notifyRecompile() {

@@ -11,6 +11,7 @@ create = "6.0.10-281"
 ponder = "1.0.64"
 flywheel = "1.0.5"
 curios = "9.4.2+1.21.1"
+kotlinforforge = "5.7.0"
 journeyMapApi = "2.0.0-1.21.1-SNAPSHOT"
 ftblibrary = "2101.1.30"
 ftbteams = "2101.1.9"
@@ -72,6 +73,7 @@ ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", 
 flywheel-api        = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel" }
 flywheel            = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel" }
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
+kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api-neoforge", version.ref = "journeyMapApi" }
 ftblibrary          = { module = "dev.ftb.mods:ftb-library-neoforge", version.ref = "ftblibrary" }
 ftbteams            = { module = "dev.ftb.mods:ftb-teams-neoforge", version.ref = "ftbteams" }
