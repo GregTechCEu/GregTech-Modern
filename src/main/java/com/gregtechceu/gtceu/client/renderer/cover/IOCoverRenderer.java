@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IIOCover;
+import com.gregtechceu.gtceu.client.model.FaceLayer;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 
@@ -73,17 +74,19 @@ public class IOCoverRenderer implements ICoverRenderer {
 
             if (isInverted && invertedOverlaySprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        invertedOverlaySprite));
+                        invertedOverlaySprite).gtceu$setFaceLayer(FaceLayer.COVER));
             } else if (overlaySprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        overlaySprite));
+                        overlaySprite).gtceu$setFaceLayer(FaceLayer.COVER));
             }
             if (isInverted && invertedEmissiveOverlaySprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        invertedEmissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false));
+                        invertedEmissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false)
+                        .gtceu$setFaceLayer(FaceLayer.COVER));
             } else if (emissiveOverlaySprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        emissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false));
+                        emissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false)
+                        .gtceu$setFaceLayer(FaceLayer.COVER));
             }
         }
     }

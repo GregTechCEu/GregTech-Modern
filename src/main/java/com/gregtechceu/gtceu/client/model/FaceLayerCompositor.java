@@ -16,28 +16,37 @@ public final class FaceLayerCompositor {
     // intentional.
     // TODO: This is for handling our model offsets, and is a good catchall on other blocks made with our overlay
     // systems, in the future I'd like to rip this out and just have proper offsets, but OOS for now.
+    // UPDATE; I HATE IT HERE. FOR EVERY TIME SOMEONE HAS TO EDIT THIS PLEASE UPDATE THIS NUMBER : 1
     @Deprecated(since = "8.0")
     private static final float MAX_LEGACY_OUTWARD_OFFSET = 0.025F;
 
     public static void retainBaseLayers(List<BakedQuad> layers) {
         ListIterator<BakedQuad> iterator = layers.listIterator();
         while (iterator.hasNext()) {
-            if (isLegacyOverlay(iterator.next())) {
+            if (resolveLayer(iterator.next()).rendersAboveBase()) {
                 iterator.remove();
             }
         }
     }
 
-    public static void retainOverlayLayers(List<BakedQuad> layers) {
+    public static void retainFaceLayers(List<BakedQuad> layers) {
         ListIterator<BakedQuad> iterator = layers.listIterator();
         while (iterator.hasNext()) {
             BakedQuad layer = iterator.next();
-            if (!isLegacyOverlay(layer)) {
+            if (!resolveLayer(layer).rendersAboveBase()) {
                 iterator.remove();
                 continue;
             }
             iterator.set(canonicalize(layer));
         }
+    }
+
+    private static FaceLayer resolveLayer(BakedQuad quad) {
+        FaceLayer layer = quad.gtceu$getFaceLayer();
+        if (layer != FaceLayer.UNCLASSIFIED) {
+            return layer;
+        }
+        return isLegacyOverlay(quad) ? FaceLayer.MACHINE_FACE : FaceLayer.BASE;
     }
 
     private static boolean isLegacyOverlay(BakedQuad quad) {

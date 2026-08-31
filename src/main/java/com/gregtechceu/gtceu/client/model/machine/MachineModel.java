@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.FaceLayer;
 import com.gregtechceu.gtceu.client.model.FaceLayerCompositor;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
@@ -260,7 +261,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                 boolean overlayPass = renderType == GTRenderTypes.machineFaceOverlay();
                 quads = getMachineQuads(state, side, rand, modelData, overlayPass ? null : renderType);
                 if (overlayPass) {
-                    FaceLayerCompositor.retainOverlayLayers(quads);
+                    FaceLayerCompositor.retainFaceLayers(quads);
                 } else {
                     FaceLayerCompositor.retainBaseLayers(quads);
                 }
@@ -291,20 +292,22 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
                 var itemFace = outputTrait.getItemOutputDirection();
                 if (itemFace != null && side == itemFace) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite)
+                            .gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     if (outputTrait.isAutoOutputItems()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                                itemOutputOverlaySprite));
+                                itemOutputOverlaySprite).gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     }
                 }
             }
             if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
                 var fluidFace = outputTrait.getFluidOutputDirection();
                 if (fluidFace != null && side == fluidFace) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite)
+                            .gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     if (outputTrait.isAutoOutputFluids()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                                fluidOutputOverlaySprite));
+                                fluidOutputOverlaySprite).gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     }
                 }
             }
