@@ -22,6 +22,7 @@ import com.tterrag.registrate.builders.BuilderCallback;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.*;
@@ -35,7 +36,6 @@ public class MultiblockMachineBuilder<
         MACHINE extends MultiblockControllerMachine,
         SELF extends MultiblockMachineBuilder<MACHINE, SELF>>
                                      extends MachineBuilder<MultiblockMachineDefinition, MACHINE, SELF> {
-
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     BuilderCallback callback,
@@ -83,8 +83,9 @@ public class MultiblockMachineBuilder<
     }
 
     public SELF recoveryItems(Supplier<ItemLike[]> items) {
-        getProperties().recoveryItems().add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
-                .toArray(ItemStack[]::new));
+        getProperties().recoveryItems()
+                .add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
+                        .toArray(ItemStack[]::new));
         return getThis();
     }
 
@@ -123,11 +124,12 @@ public class MultiblockMachineBuilder<
 
     @Override
     public MultiblockMachineDefinition.Properties getProperties() {
-        return (MultiblockMachineDefinition.Properties)super.getProperties();
+        return (MultiblockMachineDefinition.Properties) super.getProperties();
     }
 
     @Override
-    protected MultiblockMachineDefinition createDefinition() {
+    @SuppressWarnings("NullableProblems")
+    protected @NonNull MultiblockMachineDefinition createEntry() {
         return new MultiblockMachineDefinition(getOwner().makeResourceLocation(getName()), getProperties());
     }
 }

@@ -5,11 +5,17 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
@@ -22,23 +28,22 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import brachy.modularui.theme.ThemeAPI;
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.*;
 
 /**
@@ -52,93 +57,114 @@ public class MachineDefinition {
     private final ResourceLocation id;
     // This is only stored here for KJS use.
     @Getter
-    @Setter
     @Nullable
-    private String langValue;
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    private DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    private DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
-    @Setter
-    private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
+    private final String langValue;
+    private final DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
+    private final DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
+    private final Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
     @Getter
-    @Setter
-    private GTRecipeType[] recipeTypes;
+    private final GTRecipeType[] recipeTypes;
     @Getter
-    @Setter
-    private int tier = -1;
+    private final int tier;
     @Getter
-    @Setter
-    private int defaultPaintingColor;
+    private final int defaultPaintingColor;
     @Getter
-    @Setter
-    private RecipeModifier recipeModifier;
+    private final RecipeModifier recipeModifier;
     @Getter
-    @Setter
-    private boolean alwaysTryModifyRecipe;
+    private final boolean alwaysTryModifyRecipe;
     @Getter
-    @Setter
-    private BiPredicate<IRecipeLogicMachine, @Nullable GTRecipe> beforeWorking = (machine, recipe) -> true;
+    private final BiPredicate<IRecipeLogicMachine, @Nullable GTRecipe> beforeWorking;
     @Getter
-    @Setter
-    private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
+    private final Predicate<IRecipeLogicMachine> onWorking;
     @Getter
-    @Setter
-    private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
+    private final Consumer<IRecipeLogicMachine> onWaiting;
     @Getter
-    @Setter
-    private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+    private final Consumer<IRecipeLogicMachine> afterWorking;
     @Getter
-    @Setter
-    private boolean regressWhenWaiting = true;
+    private final boolean regressWhenWaiting;
     /** Whether this machine can be rotated or face upwards. */
     @Getter
-    @Setter
-    private boolean allowExtendedFacing;
-
+    private final boolean allowExtendedFacing;
     @Getter
-    @Setter
-    private RotationState rotationState;
-    @Setter
-    private VoxelShape shape;
+    private final RotationState rotationState;
+    private final VoxelShape shape;
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
     @Getter
-    @Setter
-    private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+    private final BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Getter
-    @Setter
-    private Supplier<BlockState> appearance;
+    private final Supplier<BlockState> appearance;
     @Getter
-    @Setter
-    private boolean allowCoverOnFront;
+    private final boolean allowCoverOnFront;
     @Getter
-    @Setter
     @Nullable
-    private PanelFactory UI;
+    private final PanelFactory UI;
     @Getter
-    @Setter
-    private String themeId = ThemeAPI.DEFAULT_ID;
+    private final String themeId;
     @Getter
-    @Setter
-    private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
-
+    private final Reference2IntMap<RecipeCapability<?>> recipeOutputLimits;
     @Getter
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    private StateDefinition<MachineDefinition, MachineRenderState> stateDefinition;
+    private final StateDefinition<MachineDefinition, MachineRenderState> stateDefinition;
     @Accessors(fluent = true)
     @Getter
-    private MachineRenderState defaultRenderState;
+    private final MachineRenderState defaultRenderState;
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public MachineDefinition(ResourceLocation id, Properties properties) {
         this.id = id;
+
+        this.rotationState = properties.rotationState();
+        this.langValue = properties.langValue();
+        this.UI = properties.ui();
+        this.themeId = properties.themeId();
+        this.recipeTypes = properties.recipeTypes();
+        this.blockHolder = properties.blockHolder();
+        this.itemHolder = properties.itemHolder();
+        this.tier = properties.tier();
+        this.recipeOutputLimits = properties.recipeOutputLimits();
+        this.blockEntityTypeSupplier = properties.blockEntityTypeSupplier();
+        this.tooltipBuilder = (itemStack, components) -> {
+            components.addAll(properties.tooltips());
+            if (properties.tooltipBuilder() != null) properties.tooltipBuilder().accept(itemStack, components);
+        };
+        this.recipeModifier = properties.recipeModifier();
+        this.alwaysTryModifyRecipe = properties.alwaysTryModifyRecipe();
+        this.beforeWorking = properties.beforeWorking();
+        this.onWorking = properties.onWorking();
+        this.onWaiting = properties.onWaiting();
+        this.afterWorking = properties.afterWorking();
+        this.regressWhenWaiting = properties.regressWhenWaiting();
+        this.allowCoverOnFront = properties.allowCoverOnFront();
+
+        for (GTRecipeType type : recipeTypes) {
+            if (type.getIconSupplier() == null) {
+                type.setIconSupplier(this::asStack);
+            }
+        }
+        if (properties.appearance() == null) {
+            properties.appearance(() -> blockHolder.value().defaultBlockState());
+        }
+        this.appearance = properties.appearance();
+        this.allowExtendedFacing = properties.allowExtendedFacing();
+        this.shape = properties.shape();
+        this.defaultPaintingColor = properties.paintingColor();
+
+        // Initialise render state
+
+        StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(
+                this);
+        properties.modelProperties().keySet().forEach(builder::add);
+        stateDefinition = builder.create(MachineDefinition::defaultRenderState, MachineRenderState::new);
+
+        MachineRenderState defaultState = getStateDefinition().any();
+        for (var entry : properties.modelProperties().entrySet()) {
+            if (entry.getValue() == null) continue;
+            defaultState = defaultState.setValue((Property) entry.getKey(), (Comparable) entry.getValue());
+        }
+        this.defaultRenderState = defaultState;
     }
 
     public boolean isTiered() {
         return tier != -1;
-    }
-
-    public final void registerDefaultState(MachineRenderState state) {
-        this.defaultRenderState = state;
     }
 
     public MetaMachineBlock getBlock() {
@@ -238,5 +264,40 @@ public class MachineDefinition {
     @Accessors(fluent = true)
     @Getter
     @Setter
-    public static class Properties {}
+    public static class Properties {
+
+        private DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
+        private DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
+        private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
+
+        @Nullable
+        private MachineBuilder.ModelInitializer model = null;
+        private @Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel = null;
+        protected final Map<Property<?>, @Nullable Comparable<?>> modelProperties = new IdentityHashMap<>();
+        private VoxelShape shape = Shapes.block();
+        private RotationState rotationState = RotationState.NON_Y_AXIS;
+        private boolean allowExtendedFacing = false;
+        private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
+        private GTRecipeType[] recipeTypes = new GTRecipeType[0];
+        private int tier = -1;
+        private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
+        private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
+        private PartAbility[] abilities = new PartAbility[0];
+        private final List<Component> tooltips = new ArrayList<>();
+        private @Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder;
+        private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
+        private boolean alwaysTryModifyRecipe;
+        private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+        private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
+        private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
+        private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+        private boolean regressWhenWaiting = true;
+        private boolean allowCoverOnFront = false;
+        @Nullable
+        private PanelFactory ui = null;
+        private String themeId = ThemeAPI.DEFAULT_ID;
+        private @Nullable Supplier<BlockState> appearance;
+        @Nullable
+        private String langValue = null;
+    }
 }
