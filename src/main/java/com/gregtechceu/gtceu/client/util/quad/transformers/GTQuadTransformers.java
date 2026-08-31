@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.model.IQuadTransformer;
 import net.neoforged.neoforge.client.model.QuadTransformers;
 
@@ -55,9 +54,8 @@ public final class GTQuadTransformers {
             float u = Float.intBitsToFloat(vertices[offset]);
             float v = Float.intBitsToFloat(vertices[offset + 1]);
 
-            // same as sprite.getX(oldSprite.getXOffset(x)), but we don't multiply and divide in between
-            u = Mth.map(u, oldSprite.getU0(), oldSprite.getU1(), sprite.getU0(), sprite.getU1());
-            v = Mth.map(v, oldSprite.getV0(), oldSprite.getV1(), sprite.getV0(), sprite.getV1());
+            u = sprite.getU(oldSprite.getUOffset(u));
+            v = sprite.getV(oldSprite.getVOffset(v));
 
             vertices[offset] = Float.floatToRawIntBits(u);
             vertices[offset + 1] = Float.floatToRawIntBits(v);

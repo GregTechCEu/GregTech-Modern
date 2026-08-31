@@ -155,8 +155,7 @@ public class GTElements {
     }
 
     public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, double halfLifeSeconds,
-                                            String decayTo,
-                                            String name, String symbol, boolean isIsotope) {
+                                            String decayTo, String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
         GTRegistries.register(GTRegistries.ELEMENTS, id, element);
         return element;
