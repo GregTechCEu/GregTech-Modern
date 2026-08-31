@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.embeddium;
 
+import com.gregtechceu.gtceu.client.renderer.CustomChunkRenderPass;
 import com.gregtechceu.gtceu.client.renderer.CustomChunkRenderPassRegistry;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
@@ -33,9 +34,18 @@ public final class GTEmbeddiumCompat {
         Map<RenderType, Material> materials = new IdentityHashMap<>();
         for (var pass : CustomChunkRenderPassRegistry.activePasses()) {
             materials.put(pass.renderType(), new Material(getCustomRenderPasses().get(pass.renderType()),
-                    AlphaCutoffParameter.valueOf(pass.alphaCutoff().name()), pass.mipped()));
+                    getAlphaCutoff(pass.alphaCutoff()), pass.mipped()));
         }
         return materials;
+    }
+
+    private static AlphaCutoffParameter getAlphaCutoff(CustomChunkRenderPass.AlphaCutoff alphaCutoff) {
+        return switch (alphaCutoff) {
+            case ZERO -> AlphaCutoffParameter.ZERO;
+            case ONE_TENTH -> AlphaCutoffParameter.ONE_TENTH;
+            case HALF -> AlphaCutoffParameter.HALF;
+            case ONE -> AlphaCutoffParameter.ONE;
+        };
     }
 
     public static @Nullable TerrainRenderPass getCustomRenderPass(RenderType renderType) {

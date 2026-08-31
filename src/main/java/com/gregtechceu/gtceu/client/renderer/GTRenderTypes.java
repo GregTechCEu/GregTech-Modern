@@ -77,8 +77,8 @@ public class GTRenderTypes extends RenderType {
             RenderType.BIG_BUFFER_SIZE, true, false,
             RenderType.CompositeState.builder()
                     .setLightmapState(LIGHTMAP)
-                    .setShaderState(RENDERTYPE_CUTOUT_SHADER)
-                    .setTextureState(BLOCK_SHEET)
+                    .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
                     .setWriteMaskState(COLOR_WRITE)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
                     .setLayeringState(POLYGON_OFFSET_LAYERING)

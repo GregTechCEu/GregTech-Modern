@@ -254,12 +254,16 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         boolean blockRender = modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS);
         List<BakedQuad> quads;
         if (blockRender) {
-            boolean overlayPass = renderType == GTRenderTypes.machineFaceOverlay();
-            quads = getMachineQuads(state, side, rand, modelData, overlayPass ? null : renderType);
-            if (overlayPass) {
-                FaceLayerCompositor.retainOverlayLayers(quads);
+            if (renderType == null) {
+                quads = getMachineQuads(state, side, rand, modelData, null);
             } else {
-                FaceLayerCompositor.retainBaseLayers(quads);
+                boolean overlayPass = renderType == GTRenderTypes.machineFaceOverlay();
+                quads = getMachineQuads(state, side, rand, modelData, overlayPass ? null : renderType);
+                if (overlayPass) {
+                    FaceLayerCompositor.retainOverlayLayers(quads);
+                } else {
+                    FaceLayerCompositor.retainBaseLayers(quads);
+                }
             }
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
