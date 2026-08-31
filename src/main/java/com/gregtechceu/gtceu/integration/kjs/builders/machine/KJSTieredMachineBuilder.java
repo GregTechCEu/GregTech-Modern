@@ -123,15 +123,15 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
             }
             this.definition.apply(tier, builder);
 
-            if (builder.recipeTypes().length > 0) {
-                GTRecipeType recipeType = builder.recipeTypes()[0];
+            if (builder.properties().recipeTypes().length > 0) {
+                GTRecipeType recipeType = builder.properties().recipeTypes()[0];
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
                             GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
             }
-            if (builder.ui() == null) {
+            if (builder.properties().ui() == null) {
                 builder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
             }
 

@@ -3,11 +3,8 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -15,8 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.*;
@@ -53,14 +53,16 @@ public class MultiblockMachineDefinition extends MachineDefinition {
         if (properties.patterns().isEmpty()) {
             throw new IllegalStateException("Missing default structure pattern for " + getName());
         }
-        for (Map.Entry<String, Function<MultiblockMachineDefinition, IBlockPattern>> entry : properties.patterns.entrySet()) {
+        for (Map.Entry<String, Function<MultiblockMachineDefinition, IBlockPattern>> entry : properties.patterns
+                .entrySet()) {
             structurePatterns.put(entry.getKey(), GTMemoizer.memoize(() -> entry.getValue().apply(this)));
         }
         this.structurePatterns = Collections.unmodifiableMap(structurePatterns);
         this.allowFlip = properties.allowFlip();
         this.renderXEIPreview = properties.renderMultiblockXEIPreview;
         this.renderWorldPreview = properties.renderMultiblockWorldPreview;
-        this.recoveryItems = () -> properties.recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream).toArray(ItemStack[]::new);
+        this.recoveryItems = () -> properties.recoveryItems.stream().map(Supplier::get).flatMap(Arrays::stream)
+                .toArray(ItemStack[]::new);
         this.partSorter = GTMemoizer.memoizeFunctionWeakIdent(properties.partSorter());
         this.partAppearance = properties.partAppearance();
         this.additionalDisplay = properties.additionalDisplay();
@@ -70,15 +72,23 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Getter
     @Setter
     public static class Properties extends MachineDefinition.Properties {
+
         private boolean generator = false;
         private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns = new Object2ReferenceOpenHashMap<>();
         private boolean allowFlip = true;
         private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
-        private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
-        private TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance =
-                (controller, part, side) -> controller.getDefinition().getAppearance().get();
+        private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a,
+                                                                                                              b) -> 0;
+        private TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance = (controller,
+                                                                                                                         part,
+                                                                                                                         side) -> controller
+                                                                                                                                 .getDefinition()
+                                                                                                                                 .getAppearance()
+                                                                                                                                 .get();
         private boolean renderMultiblockWorldPreview = true;
         private boolean renderMultiblockXEIPreview = true;
-        private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay = (m, sm) -> Collections.emptyList();
+        private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay = (m,
+                                                                                                              sm) -> Collections
+                                                                                                                      .emptyList();
     }
 }
