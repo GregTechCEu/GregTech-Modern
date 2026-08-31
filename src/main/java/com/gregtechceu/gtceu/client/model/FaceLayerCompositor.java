@@ -12,8 +12,10 @@ import java.util.ListIterator;
 public final class FaceLayerCompositor {
 
     private static final float POSITION_EPSILON = 1.0e-5F;
-    // Existing machine models use small outward offsets for layered face textures. Larger offsets are most likely intentional.
-    //TODO: This is for handling our model offsets, and is a good catchall on other blocks made with our overlay systems, in the future I'd like to rip this out and just have proper offsets, but OOS for now.
+    // Existing machine models use small outward offsets for layered face textures. Larger offsets are most likely
+    // intentional.
+    // TODO: This is for handling our model offsets, and is a good catchall on other blocks made with our overlay
+    // systems, in the future I'd like to rip this out and just have proper offsets, but OOS for now.
     @Deprecated(since = "8.0")
     private static final float MAX_LEGACY_OUTWARD_OFFSET = 0.025F;
 
