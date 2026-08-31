@@ -32,9 +32,16 @@ public final class CustomChunkRenderPassRegistry {
     private static final List<CustomChunkRenderPass> ACTIVE_PASSES = PASSES.stream()
             .filter(pass -> pass.loadCondition().getAsBoolean())
             .toList();
+    private static final List<CustomChunkRenderPass> AFTER_CUTOUT_PASSES = ACTIVE_PASSES.stream()
+            .filter(pass -> pass.drawStage() == CustomChunkRenderPass.DrawStage.AFTER_CUTOUT)
+            .toList();
 
     public static List<CustomChunkRenderPass> activePasses() {
         return ACTIVE_PASSES;
+    }
+
+    public static List<CustomChunkRenderPass> afterCutoutPasses() {
+        return AFTER_CUTOUT_PASSES;
     }
 
     public static @Nullable CustomChunkRenderPass getPass(RenderType renderType) {
@@ -51,9 +58,7 @@ public final class CustomChunkRenderPassRegistry {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
 
         var cameraPosition = event.getCamera().getPosition();
-        for (CustomChunkRenderPass pass : ACTIVE_PASSES) {
-            if (pass.drawStage() != CustomChunkRenderPass.DrawStage.AFTER_CUTOUT) continue;
-
+        for (CustomChunkRenderPass pass : AFTER_CUTOUT_PASSES) {
             ((LevelRendererAccessor) event.getLevelRenderer()).invokeRenderSectionLayer(pass.renderType(),
                     cameraPosition.x, cameraPosition.y, cameraPosition.z,
                     event.getModelViewMatrix(), event.getProjectionMatrix());

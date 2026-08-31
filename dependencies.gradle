@@ -142,6 +142,9 @@ dependencies {
         transitive = false
     }
 
+    extraLocalRuntime(forge.kotlinforforge) {
+        transitive = false
+    }
     extraLocalRuntime(forge.observable)
     //////////////////////////
 

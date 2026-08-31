@@ -28,7 +28,6 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
-import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
@@ -99,7 +98,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         };
         this.multiblockSchemaInfo = schemaInfo == null ? new MultiblockSchemaInfo() : schemaInfo;
         refreshSchema();
-        this.multiblockSchemaInfo.setRenderer(new SchemaRenderer(this.multiblockSchemaInfo.getMapSchema())
+        this.multiblockSchemaInfo.setRenderer(new GTMultiblockSchemaRenderer(this.multiblockSchemaInfo.getMapSchema())
                 .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)));
 
         IGuiAction.MouseReleased setBlockOnClick = (ctx, m) -> {
