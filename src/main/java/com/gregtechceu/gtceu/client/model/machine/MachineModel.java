@@ -7,12 +7,14 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.FaceLayerCompositor;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.ctm.CTMMeshBuilder;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -232,6 +234,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             renderTypeSets.add(coverRenderTypes);
         }
 
+        renderTypeSets.add(ChunkRenderTypeSet.of(GTRenderTypes.machineFaceOverlay()));
+
         return ChunkRenderTypeSet.union(renderTypeSets);
     }
 
@@ -247,9 +251,16 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             postTransform = UnbakedGeometryHelper.applyRootTransform(modelState, rootTransform);
         }
 
+        boolean blockRender = modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS);
         List<BakedQuad> quads;
-        if (modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS)) {
-            quads = getMachineQuads(state, side, rand, modelData, renderType);
+        if (blockRender) {
+            boolean overlayPass = renderType == GTRenderTypes.machineFaceOverlay();
+            quads = getMachineQuads(state, side, rand, modelData, overlayPass ? null : renderType);
+            if (overlayPass) {
+                FaceLayerCompositor.retainOverlayLayers(quads);
+            } else {
+                FaceLayerCompositor.retainBaseLayers(quads);
+            }
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
             quads = renderMachine(null, null, null, state, side, rand, modelData, renderType);

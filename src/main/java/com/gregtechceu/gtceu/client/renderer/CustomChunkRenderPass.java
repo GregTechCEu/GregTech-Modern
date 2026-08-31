@@ -1,0 +1,30 @@
+package com.gregtechceu.gtceu.client.renderer;
+
+import net.minecraft.client.renderer.RenderType;
+
+import java.util.function.BooleanSupplier;
+
+public record CustomChunkRenderPass(RenderType renderType, AlphaCutoff alphaCutoff, boolean mipped,
+                                    DrawStage drawStage, TerrainPhase terrainPhase, BooleanSupplier enabled) {
+
+    public enum AlphaCutoff {
+        ZERO,
+        ONE_TENTH,
+        HALF,
+        ONE
+    }
+
+    public enum DrawStage {
+        AFTER_CUTOUT,
+        MANUAL
+    }
+
+    public enum TerrainPhase {
+        SOLID,
+        CUTOUT_MIPPED,
+        CUTOUT,
+        TRANSLUCENT,
+        TRIPWIRE,
+        CUSTOM
+    }
+}

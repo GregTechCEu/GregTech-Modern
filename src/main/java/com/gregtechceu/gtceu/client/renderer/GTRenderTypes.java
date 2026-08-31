@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -46,6 +47,17 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
+    private static final RenderStateShard.LayeringStateShard BLOOM_LAYERING = new LayeringStateShard(
+            "bloom_layering",
+            () -> {
+                RenderSystem.polygonOffset(-0.5F, -5.0F);
+                RenderSystem.enablePolygonOffset();
+            },
+            () -> {
+                RenderSystem.polygonOffset(0.0F, 0.0F);
+                RenderSystem.disablePolygonOffset();
+            });
+
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
             RenderType.BIG_BUFFER_SIZE, true, false,
@@ -53,9 +65,22 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(RENDERTYPE_BLOOM_SHADER)
                     .setOutputState(BLOOM_TARGET)
                     .setWriteMaskState(COLOR_WRITE)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setLayeringState(BLOOM_LAYERING)
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
+                    .createCompositeState(true));
+
+    private static final RenderType MACHINE_FACE_OVERLAY = RenderType.create("gtceu:machine_face_overlay",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.BIG_BUFFER_SIZE, true, false,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_CUTOUT_SHADER)
+                    .setTextureState(BLOCK_SHEET)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
                     .createCompositeState(true));
 
     private static final RenderType FACADE_SOLID = RenderType.create("gtceu:facade_solid",
@@ -162,6 +187,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType bloom() {
         return BLOOM;
+    }
+
+    public static RenderType machineFaceOverlay() {
+        return MACHINE_FACE_OVERLAY;
     }
 
     public static RenderType facade(RenderType source) {
