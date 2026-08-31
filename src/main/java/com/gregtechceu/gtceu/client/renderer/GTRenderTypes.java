@@ -47,6 +47,7 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
+    // Bloom sits in front of base faces but behind facades and overlays using polygon offset and sort.
     private static final LayeringStateShard BLOOM_LAYERING = new LayeringStateShard(
             "bloom_layering",
             () -> {
@@ -199,6 +200,7 @@ public class GTRenderTypes extends RenderType {
         if (source == RenderType.cutout()) return FACADE_CUTOUT;
         if (source == RenderType.translucent()) return FACADE_TRANSLUCENT;
         if (source == RenderType.tripwire()) return FACADE_TRIPWIRE;
+        // Third-party chunk layers keep their own render state instead of making the facade fail.
         return source;
     }
 

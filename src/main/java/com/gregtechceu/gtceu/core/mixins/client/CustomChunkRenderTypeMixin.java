@@ -20,6 +20,7 @@ public class CustomChunkRenderTypeMixin {
         ImmutableList.Builder<RenderType> layers = ImmutableList.builder();
         boolean added = false;
         for (RenderType renderType : original) {
+            // Insert before translucent terrain so custom opaque-style passes retain stable ordering.
             if (!added && renderType == RenderType.translucent()) {
                 for (var pass : CustomChunkRenderPassRegistry.activePasses()) {
                     layers.add(pass.renderType());

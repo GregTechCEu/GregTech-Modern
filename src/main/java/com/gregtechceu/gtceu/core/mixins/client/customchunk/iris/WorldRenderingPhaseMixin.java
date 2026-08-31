@@ -24,6 +24,7 @@ public class WorldRenderingPhaseMixin {
     @Mutable
     private static WorldRenderingPhase[] $VALUES;
 
+    // Iris needs a distinct phase for custom passes such as bloom that do not match vanilla terrain.
     @Unique
     private static final WorldRenderingPhase GTCEU$CUSTOM_CHUNK;
 

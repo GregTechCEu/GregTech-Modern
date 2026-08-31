@@ -18,6 +18,7 @@ import java.util.List;
 @EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 public final class CustomChunkRenderPassRegistry {
 
+    // Pass order here is also the order used by vanilla, Sodium, and Embeddium chunk buffers.
     private static final List<CustomChunkRenderPass> PASSES = List.of(
             new CustomChunkRenderPass(GTRenderTypes.machineFaceOverlay(),
                     CustomChunkRenderPass.AlphaCutoff.ONE_TENTH, false,
@@ -27,6 +28,7 @@ public final class CustomChunkRenderPassRegistry {
                     CustomChunkRenderPass.DrawStage.MANUAL, CustomChunkRenderPass.TerrainPhase.CUSTOM,
                     () -> !BloomRenderer.SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT));
 
+    // Chunk buffer layers are fixed during client startup, so load conditions are resolved once.
     private static final List<CustomChunkRenderPass> ACTIVE_PASSES = PASSES.stream()
             .filter(pass -> pass.loadCondition().getAsBoolean())
             .toList();

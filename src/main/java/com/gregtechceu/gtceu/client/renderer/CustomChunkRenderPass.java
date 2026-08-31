@@ -8,6 +8,7 @@ public record CustomChunkRenderPass(RenderType renderType, AlphaCutoff alphaCuto
                                     DrawStage drawStage, TerrainPhase terrainPhase, BooleanSupplier loadCondition) {
 
     public enum AlphaCutoff {
+        // These names intentionally match Sodium and Embeddium's AlphaCutoffParameter values.
         ZERO,
         ONE_TENTH,
         HALF,

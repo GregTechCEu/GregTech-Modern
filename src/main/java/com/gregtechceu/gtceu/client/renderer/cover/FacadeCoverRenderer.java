@@ -240,6 +240,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     }
 
     static boolean rendersDynamically(FacadeCover facade, ChunkRenderTypeSet renderTypes) {
+        // Only opaque facades can replace the hidden block face inside the baked chunk mesh.
         return !renderTypes.isEmpty() && !occludesFullBlockFace(facade, renderTypes);
     }
 
