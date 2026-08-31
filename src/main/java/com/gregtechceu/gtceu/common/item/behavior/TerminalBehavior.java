@@ -98,9 +98,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder, IAddIn
                 !tag.contains("flipped", CompoundTag.TAG_BYTE)) {
             return InteractionResult.PASS;
         }
-        Direction frontFacing = Direction.values()[tag.getByte("facing")];
-        Direction upFacing = Direction.values()[tag.getByte("upFacing")];
-        boolean flipped = tag.getBoolean("flipped");
+        Direction frontFacing = controller.getFrontFacing();
+        Direction upFacing = controller.getUpwardsFacing();
+        boolean flipped = controller.isFlipped();
 
         if (!level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
