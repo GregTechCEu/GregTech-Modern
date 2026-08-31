@@ -9,7 +9,7 @@ Each PatternError also must implement the ui modifier, which is the way to displ
 public class MyPatternError extends PatternError {
 
     // This codec is needed for serialization. It should send all the needed data to display the error on the client. 
-    public static Codec<PlaceholderError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static MapCodec<PlaceholderError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
                     Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
             .apply(instance, MyPatternError::new));
@@ -44,13 +44,14 @@ You also need to register your new PatternErrors statically:
 
 ```java
 public class ExampleMod {
-    public ExampleMod() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addGenericListener(PatternError.PatternErrorType.class, this::registerPatternErrors);
+    public ExampleMod(IEventBus modBus) {
+        PATTERN_ERROR_TYPES.register(modBus);
     }
 
-    private void registerPatternErrors(GTCEuAPI.RegisterEvent<ResourceLocation, PatternError.PatternErrorType> event) {
-        event.register(MyPatternError.TYPE.id(), MyPatternError.TYPE);
-    }
+    private static final DeferredRegister<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = DeferredRegister.create(GTRegistries.Keys.PATTERN_ERROR_TYPE, ADDON_MOD_ID);
+
+    public static final DeferredHolder<PatternError.PatternErrorType, PatternError.PatternErrorType> MY_PATTERN_ERROR_TYPE =
+            PATTERN_ERROR_TYPES.register(MyPatternError.TYPE.id().getPath(), () -> MyPatternError.TYPE);
+
 }
 ```

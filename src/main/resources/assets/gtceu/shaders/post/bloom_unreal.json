@@ -1,7 +1,6 @@
 {
     "targets": [
         "final",
-        "filter",
         "swap_b0",
         "swap_b1",
         "swap_b2",
@@ -10,17 +9,8 @@
     ],
     "passes": [
         {
-            "name": "gtceu:filter_bloom_color",
-            "intarget": "final",
-            "outtarget": "filter",
-            "auxtargets": [
-                { "id": "final:depth",          "name": "DiffuseDepthSampler" },
-                { "id": "minecraft:main:depth", "name": "MainDepthSampler" }
-            ]
-        },
-        {
             "name": "gtceu:blur",
-            "intarget": "filter",
+            "intarget": "final",
             "outtarget": "swap_b0",
             "use_linear_filter": true,
             "uniforms": [
@@ -99,12 +89,18 @@
             ]
         },
         {
+            "__comment": "Copy the original buffer to a temporary one so we can output to the actual one in composite",
+            "name": "blit",
+            "intarget": "final",
+            "outtarget": "swap_b0"
+        },
+        {
             "name": "gtceu:unreal_composite",
             "intarget": "minecraft:main",
             "outtarget": "final",
             "use_linear_filter": true,
             "auxtargets": [
-                { "id": "filter",  "name": "HighlightSampler" },
+                { "id": "swap_b0",  "name": "HighlightSampler" },
                 { "id": "swap_b1", "name": "BlurTexture1" },
                 { "id": "swap_b2", "name": "BlurTexture2" },
                 { "id": "swap_b3", "name": "BlurTexture3" },

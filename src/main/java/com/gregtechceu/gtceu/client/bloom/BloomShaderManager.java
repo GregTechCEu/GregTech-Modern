@@ -22,6 +22,7 @@ import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.toma.configuration.config.validate.IConfigValueValidator;
 import dev.toma.configuration.config.validate.IValidationResult;
@@ -150,6 +151,10 @@ public class BloomShaderManager {
 
         @Override
         public IValidationResult validate(BloomType newType, IConfigValueReadable<BloomType> configField) {
+            if (!RenderSystem.isOnRenderThread()) {
+                RenderSystem.recordRenderCall(BloomShaderManager::initPostShaders);
+                return IValidationResult.success();
+            }
             if (!BloomShaderManager.initPostShaders()) {
                 // failed to load post shaders
 

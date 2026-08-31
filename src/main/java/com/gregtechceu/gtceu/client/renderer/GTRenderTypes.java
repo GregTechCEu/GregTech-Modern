@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -46,14 +47,91 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
+    // Bloom sits in front of base faces but behind facades and overlays using polygon offset and sort.
+    private static final LayeringStateShard BLOOM_LAYERING = new LayeringStateShard(
+            "bloom_layering",
+            () -> {
+                RenderSystem.polygonOffset(-0.5F, -5.0F);
+                RenderSystem.enablePolygonOffset();
+            },
+            () -> {
+                RenderSystem.polygonOffset(0.0F, 0.0F);
+                RenderSystem.disablePolygonOffset();
+            });
+
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
             RenderType.BIG_BUFFER_SIZE, true, false,
             RenderType.CompositeState.builder()
                     .setShaderState(RENDERTYPE_BLOOM_SHADER)
                     .setOutputState(BLOOM_TARGET)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setLayeringState(BLOOM_LAYERING)
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
+                    .createCompositeState(true));
+
+    private static final RenderType MACHINE_FACE_OVERLAY = RenderType.create("gtceu:machine_face_overlay",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.BIG_BUFFER_SIZE, true, false,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_CUTOUT_SHADER)
+                    .setTextureState(BLOCK_SHEET)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .createCompositeState(true));
+
+    private static final RenderType FACADE_SOLID = RenderType.create("gtceu:facade_solid",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.BIG_BUFFER_SIZE, true, false,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_SOLID_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .createCompositeState(true));
+    private static final RenderType FACADE_CUTOUT_MIPPED = RenderType.create("gtceu:facade_cutout_mipped",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.BIG_BUFFER_SIZE, true, false,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .createCompositeState(true));
+    private static final RenderType FACADE_CUTOUT = RenderType.create("gtceu:facade_cutout",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.SMALL_BUFFER_SIZE, true, false,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_CUTOUT_SHADER)
+                    .setTextureState(BLOCK_SHEET)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .createCompositeState(true));
+    private static final RenderType FACADE_TRANSLUCENT = RenderType.create("gtceu:facade_translucent",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.SMALL_BUFFER_SIZE, true, true,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setOutputState(TRANSLUCENT_TARGET)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .createCompositeState(true));
+    private static final RenderType FACADE_TRIPWIRE = RenderType.create("gtceu:facade_tripwire",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.TRANSIENT_BUFFER_SIZE, true, true,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(LIGHTMAP)
+                    .setShaderState(RENDERTYPE_TRIPWIRE_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setOutputState(WEATHER_TARGET)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
                     .createCompositeState(true));
     private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
         return create("gtceu:entity_bloom",
@@ -62,6 +140,8 @@ public class GTRenderTypes extends RenderType {
                 RenderType.CompositeState.builder()
                         .setShaderState(RENDERTYPE_ENTITY_BLOOM_SHADER)
                         .setOutputState(BLOOM_TARGET)
+                        .setWriteMaskState(COLOR_WRITE)
+                        .setLayeringState(POLYGON_OFFSET_LAYERING)
                         .setLightmapState(LIGHTMAP)
                         .setOverlayState(OVERLAY)
                         .setTextureState(new TextureStateShard(texture, false, true))
@@ -108,6 +188,20 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType bloom() {
         return BLOOM;
+    }
+
+    public static RenderType machineFaceOverlay() {
+        return MACHINE_FACE_OVERLAY;
+    }
+
+    public static RenderType facade(RenderType source) {
+        if (source == RenderType.solid()) return FACADE_SOLID;
+        if (source == RenderType.cutoutMipped()) return FACADE_CUTOUT_MIPPED;
+        if (source == RenderType.cutout()) return FACADE_CUTOUT;
+        if (source == RenderType.translucent()) return FACADE_TRANSLUCENT;
+        if (source == RenderType.tripwire()) return FACADE_TRIPWIRE;
+        // Third-party chunk layers keep their own render state instead of making the facade fail.
+        return source;
     }
 
     public static RenderType entityBloom(ResourceLocation location) {

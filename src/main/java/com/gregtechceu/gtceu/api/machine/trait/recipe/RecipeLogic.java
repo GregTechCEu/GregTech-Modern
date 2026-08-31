@@ -26,8 +26,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.ChanceCache
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -693,8 +691,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     protected IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
         IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> map = new IdentityHashMap<>();
-        for (RecipeCapability<?> cap : RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
-                .registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)) {
+        for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES) {
             map.put(cap, cap.makeChanceCache());
         }
         return map;

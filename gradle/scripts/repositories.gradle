@@ -36,12 +36,6 @@ repositories {
         url = "https://modmaven.dev/"
     }
 
-    maven { // LDLib, Shimmer
-        name = "FirstDarkDev Maven"
-        url = "https://maven.firstdark.dev/snapshots"
-    }
-
-
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository {
             maven { url = "https://maven.createmod.net" }
@@ -87,10 +81,9 @@ repositories {
         forRepository { maven { url = "https://maven.terraformersmc.com/releases/" } }
         filter { includeGroup("dev.emi") }
     }
-    exclusiveContent { // shedaniel - REI, architectury, cloth-config
+    exclusiveContent { // architectury
         forRepository { maven { url = "https://maven.shedaniel.me/" } }
         filter {
-            includeGroupAndSubgroups("me.shedaniel")
             includeGroup("dev.architectury")
         }
     }

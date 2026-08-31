@@ -77,15 +77,15 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveWorkab
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
-import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeCategoryBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.TagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidDefinitionBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreDefinitionBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
@@ -380,7 +380,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof RecipeCapability<?> capability) return capability;
             GTResourceLocation wrapper = GTResourceLocation.wrap(o);
             if (wrapper == null) return null;
-            return registries.access().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(wrapper.wrapped());
+            return GTRegistries.RECIPE_CAPABILITIES.get(wrapper.wrapped());
         });
 
         registry.register(MaterialStack.class, o -> {

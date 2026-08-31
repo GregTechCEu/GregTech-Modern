@@ -4,6 +4,10 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -50,13 +54,16 @@ public class GTSoundEntries {
     public static final SoundEntry PORTAL_CLOSING = REGISTRATE.sound("portal_closing").build();
     public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
 
-    public static void init() {
-        GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
-        registerSounds();
+    public static void init(IEventBus modBus) {
+        modBus.register(GTSoundEntries.class);
     }
 
-    private static void registerSounds() {
+    @SubscribeEvent
+    private static void registerSounds(RegisterEvent event) {
+        if (event.getRegistryKey() != Registries.SOUND_EVENT) return;
+
         for (SoundEntry entry : GTRegistries.SOUNDS) {
+            entry.prepare();
             entry.register(soundEvent -> GTRegistries.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(),
                     soundEvent));
         }

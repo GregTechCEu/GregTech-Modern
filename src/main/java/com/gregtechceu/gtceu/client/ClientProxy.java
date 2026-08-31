@@ -56,7 +56,6 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -82,7 +81,7 @@ public class ClientProxy {
 
         NeoForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
         GTGuiTextures.init();
-        ModLoadingContext.get().getActiveContainer().getEventBus().addListener(GTGuiTheme::onReloadThemes);
+        modBus.addListener(GTGuiTheme::onReloadThemes);
     }
 
     @SubscribeEvent

@@ -26,15 +26,6 @@ public interface IGTAddon {
     void gtInitComplete();
 
     /**
-     * Call init on your custom IWorldGenLayer class(es) here
-     *
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, IWorldGenLayer>} register event
-     *             instead
-     */
-    @Deprecated(forRemoval = true, since = "8.0.0")
-    default void registerWorldgenLayers() {}
-
-    /**
      * Call init on your custom VeinGenerator class(es) here
      */
     default void registerVeinGenerators() {}
