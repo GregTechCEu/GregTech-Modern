@@ -46,9 +46,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @Getter
     private PredicateSettings settings;
 
-    @Getter
-    private final List<Component> additionalTooltips = new ArrayList<>();
-
     @Nullable
     @Getter
     @Setter
@@ -274,14 +271,16 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @RemapForJS("addTooltip")
     @Contract(mutates = "this")
     public MultiPredicate addTooltips(Component tooltip) {
-        this.additionalTooltips.add(tooltip);
+        forEach(p -> p.addTooltips(tooltip));
+        forEachChild(mp -> mp.addTooltips(tooltip));
         return this;
     }
 
     @CheckReturnValue
     @Contract(mutates = "this")
     public MultiPredicate addTooltips(Component... tooltip) {
-        Collections.addAll(this.additionalTooltips, tooltip);
+        forEach(p -> Collections.addAll(p.getAdditionalTooltips(), tooltip));
+        forEachChild(mp -> mp.addTooltips(tooltip));
         return this;
     }
 
@@ -319,7 +318,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
                 children().stream().map(MultiPredicate::deepCopy).toList(),
                 predicates().stream().map(BasePredicate::copy).toList(),
                 this.hasAir, this.settings);
-        copy.additionalTooltips.addAll(this.additionalTooltips);
         copy.setController(this.controller);
         return copy;
     }
