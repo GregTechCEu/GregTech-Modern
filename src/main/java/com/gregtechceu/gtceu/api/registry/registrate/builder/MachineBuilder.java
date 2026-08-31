@@ -61,6 +61,7 @@ import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
@@ -157,6 +158,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         super(registrate, registrate, name, callback, GTRegistries.Keys.MACHINE);
         this.instanceFactory = instanceFactory;
         this.definitionFactory = definitionFactory;
+
+        this.defaultLang();
     }
 
     @Override
@@ -370,6 +373,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public SELF ui(PanelFactory ui) {
         this.ui = ui;
         return getThis();
+    }
+
+    public SELF defaultLang() {
+        return lang(RegistrateLangProvider.toEnglishName(getName()));
+    }
+
+    public SELF lang(String name) {
+        return langValue(name);
     }
 
     public SELF langValue(String langValue) {

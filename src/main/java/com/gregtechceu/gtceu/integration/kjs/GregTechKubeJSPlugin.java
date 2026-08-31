@@ -113,11 +113,15 @@ import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
+import dev.latvian.mods.kubejs.registry.RegistryType;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
+import dev.latvian.mods.kubejs.util.ID;
 import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
+import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.Wrapper;
+import dev.latvian.mods.rhino.type.TypeInfo;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
@@ -132,6 +136,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
 
+        registry.of(Registries.RECIPE_TYPE, reg -> {
+            reg.add(GTCEu.id("machine"), GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+        });
         registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
         registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
                 GTRecipeCategoryBuilder::new);
@@ -339,7 +346,22 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
         registry.register(GTResourceLocation.class, GTResourceLocation::wrap);
 
-        registryObjectTypeWrapper(registry, GTRecipeType.class, GTRegistries.Keys.RECIPE_TYPE);
+        registry.register(GTRecipeType.class, (Context cx, Object from, TypeInfo target) -> {
+            if (ID.isKey(from)) {
+                // if it's an ID, make it default to the GT namespace
+                GTResourceLocation wrapper = GTResourceLocation.wrap(from);
+                if (wrapper != null) from = wrapper.wrapped();
+            }
+
+            // first convert
+            Object o = cx.jsToJava(from, RegistryType.ofKey(Registries.RECIPE_TYPE).type());
+            if (o instanceof GTRecipeType gtType) {
+                return gtType;
+            } else {
+                cx.reportConversionError(from, target);
+                return null;
+            }
+        });
         registryObjectTypeWrapper(registry, GTRecipeCategory.class, GTRegistries.Keys.RECIPE_CATEGORY);
         registryObjectTypeWrapper(registry, ChanceLogic.class, GTRegistries.Keys.CHANCE_LOGIC);
 

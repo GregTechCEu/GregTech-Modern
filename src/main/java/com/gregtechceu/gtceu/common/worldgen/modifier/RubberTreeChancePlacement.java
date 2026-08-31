@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.worldgen.modifier;
 
-import com.gregtechceu.gtceu.common.data.GTPlacementModifierTypes;
+import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -23,6 +23,6 @@ public class RubberTreeChancePlacement extends RepeatingPlacement {
 
     @Override
     public PlacementModifierType<?> type() {
-        return GTPlacementModifierTypes.RUBBER_TREE_CHANCE_PLACEMENT.value();
+        return GTPlacementModifiers.RUBBER_TREE_CHANCE.get();
     }
 }

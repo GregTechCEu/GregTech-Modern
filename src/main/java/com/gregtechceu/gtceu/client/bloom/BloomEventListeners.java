@@ -12,10 +12,12 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 import net.neoforged.neoforge.client.event.RegisterNamedRenderTypesEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
@@ -24,6 +26,13 @@ import lombok.experimental.UtilityClass;
 @EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 @UtilityClass
 public class BloomEventListeners {
+
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        if (BloomRenderer.SafeMode.enabled()) {
+            NeoForge.EVENT_BUS.register(BloomRenderer.SafeMode.class);
+        }
+    }
 
     @SubscribeEvent
     public static void afterParticlesRendered(RenderLevelStageEvent event) {
@@ -77,7 +86,7 @@ public class BloomEventListeners {
             block = GTRenderTypes.bloom();
             entity = GTRenderTypes.entityBloomBlockSheet();
         } else {
-            // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
+            // if safe mode is enabled, register the named render type as a copy of neoforge's 'cutout'
             block = RenderType.cutoutMipped();
             entity = NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
         }

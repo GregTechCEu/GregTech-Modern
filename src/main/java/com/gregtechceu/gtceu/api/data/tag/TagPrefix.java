@@ -1034,7 +1034,7 @@ public class TagPrefix {
 
     @Getter
     @Setter
-    private int maxStackSize = 64;
+    private int maxStackSize = Item.DEFAULT_MAX_STACK_SIZE;
 
     @Getter
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();

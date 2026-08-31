@@ -103,6 +103,17 @@ public class Predicates {
         return blocks(null, blocks);
     }
 
+    @HideFromJS
+    public static MultiPredicate blocks(Supplier<Block> block) {
+        return blocks(block.get());
+    }
+
+    @SafeVarargs
+    @HideFromJS
+    public static MultiPredicate blocks(Supplier<Block>... blocks) {
+        return blocks(Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new));
+    }
+
     @RemapForJS("blocksDebug")
     public static MultiPredicate blocks(@Nullable String debugName, Block... blocks) {
         return blocks(debugName, Arrays.stream(blocks));

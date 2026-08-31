@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -116,15 +115,14 @@ public final class GTRegistries {
     public static final Registry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND, false);
     public static final Registry<ChanceLogic> CHANCE_LOGICS = makeRegistry(Keys.CHANCE_LOGIC);
     public static final Registry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
-
+    static {
+        // manually insert the vanilla recipe type registry into the load order list TWICE:
+        // - once for the actual recipe type registry
+        addRegistryToLoadOrder(Registries.RECIPE_TYPE, null);
+        // - a duplicate entry for the custom KubeJS builder type
+        addRegistryToLoadOrder(Keys.RECIPE_TYPE, null);
+    }
     public static final Registry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER, false);
-    /**
-     * Use {@link BuiltInRegistries#RECIPE_TYPE} instead of this. This only exists to simplify KubeJS registration.
-     *
-     * @see Registries#RECIPE_TYPE
-     */
-    @ApiStatus.Internal
-    public static final Registry<GTRecipeType> RECIPE_TYPES = makeRegistry(Keys.RECIPE_TYPE);
     public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
     public static final Registry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
 

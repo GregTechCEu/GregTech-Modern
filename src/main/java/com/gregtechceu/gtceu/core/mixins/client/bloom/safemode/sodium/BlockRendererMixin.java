@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.integration.sodium.GTSodiumCompat;
 
-import net.caffeinemc.mods.sodium.api.util.ColorARGB;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
@@ -24,23 +23,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium.BlockRendererMixin}
+ * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.sodium.BlockRendererMixin}
  *
- * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium.BlockRendererMixin
+ * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.sodium.BlockRendererMixin
  */
 @Mixin(value = BlockRenderer.class, remap = false)
 public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
 
-    @Inject(method = "processQuad",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;shadeQuad(Lnet/caffeinemc/mods/sodium/client/render/frapi/mesh/MutableQuadViewImpl;Lnet/caffeinemc/mods/sodium/client/model/light/LightMode;ZLnet/fabricmc/fabric/api/renderer/v1/material/ShadeMode;)V",
-                     shift = At.Shift.AFTER))
-    private void gtceu$copyBloomQuads$initLocals(MutableQuadViewImpl quad,
+    @Inject(method = "bufferQuad", at = @At(value = "HEAD"))
+    private void gtceu$copyBloomQuads$initLocals(MutableQuadViewImpl quad, float[] brightnesses, Material material,
                                                  CallbackInfo ci,
-                                                 @Local(name = "emissive") boolean emissive,
                                                  @Share("bloomBuffer") LocalRef<VertexConsumer> bloomBufferRef) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
-        if (BloomShaderManager.isBloomActive() && GTSodiumCompat.quadHasBloom(quad, this.quadLightData.lm, emissive)) {
+        if (BloomShaderManager.isBloomActive() && GTSodiumCompat.quadHasBloom(quad, this.quadLightData.lm)) {
             SectionPos sectionPos = SectionPos.of(this.pos);
             bloomBufferRef.set(BloomRenderer.SafeMode.getOrStartBloomBuffer(sectionPos));
         } else {
@@ -65,7 +60,7 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
         int normal = quad.getAccurateNormal(srcIndex);
 
         bloomBuffer.addVertex(out.x, out.y, out.z)
-                .setColor(ColorARGB.toABGR(out.color))
+                .setColor(out.color)
                 .setUv(out.u, out.v)
                 .setLight(out.light)
                 .setNormal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));
