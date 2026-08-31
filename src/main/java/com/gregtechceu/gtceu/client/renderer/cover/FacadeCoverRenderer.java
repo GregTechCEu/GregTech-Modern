@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.model.quad.transform.QuadTransform;
+import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.transformers.QuadPositionForcer;
 import com.gregtechceu.gtceu.client.util.quad.transformers.QuadReInterpolator;
@@ -14,10 +16,10 @@ import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -32,7 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
@@ -52,22 +53,18 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     private static final double FACADE_PLANE_BACK = 1.0 / 16;
 
     // spotless:off
-    private static final Map<Direction, QuadTransform> FACADE_PLANE_TRANSFORMERS = Util.make(new EnumMap<>(Direction.class), map -> {
+    private static final Map<Direction, QuadTransform> FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(FACADE_PLANE_BACK);
+    private static final Map<Direction, QuadTransform> FULL_BLOCK_HOLDER_FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(0);
+
+    private static Map<Direction, QuadTransform> createFacadePlaneTransformers(double thickness) {
+        Map<Direction, QuadTransform> transformers = new EnumMap<>(Direction.class);
         for (Direction dir : GTUtil.DIRECTIONS) {
             // All faces are slightly under a full block's size to never show the beginning of
             // the second row of pixels of the block's texture and to combat Z-fighting.
-            AABB facadePlane = switch (dir) {
-                case DOWN -> StaticFaceBakery.COVER_OVERLAY.setMaxY(FACADE_PLANE_BACK);
-                case UP -> StaticFaceBakery.COVER_OVERLAY.setMinY(1.0 - FACADE_PLANE_BACK);
-                case NORTH -> StaticFaceBakery.COVER_OVERLAY.setMaxZ(FACADE_PLANE_BACK);
-                case SOUTH -> StaticFaceBakery.COVER_OVERLAY.setMinZ(1.0 - FACADE_PLANE_BACK);
-                case WEST -> StaticFaceBakery.COVER_OVERLAY.setMaxX(FACADE_PLANE_BACK);
-                case EAST -> StaticFaceBakery.COVER_OVERLAY.setMinX(1.0 - FACADE_PLANE_BACK);
-            };
-
-            map.put(dir, new QuadPositionForcer(facadePlane));
+            transformers.put(dir, new QuadPositionForcer(StaticFaceBakery.createFaceCube(dir, thickness)));
         }
-    });
+        return transformers;
+    }
     // spotless:on
 
     public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
@@ -133,7 +130,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         ModelData facadeData = facadeModel.getModelData(level, pos, facadeState, modelData);
-        if (renderType != null && !facadeModel.getRenderTypes(facadeState, rand, facadeData).contains(renderType)) {
+        ChunkRenderTypeSet facadeRenderTypes = facadeModel.getRenderTypes(facadeState, rand, facadeData);
+        if (renderType != null && !facadeRenderTypes.contains(renderType)) {
             return;
         }
 
@@ -145,7 +143,10 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         MeshBuilder meshBuilder = MeshBuilder.getInstance();
         var emitter = meshBuilder.getEmitter();
 
-        QuadTransform clamper = FACADE_PLANE_TRANSFORMERS.get(attachedSide);
+        boolean fullBlockHolder = coverBehavior.coverHolder.getCoverPlateThickness() <= 0;
+        Map<Direction, QuadTransform> facadePlaneTransformers = fullBlockHolder ?
+                FULL_BLOCK_HOLDER_FACADE_PLANE_TRANSFORMERS : FACADE_PLANE_TRANSFORMERS;
+        QuadTransform clamper = facadePlaneTransformers.get(attachedSide);
         QuadReInterpolator interpolator = new QuadReInterpolator();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
@@ -169,7 +170,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
             for (BakedQuad quad : cullfaceQuads) {
                 // skip quads that aren't oriented correctly
-                if (quad.getDirection() != attachedSide && (coverBehavior.shouldRenderPlate() ||
+                if (quad.getDirection() != attachedSide && (fullBlockHolder || coverBehavior.shouldRenderPlate() ||
                         !coverBehavior.coverHolder.shouldRenderBackSide())) {
                     continue;
                 }
@@ -223,7 +224,66 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         BakedModel facadeModel = RenderUtil.getModelForState(facadeState);
+        if (facadeModel.isCustomRenderer()) {
+            return ChunkRenderTypeSet.none();
+        }
         return facadeModel.getRenderTypes(facadeState, rand, modelData);
+    }
+
+    static boolean occludesFullBlockFace(FacadeCover facade, ChunkRenderTypeSet renderTypes) {
+        if (!facade.shouldRenderPlate() || renderTypes.isEmpty()) return false;
+
+        for (RenderType renderType : renderTypes) {
+            if (renderType != RenderType.solid()) return false;
+        }
+        return true;
+    }
+
+    static boolean rendersDynamically(FacadeCover facade, ChunkRenderTypeSet renderTypes) {
+        // Only opaque facades can replace the hidden block face inside the baked chunk mesh.
+        return !renderTypes.isEmpty() && !occludesFullBlockFace(facade, renderTypes);
+    }
+
+    public static boolean hasDynamicFullBlockFacade(MetaMachine machine) {
+        if (machine.getCoverContainer().getCoverPlateThickness() > 0) return false;
+
+        BlockAndTintGetter level = machine.getLevel();
+        BlockPos pos = machine.getBlockPos();
+        for (Direction face : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = machine.getCoverContainer().getCoverAtSide(face);
+            if (!(cover instanceof FacadeCover facade)) continue;
+
+            BlockState facadeState = facade.getFacadeState();
+            RandomSource rand = RandomSource.create(facadeState.getSeed(pos));
+            ModelData facadeData = INSTANCE.getModelData(cover, pos, level, ModelData.EMPTY);
+            ChunkRenderTypeSet renderTypes = INSTANCE.getRenderTypes(cover, pos, level, rand, facadeData);
+            if (rendersDynamically(facade, renderTypes)) return true;
+        }
+        return false;
+    }
+
+    void renderDynamicFullBlockFacade(FacadeCover facade, BlockPos pos, BlockAndTintGetter level,
+                                      PoseStack poseStack, MultiBufferSource buffer, int packedOverlay) {
+        BlockState facadeState = facade.getFacadeState();
+        RandomSource rand = RandomSource.create(facadeState.getSeed(pos));
+        ModelData facadeData = getModelData(facade, pos, level, ModelData.EMPTY);
+        ChunkRenderTypeSet renderTypes = getRenderTypes(facade, pos, level, rand, facadeData);
+        if (!rendersDynamically(facade, renderTypes)) return;
+
+        var modelRenderer = Minecraft.getInstance().getBlockRenderer().getModelRenderer();
+        BlockState holderState = level.getBlockState(pos);
+        for (RenderType renderType : renderTypes) {
+            rand.setSeed(facadeState.getSeed(pos));
+            List<BakedQuad> quads = new ArrayList<>();
+            renderCover(quads, facade.attachedSide, rand, facade, pos, level,
+                    ModelData.EMPTY, renderType);
+            if (quads.isEmpty()) continue;
+
+            RenderType facadeRenderType = GTRenderTypes.facade(renderType);
+            modelRenderer.tesselateBlock(level, new DynamicFacadeModel(quads), holderState, pos, poseStack,
+                    buffer.getBuffer(facadeRenderType), false, rand, holderState.getSeed(pos), packedOverlay,
+                    ModelData.EMPTY, facadeRenderType);
+        }
     }
 
     @Override
@@ -239,6 +299,21 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return defaultItemModel.useAmbientOcclusion();
         }
         return super.useAmbientOcclusion();
+    }
+
+    private static final class DynamicFacadeModel extends BaseBakedModel {
+
+        private final List<BakedQuad> quads;
+
+        private DynamicFacadeModel(List<BakedQuad> quads) {
+            this.quads = quads;
+        }
+
+        @Override
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                        RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
+            return side == null ? quads : Collections.emptyList();
+        }
     }
 
     @Override
