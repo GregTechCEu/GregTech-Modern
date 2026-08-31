@@ -130,10 +130,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class CommonProxy {
 
-    private static IEventBus modBus;
-
     public static void init(final IEventBus modBus) {
-        CommonProxy.modBus = modBus;
         if (GTCEu.Mods.isKubeJSLoaded()) {
             // initialize this before the class's static listeners
             // so KubeJS materials are registered before the material registry is closed.
@@ -141,38 +138,11 @@ public class CommonProxy {
         }
         modBus.register(CommonProxy.class);
 
-        // MUI stuff
-        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
-        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
-
-        GTGuiTheme.registerThemes();
-        SpoilableBehavior.init();
-
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
         REGISTRATE.registerEventListeners(modBus);
-        GTCreativeModeTabs.init();
-        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
-
-        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
-        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
-        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
-
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
-    }
-
-    // Only register everything once.
-    private static boolean didRunRegistration = false;
-
-    @SubscribeEvent
-    public static void onRegister(RegisterEvent event) {
-        if (didRunRegistration) {
-            return;
-        }
-        didRunRegistration = true;
-
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
@@ -180,7 +150,7 @@ public class CommonProxy {
         GTMedicalConditions.init();
         TagPrefix.init();
 
-        GTSoundEntries.init();
+        GTSoundEntries.init(modBus);
         GTDamageTypes.init();
         GTPlaceholders.init();
 
@@ -200,7 +170,7 @@ public class CommonProxy {
         ChanceLogic.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
-        GTPatternErrors.init();
+        GTPatternErrors.init(modBus);
 
         GTFoods.init();
         GTToolTiers.init();
@@ -236,6 +206,22 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
+
+        GTCreativeModeTabs.init();
+        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
+
+        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
+        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
+        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
+
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+
+        GTGuiTheme.registerThemes();
+        SpoilableBehavior.init();
+
+        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
     }
 
     @ApiStatus.Internal

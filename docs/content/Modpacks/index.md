@@ -13,7 +13,7 @@ Refer to this section for information on how to use it, as well as for examples.
 
 ## Addon Template
 
-A basic template for creating Java addons and modpack coremods is provided [here](https://github.com/GregTechCEu/GregTech-Addon-Template).
+A basic template for creating Java addons and modpack coremods is provided [here](https://github.com/GregTechCEu/1.21.1-Addon-Template).
 
 ## General Notes
 

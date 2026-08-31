@@ -15,39 +15,18 @@ They are registered using
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
     
-    // in 1.20.1
-    public static RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION;
-
-    public ExampleMod() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modBus.addGenericListener(RecipeConditionType.class, this::registerConditions);
-    }
-    
-    public void registerConditions(GTCEuAPI.RegisterEvent<ResourceLocation, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"), // (1)
-                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-    }
-    // end 1.20.1
-    
-    // in 1.21.1
-    public static final RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-            ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "example_condition"), // (1)
-            new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-
     public ExampleMod(IEventBus modBus, FMLModContainer container) {
         modBus.addListener(CommonInit::onRegister);
-        bus.addListener(this::registerConditions);
+        bus.addListener(RecipeConditionType.class, this::registerConditions);
+        RECIPE_CONDITIONS.register(modBus);
     }
-    
-    public void registerConditions(RegisterEvent event) {
-        EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, AddonMod.id("example_condition"),
-                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-    }
-    // end 1.21.1
+
+    private static final DeferredRegister<RecipeConditionType<?>> RECIPE_CONDITIONS = DeferredRegister.create(GTRegistries.Keys.RECIPE_CONDITION, ExampleMod.MOD_ID);
+
+    public static final DeferredHolder<RecipeConditionType<?>, RecipeConditionType<ExampleCondition>> EXAMPLE_CONDITION = RECIPE_CONDITIONS.register("example_condition",
+            () -> new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
 }
 ```
-
-1. You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
 
 We will set up a condition that requires that the power buffer of the machine is above a certain Y level.
 ```java

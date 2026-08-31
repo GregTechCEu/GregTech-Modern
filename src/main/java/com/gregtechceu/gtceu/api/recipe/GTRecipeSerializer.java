@@ -104,7 +104,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                                    Map.Entry<RecipeCapability<?>, ? extends List<Content>> entry) {
         RecipeCapability<?> capability = entry.getKey();
         List<Content> contents = entry.getValue();
-        buf.writeResourceKey(buf.registryAccess().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)
+        buf.writeResourceKey(GTRegistries.RECIPE_CAPABILITIES
                 .getResourceKey(capability).orElseThrow());
         writeCollection(contents, buf, capability.serializer::toNetworkContent);
     }
@@ -113,9 +113,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                                               Map.Entry<RecipeCapability<?>, ChanceLogic> entry) {
         RecipeCapability<?> capability = entry.getKey();
         ChanceLogic logic = entry.getValue();
-        buf.writeResourceKey(buf.registryAccess().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY)
+        buf.writeResourceKey(GTRegistries.RECIPE_CAPABILITIES
                 .getResourceKey(capability).orElseThrow());
-        buf.writeResourceKey(buf.registryAccess().registryOrThrow(GTRegistries.Keys.CHANCE_LOGIC).getResourceKey(logic)
+        buf.writeResourceKey(GTRegistries.CHANCE_LOGICS.getResourceKey(logic)
                 .orElseThrow());
     }
 
