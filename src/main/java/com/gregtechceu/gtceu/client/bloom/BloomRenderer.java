@@ -68,6 +68,7 @@ public class BloomRenderer {
 
         profilerFiller.popPush("gtceu:bloom");
         setupBloomShaderUniforms();
+        BLOOM_TARGET.copyDepthFrom(Minecraft.getInstance().getMainRenderTarget());
         GTRenderTypes.bloom().setupRenderState();
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);

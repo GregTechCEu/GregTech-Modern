@@ -9,7 +9,7 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
-        "client.bloom.normal.iris.WorldRenderingPhaseMixin"
+        "client.customchunk.iris.WorldRenderingPhaseMixin"
     ],
     "mixins": [],
     "injectors": {

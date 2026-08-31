@@ -159,7 +159,7 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         this.pipeShape = blockEntity.getBlockState().getVisualShape(blockEntity.getLevel(), blockEntity.getBlockPos(),
                 CollisionContext.empty());
-        this.pipeBounds = pipeShape.bounds().inflate(0.001).move(posX, posY, posZ);
+        this.pipeBounds = pipeShape.bounds().inflate(0.003).move(posX, posY, posZ);
     }
 
     public void setTemperature(int temperature) {
@@ -191,7 +191,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         // update pipeShape every tick so it doesn't desync if the pipe is disconnected
         pipeShape = blockEntity.getBlockState().getVisualShape(blockEntity.getLevel(), blockEntity.getBlockPos(),
                 CollisionContext.empty());
-        pipeBounds = pipeShape.bounds().inflate(0.001).move(posX, posY, posZ);
+        pipeBounds = pipeShape.bounds().inflate(0.003).move(posX, posY, posZ);
 
         if (temperature > 400 && blockEntity.getLevel().random.nextFloat() < 0.04f) {
             spawnSmoke();
@@ -255,8 +255,8 @@ public class GTOverheatParticle extends GTBloomParticle {
         poseStack.translate(posX, posY, posZ);
         pipeShape.forAllBoxes((x1, y1, z1, x2, y2, z2) -> {
             RenderBufferHelper.renderColorCube(buffer, poseStack,
-                    (float) x1 - 0.001f, (float) y1 - 0.001f, (float) z1 - 0.001f,
-                    (float) x2 + 0.001f, (float) y2 + 0.001f, (float) z2 + 0.001f,
+                    (float) x1 - 0.003F, (float) y1 - 0.003F, (float) z1 - 0.003F,
+                    (float) x2 + 0.003F, (float) y2 + 0.003F, (float) z2 + 0.003F,
                     red, green, blue, alpha, true);
         });
         poseStack.popPose();
