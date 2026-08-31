@@ -359,14 +359,15 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @Override
     @CheckReturnValue
     public MultiPredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
-        if (this.settings == null) {
-            return copyWith(mp -> {
+        return copyWith(p -> {
+            if (this.settings == null) {
                 // only one level deep
-                mp.forEach(p -> p.updateSettings(configurator));
-                mp.forEachChild(p -> p.updateSettings(configurator, true));
-            });
-        }
-        return copyWith(p -> p.updateSettings(configurator));
+                p.forEach(predicate -> predicate.updateSettings(configurator));
+                p.forEachChild(child -> child.updateSettings(configurator, true));
+            } else {
+                p.updateSettings(configurator);
+            }
+        });
     }
 
     @CheckReturnValue
