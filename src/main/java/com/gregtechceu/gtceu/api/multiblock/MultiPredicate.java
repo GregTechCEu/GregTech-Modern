@@ -41,23 +41,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @Accessors(chain = true)
     private boolean controller;
 
-    /*
-     * I was curious on your opinion on how recursiveness of setting mins on multipredicates should be done, if at all
-     * 
-     * a.setmin(4).and(b.setmin(4) -> at least 4 of a and 4 of b
-     * 
-     * a.and(b).setmin(4) -> at least 4 of a and b combined
-     * 
-     * should we allow something like
-     * a.and(b).setmin(4,true) or .setminRecursive(4) -> at least 4 of a and 4 of b
-     * 
-     * for the case where the user doesn't have access to the original a and b predicates?
-     * how do we see this "recursive" idea for the difference between children and predicates? and what about when you
-     * have multiple nested children?
-     * or should we just not bother?
-     * I'm leaning to not bother, just make the predicates yourself and edit them acordingly, but wanna discuss it at
-     * least
-     */
     /// Nonnull by default, see {@link #recursive()}
     @Nullable
     @Getter
