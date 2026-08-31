@@ -15,8 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class DefaultMaterialsMixin {
 
     @Inject(method = "forRenderLayer", at = @At("HEAD"), cancellable = true)
-    private static void gtceu$provideMachineFaceOverlayMaterial(RenderType layer,
-                                                                CallbackInfoReturnable<Material> cir) {
+    private static void gtceu$provideCustomChunkMaterial(RenderType layer, CallbackInfoReturnable<Material> cir) {
         Material material = GTEmbeddiumCompat.getCustomMaterial(layer);
         if (material != null) {
             cir.setReturnValue(material);

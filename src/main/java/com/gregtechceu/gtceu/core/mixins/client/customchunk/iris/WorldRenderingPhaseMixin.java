@@ -40,7 +40,7 @@ public class WorldRenderingPhaseMixin {
     @Inject(method = "fromTerrainRenderType", at = @At("HEAD"), cancellable = true)
     private static void gtceu$classifyCustomChunkLayer(RenderType renderType,
                                                        CallbackInfoReturnable<WorldRenderingPhase> cir) {
-        var pass = CustomChunkRenderPassRegistry.get(renderType);
+        var pass = CustomChunkRenderPassRegistry.getPass(renderType);
         if (pass == null) return;
 
         cir.setReturnValue(switch (pass.terrainPhase()) {

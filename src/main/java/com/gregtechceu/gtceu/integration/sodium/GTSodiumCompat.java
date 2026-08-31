@@ -17,11 +17,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public class GTSodiumCompat {
+public final class GTSodiumCompat {
 
     @Getter(lazy = true)
     private static final Map<RenderType, TerrainRenderPass> customRenderPasses = createCustomRenderPasses();
@@ -45,11 +46,11 @@ public class GTSodiumCompat {
         return materials;
     }
 
-    public static TerrainRenderPass getCustomRenderPass(RenderType renderType) {
+    public static @Nullable TerrainRenderPass getCustomRenderPass(RenderType renderType) {
         return getCustomRenderPasses().get(renderType);
     }
 
-    public static Material getCustomMaterial(RenderType renderType) {
+    public static @Nullable Material getCustomMaterial(RenderType renderType) {
         return getCustomMaterials().get(renderType);
     }
 
@@ -59,14 +60,6 @@ public class GTSodiumCompat {
 
     public static Material getBloomMaterial() {
         return getCustomMaterial(GTRenderTypes.bloom());
-    }
-
-    public static TerrainRenderPass getMachineFaceOverlayRenderPass() {
-        return getCustomRenderPass(GTRenderTypes.machineFaceOverlay());
-    }
-
-    public static Material getMachineFaceOverlayMaterial() {
-        return getCustomMaterial(GTRenderTypes.machineFaceOverlay());
     }
 
     public static boolean quadHasBloom(MutableQuadViewImpl quad, int[] ambientPackedLights) {
@@ -102,4 +95,6 @@ public class GTSodiumCompat {
         }
         return false;
     }
+
+    private GTSodiumCompat() {}
 }

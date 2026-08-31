@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.customchunk.sodium;
 
+import com.gregtechceu.gtceu.client.renderer.CustomChunkRenderPassRegistry;
 import com.gregtechceu.gtceu.integration.sodium.GTSodiumCompat;
 
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.DefaultTerrainRenderPasses;
@@ -20,7 +21,8 @@ public class DefaultTerrainRenderPassesMixin {
     public static TerrainRenderPass[] ALL;
 
     static {
-        TerrainRenderPass[] customPasses = GTSodiumCompat.getCustomRenderPasses().values()
+        TerrainRenderPass[] customPasses = CustomChunkRenderPassRegistry.activePasses().stream()
+                .map(pass -> GTSodiumCompat.getCustomRenderPass(pass.renderType()))
                 .toArray(TerrainRenderPass[]::new);
         ALL = ArrayUtils.addAll(ALL, customPasses);
     }

@@ -47,7 +47,7 @@ public interface ICoverableRenderer {
         double thickness = coverable.getCoverPlateThickness();
 
         if (thickness <= 0) {
-            removeOpaqueFullBlockFacadeBacking(quads, coverable, pos, level, rand, coverModelData);
+            removeOpaqueFullBlockFacadeBacking(quads, coverable, pos, level, coverModelData);
         }
 
         byte coverMask = 0;
@@ -68,7 +68,7 @@ public interface ICoverableRenderer {
                     cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
                 // All faces are slightly under a full block's size to never show the beginning of
                 // the second row of pixels of the block's texture and to combat Z-fighting.
-                var cube = StaticFaceBakery.createFaceCube(face, thickness, 0);
+                var cube = StaticFaceBakery.createFaceCube(face, thickness);
 
                 if (side == null) { // render back
                     quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0], true));
@@ -92,13 +92,14 @@ public interface ICoverableRenderer {
     }
 
     private static void removeOpaqueFullBlockFacadeBacking(List<BakedQuad> quads, ICoverable coverable, BlockPos pos,
-                                                           BlockAndTintGetter level, RandomSource rand,
+                                                           BlockAndTintGetter level,
                                                            @Nullable Map<Direction, ModelData> coverModelData) {
         EnumSet<Direction> opaqueFacadeFaces = EnumSet.noneOf(Direction.class);
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(face);
             if (!(cover instanceof FacadeCover facade)) continue;
 
+            RandomSource rand = RandomSource.create(facade.getFacadeState().getSeed(pos));
             ModelData coverData = coverModelData != null ?
                     coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY;
             ChunkRenderTypeSet facadeRenderTypes = cover.getCoverRenderer().get()
@@ -123,10 +124,11 @@ public interface ICoverableRenderer {
     default void renderDynamicCovers(MetaMachine machine, float partialTick, PoseStack poseStack,
                                      MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ICoverable coverable = machine.getCoverContainer();
+        boolean fullBlockHolder = coverable.getCoverPlateThickness() <= 0;
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(face);
-            if (cover != null && coverable.getCoverPlateThickness() <= 0) {
-                FacadeCoverRenderer.INSTANCE.renderDynamicFullBlockFacade(cover, machine.getBlockPos(),
+            if (fullBlockHolder && cover instanceof FacadeCover facade) {
+                FacadeCoverRenderer.INSTANCE.renderDynamicFullBlockFacade(facade, machine.getBlockPos(),
                         machine.getLevel(), poseStack, buffer, packedOverlay);
             }
             IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRenderer().get() : null;

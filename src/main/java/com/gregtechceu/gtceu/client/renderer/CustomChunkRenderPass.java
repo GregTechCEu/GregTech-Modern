@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.RenderType;
 import java.util.function.BooleanSupplier;
 
 public record CustomChunkRenderPass(RenderType renderType, AlphaCutoff alphaCutoff, boolean mipped,
-                                    DrawStage drawStage, TerrainPhase terrainPhase, BooleanSupplier enabled) {
+                                    DrawStage drawStage, TerrainPhase terrainPhase, BooleanSupplier loadCondition) {
 
     public enum AlphaCutoff {
         ZERO,

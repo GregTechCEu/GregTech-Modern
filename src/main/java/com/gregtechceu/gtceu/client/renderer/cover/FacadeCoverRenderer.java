@@ -53,16 +53,15 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
     private static final double FACADE_PLANE_BACK = 1.0 / 16;
 
     // spotless:off
-    private static final Map<Direction, QuadTransform> FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(FACADE_PLANE_BACK, 0);
-    private static final Map<Direction, QuadTransform> FULL_BLOCK_HOLDER_FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(0, 0);
+    private static final Map<Direction, QuadTransform> FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(FACADE_PLANE_BACK);
+    private static final Map<Direction, QuadTransform> FULL_BLOCK_HOLDER_FACADE_PLANE_TRANSFORMERS = createFacadePlaneTransformers(0);
 
-    private static Map<Direction, QuadTransform> createFacadePlaneTransformers(double thickness, double outwardOffset) {
+    private static Map<Direction, QuadTransform> createFacadePlaneTransformers(double thickness) {
         Map<Direction, QuadTransform> transformers = new EnumMap<>(Direction.class);
         for (Direction dir : GTUtil.DIRECTIONS) {
             // All faces are slightly under a full block's size to never show the beginning of
             // the second row of pixels of the block's texture and to combat Z-fighting.
-            transformers.put(dir,
-                    new QuadPositionForcer(StaticFaceBakery.createFaceCube(dir, thickness, outwardOffset)));
+            transformers.put(dir, new QuadPositionForcer(StaticFaceBakery.createFaceCube(dir, thickness)));
         }
         return transformers;
     }
@@ -262,17 +261,12 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         return false;
     }
 
-    void renderDynamicFullBlockFacade(CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
+    void renderDynamicFullBlockFacade(FacadeCover facade, BlockPos pos, BlockAndTintGetter level,
                                       PoseStack poseStack, MultiBufferSource buffer, int packedOverlay) {
-        if (!(coverBehavior instanceof FacadeCover facade) ||
-                coverBehavior.coverHolder.getCoverPlateThickness() > 0) {
-            return;
-        }
-
         BlockState facadeState = facade.getFacadeState();
         RandomSource rand = RandomSource.create(facadeState.getSeed(pos));
-        ModelData facadeData = getModelData(coverBehavior, pos, level, ModelData.EMPTY);
-        ChunkRenderTypeSet renderTypes = getRenderTypes(coverBehavior, pos, level, rand, facadeData);
+        ModelData facadeData = getModelData(facade, pos, level, ModelData.EMPTY);
+        ChunkRenderTypeSet renderTypes = getRenderTypes(facade, pos, level, rand, facadeData);
         if (!rendersDynamically(facade, renderTypes)) return;
 
         var modelRenderer = Minecraft.getInstance().getBlockRenderer().getModelRenderer();
@@ -280,7 +274,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         for (RenderType renderType : renderTypes) {
             rand.setSeed(facadeState.getSeed(pos));
             List<BakedQuad> quads = new ArrayList<>();
-            renderCover(quads, coverBehavior.attachedSide, rand, coverBehavior, pos, level,
+            renderCover(quads, facade.attachedSide, rand, facade, pos, level,
                     ModelData.EMPTY, renderType);
             if (quads.isEmpty()) continue;
 

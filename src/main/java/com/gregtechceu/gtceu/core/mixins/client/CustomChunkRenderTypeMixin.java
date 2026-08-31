@@ -16,8 +16,7 @@ public class CustomChunkRenderTypeMixin {
                            at = @At(value = "INVOKE",
                                     target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;",
                                     remap = false))
-    private static ImmutableList<RenderType> gtceu$addMachineFaceOverlayToChunkBufferLayers(
-                                                                                            ImmutableList<RenderType> original) {
+    private static ImmutableList<RenderType> gtceu$addCustomChunkBufferLayers(ImmutableList<RenderType> original) {
         ImmutableList.Builder<RenderType> layers = ImmutableList.builder();
         boolean added = false;
         for (RenderType renderType : original) {

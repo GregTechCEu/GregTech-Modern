@@ -47,7 +47,7 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
-    private static final RenderStateShard.LayeringStateShard BLOOM_LAYERING = new LayeringStateShard(
+    private static final LayeringStateShard BLOOM_LAYERING = new LayeringStateShard(
             "bloom_layering",
             () -> {
                 RenderSystem.polygonOffset(-0.5F, -5.0F);
@@ -199,7 +199,7 @@ public class GTRenderTypes extends RenderType {
         if (source == RenderType.cutout()) return FACADE_CUTOUT;
         if (source == RenderType.translucent()) return FACADE_TRANSLUCENT;
         if (source == RenderType.tripwire()) return FACADE_TRIPWIRE;
-        throw new IllegalArgumentException("Unsupported facade render type: " + source);
+        return source;
     }
 
     public static RenderType entityBloom(ResourceLocation location) {

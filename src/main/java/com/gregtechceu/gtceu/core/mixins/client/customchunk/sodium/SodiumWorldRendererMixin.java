@@ -20,8 +20,8 @@ public class SodiumWorldRendererMixin {
     private RenderSectionManager renderSectionManager;
 
     @Inject(method = "drawChunkLayer", at = @At("RETURN"))
-    private void gtceu$drawMachineFaceOverlayLayer(RenderType renderLayer, ChunkRenderMatrices matrices,
-                                                   double x, double y, double z, CallbackInfo ci) {
+    private void gtceu$drawCustomChunkLayer(RenderType renderLayer, ChunkRenderMatrices matrices,
+                                            double x, double y, double z, CallbackInfo ci) {
         var pass = GTSodiumCompat.getCustomRenderPass(renderLayer);
         if (pass != null) {
             this.renderSectionManager.renderLayer(matrices, pass, x, y, z);

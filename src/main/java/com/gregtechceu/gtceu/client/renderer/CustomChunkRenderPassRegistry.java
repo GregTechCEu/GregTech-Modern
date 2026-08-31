@@ -11,6 +11,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
@@ -26,14 +28,14 @@ public final class CustomChunkRenderPassRegistry {
                     () -> !BloomRenderer.SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT));
 
     private static final List<CustomChunkRenderPass> ACTIVE_PASSES = PASSES.stream()
-            .filter(pass -> pass.enabled().getAsBoolean())
+            .filter(pass -> pass.loadCondition().getAsBoolean())
             .toList();
 
     public static List<CustomChunkRenderPass> activePasses() {
         return ACTIVE_PASSES;
     }
 
-    public static CustomChunkRenderPass get(RenderType renderType) {
+    public static @Nullable CustomChunkRenderPass getPass(RenderType renderType) {
         for (CustomChunkRenderPass pass : ACTIVE_PASSES) {
             if (pass.renderType() == renderType) {
                 return pass;

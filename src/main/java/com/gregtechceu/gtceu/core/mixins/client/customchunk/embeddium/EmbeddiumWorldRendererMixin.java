@@ -22,9 +22,9 @@ public class EmbeddiumWorldRendererMixin {
     private RenderSectionManager renderSectionManager;
 
     @Inject(method = "drawChunkLayer", at = @At("RETURN"))
-    private void gtceu$drawMachineFaceOverlayLayer(RenderType renderLayer, Matrix4f normal,
-                                                   double x, double y, double z, CallbackInfo ci,
-                                                   @Local(name = "matrices") ChunkRenderMatrices matrices) {
+    private void gtceu$drawCustomChunkLayer(RenderType renderLayer, Matrix4f normal,
+                                            double x, double y, double z, CallbackInfo ci,
+                                            @Local(name = "matrices") ChunkRenderMatrices matrices) {
         var pass = GTEmbeddiumCompat.getCustomRenderPass(renderLayer);
         if (pass != null) {
             this.renderSectionManager.renderLayer(matrices, pass, x, y, z);

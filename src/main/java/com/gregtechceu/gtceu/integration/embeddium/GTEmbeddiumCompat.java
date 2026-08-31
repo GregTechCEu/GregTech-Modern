@@ -9,11 +9,12 @@ import lombok.Getter;
 import org.embeddedt.embeddium.impl.render.chunk.terrain.TerrainRenderPass;
 import org.embeddedt.embeddium.impl.render.chunk.terrain.material.Material;
 import org.embeddedt.embeddium.impl.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public class GTEmbeddiumCompat {
+public final class GTEmbeddiumCompat {
 
     @Getter(lazy = true)
     private static final Map<RenderType, TerrainRenderPass> customRenderPasses = createCustomRenderPasses();
@@ -37,11 +38,11 @@ public class GTEmbeddiumCompat {
         return materials;
     }
 
-    public static TerrainRenderPass getCustomRenderPass(RenderType renderType) {
+    public static @Nullable TerrainRenderPass getCustomRenderPass(RenderType renderType) {
         return getCustomRenderPasses().get(renderType);
     }
 
-    public static Material getCustomMaterial(RenderType renderType) {
+    public static @Nullable Material getCustomMaterial(RenderType renderType) {
         return getCustomMaterials().get(renderType);
     }
 
@@ -53,11 +54,5 @@ public class GTEmbeddiumCompat {
         return getCustomMaterial(GTRenderTypes.bloom());
     }
 
-    public static TerrainRenderPass getMachineFaceOverlayRenderPass() {
-        return getCustomRenderPass(GTRenderTypes.machineFaceOverlay());
-    }
-
-    public static Material getMachineFaceOverlayMaterial() {
-        return getCustomMaterial(GTRenderTypes.machineFaceOverlay());
-    }
+    private GTEmbeddiumCompat() {}
 }

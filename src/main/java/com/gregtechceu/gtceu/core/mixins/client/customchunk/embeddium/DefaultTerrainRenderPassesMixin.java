@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium;
 
+import com.gregtechceu.gtceu.client.renderer.CustomChunkRenderPassRegistry;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -19,7 +20,8 @@ public class DefaultTerrainRenderPassesMixin {
     public static TerrainRenderPass[] ALL;
 
     static {
-        TerrainRenderPass[] customPasses = GTEmbeddiumCompat.getCustomRenderPasses().values()
+        TerrainRenderPass[] customPasses = CustomChunkRenderPassRegistry.activePasses().stream()
+                .map(pass -> GTEmbeddiumCompat.getCustomRenderPass(pass.renderType()))
                 .toArray(TerrainRenderPass[]::new);
         ALL = ArrayUtils.addAll(ALL, customPasses);
     }
