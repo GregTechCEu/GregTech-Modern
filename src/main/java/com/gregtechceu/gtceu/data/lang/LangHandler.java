@@ -1235,10 +1235,6 @@ public class LangHandler {
         provider.add("gtceu.multiblock.pattern.min_count", "§cAt least: %d§r");
         provider.add("gtceu.multiblock.pattern.max_count", "§cAt most: %d§r");
         multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components at:\n  %s, %s, %s.");
-        provider.add("gtceu.multiblock.pattern.exact_count", "§cExactly: %d§r");
-        provider.add("gtceu.multiblock.pattern.between_count", "§cBetween %d and %d§r");
-        provider.add("gtceu.multiblock.pattern.min_count", "§cAt least: %d§r");
-        provider.add("gtceu.multiblock.pattern.max_count", "§cAt most: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.range", "§cBetween %d and %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d has %d");
