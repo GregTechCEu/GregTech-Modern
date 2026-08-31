@@ -18,19 +18,9 @@ public class CustomChunkRenderTypeMixin {
                                     remap = false))
     private static ImmutableList<RenderType> gtceu$addCustomChunkBufferLayers(ImmutableList<RenderType> original) {
         ImmutableList.Builder<RenderType> layers = ImmutableList.builder();
-        boolean added = false;
-        for (RenderType renderType : original) {
-            // Insert before translucent terrain so custom opaque-style passes retain stable ordering.
-            if (!added && renderType == RenderType.translucent()) {
-                for (var pass : CustomChunkRenderPassRegistry.activePasses()) {
-                    layers.add(pass.renderType());
-                }
-                added = true;
-            }
-            layers.add(renderType);
-        }
-        if (!added) {
-            for (var pass : CustomChunkRenderPassRegistry.activePasses()) {
+        layers.addAll(original);
+        for (var pass : CustomChunkRenderPassRegistry.activePasses()) {
+            if (original.stream().noneMatch(renderType -> renderType == pass.renderType())) {
                 layers.add(pass.renderType());
             }
         }
