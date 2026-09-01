@@ -219,7 +219,8 @@ public class GTRecipe implements Recipe<RecipeInput> {
         this.parallels = parallels;
         this.subtickParallels = subtickParallels;
         this.batchParallels = batchParallels;
-        this.recipeCategory = (recipeCategory != GTRecipeCategory.getDefaultCategory()) ? recipeCategory : recipeType.getCategory();
+        this.recipeCategory = (recipeCategory != GTRecipeCategory.getDefaultCategory()) ? recipeCategory :
+                recipeType.getCategory();
         this.groupColor = groupColor;
         this.keepSpoilingProgress = keepSpoilingProgress;
     }
