@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.FaceLayer;
+import com.gregtechceu.gtceu.client.model.FaceLayerCompositor;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
@@ -281,6 +282,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             renderCover(quads, facade.attachedSide, rand, facade, pos, level,
                     ModelData.EMPTY, renderType);
             if (quads.isEmpty()) continue;
+            FaceLayerCompositor.composeCanonicalLayers(quads);
 
             RenderType facadeRenderType = GTRenderTypes.facade(renderType);
             modelRenderer.tesselateBlock(level, new DynamicFacadeModel(quads), holderState, pos, poseStack,
