@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import lombok.Setter;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -85,8 +86,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                            extends AbstractBuilder<MachineDefinition, DEFINITION, GTRegistrate, SELF> {
 
     protected MachineInstanceFactory<MACHINE> instanceFactory;
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    public Function<ResourceLocation, DEFINITION> definitionFactory;
 
     @Getter
     private final MachineDefinition.Properties properties;
@@ -94,6 +93,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private @Nullable BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> blockBuilder;
     private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
     private @Nullable ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> itemBuilder;
+
+    private final Set<Supplier<GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
 
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
 
@@ -332,34 +333,25 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF recipeType(GTRecipeType type) {
-        Objects.requireNonNull(type,
-                "Tried to set null recipe type on machine %s. Did you create the recipe type before this machine?"
-                        .formatted(
-                                getOwner().makeResourceLocation(getName())));
-
-        properties.recipeTypes(ArrayUtils.add(properties.recipeTypes(), type));
+    public SELF recipeType(Supplier<GTRecipeType> type) {
+        unresolvedRecipeTypes.add(type);
         initRecipeMachineModelProperties(type);
         return getThis();
     }
 
-    @Tolerate
-    public SELF recipeTypes(GTRecipeType... types) {
+    @SafeVarargs
+    public final SELF recipeTypes(Supplier<GTRecipeType>... types) {
         Validate.noNullElements(types, "Cannot add null recipe type to machine.");
 
-        List<GTRecipeType> typeList = new ArrayList<>();
-        Collections.addAll(typeList, properties.recipeTypes());
-
-        for (GTRecipeType type : types) {
+        for (Supplier<GTRecipeType> type : types) {
             initRecipeMachineModelProperties(type);
-            typeList.add(type);
+            unresolvedRecipeTypes.add(type);
         }
-        properties.recipeTypes(typeList.toArray(GTRecipeType[]::new));
         return getThis();
     }
 
-    protected void initRecipeMachineModelProperties(GTRecipeType type) {
-        if (type == GTRecipeTypes.DUMMY_RECIPES.value()) {
+    protected void initRecipeMachineModelProperties(Supplier<GTRecipeType> type) {
+        if (type == GTRecipeTypes.DUMMY_RECIPES) {
             return;
         }
         if (!properties.modelProperties().containsKey(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
@@ -626,6 +618,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @SuppressWarnings({ "NullableProblems", "unchecked" })
     protected @NonNull DEFINITION createEntry() {
+        properties.recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull).toArray(GTRecipeType[]::new));
         return (DEFINITION) new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }
 
