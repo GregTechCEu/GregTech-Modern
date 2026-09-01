@@ -83,13 +83,4 @@ public class GTRecipeCategory {
     public String toString() {
         return "GTRecipeCategory{%s}".formatted(this.registryKey);
     }
-
-    // Placeholder category used if category isn't defined for a recipe for registration
-    private static GTRecipeCategory DEFAULT;
-
-    public static GTRecipeCategory getDefaultCategory() {
-        if (DEFAULT == null) DEFAULT = new GTRecipeCategory(GTCEu.id("default"),
-                GTRecipeTypes.DUMMY_RECIPES.value());
-        return DEFAULT;
-    }
 }
