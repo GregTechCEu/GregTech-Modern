@@ -53,7 +53,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final GTRecipeBuilder recipeBuilder;
     @Getter
     @Nullable
-    private final Supplier<ItemStack> iconSupplier;
+    @Setter
+    private Supplier<ItemStack> iconSupplier;
     @Nullable
     @Getter
     protected final Holder<SoundEntry> sound;

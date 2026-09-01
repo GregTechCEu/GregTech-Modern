@@ -354,7 +354,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     protected void initRecipeMachineModelProperties(GTRecipeType type) {
-        if (type == GTRecipeTypes.DUMMY_RECIPES) {
+        if (type == GTRecipeTypes.DUMMY_RECIPES.value()) {
             return;
         }
         if (!properties.modelProperties().containsKey(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {

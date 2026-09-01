@@ -89,7 +89,7 @@ public class RecipeIteratorStressTest {
 
         long currentIterator = 0;
         for (int i = 0; i < 20; i++) {
-            RecipeDB.RecipeIterator iterator = new RecipeDB.RecipeIterator(GTRecipeTypes.ASSEMBLER_RECIPES.db(), list,
+            RecipeDB.RecipeIterator iterator = new RecipeDB.RecipeIterator(GTRecipeTypes.ASSEMBLER_RECIPES.value().db(), list,
                     (ignored) -> true);
             while (iterator.hasNext()) {
                 var recipe = iterator.next();
