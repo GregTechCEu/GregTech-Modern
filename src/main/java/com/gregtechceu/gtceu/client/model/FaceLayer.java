@@ -4,19 +4,21 @@ import org.jetbrains.annotations.Nullable;
 
 public enum FaceLayer {
 
-    UNCLASSIFIED(false),
-    BASE(false),
-    MACHINE_FACE(true),
-    COVER(true);
+    UNCLASSIFIED(0),
+    BASE(0),
+    MACHINE_FACE(1),
+    EMISSIVE(2),
+    COVER(3),
+    COVER_EMISSIVE(4);
 
-    private final boolean aboveBase;
+    private final int depthRank;
 
-    FaceLayer(boolean aboveBase) {
-        this.aboveBase = aboveBase;
+    FaceLayer(int depthRank) {
+        this.depthRank = depthRank;
     }
 
-    public boolean rendersAboveBase() {
-        return aboveBase;
+    public int depthRank() {
+        return depthRank;
     }
 
     public static FaceLayer fromTextureKey(@Nullable String textureKey) {
@@ -26,7 +28,7 @@ public enum FaceLayer {
 
         String key = textureKey.substring(1);
         if (key.startsWith("overlay")) {
-            return MACHINE_FACE;
+            return key.contains("emissive") ? EMISSIVE : MACHINE_FACE;
         }
         return BASE;
     }

@@ -19,34 +19,36 @@ public final class FaceLayerCompositor {
     // UPDATE; I HATE IT HERE. FOR EVERY TIME SOMEONE HAS TO EDIT THIS PLEASE UPDATE THIS NUMBER : 1
     @Deprecated(since = "8.0")
     private static final float MAX_LEGACY_OUTWARD_OFFSET = 0.025F;
+    private static final float LAYER_DEPTH_STEP = 1.0F / 1024.0F;
 
-    public static void retainBaseLayers(List<BakedQuad> layers) {
-        ListIterator<BakedQuad> iterator = layers.listIterator();
-        while (iterator.hasNext()) {
-            if (resolveLayer(iterator.next()).rendersAboveBase()) {
-                iterator.remove();
-            }
-        }
-    }
-
-    public static void retainFaceLayers(List<BakedQuad> layers) {
+    public static void composeCanonicalLayers(List<BakedQuad> layers) {
         ListIterator<BakedQuad> iterator = layers.listIterator();
         while (iterator.hasNext()) {
             BakedQuad layer = iterator.next();
-            if (!resolveLayer(layer).rendersAboveBase()) {
-                iterator.remove();
-                continue;
+            FaceLayer faceLayer = resolveLayer(layer);
+            if (faceLayer.depthRank() > 0) {
+                iterator.set(positionLayer(layer, faceLayer));
             }
-            iterator.set(canonicalize(layer));
         }
+        layers.sort((first, second) -> Integer.compare(resolveLayer(first).depthRank(),
+                resolveLayer(second).depthRank()));
     }
 
     private static FaceLayer resolveLayer(BakedQuad quad) {
         FaceLayer layer = quad.gtceu$getFaceLayer();
         if (layer != FaceLayer.UNCLASSIFIED) {
+            if (layer == FaceLayer.MACHINE_FACE && quad.getTintIndex() == -101) {
+                return FaceLayer.EMISSIVE;
+            }
+            if (layer == FaceLayer.COVER && quad.getTintIndex() == -101) {
+                return FaceLayer.COVER_EMISSIVE;
+            }
             return layer;
         }
-        return isLegacyOverlay(quad) ? FaceLayer.MACHINE_FACE : FaceLayer.BASE;
+        if (!isLegacyOverlay(quad)) {
+            return FaceLayer.BASE;
+        }
+        return quad.getTintIndex() == -101 ? FaceLayer.EMISSIVE : FaceLayer.MACHINE_FACE;
     }
 
     private static boolean isLegacyOverlay(BakedQuad quad) {
@@ -65,9 +67,10 @@ public final class FaceLayerCompositor {
         return outwardOffset > POSITION_EPSILON && outwardOffset <= MAX_LEGACY_OUTWARD_OFFSET;
     }
 
-    private static BakedQuad canonicalize(BakedQuad quad) {
+    private static BakedQuad positionLayer(BakedQuad quad, FaceLayer layer) {
         Direction face = quad.getDirection();
         float boundary = face.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1.0F : 0.0F;
+        float plane = boundary + face.getAxisDirection().getStep() * LAYER_DEPTH_STEP * layer.depthRank();
 
         BakedQuad canonical = GTQuadTransformers.copy(quad);
         int[] vertices = canonical.getVertices();
@@ -78,7 +81,7 @@ public final class FaceLayerCompositor {
                     canonicalCoordinate(coordinate(vertices, vertex, Direction.Axis.Y)));
             setCoordinate(vertices, vertex, Direction.Axis.Z,
                     canonicalCoordinate(coordinate(vertices, vertex, Direction.Axis.Z)));
-            setCoordinate(vertices, vertex, face.getAxis(), boundary);
+            setCoordinate(vertices, vertex, face.getAxis(), plane);
         }
         return canonical;
     }

@@ -59,7 +59,7 @@ public class SimpleCoverRenderer implements ICoverRenderer {
                     .gtceu$setFaceLayer(FaceLayer.COVER));
             if (emissiveSprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
-                        emissiveSprite).gtceu$setFaceLayer(FaceLayer.COVER));
+                        emissiveSprite).gtceu$setFaceLayer(FaceLayer.COVER_EMISSIVE));
             }
         }
     }

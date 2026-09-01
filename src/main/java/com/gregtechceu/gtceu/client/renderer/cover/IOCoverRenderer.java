@@ -82,11 +82,11 @@ public class IOCoverRenderer implements ICoverRenderer {
             if (isInverted && invertedEmissiveOverlaySprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
                         invertedEmissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false)
-                        .gtceu$setFaceLayer(FaceLayer.COVER));
+                        .gtceu$setFaceLayer(FaceLayer.COVER_EMISSIVE));
             } else if (emissiveOverlaySprite != null) {
                 quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.COVER_OVERLAY, coverBehavior.attachedSide,
                         emissiveOverlaySprite, BlockModelRotation.X0_Y0, -101, 15, true, false)
-                        .gtceu$setFaceLayer(FaceLayer.COVER));
+                        .gtceu$setFaceLayer(FaceLayer.COVER_EMISSIVE));
             }
         }
     }

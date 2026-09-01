@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.ctm.CTMMeshBuilder;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -235,8 +234,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             renderTypeSets.add(coverRenderTypes);
         }
 
-        renderTypeSets.add(ChunkRenderTypeSet.of(GTRenderTypes.machineFaceOverlay()));
-
         return ChunkRenderTypeSet.union(renderTypeSets);
     }
 
@@ -255,21 +252,12 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         boolean blockRender = modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS);
         List<BakedQuad> quads;
         if (blockRender) {
-            if (renderType == null) {
-                quads = getMachineQuads(state, side, rand, modelData, null);
-            } else {
-                boolean overlayPass = renderType == GTRenderTypes.machineFaceOverlay();
-                quads = getMachineQuads(state, side, rand, modelData, overlayPass ? null : renderType);
-                if (overlayPass) {
-                    FaceLayerCompositor.retainFaceLayers(quads);
-                } else {
-                    FaceLayerCompositor.retainBaseLayers(quads);
-                }
-            }
+            quads = getMachineQuads(state, side, rand, modelData, renderType);
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
             quads = renderMachine(null, null, null, state, side, rand, modelData, renderType);
         }
+        FaceLayerCompositor.composeCanonicalLayers(quads);
         postTransform.processInPlace(quads);
         return quads;
     }

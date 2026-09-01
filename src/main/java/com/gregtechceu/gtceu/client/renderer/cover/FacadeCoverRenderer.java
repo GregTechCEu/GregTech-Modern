@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.FaceLayer;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
@@ -191,7 +192,9 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 // fix the quad's UVs based on the original & clamped vertices
                 interpolator.transform(emitter);
 
-                quads.add(emitter.toBlockBakedQuad());
+                FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE || quad.getTintIndex() == -101 ?
+                        FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
+                quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(faceLayer));
                 emitter.emit();
             }
         }
@@ -441,7 +444,9 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         // fix the quad's UVs based on the original & clamped vertices
                         interpolator.transform(emitter);
 
-                        quads.add(emitter.toBlockBakedQuad());
+                        FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ||
+                                quad.getTintIndex() == -101 ? FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
+                        quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(faceLayer));
                         emitter.emit();
                     }
                 }

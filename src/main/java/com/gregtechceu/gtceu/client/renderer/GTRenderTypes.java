@@ -72,18 +72,6 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true));
 
-    private static final RenderType MACHINE_FACE_OVERLAY = RenderType.create("gtceu:machine_face_overlay",
-            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
-            RenderType.BIG_BUFFER_SIZE, true, false,
-            RenderType.CompositeState.builder()
-                    .setLightmapState(LIGHTMAP)
-                    .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
-                    .setTextureState(BLOCK_SHEET_MIPPED)
-                    .setWriteMaskState(COLOR_WRITE)
-                    .setDepthTestState(LEQUAL_DEPTH_TEST)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
-                    .createCompositeState(true));
-
     private static final RenderType FACADE_SOLID = RenderType.create("gtceu:facade_solid",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
             RenderType.BIG_BUFFER_SIZE, true, false,
@@ -188,10 +176,6 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType bloom() {
         return BLOOM;
-    }
-
-    public static RenderType machineFaceOverlay() {
-        return MACHINE_FACE_OVERLAY;
     }
 
     public static RenderType facade(RenderType source) {
