@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -165,6 +166,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         LongSyncValue currentOutput = syncManager.getOrCreateSyncHandler("currentOutput",
                 LongSyncValue.class,
                 () -> new LongSyncValue(this::getCurrentProduction));
+        IntSyncValue energyTier = syncManager.getOrCreateSyncHandler("energyTier", IntSyncValue.class,
+                () -> new IntSyncValue(() -> GTUtil.getTierByVoltage(this.getDisplayRecipeVoltage())));
         LongSyncValue maxOutput = syncManager.getOrCreateSyncHandler("maxOutput",
                 LongSyncValue.class,
                 () -> new LongSyncValue(this::getOverclockVoltage));
@@ -202,6 +205,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
 
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, currentOutput, energyTier, true));
         widgets.add(rotorSpeedDisplay);
         widgets.add(turbineEfficiencyDisplay);
         widgets.add(turbinePowerDisplay);

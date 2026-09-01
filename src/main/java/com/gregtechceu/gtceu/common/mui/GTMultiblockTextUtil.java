@@ -174,6 +174,42 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue());
     }
 
+    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                                        PanelSyncManager syncManager, LongSyncValue energyUsage,
+                                                        IntSyncValue energyTier, boolean isGenerator) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isActive));
+
+        return Text.dynamic(() -> {
+            long EUt = energyUsage.getLongValue();
+            float minAmperage = (float) EUt / GTValues.V[energyTier.getIntValue()];
+
+            MutableComponent text = Component.translatable("gtceu.jade.amperage_use",
+                    FormattingUtil.formatNumber2Places(minAmperage))
+                    .withStyle(ChatFormatting.RED)
+                    .append(Component.translatable("gtceu.jade.at")
+                            .withStyle(ChatFormatting.GREEN));
+            int tier = energyTier.getIntValue();
+            if (tier < GTValues.TIER_COUNT) {
+                text = text.append(Component.literal(GTValues.VNF[tier])
+                        .withStyle(style -> style.withColor(GTValues.VC[tier])));
+
+                text.append(Component.translatable("gtceu.universal.padded_parentheses",
+                        (Component.translatable("gtceu.recipe.eu.total",
+                                FormattingUtil.formatNumbers(energyUsage.getLongValue()))))
+                        .withStyle(ChatFormatting.WHITE));
+            }
+
+            return Component.translatable(isGenerator ?
+                    "gtceu.top.energy_production" :
+                    "gtceu.top.energy_consumption").append(" ").append(text).withStyle(ChatFormatting.GRAY);
+        })
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
+    }
+
     public static Component addEnergyTierLine(boolean formed, int tier) {
         if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return Text.EMPTY;

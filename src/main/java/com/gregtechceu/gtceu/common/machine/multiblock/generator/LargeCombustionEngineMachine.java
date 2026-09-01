@@ -18,16 +18,16 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraftforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
@@ -188,8 +188,6 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         if (!isFormed())
             return widgets;
 
-        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this::isActive));
         BooleanSyncValue isBoostAllowed = syncManager.getOrCreateSyncHandler("canBoost",
                 BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isBoostAllowed));
@@ -200,12 +198,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 () -> new BooleanSyncValue(this::isExtreme));
         LongSyncValue engineOutput = syncManager.getOrCreateSyncHandler("engineOutput", LongSyncValue.class,
                 () -> new LongSyncValue(this::getCurrentProduction));
+        IntSyncValue energyTier = syncManager.getOrCreateSyncHandler("energyTier", IntSyncValue.class,
+                () -> new IntSyncValue(() -> GTUtil.getTierByVoltage(this.getDisplayRecipeVoltage())));
 
-        var engineOutputDisplay = Text.dynamic(() -> Component.translatable(
-                "gtceu.multiblock.large_combustion_engine.output", engineOutput.getLongValue())
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
-                .asWidget()
-                .setEnabledIf(w -> isActive.getBoolValue());
         var boostDisallowed = Text.dynamic(() -> Component.translatable(
                 "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
                 .asWidget()
@@ -227,7 +222,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
 
-        widgets.add(engineOutputDisplay);
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, engineOutput, energyTier, true));
         widgets.add(boostDisallowed);
         widgets.add(canBoost);
         widgets.add(isBoosted);
