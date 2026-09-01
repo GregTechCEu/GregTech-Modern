@@ -229,7 +229,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         private void updateWorkingRecipe(GTRecipe recipe) {
-            if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES) {
+            if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES.value()) {
                 this.workingRecipe = recipe;
                 syncDataHolder.markClientSyncFieldDirty("workingRecipe");
                 return;
@@ -282,7 +282,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     .toList();
 
             // Distillery recipes should output to the first non-void handler
-            if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES) {
+            if (recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES.value()) {
                 var fluid = fluids.getFirst().getFluids()[0];
                 var handler = getMachine().getFirstValid();
                 if (handler == null) return false;
