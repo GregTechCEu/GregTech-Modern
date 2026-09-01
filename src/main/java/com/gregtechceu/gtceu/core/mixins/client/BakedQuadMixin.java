@@ -21,7 +21,6 @@ public class BakedQuadMixin implements BakedQuadExt {
     @Override
     public BakedQuad gtceu$setTextureKey(@Nullable String key) {
         this.gtceu$textureKey = key;
-        this.gtceu$faceLayer = FaceLayer.fromTextureKey(key);
         return (BakedQuad) (Object) this;
     }
 

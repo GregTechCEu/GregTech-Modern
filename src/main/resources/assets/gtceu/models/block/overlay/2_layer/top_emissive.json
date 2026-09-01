@@ -17,7 +17,7 @@
             "from": [  0, 16,  0 ],
             "to":   [ 16, 16, 16 ],
             "faces": {
-                "up": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "up" }
+                "up": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "up", "gtceu:face_layer": "machine_face" }
             }
         },
         {
@@ -26,7 +26,7 @@
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
-                "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "cullface": "up", "tintindex": -101 }
+                "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_emissive", "cullface": "up", "tintindex": -101, "gtceu:face_layer": "emissive" }
             }
         }
     ]

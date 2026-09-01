@@ -21,34 +21,24 @@
       "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": {
-        "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "cullface": "west" },
-        "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "cullface": "east" }
+        "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "cullface": "west", "gtceu:face_layer": "machine_face" },
+        "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "cullface": "east", "gtceu:face_layer": "machine_face" }
       }
     },
     {
       "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": {
-        "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_top", "cullface": "up" },
-        "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_bottom", "cullface": "down" }
+        "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_top", "cullface": "up", "gtceu:face_layer": "machine_face" },
+        "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_bottom", "cullface": "down", "gtceu:face_layer": "machine_face" }
       }
     },
     {
       "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": {
-        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front", "cullface": "north" },
-        "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back", "cullface": "south" }
-      }
-    },
-    {
-      "neoforge_data": { "block_light": 15, "sky_light": 15 },
-      "shade": false,
-      "from": [0, 0, 0],
-      "to": [16, 16, 16],
-      "faces": {
-        "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "cullface": "west", "tintindex": -101 },
-        "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "cullface": "east", "tintindex": -101 }
+        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front", "cullface": "north", "gtceu:face_layer": "machine_face" },
+        "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back", "cullface": "south", "gtceu:face_layer": "machine_face" }
       }
     },
     {
@@ -57,8 +47,8 @@
       "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": {
-        "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_top_emissive", "cullface": "up", "tintindex": -101 },
-        "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_bottom_emissive", "cullface": "down", "tintindex": -101 }
+        "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "cullface": "west", "tintindex": -101, "gtceu:face_layer": "emissive" },
+        "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "cullface": "east", "tintindex": -101, "gtceu:face_layer": "emissive" }
       }
     },
     {
@@ -67,20 +57,30 @@
       "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": {
-        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front_emissive", "cullface": "north", "tintindex": -101 },
-        "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back_emissive", "cullface": "south", "tintindex": -101 }
+        "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_top_emissive", "cullface": "up", "tintindex": -101, "gtceu:face_layer": "emissive" },
+        "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_bottom_emissive", "cullface": "down", "tintindex": -101, "gtceu:face_layer": "emissive" }
+      }
+    },
+    {
+      "neoforge_data": { "block_light": 15, "sky_light": 15 },
+      "shade": false,
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front_emissive", "cullface": "north", "tintindex": -101, "gtceu:face_layer": "emissive" },
+        "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back_emissive", "cullface": "south", "tintindex": -101, "gtceu:face_layer": "emissive" }
       }
     },
     {
       "from": [0, 0, 0],
       "to": [16, 16, 0],
-      "faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_energy_io", "cullface": "north" } }
+      "faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_energy_io", "cullface": "north", "gtceu:face_layer": "machine_face" } }
     },
     {
       "from": [0, 0, 0],
       "to": [16, 16, 0],
       "faces": {
-        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_energy_tint", "cullface": "north", "tintindex": 2 }
+        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_energy_tint", "cullface": "north", "tintindex": 2, "gtceu:face_layer": "machine_face" }
       }
     }
   ]

@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.client.model;
 
-import org.jetbrains.annotations.Nullable;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
+import java.util.Locale;
+
+@Accessors(fluent = true)
 public enum FaceLayer {
 
     UNCLASSIFIED(0),
@@ -11,25 +15,14 @@ public enum FaceLayer {
     COVER(3),
     COVER_EMISSIVE(4);
 
+    @Getter
     private final int depthRank;
 
     FaceLayer(int depthRank) {
         this.depthRank = depthRank;
     }
 
-    public int depthRank() {
-        return depthRank;
-    }
-
-    public static FaceLayer fromTextureKey(@Nullable String textureKey) {
-        if (textureKey == null || !textureKey.startsWith("#")) {
-            return UNCLASSIFIED;
-        }
-
-        String key = textureKey.substring(1);
-        if (key.startsWith("overlay")) {
-            return key.contains("emissive") ? EMISSIVE : MACHINE_FACE;
-        }
-        return BASE;
+    public static FaceLayer fromSerializedName(String name) {
+        return valueOf(name.toUpperCase(Locale.ROOT));
     }
 }
