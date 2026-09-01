@@ -78,10 +78,7 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.*;
@@ -165,6 +162,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
         registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilderJS.class,
                 WorldGenLayerBuilderJS::new);
+        registry.addDefault(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSetBuilder.class, MaterialIconSetBuilder::new);
 
         registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilderJS.class,
                 OreVeinDefinitionBuilderJS::new);
