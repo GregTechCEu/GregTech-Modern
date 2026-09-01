@@ -239,7 +239,7 @@ public class GTMachineUtils {
     }
 
     public static MachineEntry<MachineDefinition>[] registerSimpleGenerator(GTRegistrate registrate, String name,
-                                                                            GTRecipeType recipeType,
+                                                                            Supplier<GTRecipeType> recipeType,
                                                                             Int2IntFunction tankScalingFunction,
                                                                             float hazardStrengthPerOperation,
                                                                             int... tiers) {
@@ -263,7 +263,7 @@ public class GTMachineUtils {
 
     public static Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> registerSimpleSteamMachines(GTRegistrate registrate,
                                                                                                                      String name,
-                                                                                                                     GTRecipeType recipeType) {
+                                                                                                                     Supplier<GTRecipeType> recipeType) {
         return registerSteamMachines(registrate, "steam_" + name, SimpleSteamMachine::new,
                 (pressure, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -658,7 +658,7 @@ public class GTMachineUtils {
 
     public static MachineEntry<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
                                                                                  String name, int tier,
-                                                                                 GTRecipeType recipeType,
+                                                                                 Supplier<GTRecipeType> recipeType,
                                                                                  Supplier<? extends Block> casing,
                                                                                  Supplier<? extends Block> gear,
                                                                                  ResourceLocation casingTexture,
@@ -669,7 +669,7 @@ public class GTMachineUtils {
 
     public static MachineEntry<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
                                                                                  String name, int tier,
-                                                                                 GTRecipeType recipeType,
+                                                                                 Supplier<GTRecipeType> recipeType,
                                                                                  Supplier<? extends Block> casing,
                                                                                  Supplier<? extends Block> gear,
                                                                                  ResourceLocation casingTexture,
@@ -793,7 +793,7 @@ public class GTMachineUtils {
         @Setter
         private String name;
         @Setter
-        private GTRecipeType recipeType;
+        private Supplier<GTRecipeType> recipeType;
         @Setter
         private Int2IntFunction tankScalingFunction = defaultTankSizeFunction;
         @Setter
@@ -803,7 +803,7 @@ public class GTMachineUtils {
         private int[] tiers = ELECTRIC_TIERS;
 
         // Simple Machines need to have a name, recipe type, and a registrate to register the machine to.
-        public SimpleMachineBuilder(GTRegistrate registrate, String name, GTRecipeType recipeType) {
+        public SimpleMachineBuilder(GTRegistrate registrate, String name, Supplier<GTRecipeType> recipeType) {
             this.registrate = registrate;
             this.name = name;
             this.recipeType = recipeType;
