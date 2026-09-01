@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 public final class FaceLayerCompositor {
+
     // UPDATE; I HATE IT HERE. FOR EVERY TIME SOMEONE HAS TO EDIT THIS PLEASE UPDATE THIS NUMBER : 2
     private static final float LAYER_DEPTH_STEP = 1.0F / 1024.0F;
 
