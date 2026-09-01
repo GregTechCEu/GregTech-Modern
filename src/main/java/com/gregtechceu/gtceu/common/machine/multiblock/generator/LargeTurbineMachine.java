@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -14,11 +15,25 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -117,38 +132,63 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ******* GUI ********//
     //////////////////////////////////////
 
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // super.addDisplayText(textList);
-    // if (isFormed()) {
-    // var rotorHolder = getRotorHolder();
-    //
-    // if (rotorHolder != null && rotorHolder.getRotorEfficiency() > 0) {Expand commentComment on line L185
-    // textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed",
-    // FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()),
-    // FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
-    // textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency",
-    // rotorHolder.getTotalEfficiency()));
-    //
-    // long maxProduction = getOverclockVoltage();
-    // long currentProduction = getCurrentProduction();
-    //
-    // if (isActive()) {
-    // textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
-    // FormattingUtil.formatNumbers(currentProduction),
-    // FormattingUtil.formatNumbers(maxProduction)));
-    // }
-    //
-    // int rotorDurability = rotorHolder.getRotorDurabilityPercent();
-    // if (rotorDurability > MIN_DURABILITY_TO_WARN) {
-    // textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability));
-    // } else {
-    // textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability)
-    // .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-    // }
-    // }
-    // }
-    // }
+    public static List<IWidget> additionalDisplay(MultiblockControllerMachine controller,
+                                                  PanelSyncManager syncManager) {
+        if (!(controller instanceof LargeTurbineMachine ltMachine))
+            return Collections.emptyList();
+        if (!controller.isFormed())
+            return Collections.emptyList();
+
+        var rotorHolder = ltMachine.getRotorHolder();
+        if (!(rotorHolder != null && rotorHolder.hasRotor()))
+            return Collections.emptyList();
+
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive",
+                BooleanSyncValue.class,
+                () -> new BooleanSyncValue(ltMachine::isActive));
+        IntSyncValue rotorSpeed = syncManager.getOrCreateSyncHandler("rotorSpeed",
+                IntSyncValue.class,
+                () -> new IntSyncValue(rotorHolder::getRotorSpeed));
+        IntSyncValue maxRotorSpeed = syncManager.getOrCreateSyncHandler("maxRotorSpeed",
+                IntSyncValue.class,
+                () -> new IntSyncValue(rotorHolder::getMaxRotorHolderSpeed));
+        IntSyncValue totalEfficiency = syncManager.getOrCreateSyncHandler("totalEfficiency",
+                IntSyncValue.class,
+                () -> new IntSyncValue(rotorHolder::getTotalEfficiency));
+        LongSyncValue currentOutput = syncManager.getOrCreateSyncHandler("currentOutput",
+                LongSyncValue.class,
+                () -> new LongSyncValue(ltMachine::getCurrentProduction));
+        LongSyncValue maxOutput = syncManager.getOrCreateSyncHandler("maxOutput",
+                LongSyncValue.class,
+                () -> new LongSyncValue(ltMachine::getOverclockVoltage));
+        IntSyncValue rotorDurability = syncManager.getOrCreateSyncHandler("rotorDurability",
+                IntSyncValue.class,
+                () -> new IntSyncValue(rotorHolder::getRotorDurabilityPercent));
+
+        var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
+                FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
+                FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue())))
+                .asWidget()
+                .setEnabledIf(w -> true);
+        var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
+                totalEfficiency.getIntValue()))
+                .asWidget()
+                .setEnabledIf(w -> true);
+        var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
+                FormattingUtil.formatNumbers(currentOutput.getIntValue()),
+                FormattingUtil.formatNumbers(maxOutput.getIntValue())))
+                .asWidget()
+                .setEnabledIf(w -> isActive.getBoolValue());
+        var rotorDurabilityDisplay = Text
+                .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_durability",
+                        rotorDurability.getIntValue())
+                        .setStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ? Style.EMPTY :
+                                Style.EMPTY.withColor(ChatFormatting.RED)))
+                .asWidget()
+                .setEnabledIf(w -> true);
+
+        return Arrays.asList(rotorSpeedDisplay, turbineEfficiencyDisplay, turbinePowerDisplay, rotorDurabilityDisplay);
+    }
 
     //////////////////////////////////////
     // ****** Recipe Logic *******//
