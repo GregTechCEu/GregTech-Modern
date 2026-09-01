@@ -20,10 +20,14 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 public final class GTSodiumCompat {
+
+    private static volatile TerrainRenderPass[] cachedDefaultPasses;
+    private static volatile TerrainRenderPass[] cachedCombinedPasses;
 
     @Getter(lazy = true)
     private static final Map<RenderType, TerrainRenderPass> customRenderPasses = createCustomRenderPasses();
@@ -62,6 +66,33 @@ public final class GTSodiumCompat {
 
     public static @Nullable Material getCustomMaterial(RenderType renderType) {
         return getCustomMaterials().get(renderType);
+    }
+
+    public static TerrainRenderPass[] includeCustomRenderPasses(TerrainRenderPass[] defaultPasses) {
+        TerrainRenderPass[] combinedPasses = cachedCombinedPasses;
+        if (defaultPasses == cachedDefaultPasses && combinedPasses != null) {
+            return combinedPasses;
+        }
+
+        synchronized (GTSodiumCompat.class) {
+            if (defaultPasses != cachedDefaultPasses || cachedCombinedPasses == null) {
+                cachedCombinedPasses = combineRenderPasses(defaultPasses);
+                cachedDefaultPasses = defaultPasses;
+            }
+            return cachedCombinedPasses;
+        }
+    }
+
+    private static TerrainRenderPass[] combineRenderPasses(TerrainRenderPass[] defaultPasses) {
+        TerrainRenderPass[] customPasses = CustomChunkRenderPassRegistry.activePasses().stream()
+                .map(pass -> getCustomRenderPass(pass.renderType()))
+                .filter(pass -> Arrays.stream(defaultPasses).noneMatch(existing -> existing == pass))
+                .toArray(TerrainRenderPass[]::new);
+        if (customPasses.length == 0) return defaultPasses;
+
+        TerrainRenderPass[] passes = Arrays.copyOf(defaultPasses, defaultPasses.length + customPasses.length);
+        System.arraycopy(customPasses, 0, passes, defaultPasses.length, customPasses.length);
+        return passes;
     }
 
     public static TerrainRenderPass getBloomRenderPass() {

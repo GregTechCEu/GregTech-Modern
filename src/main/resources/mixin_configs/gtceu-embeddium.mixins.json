@@ -9,8 +9,8 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
-        "client.customchunk.embeddium.DefaultMaterialsMixin",
-        "client.customchunk.embeddium.DefaultTerrainRenderPassesMixin",
+        "client.customchunk.embeddium.EmbeddiumChunkBuildBuffersMixin",
+        "client.customchunk.embeddium.EmbeddiumChunkBuilderMeshingTaskMixin",
         "client.customchunk.embeddium.EmbeddiumWorldRendererMixin",
         "client.bloom.normal.embeddium.BlockRendererMixin",
         "client.bloom.safemode.embeddium.BlockRendererMixin"
