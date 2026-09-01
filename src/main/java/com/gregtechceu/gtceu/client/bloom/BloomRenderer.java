@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
-import com.gregtechceu.gtceu.core.config.RendererBackendCompatibility;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.BufferBuilderAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.LevelRendererAccessor;
@@ -44,7 +43,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.GTValues.MODID_EMBEDDIUM;
+import static com.gregtechceu.gtceu.api.GTValues.MODID_SODIUM;
 import static com.gregtechceu.gtceu.client.bloom.BloomShaderManager.BLOOM_TARGET;
+import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.isModLoaded;
 
 /**
  * The actual rendering logic for bloom
@@ -60,12 +62,11 @@ public class BloomRenderer {
     private static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
     public static boolean usesNormalBloomRendering() {
-        return !SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT &&
-                !RendererBackendCompatibility.requiresFallback();
+        return !SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT;
     }
 
     public static boolean usesCustomChunkPass() {
-        return usesNormalBloomRendering() && RendererBackendCompatibility.supportsCustomChunkPass();
+        return usesNormalBloomRendering() && (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM));
     }
 
     public static boolean usesOwnedSectionMeshes() {

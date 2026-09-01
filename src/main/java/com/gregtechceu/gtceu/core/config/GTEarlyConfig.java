@@ -38,6 +38,7 @@ public class GTEarlyConfig {
 
         addDelegateRule("client.bloom.safemode", SAFE_MODE, false);
         addDelegateRule("client.bloom.normal", SAFE_MODE, true);
+        addDelegateRule("client.customchunk", SAFE_MODE, true);
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
