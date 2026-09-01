@@ -29,6 +29,7 @@ import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -167,22 +168,26 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         var rotorSpeedDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_speed",
                 FormattingUtil.formatNumbers(rotorSpeed.getIntValue()),
-                FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue())))
+                FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue()))
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(w -> true);
         var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
-                totalEfficiency.getIntValue()))
+                totalEfficiency.getIntValue())
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(w -> true);
         var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
                 FormattingUtil.formatNumbers(currentOutput.getIntValue()),
-                FormattingUtil.formatNumbers(maxOutput.getIntValue())))
+                FormattingUtil.formatNumbers(maxOutput.getIntValue()))
+                .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
                 .setEnabledIf(w -> isActive.getBoolValue());
         var rotorDurabilityDisplay = Text
                 .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_durability",
                         rotorDurability.getIntValue())
-                        .setStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ? Style.EMPTY :
+                        .setStyle(rotorDurability.getIntValue() > MIN_DURABILITY_TO_WARN ?
+                                Style.EMPTY.withColor(ChatFormatting.WHITE) :
                                 Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf(w -> true);
