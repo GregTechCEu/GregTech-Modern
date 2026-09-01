@@ -81,14 +81,12 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
-        RenderType block, entity;
+        RenderType entity;
         if (BloomRenderer.usesNormalBloomRendering() && BloomShaderManager.isBloomAvailable()) {
-            block = GTRenderTypes.bloom();
             entity = GTRenderTypes.entityBloomBlockSheet();
         } else {
-            block = RenderType.cutoutMipped();
             entity = NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
         }
-        event.register(GTCEu.id("bloom"), block, entity);
+        event.register(GTCEu.id("bloom"), RenderType.cutoutMipped(), entity);
     }
 }
