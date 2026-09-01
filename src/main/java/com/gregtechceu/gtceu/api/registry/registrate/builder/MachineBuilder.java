@@ -65,6 +65,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -508,7 +509,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @SafeVarargs
     public final SELF tooltips(@Nullable Supplier<? extends @Nullable Component>... components) {
-        for (var comp: components) {
+        for (var comp : components) {
             if (comp == null) continue;
             properties.tooltips().add(comp);
         }
@@ -516,7 +517,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF tooltips(@Nullable Component... components) {
-        for (var comp: components) {
+        for (var comp : components) {
             if (comp == null) continue;
             properties.tooltips().add(() -> comp);
         }
@@ -524,7 +525,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF tooltips(List<? extends Component> components) {
-        for (var comp: components) {
+        for (var comp : components) {
             properties.tooltips().add(() -> comp);
         }
         return getThis();
