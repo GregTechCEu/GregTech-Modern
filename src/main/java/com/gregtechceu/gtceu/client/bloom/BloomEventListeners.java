@@ -82,7 +82,7 @@ public class BloomEventListeners {
     @SubscribeEvent
     public static void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
         RenderType entity;
-        if (!BloomRenderer.SafeMode.enabled() && BloomShaderManager.isBloomAvailable()) {
+        if (BloomRenderer.usesNormalBloomRendering() && BloomShaderManager.isBloomAvailable()) {
             entity = GTRenderTypes.entityBloomBlockSheet();
         } else {
             entity = NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();

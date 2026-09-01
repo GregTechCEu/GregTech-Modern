@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.client.bloom;
 
+import com.gregtechceu.gtceu.client.renderer.CustomChunkRenderBackend;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
+import com.gregtechceu.gtceu.core.config.RendererBackendCompatibility;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.BufferBuilderAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.LevelRendererAccessor;
@@ -58,9 +60,13 @@ public class BloomRenderer {
     @Getter
     private static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
-    public static boolean usesCustomChunkPass() {
+    public static boolean usesNormalBloomRendering() {
         return !SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT &&
-                (GTEarlyConfig.isModLoaded("sodium") || GTEarlyConfig.isModLoaded("embeddium"));
+                !RendererBackendCompatibility.requiresFallback();
+    }
+
+    public static boolean usesCustomChunkPass() {
+        return usesNormalBloomRendering() && CustomChunkRenderBackend.isEnabled();
     }
 
     public static boolean usesOwnedSectionMeshes() {

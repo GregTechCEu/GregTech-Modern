@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.config.Option;
+import com.gregtechceu.gtceu.core.config.RendererBackendCompatibility;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,11 +52,48 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
         String mixin = mixinClassName.substring(MIXIN_PACKAGE_ROOT.length());
 
+        Boolean rendererOverride = shouldApplyRendererMixin(mixin);
+        if (rendererOverride != null) {
+            return rendererOverride;
+        }
+
         if (!isOptionEnabled(mixin)) {
             return false;
         }
 
         return true;
+    }
+
+    private static Boolean shouldApplyRendererMixin(String mixin) {
+        boolean bloomSafeMode = isOptionEnabled(GTEarlyConfig.SAFE_MODE);
+        boolean layerSafeMode = isOptionEnabled(GTEarlyConfig.CUSTOM_CHUNK_LAYER_SAFE_MODE);
+
+        if (mixin.startsWith("client.customchunk.sodium.")) {
+            return !layerSafeMode && RendererBackendCompatibility.supports(RendererBackendCompatibility.SODIUM);
+        }
+        if (mixin.startsWith("client.bloom.normal.sodium.")) {
+            return !bloomSafeMode && !layerSafeMode &&
+                    RendererBackendCompatibility.supports(RendererBackendCompatibility.SODIUM);
+        }
+        if (mixin.startsWith("client.bloom.safemode.sodium.")) {
+            return (bloomSafeMode || layerSafeMode) &&
+                    RendererBackendCompatibility.supports(RendererBackendCompatibility.SODIUM);
+        }
+        if (mixin.startsWith("client.customchunk.embeddium.")) {
+            return !layerSafeMode && RendererBackendCompatibility.supports(RendererBackendCompatibility.EMBEDDIUM);
+        }
+        if (mixin.startsWith("client.bloom.normal.embeddium.")) {
+            return !bloomSafeMode && !layerSafeMode &&
+                    RendererBackendCompatibility.supports(RendererBackendCompatibility.EMBEDDIUM);
+        }
+        if (mixin.startsWith("client.bloom.safemode.embeddium.")) {
+            return (bloomSafeMode || layerSafeMode) &&
+                    RendererBackendCompatibility.supports(RendererBackendCompatibility.EMBEDDIUM);
+        }
+        if (mixin.startsWith("client.customchunk.iris.")) {
+            return !layerSafeMode && RendererBackendCompatibility.supportsCustomChunkPass();
+        }
+        return null;
     }
 
     public static boolean isOptionEnabled(String mixin) {

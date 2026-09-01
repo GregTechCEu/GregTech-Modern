@@ -18,6 +18,7 @@ import java.util.*;
 public class GTEarlyConfig {
 
     public static final String SAFE_MODE = "client.bloom.safe_mode.";
+    public static final String CUSTOM_CHUNK_LAYER_SAFE_MODE = "client.rendering.custom_chunk_layers.safe_mode.";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
 
@@ -38,6 +39,12 @@ public class GTEarlyConfig {
 
         addDelegateRule("client.bloom.safemode", SAFE_MODE, false);
         addDelegateRule("client.bloom.normal", SAFE_MODE, true);
+
+        option = addMixinRule(CUSTOM_CHUNK_LAYER_SAFE_MODE, false);
+        option.addComment(
+                "Whether to disable GTCEu's custom chunk render layers",
+                "Enable this if another rendering mod is incompatible with GTCEu's custom chunk layer adapter. This should, ideally, be extremely rare.",
+                "Requires restarting the client to take effect.");
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
