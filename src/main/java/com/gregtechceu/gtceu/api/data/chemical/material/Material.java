@@ -426,12 +426,8 @@ public final class Material {
         return materialInfo.hasFluidColor;
     }
 
-    public void setMaterialIconSet(MaterialIconSet materialIconSet) {
-        materialInfo.iconSet = materialIconSet;
-    }
-
     public MaterialIconSet getMaterialIconSet() {
-        return materialInfo.iconSet;
+        return materialInfo.iconSet.value();
     }
 
     public boolean isRadioactive() {
@@ -1146,9 +1142,9 @@ public final class Material {
          * <br>
          * Default will be determined by first-found Property in this order, unless specified.
          *
-         * @param iconSet The {@link MaterialIconSet} of this Material.
+         * @param iconSet A holder containing the {@link MaterialIconSet} of this Material.
          */
-        public Builder iconSet(MaterialIconSet iconSet) {
+        public Builder iconSet(Holder<MaterialIconSet> iconSet) {
             materialInfo.iconSet = iconSet;
             return this;
         }
@@ -1901,7 +1897,7 @@ public final class Material {
          */
         @Getter
         @Setter
-        private MaterialIconSet iconSet = MaterialIconSet.DULL;
+        private Holder<MaterialIconSet> iconSet = MaterialIconSet.DULL;
 
         /**
          * The components of this Material.

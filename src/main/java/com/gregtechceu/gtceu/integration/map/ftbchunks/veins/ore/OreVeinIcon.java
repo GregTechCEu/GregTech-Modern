@@ -163,7 +163,7 @@ public class OreVeinIcon implements MapIcon {
         var colors = RenderUtil.floats(color);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        MaterialIconSet iconSet = material.isNull() ? MaterialIconSet.METALLIC : material.getMaterialIconSet();
+        MaterialIconSet iconSet = material.isNull() ? MaterialIconSet.METALLIC.value() : material.getMaterialIconSet();
         ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
