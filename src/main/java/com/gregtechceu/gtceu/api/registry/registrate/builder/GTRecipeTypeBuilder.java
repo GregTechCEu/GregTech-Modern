@@ -38,7 +38,7 @@ public class GTRecipeTypeBuilder extends
 
     @Override
     public GTRegistrate getOwner() {
-        return (GTRegistrate)super.getOwner();
+        return (GTRegistrate) super.getOwner();
     }
 
     public GTRecipeTypeBuilder setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs,

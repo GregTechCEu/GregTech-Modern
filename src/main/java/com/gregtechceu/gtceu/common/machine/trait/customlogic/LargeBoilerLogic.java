@@ -13,7 +13,7 @@ public class LargeBoilerLogic extends SteamBoilerLogic {
 
     @Override
     protected GTRecipeType getRecipeType() {
-        return LARGE_BOILER_RECIPES;
+        return LARGE_BOILER_RECIPES.value();
     }
 
     @Override
