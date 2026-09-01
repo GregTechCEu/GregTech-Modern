@@ -50,7 +50,7 @@ public class MaterialProperties {
         if (!key.getType().isInstance(value))
             throw new IllegalArgumentException("Material Property must be of the same type as the property key!");
         if (hasProperty(key))
-            throw new IllegalArgumentException("Material Property " + key.toString() + " already registered!");
+            throw new IllegalArgumentException("Material Property " + key + " already registered!");
         propertyMap.put(key, value);
         propertyMap.remove(PropertyKey.EMPTY);
     }
@@ -69,9 +69,14 @@ public class MaterialProperties {
             propertyMap.remove(PropertyKey.EMPTY);
             if (verify) verify();
         }
-        return Objects.requireNonNull(getProperty(key), "Property null after ensureSet");
+        return Objects.requireNonNull(getProperty(key), "Property %s is null after ensureSet".formatted(key));
     }
 
+    /**
+     * Ensures that the given property exists, creating it if absent.
+     * @param key The property key.
+     * @return The existing property, or the newly created property.
+     */
     public <T extends IMaterialProperty> T ensureSet(PropertyKey<T> key) {
         return ensureSet(key, false);
     }
