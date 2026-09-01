@@ -132,6 +132,12 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ******* GUI ********//
     //////////////////////////////////////
 
+
+//    @Override
+//    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+//        return super.getWidgetsForDisplay(syncManager);
+//    }
+
     public static List<IWidget> additionalDisplay(MultiblockControllerMachine controller,
                                                   PanelSyncManager syncManager) {
         if (!(controller instanceof LargeTurbineMachine ltMachine))
@@ -140,8 +146,13 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
             return Collections.emptyList();
 
         var rotorHolder = ltMachine.getRotorHolder();
-        if (!(rotorHolder != null && rotorHolder.hasRotor()))
-            return Collections.emptyList();
+        if (!(rotorHolder != null && rotorHolder.hasRotor())) {
+            return Collections.singletonList(
+                    Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
+                            .asWidget()
+                            .setEnabledIf(w -> true));
+        }
 
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive",
                 BooleanSyncValue.class,
