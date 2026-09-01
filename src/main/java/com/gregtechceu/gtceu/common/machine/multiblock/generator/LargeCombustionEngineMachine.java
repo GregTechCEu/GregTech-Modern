@@ -20,8 +20,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
