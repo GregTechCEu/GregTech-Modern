@@ -14,7 +14,8 @@ public final class RendererBackendCompatibility {
     public static final String EMBEDDIUM = "embeddium";
 
     private static final Logger LOGGER = LogManager.getLogger("GregTechCEu/RendererBackendCompatibility");
-    private static final Set<String> SUPPORTED_SODIUM_VERSIONS = Set.of("0.8.12-beta.1+mc1.21.1"); //TODO: CHECK COMPAT WITH 8.13, released recently, ideally nothing broke.
+    // TODO: Check compatibility with Sodium 0.8.13.
+    private static final Set<String> SUPPORTED_SODIUM_VERSIONS = Set.of("0.8.12-beta.1+mc1.21.1");
     private static final Set<String> SUPPORTED_EMBEDDIUM_VERSIONS = Set.of("1.0.8-beta.367+mc1.21");
     private static final boolean ACCELERATED_BACKEND_LOADED = GTEarlyConfig.isModLoaded(SODIUM) ||
             GTEarlyConfig.isModLoaded(EMBEDDIUM);
