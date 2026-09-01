@@ -37,7 +37,7 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     @Override
     public Element createObject() {
-        return GTElements.createAndRegister(id, protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
+        return new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
                 isIsotope);
     }
 }
