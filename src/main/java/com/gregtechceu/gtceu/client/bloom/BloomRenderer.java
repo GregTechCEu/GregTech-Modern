@@ -58,6 +58,15 @@ public class BloomRenderer {
     @Getter
     private static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
+    public static boolean usesCustomChunkPass() {
+        return !SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT &&
+                (GTEarlyConfig.isModLoaded("sodium") || GTEarlyConfig.isModLoaded("embeddium"));
+    }
+
+    public static boolean usesOwnedSectionMeshes() {
+        return !usesCustomChunkPass();
+    }
+
     @ApiStatus.Internal
     static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum,
                             Matrix4f frustumMatrix, Matrix4f projectionMatrix, float partialTicks,
@@ -74,7 +83,7 @@ public class BloomRenderer {
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
 
         // safe mode disabled -> use deeper, faster hackery
-        if (!BloomRenderer.SafeMode.enabled()) {
+        if (usesCustomChunkPass()) {
             ((LevelRendererAccessor) levelRenderer).invokeRenderSectionLayer(GTRenderTypes.bloom(),
                     camPos.x, camPos.y, camPos.z, frustumMatrix, projectionMatrix);
 
@@ -205,7 +214,7 @@ public class BloomRenderer {
 
         @SubscribeEvent
         public static void registerSafeModeChunkGeometryRenderer(AddSectionGeometryEvent event) {
-            if (!BloomRenderer.SafeMode.enabled()) return;
+            if (!BloomRenderer.usesOwnedSectionMeshes()) return;
             if (!BloomShaderManager.isBloomActive()) return;
 
             final BlockPos sectionMinBlock = event.getSectionOrigin().immutable();

@@ -15,7 +15,6 @@
         "client.BlockModelMixin",
         "client.ClientLevelAccessor",
         "client.FaceBakeryMixin",
-        "client.CustomChunkRenderTypeMixin",
         "client.GuiGraphicsAccessor",
         "client.GuiGraphicsMixin",
         "client.ItemEntityMixin",

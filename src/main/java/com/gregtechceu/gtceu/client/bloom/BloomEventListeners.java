@@ -29,7 +29,7 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        if (BloomRenderer.SafeMode.enabled()) {
+        if (BloomRenderer.usesOwnedSectionMeshes()) {
             NeoForge.EVENT_BUS.register(BloomRenderer.SafeMode.class);
         }
     }
@@ -57,7 +57,7 @@ public class BloomEventListeners {
     public static void onLevelUnload(LevelEvent.Unload event) {
         BloomHandler.invalidateLevelData(event.getLevel());
 
-        if (BloomRenderer.SafeMode.enabled()) {
+        if (BloomRenderer.usesOwnedSectionMeshes()) {
             BloomRenderer.SafeMode.invalidateLevelData();
         }
     }
@@ -70,7 +70,7 @@ public class BloomEventListeners {
         LevelAccessor level = chunk.getLevel();
         if (level == null) return;
 
-        if (!BloomRenderer.SafeMode.enabled()) return;
+        if (!BloomRenderer.usesOwnedSectionMeshes()) return;
 
         ChunkPos chunkPos = chunk.getPos();
         int minSection = level.getMinSection(), maxSection = level.getMaxSection();
@@ -81,15 +81,12 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
-        RenderType block, entity;
+        RenderType entity;
         if (!BloomRenderer.SafeMode.enabled() && BloomShaderManager.isBloomAvailable()) {
-            block = GTRenderTypes.bloom();
             entity = GTRenderTypes.entityBloomBlockSheet();
         } else {
-            // if safe mode is enabled, register the named render type as a copy of neoforge's 'cutout'
-            block = RenderType.cutoutMipped();
             entity = NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
         }
-        event.register(GTCEu.id("bloom"), block, entity);
+        event.register(GTCEu.id("bloom"), RenderType.cutoutMipped(), entity);
     }
 }

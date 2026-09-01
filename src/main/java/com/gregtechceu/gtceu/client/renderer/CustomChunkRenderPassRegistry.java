@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
-import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.LevelRendererAccessor;
 
 import net.minecraft.client.renderer.RenderType;
@@ -22,7 +21,7 @@ public final class CustomChunkRenderPassRegistry {
     private static final List<CustomChunkRenderPass> PASSES = List.of(
             new CustomChunkRenderPass(GTRenderTypes.bloom(), CustomChunkRenderPass.AlphaCutoff.ZERO, true,
                     CustomChunkRenderPass.DrawStage.MANUAL, CustomChunkRenderPass.TerrainPhase.CUSTOM,
-                    () -> !BloomRenderer.SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT));
+                    BloomRenderer::usesCustomChunkPass));
 
     // Chunk buffer layers are fixed during client startup, so load conditions are resolved once.
     private static final List<CustomChunkRenderPass> ACTIVE_PASSES = PASSES.stream()
