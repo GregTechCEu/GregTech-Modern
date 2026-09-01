@@ -303,6 +303,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         private @Nullable Function<GTRecipeTypeUILayout.Builder, GTRecipeTypeUILayout.Builder> uiLayout = null;
         private @Nullable Consumer<GTRecipeBuilder> builderPreparer = null;
         private @Nullable BiConsumer<GTRecipeBuilder, RecipeOutput> onRecipeBuild = null;
+
         public Properties(String group, RecipeType<?>... proxyRecipes) {
             this.group = group;
             this.proxyRecipes = proxyRecipes;

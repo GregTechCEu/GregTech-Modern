@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.tterrag.registrate.AbstractRegistrate;
-import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
+
+import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.ApiStatus;
 
 public class GTRecipeTypeEntry extends RegistryEntry<RecipeType<?>, GTRecipeType> {

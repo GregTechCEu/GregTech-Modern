@@ -12,14 +12,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
-import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
-import net.minecraft.core.Holder;
+
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -241,19 +239,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return entry(name, callback -> new GTRecipeTypeBuilder(this, name, callback, group, proxyRecipes));
     }
 
-    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name, Supplier<GTRecipeType> recipeType,
-                                                                            @Nullable CategoryIcon icon, boolean isXEIVisible) {
-        return simple(name, GTRegistries.Keys.RECIPE_CATEGORY, () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
-                .setIcon(icon)
-                .setXEIVisible(isXEIVisible));
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            @Nullable CategoryIcon icon,
+                                                                            boolean isXEIVisible) {
+        return simple(name, GTRegistries.Keys.RECIPE_CATEGORY,
+                () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
+                        .setIcon(icon)
+                        .setXEIVisible(isXEIVisible));
     }
 
-    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name, Supplier<GTRecipeType> recipeType,
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType,
                                                                             @Nullable CategoryIcon icon) {
         return recipeCategory(name, recipeType, icon, true);
     }
 
-    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name, Supplier<GTRecipeType> recipeType) {
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType) {
         return recipeCategory(name, recipeType, null, true);
     }
 
