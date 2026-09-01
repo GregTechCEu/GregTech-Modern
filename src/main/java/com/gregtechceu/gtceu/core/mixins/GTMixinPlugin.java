@@ -65,33 +65,28 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
     }
 
     private static Boolean shouldApplyRendererMixin(String mixin) {
-        boolean bloomSafeMode = isOptionEnabled(GTEarlyConfig.SAFE_MODE);
-        boolean layerSafeMode = isOptionEnabled(GTEarlyConfig.CUSTOM_CHUNK_LAYER_SAFE_MODE);
+        boolean safeMode = isOptionEnabled(GTEarlyConfig.SAFE_MODE);
 
-        if (mixin.startsWith("client.customchunk.sodium.")) {
-            return !layerSafeMode && RendererBackendCompatibility.supports(RendererBackendCompatibility.SODIUM);
-        }
-        if (mixin.startsWith("client.bloom.normal.sodium.")) {
-            return !bloomSafeMode && !layerSafeMode &&
+        if (mixin.startsWith("client.customchunk.sodium.") ||
+                mixin.startsWith("client.bloom.normal.sodium.")) {
+            return !safeMode &&
                     RendererBackendCompatibility.supports(RendererBackendCompatibility.SODIUM);
         }
         if (mixin.startsWith("client.bloom.safemode.sodium.")) {
-            return (bloomSafeMode || layerSafeMode) &&
+            return safeMode &&
                     RendererBackendCompatibility.supports(RendererBackendCompatibility.SODIUM);
         }
-        if (mixin.startsWith("client.customchunk.embeddium.")) {
-            return !layerSafeMode && RendererBackendCompatibility.supports(RendererBackendCompatibility.EMBEDDIUM);
-        }
-        if (mixin.startsWith("client.bloom.normal.embeddium.")) {
-            return !bloomSafeMode && !layerSafeMode &&
+        if (mixin.startsWith("client.customchunk.embeddium.") ||
+                mixin.startsWith("client.bloom.normal.embeddium.")) {
+            return !safeMode &&
                     RendererBackendCompatibility.supports(RendererBackendCompatibility.EMBEDDIUM);
         }
         if (mixin.startsWith("client.bloom.safemode.embeddium.")) {
-            return (bloomSafeMode || layerSafeMode) &&
+            return safeMode &&
                     RendererBackendCompatibility.supports(RendererBackendCompatibility.EMBEDDIUM);
         }
         if (mixin.startsWith("client.customchunk.iris.")) {
-            return !layerSafeMode && RendererBackendCompatibility.supportsCustomChunkPass();
+            return !safeMode && RendererBackendCompatibility.supportsCustomChunkPass();
         }
         return null;
     }

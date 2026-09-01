@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.bloom;
 
-import com.gregtechceu.gtceu.client.renderer.CustomChunkRenderBackend;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -66,7 +65,7 @@ public class BloomRenderer {
     }
 
     public static boolean usesCustomChunkPass() {
-        return usesNormalBloomRendering() && CustomChunkRenderBackend.isEnabled();
+        return usesNormalBloomRendering() && RendererBackendCompatibility.supportsCustomChunkPass();
     }
 
     public static boolean usesOwnedSectionMeshes() {
