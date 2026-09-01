@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.entry;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -62,5 +63,9 @@ public class GTRecipeTypeEntry extends RegistryEntry<RecipeType<?>, GTRecipeType
 
     public Component getName() {
         return Component.translatable(getKey().location().toLanguageKey("recipe_type"));
+    }
+
+    public void addToMainCategory(GTRecipe recipe) {
+        value().addToMainCategory(recipe);
     }
 }
