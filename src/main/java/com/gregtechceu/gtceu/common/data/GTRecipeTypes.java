@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -35,7 +34,6 @@ import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.layout.Flow;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;

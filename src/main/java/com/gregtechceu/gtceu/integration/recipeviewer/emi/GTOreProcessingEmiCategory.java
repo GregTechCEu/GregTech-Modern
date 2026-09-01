@@ -44,7 +44,8 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     public static void registerWorkStations(EmiRegistry registry) {
         List<MachineDefinition> registeredMachines = new ArrayList<>();
         GTRecipeType[] validTypes = new GTRecipeType[] {
-                MACERATOR_RECIPES.value(), ORE_WASHER_RECIPES.value(), THERMAL_CENTRIFUGE_RECIPES.value(), CENTRIFUGE_RECIPES.value(),
+                MACERATOR_RECIPES.value(), ORE_WASHER_RECIPES.value(), THERMAL_CENTRIFUGE_RECIPES.value(),
+                CENTRIFUGE_RECIPES.value(),
                 CHEMICAL_BATH_RECIPES.value(), ELECTROMAGNETIC_SEPARATOR_RECIPES.value(), SIFTER_RECIPES.value()
         };
         for (MachineDefinition machine : GTEMIPlugin.SORTED_MACHINES) {

@@ -13,7 +13,7 @@ public class SmallBoilerLogic extends SteamBoilerLogic {
 
     @Override
     protected GTRecipeType getRecipeType() {
-        return STEAM_BOILER_RECIPES;
+        return STEAM_BOILER_RECIPES.value();
     }
 
     @Override
