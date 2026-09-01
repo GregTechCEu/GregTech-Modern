@@ -468,6 +468,7 @@ public class GTMachineModels {
 
     // spotless:off
     public static final ResourceLocation ROTOR_HOLDER_BLOCK = GTCEu.id("block/machine/template/rotor_holder/block");
+    public static final ResourceLocation ROTOR_HOLDER_HULL = GTCEu.id("block/cube/tinted/bottom_top");
     public static final ResourceLocation ROTOR_HOLDER_OVERLAY = GTCEu.id("block/machine/template/rotor_holder/overlay");
     public static final ResourceLocation ROTOR_HOLDER_ROTOR_IDLE = GTCEu.id("block/machine/template/rotor_holder/rotor_idle");
     public static final ResourceLocation ROTOR_HOLDER_ROTOR_SPINNING = GTCEu.id("block/machine/template/rotor_holder/rotor_spinning");
@@ -479,8 +480,22 @@ public class GTMachineModels {
             var blockModel = prov.models().nested()
                     .parent(prov.models().getExistingFile(ROTOR_HOLDER_BLOCK));
             tieredHullTextures(blockModel, builder.getOwner().getTier());
+            var formedBlockModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(ROTOR_HOLDER_HULL));
+            tieredHullTextures(formedBlockModel, builder.getOwner().getTier());
 
-            builder.part(blockModel).end();
+            builder.part(blockModel)
+                    .condition(IS_FORMED, false)
+                    .condition(HAS_ROTOR, false, true)
+                    .condition(IS_ROTOR_SPINNING, false, true)
+                    .condition(IS_EMISSIVE_ROTOR, false, true)
+                    .end();
+            builder.part(formedBlockModel)
+                    .condition(IS_FORMED, true)
+                    .condition(HAS_ROTOR, false, true)
+                    .condition(IS_ROTOR_SPINNING, false, true)
+                    .condition(IS_EMISSIVE_ROTOR, false, true)
+                    .end();
             builder.part(ROTOR_HOLDER_OVERLAY).condition(IS_FORMED, true).end();
 
             makeRotorHolderState(builder, models, ROTOR_HOLDER_ROTOR_IDLE, false, false);

@@ -5,17 +5,19 @@ import lombok.experimental.Accessors;
 
 import java.util.Locale;
 
+@Getter
 @Accessors(fluent = true)
 public enum FaceLayer {
 
     UNCLASSIFIED(0),
     BASE(0),
     MACHINE_FACE(1),
-    EMISSIVE(2),
-    COVER(3),
-    COVER_EMISSIVE(4);
+    MACHINE_DETAIL(2),
+    MACHINE_CONTENT(3),
+    EMISSIVE(4),
+    COVER(5),
+    COVER_EMISSIVE(6);
 
-    @Getter
     private final int depthRank;
 
     FaceLayer(int depthRank) {

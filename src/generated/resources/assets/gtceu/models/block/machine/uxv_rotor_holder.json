@@ -13,6 +13,30 @@
             "top": "gtceu:block/casings/voltage/uxv/top"
           }
         }
+      },
+      "when": {
+        "emissive_rotor": "false|true",
+        "has_rotor": "false|true",
+        "is_formed": "false",
+        "rotor_spinning": "false|true"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/cube/tinted/bottom_top",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/uxv/bottom",
+            "side": "gtceu:block/casings/voltage/uxv/side",
+            "top": "gtceu:block/casings/voltage/uxv/top"
+          }
+        }
+      },
+      "when": {
+        "emissive_rotor": "false|true",
+        "has_rotor": "false|true",
+        "is_formed": "true",
+        "rotor_spinning": "false|true"
       }
     },
     {
