@@ -208,7 +208,7 @@ public class TagPrefix {
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
                     ResourceLocation.withDefaultNamespace("block/end_stone"), true, false, true);
 
-    public static final TagPrefix rawOre = new TagPrefix(GTCEu.id("raw"), true)
+    public static final TagPrefix rawOre = new TagPrefix(GTCEu.id("raw"))
             .idPattern("raw_%s")
             .defaultTagPath("raw_materials/%s")
             .unformattedTagPath("raw_materials")
@@ -992,8 +992,6 @@ public class TagPrefix {
     @Getter
     @Setter
     private String idPattern;
-    @Getter
-    public final boolean invertedName;
 
     protected final List<TagType> tags = new ArrayList<>();
     @Setter
@@ -1062,26 +1060,21 @@ public class TagPrefix {
      */
     @Deprecated(since = "8.0.0")
     public TagPrefix(String name) {
-        this(name, false);
+        this(GTCEu.id(name));
     }
 
     /**
-     * @deprecated Use {@link TagPrefix#TagPrefix(ResourceLocation, boolean)}
+     * @deprecated Use {@link TagPrefix#TagPrefix(ResourceLocation)}
      */
     @Deprecated(since = "8.0.0")
     public TagPrefix(String name, boolean invertedName) {
-        this(GTCEu.id(name), invertedName);
+        this(name);
     }
 
     public TagPrefix(ResourceLocation id) {
-        this(id, false);
-    }
-
-    public TagPrefix(ResourceLocation id, boolean invertedName) {
         this.id = id;
         this.name = id.getPath();
         this.idPattern = "%s_" + getLowerCaseName();
-        this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
         GTRegistries.TAG_PREFIXES.register(id, this);
     }

@@ -1799,6 +1799,7 @@
   "config.gtceu.option.direction": "direction",
   "config.gtceu.option.disableManualCompression": "disableManualCompression",
   "config.gtceu.option.doBedrockOres": "doBedrockOres",
+  "config.gtceu.option.doDataFixers": "doDataFixers",
   "config.gtceu.option.doSuperflatOres": "doSuperflatOres",
   "config.gtceu.option.doesExplosionDamagesTerrain": "doesExplosionDamagesTerrain",
   "config.gtceu.option.drum": "drum",

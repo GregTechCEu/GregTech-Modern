@@ -34,6 +34,22 @@ public class GTCEu {
 
     public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
+    /**
+     * Only used for datafixers. Bump whenever a block changes id, save data layout changes, etc.<br>
+     * Should be bumped up to the next multiple of 10 the first time it is bumped after a release, then by 1 for each
+     * subsequent change.
+     *
+     * <p>
+     * Example versions:
+     * <ul>
+     * <li>0: 7.5.3</li>
+     * <li>10: 8.0.0-SNAPSHOT+HASH1</li> // TODO set the correct hash here
+     * <li>11: 8.0.0-SNAPSHOT+HASH2</li>
+     * <li>20: 8.0.1-SNAPSHOT+HASH2</li>
+     * </ul>
+     */
+    public static final int GT_DATA_VERSION = 10;
+
     public GTCEu() {
         GTCEu.init();
         GTCEuAPI.instance = this;
