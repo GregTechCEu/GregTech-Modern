@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -178,6 +179,29 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
             S extends MultiblockMachineBuilder<MACHINE, S>> S multiblock(String name,
                                                                          MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return entry(name, callback -> (S) new MultiblockMachineBuilder<>(this, name, callback, blockEntityFactory));
+    }
+
+    /// Element Registration
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds, @Nullable String decayTo,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return simple(name, GTRegistries.Keys.ELEMENT, () -> new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope));
+    }
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return element(name, protons, neutrons, -1, null, displayName, symbol, isIsotope);
+    }
+
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return element(name, protons, neutrons, halfLifeSeconds, null, displayName, symbol, isIsotope);
+    }
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
+                                                   String displayName, String symbol) {
+        return element(name, protons, neutrons, -1, null, displayName, symbol, false);
     }
 
     /// Cover Registration
