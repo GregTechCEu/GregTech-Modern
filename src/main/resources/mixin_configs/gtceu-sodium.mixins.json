@@ -11,6 +11,7 @@
     "client": [
         "client.customchunk.sodium.SodiumChunkBuildBuffersMixin",
         "client.customchunk.sodium.SodiumChunkBuilderMeshingTaskMixin",
+        "client.customchunk.sodium.SodiumRenderRegionManagerMixin",
         "client.customchunk.sodium.SodiumWorldRendererMixin",
         "client.bloom.normal.sodium.BlockRendererMixin",
         "client.bloom.safemode.sodium.BlockRendererMixin"
