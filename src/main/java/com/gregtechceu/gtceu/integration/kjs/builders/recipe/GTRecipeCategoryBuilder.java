@@ -33,7 +33,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     public GTRecipeCategoryBuilder(ResourceLocation id) {
         super(id);
         name = id.getPath();
-        recipeType = GTRecipeTypes.DUMMY_RECIPES;
+        recipeType = GTRecipeTypes.DUMMY_RECIPES.value();
         icon = null;
         isXEIVisible = true;
         langValue = null;
@@ -58,7 +58,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
     @Override
     public GTRecipeCategory createObject() {
-        return GTRecipeCategories.register(id, recipeType)
+        return new GTRecipeCategory(id, recipeType)
                 .setIcon(icon)
                 .setXEIVisible(isXEIVisible);
     }
