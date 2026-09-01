@@ -59,7 +59,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        IntSyncValue parallels = new IntSyncValue(this::getCurrentParallel, this::setCurrentParallel);
+        IntSyncValue parallels = new IntSyncValue(this::getCurrentParallel, this::setCurrentParallel).allowC2S();
         mainWidget.child(Flow.row()
                 .size(180, 60)
                 .child(new ButtonWidget<>()
