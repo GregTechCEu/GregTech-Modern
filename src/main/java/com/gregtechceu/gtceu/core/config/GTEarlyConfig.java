@@ -267,7 +267,7 @@ public class GTEarlyConfig {
             writer.write("# Available options:\n");
             var entries = this.options.entrySet().stream()
                     .filter(entry -> !entry.getValue().isHidden())
-                    .sorted()
+                    .sorted(Map.Entry.comparingByKey())
                     .toList();
 
             for (var entry : entries) {
