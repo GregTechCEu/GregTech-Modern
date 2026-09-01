@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -31,8 +31,7 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -132,31 +131,28 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     // ******* GUI ********//
     //////////////////////////////////////
 
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
 
-//    @Override
-//    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
-//        return super.getWidgetsForDisplay(syncManager);
-//    }
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+        if (!isFormed())
+            return widgets;
 
-    public static List<IWidget> additionalDisplay(MultiblockControllerMachine controller,
-                                                  PanelSyncManager syncManager) {
-        if (!(controller instanceof LargeTurbineMachine ltMachine))
-            return Collections.emptyList();
-        if (!controller.isFormed())
-            return Collections.emptyList();
-
-        var rotorHolder = ltMachine.getRotorHolder();
+        var rotorHolder = getRotorHolder();
         if (!(rotorHolder != null && rotorHolder.hasRotor())) {
-            return Collections.singletonList(
+            widgets.add(
                     Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                             .asWidget()
                             .setEnabledIf(w -> true));
+            return widgets;
         }
 
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive",
                 BooleanSyncValue.class,
-                () -> new BooleanSyncValue(ltMachine::isActive));
+                () -> new BooleanSyncValue(this::isActive));
         IntSyncValue rotorSpeed = syncManager.getOrCreateSyncHandler("rotorSpeed",
                 IntSyncValue.class,
                 () -> new IntSyncValue(rotorHolder::getRotorSpeed));
@@ -168,10 +164,10 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 () -> new IntSyncValue(rotorHolder::getTotalEfficiency));
         LongSyncValue currentOutput = syncManager.getOrCreateSyncHandler("currentOutput",
                 LongSyncValue.class,
-                () -> new LongSyncValue(ltMachine::getCurrentProduction));
+                () -> new LongSyncValue(this::getCurrentProduction));
         LongSyncValue maxOutput = syncManager.getOrCreateSyncHandler("maxOutput",
                 LongSyncValue.class,
-                () -> new LongSyncValue(ltMachine::getOverclockVoltage));
+                () -> new LongSyncValue(this::getOverclockVoltage));
         IntSyncValue rotorDurability = syncManager.getOrCreateSyncHandler("rotorDurability",
                 IntSyncValue.class,
                 () -> new IntSyncValue(rotorHolder::getRotorDurabilityPercent));
@@ -202,7 +198,21 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 .asWidget()
                 .setEnabledIf(w -> true);
 
-        return Arrays.asList(rotorSpeedDisplay, turbineEfficiencyDisplay, turbinePowerDisplay, rotorDurabilityDisplay);
+        widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
+
+        widgets.add(rotorSpeedDisplay);
+        widgets.add(turbineEfficiencyDisplay);
+        widgets.add(turbinePowerDisplay);
+        widgets.add(rotorDurabilityDisplay);
+
+        widgets.addAll(getDefinition().getAdditionalDisplay().apply(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addTotalRunsLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
+
+        return widgets;
     }
 
     //////////////////////////////////////
@@ -225,13 +235,15 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         }
 
         var rotorHolder = turbineMachine.getRotorHolder();
-        if (rotorHolder == null) return ModifierFunction.NULL;
+        if (rotorHolder == null)
+            return ModifierFunction.cancel(Component.translatable("gtceu.multiblock.turbine.no_rotor"));
 
         EnergyStack EUt = recipe.getOutputEUt();
         long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
-        if (EUt.isEmpty() || turbineMaxVoltage <= EUt.voltage() || holderEfficiency <= 0) return ModifierFunction.NULL;
+        if (EUt.isEmpty() || turbineMaxVoltage <= EUt.voltage() || holderEfficiency <= 0)
+            return ModifierFunction.cancel(Component.translatable("gtceu.multiblock.turbine.no_rotor"));
 
         // get the amount of parallel required to match the desired output voltage
         // Max Parallel is Ceilinged not Floored to ensure the output voltage is actually met,
