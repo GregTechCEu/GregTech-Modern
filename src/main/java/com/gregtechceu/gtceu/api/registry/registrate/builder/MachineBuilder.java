@@ -96,7 +96,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private boolean defaultBlock = true;
     private boolean defaultItem = true;
 
-    private final Set<Supplier<GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
+    protected final Set<Supplier<GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
 
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
 

@@ -40,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -243,6 +244,7 @@ public class TestUtils {
             return (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(GTCEu.id(name));
         ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).unfreeze();
         ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).unfreeze();
+        ((MappedRegistry<RecipeSerializer<?>>) BuiltInRegistries.RECIPE_SERIALIZER).unfreeze();
 
         GTRecipeType.Properties properties = new GTRecipeType.Properties(ELECTRIC, RecipeType.SMELTING);
         properties.maxInputs().put(EURecipeCapability.CAP, 1);
@@ -254,6 +256,7 @@ public class TestUtils {
         Registry.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
         GTRegistries.RECIPE_CATEGORIES.freeze();
         BuiltInRegistries.RECIPE_TYPE.freeze();
+        BuiltInRegistries.RECIPE_SERIALIZER.freeze();
         return type;
     }
 
