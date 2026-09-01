@@ -31,7 +31,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -61,7 +60,7 @@ public class ItemMaterialData {
         ITEM_MATERIAL_INFO.put(item.asItem(), materialInfo);
     }
 
-    public static ItemMaterialInfo getMaterialInfo(ItemLike item) {
+    public static @Nullable ItemMaterialInfo getMaterialInfo(ItemLike item) {
         return ITEM_MATERIAL_INFO.get(item.asItem());
     }
 
@@ -75,8 +74,8 @@ public class ItemMaterialData {
      * @param supplier      a supplier to the item
      * @param materialEntry the entry to register
      */
-    public static void registerMaterialEntry(@NotNull Supplier<? extends ItemLike> supplier,
-                                             @NotNull MaterialEntry materialEntry) {
+    public static void registerMaterialEntry(Supplier<? extends ItemLike> supplier,
+                                             MaterialEntry materialEntry) {
         registerItemEntry(supplier, materialEntry);
         ITEM_MATERIAL_ENTRY.add(Pair.of(() -> supplier.get().asItem(), materialEntry));
         var blockSupplier = convertToBlock(supplier);
@@ -88,8 +87,8 @@ public class ItemMaterialData {
     /**
      * @see #registerMaterialEntry(Supplier, MaterialEntry)
      */
-    public static void registerMaterialEntries(@NotNull Collection<Supplier<? extends ItemLike>> items,
-                                               @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+    public static void registerMaterialEntries(Collection<Supplier<? extends ItemLike>> items,
+                                               TagPrefix tagPrefix, Material material) {
         if (!items.isEmpty()) {
             MaterialEntry entry = new MaterialEntry(tagPrefix, material);
             for (var supplier : items) {
@@ -101,21 +100,21 @@ public class ItemMaterialData {
     /**
      * @see #registerMaterialEntry(Supplier, MaterialEntry)
      */
-    public static void registerMaterialEntry(@NotNull Supplier<? extends ItemLike> item,
-                                             @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+    public static void registerMaterialEntry(Supplier<? extends ItemLike> item,
+                                             TagPrefix tagPrefix, Material material) {
         registerMaterialEntry(item, new MaterialEntry(tagPrefix, material));
     }
 
     /**
      * @see #registerMaterialEntry(Supplier, MaterialEntry)
      */
-    public static void registerMaterialEntry(@NotNull ItemLike item,
-                                             @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+    public static void registerMaterialEntry(ItemLike item,
+                                             TagPrefix tagPrefix, Material material) {
         registerMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
     }
 
-    private static void registerItemEntry(@NotNull Supplier<? extends ItemLike> supplier,
-                                          @NotNull MaterialEntry materialEntry) {
+    private static void registerItemEntry(Supplier<? extends ItemLike> supplier,
+                                          MaterialEntry materialEntry) {
         MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, k -> new ArrayList<>())
                 .add(() -> supplier.get().asItem());
         if (TagPrefix.ORES.containsKey(materialEntry.tagPrefix()) &&
@@ -129,14 +128,14 @@ public class ItemMaterialData {
         }
     }
 
-    private static void registerBlockEntry(@NotNull Supplier<? extends Block> supplier,
-                                           @NotNull MaterialEntry materialEntry) {
+    private static void registerBlockEntry(Supplier<? extends Block> supplier,
+                                           MaterialEntry materialEntry) {
         MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, k -> new ArrayList<>())
                 .add(supplier);
     }
 
     @SuppressWarnings("unchecked")
-    public static @Nullable Supplier<? extends Block> convertToBlock(@NotNull Supplier<? extends ItemLike> supplier) {
+    public static @Nullable Supplier<? extends Block> convertToBlock(Supplier<? extends ItemLike> supplier) {
         if (supplier instanceof DeferredHolder<?, ?> registryObject) {
             var key = registryObject.getKey();
             if (key.isFor(Registries.BLOCK)) {
@@ -182,7 +181,7 @@ public class ItemMaterialData {
         }
     }
 
-    private static ItemMaterialInfo recurseFindMaterialInfo(ItemMaterialInfo info, ItemStack stack) {
+    private static @Nullable ItemMaterialInfo recurseFindMaterialInfo(@Nullable ItemMaterialInfo info, ItemStack stack) {
         // grab material info from each input
         for (var input : UNRESOLVED_ITEM_MATERIAL_INFO.get(stack)) {
             // recurse if its nested inputs, not yet resolved
