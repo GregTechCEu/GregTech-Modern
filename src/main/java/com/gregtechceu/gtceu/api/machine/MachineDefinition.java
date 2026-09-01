@@ -123,7 +123,10 @@ public class MachineDefinition {
         this.recipeOutputLimits = properties.recipeOutputLimits();
         this.blockEntityTypeSupplier = properties.blockEntityTypeSupplier();
         this.tooltipBuilder = (itemStack, components) -> {
-            components.addAll(properties.tooltips());
+            properties.tooltips().forEach(t -> {
+                Component c = t.get();
+                if (c != null) components.add(c);
+            });
             if (properties.tooltipBuilder() != null) properties.tooltipBuilder().accept(itemStack, components);
         };
         this.recipeModifier = properties.recipeModifier();
@@ -283,7 +286,7 @@ public class MachineDefinition {
         private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
         private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
         private PartAbility[] abilities = new PartAbility[0];
-        private final List<Component> tooltips = new ArrayList<>();
+        private final List<Supplier<? extends @Nullable Component>> tooltips = new ArrayList<>();
         private @Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder;
         private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
         private boolean alwaysTryModifyRecipe;

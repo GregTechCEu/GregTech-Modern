@@ -498,13 +498,20 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF tooltips(@Nullable Component... components) {
-        return tooltips(Arrays.asList(components));
+    @SafeVarargs
+    public final SELF tooltips(@Nullable Supplier<? extends @Nullable Component>... components) {
+        for (var comp: components) {
+            if (comp == null) continue;
+            properties.tooltips().add(comp);
+        }
+        return getThis();
     }
 
-    @SuppressWarnings("NullableProblems")
-    public SELF tooltips(List<? extends @Nullable Component> components) {
-        properties.tooltips().addAll(components.stream().filter(Objects::nonNull).toList());
+    public SELF tooltips(@Nullable Component... components) {
+        for (var comp: components) {
+            if (comp == null) continue;
+            properties.tooltips().add(() -> comp);
+        }
         return getThis();
     }
 
@@ -514,7 +521,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF conditionalTooltip(Component component, boolean condition) {
         if (condition)
-            properties.tooltips().add(component);
+            properties.tooltips().add(() -> component);
         return getThis();
     }
 

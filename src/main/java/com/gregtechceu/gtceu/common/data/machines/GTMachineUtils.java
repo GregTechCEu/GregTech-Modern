@@ -766,24 +766,28 @@ public class GTMachineUtils {
         }
     };
 
-    public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType,
+    @SuppressWarnings("unchecked")
+    public static Supplier<@Nullable Component>[] workableTiered(int tier, long voltage, long energyCapacity, Supplier<GTRecipeType> recipeType,
                                              long tankCapacity, boolean input) {
-        List<Component> tooltipComponents = new ArrayList<>();
+        List<Supplier<Component>> tooltipComponents = new ArrayList<>();
         tooltipComponents.add(input ?
-                Component.translatable("gtceu.universal.tooltip.voltage_in",
+                () -> Component.translatable("gtceu.universal.tooltip.voltage_in",
                         FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]) :
-                Component.translatable("gtceu.universal.tooltip.voltage_out",
+                () -> Component.translatable("gtceu.universal.tooltip.voltage_out",
                         FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]));
-        tooltipComponents.add(Component.translatable(
+        tooltipComponents.add(() -> Component.translatable(
                 "gtceu.universal.tooltip.energy_storage_capacity",
                 FormattingUtil.formatNumbers(energyCapacity)));
-        if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
-                recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
-            tooltipComponents.add(Component.translatable(
-                    "gtceu.universal.tooltip.fluid_storage_capacity",
-                    FormattingUtil.formatNumbers(tankCapacity)));
-        }
-        return tooltipComponents.toArray(Component[]::new);
+        tooltipComponents.add(() -> {
+            if (recipeType.get().getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
+                    recipeType.get().getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
+                return (Component.translatable(
+                        "gtceu.universal.tooltip.fluid_storage_capacity",
+                        FormattingUtil.formatNumbers(tankCapacity)));
+            }
+            return null;
+        });
+        return tooltipComponents.toArray(Supplier[]::new);
     }
 
     @Accessors(chain = true, fluent = true)
