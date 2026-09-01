@@ -24,6 +24,7 @@ import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL11;
 
@@ -37,7 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawable {
 
-    private static final UITexture ARROW = GuiTextures.PLAY;
+    private static final UITexture ARROW = GuiTextures.PLAY.withColorOverride(0xFFFF0000);
     private static final Quaternionf rotationQuat = new Quaternionf();
 
     private final ProspectorMapHandler<T> mapHandler;
@@ -46,6 +47,7 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
     @Getter
     private final int imageHeight;
     public final T[][][] data;
+    private final T[] emptyCell;
 
     public ProspectorMapTexture(ProspectorMapHandler<T> mapHandler) {
         this.mapHandler = mapHandler;
@@ -57,6 +59,31 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         // noinspection unchecked
         this.data = (T[][][]) Array.newInstance(mode.getItemClass(),
                 diameter * mode.cellSize, diameter * mode.cellSize, 0);
+        // noinspection unchecked
+        this.emptyCell = (T[]) Array.newInstance(mode.getItemClass(), 0);
+    }
+
+    private T[] applySelectionFilter(T @Nullable [] items) {
+        if (items == null || items.length == 0) return this.emptyCell;
+
+        String selected = mapHandler.getSelected();
+        if (selected == null) return items;
+
+        ProspectorMode<T> mode = mapHandler.getMode();
+        int matches = 0;
+        for (T item : items) {
+            if (selected.equals(mode.getUniqueId(item))) matches++;
+        }
+        if (matches == items.length) return items;
+        if (matches == 0) return this.emptyCell;
+
+        // noinspection unchecked
+        T[] filtered = (T[]) Array.newInstance(mode.getItemClass(), matches);
+        int i = 0;
+        for (T item : items) {
+            if (selected.equals(mode.getUniqueId(item))) filtered[i++] = item;
+        }
+        return filtered;
     }
 
     public void updateTexture(ProspectingUpdatePacket<T> packet) {
@@ -133,23 +160,28 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         RenderSystem.disableBlend();
 
         // draw special grid (e.g. fluid)
+        final ProspectorMode<T> mode = mapHandler.getMode();
         final int diameter = mapHandler.getChunkRadius() * 2 - 1;
         for (int cx = 0; cx < diameter; cx++) {
             for (int cz = 0; cz < diameter; cz++) {
-                if (this.data[cx][cz] != null && this.data[cx][cz].length > 0) {
-                    var items = this.data[cx][cz];
-                    mapHandler.getMode().drawSpecialGrid(context, items, x + cx * 16 + 1, y + cz * 16 + 1, 16, 16);
-                }
+                T[] items = applySelectionFilter(this.data[cx * mode.cellSize][cz * mode.cellSize]);
+                if (items.length == 0) continue;
+
+                mode.drawSpecialGrid(context, items, x + cx * 16 + 1, y + cz * 16 + 1, 15, 15);
             }
         }
 
         Player player = this.mapHandler.getPlayer();
-        ChunkPos playerChunkPos = player.chunkPosition();
+        // the map is anchored to the chunk the player was in when it was opened, not to the one they're in now
+        ChunkPos mapChunkPos = this.mapHandler.getPlayerChunkPos();
         int chunkRadius = this.mapHandler.getChunkRadius();
 
         float playerRotationDeg = ((player.getVisualRotationYInDegrees() % 360.0f) + 180f) - 90.0f;
-        int playerXGui = player.getBlockX() - (playerChunkPos.x - chunkRadius + 1) * 16;
-        int playerYGui = player.getBlockZ() - (playerChunkPos.z - chunkRadius + 1) * 16;
+        int playerXGui = player.getBlockX() - (mapChunkPos.x - chunkRadius + 1) * 16;
+        int playerYGui = player.getBlockZ() - (mapChunkPos.z - chunkRadius + 1) * 16;
+        if (playerXGui < 0 || playerXGui >= diameter * 16 || playerYGui < 0 || playerYGui >= diameter * 16) {
+            return;
+        }
 
         PoseStack poseStack = context.graphicsPose();
 
@@ -161,7 +193,7 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         poseStack.mulPose(rotationQuat.rotationZ(Mth.DEG_TO_RAD * playerRotationDeg));
         poseStack.translate(-5.f, -5.f, 0.0f);
 
-        ARROW.draw(context, 0, 0, 10, 10);
+        ARROW.draw(context, 0, 0, 10, 10, widgetTheme);
         poseStack.popPose();
 
         RenderSystem.enableDepthTest();
