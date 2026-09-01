@@ -7,9 +7,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BuilderCallback;
-import lombok.Getter;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -17,22 +15,29 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
+import lombok.Getter;
+
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
-public class GTRecipeTypeBuilder extends AbstractBuilder<RecipeType<?>, GTRecipeType, GTRegistrate, GTRecipeTypeBuilder> {
+public class GTRecipeTypeBuilder extends
+                                 AbstractBuilder<RecipeType<?>, GTRecipeType, GTRegistrate, GTRecipeTypeBuilder> {
 
     @Getter
     private final GTRecipeType.Properties properties;
 
-    public GTRecipeTypeBuilder(GTRegistrate owner, String name, BuilderCallback callback, String group, RecipeType<?>... proxyRecipes) {
+    public GTRecipeTypeBuilder(GTRegistrate owner, String name, BuilderCallback callback, String group,
+                               RecipeType<?>... proxyRecipes) {
         super(owner, owner, name, callback, Registries.RECIPE_TYPE);
         this.properties = new GTRecipeType.Properties(group, proxyRecipes);
     }
 
-    public GTRecipeTypeBuilder setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
+    public GTRecipeTypeBuilder setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs,
+                                            int maxFluidOutputs) {
         return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxItemInputs)
                 .setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
                 .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxItemOutputs)
@@ -130,6 +135,6 @@ public class GTRecipeTypeBuilder extends AbstractBuilder<RecipeType<?>, GTRecipe
 
     @Override
     public GTRecipeTypeEntry register() {
-        return (GTRecipeTypeEntry)super.register();
+        return (GTRecipeTypeEntry) super.register();
     }
 }

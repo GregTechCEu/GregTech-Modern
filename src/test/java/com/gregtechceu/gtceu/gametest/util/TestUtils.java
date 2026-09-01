@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -249,7 +248,7 @@ public class TestUtils {
         properties.maxInputs().put(ItemRecipeCapability.CAP, maxInputs);
         properties.maxInputs().put(FluidRecipeCapability.CAP, maxFluidInputs);
         properties.maxOutputs().put(ItemRecipeCapability.CAP, maxOutputs);
-        properties.maxOutputs().put(FluidRecipeCapability.CAP,maxFluidInputs);
+        properties.maxOutputs().put(FluidRecipeCapability.CAP, maxFluidInputs);
         GTRecipeType type = new GTRecipeType(GTCEu.id(name), properties);
         Registry.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
         GTRegistries.RECIPE_CATEGORIES.freeze();
