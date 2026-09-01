@@ -91,7 +91,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
     private @Nullable ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> itemBuilder;
 
-    private final Set<Supplier<GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
+    protected final Set<Supplier<GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
 
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
 
