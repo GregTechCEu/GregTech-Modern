@@ -438,7 +438,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                   @Param(name = "iconSet", value = "The `MaterialIconSet` of this Material.")
           })
     public MaterialBuilderWrapper iconSet(MaterialIconSet iconSet) {
-        internal.iconSet(iconSet);
+        internal.iconSet(GTRegistries.MATERIAL_ICON_SETS.wrapAsHolder(iconSet));
         return this;
     }
 
