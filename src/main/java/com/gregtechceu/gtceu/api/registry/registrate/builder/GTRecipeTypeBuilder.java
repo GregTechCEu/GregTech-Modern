@@ -36,6 +36,11 @@ public class GTRecipeTypeBuilder extends
         this.properties = new GTRecipeType.Properties(group, proxyRecipes);
     }
 
+    @Override
+    public GTRegistrate getOwner() {
+        return (GTRegistrate)super.getOwner();
+    }
+
     public GTRecipeTypeBuilder setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs,
                                             int maxFluidOutputs) {
         return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxItemInputs)
@@ -88,11 +93,6 @@ public class GTRecipeTypeBuilder extends
         return this;
     }
 
-    public GTRecipeTypeBuilder setMinRecipeConditions(int n) {
-        properties.minRecipeConditions(Math.max(properties.minRecipeConditions(), n));
-        return this;
-    }
-
     public GTRecipeTypeBuilder setHasResearchSlot(boolean hasSlot) {
         properties.hasResearchSlot(hasSlot);
         return this;
@@ -130,7 +130,7 @@ public class GTRecipeTypeBuilder extends
 
     @Override
     protected GTRecipeType createEntry() {
-        return null;
+        return new GTRecipeType(getOwner().makeResourceLocation(getName()), properties);
     }
 
     @Override
