@@ -483,7 +483,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     }
 
     public MaterialBuilderWrapper element(Element element) {
-        internal.element(element);
+        internal.element(GTRegistries.ELEMENTS.wrapAsHolder(element));
         return this;
     }
 
