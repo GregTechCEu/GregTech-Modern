@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -57,5 +58,9 @@ public class GTRecipeTypeEntry extends RegistryEntry<RecipeType<?>, GTRecipeType
 
     public int getMaxSlots(RecipeCapability<?> cap, IO io) {
         return io == IO.IN ? getMaxInputs(cap) : getMaxOutputs(cap);
+    }
+
+    public Component getName() {
+        return Component.translatable(getKey().location().toLanguageKey("recipe_type"));
     }
 }
