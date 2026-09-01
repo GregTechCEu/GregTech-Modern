@@ -49,7 +49,7 @@ public class GTRenderTypes extends RenderType {
 
     // Face layers order quads within a model. These biases preserve that order across chunk and dynamic render paths.
     private static final LayeringStateShard BLOOM_LAYERING = createDepthLayering("bloom_layering", -0.5F, -5.0F);
-    private static final LayeringStateShard FACADE_LAYERING = createDepthLayering("facade_layering", -1.0F, -10.0F);
+    private static final LayeringStateShard FACADE_LAYERING = POLYGON_OFFSET_LAYERING;
 
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,

@@ -30,12 +30,6 @@ public final class FaceLayerCompositor {
     private static FaceLayer resolveLayer(BakedQuad quad) {
         FaceLayer layer = quad.gtceu$getFaceLayer();
         if (layer != FaceLayer.UNCLASSIFIED) {
-            if (layer == FaceLayer.MACHINE_FACE && quad.getTintIndex() == -101) {
-                return FaceLayer.EMISSIVE;
-            }
-            if (layer == FaceLayer.COVER && quad.getTintIndex() == -101) {
-                return FaceLayer.COVER_EMISSIVE;
-            }
             return layer;
         }
         return FaceLayer.BASE;

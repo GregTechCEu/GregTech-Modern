@@ -193,7 +193,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 // fix the quad's UVs based on the original & clamped vertices
                 interpolator.transform(emitter);
 
-                FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE || quad.getTintIndex() == -101 ?
+                FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ?
                         FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
                 quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(faceLayer));
                 emitter.emit();
@@ -446,8 +446,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         // fix the quad's UVs based on the original & clamped vertices
                         interpolator.transform(emitter);
 
-                        FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ||
-                                quad.getTintIndex() == -101 ? FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
+                        FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ?
+                                FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
                         quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(faceLayer));
                         emitter.emit();
                     }
