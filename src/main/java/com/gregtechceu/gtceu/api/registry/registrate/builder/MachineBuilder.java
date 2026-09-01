@@ -515,6 +515,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
+    public SELF tooltips(List<? extends Component> components) {
+        for (var comp: components) {
+            properties.tooltips().add(() -> comp);
+        }
+        return getThis();
+    }
+
     public SELF conditionalTooltip(Component component, BooleanSupplier condition) {
         return conditionalTooltip(component, condition.getAsBoolean());
     }
