@@ -32,7 +32,6 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -62,6 +61,7 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -500,7 +500,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @SafeVarargs
     public final SELF tooltips(@Nullable Supplier<? extends @Nullable Component>... components) {
-        for (var comp: components) {
+        for (var comp : components) {
             if (comp == null) continue;
             properties.tooltips().add(comp);
         }
@@ -508,7 +508,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF tooltips(@Nullable Component... components) {
-        for (var comp: components) {
+        for (var comp : components) {
             if (comp == null) continue;
             properties.tooltips().add(() -> comp);
         }
@@ -516,7 +516,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF tooltips(List<? extends Component> components) {
-        for (var comp: components) {
+        for (var comp : components) {
             properties.tooltips().add(() -> comp);
         }
         return getThis();
@@ -629,7 +629,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @SuppressWarnings({ "NullableProblems", "unchecked" })
     protected @NonNull DEFINITION createEntry() {
-        properties.recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull).toArray(GTRecipeType[]::new));
+        properties.recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull)
+                .toArray(GTRecipeType[]::new));
         return (DEFINITION) new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }
 

@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.function.Supplier;
 
 public class SmartItemFilter extends Filter<ItemStack> {
 
@@ -123,7 +124,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
 
     private int lookup(ItemStack itemStack) {
         ItemStack copy = itemStack.copyWithCount(Integer.MAX_VALUE);
-        var recipe = filterMode.recipeType.db()
+        var recipe = filterMode.recipeType.get().db()
                 .find(Collections.singletonMap(ItemRecipeCapability.CAP, Collections.singletonList(copy)), r -> true);
         if (recipe == null) {
             return 0;
@@ -156,11 +157,11 @@ public class SmartItemFilter extends Filter<ItemStack> {
         public static final Codec<SmartFilteringMode> CODEC = StringRepresentable.fromEnum(SmartFilteringMode::values);
         private static final SmartFilteringMode[] VALUES = values();
         private final String localeName;
-        private final GTRecipeType recipeType;
+        private final Supplier<GTRecipeType> recipeType;
         private final Object2IntOpenCustomHashMap<ItemStack> cache = new Object2IntOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
 
-        SmartFilteringMode(String localeName, GTRecipeType type) {
+        SmartFilteringMode(String localeName, Supplier<GTRecipeType> type) {
             this.localeName = localeName;
             this.recipeType = type;
         }

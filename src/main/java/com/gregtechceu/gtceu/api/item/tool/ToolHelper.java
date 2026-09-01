@@ -386,7 +386,7 @@ public class ToolHelper {
             DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
                     dummyInputs, dummyOutputs);
 
-            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
+            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.value().searchRecipe(capHolder,
                     r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
             GTRecipe hammerRecipe = null;
             // find the first valid recipe

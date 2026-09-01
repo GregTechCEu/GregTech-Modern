@@ -127,7 +127,8 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
                 GTRecipeType recipeType = builder.properties().recipeTypes()[0];
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
-                            GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, () -> recipeType,
+                            GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
+                                    () -> recipeType,
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
             }

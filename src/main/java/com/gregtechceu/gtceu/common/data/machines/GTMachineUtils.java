@@ -767,8 +767,9 @@ public class GTMachineUtils {
     };
 
     @SuppressWarnings("unchecked")
-    public static Supplier<@Nullable Component>[] workableTiered(int tier, long voltage, long energyCapacity, Supplier<GTRecipeType> recipeType,
-                                             long tankCapacity, boolean input) {
+    public static Supplier<@Nullable Component>[] workableTiered(int tier, long voltage, long energyCapacity,
+                                                                 Supplier<GTRecipeType> recipeType,
+                                                                 long tankCapacity, boolean input) {
         List<Supplier<Component>> tooltipComponents = new ArrayList<>();
         tooltipComponents.add(input ?
                 () -> Component.translatable("gtceu.universal.tooltip.voltage_in",

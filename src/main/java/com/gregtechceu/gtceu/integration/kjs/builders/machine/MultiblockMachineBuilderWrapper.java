@@ -35,7 +35,6 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.*;
@@ -125,7 +124,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public MultiblockMachineBuilderWrapper recipeTypes(GTRecipeType... recipeTypes) {
-        for (var type: recipeTypes) {
+        for (var type : recipeTypes) {
             recipeType(type);
         }
         return this;
