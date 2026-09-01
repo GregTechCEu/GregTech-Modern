@@ -213,7 +213,7 @@ public final class ResearchManager {
                     .build();
             // for EMI to detect it's a synthetic recipe (not ever in JSON)
             recipe.setId(recipe.getId().withPrefix("/"));
-            GTRecipeTypes.SCANNER_RECIPES.addToMainCategory(recipe);
+            GTRecipeTypes.SCANNER_RECIPES.value().addToMainCategory(recipe);
         }
     }
 }

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -25,7 +26,6 @@ import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,44 +33,37 @@ import java.util.*;
 import java.util.function.*;
 
 @Accessors(chain = true)
+@SuppressWarnings("unused")
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public static final String LANGUAGE_KEY_PATH = "recipe_type";
 
     @Getter
-    @Setter(onMethod_ = { @ApiStatus.Internal })
     public GTRecipeSerializer serializer;
 
     @Getter
     public final ResourceLocation registryName;
     public final String group;
+
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
             RecipeCapability.COMPARATOR);
     public final Object2IntSortedMap<RecipeCapability<?>> maxOutputs = new Object2IntAVLTreeMap<>(
             RecipeCapability.COMPARATOR);
     @Getter
-    @Setter
-    private GTRecipeBuilder recipeBuilder;
-    @Setter
-    @Getter
-    private GTRecipeType smallRecipeMap;
-    @Setter
+    private final GTRecipeBuilder recipeBuilder;
     @Getter
     @Nullable
-    private Supplier<ItemStack> iconSupplier;
+    private final Supplier<ItemStack> iconSupplier;
     @Nullable
-    @Setter
     @Getter
-    protected Holder<SoundEntry> sound;
+    protected final Holder<SoundEntry> sound;
     @Getter
     protected List<Function<CompoundTag, String>> dataInfos = new ArrayList<>();
     @Getter
-    @Setter
     protected boolean isScanner;
     // Does this recipe type have a research item slot? If this is true you MUST create a custom UI.
     @Getter
-    @Setter
-    protected boolean hasResearchSlot;
+    protected final boolean hasResearchSlot;
     @Getter
     protected final Map<RecipeType<?>, List<RecipeHolder<GTRecipe>>> proxyRecipes;
     @Getter
@@ -81,94 +74,40 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @ApiStatus.Internal
     @Getter
     private final RecipeAdditionHandler additionHandler = new RecipeAdditionHandler(db);
-    @Setter
-    @Getter
-    private boolean offsetVoltageText = false;
-    @Setter
-    @Getter
-    private int voltageTextOffset = 20;
     private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
     @Getter
     private final List<ICustomRecipeLogic> customRecipeLogicRunners = new ArrayList<>();
     @Getter
-    private int minRecipeConditions = 0;
+    private final GTRecipeTypeUILayout uiLayout;
 
-    @Getter
-    @Setter
-    private GTRecipeTypeUILayout uiLayout;
-
-    public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
-        this.registryName = registryName;
-        this.group = group;
+    public GTRecipeType(ResourceLocation id, Properties properties) {
+        this.registryName = id;
+        this.group = properties.group();
         this.category = GTRecipeCategory.registerDefault(this);
-        recipeBuilder = new GTRecipeBuilder(registryName, this);
+        this.serializer = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, registryName,
+                new GTRecipeSerializer());
+
+        this.maxInputs.putAll(properties.maxInputs());
+        this.maxOutputs.putAll(properties.maxOutputs());
+        this.iconSupplier = properties.iconSupplier();
+        this.hasResearchSlot = properties.hasResearchSlot();
+        this.isScanner = properties.isScanner();
+        this.sound = properties.sound();
+        this.recipeBuilder = new GTRecipeBuilder(id, this);
+        if (properties.builderPreparer() != null) properties.builderPreparer().accept(recipeBuilder);
+        if (properties.onRecipeBuild() != null) recipeBuilder.onSave(properties.onRecipeBuild());
+        if (properties.uiLayout() != null) {
+            this.uiLayout = properties.uiLayout().apply(new GTRecipeTypeUILayout.Builder(this)).build();
+        } else {
+            this.uiLayout = new GTRecipeTypeUILayout.Builder(this).build();
+        }
         // must be linked to stop json contents from shuffling
         Map<RecipeType<?>, List<RecipeHolder<GTRecipe>>> map = new Object2ObjectLinkedOpenHashMap<>();
-        for (RecipeType<?> proxyRecipe : proxyRecipes) {
+        for (RecipeType<?> proxyRecipe : properties.proxyRecipes()) {
             map.put(proxyRecipe, new ArrayList<>());
         }
         this.proxyRecipes = map;
-        this.uiLayout = new GTRecipeTypeUILayout.Builder(this).build();
-    }
-
-    public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
-        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxItemInputs)
-                .setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
-                .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxItemOutputs)
-                .setMaxSize(IO.OUT, FluidRecipeCapability.CAP, maxFluidOutputs);
-    }
-
-    public GTRecipeType setEUIO(IO io) {
-        if (io.support(IO.IN)) {
-            setMaxSize(IO.IN, EURecipeCapability.CAP, 1);
-        }
-        if (io.support(IO.OUT)) {
-            setMaxSize(IO.OUT, EURecipeCapability.CAP, 1);
-        }
-        return this;
-    }
-
-    public GTRecipeType setMaxSize(IO io, RecipeCapability<?> cap, int max) {
-        if (io == IO.IN || io == IO.BOTH) {
-            maxInputs.put(cap, max);
-        }
-        if (io == IO.OUT || io == IO.BOTH) {
-            maxOutputs.put(cap, max);
-        }
-        return this;
-    }
-
-    @Tolerate
-    public GTRecipeType setSound(SoundEntry sound) {
-        return setSound(Holder.direct(sound));
-    }
-
-    public GTRecipeType UI(UnaryOperator<GTRecipeTypeUILayout.Builder> builder) {
-        uiLayout = builder.apply(new GTRecipeTypeUILayout.Builder(this)).build();
-        return this;
-    }
-
-    public GTRecipeType setMaxTooltips(int maxTooltips) {
-        return this;
-    }
-
-    public GTRecipeType setXEIVisible(boolean XEIVisible) {
-        this.category.setXEIVisible(XEIVisible);
-        return this;
-    }
-
-    public void setMinRecipeConditions(int n) {
-        minRecipeConditions = Math.max(minRecipeConditions, n);
-    }
-
-    /**
-     *
-     * @param recipeLogic A function which is passed the normal findRecipe() result. Returns null if no valid recipe for
-     *                    the custom logic is found.
-     */
-    public GTRecipeType addCustomRecipeLogic(ICustomRecipeLogic recipeLogic) {
-        this.customRecipeLogicRunners.add(recipeLogic);
-        return this;
+        category.setXEIVisible(properties.recipeViewerCategoryVisible());
     }
 
     @Override
@@ -218,11 +157,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     // ***** Recipe Builder ******//
     //////////////////////////////////////
 
-    public GTRecipeType prepareBuilder(Consumer<GTRecipeBuilder> onPrepare) {
-        onPrepare.accept(recipeBuilder);
-        return this;
-    }
-
     public GTRecipeBuilder recipeBuilder(ResourceLocation id) {
         return recipeBuilder.copy(id);
     }
@@ -250,11 +184,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
         return recipeBuilder.copyFrom(builder);
-    }
-
-    public GTRecipeType onRecipeBuild(BiConsumer<GTRecipeBuilder, RecipeOutput> onBuild) {
-        recipeBuilder.onSave(onBuild);
-        return this;
     }
 
     public void addDataStickEntry(String researchId, GTRecipe recipe) {
@@ -348,5 +277,35 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
          * Not required, can NOOP if unneeded.
          */
         default void buildRepresentativeRecipes() {}
+    }
+
+    @Getter
+    @Setter
+    @Accessors(fluent = true)
+    public static class Properties {
+
+        public String group;
+        public final RecipeType<?>[] proxyRecipes;
+
+        private final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
+                RecipeCapability.COMPARATOR);
+        private final Object2IntSortedMap<RecipeCapability<?>> maxOutputs = new Object2IntAVLTreeMap<>(
+                RecipeCapability.COMPARATOR);
+        private final List<ICustomRecipeLogic> customRecipeLogicRunners = new ArrayList<>();
+
+        @Nullable
+        private Supplier<ItemStack> iconSupplier;
+        @Nullable
+        protected Holder<SoundEntry> sound = null;
+        protected boolean isScanner = false;
+        protected boolean hasResearchSlot = false;
+        private boolean recipeViewerCategoryVisible = true;
+        private @Nullable Function<GTRecipeTypeUILayout.Builder, GTRecipeTypeUILayout.Builder> uiLayout = null;
+        private @Nullable Consumer<GTRecipeBuilder> builderPreparer = null;
+        private @Nullable BiConsumer<GTRecipeBuilder, RecipeOutput> onRecipeBuild = null;
+        public Properties(String group, RecipeType<?>... proxyRecipes) {
+            this.group = group;
+            this.proxyRecipes = proxyRecipes;
+        }
     }
 }
