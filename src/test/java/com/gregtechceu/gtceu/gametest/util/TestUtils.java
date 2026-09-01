@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
@@ -198,7 +199,7 @@ public class TestUtils {
      * Creates a dummy recipe type that also includes a basic, HV, 1 tick, cobblestone -> stone recipe
      * Requires a {@link GTRecipeType} to inherit I/O counts from
      */
-    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeType original) {
+    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeTypeEntry original) {
         GTRecipeType type = createRecipeType(name, original);
         type.getAdditionHandler().beginStaging();
         type.getAdditionHandler().addStaging(type
@@ -212,7 +213,7 @@ public class TestUtils {
 
     /**
      * Creates a dummy recipe type. Safe for use in recipe lookup.
-     * DO NOT USE THIS FOR MACHINE RECIPES. Use {@link #createRecipeType(String, GTRecipeType)} for that.
+     * DO NOT USE THIS FOR MACHINE RECIPES. Use {@link #createRecipeType(String, GTRecipeTypeEntry)} for that.
      */
     @Deprecated
     public static GTRecipeType createRecipeType(String name) {
@@ -223,7 +224,7 @@ public class TestUtils {
      * Creates a recipe type for writing test cases.
      * Requires a {@link GTRecipeType} to inherit I/O counts from.
      */
-    public static GTRecipeType createRecipeType(String name, GTRecipeType original) {
+    public static GTRecipeType createRecipeType(String name, GTRecipeTypeEntry original) {
         return createRecipeType(name,
                 original.getMaxInputs(ItemRecipeCapability.CAP),
                 original.getMaxOutputs(ItemRecipeCapability.CAP),
@@ -234,7 +235,7 @@ public class TestUtils {
     /**
      * Creates a recipe type for writing test cases.
      * Requires setting I/O counts manually.
-     * You probably want to be using {@link #createRecipeType(String, GTRecipeType)}
+     * You probably want to be using {@link #createRecipeType(String, GTRecipeTypeEntry)}
      */
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
                                                 int maxFluidOutputs) {
