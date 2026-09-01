@@ -1490,10 +1490,11 @@ public class GTRecipeBuilder {
         if (recipeType != null) {
             if (recipeCategory == null) {
                 GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
-            } else if (recipeCategory != GTRecipeCategory.getDefaultCategory() && recipeCategory.getRecipeType() != recipeType) {
-                GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
-                        new IllegalArgumentException());
-            }
+            } else if (recipeCategory != GTRecipeCategory.getDefaultCategory() &&
+                    recipeCategory.getRecipeType() != recipeType) {
+                        GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
+                                new IllegalArgumentException());
+                    }
         }
 
         if (removePreviousMatInfo) {
