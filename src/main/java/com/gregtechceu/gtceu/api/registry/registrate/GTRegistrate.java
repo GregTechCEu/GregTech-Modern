@@ -8,16 +8,18 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.GTBlockBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.SoundEntryBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.EventPriority;
@@ -230,6 +233,28 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return (GTBlockBuilder<T, P>) entry(name,
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
+    }
+
+    /// Recipe Type Builder
+
+    public GTRecipeTypeBuilder recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
+        return entry(name, callback -> new GTRecipeTypeBuilder(this, name, callback, group, proxyRecipes));
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name, Supplier<GTRecipeType> recipeType,
+                                                                            @Nullable CategoryIcon icon, boolean isXEIVisible) {
+        return simple(name, GTRegistries.Keys.RECIPE_CATEGORY, () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
+                .setIcon(icon)
+                .setXEIVisible(isXEIVisible));
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name, Supplier<GTRecipeType> recipeType,
+                                                                            @Nullable CategoryIcon icon) {
+        return recipeCategory(name, recipeType, icon, true);
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name, Supplier<GTRecipeType> recipeType) {
+        return recipeCategory(name, recipeType, null, true);
     }
 
     /// Medical Conditions

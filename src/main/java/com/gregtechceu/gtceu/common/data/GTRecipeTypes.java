@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.trait.customlogic.*;
@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -41,6 +40,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
+
 public class GTRecipeTypes {
 
     public static final String STEAM = "steam";
@@ -52,7 +53,7 @@ public class GTRecipeTypes {
     //////////////////////////////////////
     // ********* Steam **********//
     //////////////////////////////////////
-    public final static GTRecipeType STEAM_BOILER_RECIPES = register("steam_boiler", STEAM)
+    public static final GTRecipeTypeEntry STEAM_BOILER_RECIPES = REGISTRATE.recipeType("steam_boiler", STEAM)
             .setMaxIOSize(1, 0, 1, 1)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BOILER_FUEL_STEEL))
             .onRecipeBuild((builder, provider) -> {
@@ -63,27 +64,30 @@ public class GTRecipeTypes {
                 }
             })
             .addCustomRecipeLogic(SmallBoilerLogic.INSTANCE)
-            .setMaxTooltips(1)
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .register();
 
     //////////////////////////////////////
     // ********* Common *********//
     //////////////////////////////////////
-    public final static GTRecipeType FURNACE_RECIPES = register("electric_furnace", ELECTRIC, RecipeType.SMELTING)
+    public static final GTRecipeTypeEntry FURNACE_RECIPES = REGISTRATE.recipeType("electric_furnace", ELECTRIC, RecipeType.SMELTING)
             .setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(4))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.FURNACE_OVERLAY_1))
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .register();
 
-    public final static GTRecipeType ALLOY_SMELTER_RECIPES = register("alloy_smelter", ELECTRIC)
+    public static final GTRecipeTypeEntry ALLOY_SMELTER_RECIPES = REGISTRATE.recipeType("alloy_smelter", ELECTRIC)
             .setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.FURNACE_OVERLAY_1))
             .setIconSupplier(() -> GTMachines.ALLOY_SMELTER[GTValues.LV].asStack())
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .register();
 
-    public final static GTRecipeType ARC_FURNACE_RECIPES = register("arc_furnace", ELECTRIC).setMaxIOSize(1, 9, 1, 1)
+    public static final GTRecipeTypeEntry ARC_FURNACE_RECIPES = REGISTRATE.recipeType("arc_furnace", ELECTRIC)
+            .setMaxIOSize(1, 9, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT,
@@ -104,36 +108,46 @@ public class GTRecipeTypes {
                     recipeBuilder.inputFluids(GTMaterials.Oxygen.getFluid(recipeBuilder.duration));
                 }
             })
-            .addCustomRecipeLogic(ArcFurnaceLogic.INSTANCE);
+            .addCustomRecipeLogic(ArcFurnaceLogic.INSTANCE)
+            .register();
 
-    public final static GTRecipeType ASSEMBLER_RECIPES = register("assembler", ELECTRIC).setMaxIOSize(9, 1, 1, 0)
+    public static final GTRecipeTypeEntry ASSEMBLER_RECIPES = REGISTRATE.recipeType("assembler", ELECTRIC)
+            .setMaxIOSize(9, 1, 1, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ASSEMBLER))
-            .setSound(GTSoundEntries.ASSEMBLER);
+            .setSound(GTSoundEntries.ASSEMBLER)
+            .register();
 
-    public final static GTRecipeType AUTOCLAVE_RECIPES = register("autoclave", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
+    public static final GTRecipeTypeEntry AUTOCLAVE_RECIPES = REGISTRATE.recipeType("autoclave", ELECTRIC)
+            .setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CRYSTALLIZATION)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CRYSTAL_OVERLAY))
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .register();
 
-    public final static GTRecipeType BENDER_RECIPES = register("bender", ELECTRIC).setMaxIOSize(2, 1, 0, 0)
+    public static final GTRecipeTypeEntry BENDER_RECIPES = REGISTRATE.recipeType("bender", ELECTRIC)
+            .setMaxIOSize(2, 1, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BENDING)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.BENDER_OVERLAY)
                     .setItemSlotOverlay(IO.IN, 1, GTGuiTextures.INT_CIRCUIT_OVERLAY))
-            .setSound(GTSoundEntries.MOTOR);
+            .setSound(GTSoundEntries.MOTOR)
+            .register();
 
-    public final static GTRecipeType BREWING_RECIPES = register("brewery", ELECTRIC).setMaxIOSize(1, 0, 1, 1)
+    public static final GTRecipeTypeEntry BREWING_RECIPES = REGISTRATE.recipeType("brewery", ELECTRIC)
+            .setMaxIOSize(1, 0, 1, 1)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(128).EUt(4))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.BREWER_OVERLAY))
             .addCustomRecipeLogic(BreweryLogic.INSTANCE)
-            .setSound(GTSoundEntries.CHEMICAL);
+            .setSound(GTSoundEntries.CHEMICAL)
+            .register();
 
-    public final static GTRecipeType MACERATOR_RECIPES = register("macerator", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
+    public static final GTRecipeTypeEntry MACERATOR_RECIPES = REGISTRATE.recipeType("macerator", ELECTRIC)
+            .setMaxIOSize(1, 4, 0, 0)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(150).EUt(2))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MACERATE)
@@ -160,9 +174,11 @@ public class GTRecipeTypes {
                             .textLine(Text.lang("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]))))
             .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
-            .setSound(GTSoundEntries.MACERATOR);
+            .setSound(GTSoundEntries.MACERATOR)
+            .register();
 
-    public final static GTRecipeType CANNER_RECIPES = register("canner", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
+    public static final GTRecipeTypeEntry CANNER_RECIPES = REGISTRATE.recipeType("canner", ELECTRIC)
+            .setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CANNER)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CANNER_OVERLAY)
@@ -171,18 +187,21 @@ public class GTRecipeTypes {
                     .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.DARK_CANISTER_OVERLAY)
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.DARK_CANISTER_OVERLAY))
             .addCustomRecipeLogic(CannerLogic.INSTANCE)
-            .setSound(GTSoundEntries.BATH);
+            .setSound(GTSoundEntries.BATH)
+            .register();
 
-    public final static GTRecipeType CENTRIFUGE_RECIPES = register("centrifuge", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
+    public static final GTRecipeTypeEntry CENTRIFUGE_RECIPES = REGISTRATE.recipeType("centrifuge", ELECTRIC)
+            .setMaxIOSize(2, 6, 1, 6)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(5))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.EXTRACTOR_OVERLAY)
                     .setItemSlotOverlay(IO.IN, 1, GTGuiTextures.CANISTER_OVERLAY)
                     .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.CENTRIFUGE_OVERLAY))
-            .setSound(GTSoundEntries.CENTRIFUGE);
+            .setSound(GTSoundEntries.CENTRIFUGE)
+            .register();
 
-    public final static GTRecipeType CHEMICAL_BATH_RECIPES = register("chemical_bath", ELECTRIC)
+    public static final GTRecipeTypeEntry CHEMICAL_BATH_RECIPES = REGISTRATE.recipeType("chemical_bath", ELECTRIC)
             .setMaxIOSize(1, 6, 1, 1).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.LV]))
             .UI(builder -> builder
@@ -195,9 +214,11 @@ public class GTRecipeTypes {
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.BREWER_OVERLAY)
                     .setItemSlotsOverlay(IO.OUT, 0, 5, GTGuiTextures.DUST_OVERLAY)
                     .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.CENTRIFUGE_OVERLAY))
-            .setSound(GTSoundEntries.BATH);
+            .setSound(GTSoundEntries.BATH)
+            .register();
 
-    public final static GTRecipeType CHEMICAL_RECIPES = register("chemical_reactor", ELECTRIC).setMaxIOSize(2, 2, 3, 2)
+    public static final GTRecipeTypeEntry CHEMICAL_RECIPES = REGISTRATE.recipeType("chemical_reactor", ELECTRIC)
+            .setMaxIOSize(2, 2, 3, 2)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.LV]))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE)
@@ -209,17 +230,21 @@ public class GTRecipeTypes {
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_2))
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder)
-                    .save(provider));
+                    .save(provider))
+            .register();
 
-    public final static GTRecipeType COMPRESSOR_RECIPES = register("compressor", ELECTRIC).setMaxIOSize(1, 1, 0, 0)
+    public static final GTRecipeTypeEntry COMPRESSOR_RECIPES = REGISTRATE.recipeType("compressor", ELECTRIC)
+            .setMaxIOSize(1, 1, 0, 0)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(200).EUt(2))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_COMPRESS)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.COMPRESSOR_OVERLAY))
             .setIconSupplier(() -> GTMachines.COMPRESSOR[GTValues.LV].asStack())
-            .setSound(GTSoundEntries.COMPRESSOR);
+            .setSound(GTSoundEntries.COMPRESSOR)
+            .register();
 
-    public final static GTRecipeType CUTTER_RECIPES = register("cutter", ELECTRIC).setMaxIOSize(1, 2, 1, 0)
+    public static final GTRecipeTypeEntry CUTTER_RECIPES = REGISTRATE.recipeType("cutter", ELECTRIC)
+            .setMaxIOSize(1, 2, 1, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CUTTER)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SAWBLADE_OVERLAY)
@@ -248,9 +273,10 @@ public class GTRecipeTypes {
                     recipeBuilder.inputFluids(GTMaterials.Lubricant.getFluid((int) GTMath.clamp(
                             recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 1280, 1, 250)));
                 }
-            });
+            }).register();
 
-    public final static GTRecipeType DISTILLERY_RECIPES = register("distillery", ELECTRIC).setMaxIOSize(1, 1, 1, 1)
+    public static final GTRecipeTypeEntry DISTILLERY_RECIPES = REGISTRATE.recipeType("distillery", ELECTRIC)
+            .setMaxIOSize(1, 1, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.INT_CIRCUIT_OVERLAY)
@@ -262,39 +288,48 @@ public class GTRecipeTypes {
             // .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
             // .setSlotOverlay(false, false, GuiTextures.INT_CIRCUIT_OVERLAY)
             // .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.BOILER);
+            .setSound(GTSoundEntries.BOILER)
+            .register();
 
-    public final static GTRecipeType ELECTROLYZER_RECIPES = register("electrolyzer", ELECTRIC).setMaxIOSize(2, 6, 1, 6)
+    public static final GTRecipeTypeEntry ELECTROLYZER_RECIPES = REGISTRATE.recipeType("electrolyzer", ELECTRIC)
+            .setMaxIOSize(2, 6, 1, 6)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.LIGHTNING_OVERLAY_1)
                     .setItemSlotOverlay(IO.IN, 1, GTGuiTextures.CANISTER_OVERLAY)
                     .setFluidSlotsOverlay(IO.IN, 0, 5, GTGuiTextures.LIGHTNING_OVERLAY_2))
-            .setSound(GTSoundEntries.ELECTROLYZER);
+            .setSound(GTSoundEntries.ELECTROLYZER)
+            .register();
 
-    public final static GTRecipeType ELECTROMAGNETIC_SEPARATOR_RECIPES = register("electromagnetic_separator", ELECTRIC)
+    public static final GTRecipeTypeEntry ELECTROMAGNETIC_SEPARATOR_RECIPES = REGISTRATE.recipeType("electromagnetic_separator", ELECTRIC)
             .setMaxIOSize(1, 3, 0, 0).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MAGNET)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.DUST_OVERLAY))
-            .setSound(GTSoundEntries.ARC);
+            .setSound(GTSoundEntries.ARC)
+            .register();
 
-    public final static GTRecipeType EXTRACTOR_RECIPES = register("extractor", ELECTRIC).setMaxIOSize(1, 1, 0, 1)
+    public static final GTRecipeTypeEntry EXTRACTOR_RECIPES = REGISTRATE.recipeType("extractor", ELECTRIC)
+            .setMaxIOSize(1, 1, 0, 1)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(400).EUt(2))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRACT)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.EXTRACTOR_OVERLAY))
-            .setIconSupplier(() -> GTMachines.EXTRACTOR[GTValues.LV].asStack());
+            .setIconSupplier(() -> GTMachines.EXTRACTOR[GTValues.LV].asStack())
+            .register();
 
-    public final static GTRecipeType EXTRUDER_RECIPES = register("extruder", ELECTRIC).setMaxIOSize(2, 1, 0, 0)
+    public static final GTRecipeTypeEntry EXTRUDER_RECIPES = REGISTRATE.recipeType("extruder", ELECTRIC)
+            .setMaxIOSize(2, 1, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_EXTRUDER)
                     .setItemSlotOverlay(IO.IN, 1, GTGuiTextures.MOLD_OVERLAY))
             // .setSlotOverlay(false, false, true, GuiTextures.MOLD_OVERLAY)
             // .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRUDER, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.COMPRESSOR);
+            .setSound(GTSoundEntries.COMPRESSOR)
+            .register();
 
-    public final static GTRecipeType FERMENTING_RECIPES = register("fermenter", ELECTRIC).setMaxIOSize(1, 1, 1, 1)
+    public static final GTRecipeTypeEntry FERMENTING_RECIPES = REGISTRATE.recipeType("fermenter", ELECTRIC)
+            .setMaxIOSize(1, 1, 1, 1)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(2))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
@@ -303,9 +338,11 @@ public class GTRecipeTypes {
             // .setSlotOverlay(false, false, true, GuiTextures.DUST_OVERLAY)
             // .setSlotOverlay(true, false, true, GuiTextures.DUST_OVERLAY)
             // .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.CHEMICAL);
+            .setSound(GTSoundEntries.CHEMICAL)
+            .register();
 
-    public final static GTRecipeType FLUID_HEATER_RECIPES = register("fluid_heater", ELECTRIC).setMaxIOSize(1, 0, 1, 1)
+    public static final GTRecipeTypeEntry FLUID_HEATER_RECIPES = REGISTRATE.recipeType("fluid_heater", ELECTRIC)
+            .setMaxIOSize(1, 0, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.INT_CIRCUIT_OVERLAY)
@@ -315,15 +352,17 @@ public class GTRecipeTypes {
             // .setSlotOverlay(true, true, GuiTextures.HEATING_OVERLAY_2)
             // .setSlotOverlay(false, false, GuiTextures.INT_CIRCUIT_OVERLAY)
             // .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.BOILER);
+            .setSound(GTSoundEntries.BOILER)
+            .register();
 
-    public final static GTRecipeType FLUID_SOLIDFICATION_RECIPES = register("fluid_solidifier", ELECTRIC)
+    public static final GTRecipeTypeEntry FLUID_SOLIDFICATION_RECIPES = REGISTRATE.recipeType("fluid_solidifier", ELECTRIC)
             .setMaxIOSize(1, 1, 1, 0).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SOLIDIFIER_OVERLAY))
             // .setSlotOverlay(false, false, GuiTextures.SOLIDIFIER_OVERLAY)
             // .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-            .setSound(GTSoundEntries.COOLING);
+            .setSound(GTSoundEntries.COOLING)
+            .register();
 
     private static final GTRecipeTypeUILayout.ProgressWidgetSupplier forgeHammerProgressBar = (layout, value,
                                                                                                machine) -> Flow.col()
@@ -341,21 +380,25 @@ public class GTRecipeTypes {
                                                                                                                .asWidget()
                                                                                                                .height(5));
 
-    public final static GTRecipeType FORGE_HAMMER_RECIPES = register("forge_hammer", ELECTRIC).setMaxIOSize(1, 1, 0, 0)
+    public static final GTRecipeTypeEntry FORGE_HAMMER_RECIPES = REGISTRATE.recipeType("forge_hammer", ELECTRIC)
+            .setMaxIOSize(1, 1, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_HAMMER)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.HAMMER_OVERLAY)
                     .setProgressBarSupplier(forgeHammerProgressBar))
             .setIconSupplier(() -> GTMachines.FORGE_HAMMER[GTValues.LV].asStack())
-            .setSound(GTSoundEntries.FORGE_HAMMER);
+            .setSound(GTSoundEntries.FORGE_HAMMER)
+            .register();
 
-    public final static GTRecipeType FORMING_PRESS_RECIPES = register("forming_press", ELECTRIC)
+    public static final GTRecipeTypeEntry FORMING_PRESS_RECIPES = REGISTRATE.recipeType("forming_press", ELECTRIC)
             .setMaxIOSize(6, 1, 0, 0).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_COMPRESS))
             .addCustomRecipeLogic(FormingPressLogic.INSTANCE)
-            .setSound(GTSoundEntries.COMPRESSOR);
+            .setSound(GTSoundEntries.COMPRESSOR)
+            .register();
 
-    public final static GTRecipeType LATHE_RECIPES = register("lathe", ELECTRIC).setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
+    public static final GTRecipeTypeEntry LATHE_RECIPES = REGISTRATE.recipeType("lathe", ELECTRIC)
+            .setMaxIOSize(1, 2, 0, 0).setEUIO(IO.IN)
             .UI(builder -> builder
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.PIPE_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.PIPE_OVERLAY_2)
@@ -367,9 +410,11 @@ public class GTRecipeTypes {
                                     .texture(GTGuiTextures.PROGRESS_BAR_LATHE, ProgressDrawable.Direction.RIGHT)
                                     .size(20))
                             .child(GTGuiTextures.PROGRESS_BAR_LATHE_BASE.asWidget().width(5))))
-            .setSound(GTSoundEntries.CUT);
+            .setSound(GTSoundEntries.CUT)
+            .register();
 
-    public final static GTRecipeType MIXER_RECIPES = register("mixer", ELECTRIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
+    public static final GTRecipeTypeEntry MIXER_RECIPES = REGISTRATE.recipeType("mixer", ELECTRIC)
+            .setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
             .UI(builder -> builder
                     .setProgressBarSupplier((l, v, m) -> new CircularProgressDrawable()
                             .emptyTexture(GTGuiTextures.PROGRESS_MIXER[0])
@@ -379,9 +424,11 @@ public class GTRecipeTypes {
                             .value(v))
                     .setItemSlotsOverlay(IO.IN, 0, 5, GTGuiTextures.DUST_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.DUST_OVERLAY))
-            .setSound(GTSoundEntries.MIXER);
+            .setSound(GTSoundEntries.MIXER)
+            .register();
 
-    public final static GTRecipeType ORE_WASHER_RECIPES = register("ore_washer", ELECTRIC).setMaxIOSize(2, 3, 1, 0)
+    public static final GTRecipeTypeEntry ORE_WASHER_RECIPES = REGISTRATE.recipeType("ore_washer", ELECTRIC)
+            .setMaxIOSize(2, 3, 1, 0)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(400).EUt(16))
             .UI(builder -> builder
@@ -393,47 +440,58 @@ public class GTRecipeTypes {
                             .value(v))
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.DUST_OVERLAY))
-            .setSound(GTSoundEntries.BATH);
+            .setSound(GTSoundEntries.BATH)
+            .register();
 
-    public final static GTRecipeType PACKER_RECIPES = register("packer", ELECTRIC).setMaxIOSize(2, 2, 0, 0)
+    public static final GTRecipeTypeEntry PACKER_RECIPES = REGISTRATE.recipeType("packer", ELECTRIC)
+            .setMaxIOSize(2, 2, 0, 0)
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(12).duration(10))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_PACKER)
                     .setItemSlotOverlay(IO.IN, 1, GTGuiTextures.BOX_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.BOX_OVERLAY))
-            .setSound(GTSoundEntries.ASSEMBLER);
+            .setSound(GTSoundEntries.ASSEMBLER)
+            .register();
 
-    public final static GTRecipeType POLARIZER_RECIPES = register("polarizer", ELECTRIC).setMaxIOSize(1, 1, 0, 0)
+    public static final GTRecipeTypeEntry POLARIZER_RECIPES = REGISTRATE.recipeType("polarizer", ELECTRIC)
+            .setMaxIOSize(1, 1, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MAGNET))
-            .setSound(GTSoundEntries.ARC);
+            .setSound(GTSoundEntries.ARC)
+            .register();
 
-    public final static GTRecipeType LASER_ENGRAVER_RECIPES = register("laser_engraver", ELECTRIC)
+    public static final GTRecipeTypeEntry LASER_ENGRAVER_RECIPES = REGISTRATE.recipeType("laser_engraver", ELECTRIC)
             .setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 1, GTGuiTextures.LENS_OVERLAY))
-            .setSound(GTSoundEntries.ELECTROLYZER);
+            .setSound(GTSoundEntries.ELECTROLYZER)
+            .register();
 
-    public final static GTRecipeType SIFTER_RECIPES = register("sifter", ELECTRIC).setMaxIOSize(1, 6, 0, 0)
+    public static final GTRecipeTypeEntry SIFTER_RECIPES = REGISTRATE.recipeType("sifter", ELECTRIC)
+            .setMaxIOSize(1, 6, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_SIFTER))
-            .setSound(new ExistingSoundEntry(SoundEvents.SAND_PLACE, SoundSource.BLOCKS));
+            .setSound(new ExistingSoundEntry(SoundEvents.SAND_PLACE, SoundSource.BLOCKS))
+            .register();
 
-    public final static GTRecipeType THERMAL_CENTRIFUGE_RECIPES = register("thermal_centrifuge", ELECTRIC)
+    public static final GTRecipeTypeEntry THERMAL_CENTRIFUGE_RECIPES = REGISTRATE.recipeType("thermal_centrifuge", ELECTRIC)
             .setMaxIOSize(1, 3, 0, 0).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(400).EUt(30))
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.DUST_OVERLAY))
-            .setSound(GTSoundEntries.CENTRIFUGE);
+            .setSound(GTSoundEntries.CENTRIFUGE)
+            .register();
 
-    public final static GTRecipeType WIREMILL_RECIPES = register("wiremill", ELECTRIC).setMaxIOSize(2, 1, 0, 0)
+    public static final GTRecipeTypeEntry WIREMILL_RECIPES = REGISTRATE.recipeType("wiremill", ELECTRIC)
+            .setMaxIOSize(2, 1, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_WIREMILL)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.WIREMILL_OVERLAY))
-            .setSound(GTSoundEntries.MOTOR);
+            .setSound(GTSoundEntries.MOTOR)
+            .register();
 
-    public final static GTRecipeType CIRCUIT_ASSEMBLER_RECIPES = register("circuit_assembler", ELECTRIC)
+    public static final GTRecipeTypeEntry CIRCUIT_ASSEMBLER_RECIPES = REGISTRATE.recipeType("circuit_assembler", ELECTRIC)
             .setMaxIOSize(6, 1, 1, 0).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_CIRCUIT_ASSEMBLER)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CIRCUIT_OVERLAY))
@@ -453,21 +511,23 @@ public class GTRecipeTypes {
                     recipeBuilder.inputFluids(
                             GTMaterials.Tin.getFluid(Math.max(1, GTValues.L * recipeBuilder.getSolderMultiplier())));
                 }
-            });
+            }).register();
 
-    public final static GTRecipeType GAS_COLLECTOR_RECIPES = register("gas_collector", ELECTRIC)
+    public static final GTRecipeTypeEntry GAS_COLLECTOR_RECIPES = REGISTRATE.recipeType("gas_collector", ELECTRIC)
             .setMaxIOSize(1, 0, 0, 1).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_GAS_COLLECTOR)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.INT_CIRCUIT_OVERLAY)
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.CENTRIFUGE_OVERLAY))
-            .setSound(GTSoundEntries.COOLING);
+            .setSound(GTSoundEntries.COOLING)
+            .register();
 
-    public final static GTRecipeType AIR_SCRUBBER_RECIPES = register("air_scrubber", ELECTRIC)
+    public static final GTRecipeTypeEntry AIR_SCRUBBER_RECIPES = REGISTRATE.recipeType("air_scrubber", ELECTRIC)
             .setMaxIOSize(1, 3, 1, 3).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_GAS_COLLECTOR))
-            .setSound(GTSoundEntries.COOLING);
+            .setSound(GTSoundEntries.COOLING)
+            .register();
 
-    public static final GTRecipeType RESEARCH_STATION_RECIPES = register("research_station", ELECTRIC)
+    public static final GTRecipeTypeEntry RESEARCH_STATION_RECIPES = REGISTRATE.recipeType("research_station", ELECTRIC)
             .setEUIO(IO.IN)
             .setMaxSize(IO.IN, CWURecipeCapability.CAP, 1)
             .setMaxIOSize(2, 1, 0, 0)
@@ -475,10 +535,10 @@ public class GTRecipeTypes {
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SCANNER_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.RESEARCH_STATION_OVERLAY))
             .setScanner(true)
-            .setMaxTooltips(4)
-            .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
+            .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION)
+            .register();
 
-    public final static GTRecipeType ROCK_BREAKER_RECIPES = register("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
+    public static final GTRecipeTypeEntry ROCK_BREAKER_RECIPES = REGISTRATE.recipeType("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MACERATE)
                     .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT,
@@ -486,9 +546,10 @@ public class GTRecipeTypes {
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY))
             .setIconSupplier(() -> GTMachines.ROCK_CRUSHER[GTValues.LV].asStack())
-            .setSound(GTSoundEntries.FIRE);
+            .setSound(GTSoundEntries.FIRE)
+            .register();
 
-    public static final GTRecipeType SCANNER_RECIPES = register("scanner", ELECTRIC)
+    public static final GTRecipeTypeEntry SCANNER_RECIPES = REGISTRATE.recipeType("scanner", ELECTRIC)
             .setEUIO(IO.IN)
             .setMaxIOSize(2, 1, 1, 0)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
@@ -496,63 +557,72 @@ public class GTRecipeTypes {
                     .setItemSlotOverlay(IO.IN, 1, GTGuiTextures.SCANNER_OVERLAY))
             .addCustomRecipeLogic(new ResearchManager.DataStickCopyScannerLogic())
             .setScanner(true)
-            .setSound(GTSoundEntries.ELECTROLYZER);
+            .setSound(GTSoundEntries.ELECTROLYZER)
+            .register();
 
     //////////////////////////////////////
     // ******* Generator *******//
     //////////////////////////////////////
-    public final static GTRecipeType COMBUSTION_GENERATOR_FUELS = register("combustion_generator", GENERATOR)
+    public static final GTRecipeTypeEntry COMBUSTION_GENERATOR_FUELS = REGISTRATE.recipeType("combustion_generator", GENERATOR)
             .setMaxIOSize(0, 0, 1, 0).setEUIO(IO.OUT)
             .UI(builder -> builder.setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.FURNACE_OVERLAY_2)
                     .setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))
-            .setSound(GTSoundEntries.COMBUSTION);
+            .setSound(GTSoundEntries.COMBUSTION)
+            .register();
 
-    public final static GTRecipeType GAS_TURBINE_FUELS = register("gas_turbine", GENERATOR).setMaxIOSize(0, 0, 1, 0)
+    public static final GTRecipeTypeEntry GAS_TURBINE_FUELS = REGISTRATE.recipeType("gas_turbine", GENERATOR)
+            .setMaxIOSize(0, 0, 1, 0)
             .setEUIO(IO.OUT)
             .UI(builder -> builder.setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.DARK_CANISTER_OVERLAY)
                     .setProgressBar(GTGuiTextures.PROGRESS_GAS_COLLECTOR))
-            .setSound(GTSoundEntries.TURBINE);
+            .setSound(GTSoundEntries.TURBINE)
+            .register();
 
-    public final static GTRecipeType STEAM_TURBINE_FUELS = register("steam_turbine", GENERATOR).setMaxIOSize(0, 0, 1, 1)
+    public static final GTRecipeTypeEntry STEAM_TURBINE_FUELS = REGISTRATE.recipeType("steam_turbine", GENERATOR)
+            .setMaxIOSize(0, 0, 1, 1)
             .setEUIO(IO.OUT)
             .UI(builder -> builder.setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.CENTRIFUGE_OVERLAY)
                     .setProgressBar(GTGuiTextures.PROGRESS_GAS_COLLECTOR))
-            .setSound(GTSoundEntries.TURBINE);
+            .setSound(GTSoundEntries.TURBINE)
+            .register();
 
-    public final static GTRecipeType PLASMA_GENERATOR_FUELS = register("plasma_generator", GENERATOR)
+    public static final GTRecipeTypeEntry PLASMA_GENERATOR_FUELS = REGISTRATE.recipeType("plasma_generator", GENERATOR)
             .setMaxIOSize(0, 0, 1, 1).setEUIO(IO.OUT)
             .UI(builder -> builder.setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.CENTRIFUGE_OVERLAY)
                     .setProgressBar(GTGuiTextures.PROGRESS_GAS_COLLECTOR))
-            .setSound(GTSoundEntries.TURBINE);
+            .setSound(GTSoundEntries.TURBINE)
+            .register();
 
     //////////////////////////////////////
     // ******* Multiblock *******//
     //////////////////////////////////////
-    public final static GTRecipeType LARGE_BOILER_RECIPES = register("large_boiler", MULTIBLOCK)
+    public static final GTRecipeTypeEntry LARGE_BOILER_RECIPES = REGISTRATE.recipeType("large_boiler", MULTIBLOCK)
             .setMaxIOSize(1, 0, 1, 1)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BOILER_FUEL_STEEL))
             .addCustomRecipeLogic(LargeBoilerLogic.INSTANCE)
-            .setMaxTooltips(1)
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .register();
 
-    public final static GTRecipeType COKE_OVEN_RECIPES = register("coke_oven", MULTIBLOCK).setMaxIOSize(1, 1, 0, 1)
+    public static final GTRecipeTypeEntry COKE_OVEN_RECIPES = REGISTRATE.recipeType("coke_oven", MULTIBLOCK)
+            .setMaxIOSize(1, 1, 0, 1)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
-            .setMaxTooltips(1)
-            .setSound(GTSoundEntries.FIRE);
+            .setSound(GTSoundEntries.FIRE)
+            .register();
 
-    public final static GTRecipeType PRIMITIVE_BLAST_FURNACE_RECIPES = register("primitive_blast_furnace", MULTIBLOCK)
+    public static final GTRecipeTypeEntry PRIMITIVE_BLAST_FURNACE_RECIPES = REGISTRATE.recipeType("primitive_blast_furnace", MULTIBLOCK)
             .setMaxIOSize(3, 3, 0, 0)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
-            .setMaxTooltips(1)
-            .setSound(GTSoundEntries.FIRE);
+            .setSound(GTSoundEntries.FIRE)
+            .register();
 
-    public final static GTRecipeType BLAST_RECIPES = register("electric_blast_furnace", MULTIBLOCK)
+    public static final GTRecipeTypeEntry BLAST_RECIPES = REGISTRATE.recipeType("electric_blast_furnace", MULTIBLOCK)
             .setMaxIOSize(3, 3, 1, 1).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .addRecipeUIModifier(GTRecipeUIModifiers.TEMP_COIL_INFO))
-            .setSound(GTSoundEntries.FURNACE);
+            .setSound(GTSoundEntries.FURNACE)
+            .register();
 
-    public final static GTRecipeType DISTILLATION_RECIPES = register("distillation_tower", MULTIBLOCK)
+    public static final GTRecipeTypeEntry DISTILLATION_RECIPES = REGISTRATE.recipeType("distillation_tower", MULTIBLOCK)
             .setMaxIOSize(0, 1, 1, 12).setEUIO(IO.IN)
             .setSound(GTSoundEntries.CHEMICAL)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))
@@ -624,23 +694,28 @@ public class GTRecipeTypes {
                         builder.save(provider);
                     }
                 }
-            });
+            })
+            .register();
 
-    public final static GTRecipeType PYROLYSE_RECIPES = register("pyrolyse_oven", MULTIBLOCK).setMaxIOSize(2, 1, 1, 1)
+    public static final GTRecipeTypeEntry PYROLYSE_RECIPES = REGISTRATE.recipeType("pyrolyse_oven", MULTIBLOCK)
+            .setMaxIOSize(2, 1, 1, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
-            .setSound(GTSoundEntries.FIRE);
+            .setSound(GTSoundEntries.FIRE)
+            .register();
 
-    public final static GTRecipeType CRACKING_RECIPES = register("cracker", MULTIBLOCK).setMaxIOSize(1, 0, 2, 2)
+    public static final GTRecipeTypeEntry CRACKING_RECIPES = REGISTRATE.recipeType("cracker", MULTIBLOCK)
+            .setMaxIOSize(1, 0, 2, 2)
             .setEUIO(IO.IN)
             .UI(builder -> builder
                     .setProgressBar(GTGuiTextures.PROGRESS_CRACKING)
                     .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.CRACKING_OVERLAY_1)
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.CRACKING_OVERLAY_2)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CIRCUIT_OVERLAY))
-            .setSound(GTSoundEntries.FIRE);
+            .setSound(GTSoundEntries.FIRE)
+            .register();
 
-    public final static GTRecipeType IMPLOSION_RECIPES = register("implosion_compressor", MULTIBLOCK)
+    public static final GTRecipeTypeEntry IMPLOSION_RECIPES = REGISTRATE.recipeType("implosion_compressor", MULTIBLOCK)
             .setMaxIOSize(3, 2, 0, 0).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(20).EUt(GTValues.VA[GTValues.LV]))
             .UI(builder -> builder
@@ -648,22 +723,26 @@ public class GTRecipeTypes {
                     .setItemSlotOverlay(IO.IN, 2, GTGuiTextures.IMPLOSION_OVERLAY_1)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.IMPLOSION_OVERLAY_2)
                     .setItemSlotOverlay(IO.OUT, 1, GTGuiTextures.DUST_OVERLAY))
-            .setSound(new ExistingSoundEntry(SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS));
+            .setSound(new ExistingSoundEntry(SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS))
+            .register();
 
-    public final static GTRecipeType VACUUM_RECIPES = register("vacuum_freezer", MULTIBLOCK).setMaxIOSize(1, 1, 2, 1)
+    public static final GTRecipeTypeEntry VACUUM_RECIPES = REGISTRATE.recipeType("vacuum_freezer", MULTIBLOCK)
+            .setMaxIOSize(1, 1, 2, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.MV]))
-            .setSound(GTSoundEntries.COOLING);
+            .setSound(GTSoundEntries.COOLING)
+            .register();
 
-    public final static GTRecipeType ASSEMBLY_LINE_RECIPES = register("assembly_line", MULTIBLOCK)
+    public static final GTRecipeTypeEntry ASSEMBLY_LINE_RECIPES = REGISTRATE.recipeType("assembly_line", MULTIBLOCK)
             .setMaxIOSize(16, 1, 4, 0).setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
             .setSound(GTSoundEntries.ASSEMBLER)
             .setHasResearchSlot(true)
-            .onRecipeBuild(ResearchManager::createDefaultResearchRecipe);
+            .onRecipeBuild(ResearchManager::createDefaultResearchRecipe)
+            .register();
 
-    public static final GTRecipeType LARGE_CHEMICAL_RECIPES = register("large_chemical_reactor", MULTIBLOCK)
+    public static final GTRecipeTypeEntry LARGE_CHEMICAL_RECIPES = REGISTRATE.recipeType("large_chemical_reactor", MULTIBLOCK)
             .setMaxIOSize(3, 3, 5, 4).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.LV]))
             .UI(builder -> builder
@@ -675,34 +754,20 @@ public class GTRecipeTypes {
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_1)
                     .setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
-            .setSmallRecipeMap(CHEMICAL_RECIPES);
+            .register();
 
-    public static final GTRecipeType FUSION_RECIPES = register("fusion_reactor", MULTIBLOCK).setMaxIOSize(0, 0, 2, 1)
+    public static final GTRecipeTypeEntry FUSION_RECIPES = REGISTRATE.recipeType("fusion_reactor", MULTIBLOCK)
+            .setMaxIOSize(0, 0, 2, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_FUSION)
                     .addRecipeUIModifier(FusionReactorMachine::addEUToStartLabel))
             .setSound(GTSoundEntries.ARC)
-            .setMaxTooltips(4);
+            .register();
 
-    public static final GTRecipeType DUMMY_RECIPES = register("dummy", DUMMY)
-            .setXEIVisible(false);
-
-    /**
-     * @deprecated Use {@link #register(ResourceLocation, String, RecipeType[])} instead.
-     */
-    @Deprecated(since = "8.0.0", forRemoval = true)
-    protected static GTRecipeType register(String name, String group, RecipeType<?>... proxyRecipes) {
-        return register(GTCEu.id(name), group, proxyRecipes);
-    }
-
-    public static GTRecipeType register(ResourceLocation id, String group, RecipeType<?>... proxyRecipes) {
-        var recipeType = new GTRecipeType(id, group, proxyRecipes);
-        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
-        recipeType.setSerializer(GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName,
-                new GTRecipeSerializer()));
-        return recipeType;
-    }
-
+    public static final GTRecipeTypeEntry DUMMY_RECIPES = REGISTRATE.recipeType("dummy", DUMMY)
+            .setXEIVisible(false)
+            .register();
+    
     public static void init() {
         GCYMRecipeTypes.init();
     }

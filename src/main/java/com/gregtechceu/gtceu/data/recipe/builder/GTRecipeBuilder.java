@@ -148,7 +148,7 @@ public class GTRecipeBuilder {
     }
 
     public static GTRecipeBuilder ofRaw() {
-        return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES);
+        return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES.value());
     }
 
     public GTRecipeBuilder copy(String id) {
@@ -177,7 +177,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
-        recipeType.setMinRecipeConditions(builder.conditions.size());
         return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
@@ -217,7 +216,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder addCondition(RecipeCondition<?> condition) {
         conditions.add(condition);
-        recipeType.setMinRecipeConditions(conditions.size());
         return this;
     }
 
@@ -1435,6 +1433,11 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder category(Holder<GTRecipeCategory> category) {
+        this.recipeCategory = category.value();
+        return this;
+    }
+
     public GTRecipeBuilder category(@NotNull GTRecipeCategory category) {
         this.recipeCategory = category;
         return this;
@@ -1498,7 +1501,7 @@ public class GTRecipeBuilder {
         if (recipeType != null) {
             if (recipeCategory == null) {
                 GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
-            } else if (recipeCategory != GTRecipeCategory.DEFAULT && recipeCategory.getRecipeType() != recipeType) {
+            } else if (recipeCategory != GTRecipeCategory.getDefaultCategory() && recipeCategory.getRecipeType() != recipeType) {
                 GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
                         new IllegalArgumentException());
             }

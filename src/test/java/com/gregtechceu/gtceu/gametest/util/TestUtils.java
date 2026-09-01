@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.gametest.util;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -242,10 +243,14 @@ public class TestUtils {
             return (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(GTCEu.id(name));
         ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).unfreeze();
         ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).unfreeze();
-        GTRecipeType type = new GTRecipeType(GTCEu.id(name), ELECTRIC, RecipeType.SMELTING)
-                .setEUIO(IO.IN)
-                .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
 
+        GTRecipeType.Properties properties = new GTRecipeType.Properties(ELECTRIC, RecipeType.SMELTING);
+        properties.maxInputs().put(EURecipeCapability.CAP, 1);
+        properties.maxInputs().put(ItemRecipeCapability.CAP, maxInputs);
+        properties.maxInputs().put(FluidRecipeCapability.CAP, maxFluidInputs);
+        properties.maxOutputs().put(ItemRecipeCapability.CAP, maxOutputs);
+        properties.maxOutputs().put(FluidRecipeCapability.CAP,maxFluidInputs);
+        GTRecipeType type = new GTRecipeType(GTCEu.id(name), properties);
         Registry.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
         GTRegistries.RECIPE_CATEGORIES.freeze();
         BuiltInRegistries.RECIPE_TYPE.freeze();

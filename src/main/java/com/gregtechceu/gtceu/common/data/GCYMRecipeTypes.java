@@ -1,20 +1,19 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MULTIBLOCK;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.register;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GCYMRecipeTypes {
 
     //////////////////////////////////////
     // ******* Multiblock *******//
     //////////////////////////////////////
-    public final static GTRecipeType ALLOY_BLAST_RECIPES = register(GTCEu.id("alloy_blast_smelter"), MULTIBLOCK)
+    public final static GTRecipeTypeEntry ALLOY_BLAST_RECIPES = REGISTRATE.recipeType("alloy_blast_smelter", MULTIBLOCK)
             .setMaxIOSize(9, 0, 3, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder
@@ -23,7 +22,8 @@ public class GCYMRecipeTypes {
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.FURNACE_OVERLAY_2)
                     .setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .addRecipeUIModifier(GTRecipeUIModifiers.TEMP_COIL_INFO))
-            .setSound(GTSoundEntries.ARC);
+            .setSound(GTSoundEntries.ARC)
+            .register();
 
     public static void init() {}
 }

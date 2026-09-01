@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -19,10 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)
 public class GTRecipeCategory {
-
-    // Placeholder category used if category isn't defined for a recipe for registration
-    public static final GTRecipeCategory DEFAULT = new GTRecipeCategory(GTCEu.id("default"),
-            GTRecipeTypes.DUMMY_RECIPES);
 
     public final ResourceLocation registryKey;
     public final String name;
@@ -37,13 +34,6 @@ public class GTRecipeCategory {
     @Setter
     private boolean isXEIVisible = true;
 
-    public GTRecipeCategory(@NotNull GTRecipeType recipeType) {
-        this.recipeType = recipeType;
-        this.name = recipeType.registryName.getPath();
-        this.registryKey = recipeType.registryName;
-        this.languageKey = recipeType.getTranslationKey();
-    }
-
     public GTRecipeCategory(@NotNull ResourceLocation registryKey, @NotNull GTRecipeType recipeType) {
         this.recipeType = recipeType;
         this.name = registryKey.getPath();
@@ -52,8 +42,8 @@ public class GTRecipeCategory {
     }
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
-        GTRecipeCategory category = new GTRecipeCategory(recipeType);
-        GTRegistries.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
+        GTRecipeCategory category = new GTRecipeCategory(recipeType.registryName, recipeType);
+        Registry.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
         return category;
     }
 
@@ -92,5 +82,14 @@ public class GTRecipeCategory {
     @Override
     public String toString() {
         return "GTRecipeCategory{%s}".formatted(this.registryKey);
+    }
+
+    // Placeholder category used if category isn't defined for a recipe for registration
+    private static GTRecipeCategory DEFAULT;
+
+    public static GTRecipeCategory getDefaultCategory() {
+        if (DEFAULT == null) DEFAULT = new GTRecipeCategory(GTCEu.id("default"),
+                GTRecipeTypes.DUMMY_RECIPES.value());
+        return DEFAULT;
     }
 }
