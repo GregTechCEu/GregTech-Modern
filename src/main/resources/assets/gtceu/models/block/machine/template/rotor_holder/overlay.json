@@ -6,12 +6,12 @@
   },
   "elements": [
     {
-      "from": [-16, -16, -0.064],
+      "from": [-16, -16, 0],
       "to": [32, 32, 16],
       "faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_ring", "cullface": "north" } }
     },
     {
-      "from": [-16, -16, -0.128],
+      "from": [-16, -16, 0],
       "to": [32, 32, 16],
       "faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_base", "cullface": "north" } }
     }

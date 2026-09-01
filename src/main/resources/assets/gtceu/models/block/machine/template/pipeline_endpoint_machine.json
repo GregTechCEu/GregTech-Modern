@@ -23,32 +23,32 @@
       }
     },
     {
-      "from": [0, 0, -0.096],
-      "to": [16, 16, 16.096],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe", "cullface": "north" },
         "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe", "cullface": "south" }
       }
     },
     {
-      "from": [-0.128, 0, 0],
-      "to": [16.128, 16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "rotation": 90, "cullface": "west" },
         "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "rotation": 270, "cullface": "east" }
       }
     },
     {
-      "from": [0, -0.128, 0],
-      "to": [16, 16.128, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "rotation": 180, "cullface": "up" },
         "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_side", "rotation": 0, "cullface": "down" }
       }
     },
     {
-      "from": [0, 0, -0.128],
-      "to": [16, 16, 16.128],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_hatch_in", "rotation": 0, "cullface": "north" },
         "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_hatch_out", "rotation": 0, "cullface": "south" }
@@ -57,8 +57,8 @@
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
-      "from": [-0.16, 0, 0],
-      "to": [16.16, 16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "west": {
           "uv": [0, 0, 16, 16],
@@ -79,8 +79,8 @@
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
-      "from": [0, -0.16, 0],
-      "to": [16, 16.16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "up": {
           "uv": [0, 0, 16, 16],
@@ -101,8 +101,8 @@
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
-      "from": [0, 0, -0.16],
-      "to": [16, 16, 16.16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front_emissive", "cullface": "north", "tintindex": -101 },
         "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back_emissive", "cullface": "south", "tintindex": -101 }

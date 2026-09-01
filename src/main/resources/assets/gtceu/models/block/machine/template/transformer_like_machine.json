@@ -26,24 +26,24 @@
       }
     },
     {
-      "from": [-0.096, 0, 0],
-      "to": [16.096, 16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "west" },
         "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "east" }
       }
     },
     {
-      "from": [0, -0.096, 0],
-      "to": [16, 16.096, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "up" },
         "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "down" }
       }
     },
     {
-      "from": [0, 0, -0.096],
-      "to": [16, 16, 16.096],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_io", "cullface": "north" },
         "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "south" }
@@ -52,8 +52,8 @@
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
-      "from": [-0.16, 0, 0],
-      "to": [16.16, 16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "west" },
         "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "east" }
@@ -62,8 +62,8 @@
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
-      "from": [0, -0.16, 0],
-      "to": [16, 16.16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "up" },
         "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "down" }
@@ -72,32 +72,32 @@
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
-      "from": [0, 0, -0.16],
-      "to": [16, 16, 16.16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_io_emissive", "cullface": "north" },
         "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io_emissive", "cullface": "south" }
       }
     },
     {
-      "from": [-0.128, 0, 0],
-      "to": [16.128, 16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "west", "tintindex": 3 },
         "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "east", "tintindex": 3 }
       }
     },
     {
-      "from": [0, -0.128, 0],
-      "to": [16, 16.128, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "up", "tintindex": 3 },
         "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "down", "tintindex": 3 }
       }
     },
     {
-      "from": [0, 0, -0.128],
-      "to": [16, 16, 16.128],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_tinted", "cullface": "north", "tintindex": 2 },
         "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "south", "tintindex": 3 }

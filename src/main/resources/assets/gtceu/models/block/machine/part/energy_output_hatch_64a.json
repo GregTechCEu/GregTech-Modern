@@ -19,19 +19,19 @@
       }
     },
     {
-      "from": [0, 0, -0.096],
+      "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_tint", "cullface": "north", "tintindex": 2 } }
     },
     {
-      "from": [0, 0, -0.128],
+      "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in", "cullface": "north" } }
     },
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
-      "from": [0, 0, -0.128],
+      "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": { "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_emissive", "cullface": "north" } }
     }

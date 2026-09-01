@@ -24,16 +24,16 @@
       }
     },
     {
-      "from": [-0.096, 0, 0],
-      "to": [16.096, 16, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "west": { "uv": [0, 0, 16, 16], "texture": "#overlay_pump", "cullface": "west" },
         "east": { "uv": [0, 0, 16, 16], "texture": "#overlay_pump", "cullface": "east" }
       }
     },
     {
-      "from": [0, -0.096, 0],
-      "to": [16, 16.096, 16],
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
       "faces": {
         "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_screen", "cullface": "up" },
         "down": { "uv": [0, 0, 16, 16], "texture": "#overlay_hatch", "cullface": "down" }
@@ -41,14 +41,14 @@
     },
     {
       "from": [0, 0, 0],
-      "to": [16, 16, 16.096],
+      "to": [16, 16, 16],
       "faces": { "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pump", "cullface": "south" } }
     },
     {
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "from": [0, 0, 0],
-      "to": [16, 16.128, 16],
+      "to": [16, 16, 16],
       "faces": { "up": { "uv": [0, 0, 16, 16], "texture": "#overlay_screen_emissive", "cullface": "up", "tintindex": -101 } }
     }
   ]
