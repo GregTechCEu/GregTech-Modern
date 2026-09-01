@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -19,6 +20,7 @@ import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -203,6 +205,22 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                    String displayName, String symbol) {
         return element(name, protons, neutrons, -1, null, displayName, symbol, false);
     }
+
+    /// Material Icon Set registration
+
+    /**
+     * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
+     *
+     * @param name the name of the iconset
+     */
+    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name) {
+        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(name)));
+    }
+
+    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name, @Nullable Holder<MaterialIconSet> parentIconSet) {
+        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(name), parentIconSet, parentIconSet == null));
+    }
+
 
     /// Cover Registration
 
