@@ -179,6 +179,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         this.aggregateFluidHandler = attachTrait(new AggregateFluidHandler());
         this.bufferRecipeHandler = new BufferRecipeHandlerList();
         this.bufferHandlers = List.of(bufferRecipeHandler);
+        // inventory isn't used, prevent items being inserted via e.g. hoppers and becoming inaccessible.
+        this.getInventory().setFilter((ignored) -> false);
         addWorker();
     }
 
