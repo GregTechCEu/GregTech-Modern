@@ -47,17 +47,9 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
-    // Bloom sits in front of base faces but behind facades and overlays using polygon offset and sort.
-    private static final LayeringStateShard BLOOM_LAYERING = new LayeringStateShard(
-            "bloom_layering",
-            () -> {
-                RenderSystem.polygonOffset(-0.5F, -5.0F);
-                RenderSystem.enablePolygonOffset();
-            },
-            () -> {
-                RenderSystem.polygonOffset(0.0F, 0.0F);
-                RenderSystem.disablePolygonOffset();
-            });
+    // Face layers order quads within a model. These biases preserve that order across chunk and dynamic render paths.
+    private static final LayeringStateShard BLOOM_LAYERING = createDepthLayering("bloom_layering", -0.5F, -5.0F);
+    private static final LayeringStateShard FACADE_LAYERING = createDepthLayering("facade_layering", -1.0F, -10.0F);
 
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -79,7 +71,7 @@ public class GTRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_SOLID_SHADER)
                     .setTextureState(BLOCK_SHEET_MIPPED)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_CUTOUT_MIPPED = RenderType.create("gtceu:facade_cutout_mipped",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -88,7 +80,7 @@ public class GTRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
                     .setTextureState(BLOCK_SHEET_MIPPED)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_CUTOUT = RenderType.create("gtceu:facade_cutout",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -97,7 +89,7 @@ public class GTRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_CUTOUT_SHADER)
                     .setTextureState(BLOCK_SHEET)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_TRANSLUCENT = RenderType.create("gtceu:facade_translucent",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -108,7 +100,7 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setOutputState(TRANSLUCENT_TARGET)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_TRIPWIRE = RenderType.create("gtceu:facade_tripwire",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -119,7 +111,7 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setOutputState(WEATHER_TARGET)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
         return create("gtceu:entity_bloom",
@@ -168,6 +160,19 @@ public class GTRenderTypes extends RenderType {
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                           boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
+    }
+
+    private static LayeringStateShard createDepthLayering(String name, float factor, float units) {
+        return new LayeringStateShard(
+                name,
+                () -> {
+                    RenderSystem.polygonOffset(factor, units);
+                    RenderSystem.enablePolygonOffset();
+                },
+                () -> {
+                    RenderSystem.polygonOffset(0.0F, 0.0F);
+                    RenderSystem.disablePolygonOffset();
+                });
     }
 
     public static RenderType lightRing() {
