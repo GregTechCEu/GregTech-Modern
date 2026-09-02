@@ -95,5 +95,13 @@ public final class GTEmbeddiumCompat {
         return getCustomMaterial(GTRenderTypes.bloom());
     }
 
+    public static TerrainRenderPass getFaceLayerRenderPass() {
+        return getCustomRenderPass(GTRenderTypes.faceLayer());
+    }
+
+    public static Material getFaceLayerMaterial() {
+        return getCustomMaterial(GTRenderTypes.faceLayer());
+    }
+
     private GTEmbeddiumCompat() {}
 }

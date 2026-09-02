@@ -103,6 +103,14 @@ public final class GTSodiumCompat {
         return getCustomMaterial(GTRenderTypes.bloom());
     }
 
+    public static TerrainRenderPass getFaceLayerRenderPass() {
+        return getCustomRenderPass(GTRenderTypes.faceLayer());
+    }
+
+    public static Material getFaceLayerMaterial() {
+        return getCustomMaterial(GTRenderTypes.faceLayer());
+    }
+
     public static boolean quadHasBloom(MutableQuadViewImpl quad, int[] ambientPackedLights) {
         TextureAtlasSprite sprite = quad.sprite(SpriteFinderCache.forBlockAtlas());
         var metadata = TextureMetadataHelper.getMetadata(sprite);

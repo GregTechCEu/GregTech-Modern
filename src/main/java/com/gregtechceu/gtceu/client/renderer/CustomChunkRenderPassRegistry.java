@@ -19,6 +19,9 @@ public final class CustomChunkRenderPassRegistry {
 
     // Pass order here is also the order used by vanilla, Sodium, and Embeddium chunk buffers.
     private static final List<CustomChunkRenderPass> PASSES = List.of(
+            new CustomChunkRenderPass(GTRenderTypes.faceLayer(), CustomChunkRenderPass.AlphaCutoff.ONE_TENTH, true,
+                    CustomChunkRenderPass.DrawStage.AFTER_CUTOUT, CustomChunkRenderPass.TerrainPhase.CUTOUT_MIPPED,
+                    FaceLayerRouting::usesCustomChunkPass),
             new CustomChunkRenderPass(GTRenderTypes.bloom(), CustomChunkRenderPass.AlphaCutoff.ZERO, true,
                     CustomChunkRenderPass.DrawStage.MANUAL, CustomChunkRenderPass.TerrainPhase.CUSTOM,
                     BloomRenderer::usesCustomChunkPass));

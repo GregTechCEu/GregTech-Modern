@@ -49,6 +49,8 @@ public class GTRenderTypes extends RenderType {
 
     // Face layers order quads within a model. These biases preserve that order across chunk and dynamic render paths.
     private static final LayeringStateShard BLOOM_LAYERING = createDepthLayering("bloom_layering", -0.5F, -5.0F);
+    private static final LayeringStateShard FACE_LAYER_LAYERING = createDepthLayering("face_layer_layering", -0.5F,
+            -5.0F);
     private static final LayeringStateShard FACADE_LAYERING = POLYGON_OFFSET_LAYERING;
 
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom",
@@ -62,6 +64,18 @@ public class GTRenderTypes extends RenderType {
                     .setLayeringState(BLOOM_LAYERING)
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
+                    .createCompositeState(true));
+
+    private static final RenderType FACE_LAYER = RenderType.create("gtceu:face_layer",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.BIG_BUFFER_SIZE, true, false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setDepthTestState(LEQUAL_DEPTH_TEST)
+                    .setLayeringState(FACE_LAYER_LAYERING)
+                    .setLightmapState(LIGHTMAP)
                     .createCompositeState(true));
 
     private static final RenderType FACADE_SOLID = RenderType.create("gtceu:facade_solid",
@@ -181,6 +195,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType bloom() {
         return BLOOM;
+    }
+
+    public static RenderType faceLayer() {
+        return FACE_LAYER;
     }
 
     public static RenderType facade(RenderType source) {
