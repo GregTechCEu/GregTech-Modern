@@ -11,9 +11,9 @@
     "client": [
         "client.customchunk.embeddium.EmbeddiumChunkBuildBuffersMixin",
         "client.customchunk.embeddium.EmbeddiumChunkBuilderMeshingTaskMixin",
+        "client.customchunk.embeddium.EmbeddiumBlockRendererMixin",
         "client.customchunk.embeddium.EmbeddiumRenderRegionManagerMixin",
         "client.customchunk.embeddium.EmbeddiumWorldRendererMixin",
-        "client.bloom.normal.embeddium.BlockRendererMixin",
         "client.bloom.safemode.embeddium.BlockRendererMixin"
     ],
     "mixins": [],

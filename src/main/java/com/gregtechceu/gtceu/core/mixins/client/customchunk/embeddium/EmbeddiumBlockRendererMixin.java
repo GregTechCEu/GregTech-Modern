@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium;
+package com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.FaceLayerRouting;
@@ -27,20 +27,20 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = BlockRenderer.class, remap = false)
-public abstract class BlockRendererMixin {
+public abstract class EmbeddiumBlockRendererMixin {
 
     @WrapOperation(method = "writeGeometry",
                    at = @At(value = "INVOKE",
                             target = "Lorg/embeddedt/embeddium/impl/render/chunk/vertex/builder/ChunkMeshBufferBuilder;push([Lorg/embeddedt/embeddium/impl/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;Lorg/embeddedt/embeddium/impl/render/chunk/terrain/material/Material;)V"))
-    private void gtceu$routeFaceLayerAndCopyBloom(ChunkMeshBufferBuilder originalBuilder,
-                                                  ChunkVertexEncoder.Vertex[] vertices, Material originalMaterial,
-                                                  Operation<Void> original,
-                                                  BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset,
-                                                  Material material, BakedQuadView quad, int[] colors,
-                                                  QuadLightData light,
-                                                  @Local(name = "normalFace") ModelQuadFacing normalFace) {
+    private void gtceu$routeCustomPassQuads(ChunkMeshBufferBuilder originalBuilder,
+                                            ChunkVertexEncoder.Vertex[] vertices, Material originalMaterial,
+                                            Operation<Void> original,
+                                            BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset,
+                                            Material material, BakedQuadView quad, int[] colors,
+                                            QuadLightData light,
+                                            @Local(name = "normalFace") ModelQuadFacing normalFace) {
         ChunkBuildContext chunkContext = GlobalChunkBuildContext.get();
-        if (chunkContext != null && FaceLayerRouting.shouldRoute((BakedQuad) quad)) {
+        if (chunkContext != null && FaceLayerRouting.shouldUseCustomPass((BakedQuad) quad)) {
             var faceLayerPass = GTEmbeddiumCompat.getFaceLayerRenderPass();
             var faceLayerMaterial = GTEmbeddiumCompat.getFaceLayerMaterial();
             if (faceLayerPass != null && faceLayerMaterial != null) {
@@ -58,7 +58,7 @@ public abstract class BlockRendererMixin {
                 TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
             var bloomBuilder = chunkContext.buffers.get(GTEmbeddiumCompat.getBloomRenderPass());
 
-            // call the same method again, this time with the bloom chunk model builder
+            // Bloom reuses the encoded vertices in its dedicated chunk pass.
             ChunkMeshBufferBuilder vertexBuffer = bloomBuilder.getVertexBuffer(normalFace);
             vertexBuffer.push(vertices, GTEmbeddiumCompat.getBloomMaterial());
         }

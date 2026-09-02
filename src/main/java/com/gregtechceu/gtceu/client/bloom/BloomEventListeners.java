@@ -29,8 +29,8 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        if (BloomRenderer.usesOwnedSectionMeshes()) {
-            NeoForge.EVENT_BUS.register(BloomRenderer.SafeMode.class);
+        if (BloomRenderer.usesSectionMeshFallback()) {
+            NeoForge.EVENT_BUS.register(BloomRenderer.SectionMeshFallback.class);
         }
     }
 
@@ -57,8 +57,8 @@ public class BloomEventListeners {
     public static void onLevelUnload(LevelEvent.Unload event) {
         BloomHandler.invalidateLevelData(event.getLevel());
 
-        if (BloomRenderer.usesOwnedSectionMeshes()) {
-            BloomRenderer.SafeMode.invalidateLevelData();
+        if (BloomRenderer.usesSectionMeshFallback()) {
+            BloomRenderer.SectionMeshFallback.invalidateLevelData();
         }
     }
 
@@ -70,19 +70,19 @@ public class BloomEventListeners {
         LevelAccessor level = chunk.getLevel();
         if (level == null) return;
 
-        if (!BloomRenderer.usesOwnedSectionMeshes()) return;
+        if (!BloomRenderer.usesSectionMeshFallback()) return;
 
         ChunkPos chunkPos = chunk.getPos();
         int minSection = level.getMinSection(), maxSection = level.getMaxSection();
         for (int y = minSection; y < maxSection; y++) {
-            BloomRenderer.SafeMode.invalidateSectionData(SectionPos.of(chunkPos.x, y, chunkPos.z));
+            BloomRenderer.SectionMeshFallback.invalidateSectionData(SectionPos.of(chunkPos.x, y, chunkPos.z));
         }
     }
 
     @SubscribeEvent
     public static void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
         RenderType entity;
-        if (BloomRenderer.usesNormalBloomRendering() && BloomShaderManager.isBloomAvailable()) {
+        if (BloomRenderer.usesDirectBloomRendering() && BloomShaderManager.isBloomAvailable()) {
             entity = GTRenderTypes.entityBloomBlockSheet();
         } else {
             entity = NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();

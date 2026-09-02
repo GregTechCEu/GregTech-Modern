@@ -27,9 +27,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Safe mode version of {@link com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium.BlockRendererMixin}
+ * Safe mode alternative to
+ * {@link com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium.EmbeddiumBlockRendererMixin}
  *
- * @see com.gregtechceu.gtceu.core.mixins.client.bloom.normal.embeddium.BlockRendererMixin
+ * @see com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium.EmbeddiumBlockRendererMixin
  */
 @Mixin(value = BlockRenderer.class, remap = false)
 public class BlockRendererMixin {
@@ -43,7 +44,7 @@ public class BlockRendererMixin {
         // Check if quad is full brightness OR we have bloom enabled for the quad
         if (BloomShaderManager.isBloomActive() && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
             SectionPos sectionPos = SectionPos.of(ctx.pos());
-            bloomBufferRef.set(BloomRenderer.SafeMode.getOrStartBloomBuffer(sectionPos));
+            bloomBufferRef.set(BloomRenderer.SectionMeshFallback.getOrStartBloomBuffer(sectionPos));
         } else {
             bloomBufferRef.set(null);
         }

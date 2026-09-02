@@ -17,17 +17,17 @@ import java.util.List;
 @EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 public final class CustomChunkRenderPassRegistry {
 
-    // Pass order here is also the order used by vanilla, Sodium, and Embeddium chunk buffers.
-    private static final List<CustomChunkRenderPass> PASSES = List.of(
+    // Registration order is preserved when backend chunk pass arrays are extended.
+    private static final List<CustomChunkRenderPass> REGISTERED_PASSES = List.of(
             new CustomChunkRenderPass(GTRenderTypes.faceLayer(), CustomChunkRenderPass.AlphaCutoff.ONE_TENTH, true,
                     CustomChunkRenderPass.DrawStage.AFTER_CUTOUT, CustomChunkRenderPass.TerrainPhase.CUTOUT_MIPPED,
-                    FaceLayerRouting::usesCustomChunkPass),
+                    FaceLayerRouting::isCustomPassEnabled),
             new CustomChunkRenderPass(GTRenderTypes.bloom(), CustomChunkRenderPass.AlphaCutoff.ZERO, true,
                     CustomChunkRenderPass.DrawStage.MANUAL, CustomChunkRenderPass.TerrainPhase.CUSTOM,
-                    BloomRenderer::usesCustomChunkPass));
+                    BloomRenderer::usesBackendChunkPass));
 
     // Chunk buffer layers are fixed during client startup, so load conditions are resolved once.
-    private static final List<CustomChunkRenderPass> ACTIVE_PASSES = PASSES.stream()
+    private static final List<CustomChunkRenderPass> ACTIVE_PASSES = REGISTERED_PASSES.stream()
             .filter(pass -> pass.loadCondition().getAsBoolean())
             .toList();
     private static final List<CustomChunkRenderPass> AFTER_CUTOUT_PASSES = ACTIVE_PASSES.stream()

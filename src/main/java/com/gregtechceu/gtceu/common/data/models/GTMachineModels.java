@@ -468,7 +468,7 @@ public class GTMachineModels {
 
     // spotless:off
     public static final ResourceLocation ROTOR_HOLDER_BLOCK = GTCEu.id("block/machine/template/rotor_holder/block");
-    public static final ResourceLocation ROTOR_HOLDER_HULL = GTCEu.id("block/cube/tinted/bottom_top");
+    public static final ResourceLocation ROTOR_HOLDER_FORMED_BASE = GTCEu.id("block/cube/tinted/bottom_top");
     public static final ResourceLocation ROTOR_HOLDER_OVERLAY = GTCEu.id("block/machine/template/rotor_holder/overlay");
     public static final ResourceLocation ROTOR_HOLDER_ROTOR_IDLE = GTCEu.id("block/machine/template/rotor_holder/rotor_idle");
     public static final ResourceLocation ROTOR_HOLDER_ROTOR_SPINNING = GTCEu.id("block/machine/template/rotor_holder/rotor_spinning");
@@ -477,20 +477,20 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createRotorHolderModel() {
         return (ctx, prov, builder) -> {
             BlockModelProvider models = prov.models();
-            var blockModel = prov.models().nested()
+            var unformedModel = prov.models().nested()
                     .parent(prov.models().getExistingFile(ROTOR_HOLDER_BLOCK));
-            tieredHullTextures(blockModel, builder.getOwner().getTier());
-            var formedBlockModel = prov.models().nested()
-                    .parent(prov.models().getExistingFile(ROTOR_HOLDER_HULL));
-            tieredHullTextures(formedBlockModel, builder.getOwner().getTier());
+            tieredHullTextures(unformedModel, builder.getOwner().getTier());
+            var formedModel = prov.models().nested()
+                    .parent(prov.models().getExistingFile(ROTOR_HOLDER_FORMED_BASE));
+            tieredHullTextures(formedModel, builder.getOwner().getTier());
 
-            builder.part(blockModel)
+            builder.part(unformedModel)
                     .condition(IS_FORMED, false)
                     .condition(HAS_ROTOR, false, true)
                     .condition(IS_ROTOR_SPINNING, false, true)
                     .condition(IS_EMISSIVE_ROTOR, false, true)
                     .end();
-            builder.part(formedBlockModel)
+            builder.part(formedModel)
                     .condition(IS_FORMED, true)
                     .condition(HAS_ROTOR, false, true)
                     .condition(IS_ROTOR_SPINNING, false, true)

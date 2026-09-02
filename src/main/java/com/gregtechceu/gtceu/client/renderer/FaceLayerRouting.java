@@ -11,25 +11,24 @@ import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.isModLoaded;
 
 public final class FaceLayerRouting {
 
-    private static final int TAG_MASK = 0xFFFF0000;
-    private static final int TAG_PREFIX = 0x47540000;
+    // Sodium drops BakedQuad extensions, so, we just smuggle it through FRAPI inside of sodium, kinda hacky but whatever.
+    private static final int SODIUM_FACE_LAYER_TAG = 0x47540001;
 
-    public static boolean usesCustomChunkPass() {
+    public static boolean isCustomPassEnabled() {
         return (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM)) &&
                 GTMixinPlugin.isOptionEnabled("client.customchunk.");
     }
 
-    public static boolean shouldRoute(BakedQuad quad) {
+    public static boolean shouldUseCustomPass(BakedQuad quad) {
         return quad.gtceu$getFaceLayer().depthRank() > FaceLayer.BASE.depthRank();
     }
 
-    public static int encodeTag(BakedQuad quad) {
-        FaceLayer layer = quad.gtceu$getFaceLayer();
-        return layer.depthRank() > FaceLayer.BASE.depthRank() ? TAG_PREFIX | layer.ordinal() : 0;
+    public static int getSodiumRoutingTag(BakedQuad quad) {
+        return shouldUseCustomPass(quad) ? SODIUM_FACE_LAYER_TAG : 0;
     }
 
-    public static boolean shouldRoute(int tag) {
-        return (tag & TAG_MASK) == TAG_PREFIX;
+    public static boolean isSodiumFaceLayerTag(int tag) {
+        return tag == SODIUM_FACE_LAYER_TAG;
     }
 
     private FaceLayerRouting() {}

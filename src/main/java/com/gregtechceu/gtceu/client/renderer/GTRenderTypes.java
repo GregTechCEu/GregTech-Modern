@@ -47,7 +47,7 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
-    // Face layers order quads within a model. These biases preserve that order across chunk and dynamic render paths.
+    // Model space offsets establish local order; polygon offset preserves them after depth quantization.
     private static final LayeringStateShard BLOOM_LAYERING = createDepthLayering("bloom_layering", -0.5F, -5.0F);
     private static final LayeringStateShard FACE_LAYER_LAYERING = createDepthLayering("face_layer_layering", -0.5F,
             -5.0F);

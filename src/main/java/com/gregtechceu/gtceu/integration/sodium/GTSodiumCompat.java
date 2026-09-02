@@ -68,6 +68,7 @@ public final class GTSodiumCompat {
         return getCustomMaterials().get(renderType);
     }
 
+    // Extend each backend-owned view instead of mutating Sodium's shared static pass array.
     public static TerrainRenderPass[] includeCustomRenderPasses(TerrainRenderPass[] defaultPasses) {
         TerrainRenderPass[] combinedPasses = cachedCombinedPasses;
         if (defaultPasses == cachedDefaultPasses && combinedPasses != null) {

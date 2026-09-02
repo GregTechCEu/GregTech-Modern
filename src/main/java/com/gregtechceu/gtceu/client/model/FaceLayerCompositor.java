@@ -12,22 +12,23 @@ import java.util.ListIterator;
 public final class FaceLayerCompositor {
 
     // UPDATE; I HATE IT HERE. FOR EVERY TIME SOMEONE HAS TO EDIT THIS PLEASE UPDATE THIS NUMBER : 2
+    // A 1/64-pixel step separates layers without visibly lifting them from blockfaces.
     private static final float LAYER_DEPTH_STEP = 1.0F / 1024.0F;
 
-    public static void composeCanonicalLayers(List<BakedQuad> layers) {
-        ListIterator<BakedQuad> iterator = layers.listIterator();
+    public static void compose(List<BakedQuad> quads) {
+        ListIterator<BakedQuad> iterator = quads.listIterator();
         while (iterator.hasNext()) {
-            BakedQuad layer = iterator.next();
-            FaceLayer faceLayer = resolveLayer(layer);
-            if (faceLayer.depthRank() > 0) {
-                iterator.set(positionLayer(layer, faceLayer));
+            BakedQuad quad = iterator.next();
+            FaceLayer faceLayer = getEffectiveLayer(quad);
+            if (faceLayer.depthRank() > FaceLayer.BASE.depthRank()) {
+                iterator.set(positionLayer(quad, faceLayer));
             }
         }
-        layers.sort((first, second) -> Integer.compare(resolveLayer(first).depthRank(),
-                resolveLayer(second).depthRank()));
+        quads.sort((first, second) -> Integer.compare(getEffectiveLayer(first).depthRank(),
+                getEffectiveLayer(second).depthRank()));
     }
 
-    private static FaceLayer resolveLayer(BakedQuad quad) {
+    private static FaceLayer getEffectiveLayer(BakedQuad quad) {
         FaceLayer layer = quad.gtceu$getFaceLayer();
         if (layer != FaceLayer.UNCLASSIFIED) {
             return layer;

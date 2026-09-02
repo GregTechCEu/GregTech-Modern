@@ -18,6 +18,8 @@ public enum FaceLayer {
     COVER(5),
     COVER_EMISSIVE(6);
 
+    public static final String JSON_PROPERTY = "gtceu:face_layer";
+
     private final int depthRank;
 
     FaceLayer(int depthRank) {
@@ -25,6 +27,10 @@ public enum FaceLayer {
     }
 
     public static FaceLayer fromSerializedName(String name) {
-        return valueOf(name.toUpperCase(Locale.ROOT));
+        FaceLayer layer = valueOf(name.toUpperCase(Locale.ROOT));
+        if (layer == UNCLASSIFIED) {
+            throw new IllegalArgumentException("UNCLASSIFIED is reserved for internal use");
+        }
+        return layer;
     }
 }

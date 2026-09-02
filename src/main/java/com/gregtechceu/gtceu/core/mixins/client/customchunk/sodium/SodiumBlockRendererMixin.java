@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins.client.bloom.normal.sodium;
+package com.gregtechceu.gtceu.core.mixins.client.customchunk.sodium;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.FaceLayerRouting;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = BlockRenderer.class, remap = false)
-public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
+public abstract class SodiumBlockRendererMixin extends AbstractBlockRenderContext {
 
     @Shadow
     private ChunkBuildBuffers buffers;
@@ -30,12 +30,12 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
     @WrapOperation(method = "bufferQuad",
                    at = @At(value = "INVOKE",
                             target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/vertex/builder/ChunkMeshBufferBuilder;push([Lnet/caffeinemc/mods/sodium/client/render/chunk/vertex/format/ChunkVertexEncoder$Vertex;I)V"))
-    private void gtceu$routeFaceLayerAndCopyBloom(ChunkMeshBufferBuilder originalBuilder,
-                                                  ChunkVertexEncoder.Vertex[] vertices, int materialBits,
-                                                  Operation<Void> original,
-                                                  MutableQuadViewImpl quad, float[] brightnesses, Material material,
-                                                  @Local(name = "normalFace") ModelQuadFacing normalFace) {
-        if (FaceLayerRouting.shouldRoute(quad.tag())) {
+    private void gtceu$routeCustomPassQuads(ChunkMeshBufferBuilder originalBuilder,
+                                            ChunkVertexEncoder.Vertex[] vertices, int materialBits,
+                                            Operation<Void> original,
+                                            MutableQuadViewImpl quad, float[] brightnesses, Material material,
+                                            @Local(name = "normalFace") ModelQuadFacing normalFace) {
+        if (FaceLayerRouting.isSodiumFaceLayerTag(quad.tag())) {
             var faceLayerPass = GTSodiumCompat.getFaceLayerRenderPass();
             var faceLayerMaterial = GTSodiumCompat.getFaceLayerMaterial();
             if (faceLayerPass != null && faceLayerMaterial != null) {
@@ -54,7 +54,7 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
         if (GTSodiumCompat.quadHasBloom(quad, this.quadLightData.lm)) {
             var bloomBuilder = this.buffers.get(GTSodiumCompat.getBloomRenderPass());
 
-            // call the same method again, this time with the bloom chunk model builder
+            // Bloom reuses the encoded vertices in the chunk pass.
             ChunkMeshBufferBuilder vertexBuffer = bloomBuilder.getVertexBuffer(normalFace);
             vertexBuffer.push(vertices, GTSodiumCompat.getBloomMaterial().bits());
         }

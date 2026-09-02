@@ -257,7 +257,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             // if it doesn't have either of those properties, we're rendering an item.
             quads = renderMachine(null, null, null, state, side, rand, modelData, renderType);
         }
-        FaceLayerCompositor.composeCanonicalLayers(quads);
+        FaceLayerCompositor.compose(quads);
         postTransform.processInPlace(quads);
         return quads;
     }

@@ -193,9 +193,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 // fix the quad's UVs based on the original & clamped vertices
                 interpolator.transform(emitter);
 
-                FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ?
-                        FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
-                quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(faceLayer));
+                quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(getFacadeLayer(quad)));
                 emitter.emit();
             }
         }
@@ -282,7 +280,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             renderCover(quads, facade.attachedSide, rand, facade, pos, level,
                     ModelData.EMPTY, renderType);
             if (quads.isEmpty()) continue;
-            FaceLayerCompositor.composeCanonicalLayers(quads);
+            FaceLayerCompositor.compose(quads);
 
             RenderType facadeRenderType = GTRenderTypes.facade(renderType);
             modelRenderer.tesselateBlock(level, new DynamicFacadeModel(quads), holderState, pos, poseStack,
@@ -352,6 +350,10 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return defaultItemModel.getOverrides();
         }
         return super.getOverrides();
+    }
+
+    private static FaceLayer getFacadeLayer(BakedQuad quad) {
+        return quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ? FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
     }
 
     private static class FacadeItemBakedModel extends BakedModelWrapper<BakedModel> implements IDynamicBakedModel {
@@ -446,9 +448,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         // fix the quad's UVs based on the original & clamped vertices
                         interpolator.transform(emitter);
 
-                        FaceLayer faceLayer = quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ?
-                                FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
-                        quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(faceLayer));
+                        quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(getFacadeLayer(quad)));
                         emitter.emit();
                     }
                 }

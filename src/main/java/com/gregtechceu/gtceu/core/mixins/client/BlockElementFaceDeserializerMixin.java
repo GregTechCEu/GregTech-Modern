@@ -23,11 +23,11 @@ public class BlockElementFaceDeserializerMixin {
     private BlockElementFace gtceu$readFaceLayer(BlockElementFace face, JsonElement json, Type type,
                                                  JsonDeserializationContext context) {
         var object = json.getAsJsonObject();
-        if (!object.has("gtceu:face_layer")) {
+        if (!object.has(FaceLayer.JSON_PROPERTY)) {
             return face;
         }
 
-        String name = GsonHelper.getAsString(object, "gtceu:face_layer");
+        String name = GsonHelper.getAsString(object, FaceLayer.JSON_PROPERTY);
         try {
             FaceLayer layer = FaceLayer.fromSerializedName(name);
             return ((BlockElementFaceExt) (Object) face).gtceu$setFaceLayer(layer);

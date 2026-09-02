@@ -48,9 +48,7 @@ import static com.gregtechceu.gtceu.api.GTValues.MODID_SODIUM;
 import static com.gregtechceu.gtceu.client.bloom.BloomShaderManager.BLOOM_TARGET;
 import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.isModLoaded;
 
-/**
- * The actual rendering logic for bloom
- */
+/** Coordinates block, entity, and post-process bloom rendering. */
 @ApiStatus.Internal
 @UtilityClass
 public class BloomRenderer {
@@ -61,16 +59,20 @@ public class BloomRenderer {
     @Getter
     private static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
-    public static boolean usesNormalBloomRendering() {
-        return !SafeMode.enabled() && !GTEarlyConfig.OPTIFINE_PRESENT;
+    public static boolean isSafeModeEnabled() {
+        return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.BLOOM_SAFE_MODE);
     }
 
-    public static boolean usesCustomChunkPass() {
-        return usesNormalBloomRendering() && (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM));
+    public static boolean usesDirectBloomRendering() {
+        return !isSafeModeEnabled() && !GTEarlyConfig.OPTIFINE_PRESENT;
     }
 
-    public static boolean usesOwnedSectionMeshes() {
-        return !usesCustomChunkPass();
+    public static boolean usesBackendChunkPass() {
+        return usesDirectBloomRendering() && (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM));
+    }
+
+    public static boolean usesSectionMeshFallback() {
+        return !usesBackendChunkPass();
     }
 
     @ApiStatus.Internal
@@ -88,33 +90,30 @@ public class BloomRenderer {
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
 
-        // safe mode disabled -> use deeper, faster hackery
-        if (usesCustomChunkPass()) {
+        if (usesBackendChunkPass()) {
             ((LevelRendererAccessor) levelRenderer).invokeRenderSectionLayer(GTRenderTypes.bloom(),
                     camPos.x, camPos.y, camPos.z, frustumMatrix, projectionMatrix);
 
-            // have to re-setup here. so sad. very aw.
+            // Special bloom renders may replace the active target and shader state.
             GTRenderTypes.bloom().setupRenderState();
-        }
-        // safe mode enabled -> don't draw block bloom the 'normal' way; use BloomSafeMode.drawBlockBloom instead
-        else {
-            SafeMode.drawBlockBloom(camera, poseStack, frustum, frustumMatrix, projectionMatrix, levelRenderer,
+        } else {
+            SectionMeshFallback.drawBlockBloom(camera, poseStack, frustum, frustumMatrix, projectionMatrix,
+                    levelRenderer,
                     profilerFiller);
         }
 
         processPostEffect(partialTicks, profilerFiller);
 
-        // clear state. again.
         GTRenderTypes.bloom().clearRenderState();
 
-        // profiler section is popped by popPush() in the calling function; don't pop it here
+        // The caller advances the profiler section after this method returns.
     }
 
     private static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
                                            ProfilerFiller profilerFiller) {
         profilerFiller.push("special");
 
-        // render state is set up & cleared in calling function
+        // Render state is managed by renderBloom.
 
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
@@ -173,7 +172,7 @@ public class BloomRenderer {
     private static void setupBloomShaderUniforms() {
         final var config = ConfigHolder.INSTANCE.client.bloom;
 
-        // Forcefully insert config values to shader
+        // Update post-process uniforms from the client config.
         BloomShaderManager.BLOOM_CHAIN.setUniform("DepthNear", GameRenderer.PROJECTION_Z_NEAR);
         BloomShaderManager.BLOOM_CHAIN.setUniform("DepthFar", Minecraft.getInstance().gameRenderer.getDepthFar());
 
@@ -185,7 +184,7 @@ public class BloomRenderer {
         BloomShaderManager.BLOOM_CHAIN.setUniform("MaxBrightness", config.maxBrightness);
     }
 
-    /// Helper function for copying bloom-enabled quads drawn with non-bloom render types
+    /// Copies bloom-enabled quads drawn with non-bloom render types.
     public static void copyBloomQuad(BakedQuad quad, int[] packedLights, @Nullable RenderType renderType,
                                      Consumer<VertexConsumer> drawConsumer) {
         if (renderType == GTRenderTypes.bloom()) {
@@ -200,34 +199,27 @@ public class BloomRenderer {
         }
     }
 
-    /**
-     * A 'safe mode' for bloom rendering that's less intrusive but slower than the normal implementation.
-     */
+    /** Owns per-section bloom meshes when a renderer backend pass is unavailable or disabled. */
     @ApiStatus.Internal
     @UtilityClass
-    public static class SafeMode {
+    public static class SectionMeshFallback {
 
-        // it's most likely better to use ConcurrentHashMaps rather than synchronized Long2ObjectMaps for this
-        // even with the boxing overhead
-        public static Map<SectionPos, VertexBuffer> BLOOM_BUFFERS = new ConcurrentHashMap<>();
-        public static Map<SectionPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
-        public static Map<SectionPos, ByteBufferBuilder> BLOOM_BYTE_BUFFERS = new ConcurrentHashMap<>();
-        public static Map<SectionPos, MeshData.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
-
-        public static boolean enabled() {
-            return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE);
-        }
+        // Chunk compilation and render-thread invalidation access these maps concurrently.
+        private static final Map<SectionPos, VertexBuffer> BLOOM_BUFFERS = new ConcurrentHashMap<>();
+        private static final Map<SectionPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
+        private static final Map<SectionPos, ByteBufferBuilder> BLOOM_BYTE_BUFFERS = new ConcurrentHashMap<>();
+        private static final Map<SectionPos, MeshData.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
 
         @SubscribeEvent
-        public static void registerSafeModeChunkGeometryRenderer(AddSectionGeometryEvent event) {
-            if (!BloomRenderer.usesOwnedSectionMeshes()) return;
+        public static void registerSectionGeometryRenderer(AddSectionGeometryEvent event) {
+            if (!BloomRenderer.usesSectionMeshFallback()) return;
             if (!BloomShaderManager.isBloomActive()) return;
 
             final BlockPos sectionMinBlock = event.getSectionOrigin().immutable();
             final SectionPos sectionOrigin = SectionPos.of(sectionMinBlock);
 
             event.addRenderer(context -> {
-                if (!BloomRenderer.SafeMode.BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
+                if (!BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
                     return;
                 }
 
@@ -235,18 +227,18 @@ public class BloomRenderer {
                 camPos = camPos.sub(sectionMinBlock.getX(), sectionMinBlock.getY(), sectionMinBlock.getZ());
                 VertexSorting vertexSorting = VertexSorting.byDistance(camPos);
 
-                BloomRenderer.SafeMode.bakeBloomChunkBuffers(sectionOrigin, vertexSorting);
+                bakeBloomChunkBuffers(sectionOrigin, vertexSorting);
             });
         }
 
         private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum,
                                            Matrix4f frustumMatrix, Matrix4f projectionMatrix,
                                            LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
-            // re-setup in case someone touched-a my spaghetti
+            // Fallback buffers use the bloom render state outside the normal chunk pass lifecycle.
             GTRenderTypes.bloom().setupRenderState();
 
             Vec3 camPos = camera.getPosition();
-            profilerFiller.push("safe_mode");
+            profilerFiller.push("section_mesh_fallback");
 
             ShaderInstance shader = setupBlockShaderUniforms(frustumMatrix, projectionMatrix);
             Uniform chunkOffset = shader.CHUNK_OFFSET;
@@ -257,9 +249,8 @@ public class BloomRenderer {
                     SectionPos sectionPos = entry.getKey();
                     VertexBuffer buffer = entry.getValue();
 
-                    // noinspection ConstantValue it just isn't annotated :))
+                    // noinspection ConstantValue -- getFormat is not annotated for nullability.
                     if (buffer.isInvalid() || buffer.getFormat() == null) {
-                        // return early if buffer is invalid or has no vertex data bound
                         continue;
                     }
 
@@ -283,7 +274,7 @@ public class BloomRenderer {
             shader.clear();
             VertexBuffer.unbind();
 
-            // pop the "safe_mode" profiler section before posting forge render stage event
+            // Close the fallback profiler section before dispatching the render stage.
             profilerFiller.pop();
 
             ClientHooks.dispatchRenderStage(BloomHandler.RenderStage.AFTER_BLOOM, levelRenderer,
@@ -352,7 +343,7 @@ public class BloomRenderer {
             finishBloomBuffer(sectionPos, mesh, builder, vertexSorting);
         }
 
-        /// @return the shader to use for drawing block bloom.
+        /// Returns the shader used to draw block bloom.
         private static ShaderInstance setupBlockShaderUniforms(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
             ShaderInstance shader = RenderSystem.getShader();
             assert shader != null;

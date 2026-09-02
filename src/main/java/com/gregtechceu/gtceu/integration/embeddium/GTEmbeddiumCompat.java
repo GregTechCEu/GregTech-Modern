@@ -60,6 +60,7 @@ public final class GTEmbeddiumCompat {
         return getCustomMaterials().get(renderType);
     }
 
+    // Extend each backend view instead of mutating Embeddium's static array.
     public static TerrainRenderPass[] includeCustomRenderPasses(TerrainRenderPass[] defaultPasses) {
         TerrainRenderPass[] combinedPasses = cachedCombinedPasses;
         if (defaultPasses == cachedDefaultPasses && combinedPasses != null) {
