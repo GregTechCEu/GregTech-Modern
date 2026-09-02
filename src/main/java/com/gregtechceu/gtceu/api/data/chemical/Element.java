@@ -7,65 +7,20 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This is some kind of Periodic Table, which can be used to determine "Properties" of the Materials.
+ *
+ * @param protons         Amount of Protons
+ * @param neutrons        Amount of Neutrons
+ * @param halfLifeSeconds Amount of Half Life this Material has in Seconds. -1 for stable Materials
+ * @param decayTo         String representing the Elements this element decays to. Separated by an '&' Character
+ * @param name            Name of the Element
+ * @param symbol          Symbol of the Element
+ * @param isIsotope       Is this element an isotope?
  */
 @Accessors(fluent = true, chain = false)
-public class Element {
-
-    /**
-     * Amount of Protons
-     */
-    @Getter
-    @Setter
-    private long protons;
-    /**
-     * Amount of Neutrons
-     */
-    @Getter
-    @Setter
-    private long neutrons;
-    /**
-     * Amount of Half Life this Material has in Seconds. -1 for stable Materials
-     */
-    @Getter
-    @Setter
-    private double halfLifeSeconds;
-    /**
-     * String representing the Elements this element decays to. Separated by an '&' Character
-     */
-    @Getter
-    @Setter
-    private @Nullable String decayTo;
-    /**
-     * Name of the Element
-     */
-    @Getter
-    @Setter
-    private String name;
-    /**
-     * Symbol of the Element
-     */
-    @Getter
-    @Setter
-    private String symbol;
-    /**
-     * Is this element an isotope?
-     */
-    @Getter
-    @Setter
-    private boolean isIsotope;
+public record Element(long protons, long neutrons, double halfLifeSeconds, @Nullable String decayTo, String name,
+                      String symbol, boolean isIsotope) {
 
     public long mass() {
         return protons + neutrons;
-    }
-
-    public Element(long protons, long neutrons, double halfLifeSeconds, @Nullable String decayTo, String name, String symbol,
-                   boolean isIsotope) {
-        this.protons = protons;
-        this.neutrons = neutrons;
-        this.halfLifeSeconds = halfLifeSeconds;
-        this.decayTo = decayTo;
-        this.name = name;
-        this.symbol = symbol;
-        this.isIsotope = isIsotope;
     }
 }
