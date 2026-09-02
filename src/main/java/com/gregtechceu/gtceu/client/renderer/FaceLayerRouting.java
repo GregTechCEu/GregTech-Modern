@@ -15,14 +15,17 @@ public final class FaceLayerRouting {
     // Sodium drops BakedQuad extensions, so, we just smuggle it through FRAPI inside of sodium, kinda hacky but
     // whatever.
     private static final int SODIUM_FACE_LAYER_TAG = 0x47540001;
+    private static final boolean CUSTOM_PASS_ENABLED = !GTMixinPlugin
+            .isOptionEnabled(GTEarlyConfig.FACE_LAYER_SAFE_MODE) &&
+            (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM)) &&
+            GTMixinPlugin.isOptionEnabled(GTEarlyConfig.CUSTOM_CHUNK_MIXINS);
 
     public static boolean isCustomPassEnabled() {
-        return (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM)) &&
-                GTMixinPlugin.isOptionEnabled(GTEarlyConfig.CUSTOM_CHUNK_MIXINS);
+        return CUSTOM_PASS_ENABLED;
     }
 
     public static boolean shouldUseCustomPass(BakedQuad quad) {
-        return quad.gtceu$getFaceLayer().depthRank() > FaceLayer.BASE.depthRank();
+        return isCustomPassEnabled() && quad.gtceu$getFaceLayer().depthRank() > FaceLayer.BASE.depthRank();
     }
 
     public static int getSodiumRoutingTag(BakedQuad quad) {

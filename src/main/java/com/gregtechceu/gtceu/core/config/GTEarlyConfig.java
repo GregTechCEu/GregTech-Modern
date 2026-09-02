@@ -18,6 +18,7 @@ import java.util.*;
 public class GTEarlyConfig {
 
     public static final String BLOOM_SAFE_MODE = "client.bloom.safe_mode.";
+    public static final String FACE_LAYER_SAFE_MODE = "client.face_layer.safe_mode.";
     public static final String CUSTOM_CHUNK_MIXINS = "client.customchunk.";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
@@ -39,6 +40,12 @@ public class GTEarlyConfig {
 
         addDelegateRule("client.bloom.safemode", BLOOM_SAFE_MODE, false);
         addDelegateRule("client.bloom.normal", BLOOM_SAFE_MODE, true);
+
+        Option faceLayerSafeMode = addMixinRule(FACE_LAYER_SAFE_MODE, false);
+        faceLayerSafeMode.addComment(
+                "Whether to use a 'safe mode' for layered block faces",
+                "NOTE: uses the standard chunk render path, which may restore visual artifacts, but is considerably more stable and less prone to compatibility issues with other mods.",
+                "Requires restarting the client to take effect.");
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
