@@ -9,6 +9,7 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
+        "client.customchunk.iris.SodiumProgramsMixin",
         "client.customchunk.iris.WorldRenderingPhaseMixin"
     ],
     "mixins": [],

@@ -64,7 +64,9 @@ public class CTMMeshBuilder {
                     emitter.computeGeometry();
                     emitter.populateMissingNormals();
 
-                    result.add(emitter.toBakedQuad(ctmSprite));
+                    result.add(emitter.toBakedQuad(ctmSprite)
+                            .gtceu$setTextureKey(originalQuad.gtceu$getTextureKey())
+                            .gtceu$setFaceLayer(originalQuad.gtceu$getFaceLayer()));
                     emitter.emit();
                 }
             }

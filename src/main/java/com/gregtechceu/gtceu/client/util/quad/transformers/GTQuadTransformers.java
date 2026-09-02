@@ -62,14 +62,16 @@ public final class GTQuadTransformers {
         }
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getDirection(),
                 sprite, quad.isShade(), quad.hasAmbientOcclusion())
-                .gtceu$setTextureKey(quad.gtceu$getTextureKey());
+                .gtceu$setTextureKey(quad.gtceu$getTextureKey())
+                .gtceu$setFaceLayer(quad.gtceu$getFaceLayer());
     }
 
     public static BakedQuad setColor(BakedQuad quad, int argbColor, boolean clearTintIndex) {
         int[] vertices = quad.getVertices().clone();
         BakedQuad copy = new BakedQuad(vertices, clearTintIndex ? -1 : quad.getTintIndex(), quad.getDirection(),
                 quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion())
-                .gtceu$setTextureKey(quad.gtceu$getTextureKey());
+                .gtceu$setTextureKey(quad.gtceu$getTextureKey())
+                .gtceu$setFaceLayer(quad.gtceu$getFaceLayer());
 
         QuadTransformers.applyingColor(argbColor).processInPlace(copy);
         return copy;
@@ -105,7 +107,8 @@ public final class GTQuadTransformers {
     public static BakedQuad copy(BakedQuad quad) {
         return new BakedQuad(quad.getVertices().clone(), quad.getTintIndex(), quad.getDirection(),
                 quad.getSprite(), quad.isShade(), quad.hasAmbientOcclusion())
-                .gtceu$setTextureKey(quad.gtceu$getTextureKey());
+                .gtceu$setTextureKey(quad.gtceu$getTextureKey())
+                .gtceu$setFaceLayer(quad.gtceu$getFaceLayer());
     }
 
     public static int[] getPackedLights(BakedQuad quad) {
