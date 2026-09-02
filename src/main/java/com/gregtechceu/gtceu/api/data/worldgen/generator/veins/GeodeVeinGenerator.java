@@ -60,27 +60,23 @@ public class GeodeVeinGenerator extends VeinGenerator {
 
     public static final Codec<Double> CHANCE_RANGE = Codec.doubleRange(0.0, 1.0);
 
+    // spotless:off
     public static final Codec<GeodeVeinGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             GeodeBlockSettings.CODEC.fieldOf("blocks").forGetter((config) -> config.geodeBlockSettings),
             GeodeLayerSettings.CODEC.fieldOf("layers").forGetter((config) -> config.geodeLayerSettings),
             GeodeCrackSettings.CODEC.fieldOf("crack").forGetter((config) -> config.geodeCrackSettings),
-            CHANCE_RANGE.fieldOf("use_potential_placements_chance").orElse(0.35)
-                    .forGetter((config) -> config.usePotentialPlacementsChance),
-            CHANCE_RANGE.fieldOf("use_alternate_layer0_chance").orElse(0.0)
-                    .forGetter((config) -> config.useAlternateLayer0Chance),
-            Codec.BOOL.fieldOf("placements_require_layer0_alternate").orElse(true)
-                    .forGetter((config) -> config.placementsRequireLayer0Alternate),
-            IntProvider.codec(1, 20).fieldOf("outer_wall_distance").orElse(UniformInt.of(4, 5))
-                    .forGetter((config) -> config.outerWallDistance),
-            IntProvider.codec(1, 20).fieldOf("distribution_points").orElse(UniformInt.of(3, 4))
-                    .forGetter((config) -> config.distributionPoints),
-            IntProvider.codec(0, 10).fieldOf("point_offset").orElse(UniformInt.of(1, 2))
-                    .forGetter((config) -> config.pointOffset),
+            CHANCE_RANGE.fieldOf("use_potential_placements_chance").orElse(0.35).forGetter((config) -> config.usePotentialPlacementsChance),
+            CHANCE_RANGE.fieldOf("use_alternate_layer0_chance").orElse(0.0).forGetter((config) -> config.useAlternateLayer0Chance),
+            Codec.BOOL.fieldOf("placements_require_layer0_alternate").orElse(true).forGetter((config) -> config.placementsRequireLayer0Alternate),
+            IntProvider.codec(1, 20).fieldOf("outer_wall_distance").orElse(UniformInt.of(4, 5)).forGetter((config) -> config.outerWallDistance),
+            IntProvider.codec(1, 20).fieldOf("distribution_points").orElse(UniformInt.of(3, 4)).forGetter((config) -> config.distributionPoints),
+            IntProvider.codec(0, 10).fieldOf("point_offset").orElse(UniformInt.of(1, 2)).forGetter((config) -> config.pointOffset),
             Codec.INT.fieldOf("min_gen_offset").orElse(-16).forGetter((config) -> config.minGenOffset),
             Codec.INT.fieldOf("max_gen_offset").orElse(16).forGetter((config) -> config.maxGenOffset),
             CHANCE_RANGE.fieldOf("noise_multiplier").orElse(0.05).forGetter((config) -> config.noiseMultiplier),
             Codec.INT.fieldOf("invalid_blocks_threshold").forGetter((config) -> config.invalidBlocksThreshold))
             .apply(instance, GeodeVeinGenerator::new));
+    //spotless:on
 
     @Setter
     public GeodeBlockSettings geodeBlockSettings;
@@ -324,16 +320,18 @@ public class GeodeVeinGenerator extends VeinGenerator {
                                      TagKey<Block> invalidBlocks, @NotNull TagPrefix providerMaterialPrefix) {
 
         public static final Codec<GeodeBlockSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("filling_provider")
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("filling_provider")
                         .forGetter(config -> config.fillingProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("inner_layer_provider")
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec())
+                        .fieldOf("inner_layer_provider")
                         .forGetter(config -> config.innerLayerProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec())
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec())
                         .fieldOf("alternate_inner_layer_provider")
                         .forGetter(config -> config.alternateInnerLayerProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec())
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec())
                         .fieldOf("middle_layer_provider").forGetter(config -> config.middleLayerProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("outer_layer_provider")
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec())
+                        .fieldOf("outer_layer_provider")
                         .forGetter(config -> config.outerLayerProvider),
                 ExtraCodecs.nonEmptyList(BlockState.CODEC.listOf()).fieldOf("inner_placements")
                         .forGetter(config -> config.innerPlacements),
@@ -341,7 +339,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                         .forGetter(config -> config.cannotReplace),
                 TagKey.hashedCodec(Registries.BLOCK).fieldOf("invalid_blocks")
                         .forGetter(config -> config.invalidBlocks),
-                GTRegistries.TAG_PREFIXES.codec().optionalFieldOf("provider_material_prefix", TagPrefix.block)
+                GTRegistries.TAG_PREFIXES.byNameCodec().optionalFieldOf("provider_material_prefix", TagPrefix.block)
                         .forGetter(config -> config.providerMaterialPrefix))
                 .apply(instance, GeodeBlockSettings::new));
     }

@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.util.Mth;
@@ -440,7 +439,7 @@ public final class MaterialRecipeHandler {
         if (material.hasFlag(MORTAR_GRINDABLE)) {
             VanillaRecipeHelper.addShapedRecipe(provider,
                     String.format("gem_to_dust_%s_%s", material.getName(),
-                            FormattingUtil.toLowerCaseUnderscore(prefix.name)),
+                            prefix.name),
                     crushedStack,
                     "X", "m", 'X', new MaterialEntry(prefix, material));
         }
@@ -455,14 +454,14 @@ public final class MaterialRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
-                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name),
+                String.format("gem_to_gem_%s_%s", lowerPrefix.name,
                         material.getName()),
                 prevStack,
                 'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
-                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                        "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                .recipeBuilder("cut_" + material.getName() + "_" + prefix.name +
+                        "_to_" + lowerPrefix.name)
                 .inputItems(prefix, material)
                 .outputItems(prevStack)
                 .duration(20)
@@ -471,8 +470,8 @@ public final class MaterialRecipeHandler {
 
         LASER_ENGRAVER_RECIPES
                 .recipeBuilder(
-                        "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                                "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                        "engrave_" + material.getName() + "_" + prefix.name +
+                                "_to_" + lowerPrefix.name)
                 .inputItems(prevStack)
                 .notConsumable(CustomTags.WHITE_LENS)
                 .outputItems(prefix, material)

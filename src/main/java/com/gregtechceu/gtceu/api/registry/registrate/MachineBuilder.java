@@ -49,7 +49,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.ModLoader;
 
 import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.AbstractRegistrate;
@@ -61,7 +61,6 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
@@ -81,22 +80,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
+@SuppressWarnings("UnusedReturnValue")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine,
-        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>>
-                           extends BuilderBase<DEFINITION> {
+        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>> {
 
+    public final ResourceLocation id;
     protected final GTRegistrate registrate;
     protected final String name;
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
     protected MachineInstanceFactory<MACHINE> instanceFactory;
-
-    protected final Function<ResourceLocation, DEFINITION> definition;
+    protected Function<ResourceLocation, DEFINITION> definition;
     @Nullable
     @Getter
     private MachineBuilder.ModelInitializer model = null;
@@ -166,7 +165,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
-        super(ResourceLocation.fromNamespaceAndPath(registrate.getModid(), name));
+        id = registrate.makeResourceLocation(name);
         this.registrate = registrate;
         this.name = name;
         this.blockFactory = blockFactory;
@@ -646,20 +645,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return definition.apply(registrate.makeResourceLocation(name));
     }
 
-    @Override
-    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
-        super.generateAssetJsons(generator);
-        KJSCallWrapper.generateAssetJsons(generator, this, this.value);
-    }
-
-    @Override
-    public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
-        if (langValue() != null) {
-            lang.add(GTCEu.MOD_ID, value.getDescriptionId(), value.getLangValue());
-        }
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void setupStateDefinition(MachineDefinition definition) {
         StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(
@@ -679,7 +664,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @HideFromJS
     public DEFINITION register() {
         ModifyMachineEvent event = new ModifyMachineEvent(this);
-        FMLJavaModLoadingContext.get().getModEventBus().post(event);
+        ModLoader.get().postEvent(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent(event);
         }
@@ -756,8 +741,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setDefaultPaintingColor(paintingColor);
         definition.setRenderXEIPreview(renderMultiblockXEIPreview);
         definition.setRenderWorldPreview(renderMultiblockWorldPreview);
-        GTRegistries.MACHINES.register(definition.getId(), definition);
-        return value = definition;
+        GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
+        return definition;
     }
 
     @FunctionalInterface

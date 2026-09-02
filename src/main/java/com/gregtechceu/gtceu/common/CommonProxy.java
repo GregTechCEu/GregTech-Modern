@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -17,6 +16,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
@@ -27,16 +27,19 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
-import com.gregtechceu.gtceu.common.data.worldgen.*;
+import com.gregtechceu.gtceu.common.data.worldgen.GTFeatures;
+import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
 import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
@@ -48,12 +51,13 @@ import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
+import com.gregtechceu.gtceu.integration.jade.GTJadePlugin;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.entity.EntityType;
@@ -66,13 +70,14 @@ import net.minecraftforge.common.crafting.IntersectionIngredient;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DataPackRegistryEvent;
+import net.minecraftforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -80,49 +85,46 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
+
+@ApiStatus.Internal
 public class CommonProxy {
 
-    public CommonProxy() {
+    public static void init(IEventBus modBus) {
+        GTCEu.LOGGER.info("GTCEu common proxy init!");
+
         // used for forge events (ClientProxy + CommonProxy)
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.register(this);
+        modBus.register(CommonProxy.class);
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
-
-        // MUI stuff
-        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
-        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
-
-        // GTGuiTheme.registerThemes();
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
-        GTValueProviderTypes.init(eventBus);
-        GTPlacementModifiers.init(eventBus);
-        GTGlobalLootModifiers.init(eventBus);
-        GTLootConditions.init(eventBus);
-        GTLootFunctions.init(eventBus);
-        GTFeatures.init(eventBus);
-        GTCommandArguments.init(eventBus);
-        GTMobEffects.init(eventBus);
-        GTParticleTypes.init(eventBus);
-        SpoilableBehavior.init(eventBus);
+        modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
 
-        eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
-    }
-
-    public static void init() {
-        GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
+        GTRegistries.init(modBus);
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
+
+        GTValueProviderTypes.init(modBus);
+        GTPlacementModifiers.init(modBus);
+        GTGlobalLootModifiers.init(modBus);
+        GTLootConditions.init(modBus);
+        GTLootFunctions.init(modBus);
+        GTFeatures.init(modBus);
+        GTCommandArguments.init(modBus);
+        GTMobEffects.init(modBus);
+        GTParticleTypes.init(modBus);
+        SpoilableBehavior.init(modBus);
 
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
@@ -130,7 +132,7 @@ public class CommonProxy {
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        initMaterials();
+        GTMaterials.init();
         GTMedicalConditions.init();
         TagPrefix.init();
         GTSoundEntries.init();
@@ -144,16 +146,12 @@ public class CommonProxy {
         GTCovers.init();
         GTCreativeModeTabs.init();
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-        GTMenuTypes.init(modBus);
-
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
-        GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
-        GTPatternErrors.init();
+        GTPatternErrors.init(modBus);
         GTMachineUtils.init();
         GTMachines.init();
 
@@ -174,67 +172,100 @@ public class CommonProxy {
         SyncedKeyMappings.init();
         MachineOwner.init();
 
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+
+        GTGuiTheme.registerThemes();
+
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
-    @SubscribeEvent
-    public void preInit(FMLConstructModEvent event) {}
+    // Fire post material events after all other material registry events.
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onRegisterLowest(RegisterEvent event) {
+        if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
+            // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
+            // Block entirely new Materials from being added in the Post event
+            GTCEu.LOGGER.info("Firing material register late event");
+            GTRegistries.MATERIALS.closeRegistry();
+            ModLoader.get().postEventWrapContainerInModOrder(new PostMaterialEvent());
+            if (GTCEu.Mods.isKubeJSLoaded()) {
+                KJSEventWrapper.materialModification();
+            }
 
-    private static void initMaterials() {
-        // First, register CEu Materials
-        GTRegistries.MATERIALS.unfreeze();
-        GTCEu.LOGGER.info("Registering GTCEu Materials");
-        GTMaterials.init();
-
-        // Then, register addon Materials
-        GTCEu.LOGGER.info("Registering addon Materials");
-        MaterialEvent materialEvent = new MaterialEvent();
-        ModLoader.get().postEvent(materialEvent);
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialRegistry();
-        }
-
-        // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
-        // Block entirely new Materials from being added in the Post event
-        GTRegistries.MATERIALS.closeRegistry();
-        ModLoader.get().postEvent(new PostMaterialEvent());
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            KJSEventWrapper.materialModification();
-        }
-
-        // Register all material manager registries, for materials with mod ids.
-        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
-            // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
-            if (accessor.getDoDatagen().get()) {
-                // noinspection UnstableApiUsage
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
-                NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
-                        .generate((RegistrateLangProvider) provider, namespace);
-                if (providers == null) {
-                    accessor.getDatagens().put(ProviderType.LANG, generator);
-                } else {
-                    providers.add(0, generator);
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
+                // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
+                var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
+                AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
+                if (accessor.getDoDatagen().get()) {
+                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
+                            .asMap(accessor.getDatagens())
+                            .get(ProviderType.LANG);
+                    NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
+                            .generate((RegistrateLangProvider) provider, namespace);
+                    if (providers == null) {
+                        accessor.getDatagens().put(ProviderType.LANG, generator);
+                    } else {
+                        providers.add(0, generator);
+                    }
+                }
+            });
+        } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
+            // Prepare machine render states after all machines have been registered
+            for (MachineDefinition machine : GTRegistries.MACHINES) {
+                for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
+                    MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
                 }
             }
-        });
+        }
+    }
 
-        // Freeze Material Registry before processing Items, Blocks, and Fluids
-        GTRegistries.MATERIALS.freeze();
-        /* End Material Registration */
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void registerMaterialContent(RegisterEvent event) {
+        if (event.getRegistryKey() == Registries.BLOCK) {
+            GTCEu.LOGGER.info("Generating material blocks...");
+
+            // Material Blocks
+            REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
+            GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
+            GTMaterialBlocks.generateOreBlocks();        // Ore Blocks
+            GTMaterialBlocks.generateOreIndicators();    // Ore Indicators
+
+            // Material Pipes/Wires
+            REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
+            GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
+            GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
+            GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
+
+            GTMaterialBlocks.finaliseMaterialBlocks();
+
+        } else if (event.getRegistryKey() == Registries.ITEM) {
+            GTCEu.LOGGER.info("Generating material items...");
+
+            // Material Items & Tools
+            GTMaterialItems.generateMaterialItems();
+            GTMaterialItems.generateTools();
+            GTMaterialItems.generateArmors();
+            if (GTCEu.Mods.isJadeLoaded()) GTJadePlugin.registerToolHandlers();
+
+        } else if (event.getRegistryKey() == Registries.FLUID) {
+            GTCEu.LOGGER.info("Generating material fluids...");
+            GTFluids.registerMaterialFluids();
+        } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
+            GTBlockEntities.init();
+        }
     }
 
     @SubscribeEvent
-    public void addSpoilTransferModifier(ModifyMachineEvent event) {
+    public static void addSpoilTransferModifier(ModifyMachineEvent event) {
         event.getBuilder().addRecipeModifier(GTRecipeModifiers.SPOILAGE_TRANSFER);
     }
 
     @SubscribeEvent
-    public void registerDevSpoilables(RegisterSpoilablesEvent event) {
+    public static void registerDevSpoilables(RegisterSpoilablesEvent event) {
         if (GTCEu.isDev()) { // for testing purposes
             event.getBuilder()
                     .ticks(10)
@@ -267,13 +298,19 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void modConstruct(FMLConstructModEvent event) {
-        // this is done to delay initialization of content to be after KJS has set up.
-        event.enqueueWork(CommonProxy::init);
+    public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        /*
+         * event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
+         * GTOreDefinition.CODEC, GTOreDefinition.CODEC);
+         * event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID,
+         * BedrockFluidDefinition.FULL_CODEC, BedrockFluidDefinition.FULL_CODEC);
+         * event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
+         * BedrockOreDefinition.FULL_CODEC, BedrockOreDefinition.FULL_CODEC);
+         */
     }
 
     @SubscribeEvent
-    public void commonSetup(FMLCommonSetupEvent event) {
+    public static void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
             CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
@@ -318,12 +355,12 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void registerCapabilities(RegisterCapabilitiesEvent event) {
+    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         GTCapability.register(event);
     }
 
     @SubscribeEvent
-    public void registerPackFinders(AddPackFindersEvent event) {
+    public static void registerPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
             // Clear old data
             GTDynamicResourcePack.clearClient();
@@ -350,10 +387,6 @@ public class CommonProxy {
     }
 
     public static final class KJSEventWrapper {
-
-        public static void materialRegistry() {
-            GTRegistryInfo.registerFor(GTRegistries.MATERIALS.getRegistryName());
-        }
 
         public static void materialModification() {
             GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());

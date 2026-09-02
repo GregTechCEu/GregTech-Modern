@@ -13,7 +13,7 @@ import com.mojang.serialization.MapCodec;
 
 public class MachineRenderState extends StateHolder<MachineDefinition, MachineRenderState> {
 
-    public static final Codec<MachineRenderState> CODEC = codec(GTRegistries.MACHINES.codec(),
+    public static final Codec<MachineRenderState> CODEC = codec(GTRegistries.MACHINES.byNameCodec(),
             MachineDefinition::defaultRenderState).stable();
 
     public MachineRenderState(MachineDefinition owner, ImmutableMap<Property<?>, Comparable<?>> values,

@@ -117,7 +117,7 @@ public class GTJadePlugin implements IWailaPlugin {
         }
     }
 
-    static {
+    public static void registerToolHandlers() {
         GTMaterialItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
             if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
                 return;

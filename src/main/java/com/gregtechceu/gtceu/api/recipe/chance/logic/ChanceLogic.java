@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.chance.logic;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -10,9 +9,9 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -30,9 +29,7 @@ import java.util.List;
  */
 public abstract class ChanceLogic {
 
-    static {
-        GTRegistries.CHANCE_LOGICS.unfreeze();
-    }
+    public static final Codec<ChanceLogic> CODEC = GTRegistries.CHANCE_LOGICS.byNameCodec();
 
     /**
      * Chanced Output Logic where any ingredients succeeding their roll will be produced
@@ -277,7 +274,7 @@ public abstract class ChanceLogic {
     };
 
     public ChanceLogic(ResourceLocation id) {
-        GTRegistries.CHANCE_LOGICS.register(id, this);
+        GTRegistries.register(GTRegistries.CHANCE_LOGICS, id, this);
     }
 
     private ChanceLogic(String id) {
@@ -361,8 +358,5 @@ public abstract class ChanceLogic {
     public abstract Component getTranslation();
 
     @ApiStatus.Internal
-    public static void init() {
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.CHANCE_LOGICS, ChanceLogic.class));
-        GTRegistries.CHANCE_LOGICS.freeze();
-    }
+    public static void init() {}
 }

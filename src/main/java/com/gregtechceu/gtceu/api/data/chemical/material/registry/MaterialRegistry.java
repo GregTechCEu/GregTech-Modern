@@ -2,46 +2,65 @@ package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class MaterialRegistry extends GTRegistry.RL<Material> {
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class MaterialRegistry extends MappedRegistry<Material> {
 
     @Getter
-    private final Set<java.lang.String> usedNamespaces = new ObjectOpenHashSet<>();
+    private final Set<String> usedNamespaces = new ObjectOpenHashSet<>();
 
     private Phase registrationPhase = Phase.PRE;
 
     public MaterialRegistry() {
-        super(GTCEu.id("material"));
+        super(GTRegistries.Keys.MATERIAL, Lifecycle.stable());
     }
 
-    public Material get(java.lang.String name) {
+    /**
+     * Use {@link #get(ResourceLocation)} instead
+     */
+    @Deprecated(since = "8.0.0")
+    public Material get(String name) {
         ResourceLocation location = ResourceLocation.tryParse(GTCEu.appendIdString(name));
-        if (location != null) return get(location);
+        if (location != null) return Objects
+                .requireNonNullElse(get(ResourceKey.create(GTRegistries.Keys.MATERIAL, location)), GTMaterials.NULL);
         return GTMaterials.NULL;
     }
 
+    public Material getOrThrow(ResourceLocation id) {
+        return getOrThrow(ResourceKey.create(GTRegistries.Keys.MATERIAL, id));
+    }
+
     @Override
-    public <T extends Material> T register(@NotNull ResourceLocation key, @NotNull T value) {
+    public Holder.Reference<Material> registerMapping(int id, ResourceKey<Material> key, Material value,
+                                                      Lifecycle lifecycle) {
         if (registrationPhase == Phase.CLOSED || registrationPhase == Phase.FROZEN) {
-            GTCEu.LOGGER.error(
-                    "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material {}...",
-                    key);
-            return null;
+            throw new IllegalStateException(
+                    "Failed to register material %s. Materials cannot be registered in the PostMaterialEvent (or after)!"
+                            .formatted(key));
         }
-        super.register(key, value);
-        usedNamespaces.add(key.getNamespace());
-        return value;
+        usedNamespaces.add(key.location().getNamespace());
+        return super.registerMapping(id, key, value, lifecycle);
     }
 
     /**
@@ -53,11 +72,10 @@ public class MaterialRegistry extends GTRegistry.RL<Material> {
      *
      * @return all registered materials.
      */
-    @NotNull
     public @UnmodifiableView Set<Material> values() {
         if (registrationPhase == Phase.PRE || registrationPhase == Phase.OPEN)
             throw new IllegalStateException("Cannot retrieve all materials before registration");
-        return super.values();
+        return super.stream().collect(Collectors.toSet());
     }
 
     public void closeRegistry() {
@@ -65,18 +83,18 @@ public class MaterialRegistry extends GTRegistry.RL<Material> {
     }
 
     @Override
-    public void freeze() {
-        super.freeze();
+    public Registry<Material> freeze() {
         registrationPhase = Phase.FROZEN;
+        return super.freeze();
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void unfreeze() {
         super.unfreeze();
         registrationPhase = Phase.OPEN;
     }
 
-    @NotNull
     public Phase getPhase() {
         return registrationPhase;
     }

@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -34,7 +33,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -150,7 +148,7 @@ public final class Material implements Comparable<Material> {
     }
 
     protected void registerMaterial() {
-        GTRegistries.MATERIALS.register(getResourceLocation(), this);
+        GTRegistries.register(GTRegistries.MATERIALS, getResourceLocation(), this);
     }
 
     public String getName() {
@@ -574,8 +572,9 @@ public final class Material implements Comparable<Material> {
 
     @RemapPrefixForJS("kjs$")
     @SuppressWarnings("unused") // API, need to treat all of these as used
-    public static class Builder extends BuilderBase<Material> {
+    public static class Builder {
 
+        public final ResourceLocation id;
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
         private final MaterialFlags flags;
@@ -609,7 +608,7 @@ public final class Material implements Comparable<Material> {
          * @since GTCEu 2.0.0
          */
         public Builder(ResourceLocation resourceLocation) {
-            super(resourceLocation);
+            id = resourceLocation;
             String name = resourceLocation.getPath();
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
@@ -1851,8 +1850,14 @@ public final class Material implements Comparable<Material> {
          *
          * @return The finalized Material.
          */
-        @HideFromJS
         public Material buildAndRegister() {
+            var mat = createEntry();
+            mat.registerMaterial();
+            return mat;
+        }
+
+        @ApiStatus.Internal
+        public Material createEntry() {
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
@@ -1879,17 +1884,14 @@ public final class Material implements Comparable<Material> {
                 mat.setFormula(formula, formatFormula);
             }
             materialInfo.verifyInfo(properties, averageRGB);
-            mat.registerMaterial();
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }
             return mat;
         }
 
-        @Override
-        @HideFromJS
         public @NotNull Material register() {
-            return value = buildAndRegister();
+            return buildAndRegister();
         }
     }
 

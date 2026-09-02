@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -10,7 +7,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fml.ModLoader;
 
 public class GTRecipeCapabilities {
 
@@ -21,17 +17,10 @@ public class GTRecipeCapabilities {
     public final static RecipeCapability<Integer> CWU = CWURecipeCapability.CAP;
 
     public static void init() {
-        GTRegistries.RECIPE_CAPABILITIES.unfreeze();
-
-        GTRegistries.RECIPE_CAPABILITIES.register(ITEM.id, ITEM);
-        GTRegistries.RECIPE_CAPABILITIES.register(FLUID.id, FLUID);
-        GTRegistries.RECIPE_CAPABILITIES.register(BLOCK_STATE.id, BLOCK_STATE);
-        GTRegistries.RECIPE_CAPABILITIES.register(EU.id, EU);
-        GTRegistries.RECIPE_CAPABILITIES.register(CWU.id, CWU);
-
-        AddonFinder.getAddons().forEach(IGTAddon::registerRecipeCapabilities);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CAPABILITIES,
-                (Class<RecipeCapability<?>>) (Class<?>) RecipeCapability.class));
-        GTRegistries.RECIPE_CAPABILITIES.freeze();
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, ITEM.id, ITEM);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, FLUID.id, FLUID);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, BLOCK_STATE.id, BLOCK_STATE);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, EU.id, EU);
+        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, CWU.id, CWU);
     }
 }

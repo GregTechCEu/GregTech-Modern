@@ -1,44 +1,48 @@
-package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
+import java.util.function.*;
 
-@SuppressWarnings("unused")
-@Accessors(chain = true)
-public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
+public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
 
-    public final KJSTagPrefix base;
+    public final TagPrefix base;
 
     @Getter
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
     public TagPrefixBuilder(ResourceLocation id) {
         super(id);
-        this.base = create(id.getPath());
+        this.base = create(id);
     }
 
-    public abstract KJSTagPrefix create(String id);
+    public TagPrefix create(ResourceLocation id) {
+        return new TagPrefix(id, false, false);
+    }
+
+    @Override
+    public RegistryInfo<TagPrefix> getRegistryType() {
+        return GTRegistryInfo.TAG_PREFIX;
+    }
 
     public TagPrefixBuilder idPattern(String idPattern) {
         base.idPattern(idPattern);
@@ -60,8 +64,24 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
+    public TagPrefixBuilder generateRecycling(boolean generateRecycling) {
+        base.generateRecycling(generateRecycling);
+        return this;
+    }
+
     public TagPrefixBuilder generateItem(boolean generateItem) {
         base.generateItem(generateItem);
+        return this;
+    }
+
+    public TagPrefixBuilder generateBlock(boolean generateBlock) {
+        base.generateBlock(generateBlock);
+        return this;
+    }
+
+    public TagPrefixBuilder blockProperties(Supplier<Supplier<RenderType>> renderType,
+                                            UnaryOperator<BlockBehaviour.Properties> properties) {
+        base.blockProperties(new TagPrefix.BlockProperties(renderType, properties));
         return this;
     }
 
@@ -100,6 +120,11 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
+    public TagPrefixBuilder defaultTagPath(String path, boolean isVanilla) {
+        base.defaultTagPath(path, isVanilla);
+        return this;
+    }
+
     public TagPrefixBuilder prefixTagPath(String path) {
         base.prefixTagPath(path);
         return this;
@@ -115,13 +140,18 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
+    public TagPrefixBuilder unformattedTagPath(String path, boolean isVanilla) {
+        base.unformattedTagPath(path, isVanilla);
+        return this;
+    }
+
     public TagPrefixBuilder customTagPath(String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
         base.customTagPath(path, formatter);
         return this;
     }
 
-    public TagPrefixBuilder miningToolTag(String path) {
-        this.miningToolTag(TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(path)));
+    public TagPrefixBuilder customTagPredicate(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
+        base.customTagPredicate(path, isVanilla, materialPredicate);
         return this;
     }
 
@@ -131,7 +161,7 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     }
 
     @Override
-    public TagPrefix register() {
-        return value = base;
+    public TagPrefix createObject() {
+        return base;
     }
 }

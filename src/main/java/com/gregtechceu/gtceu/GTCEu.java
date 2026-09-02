@@ -9,14 +9,17 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
+import com.mojang.serialization.Codec;
 import dev.emi.emi.config.EmiConfig;
 import me.shedaniel.rei.api.client.REIRuntime;
 import org.apache.logging.log4j.LogManager;
@@ -29,15 +32,20 @@ public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
     private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
+    public static final Codec<ResourceLocation> GTCEU_ID = Codec.STRING.comapFlatMap(
+            str -> ResourceLocation.read(appendIdString(str)),
+            s -> s.getNamespace().equals(MOD_ID) ? s.getPath() : s.toString());
+
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
-    public GTCEu() {
+    public GTCEu(FMLJavaModLoadingContext context) {
         GTCEu.init();
         GTCEuAPI.instance = this;
-        DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        DistExecutor.unsafeRunWhenOn(Dist.DEDICATED_SERVER, () -> () -> CommonProxy.init(context.getModEventBus()));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientProxy.init(context.getModEventBus()));
     }
 
     public static void init() {
@@ -57,6 +65,9 @@ public class GTCEu {
         }
         // only convert it to camel_case if it has any uppercase to begin with
         if (FormattingUtil.hasUpperCase(path)) {
+            GTCEu.LOGGER.warn(
+                    "Resource location {} has uppercase characters, which are not allowed. Renaming resource location to {}",
+                    path, FormattingUtil.toLowerCaseUnderscore(path));
             path = FormattingUtil.toLowerCaseUnderscore(path);
         }
         return TEMPLATE_LOCATION.withPath(path);
@@ -155,6 +166,10 @@ public class GTCEu {
     }
 
     public static class Mods {
+
+        public static boolean isJadeLoaded() {
+            return isModLoaded(GTValues.MODID_JADE);
+        }
 
         public static boolean isJEILoaded() {
             return !(isModLoaded(GTValues.MODID_EMI) || isModLoaded(GTValues.MODID_REI)) &&
