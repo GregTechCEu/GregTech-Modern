@@ -9,6 +9,7 @@ import java.util.Locale;
 @Accessors(fluent = true)
 public enum FaceLayer {
 
+    // Unclassified is our fallback layer, if you are using this normally, please stop.
     UNCLASSIFIED(0),
     BASE(0),
     MACHINE_FACE(1),

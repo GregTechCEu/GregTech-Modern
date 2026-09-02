@@ -90,31 +90,29 @@ public class BloomRenderer {
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
 
+        // Safe Mode Backside Config
         if (usesBackendChunkPass()) {
             ((LevelRendererAccessor) levelRenderer).invokeRenderSectionLayer(GTRenderTypes.bloom(),
                     camPos.x, camPos.y, camPos.z, frustumMatrix, projectionMatrix);
 
-            // Special bloom renders may replace the active target and shader state.
+            // Special bloom renders can replace target and shader, so setup again.
             GTRenderTypes.bloom().setupRenderState();
         } else {
             SectionMeshFallback.drawBlockBloom(camera, poseStack, frustum, frustumMatrix, projectionMatrix,
                     levelRenderer,
                     profilerFiller);
         }
-
+        // Clean the state again and then let the caller advance the profiler section
+        // don't use popPush() here, if considering.
         processPostEffect(partialTicks, profilerFiller);
-
         GTRenderTypes.bloom().clearRenderState();
-
-        // The caller advances the profiler section after this method returns.
     }
 
     private static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
                                            ProfilerFiller profilerFiller) {
         profilerFiller.push("special");
 
-        // Render state is managed by renderBloom.
-
+        // Render state is managed by renderBloom, this includes setup and clearing.
         BLOOM_RENDER_LOCK.writeLock().lock();
         try {
             BloomHandler.initializeScheduledRenders();
@@ -172,7 +170,7 @@ public class BloomRenderer {
     private static void setupBloomShaderUniforms() {
         final var config = ConfigHolder.INSTANCE.client.bloom;
 
-        // Update post-process uniforms from the client config.
+        // Client Config injection
         BloomShaderManager.BLOOM_CHAIN.setUniform("DepthNear", GameRenderer.PROJECTION_Z_NEAR);
         BloomShaderManager.BLOOM_CHAIN.setUniform("DepthFar", Minecraft.getInstance().gameRenderer.getDepthFar());
 
@@ -249,7 +247,7 @@ public class BloomRenderer {
                     SectionPos sectionPos = entry.getKey();
                     VertexBuffer buffer = entry.getValue();
 
-                    // noinspection ConstantValue -- getFormat is not annotated for nullability.
+                    // noinspection ConstantValue - getFormat isn't annocated for nullibility, go away IDE errors.
                     if (buffer.isInvalid() || buffer.getFormat() == null) {
                         continue;
                     }
@@ -274,7 +272,7 @@ public class BloomRenderer {
             shader.clear();
             VertexBuffer.unbind();
 
-            // Close the fallback profiler section before dispatching the render stage.
+            // Pop the fallback safe-mode profiler section before the render stage event.
             profilerFiller.pop();
 
             ClientHooks.dispatchRenderStage(BloomHandler.RenderStage.AFTER_BLOOM, levelRenderer,
@@ -343,7 +341,7 @@ public class BloomRenderer {
             finishBloomBuffer(sectionPos, mesh, builder, vertexSorting);
         }
 
-        /// Returns the shader used to draw block bloom.
+        // Returns the shader used to draw block bloom.
         private static ShaderInstance setupBlockShaderUniforms(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
             ShaderInstance shader = RenderSystem.getShader();
             assert shader != null;

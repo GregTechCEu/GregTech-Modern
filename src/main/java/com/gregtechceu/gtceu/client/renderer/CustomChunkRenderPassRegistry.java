@@ -17,7 +17,9 @@ import java.util.List;
 @EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 public final class CustomChunkRenderPassRegistry {
 
-    // Registration order is preserved when backend chunk pass arrays are extended.
+    // Registration order is preserved when backend chunk pass arrays are extended
+    // This is possibly very, VERY, fragile, be careful and check all changes with render doc
+    // as if the order is accidentally switched, issues will occur.
     private static final List<CustomChunkRenderPass> REGISTERED_PASSES = List.of(
             new CustomChunkRenderPass(GTRenderTypes.faceLayer(), CustomChunkRenderPass.AlphaCutoff.ONE_TENTH, true,
                     CustomChunkRenderPass.DrawStage.AFTER_CUTOUT, CustomChunkRenderPass.TerrainPhase.CUTOUT_MIPPED,
@@ -26,7 +28,7 @@ public final class CustomChunkRenderPassRegistry {
                     CustomChunkRenderPass.DrawStage.MANUAL, CustomChunkRenderPass.TerrainPhase.CUSTOM,
                     BloomRenderer::usesBackendChunkPass));
 
-    // Chunk buffer layers are fixed during client startup, so load conditions are resolved once.
+    // Only resolve Client chunk buffers once at client startup
     private static final List<CustomChunkRenderPass> ACTIVE_PASSES = REGISTERED_PASSES.stream()
             .filter(pass -> pass.loadCondition().getAsBoolean())
             .toList();
