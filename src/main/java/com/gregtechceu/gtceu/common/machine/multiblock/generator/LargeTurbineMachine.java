@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -115,11 +114,6 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         return -1;
     }
 
-    public long getCurrentProduction() {
-        return isActive() && recipeLogic.getLastUnrolledRecipe() != null ?
-                recipeLogic.getLastUnrolledRecipe().getOutputEUt().voltage() : 0;
-    }
-
     public int getRotorDurabilityPercent() {
         var rotorHolder = getRotorHolder();
         if (rotorHolder != null && rotorHolder.hasRotor()) {
@@ -165,9 +159,9 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 () -> new IntSyncValue(rotorHolder::getTotalEfficiency));
         LongSyncValue currentOutput = syncManager.getOrCreateSyncHandler("currentOutput",
                 LongSyncValue.class,
-                () -> new LongSyncValue(this::getCurrentProduction));
-        IntSyncValue energyTier = syncManager.getOrCreateSyncHandler("energyTier", IntSyncValue.class,
-                () -> new IntSyncValue(() -> GTUtil.getTierByVoltage(this.getDisplayRecipeVoltage())));
+                () -> new LongSyncValue(this::getRecipeEUt));
+        LongSyncValue voltage = syncManager.getOrCreateSyncHandler("voltage", LongSyncValue.class,
+                () -> new LongSyncValue(this::getDisplayRecipeVoltage));
         LongSyncValue maxOutput = syncManager.getOrCreateSyncHandler("maxOutput",
                 LongSyncValue.class,
                 () -> new LongSyncValue(this::getOverclockVoltage));
@@ -201,11 +195,11 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 .asWidget()
                 .setEnabledIf(w -> true);
 
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, currentOutput, voltage, true));
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addRecipeTypeField(this, syncManager));
 
-        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, currentOutput, energyTier, true));
         widgets.add(rotorSpeedDisplay);
         widgets.add(turbineEfficiencyDisplay);
         widgets.add(turbinePowerDisplay);

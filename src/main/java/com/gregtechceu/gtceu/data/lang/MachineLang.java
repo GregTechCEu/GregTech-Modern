@@ -866,6 +866,11 @@ public class MachineLang {
         provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
 
         // Multiblock tooltips
+        provider.add("gtceu.multiblock.general.energy_consumption", "Using ");
+        provider.add("gtceu.multiblock.general.energy_production", "Producing ");
+        provider.add("gtceu.multiblock.general.energy_consumption_waiting", "Trying to Use ");
+        provider.add("gtceu.multiblock.general.energy_production_waiting", "Trying to Produce ");
+        provider.add("gtceu.multiblock.general.amp_volt_eut", "%s §cA §a@ %s §f(%s §fEU/t)§7");
         provider.add("gtceu.multiblock.blast_furnace.max_temperature", "Heat Capacity: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_level", "Heating Coil Level: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_discount", "Heating Coil EU Boost: %sx");
@@ -883,7 +888,6 @@ public class MachineLang {
                 "Supply §bOxygen§7 to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
                 "Supply §9Liquid Oxygen§7 to boost.");
-        provider.add("gtceu.multiblock.large_combustion_engine.output", "Producing %s EU/t");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
         provider.add("gtceu.multiblock.large_combustion_engine.no_lubricant", "Machine needs Lubricant to run");
         provider.add("gtceu.multiblock.turbine.fuel_amount", "Fuel Amount: %sL (%s)");

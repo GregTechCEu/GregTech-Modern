@@ -176,35 +176,42 @@ public class GTMultiblockTextUtil {
 
     public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
                                                         PanelSyncManager syncManager, LongSyncValue energyUsage,
-                                                        IntSyncValue energyTier, boolean isGenerator) {
+                                                        LongSyncValue displayVoltage, boolean isGenerator) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isActive));
+        BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isWaiting));
+        BooleanSyncValue isSuspend = syncManager.getOrCreateSyncHandler("isSuspend", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isSuspend));
 
         return Text.dynamic(() -> {
             long EUt = energyUsage.getLongValue();
-            float minAmperage = (float) EUt / GTValues.V[energyTier.getIntValue()];
+            long voltage = displayVoltage.getLongValue();
+            float minAmperage = (float) EUt / voltage;
+            int tier = GTUtil.getTierByVoltage(voltage);
 
-            MutableComponent text = Component.translatable("gtceu.jade.amperage_use",
-                    FormattingUtil.formatNumber2Places(minAmperage))
-                    .withStyle(ChatFormatting.RED)
-                    .append(Component.translatable("gtceu.jade.at")
-                            .withStyle(ChatFormatting.GREEN));
-            int tier = energyTier.getIntValue();
-            if (tier < GTValues.TIER_COUNT) {
-                text = text.append(Component.literal(GTValues.VNF[tier])
-                        .withStyle(style -> style.withColor(GTValues.VC[tier])));
-
-                text.append(Component.translatable("gtceu.universal.padded_parentheses",
-                        (Component.translatable("gtceu.recipe.eu.total",
-                                FormattingUtil.formatNumbers(energyUsage.getLongValue()))))
-                        .withStyle(ChatFormatting.WHITE));
+            MutableComponent productionLine;
+            if (isWaiting.getBoolValue() || isSuspend.getBoolValue()) {
+                productionLine = Component.translatable(isGenerator ?
+                        "gtceu.multiblock.general.energy_production_waiting" :
+                        "gtceu.multiblock.general.energy_consumption_waiting").withStyle(ChatFormatting.GRAY);
+            } else {
+                productionLine = Component.translatable(isGenerator ?
+                        "gtceu.multiblock.general.energy_production" :
+                        "gtceu.multiblock.general.energy_consumption").withStyle(ChatFormatting.GRAY);
             }
+            productionLine.append(Component.translatable(
+                    "gtceu.multiblock.general.amp_volt_eut", // A @ V (EUt)
+                    Component.literal(FormattingUtil.formatNumber2Places(minAmperage))
+                            .withStyle(ChatFormatting.RED),
+                    tier < GTValues.TIER_COUNT ? Component.literal(GTValues.VNF[tier])
+                            .withStyle(style -> style.withColor(GTValues.VC[tier])) : voltage,
+                    Component.literal(FormattingUtil.formatNumbers(energyUsage.getLongValue()))
+                            .withStyle(ChatFormatting.WHITE)));
 
-            return Component.translatable(isGenerator ?
-                    "gtceu.top.energy_production" :
-                    "gtceu.top.energy_consumption").append(" ").append(text).withStyle(ChatFormatting.GRAY);
+            return productionLine;
         })
                 .asWidget()
                 .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
