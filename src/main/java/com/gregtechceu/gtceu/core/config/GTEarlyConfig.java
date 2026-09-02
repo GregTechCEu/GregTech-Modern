@@ -18,6 +18,7 @@ import java.util.*;
 public class GTEarlyConfig {
 
     public static final String BLOOM_SAFE_MODE = "client.bloom.safe_mode.";
+    public static final String CUSTOM_CHUNK_MIXINS = "client.customchunk.";
 
     private static final Logger LOGGER = LogManager.getLogger("GTEarlyConfig");
 
@@ -32,13 +33,12 @@ public class GTEarlyConfig {
 
         Option bloomSafeMode = addMixinRule(BLOOM_SAFE_MODE, false);
         bloomSafeMode.addComment(
-                "Whether to use compatibility-first bloom rendering",
-                "Disables GTCEu custom chunk passes. This may be slower, but can avoid renderer compatibility issues.",
+                "Whether to use a 'safe mode' for bloom rendering",
+                "NOTE: may be slower than 'normal' logic, but is considerably more stable and less prone to compatibility issues with other mods.",
                 "Requires restarting the client to take effect.");
 
         addDelegateRule("client.bloom.safemode", BLOOM_SAFE_MODE, false);
         addDelegateRule("client.bloom.normal", BLOOM_SAFE_MODE, true);
-        addDelegateRule("client.customchunk", BLOOM_SAFE_MODE, true);
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());

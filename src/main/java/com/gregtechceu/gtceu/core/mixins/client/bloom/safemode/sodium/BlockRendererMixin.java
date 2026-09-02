@@ -38,7 +38,7 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
         // Check if quad is full brightness OR we have bloom enabled for the quad
         if (BloomShaderManager.isBloomActive() && GTSodiumCompat.quadHasBloom(quad, this.quadLightData.lm)) {
             SectionPos sectionPos = SectionPos.of(this.pos);
-            bloomBufferRef.set(BloomRenderer.SectionMeshFallback.getOrStartBloomBuffer(sectionPos));
+            bloomBufferRef.set(BloomRenderer.SafeMode.getOrStartBloomBuffer(sectionPos));
         } else {
             bloomBufferRef.set(null);
         }

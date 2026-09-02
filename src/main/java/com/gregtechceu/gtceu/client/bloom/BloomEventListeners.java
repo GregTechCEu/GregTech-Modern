@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
@@ -13,8 +11,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.NeoForgeRenderTypes;
-import net.neoforged.neoforge.client.event.RegisterNamedRenderTypesEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -29,8 +25,8 @@ public class BloomEventListeners {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        if (BloomRenderer.usesSectionMeshFallback()) {
-            NeoForge.EVENT_BUS.register(BloomRenderer.SectionMeshFallback.class);
+        if (!BloomRenderer.usesChunkPassBackend()) {
+            NeoForge.EVENT_BUS.register(BloomRenderer.SafeMode.class);
         }
     }
 
@@ -57,8 +53,8 @@ public class BloomEventListeners {
     public static void onLevelUnload(LevelEvent.Unload event) {
         BloomHandler.invalidateLevelData(event.getLevel());
 
-        if (BloomRenderer.usesSectionMeshFallback()) {
-            BloomRenderer.SectionMeshFallback.invalidateLevelData();
+        if (!BloomRenderer.usesChunkPassBackend()) {
+            BloomRenderer.SafeMode.invalidateLevelData();
         }
     }
 
@@ -70,23 +66,12 @@ public class BloomEventListeners {
         LevelAccessor level = chunk.getLevel();
         if (level == null) return;
 
-        if (!BloomRenderer.usesSectionMeshFallback()) return;
+        if (BloomRenderer.usesChunkPassBackend()) return;
 
         ChunkPos chunkPos = chunk.getPos();
         int minSection = level.getMinSection(), maxSection = level.getMaxSection();
         for (int y = minSection; y < maxSection; y++) {
-            BloomRenderer.SectionMeshFallback.invalidateSectionData(SectionPos.of(chunkPos.x, y, chunkPos.z));
+            BloomRenderer.SafeMode.invalidateSectionData(SectionPos.of(chunkPos.x, y, chunkPos.z));
         }
-    }
-
-    @SubscribeEvent
-    public static void registerNamedRenderTypes(RegisterNamedRenderTypesEvent event) {
-        RenderType entity;
-        if (BloomRenderer.usesDirectBloomRendering() && BloomShaderManager.isBloomAvailable()) {
-            entity = GTRenderTypes.entityBloomBlockSheet();
-        } else {
-            entity = NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
-        }
-        event.register(GTCEu.id("bloom"), RenderType.cutoutMipped(), entity);
     }
 }

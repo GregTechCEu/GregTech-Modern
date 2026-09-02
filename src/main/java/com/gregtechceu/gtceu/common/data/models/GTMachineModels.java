@@ -486,15 +486,9 @@ public class GTMachineModels {
 
             builder.part(unformedModel)
                     .condition(IS_FORMED, false)
-                    .condition(HAS_ROTOR, false, true)
-                    .condition(IS_ROTOR_SPINNING, false, true)
-                    .condition(IS_EMISSIVE_ROTOR, false, true)
                     .end();
             builder.part(formedModel)
                     .condition(IS_FORMED, true)
-                    .condition(HAS_ROTOR, false, true)
-                    .condition(IS_ROTOR_SPINNING, false, true)
-                    .condition(IS_EMISSIVE_ROTOR, false, true)
                     .end();
             builder.part(ROTOR_HOLDER_OVERLAY).condition(IS_FORMED, true).end();
 

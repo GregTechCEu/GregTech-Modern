@@ -44,7 +44,7 @@ public class BlockRendererMixin {
         // Check if quad is full brightness OR we have bloom enabled for the quad
         if (BloomShaderManager.isBloomActive() && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
             SectionPos sectionPos = SectionPos.of(ctx.pos());
-            bloomBufferRef.set(BloomRenderer.SectionMeshFallback.getOrStartBloomBuffer(sectionPos));
+            bloomBufferRef.set(BloomRenderer.SafeMode.getOrStartBloomBuffer(sectionPos));
         } else {
             bloomBufferRef.set(null);
         }

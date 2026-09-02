@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.model.FaceLayer;
+import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -17,7 +18,7 @@ public final class FaceLayerRouting {
 
     public static boolean isCustomPassEnabled() {
         return (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM)) &&
-                GTMixinPlugin.isOptionEnabled("client.customchunk.");
+                GTMixinPlugin.isOptionEnabled(GTEarlyConfig.CUSTOM_CHUNK_MIXINS);
     }
 
     public static boolean shouldUseCustomPass(BakedQuad quad) {

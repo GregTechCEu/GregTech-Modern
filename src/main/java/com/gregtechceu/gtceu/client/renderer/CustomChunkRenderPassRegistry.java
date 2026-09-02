@@ -26,7 +26,7 @@ public final class CustomChunkRenderPassRegistry {
                     FaceLayerRouting::isCustomPassEnabled),
             new CustomChunkRenderPass(GTRenderTypes.bloom(), CustomChunkRenderPass.AlphaCutoff.ZERO, true,
                     CustomChunkRenderPass.DrawStage.MANUAL, CustomChunkRenderPass.TerrainPhase.CUSTOM,
-                    BloomRenderer::usesBackendChunkPass));
+                    BloomRenderer::usesChunkPassBackend));
 
     // Only resolve Client chunk buffers once at client startup
     private static final List<CustomChunkRenderPass> ACTIVE_PASSES = REGISTERED_PASSES.stream()

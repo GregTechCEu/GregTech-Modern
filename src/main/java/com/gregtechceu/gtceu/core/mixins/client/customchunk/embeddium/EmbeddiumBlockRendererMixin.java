@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.customchunk.embeddium;
 
+import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.FaceLayerRouting;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
@@ -53,7 +54,7 @@ public abstract class EmbeddiumBlockRendererMixin {
             original.call(originalBuilder, vertices, originalMaterial);
         }
 
-        if (chunkContext != null && BloomShaderManager.isBloomActive() &&
+        if (chunkContext != null && BloomRenderer.usesChunkPassBackend() && BloomShaderManager.isBloomActive() &&
                 ctx.renderLayer() != GTRenderTypes.bloom() &&
                 TextureMetadataHelper.hasBloom((BakedQuad) quad, light.lm)) {
             var bloomBuilder = chunkContext.buffers.get(GTEmbeddiumCompat.getBloomRenderPass());

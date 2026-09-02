@@ -12,7 +12,7 @@ public enum FaceLayer {
 
     // Unclassified is our fallback layer, if you are using this normally, please stop.
     @ApiStatus.Internal
-    UNCLASSIFIED(0),
+    UNCLASSIFIED(-1),
     BASE(0),
     MACHINE_FACE(1),
     MACHINE_DETAIL(2),

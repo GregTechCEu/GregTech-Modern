@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.customchunk.sodium;
 
+import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.FaceLayerRouting;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
@@ -48,7 +49,8 @@ public abstract class SodiumBlockRendererMixin extends AbstractBlockRenderContex
             original.call(originalBuilder, vertices, materialBits);
         }
 
-        if (!BloomShaderManager.isBloomActive() || this.type == GTRenderTypes.bloom()) {
+        if (!BloomRenderer.usesChunkPassBackend() || !BloomShaderManager.isBloomActive() ||
+                this.type == GTRenderTypes.bloom()) {
             return;
         }
         if (GTSodiumCompat.quadHasBloom(quad, this.quadLightData.lm)) {

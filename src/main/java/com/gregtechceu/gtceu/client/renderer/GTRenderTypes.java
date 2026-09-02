@@ -48,8 +48,7 @@ public class GTRenderTypes extends RenderType {
                     .createCompositeState(false));
 
     // Model space offsets establish local order; polygon offset preserves them after depth quantization.
-    private static final LayeringStateShard BLOOM_LAYERING = createDepthLayering("bloom_layering", -0.5F, -5.0F);
-    private static final LayeringStateShard FACE_LAYER_LAYERING = createDepthLayering("face_layer_layering", -0.5F,
+    private static final LayeringStateShard CUSTOM_CHUNK_LAYERING = createDepthLayering("custom_chunk_layering", -0.5F,
             -5.0F);
     private static final LayeringStateShard FACADE_LAYERING = POLYGON_OFFSET_LAYERING;
 
@@ -61,7 +60,7 @@ public class GTRenderTypes extends RenderType {
                     .setOutputState(BLOOM_TARGET)
                     .setWriteMaskState(COLOR_WRITE)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
-                    .setLayeringState(BLOOM_LAYERING)
+                    .setLayeringState(CUSTOM_CHUNK_LAYERING)
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true));
@@ -74,7 +73,7 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .setWriteMaskState(COLOR_WRITE)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
-                    .setLayeringState(FACE_LAYER_LAYERING)
+                    .setLayeringState(CUSTOM_CHUNK_LAYERING)
                     .setLightmapState(LIGHTMAP)
                     .createCompositeState(true));
 
