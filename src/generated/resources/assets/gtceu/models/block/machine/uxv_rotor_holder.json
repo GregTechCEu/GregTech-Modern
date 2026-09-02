@@ -15,10 +15,7 @@
         }
       },
       "when": {
-        "emissive_rotor": "false|true",
-        "has_rotor": "false|true",
-        "is_formed": "false",
-        "rotor_spinning": "false|true"
+        "is_formed": "false"
       }
     },
     {
@@ -33,10 +30,7 @@
         }
       },
       "when": {
-        "emissive_rotor": "false|true",
-        "has_rotor": "false|true",
-        "is_formed": "true",
-        "rotor_spinning": "false|true"
+        "is_formed": "true"
       }
     },
     {

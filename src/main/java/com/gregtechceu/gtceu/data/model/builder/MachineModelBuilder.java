@@ -656,10 +656,9 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
             boolean matched = !useOr;
 
             if (!conditions.isEmpty()) {
-                for (var entry : stateValues.entrySet()) {
-                    Property<?> property = entry.getKey();
-                    Comparable<?> value = entry.getValue();
-                    boolean contains = conditions.containsEntry(property, value);
+                for (var entry : conditions.asMap().entrySet()) {
+                    Comparable<?> value = stateValues.get(entry.getKey());
+                    boolean contains = entry.getValue().contains(value);
 
                     if (useOr) {
                         // any OR condition can match
