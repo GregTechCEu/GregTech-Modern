@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.model;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Locale;
 
@@ -10,6 +11,7 @@ import java.util.Locale;
 public enum FaceLayer {
 
     // Unclassified is our fallback layer, if you are using this normally, please stop.
+    @ApiStatus.Internal
     UNCLASSIFIED(0),
     BASE(0),
     MACHINE_FACE(1),
