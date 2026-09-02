@@ -1042,22 +1042,6 @@ public class TagPrefix {
     @Getter
     protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
 
-    /**
-     * @deprecated Use {@link TagPrefix#TagPrefix(ResourceLocation)}
-     */
-    @Deprecated(since = "8.0.0")
-    public TagPrefix(String name) {
-        this(name, false);
-    }
-
-    /**
-     * @deprecated Use {@link TagPrefix#TagPrefix(ResourceLocation, boolean)}
-     */
-    @Deprecated(since = "8.0.0")
-    public TagPrefix(String name, boolean invertedName) {
-        this(GTCEu.id(name), invertedName);
-    }
-
     public TagPrefix(ResourceLocation id) {
         this(id, false);
     }
@@ -1192,22 +1176,6 @@ public class TagPrefix {
             return this.materialAmount;
         }
         return (long) (GTValues.M * materialAmounts.getFloat(material));
-    }
-
-    /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.get(name)}
-     */
-    @Deprecated(since = "8.0.0")
-    public static TagPrefix getPrefix(String prefixName) {
-        return getPrefix(prefixName, null);
-    }
-
-    /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.getOrDefault(prefixName, replacement)}
-     */
-    @Deprecated(since = "8.0.0")
-    public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
-        return GTRegistries.TAG_PREFIXES.getOptional(GTCEu.id(prefixName)).orElse(replacement);
     }
 
     @Unmodifiable
@@ -1388,14 +1356,6 @@ public class TagPrefix {
     @Override
     public int hashCode() {
         return name.hashCode();
-    }
-
-    /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.values()}
-     */
-    @Deprecated(since = "8.0.0")
-    public static Collection<TagPrefix> values() {
-        return GTRegistries.TAG_PREFIXES.stream().toList();
     }
 
     @Override
