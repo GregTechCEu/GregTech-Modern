@@ -17,8 +17,7 @@ public final class FaceLayerRouting {
     private static final int SODIUM_FACE_LAYER_TAG = 0x47540001;
     private static final boolean CUSTOM_PASS_ENABLED = !GTMixinPlugin
             .isOptionEnabled(GTEarlyConfig.FACE_LAYER_SAFE_MODE) &&
-            (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM)) &&
-            GTMixinPlugin.isOptionEnabled(GTEarlyConfig.CUSTOM_CHUNK_MIXINS);
+            (isModLoaded(MODID_SODIUM) || isModLoaded(MODID_EMBEDDIUM));
 
     public static boolean isCustomPassEnabled() {
         return CUSTOM_PASS_ENABLED;
