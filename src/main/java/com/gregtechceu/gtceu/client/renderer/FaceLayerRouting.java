@@ -11,7 +11,8 @@ import static com.gregtechceu.gtceu.core.config.GTEarlyConfig.isModLoaded;
 
 public final class FaceLayerRouting {
 
-    // Sodium drops BakedQuad extensions, so, we just smuggle it through FRAPI inside of sodium, kinda hacky but whatever.
+    // Sodium drops BakedQuad extensions, so, we just smuggle it through FRAPI inside of sodium, kinda hacky but
+    // whatever.
     private static final int SODIUM_FACE_LAYER_TAG = 0x47540001;
 
     public static boolean isCustomPassEnabled() {
