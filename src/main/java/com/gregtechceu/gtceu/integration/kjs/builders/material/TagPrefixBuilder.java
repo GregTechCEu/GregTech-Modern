@@ -33,10 +33,10 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
 
     public TagPrefixBuilder(ResourceLocation id) {
         super(id);
-        this.base = create(id.getPath());
+        this.base = create(id);
     }
 
-    public TagPrefix create(String id) {
+    public TagPrefix create(ResourceLocation id) {
         return new TagPrefix(id);
     }
 
