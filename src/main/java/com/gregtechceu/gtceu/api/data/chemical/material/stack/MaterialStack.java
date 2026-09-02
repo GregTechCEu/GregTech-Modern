@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public record MaterialStack(@NotNull Material material, long amount) {
+public record MaterialStack(Material material, long amount) {
+
 
     public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.NULL, 0);
 
@@ -67,7 +68,7 @@ public record MaterialStack(@NotNull Material material, long amount) {
     public String toString() {
         String string = "";
         if (this.isEmpty()) return "";
-        if (material.getChemicalFormula() == null || material.getChemicalFormula().isEmpty()) {
+        if (material.getChemicalFormula().isEmpty()) {
             string += "?";
         } else if (material.getMaterialComponents().size() > 1) {
             string += '(' + material.getChemicalFormula() + ')';

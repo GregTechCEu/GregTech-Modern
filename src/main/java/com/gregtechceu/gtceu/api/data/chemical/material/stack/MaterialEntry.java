@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.google.common.base.Preconditions;
@@ -12,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material material) {
+public record MaterialEntry(TagPrefix tagPrefix, Material material) {
 
     public MaterialEntry {
         Preconditions.checkNotNull(tagPrefix, "MaterialEntry TagPrefix cannot be null!");
@@ -70,7 +72,7 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
 
             var values = str.split(":", 2);
             if (values.length > 1) {
-                var prefix = TagPrefix.get(values[0]);
+                var prefix = GTRegistries.TAG_PREFIXES.get(GTCEu.id(values[0]));
                 if (prefix == null) throw new IllegalArgumentException("Invalid TagPrefix: " + values[0]);
                 cached = new MaterialEntry(prefix, GTMaterials.get(values[1]));
                 PARSE_CACHE.put(str, cached);

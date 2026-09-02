@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -16,6 +17,9 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -51,7 +55,7 @@ public class GTMaterials {
     public static Map<DyeColor, Material> DYE_MATERIALS = new Object2ObjectOpenHashMap<>();
     public static Material[] VOLTAGE_COMMON_MATERIALS;
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
         ElementMaterials.register();
         FirstDegreeMaterials.register();
         OrganicChemistryMaterials.register();
@@ -62,6 +66,14 @@ public class GTMaterials {
         // Gregicality Multiblocks
         GCYMMaterials.register();
 
+        modBus.register(GTMaterials.class);
+    }
+
+    /**
+     * Perform
+     */
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void modifyMaterials(PostMaterialEvent event) {
         /*
          * Register info for cyclical references
          */
@@ -275,6 +287,7 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Blaze, 4);
         rod.modifyMaterialAmount(Bone, 5);
     }
+
 
     @NotNull
     public static Material get(String name) {
