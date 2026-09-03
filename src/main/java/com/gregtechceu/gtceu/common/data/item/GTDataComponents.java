@@ -51,6 +51,9 @@ public class GTDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AoESymmetrical>> AOE = DATA_COMPONENTS
             .registerComponentType("aoe", builder -> builder.persistent(AoESymmetrical.CODEC)
                     .networkSynchronized(AoESymmetrical.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<AoESymmetrical>> MAX_AOE = DATA_COMPONENTS
+            .registerComponentType("max_aoe", builder -> builder.persistent(AoESymmetrical.CODEC)
+                    .networkSynchronized(AoESymmetrical.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> DISALLOW_CONTAINER_ITEM = DATA_COMPONENTS
             .registerComponentType("disallow_container_item", builder -> builder.persistent(Unit.CODEC)
                     .networkSynchronized(UNIT_STREAM_CODEC));

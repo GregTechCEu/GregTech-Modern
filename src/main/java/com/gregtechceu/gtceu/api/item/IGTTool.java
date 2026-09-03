@@ -102,6 +102,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         ItemStack stack = new ItemStack(asItem());
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
         stack.set(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        stack.set(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
+
         stack.remove(DataComponents.MAX_DAMAGE);
         stack.remove(DataComponents.DAMAGE);
         stack.remove(DataComponents.UNBREAKABLE);

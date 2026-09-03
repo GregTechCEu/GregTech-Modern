@@ -26,7 +26,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.geteAoEStateMutable;
 
 public class AOEConfigUIBehavior implements IToolUIBehavior<AOEConfigUIBehavior> {
 
@@ -36,14 +36,15 @@ public class AOEConfigUIBehavior implements IToolUIBehavior<AOEConfigUIBehavior>
 
     @Override
     public boolean shouldOpenUI(@NotNull Player player, @NotNull InteractionHand hand) {
-        return player.isShiftKeyDown() && !player.getItemInHand(hand)
-                .getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO).isZero();
+        return player.isShiftKeyDown() &&
+                !player.getItemInHand(hand).getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO).isZero();
     }
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack held = data.getUsedItemStack();
-        final AoESymmetrical.Mutable definition = getAoEDefinition(held).toMutable();
+        final AoESymmetrical.Mutable definition = geteAoEStateMutable(held);
+
         InteractionSyncHandler minusCols = new InteractionSyncHandler();
         minusCols.setOnMousePressed(data1 -> held.set(GTDataComponents.AOE, definition.decreaseColumn().toImmutable()));
         InteractionSyncHandler plusCols = new InteractionSyncHandler();

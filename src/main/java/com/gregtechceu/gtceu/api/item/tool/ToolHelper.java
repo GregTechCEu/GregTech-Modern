@@ -281,7 +281,18 @@ public class ToolHelper {
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        AoESymmetrical value = stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        if (stack.has(GTDataComponents.MAX_AOE)) {
+            AoESymmetrical max = stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
+            if (value.isZero()) return max;
+            return value.min(max);
+        } else {
+            return value;
+        }
+    }
+
+    public static AoESymmetrical.Mutable geteAoEStateMutable(ItemStack stack) {
+        return getAoEDefinition(stack).toMutable(stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO));
     }
 
     public static List<BlockPos> iterateAoE(AoESymmetrical aoeDefinition, Predicate<UseOnContext> predicate,
