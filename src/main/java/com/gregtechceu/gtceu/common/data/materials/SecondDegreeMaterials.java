@@ -17,6 +17,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class SecondDegreeMaterials {
 
@@ -242,8 +243,8 @@ public class SecondDegreeMaterials {
                 .color(0xffd647).secondaryColor(0x0d1e2f)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Uraninite, 3, Thorium, 1, Lead, 1)
-                .register()
-                .setFormula("(UO2)3ThPb", true);
+                .formula("(UO2)3ThPb", true)
+                .register();
 
         Monazite = REGISTRATE.material("monazite")
                 .gem(1).ore(4, 2, true)
