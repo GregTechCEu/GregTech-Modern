@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -73,7 +74,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         float outputAmount = (durability * fullAmount);
         int dustAmount = (int) outputAmount;
         int leftover = (int) ((outputAmount - (float) dustAmount) * 36.f);
-        TagPrefix tag = leftover % 4 >= leftover % 9 ? dustSmall : dustTiny;
+        Holder<TagPrefix> tag = leftover % 4 >= leftover % 9 ? dustSmall : dustTiny;
         int leftAmount = leftover % 4 >= leftover % 9 ? leftover / 9 : leftover / 4;
 
         if (dustAmount == 0 && leftAmount == 0) return null;

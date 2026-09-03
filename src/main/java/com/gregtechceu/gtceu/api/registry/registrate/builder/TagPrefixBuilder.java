@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -12,12 +11,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
-import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BuilderCallback;
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +23,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredHolder;
+
+import com.google.common.collect.Table;
+import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -43,11 +46,11 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
 
     @Getter
     @Setter
-    private String idPattern;
+    private String idPattern = "%s_" + getName();
 
     @Setter
     @Getter
-    public String langValue;
+    public String langValue = "%s " + FormattingUtil.toEnglishName(getName());
 
     @Getter
     @Setter
@@ -55,17 +58,17 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
 
     @Setter
     @Getter
-    private boolean unificationEnabled;
+    private boolean unificationEnabled = true;
     @Setter
     @Getter
     private boolean generateRecycling = false;
     @Setter
-    private boolean generateItem;
+    private boolean generateItem = false;
     @Getter
     @Setter
     private TagPrefix.ItemConstructor itemConstructor = TagPrefixItem::new;
     @Setter
-    private boolean generateBlock;
+    private boolean generateBlock = false;
     @Getter
     @Setter
     private TagPrefix.BlockConstructor blockConstructor = MaterialBlock::createAndAddModel;
@@ -153,43 +156,48 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
     }
 
     public TagPrefixBuilder blockProperties(TagPrefix.BlockProperties blockProperties) {
-        Objects.requireNonNull(blockProperties.renderType(),  "Could not set blockProperties with null renderType in TagPrefix " + getOwner().makeResourceLocation(getName()));
-        Objects.requireNonNull(blockProperties.properties(),  "Could not set blockProperties with null properties in TagPrefix " + getOwner().makeResourceLocation(getName()));
+        Objects.requireNonNull(blockProperties.renderType(),
+                "Could not set blockProperties with null renderType in TagPrefix " +
+                        getOwner().makeResourceLocation(getName()));
+        Objects.requireNonNull(blockProperties.properties(),
+                "Could not set blockProperties with null properties in TagPrefix " +
+                        getOwner().makeResourceLocation(getName()));
         this.blockProperties = blockProperties;
         return this;
     }
 
     public TagPrefixBuilder blockProperties(Supplier<Supplier<RenderType>> renderType,
-                                     UnaryOperator<BlockBehaviour.Properties> properties) {
+                                            UnaryOperator<BlockBehaviour.Properties> properties) {
         return this.blockProperties(new TagPrefix.BlockProperties(renderType, properties));
     }
 
     public TagPrefixBuilder registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 BlockBehaviour.Properties properties, ResourceLocation baseModelLocation) {
+                                        BlockBehaviour.Properties properties, ResourceLocation baseModelLocation) {
         return registerOre(stoneType, material, properties, baseModelLocation, false);
     }
 
     public TagPrefixBuilder registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
-                                 boolean doubleDrops) {
+                                        BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
+                                        boolean doubleDrops) {
         return registerOre(stoneType, material, properties, baseModelLocation, doubleDrops, false, false);
     }
 
     public TagPrefixBuilder registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
-                                 boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
+                                        BlockBehaviour.Properties properties, ResourceLocation baseModelLocation,
+                                        boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
         return registerOre(stoneType, material, () -> properties, baseModelLocation, doubleDrops, isSand,
                 shouldDropAsItem);
     }
 
     public TagPrefixBuilder registerOre(Supplier<BlockState> stoneType, Supplier<Material> material,
-                                 Supplier<BlockBehaviour.Properties> properties, ResourceLocation baseModelLocation,
-                                 boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
-        oreType = new TagPrefix.OreType(stoneType, material, properties, baseModelLocation, doubleDrops, isSand, shouldDropAsItem);
+                                        Supplier<BlockBehaviour.Properties> properties,
+                                        ResourceLocation baseModelLocation,
+                                        boolean doubleDrops, boolean isSand, boolean shouldDropAsItem) {
+        oreType = new TagPrefix.OreType(stoneType, material, properties, baseModelLocation, doubleDrops, isSand,
+                shouldDropAsItem);
         this.shouldDropAsItem = shouldDropAsItem;
         return this;
     }
-
 
     @Override
     protected TagPrefix createEntry() {
@@ -224,7 +232,7 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
 
     @Override
     public GTRegistrate getOwner() {
-        return (GTRegistrate)super.getOwner();
+        return (GTRegistrate) super.getOwner();
     }
 
     @Override
@@ -234,6 +242,6 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
 
     @Override
     public TagPrefixEntry register() {
-        return (TagPrefixEntry)super.register();
+        return (TagPrefixEntry) super.register();
     }
 }

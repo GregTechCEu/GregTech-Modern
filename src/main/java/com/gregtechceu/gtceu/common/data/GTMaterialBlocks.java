@@ -113,13 +113,7 @@ public class GTMaterialBlocks {
             }
             var entry = registrate.block("%s%s_ore".formatted(typePrefix, material.getName()),
                     properties -> oreTag.blockConstructor().create(properties, oreTag, material))
-                    .initialProperties(() -> {
-                        if (oreType.stoneType().get().isAir()) {
-                            // if the block is not registered (yet), fallback to stone
-                            return Blocks.IRON_ORE;
-                        }
-                        return oreType.stoneType().get().getBlock();
-                    })
+                    .initialProperties(() -> Blocks.IRON_ORE)
                     .properties(properties -> GTBlocks.copy(oreType.template().get(), properties).noLootTable())
                     .transform(GTBlocks.unificationBlock(oreTag, material))
                     .blockstate(NonNullBiConsumer.noop())
@@ -162,7 +156,7 @@ public class GTMaterialBlocks {
                 .block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
-                .transform(GTBlocks.unificationBlock(TagPrefix.surfaceRock, material))
+                .transform(GTBlocks.unificationBlock(TagPrefix.surfaceRock.value(), material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
@@ -193,7 +187,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowCableBlock(Material material, Insulation insulation) {
-        return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) &&
+        return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.value().isIgnored(material) &&
                 !(insulation.isCable() && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
 
@@ -203,7 +197,7 @@ public class GTMaterialBlocks {
                         p -> new CableBlock(p, insulation, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
-                .transform(GTBlocks.unificationBlock(insulation.tagPrefix, material))
+                .transform(GTBlocks.unificationBlock(insulation.tagPrefix.value(), material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -215,7 +209,7 @@ public class GTMaterialBlocks {
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        CABLE_BLOCKS_BUILDER.put(insulation.tagPrefix, material, entry);
+        CABLE_BLOCKS_BUILDER.put(insulation.tagPrefix.value(), material, entry);
     }
 
     // Material Fluid Pipe Blocks
@@ -235,7 +229,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
-        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material);
+        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.value().isIgnored(material);
     }
 
     private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType,
@@ -250,7 +244,7 @@ public class GTMaterialBlocks {
                     }
                     return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
-                .transform(GTBlocks.unificationBlock(fluidPipeType.tagPrefix, material))
+                .transform(GTBlocks.unificationBlock(fluidPipeType.tagPrefix.value(), material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -262,7 +256,7 @@ public class GTMaterialBlocks {
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        FLUID_PIPE_BLOCKS_BUILDER.put(fluidPipeType.tagPrefix, material, entry);
+        FLUID_PIPE_BLOCKS_BUILDER.put(fluidPipeType.tagPrefix.value(), material, entry);
     }
 
     // Material Item Pipe Blocks
@@ -282,7 +276,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
-        return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material);
+        return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().value().isIgnored(material);
     }
 
     private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType, GTRegistrate registrate) {
@@ -296,7 +290,7 @@ public class GTMaterialBlocks {
                     }
                     return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
-                .transform(GTBlocks.unificationBlock(itemPipeType.getTagPrefix(), material))
+                .transform(GTBlocks.unificationBlock(itemPipeType.getTagPrefix().value(), material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -308,6 +302,6 @@ public class GTMaterialBlocks {
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        ITEM_PIPE_BLOCKS_BUILDER.put(itemPipeType.getTagPrefix(), material, entry);
+        ITEM_PIPE_BLOCKS_BUILDER.put(itemPipeType.getTagPrefix().value(), material, entry);
     }
 }
