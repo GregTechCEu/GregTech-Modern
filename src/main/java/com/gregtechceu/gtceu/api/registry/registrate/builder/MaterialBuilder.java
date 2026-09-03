@@ -115,6 +115,12 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
         return this;
     }
 
+    public MaterialBuilder primaryFluidKey(FluidStorageKey key) {
+        if (properties.ensureSet(PropertyKey.FLUID).getQueuedBuilder(key) == null) throw new IllegalArgumentException("Cannot set %s as primary fluid key: Fluid for %s not registered.".formatted(key, key));
+        properties.ensureSet(PropertyKey.FLUID).setPrimaryKey(key);
+        return this;
+    }
+
     /**
      * Add a liquid for this Material.
      * <br>
