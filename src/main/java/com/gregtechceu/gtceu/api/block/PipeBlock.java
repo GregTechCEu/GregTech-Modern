@@ -343,7 +343,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         if (stack.getItem() instanceof PipeBlockItem itemPipe) {
             BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
             BlockState stateAtSide = level.getBlockState(offsetPos);
-            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
+            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock &&
+                    matBlock.tagPrefix == TagPrefix.frameGt.value()) {
                 if (itemPipe.getBlock().pipeType == pipeType) {
                     boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, stack,
                             hit);

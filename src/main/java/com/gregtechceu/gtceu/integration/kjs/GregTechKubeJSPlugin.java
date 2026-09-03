@@ -167,7 +167,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
         registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilderJS.class,
                 WorldGenLayerBuilderJS::new);
-        registry.addDefault(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSetBuilder.class, MaterialIconSetBuilder::new);
+        registry.addDefault(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSetBuilder.class,
+                MaterialIconSetBuilder::new);
 
         registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilderJS.class,
                 OreVeinDefinitionBuilderJS::new);
