@@ -275,7 +275,7 @@ public class ChemicalHelper {
     public static @Nullable Item getItem(MaterialEntry materialEntry) {
         List<ItemLike> items = getItems(materialEntry);
         if (items.isEmpty()) return null;
-        return items.get(0).asItem();
+        return items.getFirst().asItem();
     }
 
     public static @Nullable Item getItem(TagPrefix tagPrefix, Material material) {
@@ -300,6 +300,14 @@ public class ChemicalHelper {
     }
 
     public static ItemStack get(TagPrefix tagPrefix, Material material) {
+        return get(tagPrefix, material, 1);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material) {
         return get(tagPrefix, material, 1);
     }
 
@@ -342,6 +350,11 @@ public class ChemicalHelper {
     }
 
     @Nullable
+    public static Block getBlock(Holder<TagPrefix> orePrefix, Material material) {
+        return getBlock(new MaterialEntry(orePrefix.value(), material));
+    }
+
+    @Nullable
     public static TagKey<Block> getBlockTag(TagPrefix orePrefix, Material material) {
         var tags = orePrefix.getBlockTags(material);
         if (!tags.isEmpty()) {
@@ -364,7 +377,12 @@ public class ChemicalHelper {
                 "No item tag for %s %s".formatted(orePrefix, material));
     }
 
-    public static List<TagKey<Item>> getTags(TagPrefix orePrefix, @NotNull Material material) {
+    @Nullable
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Material material) {
+        return getTag(orePrefix.value(), material);
+    }
+
+    public static List<TagKey<Item>> getTags(TagPrefix orePrefix, Material material) {
         return orePrefix.getItemTags(material);
     }
 
