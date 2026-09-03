@@ -442,12 +442,12 @@ public class GTRecipeBuilder {
         return inputItems(tagPrefix, material, 1);
     }
 
-    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Material material) {
-        return inputItems(tagPrefix.value(), material, 1);
+    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        return inputItems(tagPrefix.value(), material.value(), 1);
     }
 
-    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Material material, int count) {
-        return inputItems(tagPrefix.value(), material, count);
+    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Holder<Material> material, int count) {
+        return inputItems(tagPrefix.value(), material.value(), count);
     }
 
     public GTRecipeBuilder inputItems(TagPrefix tagPrefix, Material material, int count) {
@@ -593,12 +593,12 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Material material) {
-        return outputItems(orePrefix.value(), material, 1);
+    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return outputItems(orePrefix.value(), material.value(), 1);
     }
 
-    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Material material, int count) {
-        return outputItems(orePrefix.value(), material, count);
+    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Holder<Material> material, int count) {
+        return outputItems(orePrefix.value(), material.value(), count);
     }
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
@@ -719,7 +719,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder notConsumable(Holder<TagPrefix> orePrefix, Material material) {
+    public GTRecipeBuilder notConsumable(Holder<TagPrefix> orePrefix, Holder<Material> material) {
         int lastChance = this.chance;
         this.chance = 0;
         inputItems(orePrefix, material);
@@ -727,7 +727,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder notConsumable(Holder<TagPrefix> orePrefix, Material material, int count) {
+    public GTRecipeBuilder notConsumable(Holder<TagPrefix> orePrefix, Holder<Material> material, int count) {
         int lastChance = this.chance;
         this.chance = 0;
         inputItems(orePrefix, material, count);

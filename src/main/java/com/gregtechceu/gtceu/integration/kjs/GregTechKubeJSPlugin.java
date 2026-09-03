@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -87,7 +88,6 @@ import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.*;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
@@ -389,12 +389,12 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
-        registry.register(MaterialStackWrapper.class, o -> {
+        registry.register(DeferredMaterialStack.class, o -> {
             o = Wrapper.unwrapped(o);
-            if (o instanceof MaterialStackWrapper wrapper) return wrapper;
-            if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
-            if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
-            if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
+            if (o instanceof DeferredMaterialStack wrapper) return wrapper;
+            if (o instanceof MaterialStack stack) return new DeferredMaterialStack(stack::material, stack.amount());
+            if (o instanceof Material material) return new DeferredMaterialStack(() -> material, 1);
+            if (o instanceof CharSequence chars) return DeferredMaterialStack.fromString(chars);
             return null;
         });
 

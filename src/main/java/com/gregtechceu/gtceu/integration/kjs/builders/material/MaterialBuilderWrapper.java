@@ -7,13 +7,15 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MaterialBuilder;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.function.UnaryOperator;
@@ -28,11 +31,11 @@ import java.util.function.UnaryOperator;
 @SuppressWarnings("unused")
 public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
-    private final Material.Builder internal;
+    private final MaterialBuilder internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
-        this.internal = new Material.Builder(this.id);
+        this.internal = GTRegistrate.createIgnoringListenerErrors(id.getNamespace()).material(id.getPath());
         this.dummyBuilder = true;
     }
 
@@ -443,8 +446,8 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
-    public MaterialBuilderWrapper components(MaterialStackWrapper... components) {
-        internal.kjs$components(components);
+    public MaterialBuilderWrapper components(DeferredMaterialStack... components) {
+        internal.componentStacks(components);
         return this;
     }
 
@@ -662,16 +665,8 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     }
 
     @Override
-    public Material createObject() {
-        return internal.buildAndRegister();
-    }
-
-    @Override
-    public Material transformObject(Material material) {
-        // this method is called right after `createObject`.
-        // here, you can add things that have to be done after registration
-        // but would be nice to do without using a separate material modification event.
-
-        return super.transformObject(material);
+    public @Nullable Material createObject() {
+        internal.register();
+        return null;
     }
 }
