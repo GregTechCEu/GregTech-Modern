@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import brachy.modularui.drawable.Icon;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
