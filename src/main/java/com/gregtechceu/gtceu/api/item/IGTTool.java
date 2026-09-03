@@ -739,10 +739,13 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
     default @Nullable ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
                                               UISettings settings) {
         for (var behavior : getToolStats().getBehaviors()) {
-            if (!(behavior instanceof IToolUIBehavior uiBehavior) ||
-                    !uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {
+            if (!(behavior instanceof IToolUIBehavior<?> uiBehavior)) {
                 continue;
             }
+            if (!uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {
+                continue;
+            }
+
             return uiBehavior.buildUI(data, syncManager, settings);
         }
         return null;
