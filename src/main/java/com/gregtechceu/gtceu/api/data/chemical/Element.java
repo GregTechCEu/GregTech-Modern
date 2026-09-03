@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 

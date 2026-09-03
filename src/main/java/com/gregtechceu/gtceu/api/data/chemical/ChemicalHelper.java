@@ -287,6 +287,10 @@ public class ChemicalHelper {
                 "Item for (%s %s) was null".formatted(tagPrefix, material));
     }
 
+    public static @Nullable Item getItem(Holder<TagPrefix> tagPrefix, Material material) {
+        return getItem(new MaterialEntry(tagPrefix, material));
+    }
+
     public static ItemStack get(MaterialEntry materialEntry, int size) {
         var list = getItems(materialEntry);
         if (list.isEmpty()) return ItemStack.EMPTY;

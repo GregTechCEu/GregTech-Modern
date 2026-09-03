@@ -319,7 +319,7 @@ public class WoodMachineRecipes {
             }
         }
 
-        List<WoodTypeEntry> entries = new ArrayList<WoodTypeEntry>();
+        List<WoodTypeEntry> entries = new ArrayList<>();
         entries.addAll(DEFAULT_ENTRIES);
         entries.addAll(CUSTOM_ENTRIES);
         return entries;

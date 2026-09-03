@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
