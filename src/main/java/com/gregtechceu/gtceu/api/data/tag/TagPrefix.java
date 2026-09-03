@@ -57,6 +57,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -99,7 +100,7 @@ public class TagPrefix {
 
     public static final TagPrefix NULL_PREFIX = new TagPrefix(GTCEu.id("null"));
 
-    public static final TagPrefix ore = oreTagPrefix(GTCEu.id("stone"), BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefix ore = defaultOreTagPrefix(GTCEu.id("stone"), BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
             .registerOre(
                     Blocks.STONE::defaultBlockState, () -> GTMaterials.Stone, BlockBehaviour.Properties.of()
@@ -127,7 +128,7 @@ public class TagPrefix {
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
                     ResourceLocation.withDefaultNamespace("block/andesite"));
 
-    public static final TagPrefix oreRedGranite = oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefix oreRedGranite = oreTagPrefix(GTCEu.id("red_granite"), BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Red Granite %s Ore")
             .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed,
                     BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops()
@@ -1091,8 +1092,20 @@ public class TagPrefix {
     }
 
     public static TagPrefix oreTagPrefix(ResourceLocation id, TagKey<Block> miningToolTag) {
-        return new TagPrefix(id)
-                .defaultTagPath("ores/%s")
+        return finalizeOreTagPrefix(new TagPrefix(id).prefixTagPath("ores/%s/%s"), miningToolTag);
+    }
+
+    /**
+     * Internal API, used to allocate "default" ore tag for stone ores. It does not use the prefix tag path to stay
+     * cross-mod compatible
+     */
+    @ApiStatus.Internal
+    public static TagPrefix defaultOreTagPrefix(ResourceLocation id, TagKey<Block> miningToolTag) {
+        return finalizeOreTagPrefix(new TagPrefix(id).defaultTagPath("ores/%s"), miningToolTag);
+    }
+
+    private static TagPrefix finalizeOreTagPrefix(TagPrefix oreTagPrefix, TagKey<Block> miningToolTag) {
+        return oreTagPrefix
                 .prefixOnlyTagPath("ores_in_ground/%s")
                 .unformattedTagPath("ores")
                 .materialIconType(MaterialIconType.ore)

@@ -25,7 +25,7 @@ public class KJSTagPrefix extends TagPrefix {
 
     public static KJSTagPrefix oreTagPrefix(String name) {
         return new KJSTagPrefix(name)
-                .defaultTagPath("ores/%s")
+                .prefixTagPath("ores/%s/%s")
                 .prefixOnlyTagPath("ores_in_ground/%s")
                 .unformattedTagPath("ores")
                 .materialIconType(MaterialIconType.ore)
