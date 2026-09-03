@@ -285,14 +285,13 @@ public class ToolHelper {
         AoESymmetrical value = stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
         if (stack.has(GTDataComponents.MAX_AOE)) {
             AoESymmetrical max = stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
-            if (value.isZero()) return max;
             return value.min(max);
         } else {
             return value;
         }
     }
 
-    public static AoESymmetrical.Mutable geteAoEStateMutable(ItemStack stack) {
+    public static AoESymmetrical.Mutable getAoEStateMutable(ItemStack stack) {
         return getAoEDefinition(stack).toMutable(stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO));
     }
 

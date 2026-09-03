@@ -26,7 +26,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.geteAoEStateMutable;
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getAoEStateMutable;
 
 public class AOEConfigUIBehavior implements IToolUIBehavior<AOEConfigUIBehavior> {
 
@@ -43,7 +43,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior<AOEConfigUIBehavior>
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         ItemStack held = data.getUsedItemStack();
-        final AoESymmetrical.Mutable definition = geteAoEStateMutable(held);
+        final AoESymmetrical.Mutable definition = getAoEStateMutable(held);
 
         // spotless:off
         InteractionSyncHandler minusCols = new InteractionSyncHandler();
