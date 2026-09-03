@@ -98,19 +98,16 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         ItemStack stack = new ItemStack(asItem());
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
         stack.set(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        stack.set(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY);
+        stack.set(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        stack.set(GTDataComponents.GT_TOOL, GTTool.EMPTY);
+
         stack.remove(DataComponents.MAX_DAMAGE);
         stack.remove(DataComponents.DAMAGE);
         stack.remove(DataComponents.UNBREAKABLE);
-        stack.remove(GTDataComponents.GT_TOOL);
-        stack.remove(GTDataComponents.AOE);
         stack.remove(GTDataComponents.RELOCATE_MINED_BLOCKS);
         stack.remove(GTDataComponents.RELOCATE_MOB_DROPS);
-        stack.remove(GTDataComponents.INNATE_ENCHANTMENTS);
         return stack;
-    }
-
-    private <T> void seTypedComponent(TypedDataComponent<T> component, PatchedDataComponentMap map) {
-        component.applyTo(map);
     }
 
     default ItemStack get() {
