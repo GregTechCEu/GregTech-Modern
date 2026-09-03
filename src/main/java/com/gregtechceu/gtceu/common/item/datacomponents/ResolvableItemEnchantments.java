@@ -1,12 +1,5 @@
 package com.gregtechceu.gtceu.common.item.datacomponents;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.Hash;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -24,11 +17,20 @@ import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
-import javax.annotation.Nullable;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
 
 public class ResolvableItemEnchantments implements TooltipProvider {
 
@@ -60,7 +62,8 @@ public class ResolvableItemEnchantments implements TooltipProvider {
     private final Object2IntOpenCustomHashMap<EitherHolder<Enchantment>> enchantments;
     private final boolean showInTooltip;
 
-    ResolvableItemEnchantments(Object2IntOpenCustomHashMap<EitherHolder<Enchantment>> enchantments, boolean showInTooltip) {
+    ResolvableItemEnchantments(Object2IntOpenCustomHashMap<EitherHolder<Enchantment>> enchantments,
+                               boolean showInTooltip) {
         this.enchantments = enchantments;
         this.showInTooltip = showInTooltip;
 
@@ -179,10 +182,12 @@ public class ResolvableItemEnchantments implements TooltipProvider {
 
     @Override
     public String toString() {
-        return "ResolvableItemEnchantments{enchantments=" + this.enchantments + ", showInTooltip=" + this.showInTooltip + "}";
+        return "ResolvableItemEnchantments{enchantments=" + this.enchantments + ", showInTooltip=" +
+                this.showInTooltip + "}";
     }
 
     public static class Mutable {
+
         private final Object2IntOpenCustomHashMap<EitherHolder<Enchantment>> enchantments = createLevelMap();
         private final boolean showInTooltip;
 
@@ -263,6 +268,7 @@ public class ResolvableItemEnchantments implements TooltipProvider {
     }
 
     private enum HashStrategy implements Hash.Strategy<EitherHolder<Enchantment>> {
+
         INSTANCE;
 
         @Override
