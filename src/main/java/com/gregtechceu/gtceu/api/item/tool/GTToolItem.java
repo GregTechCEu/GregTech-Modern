@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.model.runtimegen.ToolItemModelGenerator;
 
-import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -141,8 +140,7 @@ public class GTToolItem extends TieredItem implements IGTTool {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-        return super.isFoil(stack) ||
-                !stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS, ItemEnchantments.EMPTY).isEmpty();
+        return definition$isFoil(stack);
     }
 
     @Override
