@@ -63,7 +63,6 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -91,7 +90,6 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
 
     boolean playSoundOnBlockDestroy();
 
-    @NotNull
     default Item asItem() {
         return (Item) this;
     }
@@ -464,7 +462,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
     }
 
-    default boolean definition$canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility action) {
+    default boolean definition$canPerformAction(ItemStack stack, ItemAbility action) {
         if (getToolType().defaultAbilities.contains(action)) {
             return true;
         }
