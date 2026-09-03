@@ -446,6 +446,10 @@ public class GTRecipeBuilder {
         return inputItems(tagPrefix.value(), material, 1);
     }
 
+    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Material material, int count) {
+        return inputItems(tagPrefix.value(), material, count);
+    }
+
     public GTRecipeBuilder inputItems(TagPrefix tagPrefix, Material material, int count) {
         Objects.requireNonNull(tagPrefix, "TagPrefix cannot be null");
         Objects.requireNonNull(material, "Material cannot be null");
@@ -465,8 +469,6 @@ public class GTRecipeBuilder {
             return input(ItemRecipeCapability.CAP, RecipeHelper.makeSizedIngredient(item));
         }
     }
-
-
 
     public GTRecipeBuilder inputItems(MachineDefinition machine) {
         return inputItems(machine, 1);
@@ -595,6 +597,10 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix.value(), material, 1);
     }
 
+    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Material material, int count) {
+        return outputItems(orePrefix.value(), material, count);
+    }
+
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
         Objects.requireNonNull(orePrefix, "TagPrefix cannot be null");
         Objects.requireNonNull(material, "Material cannot be null");
@@ -706,6 +712,22 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder notConsumable(TagPrefix orePrefix, Material material, int count) {
+        int lastChance = this.chance;
+        this.chance = 0;
+        inputItems(orePrefix, material, count);
+        this.chance = lastChance;
+        return this;
+    }
+
+    public GTRecipeBuilder notConsumable(Holder<TagPrefix> orePrefix, Material material) {
+        int lastChance = this.chance;
+        this.chance = 0;
+        inputItems(orePrefix, material);
+        this.chance = lastChance;
+        return this;
+    }
+
+    public GTRecipeBuilder notConsumable(Holder<TagPrefix> orePrefix, Material material, int count) {
         int lastChance = this.chance;
         this.chance = 0;
         inputItems(orePrefix, material, count);
@@ -881,6 +903,22 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder chancedOutput(Item item, int count, String fraction) {
         return chancedOutput(new ItemStack(item, count), fraction);
+    }
+
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Material mat, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat), chance);
+    }
+
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Material mat, int count, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
+    }
+
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Material material, int count, String fraction) {
+        return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction);
+    }
+
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Material material, String fraction) {
+        return chancedOutput(prefix, material, 1, fraction);
     }
 
     public GTRecipeBuilder chancedOutput(Item item, String fraction) {
@@ -1482,11 +1520,11 @@ public class GTRecipeBuilder {
     }
 
     public void save(RecipeOutput output) {
-        Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         if (onSave != null) {
             onSave.accept(this, output);
         }
 
+        Objects.requireNonNull(id, "Recipe cannot have null id.");
         Objects.requireNonNull(recipeType, "Recipe cannot have null recipe type");
 
         ResearchCondition condition = this.conditions.stream()

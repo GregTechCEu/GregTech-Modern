@@ -64,12 +64,7 @@ public enum StoneTypes implements StringRepresentable {
     }
 
     public TagPrefix getTagPrefix() {
-        // disabled, always return block
-        if (false && this.natural) {
-            return TagPrefix.rock;
-        } else {
-            return TagPrefix.block;
-        }
+        return TagPrefix.block.value();
     }
 
     public @Nullable Holder<TagPrefix> getOreBaseTagPrefix() {

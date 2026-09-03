@@ -12,8 +12,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -314,7 +316,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                                      Either<BlockStateProvider, Material> middleLayerProvider,
                                      Either<BlockStateProvider, Material> outerLayerProvider,
                                      List<BlockState> innerPlacements, TagKey<Block> cannotReplace,
-                                     TagKey<Block> invalidBlocks, @NotNull TagPrefix providerMaterialPrefix) {
+                                     TagKey<Block> invalidBlocks, @NotNull Holder<TagPrefix> providerMaterialPrefix) {
 
         // spotless:off
         public static final Codec<GeodeBlockSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -326,7 +328,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                         ExtraCodecs.nonEmptyList(BlockState.CODEC.listOf()).fieldOf("inner_placements").forGetter(config -> config.innerPlacements),
                         TagKey.hashedCodec(Registries.BLOCK).fieldOf("cannot_replace").forGetter(config -> config.cannotReplace),
                         TagKey.hashedCodec(Registries.BLOCK).fieldOf("invalid_blocks").forGetter(config -> config.invalidBlocks),
-                        GTRegistries.TAG_PREFIXES.byNameCodec().optionalFieldOf("provider_material_prefix", TagPrefix.block).forGetter(config -> config.providerMaterialPrefix))
+                        RegistryFixedCodec.create(GTRegistries.Keys.TAG_PREFIX).optionalFieldOf("provider_material_prefix", TagPrefix.block).forGetter(config -> config.providerMaterialPrefix))
                 .apply(instance, GeodeBlockSettings::new));
         // spotless:on
     }

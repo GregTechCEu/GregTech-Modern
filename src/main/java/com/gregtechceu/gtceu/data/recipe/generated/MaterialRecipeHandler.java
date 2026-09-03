@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -128,7 +128,7 @@ public final class MaterialRecipeHandler {
         } else if (material.hasProperty(PropertyKey.INGOT)) {
             if (!material.hasAnyOfFlags(FLAMMABLE, NO_SMELTING)) {
 
-                boolean hasHotIngot = ingotHot.doGenerateItem(material);
+                boolean hasHotIngot = ingotHot.value().doGenerateItem(material);
                 ItemStack ingotStack = ChemicalHelper.get(hasHotIngot ? ingotHot : ingot, material);
                 if (ingotStack.isEmpty() && oreProperty != null) {
                     Material smeltingResult = oreProperty.getDirectSmeltResult();
@@ -429,8 +429,8 @@ public final class MaterialRecipeHandler {
         }
     }
 
-    private static void processGemConversion(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
-                                             @Nullable TagPrefix lowerPrefix, @NotNull Material material) {
+    private static void processGemConversion(@NotNull RecipeOutput provider, @NotNull TagPrefixEntry prefix,
+                                             @Nullable TagPrefixEntry lowerPrefix, @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.GEM)) {
             return;
         }

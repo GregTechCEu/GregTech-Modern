@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -69,7 +69,8 @@ public class OreTagPrefixBuilderJS extends TagPrefixBuilderJS {
         newPrefix.setTags(tags);
         newPrefix.miningToolTag().addAll(miningToolTag);
 
-        TagPrefix.ORES.put(newPrefix, new TagPrefix.OreType(stateSupplier, materialSupplier, templateProperties, baseModelLocation, doubleDrops, isSand, shouldDropAsItem));
+        TagPrefix.ORES.put(newPrefix, new TagPrefix.OreType(stateSupplier, materialSupplier, templateProperties,
+                baseModelLocation, doubleDrops, isSand, shouldDropAsItem));
         if (shouldDropAsItem) {
             GTOreByProduct.addOreByProductPrefix(newPrefix);
         }
