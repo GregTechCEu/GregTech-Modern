@@ -1274,11 +1274,20 @@ public class TagPrefix {
         setIgnored(material, Arrays.asList(items));
     }
 
+    @SafeVarargs
+    public final void setIgnored(Holder<Material> material, Supplier<? extends ItemLike>... items) {
+        setIgnored(material.value(), Arrays.asList(items));
+    }
+
     public void setIgnored(Material material, Collection<Supplier<? extends ItemLike>> items) {
         ignoredMaterials.computeIfAbsent(material, m -> new HashSet<>()).addAll(items);
         if (!items.isEmpty()) {
             ItemMaterialData.registerMaterialEntries(items, this, material);
         }
+    }
+
+    public void setIgnored(Holder<Material> material, Collection<Supplier<? extends ItemLike>> items) {
+        setIgnored(material.value(), items);
     }
 
     public void setIgnored(Material material, ItemLike... items) {
@@ -1300,7 +1309,17 @@ public class TagPrefix {
         }
     }
 
+    public void setIgnored(Holder<Material> material, ItemLike... items) {
+        setIgnored(material.value(), items);
+    }
+
     public void setIgnoredBlock(Material material, Block... blocks) {
+        this.setIgnored(material, Arrays.stream(blocks)
+                .map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
+                .collect(Collectors.toSet()));
+    }
+
+    public void setIgnoredBlock(Holder<Material> material, Block... blocks) {
         this.setIgnored(material, Arrays.stream(blocks)
                 .map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
                 .collect(Collectors.toSet()));
@@ -1308,6 +1327,10 @@ public class TagPrefix {
 
     public void setIgnored(Material material) {
         ignoredMaterials.computeIfAbsent(material, m -> new HashSet<>());
+    }
+
+    public void setIgnored(Holder<Material> material) {
+        setIgnored(material.value());
     }
 
     public void removeIgnored(Material material) {
