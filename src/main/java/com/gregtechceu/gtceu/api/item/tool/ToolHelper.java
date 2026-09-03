@@ -126,8 +126,9 @@ public class ToolHelper {
         return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean hasBehaviorsComponent(ItemStack stack) {
-        return stack.has(GTDataComponents.TOOL_BEHAVIORS);
+        return !getBehaviorsComponent(stack).isEmpty();
     }
 
     public static ItemStack get(GTToolType toolType, Material material) {

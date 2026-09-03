@@ -41,6 +41,10 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
         this(behaviors.stream().collect(Collectors.toMap(IToolBehavior::getType, Function.identity())));
     }
 
+    public boolean isEmpty() {
+        return this.behaviors.isEmpty();
+    }
+
     public boolean hasBehavior(ToolBehaviorType<?> type) {
         return behaviors.containsKey(type);
     }
