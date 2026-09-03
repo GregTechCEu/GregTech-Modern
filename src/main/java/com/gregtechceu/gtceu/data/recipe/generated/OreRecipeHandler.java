@@ -77,7 +77,7 @@ public final class OreRecipeHandler {
             return;
         }
 
-        var inputStack = ChemicalHelper.get(orePrefix, material);
+        var inputTag = ChemicalHelper.getTag(orePrefix, material);
 
         Material byproductMaterial = property.getOreByProduct(0, material);
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
@@ -107,7 +107,7 @@ public final class OreRecipeHandler {
             int crushedCount = property.getOreMultiplier() * oreTypeMultiplier;
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                     .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(inputStack)
+                    .inputItems(inputTag)
                     .EUt(16)
                     .duration(10)
                     .category(GTRecipeCategories.ORE_FORGING);
@@ -120,7 +120,7 @@ public final class OreRecipeHandler {
 
             builder = MACERATOR_RECIPES
                     .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(inputStack)
+                    .inputItems(inputTag)
                     .outputItems(crushedStack.copyWithCount(crushedCount * 2))
                     .chancedOutput(byproductStack, 1400)
                     .EUt(2)
@@ -141,10 +141,10 @@ public final class OreRecipeHandler {
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputTag,
                     ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputTag,
                     ingotStack, xp);
         }
     }
