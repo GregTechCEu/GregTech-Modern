@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
@@ -184,7 +184,7 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static void processGear(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
+    private static void processGear(@NotNull RecipeOutput provider, @NotNull TagPrefixEntry prefix,
                                     @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.DUST)) {
             return;
@@ -403,7 +403,7 @@ public final class PartsRecipeHandler {
         }
     }
 
-    private static void processSpring(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
+    private static void processSpring(@NotNull RecipeOutput provider, @NotNull TagPrefixEntry prefix,
                                       @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.INGOT)) {
             return;

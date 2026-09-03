@@ -10,12 +10,14 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -53,7 +55,7 @@ public class RecyclingRecipes {
 
     public static void registerRecyclingRecipes(RecipeOutput provider, ItemStack input,
                                                 List<MaterialStack> components, boolean ignoreArcSmelting,
-                                                @Nullable TagPrefix prefix) {
+                                                @Nullable Holder<TagPrefix> prefix) {
         // Gather the valid Materials for use in recycling recipes.
         // - Filter out Materials that cannot create a Dust
         // - Filter out Materials that do not equate to at least 1 Nugget worth of Material.
@@ -87,7 +89,7 @@ public class RecyclingRecipes {
             }
 
             // Skip Ingot -> Ingot Arc Recipes
-            if (ChemicalHelper.getPrefix(input.getItem()) == TagPrefix.ingot &&
+            if (ChemicalHelper.getPrefix(input.getItem()) == TagPrefix.ingot.value() &&
                     m.getProperty(PropertyKey.INGOT).getArcSmeltingInto() == m) {
                 return;
             }
@@ -135,7 +137,7 @@ public class RecyclingRecipes {
             builder.inputItems(inputTag);
         }
 
-        boolean recycle = entry.isEmpty() || entry.tagPrefix() != TagPrefix.ingot;
+        boolean recycle = entry.isEmpty() || entry.tagPrefix() != TagPrefix.ingot.value();
         if (recycle) {
             builder.category(GTRecipeCategories.MACERATOR_RECYCLING);
         }
@@ -145,7 +147,7 @@ public class RecyclingRecipes {
 
     private static void registerExtractorRecycling(RecipeOutput provider, ItemStack input,
                                                    List<MaterialStack> materials, int multiplier,
-                                                   @Nullable TagPrefix prefix) {
+                                                   @Nullable Holder<TagPrefix> prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
         if (!entry.isEmpty() && !entry.material().isNull()) {
@@ -153,7 +155,7 @@ public class RecyclingRecipes {
         }
 
         // Handle simple materials separately
-        if (prefix != null && prefix.secondaryMaterials().isEmpty()) {
+        if (prefix != null && prefix.value().secondaryMaterials().isEmpty()) {
             MaterialStack ms = ChemicalHelper.getMaterialStack(input);
             if (ms.isEmpty() || ms.material().isNull()) {
                 return;
@@ -231,7 +233,7 @@ public class RecyclingRecipes {
     }
 
     private static void registerArcRecycling(RecipeOutput provider, ItemStack input,
-                                             List<MaterialStack> materials, @Nullable TagPrefix prefix) {
+                                             List<MaterialStack> materials, @Nullable Holder<TagPrefix> prefix) {
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(input.getItem());
         TagKey<Item> inputTag = null;
         if (!entry.isEmpty() && !entry.material().isNull()) {
@@ -304,7 +306,7 @@ public class RecyclingRecipes {
         builder.save(provider);
     }
 
-    private static boolean needsRecyclingCategory(@Nullable TagPrefix prefix, @NotNull MaterialStack inputStack,
+    private static boolean needsRecyclingCategory(@Nullable Holder<TagPrefix> prefix, @NotNull MaterialStack inputStack,
                                                   @NotNull List<ItemStack> outputs) {
         if (prefix == TagPrefix.nugget || prefix == TagPrefix.ingot || prefix == TagPrefix.block) {
             if (outputs.size() == 1) {
@@ -454,7 +456,7 @@ public class RecyclingRecipes {
             if (stack.getCount() > stack.getMaxStackSize()) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
                 if (!entry.isEmpty()) { // should always be true
-                    TagPrefix prefix = entry.tagPrefix();
+                    Holder<TagPrefix> prefix = entry.tagPrefix().getRegistryHolder();
 
                     // These are the highest forms that a Material can have (for Ingot and Dust, respectively),
                     // so simply split the stacks and continue.
@@ -537,9 +539,9 @@ public class RecyclingRecipes {
                 new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * amount)));
     }
 
-    private static final List<TagPrefix> DUST_ORDER = List.of(TagPrefix.dust, TagPrefix.dustSmall,
+    private static final List<TagPrefixEntry> DUST_ORDER = List.of(TagPrefix.dust, TagPrefix.dustSmall,
             TagPrefix.dustTiny);
-    private static final List<TagPrefix> INGOT_ORDER = List.of(TagPrefix.block, TagPrefix.ingot,
+    private static final List<TagPrefixEntry> INGOT_ORDER = List.of(TagPrefix.block, TagPrefix.ingot,
             TagPrefix.nugget);
 
     private static void shrinkStacks(List<Pair<ItemStack, MaterialStack>> list, ItemStack originalStack,
@@ -548,11 +550,11 @@ public class RecyclingRecipes {
         long materialAmount = originalStack.getCount() * entry.tagPrefix().getMaterialAmount(material);
 
         // noinspection ConstantConditions
-        final List<TagPrefix> chosenList = material.hasProperty(PropertyKey.INGOT) ? INGOT_ORDER : DUST_ORDER;
+        final List<TagPrefixEntry> chosenList = material.hasProperty(PropertyKey.INGOT) ? INGOT_ORDER : DUST_ORDER;
 
         // Break materialAmount into a maximal stack
-        Map<TagPrefix, MaterialStack> tempList = new HashMap<>();
-        for (TagPrefix prefix : chosenList) {
+        Map<TagPrefixEntry, MaterialStack> tempList = new HashMap<>();
+        for (TagPrefixEntry prefix : chosenList) {
 
             // Current prefix too large to "compact" into
             if (materialAmount / prefix.getMaterialAmount(material) == 0) continue;
@@ -565,7 +567,7 @@ public class RecyclingRecipes {
         // Split the "highest level" stack (either Blocks or Dusts) if needed, as it is
         // the only stack that could possibly be above 64.
         if (tempList.containsKey(chosenList.get(0))) {
-            TagPrefix prefix = chosenList.get(0);
+            TagPrefixEntry prefix = chosenList.get(0);
             MaterialStack ms = tempList.get(prefix);
             splitStacks(list,
                     ChemicalHelper.get(chosenList.get(0), ms.material(),
@@ -573,8 +575,8 @@ public class RecyclingRecipes {
                     new MaterialEntry(prefix, material));
         }
 
-        TagPrefix mediumPrefix = chosenList.get(1); // dustSmall or ingot
-        TagPrefix smallestPrefix = chosenList.get(2); // dustTiny or nugget
+        TagPrefixEntry mediumPrefix = chosenList.get(1); // dustSmall or ingot
+        TagPrefixEntry smallestPrefix = chosenList.get(2); // dustTiny or nugget
         MaterialStack mediumMS = tempList.get(mediumPrefix); // dustSmall or ingot
         MaterialStack smallestMS = tempList.get(smallestPrefix); // dustTiny or nugget
 
@@ -582,7 +584,7 @@ public class RecyclingRecipes {
         if (mediumMS != null && smallestMS != null) {
             long singleStackAmount = mediumMS.amount() + smallestMS.amount();
             long itemAmount = singleStackAmount / smallestPrefix.getMaterialAmount(material);
-            if (itemAmount <= smallestPrefix.maxStackSize()) {
+            if (itemAmount <= smallestPrefix.value().maxStackSize()) {
                 list.add(new Pair<>(
                         ChemicalHelper.get(smallestPrefix, material, (int) itemAmount),
                         new MaterialStack(material, singleStackAmount)));

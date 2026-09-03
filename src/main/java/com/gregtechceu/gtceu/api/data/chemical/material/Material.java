@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -155,6 +156,10 @@ public final class Material {
         return !this.hasFlag(MaterialFlags.DISABLE_MATERIAL_RECIPES) && !ChemicalHelper.get(prefix, this).isEmpty();
     }
 
+    public boolean shouldGenerateRecipesFor(Holder<TagPrefix> prefix) {
+        return !this.hasFlag(MaterialFlags.DISABLE_MATERIAL_RECIPES) && !ChemicalHelper.get(prefix, this).isEmpty();
+    }
+
     public void addFlags(MaterialFlag... flags) {
         if (GTRegistries.MATERIALS.isFrozen()) {
             throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
@@ -273,7 +278,9 @@ public final class Material {
     }
 
     public SizedFluidIngredient asSingleFluidIngredient(int amount) {
-        return SizedFluidIngredient.of(Objects.requireNonNull(getFluid(), "Cannot create fluid ingredient for material without a fluid"), amount);
+        return SizedFluidIngredient.of(
+                Objects.requireNonNull(getFluid(), "Cannot create fluid ingredient for material without a fluid"),
+                amount);
     }
 
     /**
@@ -571,7 +578,7 @@ public final class Material {
         private final MaterialProperties properties;
         private final MaterialFlags flags;
 
-        private @Nullable Set<TagPrefix> ignoredTagPrefixes = null;
+        private @Nullable HolderSet<TagPrefix> ignoredTagPrefixes = null;
         private final List<TagKey<Item>> itemTags = new ArrayList<>();
 
         /*
@@ -1162,7 +1169,8 @@ public final class Material {
                     components.length % 2 == 0,
                     "Material Components list malformed!");
 
-            Validate.noNullElements(components, "Material components array for %s had null element".formatted(this.materialInfo.resourceLocation));
+            Validate.noNullElements(components,
+                    "Material components array for %s had null element".formatted(this.materialInfo.resourceLocation));
 
             for (int i = 0; i < components.length; i += 2) {
                 composition.add(new MaterialStack(
@@ -1241,11 +1249,11 @@ public final class Material {
          *
          * @param prefixes The list of prefixes to ignore.
          */
-        public Builder ignoredTagPrefixes(TagPrefix... prefixes) {
-            if (this.ignoredTagPrefixes == null) {
-                this.ignoredTagPrefixes = new HashSet<>();
-            }
-            this.ignoredTagPrefixes.addAll(Arrays.asList(prefixes));
+        @SafeVarargs
+        public final Builder ignoredTagPrefixes(Holder<TagPrefix>... prefixes) {
+            List<Holder<TagPrefix>> ignored = new ArrayList<>(Arrays.asList(prefixes));
+            if (ignoredTagPrefixes != null) ignored.addAll(this.ignoredTagPrefixes.stream().toList());
+            ignoredTagPrefixes = HolderSet.direct(ignored);
             return this;
         }
 
@@ -1850,7 +1858,7 @@ public final class Material {
             materialInfo.verifyInfo(properties, averageRGB);
             GTRegistries.register(GTRegistries.MATERIALS, mat.getResourceLocation(), mat);
             if (ignoredTagPrefixes != null) {
-                ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
+                ignoredTagPrefixes.forEach(p -> p.value().setIgnored(mat));
             }
             return mat;
         }

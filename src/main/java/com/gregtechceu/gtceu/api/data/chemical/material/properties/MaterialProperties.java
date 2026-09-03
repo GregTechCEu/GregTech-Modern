@@ -70,6 +70,7 @@ public class MaterialProperties {
 
     /**
      * Ensures that the given property exists, creating it if absent.
+     * 
      * @param key The property key.
      * @return The existing property, or the newly created property.
      */

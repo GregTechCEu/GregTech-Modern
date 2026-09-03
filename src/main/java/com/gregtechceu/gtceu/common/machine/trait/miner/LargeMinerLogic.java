@@ -135,7 +135,7 @@ public class LargeMinerLogic extends MinerLogic {
                 builder.withParameter(LootContextParams.TOOL, fortunePick));
 
         for (ItemStack outputStack : outputs) {
-            if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
+            if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed.value()) {
                 outputStack = fortuneDropMultiplier.apply(outputStack.copy(), lootContext);
             }
             blockDrops.add(outputStack);

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Unit;
@@ -57,7 +58,7 @@ public class GTMaterialItems {
 
     // Reference Maps
     public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
-    public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
+    public static final Map<Holder<TagPrefix>, Holder<TagPrefix>> purifyMap = new HashMap<>();
     static {
         purifyMap.put(TagPrefix.crushed, TagPrefix.crushedPurified);
         purifyMap.put(TagPrefix.dustImpure, TagPrefix.dust);
@@ -127,7 +128,7 @@ public class GTMaterialItems {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "RedundantCast" })
     private static void generateTool(final Material material, final GTToolType toolType, GTRegistrate registrate) {
         final MaterialToolTier tier = material.getToolTier();
         // spotless:off

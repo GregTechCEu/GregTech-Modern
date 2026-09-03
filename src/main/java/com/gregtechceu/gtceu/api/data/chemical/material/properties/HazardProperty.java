@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
@@ -48,7 +49,7 @@ public class HazardProperty implements IMaterialProperty {
     @Override
     public void verifyProperty(MaterialProperties properties) {}
 
-    public record HazardTrigger(String name, ProtectionType protectionType, Set<TagPrefix> affectedTagPrefixes)
+    public record HazardTrigger(String name, ProtectionType protectionType, HolderSet<TagPrefix> affectedTagPrefixes)
             implements StringRepresentable {
 
         public static final Map<String, HazardTrigger> ALL_TRIGGERS = new HashMap<>();
@@ -66,13 +67,13 @@ public class HazardProperty implements IMaterialProperty {
             ALL_TRIGGERS.put(name, this);
         }
 
-        public HazardTrigger(String name, ProtectionType protectionType, TagPrefix... tagPrefixes) {
-            this(name, protectionType, new HashSet<>());
-            affectedTagPrefixes.addAll(Arrays.asList(tagPrefixes));
+        @SafeVarargs
+        public HazardTrigger(String name, ProtectionType protectionType, Holder<TagPrefix>... tagPrefixes) {
+            this(name, protectionType, HolderSet.direct(tagPrefixes));
         }
 
-        public boolean isAffected(TagPrefix prefix) {
-            if (affectedTagPrefixes.isEmpty()) return true; // empty list means all prefixes are affected
+        public boolean isAffected(Holder<TagPrefix> prefix) {
+            if (affectedTagPrefixes.size() == 0) return true; // empty list means all prefixes are affected
             return affectedTagPrefixes.contains(prefix);
         }
 
@@ -194,7 +195,7 @@ public class HazardProperty implements IMaterialProperty {
         if (property == null) {
             return MaterialEntry.NULL_ENTRY;
         }
-        if (!isFluid && !property.hazardTrigger.isAffected(entry.tagPrefix())) {
+        if (!isFluid && !property.hazardTrigger.isAffected(entry.tagPrefix().getRegistryHolder())) {
             return MaterialEntry.NULL_ENTRY;
         }
         return entry;

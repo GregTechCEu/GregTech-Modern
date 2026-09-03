@@ -25,10 +25,12 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -101,7 +103,8 @@ public class TagPrefix {
                     ResourceLocation.withDefaultNamespace("block/diorite"))
             .register();
 
-    public static final TagPrefixEntry oreAndesite = REGISTRATE.oreTagPrefix("andesite", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefixEntry oreAndesite = REGISTRATE
+            .oreTagPrefix("andesite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Andesite %s Ore")
             .registerOre(
                     Blocks.ANDESITE::defaultBlockState, () -> GTMaterials.Andesite, BlockBehaviour.Properties.of()
@@ -109,7 +112,8 @@ public class TagPrefix {
                     ResourceLocation.withDefaultNamespace("block/andesite"))
             .register();
 
-    public static final TagPrefixEntry oreRedGranite = REGISTRATE.oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefixEntry oreRedGranite = REGISTRATE
+            .oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Red Granite %s Ore")
             .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.RedGranite,
                     BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops()
@@ -125,7 +129,8 @@ public class TagPrefix {
                     GTCEu.id("block/marble"))
             .register();
 
-    public static final TagPrefixEntry oreDeepslate = REGISTRATE.oreTagPrefix("deepslate", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefixEntry oreDeepslate = REGISTRATE
+            .oreTagPrefix("deepslate", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Deepslate %s Ore")
             .registerOre(
                     Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, BlockBehaviour.Properties.of()
@@ -176,7 +181,8 @@ public class TagPrefix {
                     ResourceLocation.withDefaultNamespace("block/basalt"), true)
             .register();
 
-    public static final TagPrefixEntry oreNetherrack = REGISTRATE.oreTagPrefix("netherrack", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefixEntry oreNetherrack = REGISTRATE
+            .oreTagPrefix("netherrack", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Nether %s Ore")
             .registerOre(Blocks.NETHERRACK::defaultBlockState, () -> GTMaterials.Netherrack,
                     BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).instrument(NoteBlockInstrument.BASEDRUM)
@@ -184,7 +190,8 @@ public class TagPrefix {
                     ResourceLocation.withDefaultNamespace("block/netherrack"), true, false, true)
             .register();
 
-    public static final TagPrefixEntry oreBlackstone = REGISTRATE.oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefixEntry oreBlackstone = REGISTRATE
+            .oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Blackstone %s Ore")
             .registerOre(Blocks.BLACKSTONE::defaultBlockState, () -> GTMaterials.Blackstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
@@ -193,7 +200,8 @@ public class TagPrefix {
                     ResourceLocation.withDefaultNamespace("block/blackstone"), true, false, false)
             .register();
 
-    public static final TagPrefixEntry oreEndstone = REGISTRATE.oreTagPrefix("endstone", BlockTags.MINEABLE_WITH_PICKAXE)
+    public static final TagPrefixEntry oreEndstone = REGISTRATE
+            .oreTagPrefix("endstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("End %s Ore")
             .registerOre(Blocks.END_STONE::defaultBlockState, () -> GTMaterials.Endstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM)
@@ -1133,12 +1141,21 @@ public class TagPrefix {
         this.name = id.getPath();
         this.idPattern = "%s_" + name;
         this.langValue = "%s " + FormattingUtil.toEnglishName(name);
-        GTRegistries.register(GTRegistries.TAG_PREFIXES, id, this);
+    }
+
+    public ResourceKey<TagPrefix> getKey() {
+        return ResourceKey.create(GTRegistries.Keys.TAG_PREFIX, id);
+    }
+
+    public Holder<TagPrefix> getRegistryHolder() {
+        return GTRegistries.TAG_PREFIXES.getHolderOrThrow(getKey());
     }
 
     public TagPrefix blockProperties(BlockProperties blockProperties) {
-        Objects.requireNonNull(blockProperties.renderType(),  "Could not set blockProperties with null renderType in TagPrefix " + this.id());
-        Objects.requireNonNull(blockProperties.properties(),  "Could not set blockProperties with null properties in TagPrefix " + this.id());
+        Objects.requireNonNull(blockProperties.renderType(),
+                "Could not set blockProperties with null renderType in TagPrefix " + this.id());
+        Objects.requireNonNull(blockProperties.properties(),
+                "Could not set blockProperties with null properties in TagPrefix " + this.id());
         this.blockProperties = blockProperties;
         return this;
     }

@@ -73,11 +73,11 @@ public abstract class MaterialPipeBlock<
 
     @Override
     public String getDescriptionId() {
-        return pipeType.getTagPrefix().getUnlocalizedName(material);
+        return pipeType.getTagPrefix().value().getUnlocalizedName(material);
     }
 
     @Override
     public MutableComponent getName() {
-        return pipeType.getTagPrefix().getLocalizedName(material);
+        return pipeType.getTagPrefix().value().getLocalizedName(material);
     }
 }

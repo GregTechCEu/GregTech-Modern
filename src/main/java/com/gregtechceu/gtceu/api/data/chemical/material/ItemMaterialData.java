@@ -113,6 +113,11 @@ public class ItemMaterialData {
         registerMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
     }
 
+    public static void registerMaterialEntry(ItemLike item,
+                                             Holder<TagPrefix> tagPrefix, Material material) {
+        registerMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
+    }
+
     private static void registerItemEntry(Supplier<? extends ItemLike> supplier,
                                           MaterialEntry materialEntry) {
         MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, k -> new ArrayList<>())
@@ -181,7 +186,8 @@ public class ItemMaterialData {
         }
     }
 
-    private static @Nullable ItemMaterialInfo recurseFindMaterialInfo(@Nullable ItemMaterialInfo info, ItemStack stack) {
+    private static @Nullable ItemMaterialInfo recurseFindMaterialInfo(@Nullable ItemMaterialInfo info,
+                                                                      ItemStack stack) {
         // grab material info from each input
         for (var input : UNRESOLVED_ITEM_MATERIAL_INFO.get(stack)) {
             // recurse if its nested inputs, not yet resolved

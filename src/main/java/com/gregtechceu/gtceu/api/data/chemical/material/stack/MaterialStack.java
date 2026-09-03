@@ -4,13 +4,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public record MaterialStack(Material material, long amount) {
-
 
     public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.NULL, 0);
 

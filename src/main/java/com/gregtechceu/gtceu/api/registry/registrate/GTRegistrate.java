@@ -190,16 +190,17 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     /// Element Registration
 
-    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds, @Nullable String decayTo,
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds,
+                                                   @Nullable String decayTo,
                                                    String displayName, String symbol, boolean isIsotope) {
-        return simple(name, GTRegistries.Keys.ELEMENT, () -> new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope));
+        return simple(name, GTRegistries.Keys.ELEMENT,
+                () -> new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope));
     }
 
     public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
                                                    String displayName, String symbol, boolean isIsotope) {
         return element(name, protons, neutrons, -1, null, displayName, symbol, isIsotope);
     }
-
 
     public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds,
                                                    String displayName, String symbol, boolean isIsotope) {
@@ -240,10 +241,11 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(name)));
     }
 
-    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name, @Nullable Holder<MaterialIconSet> parentIconSet) {
-        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(name), parentIconSet, parentIconSet == null));
+    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name,
+                                                                           @Nullable Holder<MaterialIconSet> parentIconSet) {
+        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET,
+                () -> new MaterialIconSet(makeResourceLocation(name), parentIconSet, parentIconSet == null));
     }
-
 
     /// Cover Registration
 

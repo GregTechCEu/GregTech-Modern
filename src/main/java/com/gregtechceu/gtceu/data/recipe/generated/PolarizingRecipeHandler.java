@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
@@ -20,11 +22,10 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.POLARIZER_RECIPES;
 
 public final class PolarizingRecipeHandler {
 
-    private static final TagPrefix[] POLARIZING_PREFIXES = new TagPrefix[] {
+    private static final HolderSet<TagPrefix> POLARIZING_PREFIXES = HolderSet.direct(
             rod, rodLong, plate, ingot, plateDense, plateDouble, rotor,
             bolt, screw, wireFine, foil, ring, dust, nugget, block,
-            dustTiny, dustSmall
-    };
+            dustTiny, dustSmall);
 
     private PolarizingRecipeHandler() {}
 
@@ -34,26 +35,26 @@ public final class PolarizingRecipeHandler {
             return;
         }
 
-        for (TagPrefix prefix : POLARIZING_PREFIXES) {
+        for (Holder<TagPrefix> prefix : POLARIZING_PREFIXES) {
             processPolarizing(provider, property, prefix, material);
         }
     }
 
     private static void processPolarizing(@NotNull RecipeOutput provider, @NotNull IngotProperty property,
-                                          @NotNull TagPrefix prefix, @NotNull Material material) {
+                                          @NotNull Holder<TagPrefix> prefix, @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
         Material magneticMaterial = property.getMagneticMaterial();
 
-        if (!magneticMaterial.isNull() && (prefix.doGenerateBlock(magneticMaterial) ||
-                prefix.doGenerateItem(magneticMaterial))) {
+        if (!magneticMaterial.isNull() && (prefix.value().doGenerateBlock(magneticMaterial) ||
+                prefix.value().doGenerateItem(magneticMaterial))) {
             ItemStack magneticStack = ChemicalHelper.get(prefix, magneticMaterial);
-            POLARIZER_RECIPES.recipeBuilder("polarize_" + material.getName() + "_" + prefix.name) // polarizing
+            POLARIZER_RECIPES.recipeBuilder("polarize_" + material.getName() + "_" + prefix.value().name) // polarizing
                     .inputItems(prefix, material)
                     .outputItems(magneticStack)
-                    .duration((int) ((int) material.getMass() * prefix.getMaterialAmount(material) / M))
+                    .duration((int) ((int) material.getMass() * prefix.value().getMaterialAmount(material) / M))
                     .EUt(getVoltageMultiplier(material))
                     .save(provider);
 
