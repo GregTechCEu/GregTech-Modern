@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -25,6 +27,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -59,6 +62,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
@@ -204,6 +209,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
                                                    String displayName, String symbol) {
         return element(name, protons, neutrons, -1, null, displayName, symbol, false);
+    }
+
+    /// TagPrefix Builder
+
+    public TagPrefixBuilder tagPrefix(String name) {
+        return entry(name, callback -> new TagPrefixBuilder(this, name, callback));
+    }
+
+    public TagPrefixBuilder oreTagPrefix(String name, TagKey<Block> miningToolTag) {
+        return entry(name, callback -> new TagPrefixBuilder(this, name, callback)
+                .defaultTagPath("ores/%s")
+                .prefixOnlyTagPath("ores_in_ground/%s")
+                .unformattedTagPath("ores")
+                .materialIconType(MaterialIconType.ore)
+                .miningToolTag(miningToolTag)
+                .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
+                .generationCondition(hasOreProperty));
     }
 
     /// Material Icon Set registration

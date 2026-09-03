@@ -108,7 +108,7 @@ public class GTMaterialBlocks {
             var oreTag = ore.getKey();
             final TagPrefix.OreType oreType = ore.getValue();
             String typePrefix = "";
-            if (oreTag != TagPrefix.ore) {
+            if (oreTag != TagPrefix.ore.value()) {
                 typePrefix = oreTag.name + "_";
             }
             var entry = registrate.block("%s%s_ore".formatted(typePrefix, material.getName()),

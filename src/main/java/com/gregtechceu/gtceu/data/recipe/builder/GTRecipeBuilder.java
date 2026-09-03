@@ -432,10 +432,6 @@ public class GTRecipeBuilder {
         return inputItems(input, 1);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix orePrefix, Material material) {
-        return inputItems(orePrefix, material, 1);
-    }
-
     public GTRecipeBuilder inputItems(MaterialEntry input) {
         return inputItems(input, 1);
     }
@@ -444,7 +440,15 @@ public class GTRecipeBuilder {
         return inputItems(input.tagPrefix(), input.material(), count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @NotNull Material material, int count) {
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, Material material) {
+        return inputItems(tagPrefix, material, 1);
+    }
+
+    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Material material) {
+        return inputItems(tagPrefix.value(), material, 1);
+    }
+
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, Material material, int count) {
         Objects.requireNonNull(tagPrefix, "TagPrefix cannot be null");
         Objects.requireNonNull(material, "Material cannot be null");
 
@@ -463,6 +467,8 @@ public class GTRecipeBuilder {
             return input(ItemRecipeCapability.CAP, RecipeHelper.makeSizedIngredient(item));
         }
     }
+
+
 
     public GTRecipeBuilder inputItems(MachineDefinition machine) {
         return inputItems(machine, 1);
@@ -587,6 +593,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material) {
         return outputItems(orePrefix, material, 1);
+    }
+
+    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Material material) {
+        return outputItems(orePrefix.value(), material, 1);
     }
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
