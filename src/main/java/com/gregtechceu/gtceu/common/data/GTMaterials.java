@@ -69,9 +69,6 @@ public class GTMaterials {
         modBus.register(GTMaterials.class);
     }
 
-    /**
-     * Perform
-     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void modifyMaterials(PostMaterialEvent event) {
         /*

@@ -125,7 +125,7 @@ public class ChemicalHelper {
     public static TagPrefix getPrefix(ItemLike itemLike) {
         MaterialEntry entry = getMaterialEntry(itemLike);
         if (!entry.isEmpty()) return entry.tagPrefix();
-        return TagPrefix.NULL_PREFIX;
+        return TagPrefix.NULL_PREFIX.value();
     }
 
     public static TagPrefix getPrefix(ItemStack itemStack) {
@@ -255,7 +255,7 @@ public class ChemicalHelper {
     public static Item getItem(MaterialEntry materialEntry) {
         List<ItemLike> items = getItems(materialEntry);
         if (items.isEmpty()) return Items.AIR;
-        return items.get(0).asItem();
+        return items.getFirst().asItem();
     }
 
     public static Item getItem(TagPrefix tagPrefix, Material material) {
@@ -275,6 +275,14 @@ public class ChemicalHelper {
     }
 
     public static ItemStack get(TagPrefix tagPrefix, Material material) {
+        return get(tagPrefix, material, 1);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material) {
         return get(tagPrefix, material, 1);
     }
 
@@ -311,6 +319,11 @@ public class ChemicalHelper {
     }
 
     @Nullable
+    public static Block getBlock(Holder<TagPrefix> orePrefix, Material material) {
+        return getBlock(new MaterialEntry(orePrefix.value(), material));
+    }
+
+    @Nullable
     public static TagKey<Block> getBlockTag(TagPrefix orePrefix, Material material) {
         var tags = orePrefix.getBlockTags(material);
         if (!tags.isEmpty()) {
@@ -326,6 +339,11 @@ public class ChemicalHelper {
             return tags.getFirst();
         }
         return null;
+    }
+
+    @Nullable
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Material material) {
+        return getTag(orePrefix.value(), material);
     }
 
     public static List<TagKey<Item>> getTags(TagPrefix orePrefix, Material material) {

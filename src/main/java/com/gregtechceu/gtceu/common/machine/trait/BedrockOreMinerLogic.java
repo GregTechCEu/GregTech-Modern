@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.trait;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -11,12 +12,14 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
@@ -78,7 +81,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             if (wm == null) return null;
             Material material = wm.material();
             if (material.isNull()) return null;
-            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
+            var bedrockOrePrefixKey = ResourceKey.create(GTRegistries.Keys.TAG_PREFIX, GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix));
+            ItemStack stack = ChemicalHelper.get(GTRegistries.TAG_PREFIXES.getOrThrow(bedrockOrePrefixKey),
                     material, getOreToProduce());
             // backup 1: crushed; if raw ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce());
