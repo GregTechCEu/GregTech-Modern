@@ -106,7 +106,7 @@ public abstract class ProspectorMode<T> {
                     return oreItems;
                 }, state -> {
                     MaterialEntry entry = ChemicalHelper.getMaterialEntry(state.getBlock());
-                    List<ItemLike> oreItems = ChemicalHelper.getItems(entry);
+                    List<ItemLike> oreItems = entry == null ? List.of() : ChemicalHelper.getItems(entry);
                     if (oreItems.isEmpty()) {
                         oreItems = List.of(state.getBlock().asItem());
                         if (oreItems.getFirst().asItem() == Items.AIR) {
