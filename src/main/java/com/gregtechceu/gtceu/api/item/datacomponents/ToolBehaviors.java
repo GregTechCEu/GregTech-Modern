@@ -25,7 +25,7 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
 
     public static final ToolBehaviors EMPTY = new ToolBehaviors(Map.of());
     // spotless:off
-    public static final Codec<Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_CODEC = Codec
+    private static final Codec<Map<ToolBehaviorType<?>, IToolBehavior<?>>> MAP_CODEC = Codec
             .dispatchedMap(GTRegistries.TOOL_BEHAVIORS.byNameCodec(), ToolBehaviorType::getCodec);
     public static final Codec<ToolBehaviors> CODEC = MAP_CODEC.xmap(ToolBehaviors::new, ToolBehaviors::behaviors);
 
@@ -39,6 +39,10 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
 
     public ToolBehaviors(List<IToolBehavior<?>> behaviors) {
         this(behaviors.stream().collect(Collectors.toMap(IToolBehavior::getType, Function.identity())));
+    }
+
+    public ToolBehaviors(Map<ToolBehaviorType<?>, IToolBehavior<?>> behaviors) {
+        this.behaviors = Collections.unmodifiableMap(behaviors);
     }
 
     public boolean isEmpty() {
