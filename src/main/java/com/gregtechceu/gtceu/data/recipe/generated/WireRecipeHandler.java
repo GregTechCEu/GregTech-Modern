@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -141,7 +143,7 @@ public final class WireRecipeHandler {
         }
 
         int cableAmount = (int) (prefix.getMaterialAmount(material) * 2 / M);
-        TagPrefix cablePrefix = TagPrefix.get("cable" + prefix.name().substring(4));
+        TagPrefix cablePrefix = GTRegistries.TAG_PREFIXES.get(GTCEu.id("cable" + prefix.name().substring(4)));
         int voltageTier = GTUtil.getTierByVoltage(property.getVoltage());
         int insulationAmount = INSULATION_AMOUNT.getInt(cablePrefix);
 

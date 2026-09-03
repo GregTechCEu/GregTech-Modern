@@ -129,8 +129,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                 DimensionMarkerBuilder::new);
         registry.addDefault(GTRegistries.Keys.MATERIAL, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
         registry.of(GTRegistries.Keys.TAG_PREFIX, reg -> {
-            reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
-            reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
+            reg.addDefault(TagPrefixBuilderJS.class, TagPrefixBuilderJS::new);
+            reg.add(GTCEu.id("ore"), OreTagPrefixBuilderJS.class, OreTagPrefixBuilderJS::new);
         });
 
         registry.of(Registries.RECIPE_TYPE, reg -> {

@@ -1251,7 +1251,7 @@ public class GTBlocks {
 
         STONE_BLOCKS.row(StoneBlockType.COBBLE).forEach((strata, block) -> {
             if (strata.generateBlocks && strata.natural) {
-                COBBLE_BLOCKS.put(strata.getOreBaseTagPrefix(), block::getDefaultState);
+                COBBLE_BLOCKS.put(strata.getOreBaseTagPrefix().value(), block::getDefaultState);
             }
         });
 
@@ -1424,11 +1424,11 @@ public class GTBlocks {
 
     private static void initializeCobbleReplacements() {
         // replacement blocks for mc based stone types
-        COBBLE_BLOCKS.put(TagPrefix.ore, Blocks.COBBLESTONE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.ore.value(), Blocks.COBBLESTONE::defaultBlockState);
         COBBLE_BLOCKS.put(TagPrefix.oreDeepslate, Blocks.COBBLED_DEEPSLATE::defaultBlockState);
         COBBLE_BLOCKS.put(TagPrefix.oreAndesite, Blocks.ANDESITE::defaultBlockState);
         COBBLE_BLOCKS.put(TagPrefix.oreDiorite, Blocks.DIORITE::defaultBlockState);
-        COBBLE_BLOCKS.put(TagPrefix.oreGranite, Blocks.GRANITE::defaultBlockState);
+        COBBLE_BLOCKS.put(TagPrefix.oreGranite.value(), Blocks.GRANITE::defaultBlockState);
         COBBLE_BLOCKS.put(TagPrefix.oreRedGranite,
                 STONE_BLOCKS.get(StoneBlockType.COBBLE, StoneTypes.RED_GRANITE)::getDefaultState);
         COBBLE_BLOCKS.put(TagPrefix.oreMarble,
