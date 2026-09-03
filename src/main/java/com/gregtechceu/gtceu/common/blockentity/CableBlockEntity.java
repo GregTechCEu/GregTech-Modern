@@ -276,7 +276,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         int oldTemperature = temperature;
         setTemperature(getDefaultTemp());
 
-        TagPrefix uninsulatedPrefix = getPipeType().getUninsulated().tagPrefix;
+        TagPrefix uninsulatedPrefix = getPipeType().getUninsulated().tagPrefix.value();
         CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS.get(uninsulatedPrefix, getPipeBlock().material).get();
         level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
 

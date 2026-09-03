@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +49,7 @@ public class GTOreByProduct {
         }
     }
 
-    private static ImmutableList<TagPrefix> IN_PROCESSING_STEPS;
+    private static HolderSet<TagPrefix> IN_PROCESSING_STEPS;
 
     private static ImmutableList<ItemStack> ALWAYS_MACHINES;
 
@@ -66,7 +68,7 @@ public class GTOreByProduct {
 
     public GTOreByProduct(Material material) {
         if (IN_PROCESSING_STEPS == null) {
-            IN_PROCESSING_STEPS = ImmutableList.of(
+            IN_PROCESSING_STEPS = HolderSet.direct(
                     TagPrefix.crushed,
                     TagPrefix.crushedPurified,
                     TagPrefix.dustImpure,
@@ -149,7 +151,7 @@ public class GTOreByProduct {
         }
 
         // add prefixes that should count as inputs to input lists (they will not be displayed in actual page)
-        for (TagPrefix prefix : IN_PROCESSING_STEPS) {
+        for (Holder<TagPrefix> prefix : IN_PROCESSING_STEPS) {
             itemInputs.add(ItemTagList.of(Objects.requireNonNull(ChemicalHelper.getTag(prefix, material)), 1,
                     DataComponentPatch.EMPTY));
         }
@@ -251,7 +253,7 @@ public class GTOreByProduct {
         // electromagnetic separator
         if (hasSeparator) {
             // noinspection DataFlowIssue
-            TagPrefix prefix = (separatedInto.getLast().getBlastTemperature() == 0 &&
+            Holder<TagPrefix> prefix = (separatedInto.getLast().getBlastTemperature() == 0 &&
                     separatedInto.getLast().hasProperty(PropertyKey.INGOT)) ? TagPrefix.nugget :
                             TagPrefix.dust;
             ItemStack separatedStack2 = ChemicalHelper.get(prefix, separatedInto.getLast(),
@@ -329,7 +331,7 @@ public class GTOreByProduct {
         return hasDirectSmelt;
     }
 
-    private void addToOutputs(Material material, TagPrefix prefix, int size) {
+    private void addToOutputs(Material material, Holder<TagPrefix> prefix, int size) {
         addToOutputs(ChemicalHelper.get(prefix, material, size));
     }
 

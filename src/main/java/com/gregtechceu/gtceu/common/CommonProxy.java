@@ -271,6 +271,11 @@ public class CommonProxy {
             GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
             GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
+
+            // Other
+            GTBlocks.generateStoneBlocks();
+            GTBlocks.initializeCobbleReplacements();
+
             // --spacer--
         } else if (event.getRegistryKey() == Registries.ITEM) {
             // Material Items & Tools
