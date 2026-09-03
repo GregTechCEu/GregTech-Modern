@@ -276,17 +276,6 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Bone, 5);
     }
 
-    @NotNull
-    public static Material get(String name) {
-        var mat = GTRegistries.MATERIALS.get(ResourceLocation.parse(name));
-        // material could be null here due to the registry grabbing a material that isn't in the map
-        if (mat == null || mat.isNull()) {
-            GTCEu.LOGGER.warn("{} is not a known Material", name);
-            return GTMaterials.NULL;
-        }
-        return mat;
-    }
-
     private static void excludeAllGems(Material material, ItemLike... items) {
         gem.setIgnored(material, items);
         excludeAllGemsButNormal(material);

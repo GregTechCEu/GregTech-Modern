@@ -24,7 +24,7 @@ public class CoilBlockBuilder extends ActiveBlockBuilder {
     @Setter
     public transient int temperature = 0, level = 0, energyDiscount = 1, tier = 0;
     @Setter
-    public transient Supplier<Material> material = () -> GTMaterials.NULL;
+    public transient Supplier<Material> material = () -> null;
     @Setter
     public transient String texture = "minecraft:missingno";
 

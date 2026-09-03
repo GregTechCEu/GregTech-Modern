@@ -54,11 +54,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> {
         return material;
     }
 
-    public Material getMaterial(ResourceLocation name) {
-        Material value = get(name);
-        return value != null ? value : GTMaterials.NULL;
-    }
-
     @Override
     public ResourceLocation getKey(Material material) {
         return material.getResourceLocation();

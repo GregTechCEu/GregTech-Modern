@@ -81,7 +81,6 @@ public class MixinHelpers {
             ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
                 if (itemLikes.isEmpty()) return;
                 var material = entry.material();
-                if (material.isNull()) return;
                 var entries = itemLikes.stream()
                         .map(Supplier::get)
                         .map(MixinHelpers::makeItemEntry)

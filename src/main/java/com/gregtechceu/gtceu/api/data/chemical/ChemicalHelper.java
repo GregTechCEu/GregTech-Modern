@@ -80,28 +80,24 @@ public class ChemicalHelper {
 
     public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
         Material entryMaterial = entry.material();
-        if (!entryMaterial.isNull()) {
-            return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
-        }
-        return MaterialStack.EMPTY;
+        return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
     }
 
     public static MaterialStack getMaterialStack(ItemLike itemLike) {
         var entry = getMaterialEntry(itemLike);
         if (entry != null) {
-            Material entryMaterial = entry.material();
-            return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
+            return getMaterialStack(entry);
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike.asItem());
         if (info == null) return MaterialStack.EMPTY;
-        if (info.getMaterial().isEmpty()) {
+        if (info.getMaterial() == null) {
             GTCEu.LOGGER.error("ItemMaterialInfo for {} is empty!", itemLike);
             return MaterialStack.EMPTY;
         }
         return info.getMaterial();
     }
 
-    public static Material getMaterial(Fluid fluid) {
+    public static @Nullable Material getMaterial(Fluid fluid) {
         if (FLUID_MATERIAL.isEmpty()) {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
             for (final Material material : GTRegistries.MATERIALS) {
@@ -119,7 +115,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        return FLUID_MATERIAL.getOrDefault(fluid, GTMaterials.NULL);
+        return FLUID_MATERIAL.getOrDefault(fluid, null);
     }
 
     public static @Nullable TagPrefix getPrefix(ItemLike itemLike) {

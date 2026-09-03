@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,16 +153,15 @@ public class OreProperty implements IMaterialProperty {
         this.oreByProducts.addAll(Arrays.asList(materials));
     }
 
-    @NotNull
-    public final Material getOreByProduct(int index) {
-        if (this.oreByProducts.isEmpty()) return GTMaterials.NULL;
+    public final @Nullable Material getOreByProduct(int index) {
+        if (this.oreByProducts.isEmpty()) return null;
         return this.oreByProducts.get(Mth.clamp(index, 0, this.oreByProducts.size() - 1));
     }
 
     @NotNull
     public final Material getOreByProduct(int index, @NotNull Material fallback) {
         Material material = getOreByProduct(index);
-        return !material.isNull() ? material : fallback;
+        return material != null ? material : fallback;
     }
 
     @Override

@@ -58,7 +58,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     public int rotorSpeed;
     @SaveField
     @SyncToClient
-    public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
+    public @Nullable Material rotorMaterial = null; // 0 - no rotor
     @Nullable
     protected TickableSubscription rotorSpeedSubs;
     @Nullable
@@ -117,12 +117,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     // ****** Rotor Holder ******//
     //////////////////////////////////////
 
-    public Material getRotorMaterial() {
-        // handles clients trying to get the material before server data sync
-        // noinspection ConstantValue
-        if (rotorMaterial == null) {
-            return GTMaterials.NULL;
-        }
+    public @Nullable Material getRotorMaterial() {
         return rotorMaterial;
     }
 
@@ -138,7 +133,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
                     .setValue(HAS_ROTOR, true)
                     .setValue(IS_EMISSIVE_ROTOR, emissive));
         } else {
-            this.rotorMaterial = GTMaterials.NULL;
+            this.rotorMaterial = null;
             setRenderState(getRenderState()
                     .setValue(HAS_ROTOR, false)
                     .setValue(IS_EMISSIVE_ROTOR, false));

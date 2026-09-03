@@ -238,7 +238,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
         final int color;
         Material material = ChemicalHelper.getMaterial(vein.fluid());
-        if (material.isNull()) {
+        if (material == null) {
             color = IClientFluidTypeExtensions.of(vein.fluid()).getTintColor();
         } else {
             color = material.getMaterialARGB();

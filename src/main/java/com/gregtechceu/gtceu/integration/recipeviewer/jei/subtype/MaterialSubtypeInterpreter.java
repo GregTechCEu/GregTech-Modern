@@ -18,13 +18,13 @@ public class MaterialSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
 
     @Override
     public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
-        return ingredient.getOrDefault(GTDataComponents.ITEM_MATERIAL, GTMaterials.NULL);
+        return ingredient.get(GTDataComponents.ITEM_MATERIAL);
     }
 
     @Override
     public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
-        Material material = ingredient.getOrDefault(GTDataComponents.ITEM_MATERIAL, GTMaterials.NULL);
-        if (material.isNull()) {
+        Material material = ingredient.get(GTDataComponents.ITEM_MATERIAL);
+        if (material == null) {
             return "";
         }
         return material.getUnlocalizedName();

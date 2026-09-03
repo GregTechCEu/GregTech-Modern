@@ -23,19 +23,12 @@ public record MaterialEntry(TagPrefix tagPrefix, Material material) {
 
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
 
-    public MaterialEntry(TagPrefix tagPrefix) {
-        this(tagPrefix, GTMaterials.NULL);
-    }
-
     public boolean isIgnored() {
         return tagPrefix().isIgnored(material());
     }
 
     public long getMaterialAmount() {
-        if (!material.isNull()) {
-            return tagPrefix.getMaterialAmount(material);
-        }
-        return tagPrefix.materialAmount();
+        return tagPrefix.getMaterialAmount(material);
     }
 
     @Override
@@ -58,7 +51,9 @@ public record MaterialEntry(TagPrefix tagPrefix, Material material) {
             if (values.length > 1) {
                 var prefix = GTRegistries.TAG_PREFIXES.get(GTCEu.id(values[0]));
                 if (prefix == null) throw new IllegalArgumentException("Invalid TagPrefix: " + values[0]);
-                cached = new MaterialEntry(prefix, GTMaterials.get(values[1]));
+                var material = GTRegistries.MATERIALS.get(GTCEu.id(values[1]));
+                if (material == null) throw new IllegalArgumentException("Invalid material: " + values[0]);
+                cached = new MaterialEntry(prefix, material);
                 PARSE_CACHE.put(str, cached);
                 return cached;
             }

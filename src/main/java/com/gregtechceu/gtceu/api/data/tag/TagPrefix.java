@@ -77,7 +77,7 @@ public class TagPrefix {
     public static TagPrefix get(String name) {
         return GTRegistries.TAG_PREFIXES.get(GTCEu.id(name));
     }
-    
+
     public static final TagPrefix ore = oreTagPrefix(GTCEu.id("stone"), BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
             .registerOre(
@@ -1182,7 +1182,7 @@ public class TagPrefix {
     }
 
     public long getMaterialAmount(@NotNull Material material) {
-        if (material.isNull() || !isAmountModified(material)) {
+        if (!isAmountModified(material)) {
             return this.materialAmount;
         }
         return (long) (GTValues.M * materialAmounts.getFloat(material));
@@ -1208,7 +1208,7 @@ public class TagPrefix {
     public List<TagKey<Item>> getItemParentTags() {
         return tags.stream()
                 .filter(TagType::isParentTag)
-                .map(type -> type.getTag(this, GTMaterials.NULL))
+                .map(type -> type.getTag(this, null))
                 .toList();
     }
 

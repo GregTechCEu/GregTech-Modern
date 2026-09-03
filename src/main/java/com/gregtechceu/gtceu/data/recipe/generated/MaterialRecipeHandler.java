@@ -651,6 +651,8 @@ public final class MaterialRecipeHandler {
 
                 Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
                         material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
+                if (nonMagneticMaterial == null) nonMagneticMaterial = material;
+
                 if (!nonMagneticMaterial.hasProperty(PropertyKey.BLAST)) {
                     ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_dust_to_block")
                             .inputItems(dust, material, (int) (materialAmount / M))

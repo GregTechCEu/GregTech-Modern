@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
@@ -1185,7 +1186,7 @@ public final class Material {
                             "Material in Components List is null for Material " + this.materialInfo.resourceLocation);
                 }
                 composition.add(new MaterialStack(
-                        components[i] instanceof CharSequence chars ? GTMaterials.get(chars.toString()) :
+                        components[i] instanceof CharSequence chars ? GTRegistries.MATERIALS.getOptional(GTCEu.id(chars.toString())).orElseThrow() :
                                 (Material) components[i],
                         ((Number) components[i + 1]).longValue()));
             }

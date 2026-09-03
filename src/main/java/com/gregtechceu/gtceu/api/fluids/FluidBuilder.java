@@ -329,7 +329,7 @@ public class FluidBuilder {
 
     @ApiStatus.Internal
     public void determineTextures(Material material, FluidStorageKey key) {
-        if (hasCustomStill || material.isNull()) {
+        if (hasCustomStill) {
             still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
         } else {
             still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);

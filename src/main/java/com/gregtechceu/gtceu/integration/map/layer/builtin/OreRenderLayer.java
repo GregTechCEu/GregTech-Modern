@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class OreRenderLayer extends MapRenderLayer {
         return Component.translatable(OreVeinRecipeWidget.getOreName(vein.definition().value()));
     }
 
-    public static @NotNull Material getMaterial(@NotNull GeneratedVeinMetadata vein) {
+    public static @Nullable Material getMaterial(@NotNull GeneratedVeinMetadata vein) {
         Material firstMaterial = null;
         GTOreDefinition definition = vein.definition().value();
         if (!definition.indicatorGenerators().isEmpty()) {
@@ -48,7 +49,7 @@ public class OreRenderLayer extends MapRenderLayer {
             firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
                     state -> {
                         var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
-                        return matStack.isEmpty() ? GTMaterials.NULL : matStack.material();
+                        return matStack.isEmpty() ? null : matStack.material();
                     },
                     Function.identity());
         }

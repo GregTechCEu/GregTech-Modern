@@ -377,14 +377,15 @@ public class RecyclingRecipes {
         int highestTemp = 0;
         for (MaterialStack ms : materials) {
             Material m = ms.material();
+            Material smeltingMaterial = m.getProperty(PropertyKey.INGOT).getSmeltingInto();
             if (m.hasProperty(PropertyKey.BLAST)) {
                 BlastProperty prop = m.getProperty(PropertyKey.BLAST);
                 if (prop.getBlastTemperature() > highestTemp) {
                     highestTemp = prop.getBlastTemperature();
                 }
-            } else if (m.hasFlag(IS_MAGNETIC) && m.hasProperty(PropertyKey.INGOT) &&
-                    m.getProperty(PropertyKey.INGOT).getSmeltingInto().hasProperty(PropertyKey.BLAST)) {
-                        BlastProperty prop = m.getProperty(PropertyKey.INGOT).getSmeltingInto()
+            } else if (m.hasFlag(IS_MAGNETIC) && m.hasProperty(PropertyKey.INGOT) && smeltingMaterial != null &&
+                    smeltingMaterial.hasProperty(PropertyKey.BLAST)) {
+                        BlastProperty prop = smeltingMaterial
                                 .getProperty(PropertyKey.BLAST);
                         if (prop.getBlastTemperature() > highestTemp) {
                             highestTemp = prop.getBlastTemperature();
