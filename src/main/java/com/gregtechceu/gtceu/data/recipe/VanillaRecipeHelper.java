@@ -760,7 +760,7 @@ public class VanillaRecipeHelper {
 
             // Gather any secondary materials if this item has an OrePrefix
             TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
-            if (!prefix.isEmpty() && !prefix.secondaryMaterials().isEmpty()) {
+            if (prefix != null && !prefix.secondaryMaterials().isEmpty()) {
                 for (MaterialStack ms : prefix.secondaryMaterials()) {
                     addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                 }

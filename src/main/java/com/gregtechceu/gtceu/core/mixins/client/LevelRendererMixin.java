@@ -185,7 +185,7 @@ public abstract class LevelRendererMixin {
 
         // spotless:off
         MaterialEntry materialEntry = ChemicalHelper.getMaterialEntry(state.getBlock());
-        if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
+        if (rendererCfg.coloredMaterialBlockOutline && materialEntry != null) {
             renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
         } else if (rendererCfg.coloredTieredMachineOutline) {

@@ -77,13 +77,7 @@ public class TagPrefix {
     public static TagPrefix get(String name) {
         return GTRegistries.TAG_PREFIXES.get(GTCEu.id(name));
     }
-
-    public boolean isEmpty() {
-        return this == NULL_PREFIX;
-    }
-
-    public static final TagPrefix NULL_PREFIX = new TagPrefix(GTCEu.id("null"));
-
+    
     public static final TagPrefix ore = oreTagPrefix(GTCEu.id("stone"), BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
             .registerOre(

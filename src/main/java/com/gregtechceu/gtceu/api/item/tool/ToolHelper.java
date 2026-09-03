@@ -407,7 +407,7 @@ public class ToolHelper {
                 cleared = true;
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(silkTouchDrop.getItem());
-            boolean isOre = !prefix.isEmpty() && TagPrefix.ORES.containsKey(prefix);
+            boolean isOre = prefix != null && TagPrefix.ORES.containsKey(prefix);
 
             for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                 ItemStack output = ItemRecipeCapability.CAP.of(content.content()).getItems()[0];

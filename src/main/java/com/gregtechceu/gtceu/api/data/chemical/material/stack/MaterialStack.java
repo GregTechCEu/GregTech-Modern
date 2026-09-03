@@ -5,19 +5,26 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public record MaterialStack(@NotNull Material material, long amount) {
+public record MaterialStack(@Nullable Material material, long amount) {
 
-    public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.NULL, 0);
+    public static final MaterialStack EMPTY = new MaterialStack(null, 0);
 
     private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialStack copy() {
         if (isEmpty()) return EMPTY;
         return new MaterialStack(material, amount);
+    }
+
+    @Override
+    public Material material() {
+        if (material == null) throw new IllegalStateException("Cannot get material from empty material stack");
+        return material;
     }
 
     public MaterialStack add(long amount) {
@@ -60,7 +67,7 @@ public record MaterialStack(@NotNull Material material, long amount) {
     }
 
     public boolean isEmpty() {
-        return this.material == GTMaterials.NULL || this.amount < 1;
+        return this.material == null || this.amount < 1;
     }
 
     @Override

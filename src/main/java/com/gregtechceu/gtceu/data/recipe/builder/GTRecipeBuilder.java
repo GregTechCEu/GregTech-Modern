@@ -454,15 +454,12 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @NotNull Material material, int count) {
-        if (tagPrefix.isEmpty() || material.isNull()) {
-            GTCEu.LOGGER.error(
-                    "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, tagPrefix, material, count);
-            return this;
-        } else {
-            tempItemMaterialStacks.add(new MaterialStack(material, tagPrefix.getMaterialAmount(material) * count));
-            tagPrefix.secondaryMaterials().forEach(mat -> tempItemMaterialStacks.add(mat.multiply(count)));
-        }
+        Objects.requireNonNull(tagPrefix, "TagPrefix cannot be null");
+        Objects.requireNonNull(material, "Material cannot be null");
+
+
+        tempItemMaterialStacks.add(new MaterialStack(material, tagPrefix.getMaterialAmount(material) * count));
+        tagPrefix.secondaryMaterials().forEach(mat -> tempItemMaterialStacks.add(mat.multiply(count)));
         TagKey<Item> tag = ChemicalHelper.getTag(tagPrefix, material);
         if (tag != null) {
             return inputItems(tag, count);
@@ -610,13 +607,9 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
-        if (orePrefix.isEmpty() || material.isNull()) {
-            GTCEu.LOGGER.error(
-                    "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, orePrefix, material, count);
-            return this;
-        }
+    public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
+        Objects.requireNonNull(orePrefix, "TagPrefix cannot be null");
+        Objects.requireNonNull(material, "Material cannot be null");
         var item = ChemicalHelper.get(orePrefix, material, count);
         if (item.isEmpty()) {
             GTCEu.LOGGER.error(

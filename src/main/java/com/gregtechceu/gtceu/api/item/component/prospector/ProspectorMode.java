@@ -75,7 +75,7 @@ public abstract class ProspectorMode<T> {
 
                         Either<Material, BlockState> item = BLOCK_CACHE.computeIfAbsent(state, blockState -> {
                             MaterialEntry entry = ChemicalHelper.getMaterialEntry(blockState.getBlock());
-                            if (!entry.isEmpty()) {
+                            if (entry != null) {
                                 return Either.left(entry.material());
                             }
                             return Either.right(blockState);
