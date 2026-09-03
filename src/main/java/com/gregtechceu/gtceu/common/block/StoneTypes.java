@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
+import net.minecraft.core.Holder;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -71,7 +72,7 @@ public enum StoneTypes implements StringRepresentable {
         }
     }
 
-    public @Nullable TagPrefix getOreBaseTagPrefix() {
+    public @Nullable Holder<TagPrefix> getOreBaseTagPrefix() {
         return switch (this) {
             case STONE -> TagPrefix.ore;
             case DEEPSLATE -> TagPrefix.oreDeepslate;
