@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.datafixers.util.Either;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

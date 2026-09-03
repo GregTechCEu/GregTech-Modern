@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.core.Holder;
@@ -218,7 +217,8 @@ public class ChemicalHelper {
     }
 
     public static MaterialEntry getMaterialEntryOrThrow(ItemLike itemLike) {
-        return Objects.requireNonNull(getMaterialEntry(itemLike), "No material entry for %s".formatted(itemLike.asItem()));
+        return Objects.requireNonNull(getMaterialEntry(itemLike),
+                "No material entry for %s".formatted(itemLike.asItem()));
     }
 
     public static @Nullable MaterialEntry getMaterialEntry(TagKey<Item> tag) {
@@ -242,7 +242,6 @@ public class ChemicalHelper {
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
-        if (materialEntry.material().isNull()) return new ArrayList<>();
         return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
             TagPrefix prefix = entry.tagPrefix();
             var items = new ArrayList<Supplier<? extends Item>>();
@@ -334,7 +333,8 @@ public class ChemicalHelper {
     }
 
     public static TagKey<Item> getTagOrThrow(TagPrefix orePrefix, Material material) {
-        return Objects.requireNonNull(getTag(orePrefix, material), "No item tag for %s %s".formatted(orePrefix, material));
+        return Objects.requireNonNull(getTag(orePrefix, material),
+                "No item tag for %s %s".formatted(orePrefix, material));
     }
 
     public static List<TagKey<Item>> getTags(TagPrefix orePrefix, @NotNull Material material) {

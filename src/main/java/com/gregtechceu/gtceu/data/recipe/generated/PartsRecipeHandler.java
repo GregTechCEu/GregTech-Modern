@@ -54,9 +54,10 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        ItemStack boltStack = ChemicalHelper.get(bolt,
-                material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                        material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+        ItemStack boltStack = ChemicalHelper.get(bolt, magMaterial);
         ItemStack ingotStack = ChemicalHelper.get(ingot, material);
 
         CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_screw_to_bolt")
@@ -92,9 +93,11 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        ItemStack screwStack = ChemicalHelper.get(screw,
-                material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                        material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+
+        ItemStack screwStack = ChemicalHelper.get(screw, magMaterial);
 
         LATHE_RECIPES.recipeBuilder("lathe_" + material.getName() + "_bolt_to_screw")
                 .inputItems(bolt, material)
@@ -115,6 +118,8 @@ public final class PartsRecipeHandler {
 
         var magMaterial = material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+
         if (!material.hasFlag(NO_SMASHING))
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("foil_%s", material.getName()),
                     ChemicalHelper.get(foil, material, 2),
@@ -160,8 +165,11 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        ItemStack fineWireStack = ChemicalHelper.get(wireFine, material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        Material magMaterial = material.hasFlag(IS_MAGNETIC) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+
+        ItemStack fineWireStack = ChemicalHelper.get(wireFine, magMaterial);
 
         if (!ChemicalHelper.get(foil, material).isEmpty())
             VanillaRecipeHelper.addShapelessRecipe(provider, String.format("fine_wire_%s", material.getName()),
@@ -191,9 +199,12 @@ public final class PartsRecipeHandler {
         }
 
         boolean isSmall = prefix == gearSmall;
-        ItemStack stack = ChemicalHelper.get(prefix,
-                material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
-                        material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+
+        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+
+        ItemStack stack = ChemicalHelper.get(prefix, magMaterial);
         if (!isSmall && material.hasProperty(PropertyKey.INGOT)) {
             int voltageMultiplier = getVoltageMultiplier(material);
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_gear")
@@ -322,8 +333,10 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        var magMaterial = material.hasFlag(IS_MAGNETIC) ?
+        Material magMaterial = material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+
         if (material.hasFlag(GENERATE_PLATE)) {
             if (!material.hasFlag(NO_SMASHING)) {
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("plate_double_%s", material.getName()),

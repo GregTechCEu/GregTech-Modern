@@ -457,7 +457,6 @@ public class GTRecipeBuilder {
         Objects.requireNonNull(tagPrefix, "TagPrefix cannot be null");
         Objects.requireNonNull(material, "Material cannot be null");
 
-
         tempItemMaterialStacks.add(new MaterialStack(material, tagPrefix.getMaterialAmount(material) * count));
         tagPrefix.secondaryMaterials().forEach(mat -> tempItemMaterialStacks.add(mat.multiply(count)));
         TagKey<Item> tag = ChemicalHelper.getTag(tagPrefix, material);
@@ -1001,7 +1000,7 @@ public class GTRecipeBuilder {
             return this;
         }
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if (!matStack.isNull() && chance != 0 && chance == maxChance) {
+        if (matStack != null && chance != 0 && chance == maxChance) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, RecipeHelper.makeSizedFluidIngredient(input));
@@ -1015,7 +1014,7 @@ public class GTRecipeBuilder {
                 return this;
             } else {
                 var matStack = ChemicalHelper.getMaterial(fluid.getFluid());
-                if (!matStack.isNull()) {
+                if (matStack != null) {
                     if (chance == maxChance && chance != 0) {
                         tempFluidStacks.add(new MaterialStack(matStack, fluid.getAmount() * GTValues.M / GTValues.L));
                     }

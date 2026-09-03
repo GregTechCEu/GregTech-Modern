@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -30,6 +29,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+
+import com.mojang.datafixers.util.Either;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -96,7 +97,7 @@ public class TooltipsHandler {
         }
 
         var material = ChemicalHelper.getMaterial(fluid);
-        if (!material.isNull()) {
+        if (material != null) {
             var formula = material.getChemicalFormula();
             if (formula != null && !formula.isEmpty()) {
                 tooltips.accept(Component.literal(formula).withStyle(ChatFormatting.YELLOW));

@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class IngotProperty implements IMaterialProperty {
@@ -55,10 +53,8 @@ public class IngotProperty implements IMaterialProperty {
 
         if (arcSmeltingInto != null) arcSmeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (macerateInto.isNull()) macerateInto = properties.getMaterial();
-        else macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (macerateInto != null) macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (!magneticMaterial.isNull())
-            magneticMaterial.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (magneticMaterial != null) magneticMaterial.getProperties().ensureSet(PropertyKey.INGOT, true);
     }
 }

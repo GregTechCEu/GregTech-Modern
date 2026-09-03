@@ -129,7 +129,7 @@ public class GTOreByProduct {
         itemInputs.add(ItemStackList.of(simpleWashers));
         itemInputs.add(ItemStackList.of(simpleWashers));
 
-        if (!washedIn.first().isNull()) {
+        if (washedIn.first() != null) {
             hasChemBath = true;
             addToInputs(GTMachines.CHEMICAL_BATH[GTValues.LV].asStack());
         } else {
@@ -163,7 +163,7 @@ public class GTOreByProduct {
         // direct smelt
         if (hasDirectSmelt) {
             ItemStack smeltingResult;
-            Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+            Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                     property.getDirectSmeltResult();
             if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
                 smeltingResult = ChemicalHelper.get(TagPrefix.ingot, smeltingMaterial);

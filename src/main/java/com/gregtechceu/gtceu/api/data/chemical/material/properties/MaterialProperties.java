@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ public class MaterialProperties {
         return propertyMap.isEmpty();
     }
 
-    public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> @Nullable T getProperty(PropertyKey<T> key) {
         return key.cast(propertyMap.get(key));
     }
 

@@ -682,7 +682,7 @@ public class VanillaRecipeHelper {
      * @return if the material is a wood
      */
     public static boolean isMaterialWood(@NotNull Material material) {
-        return !material.isNull() && material.hasProperty(PropertyKey.WOOD);
+        return material.hasProperty(PropertyKey.WOOD);
     }
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @NotNull Object... recipe) {

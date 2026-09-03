@@ -61,7 +61,6 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GlobalPosWithRot;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -106,6 +105,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

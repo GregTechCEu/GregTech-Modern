@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.util.Mth;
 
@@ -61,8 +60,7 @@ public class OreProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
-    @NotNull
-    private Material directSmeltResult = GTMaterials.NULL;
+    private @Nullable Material directSmeltResult = null;
 
     /**
      * Material in which this Ore should be washed to give additional output.
@@ -71,8 +69,7 @@ public class OreProperty implements IMaterialProperty {
      * Default: none.
      */
     @Setter
-    @NotNull
-    private Material washedIn = GTMaterials.NULL;
+    private @Nullable Material washedIn = null;
 
     /**
      * The amount of Material that the ore should be washed in
@@ -168,9 +165,9 @@ public class OreProperty implements IMaterialProperty {
     public void verifyProperty(MaterialProperties properties) {
         properties.ensureSet(PropertyKey.DUST, true);
 
-        if (!directSmeltResult.isNull())
+        if (directSmeltResult != null)
             directSmeltResult.getProperties().ensureSet(PropertyKey.DUST, true);
-        if (!washedIn.isNull())
+        if (washedIn != null)
             washedIn.getProperties().ensureSet(PropertyKey.FLUID, true);
         separatedInto.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));
         oreByProducts.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));

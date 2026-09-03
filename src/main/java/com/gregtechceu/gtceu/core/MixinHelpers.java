@@ -97,7 +97,7 @@ public class MixinHelpers {
                 if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
                     OreProperty ore = material.getProperty(PropertyKey.ORE);
                     Material washedIn = ore.getWashedIn().first();
-                    if (washedIn.isNull()) return;
+                    if (washedIn == null) return;
                     ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
                     ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
 
@@ -161,7 +161,6 @@ public class MixinHelpers {
             ItemMaterialData.MATERIAL_ENTRY_BLOCK_MAP.forEach((entry, blocks) -> {
                 if (blocks.isEmpty()) return;
                 var material = entry.material();
-                if (material.isNull()) return;
 
                 var entries = blocks.stream().map(MixinHelpers::makeBlockEntry).collect(toArrayList());
                 var materialTags = entry.tagPrefix().getAllBlockTags(material);

@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -528,7 +527,7 @@ public final class Material {
         return properties.hasProperty(key);
     }
 
-    public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> @Nullable T getProperty(PropertyKey<T> key) {
         return properties.getProperty(key);
     }
 
@@ -557,10 +556,6 @@ public final class Material {
         flags.verify(this);
         this.chemicalFormula = calculateChemicalFormula();
         calculateDecompositionType();
-    }
-
-    public boolean isNull() {
-        return this == GTMaterials.NULL;
     }
 
     @Override
@@ -1186,7 +1181,8 @@ public final class Material {
                             "Material in Components List is null for Material " + this.materialInfo.resourceLocation);
                 }
                 composition.add(new MaterialStack(
-                        components[i] instanceof CharSequence chars ? GTRegistries.MATERIALS.getOptional(GTCEu.id(chars.toString())).orElseThrow() :
+                        components[i] instanceof CharSequence chars ?
+                                GTRegistries.MATERIALS.getOptional(GTCEu.id(chars.toString())).orElseThrow() :
                                 (Material) components[i],
                         ((Number) components[i + 1]).longValue()));
             }
