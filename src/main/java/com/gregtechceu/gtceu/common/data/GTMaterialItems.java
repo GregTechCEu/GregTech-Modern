@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.gregtechceu.gtceu.common.item.datacomponents.ResolvableItemEnchantments;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.TagKey;
