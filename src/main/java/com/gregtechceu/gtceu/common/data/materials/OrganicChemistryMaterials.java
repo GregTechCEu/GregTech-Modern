@@ -50,8 +50,8 @@ public class OrganicChemistryMaterials {
                 .color(0x54403D).secondaryColor(0x241520)
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .components(Carbon, 20, Hydrogen, 26)
-                .register()
-                .setFormula("(C4H6)3C8H8", true);
+                .formula("(C4H6)3C8H8", true)
+                .register();
 
         StyreneButadieneRubber = REGISTRATE.material("styrene_butadiene_rubber")
                 .polymer()
@@ -61,8 +61,8 @@ public class OrganicChemistryMaterials {
                 .color(0x34312b).secondaryColor(0x110B09)
                 .flags(GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 20, Hydrogen, 26)
-                .register()
-                .setFormula("(C4H6)3C8H8", true);
+                .formula("(C4H6)3C8H8", true)
+                .register();
 
         PolyvinylAcetate = REGISTRATE.material("polyvinyl_acetate")
                 .fluid()
@@ -217,8 +217,8 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0x87DEAA)
                 .components(Carbon, 2, Methane, 1, HydrochloricAcid, 1)
-                .register()
-                .setFormula("C3H5Cl", true);
+                .formula("C3H5Cl", true)
+                .register();
 
         Isoprene = REGISTRATE.material("isoprene")
                 .fluid()
@@ -434,32 +434,32 @@ public class OrganicChemistryMaterials {
                 .color(0xD1D1D1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 6, Oxygen, 4)
-                .register()
-                .setFormula("C6H4(CO2H)2", true);
+                .formula("C6H4(CO2H)2", true)
+                .register();
 
         Dimethylbenzene = REGISTRATE.material("dimethylbenzene")
                 .fluid()
                 .color(0x669C40)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 10)
-                .register()
-                .setFormula("C6H4(CH3)2", true);
+                .formula("C6H4(CH3)2", true)
+                .register();
 
         Diaminobenzidine = REGISTRATE.material("diaminobenzidine")
                 .fluid()
                 .color(0x337D59)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 14, Nitrogen, 4)
-                .register()
-                .setFormula("(C6H3(NH2)2)2", true);
+                .formula("(C6H3(NH2)2)2", true)
+                .register();
 
         Dichlorobenzidine = REGISTRATE.material("dichlorobenzidine")
                 .fluid()
                 .color(0xA1DEA6)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 10, Chlorine, 2, Nitrogen, 2)
-                .register()
-                .setFormula("(C6H3Cl(NH2))2", true);
+                .formula("(C6H3Cl(NH2))2", true)
+                .register();
 
         Nitrochlorobenzene = REGISTRATE.material("nitrochlorobenzene")
                 .fluid()
@@ -532,16 +532,16 @@ public class OrganicChemistryMaterials {
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .color(0xEBEBF0).iconSet(ROUGH)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
-                .register()
-                .setFormula("C6H11NO", true);
+                .formula("C6H11NO", true)
+                .register();
 
         Caprolactam = REGISTRATE.material("caprolactam")
                 .dust()
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .color(0xfffef8).secondaryColor(0xbab7a2)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
-                .register()
-                .setFormula("(CH2)5C(O)NH", true);
+                .formula("(CH2)5C(O)NH", true)
+                .register();
 
         Butyraldehyde = REGISTRATE.material("butyraldehyde")
                 .fluid()
@@ -563,8 +563,8 @@ public class OrganicChemistryMaterials {
                 .color(0x8B8C4F).iconSet(FINE)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 10)
-                .register()
-                .setFormula("(C6H5)2", true);
+                .formula("(C6H5)2", true)
+                .register();
 
         PolychlorinatedBiphenyl = REGISTRATE.material("polychlorinated_biphenyl")
                 .fluid()
@@ -572,24 +572,24 @@ public class OrganicChemistryMaterials {
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 8, Chlorine, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register()
-                .setFormula("(C6H4Cl)2", true);
+                .formula("(C6H4Cl)2", true)
+                .register();
 
         AceticAnhydride = REGISTRATE.material("acetic_anhydride")
                 .fluid()
                 .color(0xE0D182)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 6, Oxygen, 3)
-                .register()
-                .setFormula("(CH3CO)2O", true);
+                .formula("(CH3CO)2O", true)
+                .register();
 
         AminoPhenol = REGISTRATE.material("aminophenol")
                 .fluid()
                 .color(0x784421)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 7, Nitrogen, 1, Oxygen, 1)
-                .register()
-                .setFormula("H2NC6H4OH", true);
+                .formula("H2NC6H4OH", true)
+                .register();
 
         Paracetamol = REGISTRATE.material("paracetamol")
                 .dust()
