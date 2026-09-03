@@ -212,6 +212,12 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return element(name, protons, neutrons, -1, null, displayName, symbol, false);
     }
 
+    /// Material builder
+
+    public MaterialBuilder material(String name) {
+        return entry(name, callback -> new MaterialBuilder(this, name, callback));
+    }
+
     /// TagPrefix Builder
 
     public TagPrefixBuilder tagPrefix(String name) {

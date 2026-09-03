@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -34,7 +35,16 @@ public class TagPrefixEntry extends RegistryEntry<TagPrefix, TagPrefix> {
         value().setIgnored(material, Arrays.asList(items));
     }
 
+    @SafeVarargs
+    public final void setIgnored(Holder<Material> material, Supplier<? extends ItemLike>... items) {
+        value().setIgnored(material, Arrays.asList(items));
+    }
+
     public void setIgnored(Material material, Collection<Supplier<? extends ItemLike>> items) {
+        value().setIgnored(material, items);
+    }
+
+    public void setIgnored(Holder<Material> material, Collection<Supplier<? extends ItemLike>> items) {
         value().setIgnored(material, items);
     }
 
@@ -42,11 +52,23 @@ public class TagPrefixEntry extends RegistryEntry<TagPrefix, TagPrefix> {
         value().setIgnored(material, items);
     }
 
+    public void setIgnored(Holder<Material> material, ItemLike... items) {
+        value().setIgnored(material, items);
+    }
+
     public void setIgnoredBlock(Material material, Block... blocks) {
         value().setIgnoredBlock(material, blocks);
     }
 
+    public void setIgnoredBlock(Holder<Material> material, Block... blocks) {
+        value().setIgnoredBlock(material, blocks);
+    }
+
     public void setIgnored(Material material) {
+        value().setIgnored(material);
+    }
+
+    public void setIgnored(Holder<Material> material) {
         value().setIgnored(material);
     }
 
@@ -56,6 +78,10 @@ public class TagPrefixEntry extends RegistryEntry<TagPrefix, TagPrefix> {
 
     public void modifyMaterialAmount(Material material, float amount) {
         value().modifyMaterialAmount(material, amount);
+    }
+
+    public void modifyMaterialAmount(Holder<Material> material, float amount) {
+        value().modifyMaterialAmount(material.value(), amount);
     }
 
     public long materialAmount() {

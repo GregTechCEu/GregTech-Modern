@@ -1,602 +1,605 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MaterialBuilder;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustSmall;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustTiny;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class UnknownCompositionMaterials {
 
     public static void register() {
-        WoodGas = new Material.Builder(GTCEu.id("wood_gas"))
+        WoodGas = REGISTRATE.material("wood_gas")
                 .gas()
                 .color(0xDECD87).secondaryColor(0xdeb287)
-                .buildAndRegister();
+                .register();
 
-        WoodVinegar = new Material.Builder(GTCEu.id("wood_vinegar"))
+        WoodVinegar = REGISTRATE.material("wood_vinegar")
                 .fluid()
                 .color(0xD45500).secondaryColor(0x905800)
-                .buildAndRegister();
+                .register();
 
-        WoodTar = new Material.Builder(GTCEu.id("wood_tar"))
+        WoodTar = REGISTRATE.material("wood_tar")
                 .fluid()
                 .color(0x3a271a).secondaryColor(0x28170B)
-                .flags(STICKY, FLAMMABLE).buildAndRegister();
+                .flags(STICKY, FLAMMABLE).register();
 
-        CharcoalByproducts = new Material.Builder(GTCEu.id("charcoal_byproducts"))
-                .fluid().color(0x784421).buildAndRegister();
+        CharcoalByproducts = REGISTRATE.material("charcoal_byproducts")
+                .fluid().color(0x784421).register();
 
-        Biomass = new Material.Builder(GTCEu.id("biomass"))
-                .liquid(new FluidBuilder().customStill()).color(0x00FF00).buildAndRegister();
+        Biomass = REGISTRATE.material("biomass")
+                .liquid(new FluidBuilder().customStill()).color(0x00FF00).register();
 
-        BioDiesel = new Material.Builder(GTCEu.id("bio_diesel"))
+        BioDiesel = REGISTRATE.material("bio_diesel")
                 .fluid().color(0xFF8000)
-                .flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
+                .flags(FLAMMABLE, EXPLOSIVE).register();
 
-        FermentedBiomass = new Material.Builder(GTCEu.id("fermented_biomass"))
+        FermentedBiomass = REGISTRATE.material("fermented_biomass")
                 .liquid(new FluidBuilder().temperature(300))
                 .color(0x445500)
-                .buildAndRegister();
+                .register();
 
-        Creosote = new Material.Builder(GTCEu.id("creosote"))
+        Creosote = REGISTRATE.material("creosote")
                 .liquid(new FluidBuilder().block().customStill().burnTime(6400)).color(0x804000)
-                .flags(STICKY).buildAndRegister();
+                .flags(STICKY).register();
 
-        Diesel = new Material.Builder(GTCEu.id("diesel"))
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
+        Diesel = REGISTRATE.material("diesel")
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE, EXPLOSIVE).register();
 
-        RocketFuel = new Material.Builder(GTCEu.id("rocket_fuel"))
-                .fluid().flags(FLAMMABLE, EXPLOSIVE).color(0xBDB78C).buildAndRegister();
+        RocketFuel = REGISTRATE.material("rocket_fuel")
+                .fluid().flags(FLAMMABLE, EXPLOSIVE).color(0xBDB78C).register();
 
-        Glue = new Material.Builder(GTCEu.id("glue"))
-                .liquid(new FluidBuilder().customStill()).flags(STICKY).buildAndRegister();
+        Glue = REGISTRATE.material("glue")
+                .liquid(new FluidBuilder().customStill()).flags(STICKY).register();
 
-        Lubricant = new Material.Builder(GTCEu.id("lubricant"))
-                .liquid(new FluidBuilder().customStill()).buildAndRegister();
+        Lubricant = REGISTRATE.material("lubricant")
+                .liquid(new FluidBuilder().customStill()).register();
 
-        McGuffium239 = new Material.Builder(GTCEu.id("mc_guffium_239"))
-                .liquid(new FluidBuilder().customStill()).buildAndRegister();
+        McGuffium239 = REGISTRATE.material("mc_guffium_239")
+                .liquid(new FluidBuilder().customStill()).register();
 
-        IndiumConcentrate = new Material.Builder(GTCEu.id("indium_concentrate"))
+        IndiumConcentrate = REGISTRATE.material("indium_concentrate")
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
-                .color(0x0E2950).buildAndRegister();
+                .color(0x0E2950).register();
 
-        SeedOil = new Material.Builder(GTCEu.id("seed_oil"))
+        SeedOil = REGISTRATE.material("seed_oil")
                 .liquid(new FluidBuilder().customStill())
                 .color(0xFFFFFF)
-                .flags(STICKY, FLAMMABLE).buildAndRegister();
+                .flags(STICKY, FLAMMABLE).register();
 
-        DrillingFluid = new Material.Builder(GTCEu.id("drilling_fluid"))
-                .fluid().color(0xFFFFAA).buildAndRegister();
+        DrillingFluid = REGISTRATE.material("drilling_fluid")
+                .fluid().color(0xFFFFAA).register();
 
-        ConstructionFoam = new Material.Builder(GTCEu.id("construction_foam"))
-                .fluid().color(0x808080).buildAndRegister();
+        ConstructionFoam = REGISTRATE.material("construction_foam")
+                .fluid().color(0x808080).register();
 
-        SulfuricHeavyFuel = new Material.Builder(GTCEu.id("sulfuric_heavy_fuel"))
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).buildAndRegister();
+        SulfuricHeavyFuel = REGISTRATE.material("sulfuric_heavy_fuel")
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
 
-        HeavyFuel = new Material.Builder(GTCEu.id("heavy_fuel"))
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).buildAndRegister();
+        HeavyFuel = REGISTRATE.material("heavy_fuel")
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
 
-        LightlyHydroCrackedHeavyFuel = new Material.Builder(GTCEu.id("lightly_hydro_cracked_heavy_fuel"))
+        LightlyHydroCrackedHeavyFuel = REGISTRATE.material("lightly_hydro_cracked_heavy_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xFFFF00).flags(FLAMMABLE).buildAndRegister();
+                .color(0xFFFF00).flags(FLAMMABLE).register();
 
-        SeverelyHydroCrackedHeavyFuel = new Material.Builder(GTCEu.id("severely_hydro_cracked_heavy_fuel"))
+        SeverelyHydroCrackedHeavyFuel = REGISTRATE.material("severely_hydro_cracked_heavy_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xFFFF00).flags(FLAMMABLE).buildAndRegister();
+                .color(0xFFFF00).flags(FLAMMABLE).register();
 
-        LightlySteamCrackedHeavyFuel = new Material.Builder(GTCEu.id("lightly_steam_cracked_heavy_fuel"))
+        LightlySteamCrackedHeavyFuel = REGISTRATE.material("lightly_steam_cracked_heavy_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).buildAndRegister();
+                .flags(FLAMMABLE).register();
 
-        SeverelySteamCrackedHeavyFuel = new Material.Builder(GTCEu.id("severely_steam_cracked_heavy_fuel"))
+        SeverelySteamCrackedHeavyFuel = REGISTRATE.material("severely_steam_cracked_heavy_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).buildAndRegister();
+                .flags(FLAMMABLE).register();
 
-        SulfuricLightFuel = new Material.Builder(GTCEu.id("sulfuric_light_fuel"))
+        SulfuricLightFuel = REGISTRATE.material("sulfuric_light_fuel")
                 .liquid(new FluidBuilder()
                         .customStill())
-                .flags(FLAMMABLE).buildAndRegister();
+                .flags(FLAMMABLE).register();
 
-        LightFuel = new Material.Builder(GTCEu.id("light_fuel"))
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).buildAndRegister();
+        LightFuel = REGISTRATE.material("light_fuel")
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
 
-        LightlyHydroCrackedLightFuel = new Material.Builder(GTCEu.id("lightly_hydro_cracked_light_fuel"))
-                .liquid(new FluidBuilder()
-                        .temperature(775)
-                        .customStill())
-                .color(0xB7AF08).flags(FLAMMABLE).buildAndRegister();
-
-        SeverelyHydroCrackedLightFuel = new Material.Builder(GTCEu.id("severely_hydro_cracked_light_fuel"))
+        LightlyHydroCrackedLightFuel = REGISTRATE.material("lightly_hydro_cracked_light_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xB7AF08).flags(FLAMMABLE).buildAndRegister();
+                .color(0xB7AF08).flags(FLAMMABLE).register();
 
-        LightlySteamCrackedLightFuel = new Material.Builder(GTCEu.id("lightly_steam_cracked_light_fuel"))
+        SeverelyHydroCrackedLightFuel = REGISTRATE.material("severely_hydro_cracked_light_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).buildAndRegister();
+                .color(0xB7AF08).flags(FLAMMABLE).register();
 
-        SeverelySteamCrackedLightFuel = new Material.Builder(GTCEu.id("severely_steam_cracked_light_fuel"))
+        LightlySteamCrackedLightFuel = REGISTRATE.material("lightly_steam_cracked_light_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).buildAndRegister();
+                .flags(FLAMMABLE).register();
 
-        SulfuricNaphtha = new Material.Builder(GTCEu.id("sulfuric_naphtha"))
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).buildAndRegister();
-
-        Naphtha = new Material.Builder(GTCEu.id("naphtha"))
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).buildAndRegister();
-
-        LightlyHydroCrackedNaphtha = new Material.Builder(GTCEu.id("lightly_hydro_cracked_naphtha"))
+        SeverelySteamCrackedLightFuel = REGISTRATE.material("severely_steam_cracked_light_fuel")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).buildAndRegister();
+                .flags(FLAMMABLE).register();
 
-        SeverelyHydroCrackedNaphtha = new Material.Builder(GTCEu.id("severely_hydro_cracked_naphtha"))
+        SulfuricNaphtha = REGISTRATE.material("sulfuric_naphtha")
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
+
+        Naphtha = REGISTRATE.material("naphtha")
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
+
+        LightlyHydroCrackedNaphtha = REGISTRATE.material("lightly_hydro_cracked_naphtha")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).buildAndRegister();
+                .color(0xBFB608).flags(FLAMMABLE).register();
 
-        LightlySteamCrackedNaphtha = new Material.Builder(GTCEu.id("lightly_steam_cracked_naphtha"))
+        SeverelyHydroCrackedNaphtha = REGISTRATE.material("severely_hydro_cracked_naphtha")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).buildAndRegister();
+                .color(0xBFB608).flags(FLAMMABLE).register();
 
-        SeverelySteamCrackedNaphtha = new Material.Builder(GTCEu.id("severely_steam_cracked_naphtha"))
+        LightlySteamCrackedNaphtha = REGISTRATE.material("lightly_steam_cracked_naphtha")
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).buildAndRegister();
+                .color(0xBFB608).flags(FLAMMABLE).register();
 
-        SulfuricGas = new Material.Builder(GTCEu.id("sulfuric_gas"))
+        SeverelySteamCrackedNaphtha = REGISTRATE.material("severely_steam_cracked_naphtha")
+                .liquid(new FluidBuilder()
+                        .temperature(775)
+                        .customStill())
+                .color(0xBFB608).flags(FLAMMABLE).register();
+
+        SulfuricGas = REGISTRATE.material("sulfuric_gas")
                 .gas(new FluidBuilder().customStill())
-                .color(0xECDCCC).buildAndRegister();
+                .color(0xECDCCC).register();
 
-        RefineryGas = new Material.Builder(GTCEu.id("refinery_gas"))
+        RefineryGas = REGISTRATE.material("refinery_gas")
                 .gas(new FluidBuilder().customStill())
                 .color(0xB4B4B4)
                 .flags(FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        LightlyHydroCrackedGas = new Material.Builder(GTCEu.id("lightly_hydro_cracked_gas"))
+        LightlyHydroCrackedGas = REGISTRATE.material("lightly_hydro_cracked_gas")
                 .gas(new FluidBuilder().temperature(775))
                 .color(0xA0A0A0)
                 .flags(FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        SeverelyHydroCrackedGas = new Material.Builder(GTCEu.id("severely_hydro_cracked_gas"))
+        SeverelyHydroCrackedGas = REGISTRATE.material("severely_hydro_cracked_gas")
                 .gas(new FluidBuilder().temperature(775))
                 .color(0xC8C8C8)
                 .flags(FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        LightlySteamCrackedGas = new Material.Builder(GTCEu.id("lightly_steam_cracked_gas"))
+        LightlySteamCrackedGas = REGISTRATE.material("lightly_steam_cracked_gas")
                 .gas(new FluidBuilder().temperature(775))
                 .color(0xE0E0E0)
                 .flags(FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        SeverelySteamCrackedGas = new Material.Builder(GTCEu.id("severely_steam_cracked_gas"))
+        SeverelySteamCrackedGas = REGISTRATE.material("severely_steam_cracked_gas")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xE0E0E0).flags(FLAMMABLE).buildAndRegister();
+                .color(0xE0E0E0).flags(FLAMMABLE).register();
 
-        HydroCrackedEthane = new Material.Builder(GTCEu.id("hydro_cracked_ethane"))
+        HydroCrackedEthane = REGISTRATE.material("hydro_cracked_ethane")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x9696BC).flags(FLAMMABLE).buildAndRegister();
+                .color(0x9696BC).flags(FLAMMABLE).register();
 
-        HydroCrackedEthylene = new Material.Builder(GTCEu.id("hydro_cracked_ethylene"))
+        HydroCrackedEthylene = REGISTRATE.material("hydro_cracked_ethylene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xA3A3A0).flags(FLAMMABLE).buildAndRegister();
+                .color(0xA3A3A0).flags(FLAMMABLE).register();
 
-        HydroCrackedPropene = new Material.Builder(GTCEu.id("hydro_cracked_propene"))
+        HydroCrackedPropene = REGISTRATE.material("hydro_cracked_propene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).buildAndRegister();
+                .color(0xBEA540).flags(FLAMMABLE).register();
 
-        HydroCrackedPropane = new Material.Builder(GTCEu.id("hydro_cracked_propane"))
+        HydroCrackedPropane = REGISTRATE.material("hydro_cracked_propane")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).buildAndRegister();
+                .color(0xBEA540).flags(FLAMMABLE).register();
 
-        HydroCrackedButane = new Material.Builder(GTCEu.id("hydro_cracked_butane"))
+        HydroCrackedButane = REGISTRATE.material("hydro_cracked_butane")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x852C18).flags(FLAMMABLE).buildAndRegister();
+                .color(0x852C18).flags(FLAMMABLE).register();
 
-        HydroCrackedButene = new Material.Builder(GTCEu.id("hydro_cracked_butene"))
+        HydroCrackedButene = REGISTRATE.material("hydro_cracked_butene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x993E05).flags(FLAMMABLE).buildAndRegister();
+                .color(0x993E05).flags(FLAMMABLE).register();
 
-        HydroCrackedButadiene = new Material.Builder(GTCEu.id("hydro_cracked_butadiene"))
+        HydroCrackedButadiene = REGISTRATE.material("hydro_cracked_butadiene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xAD5203).flags(FLAMMABLE).buildAndRegister();
+                .color(0xAD5203).flags(FLAMMABLE).register();
 
-        SteamCrackedEthane = new Material.Builder(GTCEu.id("steam_cracked_ethane"))
+        SteamCrackedEthane = REGISTRATE.material("steam_cracked_ethane")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x9696BC).flags(FLAMMABLE).buildAndRegister();
+                .color(0x9696BC).flags(FLAMMABLE).register();
 
-        SteamCrackedEthylene = new Material.Builder(GTCEu.id("steam_cracked_ethylene"))
+        SteamCrackedEthylene = REGISTRATE.material("steam_cracked_ethylene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xA3A3A0).flags(FLAMMABLE).buildAndRegister();
+                .color(0xA3A3A0).flags(FLAMMABLE).register();
 
-        SteamCrackedPropene = new Material.Builder(GTCEu.id("steam_cracked_propene"))
+        SteamCrackedPropene = REGISTRATE.material("steam_cracked_propene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).buildAndRegister();
+                .color(0xBEA540).flags(FLAMMABLE).register();
 
-        SteamCrackedPropane = new Material.Builder(GTCEu.id("steam_cracked_propane"))
+        SteamCrackedPropane = REGISTRATE.material("steam_cracked_propane")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).buildAndRegister();
+                .color(0xBEA540).flags(FLAMMABLE).register();
 
-        SteamCrackedButane = new Material.Builder(GTCEu.id("steam_cracked_butane"))
+        SteamCrackedButane = REGISTRATE.material("steam_cracked_butane")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x852C18).flags(FLAMMABLE).buildAndRegister();
+                .color(0x852C18).flags(FLAMMABLE).register();
 
-        SteamCrackedButene = new Material.Builder(GTCEu.id("steam_cracked_butene"))
+        SteamCrackedButene = REGISTRATE.material("steam_cracked_butene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x993E05).flags(FLAMMABLE).buildAndRegister();
+                .color(0x993E05).flags(FLAMMABLE).register();
 
-        SteamCrackedButadiene = new Material.Builder(GTCEu.id("steam_cracked_butadiene"))
+        SteamCrackedButadiene = REGISTRATE.material("steam_cracked_butadiene")
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xAD5203).flags(FLAMMABLE).buildAndRegister();
+                .color(0xAD5203).flags(FLAMMABLE).register();
 
-        LPG = new Material.Builder(GTCEu.id("lpg"))
+        LPG = REGISTRATE.material("lpg")
                 .liquid(new FluidBuilder().customStill())
-                .color(0xFCFCAC).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
+                .color(0xFCFCAC).flags(FLAMMABLE, EXPLOSIVE).register();
 
-        RawGrowthMedium = new Material.Builder(GTCEu.id("raw_growth_medium"))
-                .fluid().color(0xA47351).buildAndRegister();
+        RawGrowthMedium = REGISTRATE.material("raw_growth_medium")
+                .fluid().color(0xA47351).register();
 
-        SterileGrowthMedium = new Material.Builder(GTCEu.id("sterilized_growth_medium"))
-                .fluid().color(0xAC876E).buildAndRegister();
+        SterileGrowthMedium = REGISTRATE.material("sterilized_growth_medium")
+                .fluid().color(0xAC876E).register();
 
-        Oil = new Material.Builder(GTCEu.id("oil"))
+        Oil = REGISTRATE.material("oil")
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        HeavyOil = new Material.Builder(GTCEu.id("heavy_oil"))
+        HeavyOil = REGISTRATE.material("heavy_oil")
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        RawOil = new Material.Builder(GTCEu.id("raw_oil"))
+        RawOil = REGISTRATE.material("raw_oil")
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        LightOil = new Material.Builder(GTCEu.id("light_oil"))
+        LightOil = REGISTRATE.material("light_oil")
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        NaturalGas = new Material.Builder(GTCEu.id("natural_gas"))
+        NaturalGas = REGISTRATE.material("natural_gas")
                 .gas(new FluidBuilder().block().customStill())
-                .flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
+                .flags(FLAMMABLE, EXPLOSIVE).register();
 
-        Bacteria = new Material.Builder(GTCEu.id("bacteria"))
-                .fluid().color(0x808000).buildAndRegister();
+        Bacteria = REGISTRATE.material("bacteria")
+                .fluid().color(0x808000).register();
 
-        BacterialSludge = new Material.Builder(GTCEu.id("bacterial_sludge"))
-                .fluid().color(0x355E3B).buildAndRegister();
+        BacterialSludge = REGISTRATE.material("bacterial_sludge")
+                .fluid().color(0x355E3B).register();
 
-        EnrichedBacterialSludge = new Material.Builder(GTCEu.id("enriched_bacterial_sludge"))
-                .fluid().color(0x7FFF00).buildAndRegister();
+        EnrichedBacterialSludge = REGISTRATE.material("enriched_bacterial_sludge")
+                .fluid().color(0x7FFF00).register();
 
-        Mutagen = new Material.Builder(GTCEu.id("mutagen"))
-                .fluid().color(0x00FF7F).buildAndRegister();
+        Mutagen = REGISTRATE.material("mutagen")
+                .fluid().color(0x00FF7F).register();
 
-        GelatinMixture = new Material.Builder(GTCEu.id("gelatin_mixture"))
-                .fluid().color(0x588BAE).buildAndRegister();
+        GelatinMixture = REGISTRATE.material("gelatin_mixture")
+                .fluid().color(0x588BAE).register();
 
-        RawGasoline = new Material.Builder(GTCEu.id("raw_gasoline"))
-                .fluid().color(0xFF6400).flags(FLAMMABLE).buildAndRegister();
+        RawGasoline = REGISTRATE.material("raw_gasoline")
+                .fluid().color(0xFF6400).flags(FLAMMABLE).register();
 
-        Gasoline = new Material.Builder(GTCEu.id("gasoline"))
-                .fluid().color(0xFAA500).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
+        Gasoline = REGISTRATE.material("gasoline")
+                .fluid().color(0xFAA500).flags(FLAMMABLE, EXPLOSIVE).register();
 
-        HighOctaneGasoline = new Material.Builder(GTCEu.id("high_octane_gasoline"))
-                .fluid().color(0xFFA500).flags(FLAMMABLE, EXPLOSIVE).buildAndRegister();
+        HighOctaneGasoline = REGISTRATE.material("high_octane_gasoline")
+                .fluid().color(0xFFA500).flags(FLAMMABLE, EXPLOSIVE).register();
 
-        CoalGas = new Material.Builder(GTCEu.id("coal_gas"))
-                .gas().color(0x333333).buildAndRegister();
+        CoalGas = REGISTRATE.material("coal_gas")
+                .gas().color(0x333333).register();
 
-        CoalTar = new Material.Builder(GTCEu.id("coal_tar"))
-                .fluid().color(0x1A1A1A).flags(STICKY, FLAMMABLE).buildAndRegister();
+        CoalTar = REGISTRATE.material("coal_tar")
+                .fluid().color(0x1A1A1A).flags(STICKY, FLAMMABLE).register();
 
-        Gunpowder = new Material.Builder(GTCEu.id("gunpowder"))
+        Gunpowder = REGISTRATE.material("gunpowder")
                 .dust(0)
                 .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
                 .components(Saltpeter, 2, Sulfur, 1, Carbon, 3)
-                .buildAndRegister();
+                .register();
 
-        Oilsands = new Material.Builder(GTCEu.id("oilsands"))
+        Oilsands = REGISTRATE.material("oilsands")
                 .dust(1).ore()
                 .color(0xe3c78a).secondaryColor(0x161e22).iconSet(SAND)
                 .flags(FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        RareEarth = new Material.Builder(GTCEu.id("rare_earth"))
+        RareEarth = REGISTRATE.material("rare_earth")
                 .dust(0)
                 .color(0xffdc88).secondaryColor(0xe99673).iconSet(FINE)
-                .buildAndRegister();
+                .register();
 
-        Stone = new Material.Builder(GTCEu.id("stone"))
+        Stone = REGISTRATE.material("stone")
                 .dust(2)
                 .color(0x8f8f8f).secondaryColor(0x898989).iconSet(ROUGH)
                 .flags(MORTAR_GRINDABLE, GENERATE_GEAR, NO_SMASHING, NO_SMELTING)
-                .buildAndRegister();
+                .register();
 
-        Lava = new Material.Builder(GTCEu.id("lava"))
-                .fluid().color(0xFF4000).buildAndRegister();
+        Lava = REGISTRATE.material("lava")
+                .fluid().color(0xFF4000).register();
 
-        Netherite = new Material.Builder(GTCEu.id("netherite"))
+        Netherite = REGISTRATE.material("netherite")
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
                 .flags(FIRE_RESISTANT)
                 .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
-                .buildAndRegister();
+                .register();
 
-        Glowstone = new Material.Builder(GTCEu.id("glowstone"))
+        Glowstone = REGISTRATE.material("glowstone")
                 .dust(1)
                 .liquid(new FluidBuilder().temperature(500))
                 .color(0xfcb34c).secondaryColor(0xce7533).iconSet(SHINY)
                 .flags(NO_SMASHING, GENERATE_PLATE, EXCLUDE_PLATE_COMPRESSOR_RECIPE,
                         EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
-                .buildAndRegister();
+                .register();
 
-        NetherStar = new Material.Builder(GTCEu.id("nether_star"))
+        NetherStar = REGISTRATE.material("nether_star")
                 .gem(4)
                 .color(0xfeffc6).secondaryColor(0x7fd7e2)
                 .iconSet(NETHERSTAR)
                 .flags(NO_SMASHING, NO_SMELTING, GENERATE_LENS)
-                .buildAndRegister();
+                .register();
 
-        Endstone = new Material.Builder(GTCEu.id("endstone"))
+        Endstone = REGISTRATE.material("endstone")
                 .dust(1)
                 .color(0xf6fabd).secondaryColor(0xc5be8b).iconSet(ROUGH)
                 .flags(NO_SMASHING)
-                .buildAndRegister();
+                .register();
 
-        Netherrack = new Material.Builder(GTCEu.id("netherrack"))
+        Netherrack = REGISTRATE.material("netherrack")
                 .dust(1)
                 .color(0x7c4249).secondaryColor(0x400b0b).iconSet(ROUGH)
                 .flags(NO_SMASHING, FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        CetaneBoostedDiesel = new Material.Builder(GTCEu.id("cetane_boosted_diesel"))
+        CetaneBoostedDiesel = REGISTRATE.material("cetane_boosted_diesel")
                 .liquid(new FluidBuilder().customStill())
                 .color(0xC8FF00)
                 .flags(FLAMMABLE, EXPLOSIVE)
-                .buildAndRegister();
+                .register();
 
-        Collagen = new Material.Builder(GTCEu.id("collagen"))
+        Collagen = REGISTRATE.material("collagen")
                 .dust(1)
                 .color(0xffadb7).secondaryColor(0x80471C).iconSet(ROUGH)
-                .buildAndRegister();
+                .register();
 
-        Gelatin = new Material.Builder(GTCEu.id("gelatin"))
+        Gelatin = REGISTRATE.material("gelatin")
                 .dust(1)
                 .color(0xfaf7cb).secondaryColor(0x693d00).iconSet(ROUGH)
-                .buildAndRegister();
+                .register();
 
-        Agar = new Material.Builder(GTCEu.id("agar"))
+        Agar = REGISTRATE.material("agar")
                 .dust(1)
                 .color(0xbdd168).secondaryColor(0x403218).iconSet(ROUGH)
-                .buildAndRegister();
+                .register();
 
-        Milk = new Material.Builder(GTCEu.id("milk"))
+        Milk = REGISTRATE.material("milk")
                 .liquid(new FluidBuilder()
                         .temperature(295)
                         .customStill())
                 .color(0xfffbf0).secondaryColor(0xf6eac8).iconSet(FINE)
-                .buildAndRegister();
+                .register();
 
-        Cocoa = new Material.Builder(GTCEu.id("cocoa"))
+        Cocoa = REGISTRATE.material("cocoa")
                 .dust(0)
                 .color(0x976746).secondaryColor(0x301a0a).iconSet(FINE)
-                .buildAndRegister();
+                .register();
 
-        Wheat = new Material.Builder(GTCEu.id("wheat"))
+        Wheat = REGISTRATE.material("wheat")
                 .dust(0)
                 .color(0xdcbb65).secondaryColor(0x565138).iconSet(FINE)
-                .buildAndRegister();
+                .register();
 
-        Meat = new Material.Builder(GTCEu.id("meat"))
+        Meat = REGISTRATE.material("meat")
                 .dust(1)
                 .color(0xe85048).secondaryColor(0x470a06).iconSet(SAND)
-                .buildAndRegister();
+                .register();
 
-        Wood = new Material.Builder(GTCEu.id("wood"))
+        Wood = REGISTRATE.material("wood")
                 .wood()
                 .color(0xc29f6d).secondaryColor(0x643200).iconSet(WOOD)
                 .fluidPipeProperties(340, 5, false)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR,
                         GENERATE_FRAME)
-                .buildAndRegister();
+                .register();
 
-        Paper = new Material.Builder(GTCEu.id("paper"))
+        Paper = REGISTRATE.material("paper")
                 .dust(0)
                 .color(0xF9F9F9).secondaryColor(0xECECEC).iconSet(DULL)
                 .flags(GENERATE_PLATE, FLAMMABLE, NO_SMELTING, NO_SMASHING,
                         MORTAR_GRINDABLE, EXCLUDE_PLATE_COMPRESSOR_RECIPE)
-                .buildAndRegister();
+                .register();
 
-        FishOil = new Material.Builder(GTCEu.id("fish_oil"))
+        FishOil = REGISTRATE.material("fish_oil")
                 .fluid()
                 .color(0xDCC15D)
                 .flags(STICKY, FLAMMABLE)
-                .buildAndRegister();
+                .register();
 
-        RubySlurry = new Material.Builder(GTCEu.id("ruby_slurry"))
-                .fluid().color(0xff6464).buildAndRegister();
+        RubySlurry = REGISTRATE.material("ruby_slurry")
+                .fluid().color(0xff6464).register();
 
-        SapphireSlurry = new Material.Builder(GTCEu.id("sapphire_slurry"))
-                .fluid().color(0x6464c8).buildAndRegister();
+        SapphireSlurry = REGISTRATE.material("sapphire_slurry")
+                .fluid().color(0x6464c8).register();
 
-        GreenSapphireSlurry = new Material.Builder(GTCEu.id("green_sapphire_slurry"))
-                .fluid().color(0x64c882).buildAndRegister();
+        GreenSapphireSlurry = REGISTRATE.material("green_sapphire_slurry")
+                .fluid().color(0x64c882).register();
 
         // These colors are much nicer looking than those in MC's EnumDyeColor
-        DyeBlack = new Material.Builder(GTCEu.id("black_dye"))
-                .fluid().color(0x202020).buildAndRegister();
+        DyeBlack = REGISTRATE.material("black_dye")
+                .fluid().color(0x202020).register();
 
-        DyeRed = new Material.Builder(GTCEu.id("red_dye"))
-                .fluid().color(0xFF0000).buildAndRegister();
+        DyeRed = REGISTRATE.material("red_dye")
+                .fluid().color(0xFF0000).register();
 
-        DyeGreen = new Material.Builder(GTCEu.id("green_dye"))
-                .fluid().color(0x00FF00).buildAndRegister();
+        DyeGreen = REGISTRATE.material("green_dye")
+                .fluid().color(0x00FF00).register();
 
-        DyeBrown = new Material.Builder(GTCEu.id("brown_dye"))
-                .fluid().color(0x604000).buildAndRegister();
+        DyeBrown = REGISTRATE.material("brown_dye")
+                .fluid().color(0x604000).register();
 
-        DyeBlue = new Material.Builder(GTCEu.id("blue_dye"))
-                .fluid().color(0x0020FF).buildAndRegister();
+        DyeBlue = REGISTRATE.material("blue_dye")
+                .fluid().color(0x0020FF).register();
 
-        DyePurple = new Material.Builder(GTCEu.id("purple_dye"))
-                .fluid().color(0x800080).buildAndRegister();
+        DyePurple = REGISTRATE.material("purple_dye")
+                .fluid().color(0x800080).register();
 
-        DyeCyan = new Material.Builder(GTCEu.id("cyan_dye"))
-                .fluid().color(0x00FFFF).buildAndRegister();
+        DyeCyan = REGISTRATE.material("cyan_dye")
+                .fluid().color(0x00FFFF).register();
 
-        DyeLightGray = new Material.Builder(GTCEu.id("light_gray_dye"))
-                .fluid().color(0xC0C0C0).buildAndRegister();
+        DyeLightGray = REGISTRATE.material("light_gray_dye")
+                .fluid().color(0xC0C0C0).register();
 
-        DyeGray = new Material.Builder(GTCEu.id("gray_dye"))
-                .fluid().color(0x808080).buildAndRegister();
+        DyeGray = REGISTRATE.material("gray_dye")
+                .fluid().color(0x808080).register();
 
-        DyePink = new Material.Builder(GTCEu.id("pink_dye"))
-                .fluid().color(0xFFC0C0).buildAndRegister();
+        DyePink = REGISTRATE.material("pink_dye")
+                .fluid().color(0xFFC0C0).register();
 
-        DyeLime = new Material.Builder(GTCEu.id("lime_dye"))
-                .fluid().color(0x80FF80).buildAndRegister();
+        DyeLime = REGISTRATE.material("lime_dye")
+                .fluid().color(0x80FF80).register();
 
-        DyeYellow = new Material.Builder(GTCEu.id("yellow_dye"))
-                .fluid().color(0xFFFF00).buildAndRegister();
+        DyeYellow = REGISTRATE.material("yellow_dye")
+                .fluid().color(0xFFFF00).register();
 
-        DyeLightBlue = new Material.Builder(GTCEu.id("light_blue_dye"))
-                .fluid().color(0x6080FF).buildAndRegister();
+        DyeLightBlue = REGISTRATE.material("light_blue_dye")
+                .fluid().color(0x6080FF).register();
 
-        DyeMagenta = new Material.Builder(GTCEu.id("magenta_dye"))
-                .fluid().color(0xFF00FF).buildAndRegister();
+        DyeMagenta = REGISTRATE.material("magenta_dye")
+                .fluid().color(0xFF00FF).register();
 
-        DyeOrange = new Material.Builder(GTCEu.id("orange_dye"))
-                .fluid().color(0xFF8000).buildAndRegister();
+        DyeOrange = REGISTRATE.material("orange_dye")
+                .fluid().color(0xFF8000).register();
 
-        DyeWhite = new Material.Builder(GTCEu.id("white_dye"))
-                .fluid().color(0xFFFFFF).buildAndRegister();
+        DyeWhite = REGISTRATE.material("white_dye")
+                .fluid().color(0xFFFFFF).register();
 
-        ImpureEnrichedNaquadahSolution = new Material.Builder(GTCEu.id("impure_enriched_naquadah_solution"))
-                .fluid().color(0x388438).buildAndRegister();
+        ImpureEnrichedNaquadahSolution = REGISTRATE.material("impure_enriched_naquadah_solution")
+                .fluid().color(0x388438).register();
 
-        EnrichedNaquadahSolution = new Material.Builder(GTCEu.id("enriched_naquadah_solution"))
-                .fluid().color(0x3AAD3A).buildAndRegister();
+        EnrichedNaquadahSolution = REGISTRATE.material("enriched_naquadah_solution")
+                .fluid().color(0x3AAD3A).register();
 
-        AcidicEnrichedNaquadahSolution = new Material.Builder(GTCEu.id("acidic_enriched_naquadah_solution"))
+        AcidicEnrichedNaquadahSolution = REGISTRATE.material("acidic_enriched_naquadah_solution")
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
-                .color(0x3DD63D).buildAndRegister();
+                .color(0x3DD63D).register();
 
-        EnrichedNaquadahWaste = new Material.Builder(GTCEu.id("enriched_naquadah_waste"))
-                .fluid().color(0x355B35).buildAndRegister();
+        EnrichedNaquadahWaste = REGISTRATE.material("enriched_naquadah_waste")
+                .fluid().color(0x355B35).register();
 
-        ImpureNaquadriaSolution = new Material.Builder(GTCEu.id("impure_naquadria_solution"))
-                .fluid().color(0x518451).buildAndRegister();
+        ImpureNaquadriaSolution = REGISTRATE.material("impure_naquadria_solution")
+                .fluid().color(0x518451).register();
 
-        NaquadriaSolution = new Material.Builder(GTCEu.id("naquadria_solution"))
-                .fluid().color(0x61AD61).buildAndRegister();
+        NaquadriaSolution = REGISTRATE.material("naquadria_solution")
+                .fluid().color(0x61AD61).register();
 
-        AcidicNaquadriaSolution = new Material.Builder(GTCEu.id("acidic_naquadria_solution"))
+        AcidicNaquadriaSolution = REGISTRATE.material("acidic_naquadria_solution")
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
-                .color(0x70D670).buildAndRegister();
+                .color(0x70D670).register();
 
-        NaquadriaWaste = new Material.Builder(GTCEu.id("naquadria_waste"))
-                .fluid().color(0x425B42).buildAndRegister();
+        NaquadriaWaste = REGISTRATE.material("naquadria_waste")
+                .fluid().color(0x425B42).register();
 
-        Lapotron = new Material.Builder(GTCEu.id("lapotron"))
+        Lapotron = REGISTRATE.material("lapotron")
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
                 .flags(DISABLE_MATERIAL_RECIPES)
-                // TODO readd once material registration properly deferred .ignoredTagPrefixes(dustTiny, dustSmall)
-                .buildAndRegister();
+                .ignoredTagPrefixes(dustTiny, dustSmall)
+                .register();
 
-        TreatedWood = new Material.Builder(GTCEu.id("treated_wood"))
+        TreatedWood = REGISTRATE.material("treated_wood")
                 .wood()
                 .color(0x644218).secondaryColor(0x4e0b00).iconSet(WOOD)
                 .fluidPipeProperties(340, 10, false)
                 .flags(GENERATE_PLATE, FLAMMABLE, GENERATE_ROD, GENERATE_FRAME)
-                .buildAndRegister();
+                .register();
 
-        UUMatter = new Material.Builder(GTCEu.id("uu_matter"))
+        UUMatter = REGISTRATE.material("uu_matter")
                 .liquid(new FluidBuilder()
                         .temperature(300)
                         .customStill())
-                .buildAndRegister();
+                .register();
 
-        PCBCoolant = new Material.Builder(GTCEu.id("pcb_coolant"))
+        PCBCoolant = REGISTRATE.material("pcb_coolant")
                 .fluid().color(0xD5D69C)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .buildAndRegister();
+                .register();
 
-        Sculk = new Material.Builder(GTCEu.id("sculk"))
+        Sculk = REGISTRATE.material("sculk")
                 .dust(1)
                 .color(0x015a5c).secondaryColor(0x001616).iconSet(ROUGH)
-                .buildAndRegister();
+                .register();
 
-        Wax = new Material.Builder(GTCEu.id("wax"))
+        Wax = REGISTRATE.material("wax")
                 .gem().fluid()
                 .color(0xfabf29)
                 .flags(NO_SMELTING)
-                .buildAndRegister();
+                .register();
 
-        BauxiteSlurry = new Material.Builder(GTCEu.id("bauxite_slurry"))
+        BauxiteSlurry = REGISTRATE.material("bauxite_slurry")
                 .fluid()
                 .color(0x051650)
-                .buildAndRegister();
+                .register();
 
-        CrackedBauxiteSlurry = new Material.Builder(GTCEu.id("cracked_bauxite_slurry"))
+        CrackedBauxiteSlurry = REGISTRATE.material("cracked_bauxite_slurry")
                 .liquid(775)
                 .color(0x052C50)
-                .buildAndRegister();
+                .register();
 
-        BauxiteSludge = new Material.Builder(GTCEu.id("bauxite_sludge"))
+        BauxiteSludge = REGISTRATE.material("bauxite_sludge")
                 .fluid()
                 .color(0x563D2D)
-                .buildAndRegister();
+                .register();
 
-        DecalcifiedBauxiteSludge = new Material.Builder(GTCEu.id("decalcified_bauxite_sludge"))
+        DecalcifiedBauxiteSludge = REGISTRATE.material("decalcified_bauxite_sludge")
                 .fluid()
                 .color(0x6F2DA8)
-                .buildAndRegister();
+                .register();
 
-        BauxiteSlag = new Material.Builder(GTCEu.id("bauxite_slag"))
+        BauxiteSlag = REGISTRATE.material("bauxite_slag")
                 .dust()
                 .color(0x6F2DA8).iconSet(SAND)
-                .buildAndRegister();
+                .register();
     }
 }
