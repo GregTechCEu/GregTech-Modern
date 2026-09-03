@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
@@ -474,10 +475,11 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
+    @SafeVarargs
     @Info("""
             Added `TagPrefix` to be ignored by this Material.
             """)
-    public MaterialBuilderWrapper ignoredTagPrefixes(TagPrefix... prefixes) {
+    public final MaterialBuilderWrapper ignoredTagPrefixes(Holder<TagPrefix>... prefixes) {
         internal.ignoredTagPrefixes(prefixes);
         return this;
     }

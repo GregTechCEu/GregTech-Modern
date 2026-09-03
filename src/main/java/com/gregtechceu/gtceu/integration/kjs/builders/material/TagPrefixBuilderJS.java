@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-
 import com.gregtechceu.gtceu.api.data.tag.TagType;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
-import lombok.Setter;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,8 +18,10 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import com.google.common.collect.Table;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
@@ -137,7 +137,8 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
         return this;
     }
 
-    public TagPrefixBuilderJS customTagPredicate(String path, boolean isVanilla, Predicate<Material> materialPredicate) {
+    public TagPrefixBuilderJS customTagPredicate(String path, boolean isVanilla,
+                                                 Predicate<Material> materialPredicate) {
         this.tags.add(TagType.withCustomFilter(path, isVanilla, materialPredicate));
         return this;
     }
@@ -148,14 +149,16 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
     }
 
     public TagPrefixBuilderJS blockProperties(TagPrefix.BlockProperties blockProperties) {
-        Objects.requireNonNull(blockProperties.renderType(),  "Could not set blockProperties with null renderType in TagPrefix " + id);
-        Objects.requireNonNull(blockProperties.properties(),  "Could not set blockProperties with null properties in TagPrefix " + id);
+        Objects.requireNonNull(blockProperties.renderType(),
+                "Could not set blockProperties with null renderType in TagPrefix " + id);
+        Objects.requireNonNull(blockProperties.properties(),
+                "Could not set blockProperties with null properties in TagPrefix " + id);
         this.blockProperties = blockProperties;
         return this;
     }
 
     public TagPrefixBuilderJS blockProperties(Supplier<Supplier<RenderType>> renderType,
-                                            UnaryOperator<BlockBehaviour.Properties> properties) {
+                                              UnaryOperator<BlockBehaviour.Properties> properties) {
         return this.blockProperties(new TagPrefix.BlockProperties(renderType, properties));
     }
 
@@ -178,7 +181,6 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
                 .tooltip(tooltip)
                 .maxStackSize(maxStackSize);
     }
-
 
     @Override
     public TagPrefix createObject() {

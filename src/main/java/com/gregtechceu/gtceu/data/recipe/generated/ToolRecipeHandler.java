@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.*;
@@ -216,7 +217,7 @@ public final class ToolRecipeHandler {
 
         final int voltageMultiplier = material.getBlastTemperature() > 2800 ? GTValues.VA[GTValues.LV] :
                 GTValues.VA[GTValues.ULV];
-        TagPrefix toolPrefix;
+        Holder<TagPrefix> toolPrefix;
 
         if (material.hasFlag(GENERATE_PLATE)) {
             final MaterialEntry plate = new MaterialEntry(TagPrefix.plate, material);
@@ -327,7 +328,7 @@ public final class ToolRecipeHandler {
         }
     }
 
-    private static void addElectricToolRecipe(@NotNull RecipeOutput provider, @NotNull TagPrefix toolHead,
+    private static void addElectricToolRecipe(@NotNull RecipeOutput provider, @NotNull Holder<TagPrefix> toolHead,
                                               @NotNull GTToolType @NotNull [] toolItems,
                                               @NotNull Material material) {
         for (GTToolType toolType : toolItems) {

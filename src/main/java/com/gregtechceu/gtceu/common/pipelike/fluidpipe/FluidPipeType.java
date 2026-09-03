@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -32,18 +33,18 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
     public final float thickness;
     public final int capacityMultiplier;
     @Getter
-    public final TagPrefix tagPrefix;
+    public final Holder<TagPrefix> tagPrefix;
     public final int channels;
 
-    FluidPipeType(String name, float thickness, int capacityMultiplier, TagPrefix TagPrefix) {
-        this(name, thickness, capacityMultiplier, TagPrefix, 1);
+    FluidPipeType(String name, float thickness, int capacityMultiplier, Holder<TagPrefix> tagPrefix) {
+        this(name, thickness, capacityMultiplier, tagPrefix, 1);
     }
 
-    FluidPipeType(String name, float thickness, int capacityMultiplier, TagPrefix TagPrefix, int channels) {
+    FluidPipeType(String name, float thickness, int capacityMultiplier, Holder<TagPrefix> tagPrefix, int channels) {
         this.name = name;
         this.thickness = thickness;
         this.capacityMultiplier = capacityMultiplier;
-        this.tagPrefix = TagPrefix;
+        this.tagPrefix = tagPrefix;
         this.channels = channels;
     }
 
