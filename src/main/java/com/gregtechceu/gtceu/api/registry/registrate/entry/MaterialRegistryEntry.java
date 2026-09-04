@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.registry.registrate.entry;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.MaterialProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
@@ -10,6 +12,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.utils.TagUtil;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import lombok.Getter;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -28,6 +31,19 @@ public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
     public String getName() {
         return getKey().location().getPath();
     }
+
+    public Material.MaterialInfo getMaterialInfo() {
+        return value().getMaterialInfo();
+    }
+
+    public MaterialProperties getProperties() {
+        return value().getProperties();
+    }
+
+    public MaterialFlags getFlags() {
+        return value().getFlags();
+    }
+
 
     /**
      * Retrieves a fluid from the material.
