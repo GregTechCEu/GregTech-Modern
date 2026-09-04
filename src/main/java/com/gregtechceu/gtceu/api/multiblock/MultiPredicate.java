@@ -61,7 +61,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         this.children = Collections.unmodifiableList(children);
         this.type = type;
         this.hasAir = hasAir;
-        this.settings = Objects.requireNonNullElseGet(settings, PredicateSettings::create);
+        this.settings = settings; // settings set as-is, ideally copied prior
     }
 
     /// @return innermost base predicate that passes state check at given pos
@@ -285,7 +285,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     /// If single, mutates the only predicate <br/>
-    /// Otherwise mutates this multipredicate, adds setting if it was null
+    /// Otherwise mutates this multipredicate, adds setting if it was null and {@code shouldCreate} is true
     @Override
     public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
         this.updateSettings(configurator, false);
@@ -339,11 +339,13 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @CheckReturnValue
     public MultiPredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
         return copyWith(p -> {
+            // is this (the current reference being copied) have their settings set to null?
             if (this.settings == null) {
-                // only one level deep
+                // apply the settings to each predicate and child, creating new settings if needed
                 p.forEach(predicate -> predicate.updateSettings(configurator));
                 p.forEachChild(child -> child.updateSettings(configurator, true));
             } else {
+                // the current reference has settings, it should've been copied by this point
                 p.updateSettings(configurator);
             }
         });
@@ -474,27 +476,42 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// @param a left operand
     /// @param type logic of the new predicate
     /// @param b right operand, may be null
-    /// @return If {@code b == null}, returns {@code a}. <br />
+    /// @return If {@code b == null || b == EMPTY}, returns {@code a}. <br />
     /// If {@code a == EMPTY}, returns {@code b}. <br />
     /// Otherwise, returns a new MultiPredicate that combines {@code a} and {@code b}
     private static MultiPredicate combine(MultiPredicate a, Logic type, @Nullable MultiPredicate b) {
         if (b == null || b.isEmpty()) return a; // no op
         if (a.isEmpty()) return b;
-        if (!Objects.equals(a.settings, b.settings)) {
-            a.applySettingsToChildren();
-            b.applySettingsToChildren();
-        }
+
         List<BasePredicate> predicates = new ArrayList<>();
         List<MultiPredicate> children = new ArrayList<>();
-        appendPredicates(type, a, predicates, children);
-        appendPredicates(type, b, predicates, children);
+
+        // if a and b have different settings, they need to be added
+        // as children to the new predicate to maintain expected behavior
+        boolean equalSettings = Objects.equals(a.getSettings(), b.getSettings());
+
+        appendPredicates(type, a.deepCopy(), predicates, children, equalSettings);
+        appendPredicates(type, b.deepCopy(), predicates, children, equalSettings);
+
         predicates.sort(BasePredicate::compareTo);
-        return type.makePredicate(children, predicates, a.hasAir || b.hasAir, null);
+
+        // if the settings are the same, we can reuse one of them
+        PredicateSettings newSettings;
+        if (!equalSettings) {
+            newSettings = PredicateSettings.create();
+        } else if (a.getSettings() == null) {
+            newSettings = null;
+        } else {
+            newSettings = a.getSettings().copy();
+        }
+
+        return type.makePredicate(children, predicates, a.hasAir || b.hasAir, newSettings);
     }
 
     private static void appendPredicates(Logic type, MultiPredicate multiPredicate,
-                                         List<BasePredicate> predicates, List<MultiPredicate> children) {
-        if (multiPredicate.isSingle() || multiPredicate.isType(type)) {
+                                         List<BasePredicate> predicates, List<MultiPredicate> children,
+                                         boolean equalSettings) {
+        if (multiPredicate.isSingle() || (multiPredicate.isType(type) && equalSettings)) {
             predicates.addAll(multiPredicate.predicates());
             children.addAll(multiPredicate.children());
         } else {
@@ -510,10 +527,10 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
     }
 
-    /// @param predicates list must be modifiable
+    /// @return A multi predicate with default settings
     private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
         return type.makePredicate(List.of(), predicates, predicates.stream()
-                .anyMatch(p -> p == BasePredicate.AIR), null);
+                .anyMatch(p -> p == BasePredicate.AIR), PredicateSettings.create());
     }
 
     protected enum Logic {
