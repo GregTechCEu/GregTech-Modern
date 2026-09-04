@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.IngotProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -152,8 +153,9 @@ public class RecyclingRecipes {
                 return;
             }
             Material m = ms.material();
-            if (m.hasProperty(PropertyKey.INGOT) && m.getProperty(PropertyKey.INGOT).getMacerateInto() != null) {
-                m = m.getProperty(PropertyKey.INGOT).getMacerateInto();
+            IngotProperty ingotProperty = m.getProperty(PropertyKey.INGOT);
+            if (ingotProperty != null && ingotProperty.getMacerateInto() != null) {
+                m = ingotProperty.getMacerateInto().value();
             }
             if (!m.hasProperty(PropertyKey.FLUID) || m.getFluid() == null) {
                 return;
@@ -237,7 +239,8 @@ public class RecyclingRecipes {
             return;
         } else if (prefix == TagPrefix.block) {
             if (!ms.isEmpty() && !ms.material().hasProperty(PropertyKey.GEM)) {
-                Material arcResult = ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto();
+                Holder<Material> arcResultHolder = ms.material().getProperty(PropertyKey.INGOT).getArcSmeltingInto();
+                Material arcResult = arcResultHolder == null ? null : arcResultHolder.value();
                 if (arcResult == null) arcResult = ms.material();
 
                 ItemStack output = ChemicalHelper.get(TagPrefix.ingot,
@@ -307,9 +310,10 @@ public class RecyclingRecipes {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(outputs.getFirst().getItem());
                 if (entry != null) {
                     Material mat = inputStack.material();
-                    if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
-                        return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material() &&
-                                mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != null;
+                    IngotProperty ingotProperty = mat.getProperty(PropertyKey.INGOT);
+                    if (!mat.hasFlag(IS_MAGNETIC) && ingotProperty != null) {
+                        return !entry.material().getRegistryHolder().equals(ingotProperty.getArcSmeltingInto()) &&
+                                ingotProperty.getArcSmeltingInto() != null;
                     }
                 }
             }
@@ -343,7 +347,7 @@ public class RecyclingRecipes {
         // Else if the Material is an Ingot, return the Arc Smelting
         // result if it exists, otherwise return the Material itself.
         if (material.hasProperty(PropertyKey.INGOT)) {
-            Material arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
+            Holder<Material> arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
             if (arcSmelt != null) {
                 return new MaterialStack(arcSmelt, amount);
             }
@@ -352,7 +356,7 @@ public class RecyclingRecipes {
     }
 
     private static ItemStack getArcIngotOrDust(@NotNull MaterialStack stack) {
-        if (stack.material() == GTMaterials.Carbon) {
+        if (stack.material() == GTMaterials.Carbon.value()) {
             return ChemicalHelper.getDust(stack);
         }
         return ChemicalHelper.getIngotOrDust(stack);
@@ -364,13 +368,13 @@ public class RecyclingRecipes {
 
         // If the Gem Material has Oxygen in it, return Ash
         if (material.getMaterialComponents().stream()
-                .anyMatch(stack -> stack.material() == GTMaterials.Oxygen)) {
+                .anyMatch(stack -> stack.material() == GTMaterials.Oxygen.value())) {
             return new MaterialStack(GTMaterials.Ash, amount / 8);
         }
 
         // Else if the Gem Material has Carbon in it, return Carbon
         if (material.getMaterialComponents().stream()
-                .anyMatch(stack -> stack.material() == GTMaterials.Carbon)) {
+                .anyMatch(stack -> stack.material() == GTMaterials.Carbon.value())) {
             return new MaterialStack(GTMaterials.Carbon, amount / 8);
         }
 
@@ -384,7 +388,8 @@ public class RecyclingRecipes {
         for (MaterialStack ms : materials) {
             Material m = ms.material();
             if (m.getProperty(PropertyKey.INGOT) == null) continue;
-            Material smeltingMaterial = m.getProperty(PropertyKey.INGOT).getSmeltingInto();
+            Holder<Material> materialHolder = m.getProperty(PropertyKey.INGOT).getSmeltingInto();
+            Material smeltingMaterial = materialHolder == null ? null : materialHolder.value();
             if (m.hasProperty(PropertyKey.BLAST)) {
                 BlastProperty prop = m.getProperty(PropertyKey.BLAST);
                 if (prop.getBlastTemperature() > highestTemp) {
@@ -445,8 +450,12 @@ public class RecyclingRecipes {
         List<Pair<ItemStack, MaterialStack>> outputs = new ArrayList<>();
 
         for (MaterialStack ms : materials) {
-            Material macerateResult = ms.material().hasFlag(IS_MAGNETIC) ?
-                    ms.material().getProperty(PropertyKey.INGOT).getMacerateInto() : ms.material();
+
+            Material macerateResult = null;
+            if (ms.material().hasFlag(IS_MAGNETIC)) {
+                Holder<Material> macerateResultHolder = ms.material().getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto();
+                macerateResult = macerateResultHolder == null ? null : macerateResultHolder.value();
+            }
             if (macerateResult == null) macerateResult = ms.material();
 
             ms = new MaterialStack(macerateResult, ms.amount());
@@ -604,7 +613,7 @@ public class RecyclingRecipes {
     }
 
     private static boolean isAshMaterial(MaterialStack ms) {
-        return ms.material() == GTMaterials.Ash || ms.material() == GTMaterials.DarkAsh ||
-                ms.material() == GTMaterials.Carbon;
+        return ms.material() == GTMaterials.Ash.value() || ms.material() == GTMaterials.DarkAsh.value() ||
+                ms.material() == GTMaterials.Carbon.value();
     }
 }

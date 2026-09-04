@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -225,10 +226,14 @@ public class CommonProxy {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
+            GTRegistries.MATERIALS.close();
+
+            // Because material properties can't be verified while holders may be unresolved, verify all materials after the registry is closed and all elements have been registered.
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterial);
+
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
             GTCEu.LOGGER.info("Firing material register late event");
-            GTRegistries.MATERIALS.close();
             ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
