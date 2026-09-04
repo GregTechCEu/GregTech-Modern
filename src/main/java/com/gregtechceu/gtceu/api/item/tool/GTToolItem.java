@@ -139,6 +139,11 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
+    public boolean isFoil(ItemStack stack) {
+        return definition$isFoil(stack);
+    }
+
+    @Override
     public ItemEnchantments getAllEnchantments(ItemStack stack, HolderLookup.RegistryLookup<Enchantment> lookup) {
         return definition$getAllEnchantments(stack, lookup);
     }

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
+import com.gregtechceu.gtceu.common.item.datacomponents.ResolvableItemEnchantments;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.TagKey;
@@ -137,12 +138,9 @@ public class GTMaterialItems {
         TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<Item, ? extends IGTTool>) (ItemProviderEntry<Item, ?>) registrate
                 .item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.create(toolType, tier, material, toolType.toolDefinition, p).asItem())
                 .properties(p -> {
-                    if (!toolType.toolDefinition.getAoEDefinition().isZero()) {
-                        p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition());
-                    }
-                    return p.craftRemainder(Items.AIR);
-                })
-                .properties(p -> {
+                    p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition());
+                    p.craftRemainder(Items.AIR);
+
                     IGTToolDefinition toolStats = toolType.toolDefinition;
                     // Set other tool stats (durability)
                     ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
@@ -208,6 +206,17 @@ public class GTMaterialItems {
                         p.component(GTDataComponents.RELOCATE_MINED_BLOCKS, Unit.INSTANCE);
                         p.component(GTDataComponents.RELOCATE_MOB_DROPS, Unit.INSTANCE);
                     }
+
+                    // Set tool and material enchantments
+                    if (!toolStats.getDefaultEnchantments().isEmpty() || !toolProperty.getEnchantments().isEmpty()) {
+                        var innateEnchantments = new ResolvableItemEnchantments.Mutable();
+                        toolStats.getDefaultEnchantments().forEach(innateEnchantments::upgrade);
+                        toolProperty.getEnchantments().forEach(innateEnchantments::upgrade);
+                        p.component(GTDataComponents.INNATE_ENCHANTMENTS, innateEnchantments.toImmutable());
+                    } else {
+                        p.component(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY);
+                    }
+
                     return p;
                 })
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())

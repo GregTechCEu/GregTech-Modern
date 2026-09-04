@@ -23,7 +23,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
@@ -67,10 +66,10 @@ public class GTDataComponents {
             .registerComponentType("tool_mode", builder -> builder
                     .persistent(ToolModeSwitchBehavior.ModeType.CODEC)
                     .networkSynchronized(ToolModeSwitchBehavior.ModeType.STREAM_CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemEnchantments>> INNATE_ENCHANTMENTS = DATA_COMPONENTS
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResolvableItemEnchantments>> INNATE_ENCHANTMENTS = DATA_COMPONENTS
             .registerComponentType("innate_enchantments", builder -> builder
-                    .persistent(ItemEnchantments.CODEC)
-                    .networkSynchronized(ItemEnchantments.STREAM_CODEC)
+                    .persistent(ResolvableItemEnchantments.CODEC)
+                    .networkSynchronized(ResolvableItemEnchantments.STREAM_CODEC)
                     .cacheEncoding());
 
     // Material-related
