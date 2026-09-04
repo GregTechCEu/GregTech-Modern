@@ -137,12 +137,10 @@ public class GTMaterialItems {
         TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<Item, ? extends IGTTool>) (ItemProviderEntry<Item, ?>) registrate
                 .item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.create(toolType, tier, material, toolType.toolDefinition, p).asItem())
                 .properties(p -> {
-                    if (!toolType.toolDefinition.getAoEDefinition().isZero()) {
-                        p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition());
-                    }
-                    return p.craftRemainder(Items.AIR);
-                })
-                .properties(p -> {
+                    p.component(GTDataComponents.MAX_AOE, toolType.toolDefinition.getAoEDefinition());
+                    p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition());
+                    p.craftRemainder(Items.AIR);
+
                     IGTToolDefinition toolStats = toolType.toolDefinition;
                     // Set other tool stats (durability)
                     ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
