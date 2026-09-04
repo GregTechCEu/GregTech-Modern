@@ -1,7 +1,6 @@
-package com.gregtechceu.gtceu.api.registry.registrate.builder;
+package com.gregtechceu.gtceu.api.data.chemical.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -14,34 +13,29 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BuilderCallback;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings({ "UnusedReturnValue", "unused" })
-@RemapPrefixForJS("kjs$")
-public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegistrate, MaterialBuilder> {
+public class MaterialBuilder {
 
+    private final ResourceLocation resourceLocation;
     private final Material.MaterialInfo materialInfo;
     private final MaterialProperties properties;
     private final MaterialFlags flags;
@@ -68,21 +62,16 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *
      * @since GTCEu 2.0.0
      */
-    public MaterialBuilder(GTRegistrate owner, String name, BuilderCallback callback) {
-        super(owner, owner, name, callback, GTRegistries.Keys.MATERIAL);
-
+    public MaterialBuilder(ResourceLocation id) {
+        this.resourceLocation = id;
+        var name = id.getPath();
         if (name.charAt(name.length() - 1) == '_')
             throw new IllegalArgumentException("Material name cannot end with a '_'!");
-        materialInfo = new Material.MaterialInfo(getOwner().makeResourceLocation(name));
+        materialInfo = new Material.MaterialInfo(id);
         properties = new MaterialProperties();
         flags = new MaterialFlags();
     }
-
-    @Override
-    public GTRegistrate getOwner() {
-        return (GTRegistrate) super.getOwner();
-    }
-
+    
     /*
      * Material Types
      */
@@ -645,7 +634,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
                 "Material Components list malformed!");
 
         Validate.noNullElements(components,
-                "Material components array for %s had null element".formatted(getName()));
+                "Material components array for %s had null element".formatted(resourceLocation.getPath()));
 
         for (int i = 0; i < components.length; i += 2) {
             compositionSupplier.add(new DeferredMaterialStack(((Holder<Material>) components[i])::value,
@@ -963,7 +952,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      * @param progressionMultiplier Multiplier for how quickly the condition will progress.
      */
     public MaterialBuilder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
-                                  float progressionMultiplier) {
+                                                                                        float progressionMultiplier) {
         properties.setProperty(PropertyKey.HAZARD,
                 new HazardProperty(trigger, condition, progressionMultiplier, false));
         return this;
@@ -980,7 +969,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *                              components list.
      */
     public MaterialBuilder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
-                                  float progressionMultiplier, boolean applyToDerivatives) {
+                                                                                        float progressionMultiplier, boolean applyToDerivatives) {
         properties.setProperty(PropertyKey.HAZARD,
                 new HazardProperty(trigger, condition, progressionMultiplier, applyToDerivatives));
         return this;
@@ -999,7 +988,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *                           components list.
      */
     public MaterialBuilder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
-                                  boolean applyToDerivatives) {
+                                                                                        boolean applyToDerivatives) {
         properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
         return this;
     }
@@ -1237,7 +1226,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *                            Not currently utilized and intended for addons to use.
      */
     public MaterialBuilder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
-                                           int criticalTemperature) {
+                                                                                                 int criticalTemperature) {
         properties.ensureSet(PropertyKey.DUST);
         properties.setProperty(PropertyKey.WIRE,
                 new WireProperties(voltage, amperage, loss, isSuperCon, criticalTemperature));
@@ -1271,7 +1260,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      * @param plasmaProof Whether this Pipe can hold Plasmas. If not, the Pipe may lose fluid or cause damage.
      */
     public MaterialBuilder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
-                                               boolean cryoProof, boolean plasmaProof) {
+                                                                                                     boolean cryoProof, boolean plasmaProof) {
         properties.setProperty(PropertyKey.FLUID_PIPE,
                 new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
         return this;
@@ -1302,17 +1291,8 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
         return this;
     }
 
-    @Override
-    protected MaterialRegistryEntry createEntryWrapper(DeferredHolder<Material, Material> delegate) {
-        return new MaterialRegistryEntry(getOwner(), delegate);
-    }
-
-    public MaterialRegistryEntry register() {
-        return (MaterialRegistryEntry) super.register();
-    }
-
-    @Override
-    protected Material createEntry() {
+    @ApiStatus.Internal
+    public Material createMaterial() {
         materialInfo.setComponents(compositionSupplier);
 
         if (!properties.hasProperty(PropertyKey.HAZARD)) {

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.MaterialBuilder;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
@@ -14,8 +15,6 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MaterialBuilder;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -36,8 +35,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
-        this.internal = GTRegistrate.createIgnoringListenerErrors(id.getNamespace()).material(id.getPath());
-        this.dummyBuilder = true;
+        this.internal = new MaterialBuilder(id);
     }
 
     /*
@@ -667,9 +665,9 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
+
     @Override
-    public @Nullable Material createObject() {
-        internal.register();
-        return null;
+    public Material createObject() {
+        return internal.createMaterial();
     }
 }

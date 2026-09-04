@@ -19,7 +19,7 @@ public class OrganicChemistryMaterials {
      * ID RANGE: 1000-1068 (incl.)
      */
     public static void register() {
-        SiliconeRubber = REGISTRATE.material("silicone_rubber")
+        SiliconeRubber = REGISTRATE.material("silicone_rubber", builder -> builder
                 .polymer()
                 .liquid(new FluidBuilder().temperature(900))
                 .toolStats(
@@ -27,31 +27,31 @@ public class OrganicChemistryMaterials {
                 .color(0xF0F0F0).secondaryColor(0xE8E8E0)
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1, Silicon, 1)
-                .register();
+        );
 
-        Nitrobenzene = REGISTRATE.material("nitrobenzene")
+        Nitrobenzene = REGISTRATE.material("nitrobenzene", builder -> builder
                 .gas()
                 .color(0x704936)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 5, Nitrogen, 1, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        RawRubber = REGISTRATE.material("raw_rubber")
+        RawRubber = REGISTRATE.material("raw_rubber", builder -> builder
                 .polymer()
                 .color(0x54503D).secondaryColor(0x54403D)
                 .components(Carbon, 5, Hydrogen, 8)
-                .register();
+        );
 
-        RawStyreneButadieneRubber = REGISTRATE.material("raw_styrene_butadiene_rubber")
+        RawStyreneButadieneRubber = REGISTRATE.material("raw_styrene_butadiene_rubber", builder -> builder
                 .dust()
                 .color(0x54403D).secondaryColor(0x241520)
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .components(Carbon, 20, Hydrogen, 26)
                 .formula("(C4H6)3C8H8", true)
-                .register();
+        );
 
-        StyreneButadieneRubber = REGISTRATE.material("styrene_butadiene_rubber")
+        StyreneButadieneRubber = REGISTRATE.material("styrene_butadiene_rubber", builder -> builder
                 .polymer()
                 .liquid(new FluidBuilder().temperature(1000))
                 .toolStats(
@@ -60,47 +60,47 @@ public class OrganicChemistryMaterials {
                 .flags(GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 20, Hydrogen, 26)
                 .formula("(C4H6)3C8H8", true)
-                .register();
+        );
 
-        PolyvinylAcetate = REGISTRATE.material("polyvinyl_acetate")
+        PolyvinylAcetate = REGISTRATE.material("polyvinyl_acetate", builder -> builder
                 .fluid()
                 .color(0xFF9955)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 6, Oxygen, 2)
-                .register();
+        );
 
-        ReinforcedEpoxyResin = REGISTRATE.material("reinforced_epoxy_resin")
+        ReinforcedEpoxyResin = REGISTRATE.material("reinforced_epoxy_resin", builder -> builder
                 .polymer()
                 .liquid(new FluidBuilder().temperature(600))
                 .color(0x9ecaad).secondaryColor(0xb1b2a1).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 6, Hydrogen, 4, Oxygen, 1)
-                .register();
+        );
 
-        PolyvinylChloride = REGISTRATE.material("polyvinyl_chloride")
+        PolyvinylChloride = REGISTRATE.material("polyvinyl_chloride", builder -> builder
                 .polymer()
                 .liquid(new FluidBuilder().temperature(373))
                 .color(0xFF9955).secondaryColor(0x6ca5bf)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
                 .itemPipeProperties(512, 4)
-                .register();
+        );
 
-        PolyphenyleneSulfide = REGISTRATE.material("polyphenylene_sulfide")
+        PolyphenyleneSulfide = REGISTRATE.material("polyphenylene_sulfide", builder -> builder
                 .polymer()
                 .liquid(new FluidBuilder().temperature(500))
                 .color(0x5e5e08).secondaryColor(0x2c373c)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 4, Sulfur, 1)
-                .register();
+        );
 
-        GlycerylTrinitrate = REGISTRATE.material("glyceryl_trinitrate")
+        GlycerylTrinitrate = REGISTRATE.material("glyceryl_trinitrate", builder -> builder
                 .liquid(new FluidBuilder().customStill())
                 .flags(FLAMMABLE, EXPLOSIVE)
                 .components(Carbon, 3, Hydrogen, 5, Nitrogen, 3, Oxygen, 9)
-                .register();
+        );
 
-        Polybenzimidazole = REGISTRATE.material("polybenzimidazole")
+        Polybenzimidazole = REGISTRATE.material("polybenzimidazole", builder -> builder
                 .polymer()
                 .liquid(new FluidBuilder().temperature(1450))
                 .color(0x464441).secondaryColor(0x382e1b)
@@ -110,16 +110,16 @@ public class OrganicChemistryMaterials {
                                 .build())
                 .components(Carbon, 20, Hydrogen, 12, Nitrogen, 4)
                 .fluidPipeProperties(1000, 350, true)
-                .register();
+        );
 
-        Polydimethylsiloxane = REGISTRATE.material("polydimethylsiloxane")
+        Polydimethylsiloxane = REGISTRATE.material("polydimethylsiloxane", builder -> builder
                 .dust()
                 .color(0xF5F5F5).secondaryColor(0x9d9fa1)
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1, Silicon, 1)
-                .register();
+        );
 
-        Polyethylene = REGISTRATE.material("polyethylene")
+        Polyethylene = REGISTRATE.material("polyethylene", builder -> builder
                 .polymer(1)
                 .liquid(new FluidBuilder().temperature(408))
                 .color(0xC8C8C8)
@@ -128,25 +128,25 @@ public class OrganicChemistryMaterials {
                         ToolProperty.Builder.of(1.0F, 1.0F, 256, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Hydrogen, 4)
                 .fluidPipeProperties(370, 60, true)
-                .register();
+        );
 
-        Epoxy = REGISTRATE.material("epoxy")
+        Epoxy = REGISTRATE.material("epoxy", builder -> builder
                 .polymer(1)
                 .liquid(new FluidBuilder().temperature(400))
                 .color(0xf6fabd).secondaryColor(0xC88C14).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 21, Hydrogen, 25, Chlorine, 1, Oxygen, 5)
-                .register();
+        );
 
-        Polycaprolactam = REGISTRATE.material("polycaprolactam")
+        Polycaprolactam = REGISTRATE.material("polycaprolactam", builder -> builder
                 .polymer(1)
                 .liquid(new FluidBuilder().temperature(493))
                 .color(0x3f3d2d).secondaryColor(0x43432e)
                 .appendFlags(STD_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
-                .register();
+        );
 
-        Polytetrafluoroethylene = REGISTRATE.material("polytetrafluoroethylene")
+        Polytetrafluoroethylene = REGISTRATE.material("polytetrafluoroethylene", builder -> builder
                 .polymer(1)
                 .liquid(new FluidBuilder().temperature(600))
                 .color(0x6e6e6e).secondaryColor(0x202020)
@@ -155,354 +155,354 @@ public class OrganicChemistryMaterials {
                         ToolProperty.Builder.of(1.0F, 1.0F, 512, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Fluorine, 4)
                 .fluidPipeProperties(600, 100, true, true, false, false)
-                .register();
+        );
 
-        Sugar = REGISTRATE.material("sugar")
+        Sugar = REGISTRATE.material("sugar", builder -> builder
                 .gem(1)
                 .color(0xFFFFFF).secondaryColor(0x545468).iconSet(FINE)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 12, Oxygen, 6)
-                .register();
+        );
 
-        Methane = REGISTRATE.material("methane")
+        Methane = REGISTRATE.material("methane", builder -> builder
                 .gas(new FluidBuilder()
                         .translation("gtceu.fluid.gas_generic"))
                 .color(0xFF0078)
                 .components(Carbon, 1, Hydrogen, 4)
-                .register();
+        );
 
-        Epichlorohydrin = REGISTRATE.material("epichlorohydrin")
+        Epichlorohydrin = REGISTRATE.material("epichlorohydrin", builder -> builder
                 .liquid(new FluidBuilder().customStill())
                 .color(0x712400)
                 .components(Carbon, 3, Hydrogen, 5, Chlorine, 1, Oxygen, 1)
-                .register();
+        );
 
-        Monochloramine = REGISTRATE.material("monochloramine")
+        Monochloramine = REGISTRATE.material("monochloramine", builder -> builder
                 .gas()
                 .color(0x3F9F80)
                 .components(Nitrogen, 1, Hydrogen, 2, Chlorine, 1)
-                .register();
+        );
 
-        Chloroform = REGISTRATE.material("chloroform")
+        Chloroform = REGISTRATE.material("chloroform", builder -> builder
                 .fluid()
                 .color(0x892CA0)
                 .components(Carbon, 1, Hydrogen, 1, Chlorine, 3)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.POISON)
-                .register();
+        );
 
-        Cumene = REGISTRATE.material("cumene")
+        Cumene = REGISTRATE.material("cumene", builder -> builder
                 .gas()
                 .color(0x552200)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 9, Hydrogen, 12)
-                .register();
+        );
 
-        Tetrafluoroethylene = REGISTRATE.material("tetrafluoroethylene")
+        Tetrafluoroethylene = REGISTRATE.material("tetrafluoroethylene", builder -> builder
                 .gas()
                 .color(0x7D7D7D)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Fluorine, 4)
-                .register();
+        );
 
-        Chloromethane = REGISTRATE.material("chloromethane")
+        Chloromethane = REGISTRATE.material("chloromethane", builder -> builder
                 .gas()
                 .color(0xC82CA0)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 1, Hydrogen, 3, Chlorine, 1)
-                .register();
+        );
 
-        AllylChloride = REGISTRATE.material("allyl_chloride")
+        AllylChloride = REGISTRATE.material("allyl_chloride", builder -> builder
                 .fluid()
                 .color(0x87DEAA)
                 .components(Carbon, 2, Methane, 1, HydrochloricAcid, 1)
                 .formula("C3H5Cl", true)
-                .register();
+        );
 
-        Isoprene = REGISTRATE.material("isoprene")
+        Isoprene = REGISTRATE.material("isoprene", builder -> builder
                 .fluid()
                 .color(0x141414)
                 .components(Carbon, 5, Hydrogen, 8)
-                .register();
+        );
 
-        Propane = REGISTRATE.material("propane")
+        Propane = REGISTRATE.material("propane", builder -> builder
                 .gas()
                 .color(0xFAE250)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 3, Hydrogen, 8)
-                .register();
+        );
 
-        Propene = REGISTRATE.material("propene")
+        Propene = REGISTRATE.material("propene", builder -> builder
                 .gas()
                 .color(0xFFDD55)
                 .components(Carbon, 3, Hydrogen, 6)
-                .register();
+        );
 
-        Ethane = REGISTRATE.material("ethane")
+        Ethane = REGISTRATE.material("ethane", builder -> builder
                 .gas()
                 .color(0xC8C8FF)
                 .components(Carbon, 2, Hydrogen, 6)
-                .register();
+        );
 
-        Butene = REGISTRATE.material("butene")
+        Butene = REGISTRATE.material("butene", builder -> builder
                 .gas()
                 .color(0xCF5005)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 8)
-                .register();
+        );
 
-        Butane = REGISTRATE.material("butane")
+        Butane = REGISTRATE.material("butane", builder -> builder
                 .gas()
                 .color(0xB6371E)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 10)
-                .register();
+        );
 
-        DissolvedCalciumAcetate = REGISTRATE.material("dissolved_calcium_acetate")
+        DissolvedCalciumAcetate = REGISTRATE.material("dissolved_calcium_acetate", builder -> builder
                 .fluid()
                 .color(0xDCC8B4)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Calcium, 1, Carbon, 4, Oxygen, 4, Hydrogen, 6, Water, 1)
-                .register();
+        );
 
-        VinylAcetate = REGISTRATE.material("vinyl_acetate")
+        VinylAcetate = REGISTRATE.material("vinyl_acetate", builder -> builder
                 .fluid()
                 .color(0xE1B380)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 6, Oxygen, 2)
-                .register();
+        );
 
-        MethylAcetate = REGISTRATE.material("methyl_acetate")
+        MethylAcetate = REGISTRATE.material("methyl_acetate", builder -> builder
                 .fluid()
                 .color(0xEEC6AF)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 3, Hydrogen, 6, Oxygen, 2)
-                .register();
+        );
 
-        Ethenone = REGISTRATE.material("ethenone")
+        Ethenone = REGISTRATE.material("ethenone", builder -> builder
                 .fluid()
                 .color(0x141446)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 2, Oxygen, 1)
-                .register();
+        );
 
-        Tetranitromethane = REGISTRATE.material("tetranitromethane")
+        Tetranitromethane = REGISTRATE.material("tetranitromethane", builder -> builder
                 .fluid()
                 .color(0x0F2828)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 1, Nitrogen, 4, Oxygen, 8)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.WEAK_POISON)
-                .register();
+        );
 
-        Dimethylamine = REGISTRATE.material("dimethylamine")
+        Dimethylamine = REGISTRATE.material("dimethylamine", builder -> builder
                 .gas()
                 .color(0x554469)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 7, Nitrogen, 1)
-                .register();
+        );
 
-        Dimethylhydrazine = REGISTRATE.material("dimethylhydrazine")
+        Dimethylhydrazine = REGISTRATE.material("dimethylhydrazine", builder -> builder
                 .fluid()
                 .color(0x000055)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 8, Nitrogen, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        DinitrogenTetroxide = REGISTRATE.material("dinitrogen_tetroxide")
+        DinitrogenTetroxide = REGISTRATE.material("dinitrogen_tetroxide", builder -> builder
                 .gas()
                 .color(0x004184)
                 .components(Nitrogen, 2, Oxygen, 4)
-                .register();
+        );
 
-        Dimethyldichlorosilane = REGISTRATE.material("dimethyldichlorosilane")
+        Dimethyldichlorosilane = REGISTRATE.material("dimethyldichlorosilane", builder -> builder
                 .gas()
                 .color(0x441650)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 6, Chlorine, 2, Silicon, 1)
-                .register();
+        );
 
-        Styrene = REGISTRATE.material("styrene")
+        Styrene = REGISTRATE.material("styrene", builder -> builder
                 .fluid()
                 .color(0xD2C8BE)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 8)
-                .register();
+        );
 
-        Butadiene = REGISTRATE.material("butadiene")
+        Butadiene = REGISTRATE.material("butadiene", builder -> builder
                 .gas()
                 .color(0xB55A10)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 6)
-                .register();
+        );
 
-        Dichlorobenzene = REGISTRATE.material("dichlorobenzene")
+        Dichlorobenzene = REGISTRATE.material("dichlorobenzene", builder -> builder
                 .fluid()
                 .color(0x004455)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 4, Chlorine, 2)
-                .register();
+        );
 
-        AceticAcid = REGISTRATE.material("acetic_acid")
+        AceticAcid = REGISTRATE.material("acetic_acid", builder -> builder
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xC8B4A0)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 4, Oxygen, 2)
-                .register();
+        );
 
-        Phenol = REGISTRATE.material("phenol")
+        Phenol = REGISTRATE.material("phenol", builder -> builder
                 .fluid()
                 .color(0x784421)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 6, Oxygen, 1)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        BisphenolA = REGISTRATE.material("bisphenol_a")
+        BisphenolA = REGISTRATE.material("bisphenol_a", builder -> builder
                 .fluid()
                 .color(0xD4AA00)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 15, Hydrogen, 16, Oxygen, 2)
-                .register();
+        );
 
-        VinylChloride = REGISTRATE.material("vinyl_chloride")
+        VinylChloride = REGISTRATE.material("vinyl_chloride", builder -> builder
                 .gas()
                 .color(0xE1F0F0)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        Ethylene = REGISTRATE.material("ethylene")
+        Ethylene = REGISTRATE.material("ethylene", builder -> builder
                 .gas()
                 .color(0xE1E1E1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 4)
-                .register();
+        );
 
-        Benzene = REGISTRATE.material("benzene")
+        Benzene = REGISTRATE.material("benzene", builder -> builder
                 .fluid()
                 .color(0x1A1A1A)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 6)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        Acetone = REGISTRATE.material("acetone")
+        Acetone = REGISTRATE.material("acetone", builder -> builder
                 .fluid()
                 .color(0xAFAFAF)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 3, Hydrogen, 6, Oxygen, 1)
-                .register();
+        );
 
-        Glycerol = REGISTRATE.material("glycerol")
+        Glycerol = REGISTRATE.material("glycerol", builder -> builder
                 .fluid()
                 .color(0x87DE87)
                 .components(Carbon, 3, Hydrogen, 8, Oxygen, 3)
-                .register();
+        );
 
-        Methanol = REGISTRATE.material("methanol")
+        Methanol = REGISTRATE.material("methanol", builder -> builder
                 .fluid()
                 .color(0xAA8800)
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.METHANOL_POISONING)
-                .register();
+        );
 
-        Ethanol = REGISTRATE.material("ethanol")
-                .liquid(new FluidBuilder().customStill())
-                .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
-                .flags(DISABLE_DECOMPOSITION)
+        Ethanol = REGISTRATE.material("ethanol", builder -> builder
+                        .liquid(new FluidBuilder().customStill())
+                        .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
+                        .flags(DISABLE_DECOMPOSITION)
                 // TODO ethanol intoxication .hazard(HazardProperty.HazardTrigger.INHALATION,
-                .register();
+        );
 
-        Toluene = REGISTRATE.material("toluene")
+        Toluene = REGISTRATE.material("toluene", builder -> builder
                 .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 7, Hydrogen, 8)
-                .register();
+        );
 
-        DiphenylIsophtalate = REGISTRATE.material("diphenyl_isophthalate")
+        DiphenylIsophtalate = REGISTRATE.material("diphenyl_isophthalate", builder -> builder
                 .fluid()
                 .color(0x246E57)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 20, Hydrogen, 14, Oxygen, 4)
-                .register();
+        );
 
-        PhthalicAcid = REGISTRATE.material("phthalic_acid")
+        PhthalicAcid = REGISTRATE.material("phthalic_acid", builder -> builder
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xD1D1D1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 6, Oxygen, 4)
                 .formula("C6H4(CO2H)2", true)
-                .register();
+        );
 
-        Dimethylbenzene = REGISTRATE.material("dimethylbenzene")
+        Dimethylbenzene = REGISTRATE.material("dimethylbenzene", builder -> builder
                 .fluid()
                 .color(0x669C40)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 10)
                 .formula("C6H4(CH3)2", true)
-                .register();
+        );
 
-        Diaminobenzidine = REGISTRATE.material("diaminobenzidine")
+        Diaminobenzidine = REGISTRATE.material("diaminobenzidine", builder -> builder
                 .fluid()
                 .color(0x337D59)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 14, Nitrogen, 4)
                 .formula("(C6H3(NH2)2)2", true)
-                .register();
+        );
 
-        Dichlorobenzidine = REGISTRATE.material("dichlorobenzidine")
+        Dichlorobenzidine = REGISTRATE.material("dichlorobenzidine", builder -> builder
                 .fluid()
                 .color(0xA1DEA6)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 10, Chlorine, 2, Nitrogen, 2)
                 .formula("(C6H3Cl(NH2))2", true)
-                .register();
+        );
 
-        Nitrochlorobenzene = REGISTRATE.material("nitrochlorobenzene")
+        Nitrochlorobenzene = REGISTRATE.material("nitrochlorobenzene", builder -> builder
                 .fluid()
                 .color(0x8FB51A)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 4, Chlorine, 1, Nitrogen, 1, Oxygen, 2)
-                .register();
+        );
 
-        Chlorobenzene = REGISTRATE.material("chlorobenzene")
+        Chlorobenzene = REGISTRATE.material("chlorobenzene", builder -> builder
                 .fluid()
                 .color(0x326A3E)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 5, Chlorine, 1)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        Octane = REGISTRATE.material("octane")
+        Octane = REGISTRATE.material("octane", builder -> builder
                 .fluid()
                 .flags(DISABLE_DECOMPOSITION)
                 .color(0x8A0A09)
                 .components(Carbon, 8, Hydrogen, 18)
-                .register();
+        );
 
-        EthylTertButylEther = REGISTRATE.material("ethyl_tertbutyl_ether")
+        EthylTertButylEther = REGISTRATE.material("ethyl_tertbutyl_ether", builder -> builder
                 .fluid()
                 .flags(DISABLE_DECOMPOSITION)
                 .color(0xB15C06)
                 .components(Carbon, 6, Hydrogen, 14, Oxygen, 1)
-                .register();
+        );
 
-        Ethylbenzene = REGISTRATE.material("ethylbenzene")
+        Ethylbenzene = REGISTRATE.material("ethylbenzene", builder -> builder
                 .fluid()
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 10)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        Naphthalene = REGISTRATE.material("naphthalene")
+        Naphthalene = REGISTRATE.material("naphthalene", builder -> builder
                 .fluid()
                 .flags(DISABLE_DECOMPOSITION)
                 .color(0xF4F4D7)
                 .components(Carbon, 10, Hydrogen, 8)
-                .register();
+        );
 
-        Rubber = REGISTRATE.material("rubber")
+        Rubber = REGISTRATE.material("rubber", builder -> builder
                 .polymer(0)
                 .liquid(new FluidBuilder().temperature(400))
                 .color(0x353529).secondaryColor(0x080808)
@@ -510,104 +510,104 @@ public class OrganicChemistryMaterials {
                         ToolProperty.Builder.of(1.0F, 1.0F, 256, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .flags(GENERATE_RING, GENERATE_FOIL)
                 .components(Carbon, 5, Hydrogen, 8)
-                .register();
+        );
 
-        Cyclohexane = REGISTRATE.material("cyclohexane")
+        Cyclohexane = REGISTRATE.material("cyclohexane", builder -> builder
                 .fluid()
                 .color(0xe8b113).secondaryColor(0x602a10)
                 .components(Carbon, 6, Hydrogen, 12)
-                .register();
+        );
 
-        NitrosylChloride = REGISTRATE.material("nitrosyl_chloride")
+        NitrosylChloride = REGISTRATE.material("nitrosyl_chloride", builder -> builder
                 .gas()
                 .flags(FLAMMABLE)
                 .color(0xF3F100)
                 .components(Nitrogen, 1, Oxygen, 1, Chlorine, 1)
-                .register();
+        );
 
-        CyclohexanoneOxime = REGISTRATE.material("cyclohexanone_oxime")
+        CyclohexanoneOxime = REGISTRATE.material("cyclohexanone_oxime", builder -> builder
                 .dust()
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .color(0xEBEBF0).iconSet(ROUGH)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
                 .formula("C6H11NO", true)
-                .register();
+        );
 
-        Caprolactam = REGISTRATE.material("caprolactam")
+        Caprolactam = REGISTRATE.material("caprolactam", builder -> builder
                 .dust()
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .color(0xfffef8).secondaryColor(0xbab7a2)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
                 .formula("(CH2)5C(O)NH", true)
-                .register();
+        );
 
-        Butyraldehyde = REGISTRATE.material("butyraldehyde")
+        Butyraldehyde = REGISTRATE.material("butyraldehyde", builder -> builder
                 .fluid()
                 .color(0x554A3F)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 8, Oxygen, 1)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.NAUSEA, false)
-                .register();
+        );
 
-        PolyvinylButyral = REGISTRATE.material("polyvinyl_butyral")
+        PolyvinylButyral = REGISTRATE.material("polyvinyl_butyral", builder -> builder
                 .ingot().fluid()
                 .color(0x3e7051).secondaryColor(0x535648)
                 .flags(GENERATE_PLATE, DISABLE_DECOMPOSITION, NO_SMASHING)
                 .components(Butyraldehyde, 1, PolyvinylAcetate, 1)
-                .register();
+        );
 
-        Biphenyl = REGISTRATE.material("biphenyl")
+        Biphenyl = REGISTRATE.material("biphenyl", builder -> builder
                 .dust()
                 .color(0x8B8C4F).iconSet(FINE)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 10)
                 .formula("(C6H5)2", true)
-                .register();
+        );
 
-        PolychlorinatedBiphenyl = REGISTRATE.material("polychlorinated_biphenyl")
+        PolychlorinatedBiphenyl = REGISTRATE.material("polychlorinated_biphenyl", builder -> builder
                 .fluid()
                 .color(0xCACC0E)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 8, Chlorine, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
                 .formula("(C6H4Cl)2", true)
-                .register();
+        );
 
-        AceticAnhydride = REGISTRATE.material("acetic_anhydride")
+        AceticAnhydride = REGISTRATE.material("acetic_anhydride", builder -> builder
                 .fluid()
                 .color(0xE0D182)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 6, Oxygen, 3)
                 .formula("(CH3CO)2O", true)
-                .register();
+        );
 
-        AminoPhenol = REGISTRATE.material("aminophenol")
+        AminoPhenol = REGISTRATE.material("aminophenol", builder -> builder
                 .fluid()
                 .color(0x784421)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 7, Nitrogen, 1, Oxygen, 1)
                 .formula("H2NC6H4OH", true)
-                .register();
+        );
 
-        Paracetamol = REGISTRATE.material("paracetamol")
+        Paracetamol = REGISTRATE.material("paracetamol", builder -> builder
                 .dust()
                 .color(0xF2EDCB)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 9, Nitrogen, 1, Oxygen, 2)
-                .register();
+        );
 
-        AmmoniumFormate = REGISTRATE.material("ammonium_formate")
+        AmmoniumFormate = REGISTRATE.material("ammonium_formate", builder -> builder
                 .gas()
                 .color(0x93badb)
                 .components(Carbon, 1, Hydrogen, 5, Nitrogen, 1, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.IRRITANT)
-                .register();
+        );
 
-        Formamide = REGISTRATE.material("formamide")
+        Formamide = REGISTRATE.material("formamide", builder -> builder
                 .liquid()
                 .color(0x5cccb6)
                 .components(Carbon, 1, Hydrogen, 3, Nitrogen, 1, Oxygen, 1)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CHEMICAL_BURNS)
-                .register();
+        );
     }
 }

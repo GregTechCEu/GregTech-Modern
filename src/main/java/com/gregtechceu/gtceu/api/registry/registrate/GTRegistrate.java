@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.MaterialBuilder;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
@@ -62,6 +64,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
@@ -214,8 +217,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     /// Material builder
 
-    public MaterialBuilder material(String name) {
-        return entry(name, callback -> new MaterialBuilder(this, name, callback));
+    public MaterialRegistryEntry material(String name, UnaryOperator<MaterialBuilder> materialBuilderCallback) {
+        return entry(name, callback -> new RegistrateMaterialBuilderWrapper(this, name, callback, materialBuilderCallback)).register();
     }
 
     /// TagPrefix Builder
