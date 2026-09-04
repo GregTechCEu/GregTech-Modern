@@ -13,6 +13,24 @@
             "top": "gtceu:block/casings/voltage/uv/top"
           }
         }
+      },
+      "when": {
+        "is_formed": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": {
+          "parent": "gtceu:block/cube/tinted/bottom_top",
+          "textures": {
+            "bottom": "gtceu:block/casings/voltage/uv/bottom",
+            "side": "gtceu:block/casings/voltage/uv/side",
+            "top": "gtceu:block/casings/voltage/uv/top"
+          }
+        }
+      },
+      "when": {
+        "is_formed": "true"
       }
     },
     {

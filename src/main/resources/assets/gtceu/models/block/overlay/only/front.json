@@ -2,10 +2,10 @@
     "parent": "block/block",
     "elements": [
         {
-            "from": [  0,  0, -0.096 ],
-            "to":   [ 16, 16, -0.096 ],
+            "from": [  0,  0,  0 ],
+            "to":   [ 16, 16,  0 ],
             "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
+                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north", "gtceu:face_layer": "machine_face" }
             }
         }
     ]
