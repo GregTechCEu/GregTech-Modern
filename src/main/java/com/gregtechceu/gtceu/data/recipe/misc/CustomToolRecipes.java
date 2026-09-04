@@ -41,7 +41,7 @@ import static com.gregtechceu.gtceu.data.recipe.generated.ToolRecipeHandler.*;
 public final class CustomToolRecipes {
 
     private static final Int2ReferenceMap<ItemEntry<? extends Item>> motorItems = new Int2ReferenceArrayMap<>();
-    private static final Int2ReferenceMap<Material> baseMaterials = new Int2ReferenceArrayMap<>();
+    private static final Int2ReferenceMap<Holder<Material>> baseMaterials = new Int2ReferenceArrayMap<>();
     private static final Int2ReferenceMap<List<ItemEntry<? extends Item>>> batteryItems = new Int2ReferenceArrayMap<>();
 
     private CustomToolRecipes() {}
@@ -176,8 +176,10 @@ public final class CustomToolRecipes {
     private static void registerSoftToolRecipes(@NotNull RecipeOutput provider) {
         final ItemStack stick = new ItemStack(Items.STICK);
 
-        for (Holder<Material> holder: softMaterials) {
-            Material material = holder.value();
+        Material[] matArr = softMaterials.stream().map(Holder::value).toArray(Material[]::new);
+        for (int i = 0; i < matArr.length; i++) {
+            Material material = matArr[i];
+
             if (material.hasProperty(PropertyKey.WOOD)) {
                 // todo allow these 3 to be mirrored
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material.getName()),
