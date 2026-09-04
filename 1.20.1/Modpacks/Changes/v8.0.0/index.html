@@ -5335,8 +5335,12 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
 <p>Previously, <code>handleRecipeInner</code> should return <code>null</code> when there's nothing left to process. This has been changed to requiring an empty list (e.g. the list of remaining ingredients). Returning <code>null</code> is now wrong and will crash (NPE).</p>
 <h2 id="empty-content-check-for-recipe-capabilities">Empty content check for recipe capabilities</h2>
 <p>As a recipe-matching optimization, input handlers whose <code>getTotalContentAmount()</code> returns <code>0</code> are now skipped during recipe handling. If your <code>RecipeCapability</code> has handlers that legitimately report a total content amount of <code>0</code> but can still satisfy a recipe (e.g. rate-based capabilities like computation/CWU, where nothing is "stored" but the handler can still provide), you must now override <code>RecipeCapability#skipEmptyContentCheck()</code> to return <code>true</code>, otherwise these capabilities will break (their handlers will never be run).</p>
-<h2 id="removal-of-marker-materials">Removal of marker materials</h2>
-<p>Marker materials have been removed. This means that a few utils related to colored items have been moved. All GT color values are now located in <code>GTValues.COLORS</code>, and getting a colored lens should now be done using the <code>forge:lenses/&lt;color&gt;</code> tags.</p>
+<h2 id="removal-of-marker-materials-and-null-material">Removal of marker materials and null material</h2>
+<ul>
+<li>Marker materials have been removed. This means that a few utils related to colored items have been moved. Use the <code>DyeColor</code> enum for colors, and use the <code>forge:lenses/&lt;color&gt;</code> tags for lenses.</li>
+<li>The null material and null tag prefix have been removed. <code>material.isNull()</code>/<code>tagPrefix.isNull()</code> checks should be replaced with <code>material != null</code>/<code>tagPrefix != null</code>.</li>
+<li>Material entries can no longer be empty, and must always have a valid tag prefix and material.</li>
+</ul>
 <h2 id="filter-api-refactor">Filter API refactor</h2>
 <ul>
 <li>The API for using filters has changed:<ul>
