@@ -6,7 +6,9 @@ public enum TransferMode {
 
     TRANSFER_ANY("transfer_any", 1),
     TRANSFER_EXACT("transfer_exact", 1024),
-    KEEP_EXACT("keep_exact", 1024);
+    KEEP_EXACT("keep_exact", 1024),
+    TRANSFER_MULTIPLE("transfer_multiple", 1024),
+    KEEP_MULTIPLE("keep_multiple", 1024);
 
     public static final TransferMode[] VALUES = values();
 

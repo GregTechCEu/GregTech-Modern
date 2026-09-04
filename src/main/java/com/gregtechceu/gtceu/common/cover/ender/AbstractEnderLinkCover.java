@@ -370,6 +370,22 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .widthRelOffset(1f, -20)
                         .value(searchSync)));
 
+        MutableSingletonList<String> searchString = new MutableSingletonList<>("");
+        var searchSync = SyncHandlers.string(searchString::get, searchString::set)
+                .allowC2S();
+        Flow col = Flow.col()
+                .childPadding(4)
+                .widthRel(1)
+                .marginTop(7);
+        panel.child(col);
+        col.child(Flow.row()
+                .coverChildrenHeight()
+                .widthRel(0.8f)
+                .child(GuiTextures.SEARCH.asWidget())
+                .child(new TextFieldWidget()
+                        .widthRelOffset(1f, -20)
+                        .value(searchSync)));
+
         var entries = new GenericListSyncHandler.Builder<VirtualEntry>()
                 .getter(() -> this.getVirtualEntries(entry -> entry.getDescription().contains(searchString.get())))
                 .adapter(new VirtualEntryAdapter())
