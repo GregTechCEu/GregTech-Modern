@@ -71,7 +71,7 @@ public class GTRenderTypes extends RenderType {
             RenderType.CompositeState.builder()
                     .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
                     .setTextureState(BLOCK_SHEET_MIPPED)
-                    .setWriteMaskState(COLOR_WRITE)
+                    .setWriteMaskState(COLOR_DEPTH_WRITE)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
                     .setLayeringState(CUSTOM_CHUNK_LAYERING)
                     .setLightmapState(LIGHTMAP)
