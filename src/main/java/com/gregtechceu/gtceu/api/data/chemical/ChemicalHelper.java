@@ -290,6 +290,14 @@ public class ChemicalHelper {
         return get(tagPrefix, material, 1);
     }
 
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        return get(tagPrefix, material, 1);
+    }
+
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
         if (materialEntry.isEmpty()) return Collections.emptyList();
         return MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
@@ -343,6 +351,11 @@ public class ChemicalHelper {
             return tags.getFirst();
         }
         return null;
+    }
+
+    @Nullable
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return getTag(orePrefix.value(), material.value());
     }
 
     @Nullable

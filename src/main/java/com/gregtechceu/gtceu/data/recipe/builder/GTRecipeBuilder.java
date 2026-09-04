@@ -444,6 +444,14 @@ public class GTRecipeBuilder {
         return inputItems(tagPrefix, material, 1);
     }
 
+    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Material material) {
+        return inputItems(tagPrefix.value(), material, 1);
+    }
+
+    public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Material material, int count) {
+        return inputItems(tagPrefix.value(), material, count);
+    }
+
     public GTRecipeBuilder inputItems(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
         return inputItems(tagPrefix.value(), material.value(), 1);
     }
@@ -608,6 +616,15 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Holder<Material> material, int count) {
         return outputItems(orePrefix.value(), material.value(), count);
     }
+
+    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Material material) {
+        return outputItems(orePrefix.value(), material, 1);
+    }
+
+    public GTRecipeBuilder outputItems(Holder<TagPrefix> orePrefix, Material material, int count) {
+        return outputItems(orePrefix.value(), material, count);
+    }
+
 
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
         if (orePrefix.isEmpty() || material.isNull()) {
@@ -917,19 +934,19 @@ public class GTRecipeBuilder {
         return chancedOutput(new ItemStack(item, count), fraction);
     }
 
-    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Material mat, int chance) {
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Holder<Material> mat, int chance) {
         return chancedOutput(ChemicalHelper.get(tag, mat), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Material mat, int count, int chance) {
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Holder<Material> mat, int count, int chance) {
         return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Material material, int count, String fraction) {
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Holder<Material> material, int count, String fraction) {
         return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction);
     }
 
-    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Material material, String fraction) {
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Holder<Material> material, String fraction) {
         return chancedOutput(prefix, material, 1, fraction);
     }
 
@@ -1033,6 +1050,11 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputFluids(@NotNull Material material, int amount) {
         return inputFluids(material.getFluid(amount));
     }
+
+    public GTRecipeBuilder inputFluids(Holder<Material> material, int amount) {
+        return inputFluids(material.value().getFluid(amount));
+    }
+
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         if (missingIngredientError(0, true, FluidRecipeCapability.CAP, input::isEmpty)) {

@@ -104,7 +104,7 @@ public class AlloyBlastRecipeProducer {
             final int msAmount = (int) materialStack.amount();
 
             if (component.hasProperty(PropertyKey.DUST)) {
-                builder.inputItems(TagPrefix.dust, component, msAmount);
+                builder.inputItems(TagPrefix.dust.value(), component, msAmount);
             } else if (component.hasProperty(PropertyKey.FLUID)) {
                 if (fluids >= 2) {
                     // more than 2 fluids won't fit in the machine
@@ -190,7 +190,7 @@ public class AlloyBlastRecipeProducer {
                 .inputFluids(new FluidStack(molten, GTValues.L))
                 .duration((int) material.getMass() * 3)
                 .notConsumable(GTItems.SHAPE_MOLD_INGOT.asStack())
-                .outputItems(TagPrefix.ingot, material);
+                .outputItems(TagPrefix.ingot.value(), material);
 
         // helium for when >= 5000K temperature
         if (temperature >= 5000) {

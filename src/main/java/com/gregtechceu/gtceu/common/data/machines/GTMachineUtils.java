@@ -32,6 +32,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -381,14 +382,14 @@ public class GTMachineUtils {
                 HIGH_TIERS);
     }
 
-    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, Material material,
+    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material,
                                                                 int capacity,
                                                                 int rowLength, String lang) {
         final boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
         return registrate
-                .machine(material.getName() + "_crate",
-                        info -> new CrateMachine(info, material, capacity, rowLength))
+                .machine(material.value().getName() + "_crate",
+                        info -> new CrateMachine(info, material.value(), capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
@@ -399,12 +400,12 @@ public class GTMachineUtils {
                 .register();
     }
 
-    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, Material material, int capacity,
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material, int capacity,
                                                                String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate
-                .machine(material.getName() + "_drum", info -> new DrumMachine(info, material, capacity))
-                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material)).build()
+                .machine(material.value().getName() + "_drum", info -> new DrumMachine(info, material.value(), capacity))
+                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material.value())).build()
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))

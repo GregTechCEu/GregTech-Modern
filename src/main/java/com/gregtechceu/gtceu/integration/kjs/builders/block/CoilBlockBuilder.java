@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
@@ -75,7 +76,7 @@ public class CoilBlockBuilder extends ActiveBlockBuilder {
     public Block createObject() {
         SimpleCoilType coilType = new SimpleCoilType(this.id.getPath(),
                 temperature, level, energyDiscount, tier,
-                material, ResourceLocation.parse(texture));
+                GTRegistries.MATERIALS.wrapAsHolder(material.get()), ResourceLocation.parse(texture));
         CoilBlock result = new CoilBlock(this.createProperties(), coilType);
         GTCEuAPI.HEATING_COILS.put(coilType, () -> result);
         return result;

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -404,14 +405,14 @@ public class GTItems {
                             new ItemFluidContainer()))
             .register();
 
-    public static ItemEntry<ComponentItem> createFluidCell(Material mat, int capacity, int matSize, int stackSize) {
+    public static ItemEntry<ComponentItem> createFluidCell(MaterialRegistryEntry mat, int capacity, int matSize, int stackSize) {
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
         Preconditions.checkArgument(prop != null,
                 "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",
-                mat.getName());
+                mat.value().getName());
         return REGISTRATE
-                .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::new)
-                .lang("%s " + toEnglishName(mat.getName()) + " Cell")
+                .item("%s_fluid_cell".formatted(mat.value().getName()), ComponentItem::new)
+                .lang("%s " + toEnglishName(mat.value().getName()) + " Cell")
                 .color(() -> GTItems::cellColor)
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .properties(p -> p.stacksTo(stackSize))

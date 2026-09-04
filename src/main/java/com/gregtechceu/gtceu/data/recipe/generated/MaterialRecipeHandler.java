@@ -210,7 +210,7 @@ public final class MaterialRecipeHandler {
                     .save(provider);
         } else {
             blastBuilder.duration(duration);
-            if (material == Silicon) {
+            if (material == Silicon.value()) {
                 blastBuilder.circuitMeta(1);
             }
             blastBuilder.save(provider);
