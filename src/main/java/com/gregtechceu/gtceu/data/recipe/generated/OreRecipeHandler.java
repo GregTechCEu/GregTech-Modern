@@ -20,9 +20,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IntersectionIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
