@@ -249,10 +249,12 @@ public class ItemNetHandler implements IItemHandlerModifiable {
             toInsert.setCount(data.toTransfer);
 
             ItemStack ins = insertIntoTarget(data.routePath, toInsert, simulate, false);
-            ins.setCount(data.toTransfer - ins.getCount());
+            int insCount = data.toTransfer - ins.getCount();
 
-            inserted += ins.getCount();
-            transferTo(data.routePath, simulate, ins);
+            inserted += insCount;
+            if (insCount > 0) {
+                transferTo(data.routePath, simulate, stack.copyWithCount(insCount));
+            }
         }
 
         ItemStack remainder = stack.copy();
