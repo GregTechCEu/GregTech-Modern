@@ -246,10 +246,10 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<TransparentBlock> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
-    public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
+    public static final ImmutableMap<Holder<Material>, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
     static {
-        ImmutableMap.Builder<Material, BlockEntry<Block>> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<Holder<Material>, BlockEntry<Block>> builder = ImmutableMap.builder();
         builder.put(GTMaterials.Bronze, CASING_BRONZE_BRICKS);
         builder.put(GTMaterials.Invar, CASING_INVAR_HEATPROOF);
         builder.put(GTMaterials.Aluminium, CASING_ALUMINIUM_FROSTPROOF);
