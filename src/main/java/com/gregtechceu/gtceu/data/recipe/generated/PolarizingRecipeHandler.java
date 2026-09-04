@@ -60,7 +60,7 @@ public final class PolarizingRecipeHandler {
 
             VanillaRecipeHelper.addSmeltingRecipe(provider,
                     "demagnetize_" + magneticMaterial.getName() + "_" + prefix,
-                    ChemicalHelper.getTag(prefix, magneticMaterial),
+                    ChemicalHelper.getTagOrThrow(prefix, magneticMaterial),
                     ChemicalHelper.get(prefix, material)); // de-magnetizing
         }
     }

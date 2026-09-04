@@ -1532,7 +1532,7 @@ public class GTRecipeBuilder {
         if (itemMaterialInfo || fluidMaterialInfo) {
             addOutputMaterialInfo();
         }
-        
+
         consumer.accept(build());
     }
 
