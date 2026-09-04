@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationProvider {
 
@@ -49,21 +51,25 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate,
+                           @NotNull Set<IOpticalComputationProvider> seen,
+                           @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
         if (cwut == 0) return 0;
-        int provided = traverseRequestCWUt(cwut, simulate, seen);
-        if (provided > 0) setPipesActive();
+        int provided = traverseRequestCWUt(cwut, simulate, seen, simulationState);
+        if (provided > 0 && !simulate) setPipesActive();
         return provided;
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-        return traverseMaxCWUt(seen);
+    public int getMaxCWUt(@NotNull Set<IOpticalComputationProvider> seen,
+                          @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
+        return traverseMaxCWUt(seen, simulationState);
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-        return traverseCanBridge(seen);
+    public boolean canBridge(@NotNull Set<IOpticalComputationProvider> seen,
+                             @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
+        return traverseCanBridge(seen, simulationState);
     }
 
     private void setPipesActive() {
@@ -93,26 +99,30 @@ public class OpticalNetHandler implements IDataAccessHatch, IOpticalComputationP
         return false;
     }
 
-    private int traverseRequestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    private int traverseRequestCWUt(int cwut, boolean simulate,
+                                    @NotNull Set<IOpticalComputationProvider> seen,
+                                    @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
         IOpticalComputationProvider provider = getComputationProvider(seen);
         if (provider == null) return 0;
-        return provider.requestCWUt(cwut, simulate, seen);
+        return provider.requestCWUt(cwut, simulate, seen, simulationState);
     }
 
-    private int traverseMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+    private int traverseMaxCWUt(@NotNull Set<IOpticalComputationProvider> seen,
+                                @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
         IOpticalComputationProvider provider = getComputationProvider(seen);
         if (provider == null) return 0;
-        return provider.getMaxCWUt(seen);
+        return provider.getMaxCWUt(seen, simulationState);
     }
 
-    private boolean traverseCanBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+    private boolean traverseCanBridge(@NotNull Set<IOpticalComputationProvider> seen,
+                                      @NotNull Map<IOpticalComputationProvider, Object> simulationState) {
         IOpticalComputationProvider provider = getComputationProvider(seen);
         if (provider == null) return true; // nothing found, so don't report a problem, just pass quietly
-        return provider.canBridge(seen);
+        return provider.canBridge(seen, simulationState);
     }
 
     @Nullable
-    private IOpticalComputationProvider getComputationProvider(@NotNull Collection<IOpticalComputationProvider> seen) {
+    private IOpticalComputationProvider getComputationProvider(@NotNull Set<IOpticalComputationProvider> seen) {
         if (isNetInvalidForTraversal()) return null;
 
         OpticalRoutePath inv = net.getNetData(pipe.getBlockPos(), facing);
