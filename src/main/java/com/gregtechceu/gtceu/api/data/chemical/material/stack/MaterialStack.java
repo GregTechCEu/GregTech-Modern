@@ -5,18 +5,18 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.Holder;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public record MaterialStack(@Nullable Material material, long amount) {
 
-    public static final MaterialStack EMPTY = new MaterialStack((Material)null, 0);
+    public static final MaterialStack EMPTY = new MaterialStack((Material) null, 0);
 
     private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
-
 
     public MaterialStack(Holder<Material> materialHolder, long amount) {
         this(materialHolder.value(), amount);

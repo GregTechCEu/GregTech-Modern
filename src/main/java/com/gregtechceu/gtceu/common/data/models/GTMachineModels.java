@@ -513,20 +513,24 @@ public class GTMachineModels {
                 .setModel(provider.getExistingFile(model));
     }
 
-    public static final ImmutableMap<Holder<Material>, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util.make(() -> {
-        ImmutableMap.Builder<Holder<Material>, ResourceLocation> builder = ImmutableMap.builder();
-        builder.put(GTMaterials.Bronze, GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
-        builder.put(GTMaterials.Invar, GTCEu.id("block/casings/solid/machine_casing_heatproof"));
-        builder.put(GTMaterials.Aluminium, GTCEu.id("block/casings/solid/machine_casing_frost_proof"));
-        builder.put(GTMaterials.Steel, GTCEu.id("block/casings/solid/machine_casing_solid_steel"));
-        builder.put(GTMaterials.StainlessSteel, GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"));
-        builder.put(GTMaterials.Titanium, GTCEu.id("block/casings/solid/machine_casing_stable_titanium"));
-        builder.put(GTMaterials.TungstenSteel, GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
-        builder.put(GTMaterials.Polytetrafluoroethylene, GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
-        builder.put(GTMaterials.HSSE, GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"));
+    public static final ImmutableMap<Holder<Material>, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util
+            .make(() -> {
+                ImmutableMap.Builder<Holder<Material>, ResourceLocation> builder = ImmutableMap.builder();
+                builder.put(GTMaterials.Bronze, GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
+                builder.put(GTMaterials.Invar, GTCEu.id("block/casings/solid/machine_casing_heatproof"));
+                builder.put(GTMaterials.Aluminium, GTCEu.id("block/casings/solid/machine_casing_frost_proof"));
+                builder.put(GTMaterials.Steel, GTCEu.id("block/casings/solid/machine_casing_solid_steel"));
+                builder.put(GTMaterials.StainlessSteel,
+                        GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"));
+                builder.put(GTMaterials.Titanium, GTCEu.id("block/casings/solid/machine_casing_stable_titanium"));
+                builder.put(GTMaterials.TungstenSteel,
+                        GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
+                builder.put(GTMaterials.Polytetrafluoroethylene,
+                        GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
+                builder.put(GTMaterials.HSSE, GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"));
 
-        return builder.build();
-    });
+                return builder.build();
+            });
 
     // spotless:off
     public static MachineBuilder.ModelInitializer createWorldAcceleratorModel(ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {

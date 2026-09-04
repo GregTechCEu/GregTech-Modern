@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.core.mixins.MappedRegistryAccessor;
 
-import lombok.Getter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.RegistrationInfo;
@@ -12,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Lifecycle;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

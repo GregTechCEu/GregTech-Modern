@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -400,11 +399,13 @@ public class GTMachineUtils {
                 .register();
     }
 
-    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material, int capacity,
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                               int capacity,
                                                                String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate
-                .machine(material.value().getName() + "_drum", info -> new DrumMachine(info, material.value(), capacity))
+                .machine(material.value().getName() + "_drum",
+                        info -> new DrumMachine(info, material.value(), capacity))
                 .item((holder, prop) -> DrumMachineItem.create(holder, prop, material.value())).build()
                 .langValue(lang)
                 .rotationState(RotationState.NONE)

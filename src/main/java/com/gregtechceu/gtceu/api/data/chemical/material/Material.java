@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.TagUtil;
@@ -36,6 +35,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -79,7 +79,7 @@ public final class Material {
     private final List<TagKey<Item>> itemTags = new ArrayList<>();
 
     public Material(MaterialInfo materialInfo, MaterialProperties properties,
-                     MaterialFlags flags) {
+                    MaterialFlags flags) {
         this.materialInfo = materialInfo;
         this.properties = properties;
         this.flags = flags;
@@ -156,7 +156,7 @@ public final class Material {
         if (GTRegistries.MATERIALS.isFrozen()) {
             throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
         }
-        this.flags.addFlags(flags).verify(this);
+        this.flags.addFlags(flags);
     }
 
     public boolean hasFlag(MaterialFlag flag) {
@@ -509,14 +509,17 @@ public final class Material {
         return new MaterialStack(this, amount);
     }
 
+    @Contract(pure = true)
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return properties.hasProperty(key);
     }
 
+    @Contract(pure = true)
     public <T extends IMaterialProperty> @Nullable T getProperty(PropertyKey<T> key) {
         return properties.getProperty(key);
     }
 
+    @Contract(pure = true)
     public <T extends IMaterialProperty> T getPropertyOrThrow(PropertyKey<T> key) {
         return Objects.requireNonNull(getProperty(key), "Material missing %s property".formatted(key));
     }
@@ -530,7 +533,6 @@ public final class Material {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);
-        if (!GTRegistries.MATERIALS.isRegistryClosed()) properties.verify();
     }
 
     public boolean isSolid() {
@@ -657,7 +659,8 @@ public final class Material {
         }
 
         public ImmutableList<MaterialStack> getComponentList() {
-            if (resolvedComponentList == null) resolvedComponentList = ImmutableList.copyOf(unresolvedComponentList.stream().map(DeferredMaterialStack::toMatStack).toList());
+            if (resolvedComponentList == null) resolvedComponentList = ImmutableList
+                    .copyOf(unresolvedComponentList.stream().map(DeferredMaterialStack::toMatStack).toList());
             return resolvedComponentList;
         }
 

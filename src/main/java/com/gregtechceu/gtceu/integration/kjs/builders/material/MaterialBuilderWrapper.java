@@ -25,6 +25,7 @@ import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
@@ -587,23 +588,24 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m) {
+    public MaterialBuilderWrapper washedIn(Holder<Material> m) {
         internal.washedIn(m);
         return this;
     }
 
     public MaterialBuilderWrapper washedIn(Material m, int washedAmount) {
-        internal.washedIn(m, washedAmount);
+        internal.washedIn(m.getRegistryHolder(), washedAmount);
         return this;
     }
 
-    public MaterialBuilderWrapper separatedInto(Material... m) {
-        internal.separatedInto(m);
+    @SuppressWarnings("unchecked")
+    public final MaterialBuilderWrapper separatedInto(Material... m) {
+        internal.oreByproducts(Arrays.stream(m).map(Material::getRegistryHolder).toArray(Holder[]::new));
         return this;
     }
 
     public MaterialBuilderWrapper oreSmeltInto(Material m) {
-        internal.oreSmeltInto(m);
+        internal.oreSmeltInto(m.getRegistryHolder());
         return this;
     }
 
@@ -627,8 +629,9 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public MaterialBuilderWrapper addOreByproducts(Material... byproducts) {
-        internal.addOreByproducts(byproducts);
+        internal.oreByproducts(Arrays.stream(byproducts).map(Material::getRegistryHolder).toArray(Holder[]::new));
         return this;
     }
 

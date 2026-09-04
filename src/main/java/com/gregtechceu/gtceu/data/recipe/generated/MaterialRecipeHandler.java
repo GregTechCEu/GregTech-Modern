@@ -119,7 +119,7 @@ public final class MaterialRecipeHandler {
             }
 
             if (oreProperty != null) {
-                Material smeltingResult = oreProperty.getDirectSmeltResult();
+                Holder<Material> smeltingResult = oreProperty.getDirectSmeltResult();
                 if (smeltingResult != null) {
                     VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
                             ChemicalHelper.getTag(dust, material), ChemicalHelper.get(ingot, smeltingResult));
@@ -132,7 +132,7 @@ public final class MaterialRecipeHandler {
                 boolean hasHotIngot = ingotHot.value().doGenerateItem(material);
                 ItemStack ingotStack = ChemicalHelper.get(hasHotIngot ? ingotHot : ingot, material);
                 if (ingotStack.isEmpty() && oreProperty != null) {
-                    Material smeltingResult = oreProperty.getDirectSmeltResult();
+                    Holder<Material> smeltingResult = oreProperty.getDirectSmeltResult();
                     if (smeltingResult != null) {
                         ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     }
@@ -153,7 +153,8 @@ public final class MaterialRecipeHandler {
                     processEBFRecipe(material, blastProperty, ingotStack, provider);
 
                     if (ingotProperty.getMagneticMaterial() != null) {
-                        processEBFRecipe(ingotProperty.getMagneticMaterial().value(), blastProperty, ingotStack, provider);
+                        processEBFRecipe(ingotProperty.getMagneticMaterial().value(), blastProperty, ingotStack,
+                                provider);
                     }
                 }
             }
@@ -167,7 +168,7 @@ public final class MaterialRecipeHandler {
 
             // Some Ores with Direct Smelting Results have neither ingot nor gem properties
             if (oreProperty != null) {
-                Material smeltingResult = oreProperty.getDirectSmeltResult();
+                Holder<Material> smeltingResult = oreProperty.getDirectSmeltResult();
                 if (smeltingResult != null) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
@@ -181,7 +182,6 @@ public final class MaterialRecipeHandler {
 
     private static void processEBFRecipe(Material material, BlastProperty property, ItemStack output,
                                          RecipeOutput provider) {
-
         int blastTemp = property.getBlastTemperature();
         BlastProperty.GasTier gasTier = property.getGasTier();
         int duration = property.getDurationOverride();

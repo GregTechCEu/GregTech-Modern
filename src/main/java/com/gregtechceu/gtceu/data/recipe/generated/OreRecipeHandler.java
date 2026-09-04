@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
-import com.gregtechceu.gtceu.api.registry.registrate.entry.TagPrefixEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -17,6 +16,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -57,13 +57,15 @@ public final class OreRecipeHandler {
     }
 
     private static void processMetalSmelting(@NotNull RecipeOutput provider, @NotNull OreProperty property,
-                                             @NotNull TagPrefix prefix, @NotNull Material material) {
-        Material smeltingResult = property.getDirectSmeltResult() == null ? material : property.getDirectSmeltResult();
+                                             @NotNull Holder<TagPrefix> prefix, @NotNull Material material) {
+        Material smeltingResult = property.getDirectSmeltResult() == null ? material :
+                property.getDirectSmeltResult().value();
         if (smeltingResult.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
 
-            if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingResult) && !prefix.isIgnored(material)) {
-                String name = "smelt_" + prefix.name + "_" + material.getName() + "_to_ingot";
+            if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingResult) &&
+                    !prefix.value().isIgnored(material)) {
+                String name = "smelt_" + prefix.value().name + "_" + material.getName() + "_to_ingot";
                 TagKey<Item> tag = ChemicalHelper.getTag(prefix, material);
 
                 VanillaRecipeHelper.addSmeltingRecipe(provider, name, tag, ingotStack, 0.5f);
@@ -87,7 +89,7 @@ public final class OreRecipeHandler {
         }
 
         Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
-                property.getDirectSmeltResult();
+                property.getDirectSmeltResult().value();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
             ingotStack = ChemicalHelper.get(ingot, smeltingMaterial);
@@ -163,7 +165,7 @@ public final class OreRecipeHandler {
         }
 
         Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
-                property.getDirectSmeltResult();
+                property.getDirectSmeltResult().value();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
             ingotStack = ChemicalHelper.get(ingot, smeltingMaterial);

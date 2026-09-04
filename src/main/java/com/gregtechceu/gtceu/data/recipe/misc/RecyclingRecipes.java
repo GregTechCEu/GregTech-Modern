@@ -453,7 +453,8 @@ public class RecyclingRecipes {
 
             Material macerateResult = null;
             if (ms.material().hasFlag(IS_MAGNETIC)) {
-                Holder<Material> macerateResultHolder = ms.material().getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto();
+                Holder<Material> macerateResultHolder = ms.material().getPropertyOrThrow(PropertyKey.INGOT)
+                        .getMacerateInto();
                 macerateResult = macerateResultHolder == null ? null : macerateResultHolder.value();
             }
             if (macerateResult == null) macerateResult = ms.material();

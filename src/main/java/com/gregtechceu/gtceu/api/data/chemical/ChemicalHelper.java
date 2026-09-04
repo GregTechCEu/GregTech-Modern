@@ -385,7 +385,6 @@ public class ChemicalHelper {
                 "No item tag for %s %s".formatted(orePrefix, material));
     }
 
-
     public static List<TagKey<Item>> getTags(TagPrefix orePrefix, Material material) {
         return orePrefix.getItemTags(material);
     }
