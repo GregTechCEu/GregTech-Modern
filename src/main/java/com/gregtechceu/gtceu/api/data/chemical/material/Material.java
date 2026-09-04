@@ -509,6 +509,10 @@ public final class Material {
         return properties.getProperty(key);
     }
 
+    public <T extends IMaterialProperty> T getPropertyOrThrow(PropertyKey<T> key) {
+        return Objects.requireNonNull(getProperty(key), "Material missing %s property".formatted(key));
+    }
+
     public <T extends IMaterialProperty> void removeProperty(PropertyKey<T> key) {
         properties.removeProperty(key);
     }
@@ -533,10 +537,6 @@ public final class Material {
         properties.verify();
         flags.verify(this);
         calculateDecompositionType();
-    }
-
-    public boolean isNull() {
-        return this == GTMaterials.NULL;
     }
 
     @Override

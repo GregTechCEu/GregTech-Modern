@@ -105,10 +105,12 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class CommonEventListener {
@@ -148,19 +150,22 @@ public class CommonEventListener {
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
-            if (entry.material().isNull()) {
+            Either<Material, MaterialEntry> hazardMaterial = HazardProperty.getValidHazardMaterial(stack);
+            if (hazardMaterial == null) {
                 continue;
             }
-            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
-            if (property == null) continue;
+
+            var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(entry, stack.getCount());
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
         }
     }
 
@@ -207,13 +212,17 @@ public class CommonEventListener {
         }
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
 
-        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
-        if (entry.material().isNull()) {
+        var hazardMaterial = HazardProperty.getValidHazardMaterial(usedItem);
+        if (hazardMaterial == null) {
             return;
         }
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+        var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
-            tracker.progressRelatedCondition(entry, 1);
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, 1));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, 1));
         }
     }
 

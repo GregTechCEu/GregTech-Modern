@@ -126,10 +126,8 @@ public class ItemMaterialData {
                 !ORES_INVERSE.containsValue(materialEntry.tagPrefix())) {
             ORES_INVERSE.put(TagPrefix.ORES.get(materialEntry.tagPrefix()).stoneType(), materialEntry.tagPrefix());
         }
-        if (!materialEntry.isEmpty()) {
-            for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
-                TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
-            }
+        for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
+            TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
         }
     }
 

@@ -118,7 +118,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         return 0xFFFFFF;
     }
 
-    @NotNull
+    @Nullable
     Material getFrameMaterial();
 
     @ApiStatus.Internal

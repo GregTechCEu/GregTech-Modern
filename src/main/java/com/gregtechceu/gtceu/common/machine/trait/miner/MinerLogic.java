@@ -197,7 +197,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         if (ConfigHolder.INSTANCE.machines.replaceWithCobbleVersion) {
             BlockState oreState = level.getBlockState(pos);
             Holder<TagPrefix> prefix = ChemicalHelper.getPrefix(oreState.getBlock()).getRegistryHolder();
-            if (prefix.value().isEmpty() || !GTBlocks.COBBLE_BLOCKS.containsKey(prefix))
+            if (prefix == null || !GTBlocks.COBBLE_BLOCKS.containsKey(prefix))
                 return Blocks.COBBLESTONE.defaultBlockState();
             return GTBlocks.COBBLE_BLOCKS.get(prefix).get();
         }

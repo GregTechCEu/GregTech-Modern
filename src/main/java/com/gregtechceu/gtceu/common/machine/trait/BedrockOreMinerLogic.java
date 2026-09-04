@@ -80,7 +80,6 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             WeightedMaterial wm = GTUtil.getRandomItem(serverLevel.random, veinMaterials);
             if (wm == null) return null;
             Material material = wm.material();
-            if (material.isNull()) return null;
             var bedrockOrePrefixKey = ResourceKey.create(GTRegistries.Keys.TAG_PREFIX,
                     GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix));
             ItemStack stack = ChemicalHelper.get(GTRegistries.TAG_PREFIXES.getOrThrow(bedrockOrePrefixKey),

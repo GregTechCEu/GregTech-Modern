@@ -37,6 +37,10 @@ public class MaterialProperties {
         return key.cast(propertyMap.get(key));
     }
 
+    public <T extends IMaterialProperty> T getPropertyOrThrow(PropertyKey<T> key) {
+        return Objects.requireNonNull(getProperty(key), "Material missing %s property".formatted(key));
+    }
+
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return propertyMap.containsKey(key);
     }
@@ -70,7 +74,7 @@ public class MaterialProperties {
 
     /**
      * Ensures that the given property exists, creating it if absent.
-     * 
+     *
      * @param key The property key.
      * @return The existing property, or the newly created property.
      */

@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import net.minecraft.core.Holder;
+
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +38,8 @@ public record DeferredMaterialStack(@Nullable Supplier<@NotNull Material> materi
         }
 
         final String copyFinal = copy;
-        Supplier<Material> mat = () -> GTMaterials.get(copyFinal);
+        final ResourceKey<Material> matKey = ResourceKey.create(GTRegistries.Keys.MATERIAL, GTCEu.id(copyFinal));
+        Supplier<Material> mat = () -> GTRegistries.MATERIALS.getOrThrow(matKey);
         cached = new DeferredMaterialStack(mat, count);
         PARSE_CACHE.put(trimmed, cached);
         return cached.copy();

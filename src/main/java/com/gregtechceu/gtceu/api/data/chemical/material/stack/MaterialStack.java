@@ -1,26 +1,35 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.Holder;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public record MaterialStack(Material material, long amount) {
+public record MaterialStack(@Nullable Material material, long amount) {
+
+    public static final MaterialStack EMPTY = new MaterialStack(null, 0);
+
+    private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialStack(Holder<Material> materialHolder, long amount) {
         this(materialHolder.value(), amount);
     }
 
-    public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.NULL, 0);
-
-    private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
-
     public MaterialStack copy() {
         if (isEmpty()) return EMPTY;
         return new MaterialStack(material, amount);
+    }
+
+    @Override
+    public Material material() {
+        if (material == null) throw new IllegalStateException("Cannot get material from empty material stack");
+        return material;
     }
 
     public MaterialStack add(long amount) {
@@ -57,13 +66,13 @@ public record MaterialStack(Material material, long amount) {
             copy = copy.substring(spaceIndex + 1);
         }
 
-        cached = new MaterialStack(GTMaterials.get(copy), count);
+        cached = new MaterialStack(GTRegistries.MATERIALS.get(GTCEu.id(copy)), count);
         PARSE_CACHE.put(trimmed, cached);
         return cached;
     }
 
     public boolean isEmpty() {
-        return this.material == GTMaterials.NULL || this.amount < 1;
+        return this.material == null || this.amount < 1;
     }
 
     @Override

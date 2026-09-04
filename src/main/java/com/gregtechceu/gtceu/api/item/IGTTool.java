@@ -321,7 +321,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
-        if (entry.isEmpty()) return false;
+        if (entry == null) return false;
         if (entry.material() == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {

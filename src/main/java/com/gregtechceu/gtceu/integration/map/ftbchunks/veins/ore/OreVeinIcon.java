@@ -34,7 +34,7 @@ import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class OreVeinIcon implements MapIcon {
                 !(veinMetadata.depleted() && FTBChunksOptions.hideDepleted());
     }
 
-    public @NotNull Material getMaterial() {
+    public @Nullable Material getMaterial() {
         return OreRenderLayer.getMaterial(veinMetadata);
     }
 
@@ -93,7 +93,8 @@ public class OreVeinIcon implements MapIcon {
                 Icons.REMOVE,
                 b -> veinMetadata.depleted(!veinMetadata.depleted()));
 
-        var color = Color4I.rgba(getMaterial().getMaterialARGB());
+        var matColor = getMaterial() == null ? 0xFFFFFFFF : getMaterial().getMaterialARGB();
+        var color = Color4I.rgba(matColor);
         var waypointIcon = WaypointType.DEFAULT.getIcon().withColor(color);
         ContextMenuItem toggleWaypoint = new ContextMenuItem(
                 Component.translatable("button.gtceu.toggle_waypoint.name"),
@@ -114,15 +115,15 @@ public class OreVeinIcon implements MapIcon {
         var waypointManager = FTBChunksAPI.clientApi().getWaypointManager(dimension)
                 .orElse(null);
         if (mapManager == null || waypointManager == null) return;
+        var matColor = getMaterial() == null ? 0xFFFFFFFF : getMaterial().getMaterialARGB();
 
         var waypoint = new WaypointImpl(WaypointType.DEFAULT,
                 mapManager.getDimension(dimension), veinMetadata.center());
         if (waypointManager.getAllWaypoints().contains(waypoint)) {
             waypointManager.removeWaypoint(waypoint);
         } else {
-            int color = getMaterial().getMaterialARGB();
             waypointManager.addWaypointAt(veinMetadata.center(), getName().getString())
-                    .setColor(color)
+                    .setColor(matColor)
                     .setHidden(false);
         }
         screen.refreshWidgets();
@@ -159,11 +160,11 @@ public class OreVeinIcon implements MapIcon {
 
         var iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
         var material = getMaterial();
-        var color = material.isNull() ? 0xFFFFFFFF : material.getMaterialARGB();
+        var color = material == null ? 0xFFFFFFFF : material.getMaterialARGB();
         var colors = RenderUtil.floats(color);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        MaterialIconSet iconSet = material.isNull() ? MaterialIconSet.METALLIC.value() : material.getMaterialIconSet();
+        MaterialIconSet iconSet = material == null ? MaterialIconSet.METALLIC.value() : material.getMaterialIconSet();
         ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -173,7 +174,7 @@ public class OreVeinIcon implements MapIcon {
 
         oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, "secondary", true);
         if (oreTexture != null) {
-            var materialSecondaryARGB = material.isNull() ? 0xFFFFFFFF : material.getMaterialSecondaryARGB();
+            var materialSecondaryARGB = material == null ? 0xFFFFFFFF : material.getMaterialSecondaryARGB();
             colors = RenderUtil.floats(materialSecondaryARGB);
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)

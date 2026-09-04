@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
@@ -16,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class OreRenderLayer extends MapRenderLayer {
         return Component.translatable(OreVeinRecipeWidget.getOreName(vein.definition().value()));
     }
 
-    public static @NotNull Material getMaterial(@NotNull GeneratedVeinMetadata vein) {
+    public static @Nullable Material getMaterial(@NotNull GeneratedVeinMetadata vein) {
         Material firstMaterial = null;
         GTOreDefinition definition = vein.definition().value();
         if (!definition.indicatorGenerators().isEmpty()) {
@@ -48,11 +48,11 @@ public class OreRenderLayer extends MapRenderLayer {
             firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
                     state -> {
                         var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
-                        return matStack.isEmpty() ? GTMaterials.NULL : matStack.material();
+                        return matStack.isEmpty() ? null : matStack.material();
                     },
                     Function.identity());
         }
-        if (firstMaterial == null) {
+        if (firstMaterial == null && !definition.veinGenerator().getAllMaterials().isEmpty()) {
             firstMaterial = definition.veinGenerator().getAllMaterials().getFirst();
         }
         return firstMaterial;
