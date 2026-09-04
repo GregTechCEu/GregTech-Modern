@@ -118,6 +118,11 @@ public class ItemMaterialData {
         registerMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
     }
 
+    public static void registerMaterialEntry(ItemLike item,
+                                             Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        registerMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
+    }
+
     private static void registerItemEntry(Supplier<? extends ItemLike> supplier,
                                           MaterialEntry materialEntry) {
         MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, k -> new ArrayList<>())
