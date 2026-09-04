@@ -45,10 +45,10 @@ public final class PolarizingRecipeHandler {
             return;
         }
 
-        Material magneticMaterial = property.getMagneticMaterial();
+        Holder<Material> magneticMaterial = property.getMagneticMaterial();
 
-        if (magneticMaterial != null && (prefix.value().doGenerateBlock(magneticMaterial) ||
-                prefix.value().doGenerateItem(magneticMaterial))) {
+        if (magneticMaterial != null && (prefix.value().doGenerateBlock(magneticMaterial.value()) ||
+                prefix.value().doGenerateItem(magneticMaterial.value()))) {
             ItemStack magneticStack = ChemicalHelper.get(prefix, magneticMaterial);
             POLARIZER_RECIPES.recipeBuilder("polarize_" + material.getName() + "_" + prefix.value().name) // polarizing
                     .inputItems(prefix, material)
@@ -58,7 +58,7 @@ public final class PolarizingRecipeHandler {
                     .save(provider);
 
             VanillaRecipeHelper.addSmeltingRecipe(provider,
-                    "demagnetize_" + magneticMaterial.getName() + "_" + prefix,
+                    "demagnetize_" + magneticMaterial.value().getName() + "_" + prefix,
                     ChemicalHelper.getTag(prefix, magneticMaterial),
                     ChemicalHelper.get(prefix, material)); // de-magnetizing
         }
