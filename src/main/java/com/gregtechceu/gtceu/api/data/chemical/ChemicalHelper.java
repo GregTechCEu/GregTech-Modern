@@ -115,7 +115,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        return FLUID_MATERIAL.getOrDefault(fluid, null);
+        return FLUID_MATERIAL.get(fluid);
     }
 
     public static @Nullable TagPrefix getPrefix(ItemLike itemLike) {
@@ -128,7 +128,7 @@ public class ChemicalHelper {
         return Objects.requireNonNull(getPrefix(itemLike), "No tag prefix present for %s".formatted(itemLike.asItem()));
     }
 
-    public static TagPrefix getPrefix(ItemStack itemStack) {
+    public static @Nullable TagPrefix getPrefix(ItemStack itemStack) {
         return getPrefix(itemStack.getItem());
     }
 
@@ -241,7 +241,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        return TAG_MATERIAL_ENTRY.getOrDefault(tag, null);
+        return TAG_MATERIAL_ENTRY.get(tag);
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
@@ -360,11 +360,6 @@ public class ChemicalHelper {
         return null;
     }
 
-    public static TagKey<Item> getTagOrThrow(TagPrefix orePrefix, Material material) {
-        return Objects.requireNonNull(getTag(orePrefix, material),
-                "No item tag for %s %s".formatted(orePrefix, material));
-    }
-
     @Nullable
     public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Holder<Material> material) {
         return getTag(orePrefix.value(), material.value());
@@ -373,6 +368,21 @@ public class ChemicalHelper {
     @Nullable
     public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Material material) {
         return getTag(orePrefix.value(), material);
+    }
+
+    public static TagKey<Item> getTagOrThrow(TagPrefix orePrefix, Material material) {
+        return Objects.requireNonNull(getTag(orePrefix, material),
+                "No item tag for %s %s".formatted(orePrefix, material));
+    }
+
+    public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Material material) {
+        return Objects.requireNonNull(getTag(orePrefix, material),
+                "No item tag for %s %s".formatted(orePrefix, material));
+    }
+
+    public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return Objects.requireNonNull(getTag(orePrefix, material),
+                "No item tag for %s %s".formatted(orePrefix, material));
     }
 
     public static List<TagKey<Item>> getTags(TagPrefix orePrefix, Material material) {

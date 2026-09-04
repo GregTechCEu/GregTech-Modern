@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.util.Mth;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
@@ -22,8 +24,7 @@ public class OreProperty implements IMaterialProperty {
      * <p>
      * Default: none, meaning only this property's Material.
      */
-    @Getter
-    private final List<Material> oreByProducts = new ArrayList<>();
+    private HolderSet<Material> oreByProducts = null;
 
     /**
      * Crushed Ore output amount multiplier during Maceration.
@@ -60,7 +61,7 @@ public class OreProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
-    private @Nullable Material directSmeltResult = null;
+    private @Nullable Holder<Material> directSmeltResult = null;
 
     /**
      * Material in which this Ore should be washed to give additional output.
@@ -69,7 +70,7 @@ public class OreProperty implements IMaterialProperty {
      * Default: none.
      */
     @Setter
-    private @Nullable Material washedIn = null;
+    private @Nullable Holder<Material> washedIn = null;
 
     /**
      * The amount of Material that the ore should be washed in
@@ -88,7 +89,7 @@ public class OreProperty implements IMaterialProperty {
      * Default: none.
      */
     @Getter
-    private final List<Material> separatedInto = new ArrayList<>();
+    private HolderSet<Material> separatedInto = null;
 
     public OreProperty(int oreMultiplier, int byProductMultiplier) {
         this.oreMultiplier = oreMultiplier;
@@ -105,21 +106,28 @@ public class OreProperty implements IMaterialProperty {
     /**
      * Default values constructor.
      */
+    @SuppressWarnings("unused")
     public OreProperty() {
         this(1, 1);
     }
 
-    public void setWashedIn(Material m, int washedAmount) {
+    public void setWashedIn(Holder<Material> m, int washedAmount) {
         this.washedIn = m;
         this.washedAmount = washedAmount;
     }
 
     public @NotNull ObjectIntPair<@Nullable Material> getWashedIn() {
-        return ObjectIntPair.of(this.washedIn, this.washedAmount);
+        return ObjectIntPair.of(this.washedIn == null ? null : washedIn.value(), this.washedAmount);
     }
 
-    public void setSeparatedInto(Material... materials) {
-        this.separatedInto.addAll(Arrays.asList(materials));
+    @SafeVarargs
+    public final void setSeparatedInto(Holder<Material>... materials) {
+        separatedInto = HolderSet.direct(Arrays.stream(materials).toList());
+    }
+
+    public HolderSet<Material> getOreByProducts() {
+        if (oreByProducts == null) return HolderSet.empty();
+        return oreByProducts;
     }
 
     /**
@@ -127,7 +135,8 @@ public class OreProperty implements IMaterialProperty {
      *
      * @param materials the materials to use as byproducts
      */
-    public void setOreByProducts(@NotNull Material @NotNull... materials) {
+    @SafeVarargs
+    public final void setOreByProducts(@NotNull Holder<Material> @NotNull... materials) {
         setOreByProducts(Arrays.asList(materials));
     }
 
@@ -136,9 +145,8 @@ public class OreProperty implements IMaterialProperty {
      *
      * @param materials the materials to use as byproducts
      */
-    public void setOreByProducts(@NotNull Collection<@NotNull Material> materials) {
-        this.oreByProducts.clear();
-        this.oreByProducts.addAll(materials);
+    public void setOreByProducts(@NotNull Collection<Holder<Material>> materials) {
+        oreByProducts = HolderSet.direct(new ArrayList<>(materials));
     }
 
     /**
@@ -146,13 +154,16 @@ public class OreProperty implements IMaterialProperty {
      *
      * @param materials the materials to add as byproducts
      */
-    public void addOreByProducts(@NotNull Material @NotNull... materials) {
-        this.oreByProducts.addAll(Arrays.asList(materials));
+    @SafeVarargs
+    public final void addOreByProducts(@NotNull Holder<Material> @NotNull... materials) {
+        List<Holder<Material>> toAdd = new ArrayList<>(Arrays.stream(materials).toList());
+        if (oreByProducts != null) toAdd.addAll(oreByProducts.stream().toList());
+        oreByProducts = HolderSet.direct(toAdd);
     }
 
     public final @Nullable Material getOreByProduct(int index) {
-        if (this.oreByProducts.isEmpty()) return null;
-        return this.oreByProducts.get(Mth.clamp(index, 0, this.oreByProducts.size() - 1));
+        if (this.oreByProducts == null || this.oreByProducts.size() == 0) return null;
+        return this.oreByProducts.get(Mth.clamp(index, 0, this.oreByProducts.size() - 1)).value();
     }
 
     @NotNull
@@ -166,10 +177,10 @@ public class OreProperty implements IMaterialProperty {
         properties.ensureSet(PropertyKey.DUST, true);
 
         if (directSmeltResult != null)
-            directSmeltResult.getProperties().ensureSet(PropertyKey.DUST, true);
+            directSmeltResult.value().getProperties().ensureSet(PropertyKey.DUST, true);
         if (washedIn != null)
-            washedIn.getProperties().ensureSet(PropertyKey.FLUID, true);
-        separatedInto.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));
-        oreByProducts.forEach(m -> m.getProperties().ensureSet(PropertyKey.DUST, true));
+            washedIn.value().getProperties().ensureSet(PropertyKey.FLUID, true);
+        separatedInto.forEach(m -> m.value().getProperties().ensureSet(PropertyKey.DUST, true));
+        oreByProducts.forEach(m -> m.value().getProperties().ensureSet(PropertyKey.DUST, true));
     }
 }

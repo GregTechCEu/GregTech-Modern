@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
@@ -20,9 +18,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
-import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BuilderCallback;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceKey;
@@ -30,13 +26,19 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.registries.DeferredHolder;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-@SuppressWarnings({"UnusedReturnValue", "unused"})
+@SuppressWarnings({ "UnusedReturnValue", "unused" })
 @RemapPrefixForJS("kjs$")
 public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegistrate, MaterialBuilder> {
 
@@ -69,7 +71,8 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
     public MaterialBuilder(GTRegistrate owner, String name, BuilderCallback callback) {
         super(owner, owner, name, callback, GTRegistries.Keys.MATERIAL);
 
-        if (name.charAt(name.length() - 1) == '_') throw new IllegalArgumentException("Material name cannot end with a '_'!");
+        if (name.charAt(name.length() - 1) == '_')
+            throw new IllegalArgumentException("Material name cannot end with a '_'!");
         materialInfo = new Material.MaterialInfo(getOwner().makeResourceLocation(name));
         properties = new MaterialProperties();
         flags = new MaterialFlags();
@@ -77,7 +80,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
 
     @Override
     public GTRegistrate getOwner() {
-        return (GTRegistrate)super.getOwner();
+        return (GTRegistrate) super.getOwner();
     }
 
     /*
@@ -116,7 +119,8 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
     }
 
     public MaterialBuilder primaryFluidKey(FluidStorageKey key) {
-        if (properties.ensureSet(PropertyKey.FLUID).getQueuedBuilder(key) == null) throw new IllegalArgumentException("Cannot set %s as primary fluid key: Fluid for %s not registered.".formatted(key, key));
+        if (properties.ensureSet(PropertyKey.FLUID).getQueuedBuilder(key) == null) throw new IllegalArgumentException(
+                "Cannot set %s as primary fluid key: Fluid for %s not registered.".formatted(key, key));
         properties.ensureSet(PropertyKey.FLUID).setPrimaryKey(key);
         return this;
     }
@@ -644,7 +648,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
                 "Material components array for %s had null element".formatted(getName()));
 
         for (int i = 0; i < components.length; i += 2) {
-            compositionSupplier.add(new DeferredMaterialStack(((Holder<Material>)components[i])::value,
+            compositionSupplier.add(new DeferredMaterialStack(((Holder<Material>) components[i])::value,
                     ((Number) components[i + 1]).longValue()));
         }
         return this;
@@ -1075,7 +1079,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *          This Material will be given a {@link FluidProperty} if it does not already have one,
      *          of type LIQUID and no Fluid block.
      */
-    public MaterialBuilder washedIn(Material m) {
+    public MaterialBuilder washedIn(Holder<Material> m) {
         properties.ensureSet(PropertyKey.ORE).setWashedIn(m);
         return this;
     }
@@ -1090,7 +1094,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *                     of type LIQUID and no Fluid block.
      * @param washedAmount The amount of the above Fluid required to wash the Ore.
      */
-    public MaterialBuilder washedIn(Material m, int washedAmount) {
+    public MaterialBuilder washedIn(Holder<Material> m, int washedAmount) {
         properties.ensureSet(PropertyKey.ORE).setWashedIn(m, washedAmount);
         return this;
     }
@@ -1104,7 +1108,8 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      * @param m The Materials which should be output by the Electromagnetic Separator in addition to a normal Dust
      *          of this Material.
      */
-    public MaterialBuilder separatedInto(Material... m) {
+    @SafeVarargs
+    public final MaterialBuilder separatedInto(Holder<Material>... m) {
         properties.ensureSet(PropertyKey.ORE).setSeparatedInto(m);
         return this;
     }
@@ -1116,7 +1121,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *
      * @param m The Material which should be output when smelting.
      */
-    public MaterialBuilder oreSmeltInto(Material m) {
+    public MaterialBuilder oreSmeltInto(Holder<Material> m) {
         properties.ensureSet(PropertyKey.ORE).setDirectSmeltResult(m);
         return this;
     }
@@ -1184,9 +1189,10 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      * Automatically adds an {@link OreProperty} to this Material if it does not already have one,
      * with ore and byproduct multipliers of 1 and no emissive textures (if not already set).
      *
-     * @param byproducts The list of Materials which serve as byproducts during ore processing.
+     * @param byproducts A holderset of materials which serve as byproducts during ore processing.
      */
-    public MaterialBuilder addOreByproducts(Material... byproducts) {
+    @SafeVarargs
+    public final MaterialBuilder oreByproducts(Holder<Material>... byproducts) {
         properties.ensureSet(PropertyKey.ORE).setOreByProducts(byproducts);
         return this;
     }
@@ -1302,12 +1308,11 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
     }
 
     public MaterialRegistryEntry register() {
-        return (MaterialRegistryEntry)super.register();
+        return (MaterialRegistryEntry) super.register();
     }
 
     @Override
     protected Material createEntry() {
-
         materialInfo.setComponents(compositionSupplier);
 
         if (!properties.hasProperty(PropertyKey.HAZARD)) {
