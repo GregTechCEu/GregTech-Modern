@@ -296,6 +296,7 @@ public class FluidBuilder {
         if (this.hasFluidBlock) {
             builder.block(MaterialFluidBlock::new)
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                    .properties(p -> p.mapColor(GTUtil.determineMapColor(material.getMaterialRGB())))
                     .color(() -> () -> (state, level, pos, index) -> {
                         return IClientFluidTypeExtensions.of(state.getFluidState())
                                 .getTintColor(state.getFluidState(), level, pos);
