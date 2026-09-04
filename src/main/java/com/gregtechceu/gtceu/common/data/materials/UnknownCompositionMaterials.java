@@ -17,587 +17,587 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class UnknownCompositionMaterials {
 
     public static void register() {
-        WoodGas = REGISTRATE.material("wood_gas")
+        WoodGas = REGISTRATE.material("wood_gas", builder -> builder
                 .gas()
                 .color(0xDECD87).secondaryColor(0xdeb287)
-                .register();
+        );
 
-        WoodVinegar = REGISTRATE.material("wood_vinegar")
+        WoodVinegar = REGISTRATE.material("wood_vinegar", builder -> builder
                 .fluid()
                 .color(0xD45500).secondaryColor(0x905800)
-                .register();
+        );
 
-        WoodTar = REGISTRATE.material("wood_tar")
+        WoodTar = REGISTRATE.material("wood_tar", builder -> builder
                 .fluid()
                 .color(0x3a271a).secondaryColor(0x28170B)
-                .flags(STICKY, FLAMMABLE).register();
+                .flags(STICKY, FLAMMABLE));
 
-        CharcoalByproducts = REGISTRATE.material("charcoal_byproducts")
-                .fluid().color(0x784421).register();
+        CharcoalByproducts = REGISTRATE.material("charcoal_byproducts", builder -> builder
+                .fluid().color(0x784421));
 
-        Biomass = REGISTRATE.material("biomass")
-                .liquid(new FluidBuilder().customStill()).color(0x00FF00).register();
+        Biomass = REGISTRATE.material("biomass", builder -> builder
+                .liquid(new FluidBuilder().customStill()).color(0x00FF00));
 
-        BioDiesel = REGISTRATE.material("bio_diesel")
+        BioDiesel = REGISTRATE.material("bio_diesel", builder -> builder
                 .fluid().color(0xFF8000)
-                .flags(FLAMMABLE, EXPLOSIVE).register();
+                .flags(FLAMMABLE, EXPLOSIVE));
 
-        FermentedBiomass = REGISTRATE.material("fermented_biomass")
+        FermentedBiomass = REGISTRATE.material("fermented_biomass", builder -> builder
                 .liquid(new FluidBuilder().temperature(300))
                 .color(0x445500)
-                .register();
+        );
 
-        Creosote = REGISTRATE.material("creosote")
+        Creosote = REGISTRATE.material("creosote", builder -> builder
                 .liquid(new FluidBuilder().block().customStill().burnTime(6400)).color(0x804000)
-                .flags(STICKY).register();
+                .flags(STICKY));
 
-        Diesel = REGISTRATE.material("diesel")
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE, EXPLOSIVE).register();
+        Diesel = REGISTRATE.material("diesel", builder -> builder
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE, EXPLOSIVE));
 
-        RocketFuel = REGISTRATE.material("rocket_fuel")
-                .fluid().flags(FLAMMABLE, EXPLOSIVE).color(0xBDB78C).register();
+        RocketFuel = REGISTRATE.material("rocket_fuel", builder -> builder
+                .fluid().flags(FLAMMABLE, EXPLOSIVE).color(0xBDB78C));
 
-        Glue = REGISTRATE.material("glue")
-                .liquid(new FluidBuilder().customStill()).flags(STICKY).register();
+        Glue = REGISTRATE.material("glue", builder -> builder
+                .liquid(new FluidBuilder().customStill()).flags(STICKY));
 
-        Lubricant = REGISTRATE.material("lubricant")
-                .liquid(new FluidBuilder().customStill()).register();
+        Lubricant = REGISTRATE.material("lubricant", builder -> builder
+                .liquid(new FluidBuilder().customStill()));
 
-        McGuffium239 = REGISTRATE.material("mc_guffium_239")
-                .liquid(new FluidBuilder().customStill()).register();
+        McGuffium239 = REGISTRATE.material("mc_guffium_239", builder -> builder
+                .liquid(new FluidBuilder().customStill()));
 
-        IndiumConcentrate = REGISTRATE.material("indium_concentrate")
+        IndiumConcentrate = REGISTRATE.material("indium_concentrate", builder -> builder
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
-                .color(0x0E2950).register();
+                .color(0x0E2950));
 
-        SeedOil = REGISTRATE.material("seed_oil")
+        SeedOil = REGISTRATE.material("seed_oil", builder -> builder
                 .liquid(new FluidBuilder().customStill())
                 .color(0xFFFFFF)
-                .flags(STICKY, FLAMMABLE).register();
+                .flags(STICKY, FLAMMABLE));
 
-        DrillingFluid = REGISTRATE.material("drilling_fluid")
-                .fluid().color(0xFFFFAA).register();
+        DrillingFluid = REGISTRATE.material("drilling_fluid", builder -> builder
+                .fluid().color(0xFFFFAA));
 
-        ConstructionFoam = REGISTRATE.material("construction_foam")
-                .fluid().color(0x808080).register();
+        ConstructionFoam = REGISTRATE.material("construction_foam", builder -> builder
+                .fluid().color(0x808080));
 
-        SulfuricHeavyFuel = REGISTRATE.material("sulfuric_heavy_fuel")
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
+        SulfuricHeavyFuel = REGISTRATE.material("sulfuric_heavy_fuel", builder -> builder
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE));
 
-        HeavyFuel = REGISTRATE.material("heavy_fuel")
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
+        HeavyFuel = REGISTRATE.material("heavy_fuel", builder -> builder
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE));
 
-        LightlyHydroCrackedHeavyFuel = REGISTRATE.material("lightly_hydro_cracked_heavy_fuel")
+        LightlyHydroCrackedHeavyFuel = REGISTRATE.material("lightly_hydro_cracked_heavy_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xFFFF00).flags(FLAMMABLE).register();
+                .color(0xFFFF00).flags(FLAMMABLE));
 
-        SeverelyHydroCrackedHeavyFuel = REGISTRATE.material("severely_hydro_cracked_heavy_fuel")
+        SeverelyHydroCrackedHeavyFuel = REGISTRATE.material("severely_hydro_cracked_heavy_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xFFFF00).flags(FLAMMABLE).register();
+                .color(0xFFFF00).flags(FLAMMABLE));
 
-        LightlySteamCrackedHeavyFuel = REGISTRATE.material("lightly_steam_cracked_heavy_fuel")
+        LightlySteamCrackedHeavyFuel = REGISTRATE.material("lightly_steam_cracked_heavy_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).register();
+                .flags(FLAMMABLE));
 
-        SeverelySteamCrackedHeavyFuel = REGISTRATE.material("severely_steam_cracked_heavy_fuel")
+        SeverelySteamCrackedHeavyFuel = REGISTRATE.material("severely_steam_cracked_heavy_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).register();
+                .flags(FLAMMABLE));
 
-        SulfuricLightFuel = REGISTRATE.material("sulfuric_light_fuel")
+        SulfuricLightFuel = REGISTRATE.material("sulfuric_light_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .customStill())
-                .flags(FLAMMABLE).register();
+                .flags(FLAMMABLE));
 
-        LightFuel = REGISTRATE.material("light_fuel")
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
+        LightFuel = REGISTRATE.material("light_fuel", builder -> builder
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE));
 
-        LightlyHydroCrackedLightFuel = REGISTRATE.material("lightly_hydro_cracked_light_fuel")
-                .liquid(new FluidBuilder()
-                        .temperature(775)
-                        .customStill())
-                .color(0xB7AF08).flags(FLAMMABLE).register();
-
-        SeverelyHydroCrackedLightFuel = REGISTRATE.material("severely_hydro_cracked_light_fuel")
+        LightlyHydroCrackedLightFuel = REGISTRATE.material("lightly_hydro_cracked_light_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xB7AF08).flags(FLAMMABLE).register();
+                .color(0xB7AF08).flags(FLAMMABLE));
 
-        LightlySteamCrackedLightFuel = REGISTRATE.material("lightly_steam_cracked_light_fuel")
+        SeverelyHydroCrackedLightFuel = REGISTRATE.material("severely_hydro_cracked_light_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).register();
+                .color(0xB7AF08).flags(FLAMMABLE));
 
-        SeverelySteamCrackedLightFuel = REGISTRATE.material("severely_steam_cracked_light_fuel")
+        LightlySteamCrackedLightFuel = REGISTRATE.material("lightly_steam_cracked_light_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .flags(FLAMMABLE).register();
+                .flags(FLAMMABLE));
 
-        SulfuricNaphtha = REGISTRATE.material("sulfuric_naphtha")
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
-
-        Naphtha = REGISTRATE.material("naphtha")
-                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE).register();
-
-        LightlyHydroCrackedNaphtha = REGISTRATE.material("lightly_hydro_cracked_naphtha")
+        SeverelySteamCrackedLightFuel = REGISTRATE.material("severely_steam_cracked_light_fuel", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).register();
+                .flags(FLAMMABLE));
 
-        SeverelyHydroCrackedNaphtha = REGISTRATE.material("severely_hydro_cracked_naphtha")
+        SulfuricNaphtha = REGISTRATE.material("sulfuric_naphtha", builder -> builder
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE));
+
+        Naphtha = REGISTRATE.material("naphtha", builder -> builder
+                .liquid(new FluidBuilder().customStill()).flags(FLAMMABLE));
+
+        LightlyHydroCrackedNaphtha = REGISTRATE.material("lightly_hydro_cracked_naphtha", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).register();
+                .color(0xBFB608).flags(FLAMMABLE));
 
-        LightlySteamCrackedNaphtha = REGISTRATE.material("lightly_steam_cracked_naphtha")
+        SeverelyHydroCrackedNaphtha = REGISTRATE.material("severely_hydro_cracked_naphtha", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).register();
+                .color(0xBFB608).flags(FLAMMABLE));
 
-        SeverelySteamCrackedNaphtha = REGISTRATE.material("severely_steam_cracked_naphtha")
+        LightlySteamCrackedNaphtha = REGISTRATE.material("lightly_steam_cracked_naphtha", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(775)
                         .customStill())
-                .color(0xBFB608).flags(FLAMMABLE).register();
+                .color(0xBFB608).flags(FLAMMABLE));
 
-        SulfuricGas = REGISTRATE.material("sulfuric_gas")
+        SeverelySteamCrackedNaphtha = REGISTRATE.material("severely_steam_cracked_naphtha", builder -> builder
+                .liquid(new FluidBuilder()
+                        .temperature(775)
+                        .customStill())
+                .color(0xBFB608).flags(FLAMMABLE));
+
+        SulfuricGas = REGISTRATE.material("sulfuric_gas", builder -> builder
                 .gas(new FluidBuilder().customStill())
-                .color(0xECDCCC).register();
+                .color(0xECDCCC));
 
-        RefineryGas = REGISTRATE.material("refinery_gas")
+        RefineryGas = REGISTRATE.material("refinery_gas", builder -> builder
                 .gas(new FluidBuilder().customStill())
                 .color(0xB4B4B4)
                 .flags(FLAMMABLE)
-                .register();
+        );
 
-        LightlyHydroCrackedGas = REGISTRATE.material("lightly_hydro_cracked_gas")
+        LightlyHydroCrackedGas = REGISTRATE.material("lightly_hydro_cracked_gas", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
                 .color(0xA0A0A0)
                 .flags(FLAMMABLE)
-                .register();
+        );
 
-        SeverelyHydroCrackedGas = REGISTRATE.material("severely_hydro_cracked_gas")
+        SeverelyHydroCrackedGas = REGISTRATE.material("severely_hydro_cracked_gas", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
                 .color(0xC8C8C8)
                 .flags(FLAMMABLE)
-                .register();
+        );
 
-        LightlySteamCrackedGas = REGISTRATE.material("lightly_steam_cracked_gas")
+        LightlySteamCrackedGas = REGISTRATE.material("lightly_steam_cracked_gas", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
                 .color(0xE0E0E0)
                 .flags(FLAMMABLE)
-                .register();
+        );
 
-        SeverelySteamCrackedGas = REGISTRATE.material("severely_steam_cracked_gas")
+        SeverelySteamCrackedGas = REGISTRATE.material("severely_steam_cracked_gas", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xE0E0E0).flags(FLAMMABLE).register();
+                .color(0xE0E0E0).flags(FLAMMABLE));
 
-        HydroCrackedEthane = REGISTRATE.material("hydro_cracked_ethane")
+        HydroCrackedEthane = REGISTRATE.material("hydro_cracked_ethane", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x9696BC).flags(FLAMMABLE).register();
+                .color(0x9696BC).flags(FLAMMABLE));
 
-        HydroCrackedEthylene = REGISTRATE.material("hydro_cracked_ethylene")
+        HydroCrackedEthylene = REGISTRATE.material("hydro_cracked_ethylene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xA3A3A0).flags(FLAMMABLE).register();
+                .color(0xA3A3A0).flags(FLAMMABLE));
 
-        HydroCrackedPropene = REGISTRATE.material("hydro_cracked_propene")
+        HydroCrackedPropene = REGISTRATE.material("hydro_cracked_propene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).register();
+                .color(0xBEA540).flags(FLAMMABLE));
 
-        HydroCrackedPropane = REGISTRATE.material("hydro_cracked_propane")
+        HydroCrackedPropane = REGISTRATE.material("hydro_cracked_propane", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).register();
+                .color(0xBEA540).flags(FLAMMABLE));
 
-        HydroCrackedButane = REGISTRATE.material("hydro_cracked_butane")
+        HydroCrackedButane = REGISTRATE.material("hydro_cracked_butane", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x852C18).flags(FLAMMABLE).register();
+                .color(0x852C18).flags(FLAMMABLE));
 
-        HydroCrackedButene = REGISTRATE.material("hydro_cracked_butene")
+        HydroCrackedButene = REGISTRATE.material("hydro_cracked_butene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x993E05).flags(FLAMMABLE).register();
+                .color(0x993E05).flags(FLAMMABLE));
 
-        HydroCrackedButadiene = REGISTRATE.material("hydro_cracked_butadiene")
+        HydroCrackedButadiene = REGISTRATE.material("hydro_cracked_butadiene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xAD5203).flags(FLAMMABLE).register();
+                .color(0xAD5203).flags(FLAMMABLE));
 
-        SteamCrackedEthane = REGISTRATE.material("steam_cracked_ethane")
+        SteamCrackedEthane = REGISTRATE.material("steam_cracked_ethane", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x9696BC).flags(FLAMMABLE).register();
+                .color(0x9696BC).flags(FLAMMABLE));
 
-        SteamCrackedEthylene = REGISTRATE.material("steam_cracked_ethylene")
+        SteamCrackedEthylene = REGISTRATE.material("steam_cracked_ethylene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xA3A3A0).flags(FLAMMABLE).register();
+                .color(0xA3A3A0).flags(FLAMMABLE));
 
-        SteamCrackedPropene = REGISTRATE.material("steam_cracked_propene")
+        SteamCrackedPropene = REGISTRATE.material("steam_cracked_propene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).register();
+                .color(0xBEA540).flags(FLAMMABLE));
 
-        SteamCrackedPropane = REGISTRATE.material("steam_cracked_propane")
+        SteamCrackedPropane = REGISTRATE.material("steam_cracked_propane", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xBEA540).flags(FLAMMABLE).register();
+                .color(0xBEA540).flags(FLAMMABLE));
 
-        SteamCrackedButane = REGISTRATE.material("steam_cracked_butane")
+        SteamCrackedButane = REGISTRATE.material("steam_cracked_butane", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x852C18).flags(FLAMMABLE).register();
+                .color(0x852C18).flags(FLAMMABLE));
 
-        SteamCrackedButene = REGISTRATE.material("steam_cracked_butene")
+        SteamCrackedButene = REGISTRATE.material("steam_cracked_butene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0x993E05).flags(FLAMMABLE).register();
+                .color(0x993E05).flags(FLAMMABLE));
 
-        SteamCrackedButadiene = REGISTRATE.material("steam_cracked_butadiene")
+        SteamCrackedButadiene = REGISTRATE.material("steam_cracked_butadiene", builder -> builder
                 .gas(new FluidBuilder().temperature(775))
-                .color(0xAD5203).flags(FLAMMABLE).register();
+                .color(0xAD5203).flags(FLAMMABLE));
 
-        LPG = REGISTRATE.material("lpg")
+        LPG = REGISTRATE.material("lpg", builder -> builder
                 .liquid(new FluidBuilder().customStill())
-                .color(0xFCFCAC).flags(FLAMMABLE, EXPLOSIVE).register();
+                .color(0xFCFCAC).flags(FLAMMABLE, EXPLOSIVE));
 
-        RawGrowthMedium = REGISTRATE.material("raw_growth_medium")
-                .fluid().color(0xA47351).register();
+        RawGrowthMedium = REGISTRATE.material("raw_growth_medium", builder -> builder
+                .fluid().color(0xA47351));
 
-        SterileGrowthMedium = REGISTRATE.material("sterilized_growth_medium")
-                .fluid().color(0xAC876E).register();
+        SterileGrowthMedium = REGISTRATE.material("sterilized_growth_medium", builder -> builder
+                .fluid().color(0xAC876E));
 
-        Oil = REGISTRATE.material("oil")
+        Oil = REGISTRATE.material("oil", builder -> builder
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .register();
+        );
 
-        HeavyOil = REGISTRATE.material("heavy_oil")
+        HeavyOil = REGISTRATE.material("heavy_oil", builder -> builder
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .register();
+        );
 
-        RawOil = REGISTRATE.material("raw_oil")
+        RawOil = REGISTRATE.material("raw_oil", builder -> builder
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .register();
+        );
 
-        LightOil = REGISTRATE.material("light_oil")
+        LightOil = REGISTRATE.material("light_oil", builder -> builder
                 .liquid(new FluidBuilder().block().customStill())
                 .color(0x0A0A0A)
                 .flags(STICKY, FLAMMABLE)
-                .register();
+        );
 
-        NaturalGas = REGISTRATE.material("natural_gas")
+        NaturalGas = REGISTRATE.material("natural_gas", builder -> builder
                 .gas(new FluidBuilder().block().customStill())
-                .flags(FLAMMABLE, EXPLOSIVE).register();
+                .flags(FLAMMABLE, EXPLOSIVE));
 
-        Bacteria = REGISTRATE.material("bacteria")
-                .fluid().color(0x808000).register();
+        Bacteria = REGISTRATE.material("bacteria", builder -> builder
+                .fluid().color(0x808000));
 
-        BacterialSludge = REGISTRATE.material("bacterial_sludge")
-                .fluid().color(0x355E3B).register();
+        BacterialSludge = REGISTRATE.material("bacterial_sludge", builder -> builder
+                .fluid().color(0x355E3B));
 
-        EnrichedBacterialSludge = REGISTRATE.material("enriched_bacterial_sludge")
-                .fluid().color(0x7FFF00).register();
+        EnrichedBacterialSludge = REGISTRATE.material("enriched_bacterial_sludge", builder -> builder
+                .fluid().color(0x7FFF00));
 
-        Mutagen = REGISTRATE.material("mutagen")
-                .fluid().color(0x00FF7F).register();
+        Mutagen = REGISTRATE.material("mutagen", builder -> builder
+                .fluid().color(0x00FF7F));
 
-        GelatinMixture = REGISTRATE.material("gelatin_mixture")
-                .fluid().color(0x588BAE).register();
+        GelatinMixture = REGISTRATE.material("gelatin_mixture", builder -> builder
+                .fluid().color(0x588BAE));
 
-        RawGasoline = REGISTRATE.material("raw_gasoline")
-                .fluid().color(0xFF6400).flags(FLAMMABLE).register();
+        RawGasoline = REGISTRATE.material("raw_gasoline", builder -> builder
+                .fluid().color(0xFF6400).flags(FLAMMABLE));
 
-        Gasoline = REGISTRATE.material("gasoline")
-                .fluid().color(0xFAA500).flags(FLAMMABLE, EXPLOSIVE).register();
+        Gasoline = REGISTRATE.material("gasoline", builder -> builder
+                .fluid().color(0xFAA500).flags(FLAMMABLE, EXPLOSIVE));
 
-        HighOctaneGasoline = REGISTRATE.material("high_octane_gasoline")
-                .fluid().color(0xFFA500).flags(FLAMMABLE, EXPLOSIVE).register();
+        HighOctaneGasoline = REGISTRATE.material("high_octane_gasoline", builder -> builder
+                .fluid().color(0xFFA500).flags(FLAMMABLE, EXPLOSIVE));
 
-        CoalGas = REGISTRATE.material("coal_gas")
-                .gas().color(0x333333).register();
+        CoalGas = REGISTRATE.material("coal_gas", builder -> builder
+                .gas().color(0x333333));
 
-        CoalTar = REGISTRATE.material("coal_tar")
-                .fluid().color(0x1A1A1A).flags(STICKY, FLAMMABLE).register();
+        CoalTar = REGISTRATE.material("coal_tar", builder -> builder
+                .fluid().color(0x1A1A1A).flags(STICKY, FLAMMABLE));
 
-        Gunpowder = REGISTRATE.material("gunpowder")
+        Gunpowder = REGISTRATE.material("gunpowder", builder -> builder
                 .dust(0)
                 .color(0xa4a4a4).secondaryColor(0x767676).iconSet(ROUGH)
                 .flags(FLAMMABLE, EXPLOSIVE, NO_SMELTING, NO_SMASHING)
                 .components(Saltpeter, 2, Sulfur, 1, Carbon, 3)
-                .register();
+        );
 
-        Oilsands = REGISTRATE.material("oilsands")
+        Oilsands = REGISTRATE.material("oilsands", builder -> builder
                 .dust(1).ore()
                 .color(0xe3c78a).secondaryColor(0x161e22).iconSet(SAND)
                 .flags(FLAMMABLE)
-                .register();
+        );
 
-        RareEarth = REGISTRATE.material("rare_earth")
+        RareEarth = REGISTRATE.material("rare_earth", builder -> builder
                 .dust(0)
                 .color(0xffdc88).secondaryColor(0xe99673).iconSet(FINE)
-                .register();
+        );
 
-        Stone = REGISTRATE.material("stone")
+        Stone = REGISTRATE.material("stone", builder -> builder
                 .dust(2)
                 .color(0x8f8f8f).secondaryColor(0x898989).iconSet(ROUGH)
                 .flags(MORTAR_GRINDABLE, GENERATE_GEAR, NO_SMASHING, NO_SMELTING)
-                .register();
+        );
 
-        Lava = REGISTRATE.material("lava")
-                .fluid().color(0xFF4000).register();
+        Lava = REGISTRATE.material("lava", builder -> builder
+                .fluid().color(0xFF4000));
 
-        Netherite = REGISTRATE.material("netherite")
+        Netherite = REGISTRATE.material("netherite", builder -> builder
                 .ingot().color(0x4b4042).secondaryColor(0x474447)
                 .flags(FIRE_RESISTANT)
                 .toolStats(ToolProperty.Builder.of(10.0F, 4.0F, 2032, 4)
                         .enchantability(21).build())
-                .register();
+        );
 
-        Glowstone = REGISTRATE.material("glowstone")
+        Glowstone = REGISTRATE.material("glowstone", builder -> builder
                 .dust(1)
                 .liquid(new FluidBuilder().temperature(500))
                 .color(0xfcb34c).secondaryColor(0xce7533).iconSet(SHINY)
                 .flags(NO_SMASHING, GENERATE_PLATE, EXCLUDE_PLATE_COMPRESSOR_RECIPE,
                         EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
-                .register();
+        );
 
-        NetherStar = REGISTRATE.material("nether_star")
+        NetherStar = REGISTRATE.material("nether_star", builder -> builder
                 .gem(4)
                 .color(0xfeffc6).secondaryColor(0x7fd7e2)
                 .iconSet(NETHERSTAR)
                 .flags(NO_SMASHING, NO_SMELTING, GENERATE_LENS)
-                .register();
+        );
 
-        Endstone = REGISTRATE.material("endstone")
+        Endstone = REGISTRATE.material("endstone", builder -> builder
                 .dust(1)
                 .color(0xf6fabd).secondaryColor(0xc5be8b).iconSet(ROUGH)
                 .flags(NO_SMASHING)
-                .register();
+        );
 
-        Netherrack = REGISTRATE.material("netherrack")
+        Netherrack = REGISTRATE.material("netherrack", builder -> builder
                 .dust(1)
                 .color(0x7c4249).secondaryColor(0x400b0b).iconSet(ROUGH)
                 .flags(NO_SMASHING, FLAMMABLE)
-                .register();
+        );
 
-        CetaneBoostedDiesel = REGISTRATE.material("cetane_boosted_diesel")
+        CetaneBoostedDiesel = REGISTRATE.material("cetane_boosted_diesel", builder -> builder
                 .liquid(new FluidBuilder().customStill())
                 .color(0xC8FF00)
                 .flags(FLAMMABLE, EXPLOSIVE)
-                .register();
+        );
 
-        Collagen = REGISTRATE.material("collagen")
+        Collagen = REGISTRATE.material("collagen", builder -> builder
                 .dust(1)
                 .color(0xffadb7).secondaryColor(0x80471C).iconSet(ROUGH)
-                .register();
+        );
 
-        Gelatin = REGISTRATE.material("gelatin")
+        Gelatin = REGISTRATE.material("gelatin", builder -> builder
                 .dust(1)
                 .color(0xfaf7cb).secondaryColor(0x693d00).iconSet(ROUGH)
-                .register();
+        );
 
-        Agar = REGISTRATE.material("agar")
+        Agar = REGISTRATE.material("agar", builder -> builder
                 .dust(1)
                 .color(0xbdd168).secondaryColor(0x403218).iconSet(ROUGH)
-                .register();
+        );
 
-        Milk = REGISTRATE.material("milk")
+        Milk = REGISTRATE.material("milk", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(295)
                         .customStill())
                 .color(0xfffbf0).secondaryColor(0xf6eac8).iconSet(FINE)
-                .register();
+        );
 
-        Cocoa = REGISTRATE.material("cocoa")
+        Cocoa = REGISTRATE.material("cocoa", builder -> builder
                 .dust(0)
                 .color(0x976746).secondaryColor(0x301a0a).iconSet(FINE)
-                .register();
+        );
 
-        Wheat = REGISTRATE.material("wheat")
+        Wheat = REGISTRATE.material("wheat", builder -> builder
                 .dust(0)
                 .color(0xdcbb65).secondaryColor(0x565138).iconSet(FINE)
-                .register();
+        );
 
-        Meat = REGISTRATE.material("meat")
+        Meat = REGISTRATE.material("meat", builder -> builder
                 .dust(1)
                 .color(0xe85048).secondaryColor(0x470a06).iconSet(SAND)
-                .register();
+        );
 
-        Wood = REGISTRATE.material("wood")
+        Wood = REGISTRATE.material("wood", builder -> builder
                 .wood()
                 .color(0xc29f6d).secondaryColor(0x643200).iconSet(WOOD)
                 .fluidPipeProperties(340, 5, false)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR,
                         GENERATE_FRAME)
-                .register();
+        );
 
-        Paper = REGISTRATE.material("paper")
+        Paper = REGISTRATE.material("paper", builder -> builder
                 .dust(0)
                 .color(0xF9F9F9).secondaryColor(0xECECEC).iconSet(DULL)
                 .flags(GENERATE_PLATE, FLAMMABLE, NO_SMELTING, NO_SMASHING,
                         MORTAR_GRINDABLE, EXCLUDE_PLATE_COMPRESSOR_RECIPE)
-                .register();
+        );
 
-        FishOil = REGISTRATE.material("fish_oil")
+        FishOil = REGISTRATE.material("fish_oil", builder -> builder
                 .fluid()
                 .color(0xDCC15D)
                 .flags(STICKY, FLAMMABLE)
-                .register();
+        );
 
-        RubySlurry = REGISTRATE.material("ruby_slurry")
-                .fluid().color(0xff6464).register();
+        RubySlurry = REGISTRATE.material("ruby_slurry", builder -> builder
+                .fluid().color(0xff6464));
 
-        SapphireSlurry = REGISTRATE.material("sapphire_slurry")
-                .fluid().color(0x6464c8).register();
+        SapphireSlurry = REGISTRATE.material("sapphire_slurry", builder -> builder
+                .fluid().color(0x6464c8));
 
-        GreenSapphireSlurry = REGISTRATE.material("green_sapphire_slurry")
-                .fluid().color(0x64c882).register();
+        GreenSapphireSlurry = REGISTRATE.material("green_sapphire_slurry", builder -> builder
+                .fluid().color(0x64c882));
 
         // These colors are much nicer looking than those in MC's EnumDyeColor
-        DyeBlack = REGISTRATE.material("black_dye")
-                .fluid().color(0x202020).register();
+        DyeBlack = REGISTRATE.material("black_dye", builder -> builder
+                .fluid().color(0x202020));
 
-        DyeRed = REGISTRATE.material("red_dye")
-                .fluid().color(0xFF0000).register();
+        DyeRed = REGISTRATE.material("red_dye", builder -> builder
+                .fluid().color(0xFF0000));
 
-        DyeGreen = REGISTRATE.material("green_dye")
-                .fluid().color(0x00FF00).register();
+        DyeGreen = REGISTRATE.material("green_dye", builder -> builder
+                .fluid().color(0x00FF00));
 
-        DyeBrown = REGISTRATE.material("brown_dye")
-                .fluid().color(0x604000).register();
+        DyeBrown = REGISTRATE.material("brown_dye", builder -> builder
+                .fluid().color(0x604000));
 
-        DyeBlue = REGISTRATE.material("blue_dye")
-                .fluid().color(0x0020FF).register();
+        DyeBlue = REGISTRATE.material("blue_dye", builder -> builder
+                .fluid().color(0x0020FF));
 
-        DyePurple = REGISTRATE.material("purple_dye")
-                .fluid().color(0x800080).register();
+        DyePurple = REGISTRATE.material("purple_dye", builder -> builder
+                .fluid().color(0x800080));
 
-        DyeCyan = REGISTRATE.material("cyan_dye")
-                .fluid().color(0x00FFFF).register();
+        DyeCyan = REGISTRATE.material("cyan_dye", builder -> builder
+                .fluid().color(0x00FFFF));
 
-        DyeLightGray = REGISTRATE.material("light_gray_dye")
-                .fluid().color(0xC0C0C0).register();
+        DyeLightGray = REGISTRATE.material("light_gray_dye", builder -> builder
+                .fluid().color(0xC0C0C0));
 
-        DyeGray = REGISTRATE.material("gray_dye")
-                .fluid().color(0x808080).register();
+        DyeGray = REGISTRATE.material("gray_dye", builder -> builder
+                .fluid().color(0x808080));
 
-        DyePink = REGISTRATE.material("pink_dye")
-                .fluid().color(0xFFC0C0).register();
+        DyePink = REGISTRATE.material("pink_dye", builder -> builder
+                .fluid().color(0xFFC0C0));
 
-        DyeLime = REGISTRATE.material("lime_dye")
-                .fluid().color(0x80FF80).register();
+        DyeLime = REGISTRATE.material("lime_dye", builder -> builder
+                .fluid().color(0x80FF80));
 
-        DyeYellow = REGISTRATE.material("yellow_dye")
-                .fluid().color(0xFFFF00).register();
+        DyeYellow = REGISTRATE.material("yellow_dye", builder -> builder
+                .fluid().color(0xFFFF00));
 
-        DyeLightBlue = REGISTRATE.material("light_blue_dye")
-                .fluid().color(0x6080FF).register();
+        DyeLightBlue = REGISTRATE.material("light_blue_dye", builder -> builder
+                .fluid().color(0x6080FF));
 
-        DyeMagenta = REGISTRATE.material("magenta_dye")
-                .fluid().color(0xFF00FF).register();
+        DyeMagenta = REGISTRATE.material("magenta_dye", builder -> builder
+                .fluid().color(0xFF00FF));
 
-        DyeOrange = REGISTRATE.material("orange_dye")
-                .fluid().color(0xFF8000).register();
+        DyeOrange = REGISTRATE.material("orange_dye", builder -> builder
+                .fluid().color(0xFF8000));
 
-        DyeWhite = REGISTRATE.material("white_dye")
-                .fluid().color(0xFFFFFF).register();
+        DyeWhite = REGISTRATE.material("white_dye", builder -> builder
+                .fluid().color(0xFFFFFF));
 
-        ImpureEnrichedNaquadahSolution = REGISTRATE.material("impure_enriched_naquadah_solution")
-                .fluid().color(0x388438).register();
+        ImpureEnrichedNaquadahSolution = REGISTRATE.material("impure_enriched_naquadah_solution", builder -> builder
+                .fluid().color(0x388438));
 
-        EnrichedNaquadahSolution = REGISTRATE.material("enriched_naquadah_solution")
-                .fluid().color(0x3AAD3A).register();
+        EnrichedNaquadahSolution = REGISTRATE.material("enriched_naquadah_solution", builder -> builder
+                .fluid().color(0x3AAD3A));
 
-        AcidicEnrichedNaquadahSolution = REGISTRATE.material("acidic_enriched_naquadah_solution")
+        AcidicEnrichedNaquadahSolution = REGISTRATE.material("acidic_enriched_naquadah_solution", builder -> builder
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
-                .color(0x3DD63D).register();
+                .color(0x3DD63D));
 
-        EnrichedNaquadahWaste = REGISTRATE.material("enriched_naquadah_waste")
-                .fluid().color(0x355B35).register();
+        EnrichedNaquadahWaste = REGISTRATE.material("enriched_naquadah_waste", builder -> builder
+                .fluid().color(0x355B35));
 
-        ImpureNaquadriaSolution = REGISTRATE.material("impure_naquadria_solution")
-                .fluid().color(0x518451).register();
+        ImpureNaquadriaSolution = REGISTRATE.material("impure_naquadria_solution", builder -> builder
+                .fluid().color(0x518451));
 
-        NaquadriaSolution = REGISTRATE.material("naquadria_solution")
-                .fluid().color(0x61AD61).register();
+        NaquadriaSolution = REGISTRATE.material("naquadria_solution", builder -> builder
+                .fluid().color(0x61AD61));
 
-        AcidicNaquadriaSolution = REGISTRATE.material("acidic_naquadria_solution")
+        AcidicNaquadriaSolution = REGISTRATE.material("acidic_naquadria_solution", builder -> builder
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
-                .color(0x70D670).register();
+                .color(0x70D670));
 
-        NaquadriaWaste = REGISTRATE.material("naquadria_waste")
-                .fluid().color(0x425B42).register();
+        NaquadriaWaste = REGISTRATE.material("naquadria_waste", builder -> builder
+                .fluid().color(0x425B42));
 
-        Lapotron = REGISTRATE.material("lapotron")
+        Lapotron = REGISTRATE.material("lapotron", builder -> builder
                 .gem()
                 .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
                 .flags(DISABLE_MATERIAL_RECIPES)
                 .ignoredTagPrefixes(dustTiny, dustSmall)
-                .register();
+        );
 
-        TreatedWood = REGISTRATE.material("treated_wood")
+        TreatedWood = REGISTRATE.material("treated_wood", builder -> builder
                 .wood()
                 .color(0x644218).secondaryColor(0x4e0b00).iconSet(WOOD)
                 .fluidPipeProperties(340, 10, false)
                 .flags(GENERATE_PLATE, FLAMMABLE, GENERATE_ROD, GENERATE_FRAME)
-                .register();
+        );
 
-        UUMatter = REGISTRATE.material("uu_matter")
+        UUMatter = REGISTRATE.material("uu_matter", builder -> builder
                 .liquid(new FluidBuilder()
                         .temperature(300)
                         .customStill())
-                .register();
+        );
 
-        PCBCoolant = REGISTRATE.material("pcb_coolant")
+        PCBCoolant = REGISTRATE.material("pcb_coolant", builder -> builder
                 .fluid().color(0xD5D69C)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.CARCINOGEN)
-                .register();
+        );
 
-        Sculk = REGISTRATE.material("sculk")
+        Sculk = REGISTRATE.material("sculk", builder -> builder
                 .dust(1)
                 .color(0x015a5c).secondaryColor(0x001616).iconSet(ROUGH)
-                .register();
+        );
 
-        Wax = REGISTRATE.material("wax")
+        Wax = REGISTRATE.material("wax", builder -> builder
                 .gem().fluid()
                 .color(0xfabf29)
                 .flags(NO_SMELTING)
-                .register();
+        );
 
-        BauxiteSlurry = REGISTRATE.material("bauxite_slurry")
+        BauxiteSlurry = REGISTRATE.material("bauxite_slurry", builder -> builder
                 .fluid()
                 .color(0x051650)
-                .register();
+        );
 
-        CrackedBauxiteSlurry = REGISTRATE.material("cracked_bauxite_slurry")
+        CrackedBauxiteSlurry = REGISTRATE.material("cracked_bauxite_slurry", builder -> builder
                 .liquid(775)
                 .color(0x052C50)
-                .register();
+        );
 
-        BauxiteSludge = REGISTRATE.material("bauxite_sludge")
+        BauxiteSludge = REGISTRATE.material("bauxite_sludge", builder -> builder
                 .fluid()
                 .color(0x563D2D)
-                .register();
+        );
 
-        DecalcifiedBauxiteSludge = REGISTRATE.material("decalcified_bauxite_sludge")
+        DecalcifiedBauxiteSludge = REGISTRATE.material("decalcified_bauxite_sludge", builder -> builder
                 .fluid()
                 .color(0x6F2DA8)
-                .register();
+        );
 
-        BauxiteSlag = REGISTRATE.material("bauxite_slag")
+        BauxiteSlag = REGISTRATE.material("bauxite_slag", builder -> builder
                 .dust()
                 .color(0x6F2DA8).iconSet(SAND)
-                .register();
+        );
     }
 }
