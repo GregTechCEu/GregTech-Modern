@@ -8,8 +8,9 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class MaterialIconSet {
 
@@ -62,7 +63,7 @@ public class MaterialIconSet {
      * @param name the name of the iconset
      */
     @Deprecated(since = "8.0.0")
-    public MaterialIconSet(@NotNull String name) {
+    public MaterialIconSet(String name) {
         this(name, MaterialIconSet.DULL);
     }
 
@@ -74,7 +75,7 @@ public class MaterialIconSet {
      * @param parentIconset the parent iconset
      */
     @Deprecated(since = "8.0.0")
-    public MaterialIconSet(@NotNull String name, @NotNull MaterialIconSet parentIconset) {
+    public MaterialIconSet(String name, MaterialIconSet parentIconset) {
         this(name, parentIconset, false);
     }
 
@@ -87,7 +88,7 @@ public class MaterialIconSet {
      * @param isRootIconset true if this should be a root iconset, otherwise false
      */
     @Deprecated(since = "8.0.0")
-    public MaterialIconSet(@NotNull String name, @Nullable MaterialIconSet parentIconset, boolean isRootIconset) {
+    public MaterialIconSet(String name, @Nullable MaterialIconSet parentIconset, boolean isRootIconset) {
         this(GTCEu.id(name), parentIconset, isRootIconset);
     }
 
@@ -96,7 +97,7 @@ public class MaterialIconSet {
      *
      * @param id the id of the iconset
      */
-    public MaterialIconSet(@NotNull ResourceLocation id) {
+    public MaterialIconSet(ResourceLocation id) {
         this(id, MaterialIconSet.DULL);
     }
 
@@ -106,7 +107,7 @@ public class MaterialIconSet {
      * @param id            the id of the iconset
      * @param parentIconset the parent iconset
      */
-    public MaterialIconSet(@NotNull ResourceLocation id, @NotNull MaterialIconSet parentIconset) {
+    public MaterialIconSet(ResourceLocation id, MaterialIconSet parentIconset) {
         this(id, parentIconset, false);
     }
 
@@ -117,7 +118,7 @@ public class MaterialIconSet {
      * @param parentIconset the parent iconset, should be null if this should be a root iconset
      * @param isRootIconset true if this should be a root iconset, otherwise false
      */
-    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset,
+    public MaterialIconSet(ResourceLocation id, @Nullable MaterialIconSet parentIconset,
                            boolean isRootIconset) {
         this.id = id;
 
@@ -135,8 +136,8 @@ public class MaterialIconSet {
      * @deprecated Use {@code GTRegistries.MATERIAL_ICON_SETS.get()}
      */
     @Deprecated(since = "8.0.0")
-    public static MaterialIconSet getByName(@NotNull String name) {
-        return GTRegistries.MATERIAL_ICON_SETS.get(GTCEu.id(name));
+    public static MaterialIconSet getByName(String name) {
+        return Objects.requireNonNull(GTRegistries.MATERIAL_ICON_SETS.get(GTCEu.id(name)));
     }
 
     public String getName() {
