@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -166,7 +167,7 @@ public final class MaterialRecipeHandler {
                     processEBFRecipe(material, blastProperty, ingotStack, provider);
 
                     if (ingotProperty.getMagneticMaterial() != null) {
-                        processEBFRecipe(ingotProperty.getMagneticMaterial(), blastProperty, ingotStack, provider);
+                        processEBFRecipe(ingotProperty.getMagneticMaterial().value(), blastProperty, ingotStack, provider);
                     }
                 }
             }
@@ -194,6 +195,7 @@ public final class MaterialRecipeHandler {
 
     private static void processEBFRecipe(Material material, BlastProperty property, ItemStack output,
                                          RecipeOutput provider) {
+
         int blastTemp = property.getBlastTemperature();
         BlastProperty.GasTier gasTier = property.getGasTier();
         int duration = property.getDurationOverride();
@@ -332,9 +334,7 @@ public final class MaterialRecipeHandler {
                     ChemicalHelper.get(dust, material), "X", "m", 'X', new MaterialEntry(ingot, material));
         }
 
-        var magMaterial = material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
+        Material magMaterial = getMagneticResult(material);
 
         if (material.hasFlag(GENERATE_ROD)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_%s", material.getName()),
@@ -496,9 +496,7 @@ public final class MaterialRecipeHandler {
 
         ItemStack nuggetStack = ChemicalHelper.get(nugget, material);
         if (material.hasProperty(PropertyKey.INGOT)) {
-            Material magMaterial = material.hasFlag(IS_MAGNETIC) ?
-                    material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
-            if (magMaterial == null) magMaterial = material;
+            Material magMaterial = getMagneticResult(material);
             ItemStack ingotStack = ChemicalHelper.get(ingot, magMaterial);
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
@@ -585,12 +583,7 @@ public final class MaterialRecipeHandler {
             return;
         }
 
-        IngotProperty ingotProperty = material.getProperty(PropertyKey.INGOT);
-
-        Material magMaterial = material.hasFlag(IS_MAGNETIC) && ingotProperty != null ?
-                ingotProperty.getMacerateInto() : material;
-        if (magMaterial == null) magMaterial = material;
-
+        Material magMaterial = getMagneticResult(material);
         ItemStack blockStack = ChemicalHelper.get(block, magMaterial);
 
         long materialAmount = block.getMaterialAmount(material);
@@ -667,8 +660,11 @@ public final class MaterialRecipeHandler {
                         .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
 
-                Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
-                        material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
+                Material nonMagneticMaterial = null;
+                if (material.hasFlag(IS_MAGNETIC)) {
+                    var matHolder = material.getPropertyOrThrow(PropertyKey.INGOT).getSmeltingInto();
+                    if (matHolder != null) nonMagneticMaterial = matHolder.value();
+                }
                 if (nonMagneticMaterial == null) nonMagneticMaterial = material;
 
                 if (!nonMagneticMaterial.hasProperty(PropertyKey.BLAST)) {
@@ -707,5 +703,11 @@ public final class MaterialRecipeHandler {
 
     private static int getVoltageMultiplier(Material material) {
         return material.getBlastTemperature() >= 2800 ? VA[LV] : VA[ULV];
+    }
+
+    private static Material getMagneticResult(Material material) {
+        if (!material.hasFlag(IS_MAGNETIC) || !material.hasProperty(PropertyKey.INGOT)) return material;
+        Holder<Material> mat = material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto();
+        return mat == null ? material : mat.value();
     }
 }
