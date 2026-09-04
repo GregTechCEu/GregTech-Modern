@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -51,7 +52,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     @Override
-    protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                                    IBlockPattern pattern,
                                                     Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
@@ -77,7 +79,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     @Override
-    public void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    public void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                    IBlockPattern pattern,
                                     Direction frontFacing,
                                     Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
@@ -101,25 +104,26 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
             // Attempts to first place the predicate if the min (layer) count isn't satisfied, then the
             // max (layer) count
-            if (tryMinCount(resultStructure, predicate, mutablePos)) continue;
-            if (tryMaxCount(resultStructure, predicate, mutablePos)) continue;
+            if (tryMinCount(info, resultStructure, predicate, mutablePos)) continue;
+            if (tryMaxCount(info, resultStructure, predicate, mutablePos)) continue;
             // If we arrive here, there's nothing we can place that doesn't overflow a max count!
             throw new IllegalStateException("Could not place a block without breaking maxCount requirements");
         }
     }
 
-    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
-            int minCount = getMinCount(predicate, basePredicate);
+            int minCount = info.getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (minCount == -1 || totalAlreadyPopulated >= minCount) continue;
 
             BlockInfo toInsert = null;
-            if (blockPreferences.contains(predicate, basePredicate)) {
-                toInsert = blockPreferences.get(predicate, basePredicate);
+            if (info.getBlockPreferences().contains(predicate, basePredicate)) {
+                toInsert = info.getBlockPreferences().get(predicate, basePredicate);
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
@@ -127,23 +131,24 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(resultStructure, child, pos)) return true;
+            if (tryMinCount(info, resultStructure, child, pos)) return true;
         }
         return false;
     }
 
-    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.predicates()) {
-            int maxCount = getMaxCount(predicate, basePredicate);
+            int maxCount = info.getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
             BlockInfo toInsert = null;
-            if (blockPreferences.contains(predicate, basePredicate)) {
-                toInsert = blockPreferences.get(predicate, basePredicate);
+            if (info.getBlockPreferences().contains(predicate, basePredicate)) {
+                toInsert = info.getBlockPreferences().get(predicate, basePredicate);
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
@@ -151,7 +156,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             return true;
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(resultStructure, child, pos)) return true;
+            if (tryMaxCount(info, resultStructure, child, pos)) return true;
         }
         return false;
     }

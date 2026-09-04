@@ -1,0 +1,164 @@
+package com.gregtechceu.gtceu.api.multiblock.util;
+
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+
+import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+
+import java.util.Comparator;
+import java.util.Map;
+
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
+
+public class AutobuildHelper {
+
+    // todo remove
+    public static Long2ObjectMap<BlockInfo> readBlockPreferences(CompoundTag tag) {
+        Long2ObjectMap<BlockInfo> blockPreferences = new Long2ObjectOpenHashMap<>();
+        if (!tag.contains("blockPreferences", CompoundTag.TAG_LIST)) {
+            return blockPreferences;
+        }
+
+        var preferences = tag.getList("blockPreferences", CompoundTag.TAG_COMPOUND);
+        for (int i = 0; i < preferences.size(); i++) {
+            CompoundTag preference = preferences.getCompound(i);
+            BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(),
+                    preference.getCompound("state"));
+            if (state.isAir()) continue;
+            blockPreferences.put(preference.getLong("pos"), BlockInfo.fromBlockState(state));
+        }
+        return blockPreferences;
+    }
+
+    /*
+     * iterate over every position in the structure
+     * for each block
+     * - if that block is part of the structure and valid in that predicate, add to alreadyPlaced
+     * - if that block can be replaced(air, tall grass, etc? block property replaceable) add to replaceableBlocks
+     * - if that block CANT be replaced and not valid, add to canNotPlace,
+     * maybe add what already exists there to another list for reporting(invalidBlocks)?
+     * 
+     * 
+     * for each replaceableBlock
+     * - if that candidate from the predicate exists in the inventory, add to some blocksToRemove list
+     * (small size for chunked building)
+     * figure out the auto placement action
+     * - if the candidate does not exist, add to blocksMissing(for later reporting)
+     */
+
+    public static void autobuild(ServerPlayer player, ItemStack item, MultiblockMachineDefinition definition,
+                                 MultiblockControllerMachine controller, Map<BlockPos, BlockInfo> blocksToPlace,
+                                 AbstractStructureHelper structureHelper) {
+        Long2ObjectOpenHashMap<BlockState> alreadyValidPlaced = new Long2ObjectOpenHashMap<>();
+        Long2ObjectOpenHashMap<BlockState> replaceableBlocks = new Long2ObjectOpenHashMap<>();
+        Long2ObjectOpenHashMap<BlockState> canNotPlaceBlocks = new Long2ObjectOpenHashMap<>();
+
+        Level level = player.level();
+
+        Block controllerBlock = controller.getDefinition().getBlock();
+        BlockPos schemaControllerPos = BlockPos.ZERO;
+        for (var entry : blocksToPlace.entrySet()) {
+            if (entry.getValue().getBlockState().is(controllerBlock)) {
+                schemaControllerPos = entry.getKey();
+                break;
+            }
+        }
+
+        BlockPos controllerOffset = controller.getBlockPos().subtract(schemaControllerPos);
+
+        PredicateContext cxt = new PredicateContext(null);
+        cxt.updateLevel(level);
+        int checkedBlocks = 0;
+        for (var entry : blocksToPlace.entrySet()) {
+            BlockPos pos = entry.getKey().offset(controllerOffset);
+            var blockState = level.getBlockState(pos);
+
+            var predicate = structureHelper.getPredicateFromPos(
+                    definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get(),
+                    entry.getKey(), controller.getFrontFacing(), controller.getUpwardsFacing(), controller.isFlipped());
+
+            cxt.updatePos(pos);
+            var innerPredicate = predicate.getPredicateAtPos(cxt);
+            if (innerPredicate != null) {
+                alreadyValidPlaced.put(pos.asLong(), blockState);
+            } else {
+                if (blockState.canBeReplaced()) {
+                    replaceableBlocks.put(pos.asLong(), blocksToPlace.get(entry.getKey()).getBlockState());
+                    checkedBlocks++;
+                } else {
+                    canNotPlaceBlocks.put(pos.asLong(), blockState);
+                }
+            }
+            if (checkedBlocks > 32) {
+                break;
+            }
+        }
+
+        // Step 1. Making the "what we want" list
+        Map<Item, Integer> whatWeWant = new Object2IntArrayMap<>();
+        for (var entry : replaceableBlocks.long2ObjectEntrySet()) {
+            whatWeWant.merge(entry.getValue().getBlock().asItem(), 1, Integer::sum);
+        }
+
+        // Step 2. Try to fetch
+        Map<Item, Integer> whatWeHave = new Object2IntArrayMap<>();
+        for (var entry : whatWeWant.entrySet()) {
+            Item desiredItem = entry.getKey();
+            int desiredAmount = entry.getValue();
+            var slotIndex = player.getInventory().findSlotMatchingItem(new ItemStack(desiredItem));
+            if (slotIndex == -1) continue;
+            var playerSlotStack = player.getInventory().getItem(slotIndex);
+            int toDeduct = Math.min(playerSlotStack.getCount(), desiredAmount);
+            playerSlotStack.shrink(toDeduct);
+            whatWeHave.put(desiredItem, toDeduct);
+        }
+
+        // Step 3. Place what was fetched
+        for (var entry : replaceableBlocks.long2ObjectEntrySet()
+                .stream()
+                .sorted(Comparator.comparingLong(Long2ObjectMap.Entry::getLongKey))
+                .toList()) {
+            var blockState = entry.getValue();
+            var blocksLeft = whatWeHave.merge(blockState.getBlock().asItem(), -1, Integer::sum);
+            if (blocksLeft < 0) continue;
+            whatWeWant.merge(blockState.getBlock().asItem(), -1, Integer::sum);
+            level.setBlockAndUpdate(BlockPos.of(entry.getLongKey()), blockState);
+        }
+
+        if (!whatWeWant.isEmpty()) {
+            player.displayClientMessage(Component.translatable("gtceu.autobuild.missing_blocks").withStyle(ChatFormatting.RED), false);
+        }
+        for (var entry : whatWeWant.entrySet()) {
+            if (entry.getValue() > 0) {
+                player.displayClientMessage(Component.literal(entry.getKey().toString() + " " + entry.getValue()), false);
+            }
+        }
+
+        for (var entry : canNotPlaceBlocks.long2ObjectEntrySet()) {
+            AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
+                    .aabb(BlockPos.of(entry.getLongKey()))
+                    .colorARGB(255, 180, 0, 0)
+                    .thickness(0.025)
+                    .durationMillis(10000)
+                    .phaseMillis(750)
+                    .build());
+        }
+    }
+}

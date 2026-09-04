@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
@@ -50,7 +51,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 frontFacing, upFacing, isFlipped);
     }
 
-    protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected void populateWithUserBlockPreferences(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                                    IBlockPattern pattern,
                                                     Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
@@ -70,7 +72,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             }
             char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
             MultiPredicate predicate = blockPattern.getPredicates().get(c);
-            if (!isValidCandidate(resultStructure, predicate, pos, blockInfo, sliceDir)) {
+            if (!isValidCandidate(info, resultStructure, predicate, pos, blockInfo, sliceDir)) {
                 throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
                         " for position " + pos);
             }
@@ -78,7 +80,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
-    protected void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected void populateFromPattern(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                       IBlockPattern pattern,
                                        Direction frontFacing, Direction upFacing, boolean isFlipped) {
         // spotless:off
         // 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
@@ -119,8 +122,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
                     // Attempts to first place the predicate if the minimum (layer) count isn't satisfied, then the
                     // maximum (layer) count
-                    if (tryMinCount(resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
-                    if (tryMaxCount(resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
+                    if (tryMinCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
+                    if (tryMaxCount(info, resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
                     throw new IllegalStateException(
                             "Could not place a block without breaking maxCount requirements for character " + c);
@@ -129,10 +132,11 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
-    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean tryMinCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicates()) {
-            int minCount = getMinCount(predicate, basePredicate);
+            int minCount = info.getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
@@ -142,7 +146,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             if (globalMinMet && sliceMinMet) continue;
 
-            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
+            BlockInfo toInsert = info.getBlockPreferences().get(predicate, basePredicate);
             if (toInsert == null) {
                 toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
                     GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
@@ -150,7 +154,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 });
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
-            if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
+            if (isValidCandidate(info, resultStructure, predicate, pos, toInsert, dir)) {
                 resultStructure.put(pos, toInsert);
                 if (this.controllerBlock == null && predicate.isController()) {
                     this.controllerBlock = toInsert.getBlockState().getBlock();
@@ -159,15 +163,16 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             }
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMinCount(resultStructure, child, pos, dir, offset)) return true;
+            if (tryMinCount(info, resultStructure, child, pos, dir, offset)) return true;
         }
         return false;
     }
 
-    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean tryMaxCount(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicates()) {
-            int maxCount = getMaxCount(predicate, basePredicate);
+            int maxCount = info.getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
@@ -175,7 +180,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
             if (!basePredicate.testSliceMax(layerAlreadyPopulated + 1)) continue;
 
-            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
+            BlockInfo toInsert = info.getBlockPreferences().get(predicate, basePredicate);
             if (toInsert == null) {
                 toInsert = basePredicate.getFirstCandidate().orElseGet(() -> {
                     GTCEu.LOGGER.warn("Predicate\n\t{}\nhas no candidates to chose from!", basePredicate);
@@ -183,7 +188,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                 });
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
-            if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
+            if (isValidCandidate(info, resultStructure, predicate, pos, toInsert, dir)) {
                 resultStructure.put(pos, toInsert);
                 if (this.controllerBlock == null && predicate.isController()) {
                     this.controllerBlock = toInsert.getBlockState().getBlock();
@@ -192,12 +197,13 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             }
         }
         for (MultiPredicate child : predicate.children()) {
-            if (tryMaxCount(resultStructure, child, pos, dir, offset)) return true;
+            if (tryMaxCount(info, resultStructure, child, pos, dir, offset)) return true;
         }
         return false;
     }
 
-    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
+    private boolean isValidCandidate(MultiblockSchemaInfo info, Map<BlockPos, BlockInfo> resultStructure,
+                                     MultiPredicate predicate,
                                      BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
         // force true because idk what to do with this
         if (newInfo == BlockInfo.EMPTY) return true;
@@ -215,7 +221,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
              */
             if (!basePredicate.getCandidates().contains(newInfo)) continue;
 
-            int maxCount = getMaxCount(predicate, basePredicate);
+            int maxCount = info.getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
@@ -227,7 +233,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
             }
         }
         for (MultiPredicate child : predicate.children()) {
-            if (isValidCandidate(resultStructure, child, pos, newInfo, sliceDir)) {
+            if (isValidCandidate(info, resultStructure, child, pos, newInfo, sliceDir)) {
                 return true;
             }
         }

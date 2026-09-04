@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.recipeviewer.rei;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -111,7 +112,7 @@ public class MultiblockInfoReiCategory extends
                 structureHelper = AbstractStructureHelper.expandable(userDimensions);
             }
             if (structureHelper != null) {
-                structureHelper.populate(resultStructure, pattern, null,
+                structureHelper.populate(new MultiblockSchemaInfo(), resultStructure, pattern, null,
                         definition.getRotationState().defaultDirection, switch (definition.getRotationState()) {
                             case Y_AXIS -> Direction.NORTH;
                             case ALL, NON_Y_AXIS, NONE -> Direction.UP;

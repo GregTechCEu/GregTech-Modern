@@ -27,6 +27,7 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
@@ -83,8 +84,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private @Nullable BlockPos controllerPos;
     private SelectionInfo selectionInfo = SelectionInfo.empty();
 
-    private int yLevel = -1;
-    private int maxHeight = 0;
+    private int yLevel = Integer.MAX_VALUE;
 
     @Setter
     private @Nullable Runnable onSchemaRefresh;
@@ -158,7 +158,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
                 .entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().get())).toList();
 
-        this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, -10,
+        this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, 0,
                 this.multiblockSchemaInfo.getMapSchema().getCenter());
         PredicateContext context = new PredicateContext(null);
         SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
@@ -188,10 +188,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
         this.multiblockSchemaInfo.setMultiSchema(schema);
         this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().updateRenderFilter((pos, state) -> {
-            if (yLevel == -1) {
+            if (yLevel == Integer.MAX_VALUE) {
                 return true;
             }
-            return pos.getY() >= yLevel;
+            return pos.getY() <= yLevel;
         });
 
         this.coverChildren()
@@ -209,6 +209,51 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().renderFilter(),
                                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                             }
+                            return true;
+                        }))
+                // todo serialize these values as part of the schema nbt
+                .child(new ToggleButton()
+                        .tooltip(r -> r.addLine(Component.literal("Press to flip structure")))
+                        .left(25)
+                        .value(new BoolValue.Dynamic(() -> isFlipped, v -> {
+                            setFlipped(!isFlipped);
+                            refreshSchema();
+                            refreshViewWidget();
+                        })))
+                .child(new ButtonWidget<>()
+                        .overlay(new DynamicDrawable(() -> Text.dynamic(
+                                () -> Component.literal(yLevel == Integer.MAX_VALUE ? "A" : String.valueOf(yLevel)))
+                                .asIcon()))
+                        .left(45)
+                        .onMousePressed((c, b) -> {
+                            var bounds = multiblockSchemaInfo.getMapSchema().getBounds();
+                            int min = bounds.getFirst().getY();
+                            int max = bounds.getSecond().getY();
+
+                            if (b == InputConstants.MOUSE_BUTTON_LEFT) {
+                                if (yLevel == Integer.MAX_VALUE) yLevel = min - 1;
+                                yLevel += 1;
+                            } else if (b == InputConstants.MOUSE_BUTTON_RIGHT) {
+                                if (yLevel == Integer.MAX_VALUE) yLevel = max;
+                                yLevel -= 1;
+                            } else if (b == InputConstants.MOUSE_BUTTON_MIDDLE) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            if (yLevel >= max) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            if (yLevel < min) {
+                                yLevel = Integer.MAX_VALUE;
+                            }
+                            refreshSchema();
+                            Reference2IntMap<Block> newBlockCounts = new Reference2IntOpenHashMap<>();
+                            for (var entry : this.multiblockSchemaInfo.getStructureBlocks().entrySet()) {
+                                if (entry.getKey().getY() <= yLevel) {
+                                    newBlockCounts.merge(entry.getValue().getBlockState().getBlock(), 1, Integer::sum);
+                                }
+                            }
+                            this.multiblockSchemaInfo.setBlockCounts(newBlockCounts);
+                            refreshViewWidget();
                             return true;
                         }))
                 .child(Flow.col()
