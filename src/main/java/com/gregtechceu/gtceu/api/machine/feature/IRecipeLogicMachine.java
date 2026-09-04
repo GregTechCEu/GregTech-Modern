@@ -188,4 +188,12 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     default boolean isActive() {
         return getRecipeLogic().isActive();
     }
+
+    default boolean isWaiting() {
+        return getRecipeLogic().isWaiting();
+    }
+
+    default boolean isSuspend() {
+        return getRecipeLogic().isSuspend();
+    }
 }
