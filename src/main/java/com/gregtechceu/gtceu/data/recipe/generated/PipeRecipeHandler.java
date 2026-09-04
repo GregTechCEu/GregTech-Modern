@@ -43,9 +43,9 @@ public final class PipeRecipeHandler {
         processRestrictivePipe(provider, PropertyKey.ITEM_PIPE, pipeLargeRestrictive, pipeLargeItem, material);
         processRestrictivePipe(provider, PropertyKey.ITEM_PIPE, pipeHugeRestrictive, pipeHugeItem, material);
 
-        addDuctRecipes(provider, Steel, 2);
-        addDuctRecipes(provider, StainlessSteel, 4);
-        addDuctRecipes(provider, TungstenSteel, 8);
+        addDuctRecipes(provider, Steel.value(), 2);
+        addDuctRecipes(provider, StainlessSteel.value(), 4);
+        addDuctRecipes(provider, TungstenSteel.value(), 8);
     }
 
     private static void processRestrictivePipe(@NotNull RecipeOutput provider,
