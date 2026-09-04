@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -175,9 +176,8 @@ public final class CustomToolRecipes {
     private static void registerSoftToolRecipes(@NotNull RecipeOutput provider) {
         final ItemStack stick = new ItemStack(Items.STICK);
 
-        for (int i = 0; i < softMaterials.length; i++) {
-            Material material = softMaterials[i];
-
+        for (Holder<Material> holder: softMaterials) {
+            Material material = holder.value();
             if (material.hasProperty(PropertyKey.WOOD)) {
                 // todo allow these 3 to be mirrored
                 VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material.getName()),

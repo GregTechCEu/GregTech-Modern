@@ -136,7 +136,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return tool.getMaterial();
         }
 
-        return GTMaterials.Iron;
+        return GTMaterials.Iron.value();
     }
 
     default @Nullable ToolProperty getToolProperty() {
