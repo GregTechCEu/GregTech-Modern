@@ -20,8 +20,6 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import dev.ryanhcode.sable.companion.SableCompanion;
-import dev.ryanhcode.sable.companion.SubLevelAccess;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,6 +58,8 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import appeng.api.AECapabilities;
 import appeng.api.networking.IInWorldGridNodeHost;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.SubLevelAccess;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -593,6 +593,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     }
 
     private static class SableUtils {
+
         public static Vec3 transformIntoSubLevel(Vec3 pos, Level level, BlockPos blockPos) {
             // transform the players "global" position into the sublevel plot's local space for the distance checks
             SubLevelAccess subLevel = SableCompanion.INSTANCE.getContaining(level, blockPos);

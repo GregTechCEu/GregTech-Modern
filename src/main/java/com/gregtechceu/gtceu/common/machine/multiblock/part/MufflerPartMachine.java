@@ -19,9 +19,6 @@ import com.gregtechceu.gtceu.common.data.GTParticleTypes;
 import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import dev.ryanhcode.sable.companion.ClientSubLevelAccess;
-import dev.ryanhcode.sable.companion.SableCompanion;
-import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +31,9 @@ import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
+import dev.ryanhcode.sable.companion.ClientSubLevelAccess;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -194,12 +194,14 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     }
 
     private static class SableUtils {
+
         public static Vec3 transformPositionAndNormal(Vec3 pos, Vector3d normal) {
             ClientSubLevelAccess clientSubLevelAccess = SableCompanion.INSTANCE.getContainingClient(pos);
             if (clientSubLevelAccess != null) {
                 // if in a sublevel, we should transform our center and normal to match the sublevel's pose
                 clientSubLevelAccess.renderPose().transformNormal(normal);
-                return JOMLConversion.toMojang(clientSubLevelAccess.renderPose().transformPosition(JOMLConversion.toJOML(pos)));
+                return JOMLConversion
+                        .toMojang(clientSubLevelAccess.renderPose().transformPosition(JOMLConversion.toJOML(pos)));
             }
             return pos;
         }
