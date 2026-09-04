@@ -306,7 +306,8 @@ public class RecyclingRecipes {
                 if (entry != null) {
                     Material mat = inputStack.material();
                     if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
-                        return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != null;
+                        return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material() &&
+                                mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != null;
                     }
                 }
             }

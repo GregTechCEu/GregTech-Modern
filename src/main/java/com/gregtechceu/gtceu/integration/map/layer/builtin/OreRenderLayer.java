@@ -52,7 +52,7 @@ public class OreRenderLayer extends MapRenderLayer {
                     },
                     Function.identity());
         }
-        if (firstMaterial == null) {
+        if (firstMaterial == null && !definition.veinGenerator().getAllMaterials().isEmpty()) {
             firstMaterial = definition.veinGenerator().getAllMaterials().getFirst();
         }
         return firstMaterial;

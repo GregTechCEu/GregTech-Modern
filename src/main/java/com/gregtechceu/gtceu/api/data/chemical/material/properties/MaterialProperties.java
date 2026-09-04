@@ -37,6 +37,10 @@ public class MaterialProperties {
         return key.cast(propertyMap.get(key));
     }
 
+    public <T extends IMaterialProperty> T getPropertyOrThrow(PropertyKey<T> key) {
+        return Objects.requireNonNull(getProperty(key), "Material missing %s property".formatted(key));
+    }
+
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
         return propertyMap.containsKey(key);
     }
@@ -59,16 +63,17 @@ public class MaterialProperties {
             propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
     }
 
-    public <T extends IMaterialProperty> void ensureSet(PropertyKey<T> key, boolean verify) {
+    public <T extends IMaterialProperty> T ensureSet(PropertyKey<T> key, boolean verify) {
         if (!hasProperty(key)) {
             propertyMap.put(key, key.constructDefault());
             propertyMap.remove(PropertyKey.EMPTY);
             if (verify) verify();
         }
+        return Objects.requireNonNull(getProperty(key), "Property null after ensureSet");
     }
 
-    public <T extends IMaterialProperty> void ensureSet(PropertyKey<T> key) {
-        ensureSet(key, false);
+    public <T extends IMaterialProperty> T ensureSet(PropertyKey<T> key) {
+        return ensureSet(key, false);
     }
 
     public void verify() {

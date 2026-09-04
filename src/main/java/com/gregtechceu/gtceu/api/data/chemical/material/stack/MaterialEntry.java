@@ -49,7 +49,7 @@ public record MaterialEntry(TagPrefix tagPrefix, Material material) {
                 var prefix = GTRegistries.TAG_PREFIXES.get(GTCEu.id(values[0]));
                 if (prefix == null) throw new IllegalArgumentException("Invalid TagPrefix: " + values[0]);
                 var material = GTRegistries.MATERIALS.get(GTCEu.id(values[1]));
-                if (material == null) throw new IllegalArgumentException("Invalid material: " + values[0]);
+                if (material == null) throw new IllegalArgumentException("Invalid material: " + values[1]);
                 cached = new MaterialEntry(prefix, material);
                 PARSE_CACHE.put(str, cached);
                 return cached;

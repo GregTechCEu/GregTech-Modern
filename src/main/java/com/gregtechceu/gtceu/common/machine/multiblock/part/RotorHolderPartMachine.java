@@ -75,9 +75,9 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
 
     @Override
     public int tintColor(int index) {
-        if (index >= 2) {
+        if (index >= 2 && getRotorMaterial() != null) {
             return getRotorMaterial().getLayerARGB(index - 2);
-        } else if (index <= -103) {
+        } else if (index <= -103 && getRotorMaterial() != null) {
             return getRotorMaterial().getLayerARGB(index + 2);
         }
         return super.tintColor(index);

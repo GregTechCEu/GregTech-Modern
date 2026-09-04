@@ -146,8 +146,8 @@ public final class MaterialRecipeHandler {
                                 ChemicalHelper.getTag(dust, material), ingotStack);
                     }
                 } else {
-                    IngotProperty ingotProperty = material.getProperty(PropertyKey.INGOT);
-                    BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
+                    IngotProperty ingotProperty = material.getPropertyOrThrow(PropertyKey.INGOT);
+                    BlastProperty blastProperty = material.getPropertyOrThrow(PropertyKey.BLAST);
 
                     processEBFRecipe(material, blastProperty, ingotStack, provider);
 
@@ -576,8 +576,14 @@ public final class MaterialRecipeHandler {
             return;
         }
 
-        ItemStack blockStack = ChemicalHelper.get(block, material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        IngotProperty ingotProperty = material.getProperty(PropertyKey.INGOT);
+
+        Material magMaterial = material.hasFlag(IS_MAGNETIC) && ingotProperty != null ?
+                ingotProperty.getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+
+        ItemStack blockStack = ChemicalHelper.get(block, magMaterial);
+
         long materialAmount = block.getMaterialAmount(material);
         if (material.hasFluid()) {
             FluidStack stack = material.getProperty(PropertyKey.FLUID).solidifiesFrom((int) (materialAmount * L / M));
@@ -592,8 +598,7 @@ public final class MaterialRecipeHandler {
         }
 
         if (material.hasFlag(GENERATE_PLATE)) {
-            ItemStack plateStack = ChemicalHelper.get(plate, material.hasFlag(IS_MAGNETIC) ?
-                    material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+            ItemStack plateStack = ChemicalHelper.get(plate, magMaterial);
             if (!plateStack.isEmpty()) {
                 CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_block_to_plate")
                         .inputItems(block, material)

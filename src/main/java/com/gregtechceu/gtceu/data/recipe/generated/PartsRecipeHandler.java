@@ -366,8 +366,9 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        var magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
+        Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_dense_plate")
                 .inputItems(plate, material, 9)
                 .circuitMeta(9)
@@ -504,13 +505,15 @@ public final class PartsRecipeHandler {
                     .duration((int) Math.max(material.getMass() * 2, 1))
                     .EUt(16);
 
-            var materialOutput = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
+            Material magMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
                     material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+            if (magMaterial == null) magMaterial = material;
+
             if (ConfigHolder.INSTANCE.recipes.harderRods) {
-                builder.outputItems(rod, materialOutput);
-                builder.outputItems(dustSmall, materialOutput, 2);
+                builder.outputItems(rod, magMaterial);
+                builder.outputItems(dustSmall, magMaterial, 2);
             } else {
-                builder.outputItems(rod, materialOutput, 2);
+                builder.outputItems(rod, magMaterial, 2);
             }
             builder.save(provider);
         }
@@ -619,8 +622,10 @@ public final class PartsRecipeHandler {
             return;
         }
 
-        var outputMaterial = material.hasFlag(IS_MAGNETIC) ? material.getProperty(PropertyKey.INGOT).getMacerateInto() :
-                material;
+        Material outputMaterial = material.hasFlag(IS_MAGNETIC) && material.hasProperty(PropertyKey.INGOT) ?
+                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+        if (outputMaterial == null) outputMaterial = material;
+
         if (!material.hasFlag(NO_SMASHING)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_%s", material.getName()),
                     ChemicalHelper.get(round, outputMaterial),
