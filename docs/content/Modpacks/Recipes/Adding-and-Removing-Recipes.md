@@ -124,7 +124,7 @@ Syntax: `event.recipes.gtceu.RECIPE_TYPE(string: recipe id)`
         - `.itemInputs()`
         - `.chancedInput()`
         - `.itemInputsRanged()`
-        - `.notConsumable()`
+        - `.notConsumable()` in Java or `notConsumableItem()` in JavaScript
     - Fluids:
         - `.inputFluids()`
         - `.chancedFluidInput()`
