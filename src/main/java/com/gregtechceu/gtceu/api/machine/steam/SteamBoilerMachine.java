@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -74,12 +75,16 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     protected TickableSubscription temperatureSubs, autoOutputSubs;
     @Nullable
     protected ISubscription steamTankSubs;
+    @SaveField
+    @Getter
+    private int heatingTimeDebt; // amount of time the fuel should be burned for to account for the boiler cooling down
 
     public SteamBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
-        super(info, isHighPressure, new RecipeLogic(),
+        super(info, isHighPressure, new SteamBoilerRecipeLogic(),
                 new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.OUT));
         this.waterTank = attachTrait(createWaterTank());
         this.waterTank.setFilter(fluid -> fluid.getFluid().is(GTMaterials.Water.getFluidTag()));
+        recipeLogic.setRegressWhenWaiting(false);
     }
 
     //////////////////////////////////////
@@ -157,18 +162,31 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     }
 
     protected void updateCurrentTemperature() {
-        if (recipeLogic.isWorking()) {
-            if (getOffsetTimer() % 12 == 0) {
-                if (currentTemperature < getMaxTemperature())
-                    if (isHighPressure) {
-                        currentTemperature++;
-                    } else if (getOffsetTimer() % 24 == 0) {
-                        currentTemperature++;
-                    }
+        if (shouldDiscountFuelConsumptionAtMaxTemperature() &&
+                currentTemperature >= getMaxTemperature() &&
+                (recipeLogic.isWorking() || recipeLogic.isWaiting())) {
+            // We are fully heated up and are running a recipe. We want to simulate the cooling logic here,
+            // but instead of actually lowering the temperature, we instead manipulate the heating time debt
+            // to simulate the fuel burn cycle without actually affecting the temperature.
+            if (timeBeforeCoolingDown == 0) {
+                // Heating interval times cool down rate is the same amount of fuel recipe progress it would take
+                // to get the lowered temperature back up to the maximum temperature.
+                heatingTimeDebt += getHeatingTimeDebtAtMaxTemperature();
+                timeBeforeCoolingDown = getCooldownInterval();
+            } else {
+                --timeBeforeCoolingDown;
+            }
+        } else if (recipeLogic.isWorking()) {
+            this.timeBeforeCoolingDown = getCooldownInterval();
+            if (getOffsetTimer() % getHeatingInterval() == 0) {
+                if (currentTemperature < getMaxTemperature()) {
+                    currentTemperature++;
+                }
             }
         } else if (timeBeforeCoolingDown == 0) {
             if (currentTemperature > 0) {
                 currentTemperature -= getCoolDownRate();
+                heatingTimeDebt = 0;
                 timeBeforeCoolingDown = getCooldownInterval();
             }
         } else {
@@ -229,6 +247,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         return 1;
     }
 
+    protected int getHeatingInterval() {
+        return isHighPressure ? 12 : 24;
+    }
+
     public int getMaxTemperature() {
         return isHighPressure ? 1000 : 500;
     }
@@ -267,6 +289,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     public boolean onWorking() {
+        if (heatingTimeDebt > 0) {
+            --this.heatingTimeDebt;
+        }
         boolean value = super.onWorking();
         if (currentTemperature < getMaxTemperature()) {
             currentTemperature = Math.max(1, currentTemperature);
@@ -275,10 +300,28 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         return value;
     }
 
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        this.timeBeforeCoolingDown = getCooldownInterval();
+    /** Returns true if fuel consumption should be discounted at max temperature */
+    protected boolean shouldDiscountFuelConsumptionAtMaxTemperature() {
+        return true;
+    }
+
+    /** Returns true if we should suspend the currently running burning recipe due to the boiler being fully heated */
+    protected boolean shouldSuspendRecipeDueToBeingFullyHeated() {
+        return shouldDiscountFuelConsumptionAtMaxTemperature() &&
+                currentTemperature >= getMaxTemperature() &&
+                heatingTimeDebt <= 0;
+    }
+
+    protected int getHeatingTimeDebtAtMaxTemperature() {
+        return Math.min(getHeatingInterval() * getCoolDownRate(), getCooldownInterval());
+    }
+
+    /** Returns the effective fuel consumption rate, normalized */
+    public float getEffectiveFuelConsumptionRate() {
+        if (shouldDiscountFuelConsumptionAtMaxTemperature() && currentTemperature >= getMaxTemperature()) {
+            return getHeatingTimeDebtAtMaxTemperature() * 1.0f / getCooldownInterval();
+        }
+        return 1.0f;
     }
 
     //////////////////////////////////////
@@ -390,5 +433,17 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                     FormattingUtil.formatNumbers((int) (getTemperaturePercent() * 100))));
         }
         return new ArrayList<>();
+    }
+
+    private static class SteamBoilerRecipeLogic extends RecipeLogic {
+
+        @Override
+        public ActionResult handleTickRecipe(GTRecipe recipe) {
+            SteamBoilerMachine boilerMachine = (SteamBoilerMachine) getMachine();
+            if (boilerMachine.shouldSuspendRecipeDueToBeingFullyHeated()) {
+                return ActionResult.FAIL_NO_REASON;
+            }
+            return super.handleTickRecipe(recipe);
+        }
     }
 }
