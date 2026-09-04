@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.utils.TagUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -85,7 +86,14 @@ public final class Material {
         this.properties = properties;
         this.flags = flags;
         this.properties.setMaterial(this);
-        verifyMaterial();
+    }
+
+    public ResourceKey<Material> getKey() {
+        return ResourceKey.create(GTRegistries.Keys.MATERIAL, getResourceLocation());
+    }
+
+    public Holder<Material> getRegistryHolder() {
+        return GTRegistries.MATERIALS.getHolderOrThrow(getKey());
     }
 
     public String getChemicalFormula() {
@@ -524,7 +532,7 @@ public final class Material {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);
-        properties.verify();
+        if (!GTRegistries.MATERIALS.isRegistryClosed()) properties.verify();
     }
 
     public boolean isSolid() {
