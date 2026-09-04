@@ -303,9 +303,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     public void setSettings(@Nullable PredicateSettings settings) {
-        if (settings != null) {
-            this.settings = settings.copy();
-        }
+        this.settings = settings == null ? null : settings.copy();
     }
 
     /*
@@ -334,7 +332,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// @return a copy of this multipredicate with `this.settings = null`
     @CheckReturnValue
     public MultiPredicate recursive() {
-        return copyWith(mp -> mp.settings = null);
+        return copyWith(mp -> mp.setSettings(null));
     }
 
     @Override
