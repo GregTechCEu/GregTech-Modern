@@ -19,6 +19,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +29,6 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.HIGH_SIFTER_OUTPUT;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -77,7 +78,12 @@ public final class OreRecipeHandler {
             return;
         }
 
-        var inputStack = ChemicalHelper.get(orePrefix, material);
+        // we assume the tag prefix is a properly defined ore tag prefix here
+        Ingredient input = IntersectionIngredient.of(
+                Ingredient.of(ChemicalHelper.getTag(orePrefix, material)),
+                // Hardcoded index to the "ores_in_ground/<stone type>" parent tag.
+                // Not a great solution by any means, but it'll do for now
+                Ingredient.of(orePrefix.getItemParentTags().get(0)));
 
         Material byproductMaterial = property.getOreByProduct(0, material);
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
@@ -107,7 +113,7 @@ public final class OreRecipeHandler {
             int crushedCount = property.getOreMultiplier() * oreTypeMultiplier;
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
                     .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(inputStack)
+                    .inputItems(input)
                     .EUt(16)
                     .duration(10)
                     .category(GTRecipeCategories.ORE_FORGING);
@@ -120,7 +126,7 @@ public final class OreRecipeHandler {
 
             builder = MACERATOR_RECIPES
                     .recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_crushed_ore")
-                    .inputItems(inputStack)
+                    .inputItems(input)
                     .outputItems(crushedStack.copyWithCount(crushedCount * 2))
                     .chancedOutput(byproductStack, 1400)
                     .EUt(2)
@@ -141,11 +147,11 @@ public final class OreRecipeHandler {
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
-                    ingotStack, xp);
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
+                    input, ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
-                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot", inputStack,
-                    ingotStack, xp);
+                    "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
+                    input, ingotStack, xp);
         }
     }
 
