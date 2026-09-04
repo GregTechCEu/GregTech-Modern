@@ -313,7 +313,7 @@ public class GTResearchMachines {
             .tooltips(Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_active"),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant",
-                            8, GTMaterials.PCBCoolant.getLocalizedName()),
+                            8, GTMaterials.PCBCoolant.value().getLocalizedName()),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 2),
                     Component.translatable("gtceu.part_sharing.disabled"))
             .register();
