@@ -1777,6 +1777,8 @@
   "config.gtceu.option.batchDuration": "batchDuration",
   "config.gtceu.option.bedrockOreDistance": "bedrockOreDistance",
   "config.gtceu.option.bedrockOreDropTagPrefix": "bedrockOreDropTagPrefix",
+  "config.gtceu.option.blockFovChange": "blockFovChange",
+  "config.gtceu.option.blockSpeedChange": "blockSpeedChange",
   "config.gtceu.option.bloom": "bloom",
   "config.gtceu.option.bloomType.load_error": "Could not load shaders for the bloom effect, see %s for details",
   "config.gtceu.option.borderColor": "borderColor",

@@ -821,6 +821,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "List of domains that are allowed in the image module" })
         public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
                 "raw.githubusercontent.com" };
+        @Configurable
+        @Configurable.Comment({ "Whether or not speed-modifying blocks should change player's speed." })
+        @Configurable.Synchronized
+        public boolean blockSpeedChange = true;
     }
 
     public static class ClientConfigs {
@@ -871,6 +875,8 @@ public class ConfigHolder {
         @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
         @Configurable
+        @Configurable.Comment({ "Whether or not speed-modifying blocks should change player's FOV." })
+        public boolean blockFovChange = true;
         public UIConfigs ui = new UIConfigs();
 
         public int getDefaultPaintingColor() {
