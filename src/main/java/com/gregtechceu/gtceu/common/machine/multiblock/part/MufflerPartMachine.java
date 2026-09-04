@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -24,6 +25,7 @@ import dev.ryanhcode.sable.companion.math.JOMLConversion;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -162,11 +164,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
 
         var center = pos.getCenter();
 
-        ClientSubLevelAccess clientSubLevelAccess = SableCompanion.INSTANCE.getContainingClient(pos);
-        if (clientSubLevelAccess != null) {
-            // if in a sublevel, we should transform our center and normal to match the sublevel's pose
-            center = JOMLConversion.toMojang(clientSubLevelAccess.renderPose().transformPosition(JOMLConversion.toJOML(center)));
-            clientSubLevelAccess.renderPose().transformNormal(normal);
+        if (GTCEu.Mods.isSableLoaded()) {
+            center = SableUtils.transformPositionAndNormal(center, normal);
         }
 
         var offset = .75f;
@@ -192,5 +191,17 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
         mainWidget
                 .child(createSquareSlotGroupFromInventory(inventory, "muffler_inventory", syncManager).margin(10)
                         .center());
+    }
+
+    private static class SableUtils {
+        public static Vec3 transformPositionAndNormal(Vec3 pos, Vector3d normal) {
+            ClientSubLevelAccess clientSubLevelAccess = SableCompanion.INSTANCE.getContainingClient(pos);
+            if (clientSubLevelAccess != null) {
+                // if in a sublevel, we should transform our center and normal to match the sublevel's pose
+                clientSubLevelAccess.renderPose().transformNormal(normal);
+                return JOMLConversion.toMojang(clientSubLevelAccess.renderPose().transformPosition(JOMLConversion.toJOML(pos)));
+            }
+            return pos;
+        }
     }
 }
