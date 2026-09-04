@@ -100,7 +100,7 @@ public class GTOreByProduct {
         // "INPUTS"
 
         ObjectIntPair<Material> washedIn = property.getWashedIn();
-        List<Material> separatedInto = property.getSeparatedInto();
+        List<Material> separatedInto = property.getSeparatedInto().stream().map(Holder::value).toList();
 
         ItemTagList oreStacks = new ItemTagList();
         for (TagPrefix prefix : ORES) {
