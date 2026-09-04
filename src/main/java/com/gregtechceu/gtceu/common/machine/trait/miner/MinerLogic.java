@@ -123,6 +123,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
     @Getter
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
+    @Getter
+    private final RecipeCapabilityVersions recipeVersions;
     private @Nullable ItemRecipeHandler inputItemHandler, outputItemHandler;
     @Setter
     @Getter
@@ -145,6 +147,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.pickaxeTool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.recipeVersions = new RecipeCapabilityVersions();
     }
 
     @Override
