@@ -194,6 +194,7 @@ public class ChemicalHelper {
             // for unification entries.
             for (var entry : ITEM_MATERIAL_ENTRY) {
                 ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get().asItem(), entry.getSecond());
+                ITEMS_WITHOUT_MATERIAL.remove(entry.getFirst().get().asItem());
             }
             ITEM_MATERIAL_ENTRY.clear();
 

@@ -389,10 +389,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         var pipeNode = getPipeTile(level, pos);
-        if (pipeNode != null && pipeNode.getFrameMaterial() != null) {
-            return false;
-        }
-        return false;
+        return pipeNode != null && pipeNode.getFrameMaterial() != null;
     }
 
     @Override

@@ -95,7 +95,7 @@ public class MixinHelpers {
                 }
 
                 if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
-                    OreProperty ore = material.getProperty(PropertyKey.ORE);
+                    OreProperty ore = material.getPropertyOrThrow(PropertyKey.ORE);
                     Material washedIn = ore.getWashedIn().first();
                     if (washedIn == null) return;
                     ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();

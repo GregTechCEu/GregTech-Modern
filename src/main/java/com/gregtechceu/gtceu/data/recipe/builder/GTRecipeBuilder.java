@@ -1480,6 +1480,7 @@ public class GTRecipeBuilder {
     }
 
     public void save(RecipeOutput output) {
+        Objects.requireNonNull(recipeType, "Recipe type cannot be null");
         if (onSave != null) {
             onSave.accept(this, output);
         }
@@ -1515,7 +1516,6 @@ public class GTRecipeBuilder {
         tempItemMaterialStacks = null;
         tempFluidStacks = null;
 
-        assert recipeType != null;
         output.accept(id.withPrefix(recipeType.registryName.getPath() + "/"), build(), null);
     }
 

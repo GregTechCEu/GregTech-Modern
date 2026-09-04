@@ -1168,7 +1168,9 @@ public final class Material {
                 }
                 composition.add(new MaterialStack(
                         components[i] instanceof CharSequence chars ?
-                                GTRegistries.MATERIALS.getOptional(GTCEu.id(chars.toString())).orElseThrow() :
+                                GTRegistries.MATERIALS.getOptional(GTCEu.id(chars.toString()))
+                                        .orElseThrow(() -> new NoSuchElementException(
+                                                "Unknown material: " + GTCEu.id(chars.toString()))) :
                                 (Material) components[i],
                         ((Number) components[i + 1]).longValue()));
             }
@@ -1829,6 +1831,7 @@ public final class Material {
                     ImmutableList.copyOf(composition);
             if (!properties.hasProperty(PropertyKey.HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {
+                    if (materialStack.isEmpty()) continue;
                     Material material = materialStack.material();
                     HazardProperty property = material.getProperty(PropertyKey.HAZARD);
                     if (property != null && property.applyToDerivatives) {

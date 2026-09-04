@@ -84,7 +84,7 @@ public class GTOreByProduct {
                     GTMachines.MACERATOR[GTValues.LV].asStack(),
                     GTMachines.CENTRIFUGE[GTValues.LV].asStack());
         }
-        OreProperty property = material.getProperty(PropertyKey.ORE);
+        OreProperty property = material.getPropertyOrThrow(PropertyKey.ORE);
         int oreMultiplier = property.getOreMultiplier();
         int byproductMultiplier = property.getByProductMultiplier();
         currentSlot = 0;

@@ -452,7 +452,8 @@ public class RecyclingRecipes {
             if (stack.isEmpty()) continue;
 
             if (stack.getCount() > stack.getMaxStackSize()) {
-                MaterialEntry entry = ChemicalHelper.getMaterialEntryOrThrow(stack.getItem());
+                MaterialEntry entry = ChemicalHelper.getMaterialEntry(stack.getItem());
+                if (entry == null) continue;
                 TagPrefix prefix = entry.tagPrefix();
 
                 // These are the highest forms that a Material can have (for Ingot and Dust, respectively),
