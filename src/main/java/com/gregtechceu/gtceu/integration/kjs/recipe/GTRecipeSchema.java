@@ -69,6 +69,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -759,11 +760,7 @@ public interface GTRecipeSchema {
         }
 
         private void validateItems(@NotNull String type, TagPrefix... items) {
-            for (var item : items) {
-                if (item == null || item.isEmpty()) {
-                    throw new KubeRuntimeException(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
-                }
-            }
+            Validate.noNullElements(items, String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
         }
 
         private void validateFluids(@NotNull String type, FluidStack... fluids) {
