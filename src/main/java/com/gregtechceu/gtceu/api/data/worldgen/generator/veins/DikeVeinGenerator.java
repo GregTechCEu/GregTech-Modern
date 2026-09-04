@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -190,6 +191,10 @@ public class DikeVeinGenerator extends VeinGenerator {
         // spotless:on
         public DikeBlockDefinition(Material block, int weight, int minY, int maxY) {
             this(Either.right(block), weight, minY, maxY);
+        }
+
+        public DikeBlockDefinition(Holder<Material> block, int weight, int minY, int maxY) {
+            this(Either.right(block.value()), weight, minY, maxY);
         }
 
         public DikeBlockDefinition(List<TargetBlockState> block, int weight, int minY, int maxY) {
