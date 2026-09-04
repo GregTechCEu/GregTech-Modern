@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.POLARIZER_RECIPES;
 
@@ -66,9 +65,9 @@ public final class PolarizingRecipeHandler {
     }
 
     private static int getVoltageMultiplier(@NotNull Material material) {
-        if (material == GTMaterials.Steel || material == GTMaterials.Iron) return VH[LV];
-        if (material == GTMaterials.Neodymium) return VH[HV];
-        if (material == GTMaterials.Samarium) return VH[IV];
+        if (material == GTMaterials.Steel.value() || material == GTMaterials.Iron.value()) return VH[LV];
+        if (material == GTMaterials.Neodymium.value()) return VH[HV];
+        if (material == GTMaterials.Samarium.value()) return VH[IV];
         return material.getBlastTemperature() >= 1200 ? VA[LV] : 2;
     }
 }

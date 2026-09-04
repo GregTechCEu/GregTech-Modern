@@ -1369,8 +1369,8 @@ public class FirstDegreeMaterials {
                 .blast(b -> b.temp(4400, GasTier.MID)
                         .blastStats(VA[EV], 1000)
                         .vacuumStats(VA[EV], 200))
-                .register()
-                .setFormula("UPt3", true);
+                .formula("UPt3", true)
+                .register();
 
         SamariumIronArsenicOxide = REGISTRATE.material("samarium_iron_arsenic_oxide")
                 .ingot()
