@@ -295,7 +295,6 @@ public class SecondDegreeMaterials {
                 .arcSmeltInto(Steel)
                 .macerateInto(Steel)
                 .register();
-        Steel.getProperty(PropertyKey.INGOT).setMagneticMaterial(SteelMagnetic);
 
         VanadiumSteel = REGISTRATE.material("vanadium_steel")
                 .ingot(3)
@@ -478,8 +477,8 @@ public class SecondDegreeMaterials {
                 .dust()
                 .color(0x60a1c5).secondaryColor(0x48619c)
                 .components(Ammonia, 1, HydrochloricAcid, 1)
-                .register()
-                .setFormula("NH4Cl", true);
+                .formula("NH4Cl", true)
+                .register();
 
         AcidicOsmiumSolution = REGISTRATE.material("acidic_osmium_solution")
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))

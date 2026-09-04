@@ -1,16 +1,13 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MaterialBuilder;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -44,7 +41,6 @@ public class FirstDegreeMaterials {
                 .components(Copper, 1)
                 .cableProperties(V[MV], 1, 1)
                 .register();
-        Copper.getProperty(PropertyKey.INGOT).setArcSmeltingInto(AnnealedCopper);
 
         Asbestos = REGISTRATE.material("asbestos")
                 .dust(1).ore(3, 1)
@@ -556,8 +552,8 @@ public class FirstDegreeMaterials {
                 .color(0xd7e8b3).secondaryColor(0x143cae)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Calcium, 1, Tungsten, 1, Oxygen, 4)
-                .register()
-                .setFormula("Ca(WO3)O", true);
+                .formula("Ca(WO3)O", true)
+                .register();
 
         Sodalite = REGISTRATE.material("sodalite")
                 .gem(1).ore(6, 4)
@@ -571,7 +567,8 @@ public class FirstDegreeMaterials {
                 .dust()
                 .color(0xd4ecf9).secondaryColor(0xa6b9b6)
                 .components(Aluminium, 2, Sulfur, 3, Oxygen, 9)
-                .register().setFormula("Al2(SO3)3", true);
+                .formula("Al2(SO3)3", true)
+                .register();
 
         Tantalite = REGISTRATE.material("tantalite")
                 .dust(3).ore()
@@ -639,6 +636,7 @@ public class FirstDegreeMaterials {
                 .cableProperties(V[EV], 2, 2)
                 .blast(b -> b.temp(1000)
                         .blastStats(VA[MV], 800)) // no gas tier for steel
+                .magneticMaterial(SteelMagnetic)
                 .register();
 
         Stibnite = REGISTRATE.material("stibnite")
@@ -675,8 +673,8 @@ public class FirstDegreeMaterials {
                 .color(0xe0ffc4).secondaryColor(0xab4400)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Tungsten, 1, Lithium, 2, Oxygen, 4)
-                .register()
-                .setFormula("Li2(WO3)O", true);
+                .formula("Li2(WO3)O", true)
+                .register();
 
         Ultimet = REGISTRATE.material("ultimet")
                 .ingot(4)
@@ -697,8 +695,8 @@ public class FirstDegreeMaterials {
                 .color(0xffd52e).secondaryColor(0x17212b).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Uranium238, 1, Oxygen, 2)
-                .register()
-                .setFormula("UO2", true);
+                .formula("UO2", true)
+                .register();
 
         Uvarovite = REGISTRATE.material("uvarovite")
                 .gem()
@@ -730,8 +728,6 @@ public class FirstDegreeMaterials {
                         .attackSpeed(-0.2F).enchantability(5).build())
                 .rotorStats(145, 105, 3.5f, 384)
                 .register();
-        Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
-        Iron.getProperty(PropertyKey.INGOT).setArcSmeltingInto(WroughtIron);
 
         Wulfenite = REGISTRATE.material("wulfenite")
                 .dust(3).ore()
@@ -1109,7 +1105,6 @@ public class FirstDegreeMaterials {
                 .arcSmeltInto(WroughtIron)
                 .macerateInto(Iron)
                 .register();
-        Iron.getProperty(PropertyKey.INGOT).setMagneticMaterial(IronMagnetic);
 
         TungstenCarbide = REGISTRATE.material("tungsten_carbide")
                 .ingot(4).fluid()
@@ -1238,8 +1233,8 @@ public class FirstDegreeMaterials {
                 .color(0x42D126)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Uranium238, 1, Fluorine, 6)
-                .register()
-                .setFormula("UF6", true);
+                .formula("UF6", true)
+                .register();
 
         EnrichedUraniumHexafluoride = REGISTRATE.material("enriched_uranium_hexafluoride")
                 .gas()
@@ -1284,7 +1279,6 @@ public class FirstDegreeMaterials {
                 .arcSmeltInto(Neodymium)
                 .macerateInto(Neodymium)
                 .register();
-        Neodymium.getProperty(PropertyKey.INGOT).setMagneticMaterial(NeodymiumMagnetic);
 
         HydrochloricAcid = REGISTRATE.material("hydrochloric_acid")
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
@@ -1323,7 +1317,6 @@ public class FirstDegreeMaterials {
                 .arcSmeltInto(Samarium)
                 .macerateInto(Samarium)
                 .register();
-        Samarium.getProperty(PropertyKey.INGOT).setMagneticMaterial(SamariumMagnetic);
 
         ManganesePhosphide = REGISTRATE.material("manganese_phosphide")
                 .ingot()
@@ -1406,11 +1399,10 @@ public class FirstDegreeMaterials {
                 .blast(b -> b.temp(9000, GasTier.HIGH)
                         .blastStats(VA[IV], 1500)
                         .vacuumStats(VA[ZPM], 200))
-                .register()
-                .setFormula("URhNq2", true);
+                .formula("URhNq2", true)
+                .register();
 
-        EnrichedNaquadahTriniumEuropiumDuranide = new MaterialBuilder(
-                GTCEu.id("enriched_naquadah_trinium_europium_duranide"))
+        EnrichedNaquadahTriniumEuropiumDuranide = REGISTRATE.material("enriched_naquadah_trinium_europium_duranide")
                 .ingot()
                 .liquid(new FluidBuilder().temperature(5930))
                 .color(0xc6b083).secondaryColor(0x45063d).iconSet(METALLIC)
@@ -1446,8 +1438,8 @@ public class FirstDegreeMaterials {
                 .color(0xEEAA55)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Rhodium, 2, Sulfur, 3, Oxygen, 12)
-                .register()
-                .setFormula("Rh2(SO4)3", true);
+                .formula("Rh2(SO4)3", true)
+                .register();
 
         RutheniumTetroxide = REGISTRATE.material("ruthenium_tetroxide")
                 .dust()
@@ -1571,23 +1563,23 @@ public class FirstDegreeMaterials {
                 .dust()
                 .color(0xc9a842).secondaryColor(0x947110).iconSet(DULL)
                 .components(Potassium, 4, Iron, 1, Carbon, 6, Nitrogen, 6)
-                .register()
-                .setFormula("K4[Fe(CN)6]", true);
+                .formula("K4[Fe(CN)6]", true)
+                .register();
 
         CalciumFerrocyanide = REGISTRATE.material("calcium_ferrocyanide")
                 .dust()
                 .color(0xc9a842).secondaryColor(0x947110).iconSet(DULL)
                 .components(Calcium, 2, Iron, 1, Carbon, 6, Nitrogen, 6)
-                .register()
-                .setFormula("Ca2[Fe(CN)6]", true);
+                .formula("Ca2[Fe(CN)6]", true)
+                .register();
 
         CalciumHydroxide = REGISTRATE.material("calcium_hydroxide")
                 .dust()
                 .color(0x72dbd4).secondaryColor(0x138a80).iconSet(ROUGH)
                 .components(Calcium, 1, Oxygen, 2, Hydrogen, 2)
                 .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.CHEMICAL_BURNS)
-                .register()
-                .setFormula("Ca(OH)2", true);
+                .formula("Ca(OH)2", true)
+                .register();
 
         CalciumCarbonate = REGISTRATE.material("calcium_carbonate")
                 .dust()
@@ -1628,8 +1620,8 @@ public class FirstDegreeMaterials {
                 .color(0x102e5e).secondaryColor(0x010c42)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Iron, 7, Carbon, 18, Nitrogen, 18)
-                .register()
-                .setFormula("Fe4[Fe(CN)6]3", true);
+                .formula("Fe4[Fe(CN)6]3", true)
+                .register();
 
         Formaldehyde = REGISTRATE.material("formaldehyde")
                 .liquid()

@@ -71,8 +71,8 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
                                                     int durationFactor) {
         if (!mat.hasProperty(PropertyKey.INGOT)) return null;
 
-        var material = mat.getProperty(PropertyKey.INGOT);
-        var materialArc = material.getArcSmeltingInto();
+        var material = mat.getPropertyOrThrow(PropertyKey.INGOT);
+        var materialArc = material.getArcSmeltingInto() == null ? null : material.getArcSmeltingInto().value();
         if (materialArc == null) materialArc = mat;
 
         float outputAmount = (durability * fullAmount);
@@ -106,7 +106,7 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
         float durability = 0.69f;
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
         assert turbineBehaviour != null : "Default Turbine Stack doesn't have Turbine Behaviour";
-        turbineBehaviour.setPartMaterial(stack, GTMaterials.Iron);
+        turbineBehaviour.setPartMaterial(stack, GTMaterials.Iron.value());
         turbineBehaviour.setPartDamage(stack, 8928);
 
         rotorRecipe = applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
@@ -115,10 +115,10 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
         rotorRecipe.setId(rotorRecipe.getId().withPrefix("/"));
 
         // noinspection DataFlowIssue
-        stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron, GTToolType.PICKAXE).asStack();
+        stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron.value(), GTToolType.PICKAXE).asStack();
         stack.set(DataComponents.CUSTOM_NAME, Component.translatable("gtceu.auto_decomp.tool"));
         stack.setDamageValue(79);
-        pickaxeRecipe = applyDurabilityRecipe("tool_decomp", stack, GTMaterials.Iron,
+        pickaxeRecipe = applyDurabilityRecipe("tool_decomp", stack, GTMaterials.Iron.value(),
                 (float) (GTToolType.PICKAXE.materialAmount / GTValues.M), durability,
                 GTValues.VH[GTValues.LV], 2);
 

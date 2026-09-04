@@ -630,7 +630,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      * Set the components that make up this Material.<br>
      * This information is used for automatic decomposition, chemical formula generation, among other things.
      *
-     * @param components An Object array formed as pairs of {@link Material} and Integer, representing the
+     * @param components An Object array formed as pairs of Holder<Material> and Integer, representing the
      *                   Material and the amount of said Material in this Material's composition.
      * @throws IllegalArgumentException if the Object array is malformed.
      */
@@ -1128,7 +1128,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *
      * @param m The Material that this Material will be polarized into.
      */
-    public MaterialBuilder polarizesInto(Material m) {
+    public MaterialBuilder polarizesInto(Holder<Material> m) {
         properties.ensureSet(PropertyKey.INGOT).setMagneticMaterial(m);
         return this;
     }
@@ -1138,9 +1138,9 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      * Automatically adds an {@link IngotProperty} to this Material if it does not already have one,
      * with a harvest level of 2 and no Furnace burn time (if not already set).
      *
-     * @param m The Material that this Material will turn into in any Arc Furnace recipes.
+     * @param m A {@link Holder} containing the Material that this Material will turn into in any Arc Furnace recipes.
      */
-    public MaterialBuilder arcSmeltInto(Material m) {
+    public MaterialBuilder arcSmeltInto(Holder<Material> m) {
         properties.ensureSet(PropertyKey.INGOT).setArcSmeltingInto(m);
         return this;
     }
@@ -1153,7 +1153,7 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *
      * @param m The Material that this Material's Ingot should macerate directly into.
      */
-    public MaterialBuilder macerateInto(Material m) {
+    public MaterialBuilder macerateInto(Holder<Material> m) {
         properties.ensureSet(PropertyKey.INGOT).setMacerateInto(m);
         return this;
     }
@@ -1166,8 +1166,16 @@ public class MaterialBuilder extends AbstractBuilder<Material, Material, GTRegis
      *
      * @param m The Material that this Material's Ingot should smelt directly into.
      */
-    public MaterialBuilder ingotSmeltInto(Material m) {
+    public MaterialBuilder ingotSmeltInto(Holder<Material> m) {
         properties.ensureSet(PropertyKey.INGOT).setSmeltingInto(m);
+        return this;
+    }
+
+    /**
+     * Sets the Material that this Material's items can turn into in a polarizer.
+     */
+    public MaterialBuilder magneticMaterial(Holder<Material> m) {
+        properties.ensureSet(PropertyKey.INGOT).setMagneticMaterial(m);
         return this;
     }
 

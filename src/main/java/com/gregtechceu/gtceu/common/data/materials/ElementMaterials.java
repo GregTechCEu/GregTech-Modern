@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -208,6 +209,7 @@ public class ElementMaterials {
                 .element(GTElements.Cu)
                 .cableProperties(V[MV], 1, 2)
                 .fluidPipeProperties(1696, 6, true)
+                .arcSmeltInto(AnnealedCopper)
                 .register();
 
         Curium = REGISTRATE.material("curium")
@@ -399,6 +401,9 @@ public class ElementMaterials {
                         .enchantability(14).addTypes(GTToolType.MORTAR).build())
                 .rotorStats(115, 115, 2.5f, 256)
                 .cableProperties(V[MV], 2, 3)
+                .ingotSmeltInto(WroughtIron)
+                .arcSmeltInto(WroughtIron)
+                .magneticMaterial(IronMagnetic)
                 .register();
 
         Krypton = REGISTRATE.material("krypton")
@@ -510,6 +515,7 @@ public class ElementMaterials {
                 .element(GTElements.Nd)
                 .rotorStats(100, 115, 2.0f, 512)
                 .blast(1297, GasTier.MID)
+                .magneticMaterial(NeodymiumMagnetic)
                 .register();
 
         Neon = REGISTRATE.material("neon")
@@ -733,6 +739,7 @@ public class ElementMaterials {
                 .blast(b -> b.temp(5400, GasTier.HIGH)
                         .blastStats(VA[EV], 1500)
                         .vacuumStats(VA[HV], 200))
+                .magneticMaterial(SamariumMagnetic)
                 .register();
 
         Scandium = REGISTRATE.material("scandium")
