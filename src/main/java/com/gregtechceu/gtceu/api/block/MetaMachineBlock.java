@@ -20,6 +20,8 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.SubLevelAccess;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -162,6 +164,11 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
             }
 
             Vec3 pos = player.position();
+
+            // transform the players "global" position into the sublevel plot's local space for the distance checks
+            SubLevelAccess subLevel = SableCompanion.INSTANCE.getContaining(player.level(), blockPos);
+            if (subLevel != null) pos = subLevel.logicalPose().transformPositionInverse(pos);
+
             if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D &&
                     Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
                 double d0 = pos.y + (double) player.getEyeHeight();
