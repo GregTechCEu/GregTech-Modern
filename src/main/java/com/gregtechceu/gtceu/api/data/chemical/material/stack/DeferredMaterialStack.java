@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-public record DeferredMaterialStack(@Nullable Supplier<@NotNull Material> material, long amount) {
+public record DeferredMaterialStack(@Nullable Supplier<Material> material, long amount) {
 
-    public static DeferredMaterialStack EMPTY = new DeferredMaterialStack(() -> GTMaterials.NULL, 0);
+    public static DeferredMaterialStack EMPTY = new DeferredMaterialStack(null, 0);
 
     private static final Map<String, DeferredMaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
