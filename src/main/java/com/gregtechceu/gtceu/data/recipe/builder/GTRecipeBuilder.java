@@ -1533,6 +1533,10 @@ public class GTRecipeBuilder {
             addOutputMaterialInfo();
         }
 
+        tempItemStacks = null;
+        tempItemMaterialStacks = null;
+        tempFluidStacks = null;
+
         consumer.accept(build());
     }
 

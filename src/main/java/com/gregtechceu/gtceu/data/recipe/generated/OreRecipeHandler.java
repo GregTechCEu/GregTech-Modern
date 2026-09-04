@@ -208,7 +208,7 @@ public final class OreRecipeHandler {
             float xp = Math.round(((1 + 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider,
                     "smelt_raw_" + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(rawOre, material),
+                    ChemicalHelper.getTagOrThrow(rawOre, material),
                     ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider,
                     "smelt_raw_" + material.getName() + "_ore_to_ingot",

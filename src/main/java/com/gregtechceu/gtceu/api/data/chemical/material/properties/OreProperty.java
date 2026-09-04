@@ -120,7 +120,7 @@ public class OreProperty implements IMaterialProperty {
         return washedIn != null;
     }
 
-    public @NotNull ObjectIntPair<Material> getWashedIn() {
+    public @NotNull ObjectIntPair<@Nullable Material> getWashedIn() {
         return ObjectIntPair.of(this.washedIn, this.washedAmount);
     }
 

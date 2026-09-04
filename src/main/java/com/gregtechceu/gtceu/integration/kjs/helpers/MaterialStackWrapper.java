@@ -47,7 +47,7 @@ public record MaterialStackWrapper(Supplier<@Nullable Material> material, long a
     }
 
     public boolean isEmpty() {
-        return this.amount < 1 || this.material == null || this.material.get() == null;
+        return this.amount < 1 || this.material == null;
     }
 
     public MaterialStack toMatStack() {
