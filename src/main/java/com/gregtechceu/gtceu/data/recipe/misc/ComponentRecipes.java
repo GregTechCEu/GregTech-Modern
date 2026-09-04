@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;

@@ -617,7 +617,6 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix.value(), material, count);
     }
 
-
     public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
         Objects.requireNonNull(orePrefix, "TagPrefix cannot be null");
         Objects.requireNonNull(material, "Material cannot be null");
@@ -946,7 +945,8 @@ public class GTRecipeBuilder {
         return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
     }
 
-    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Holder<Material> material, int count, String fraction) {
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Holder<Material> material, int count,
+                                         String fraction) {
         return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction);
     }
 
@@ -1058,7 +1058,6 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputFluids(Holder<Material> material, int amount) {
         return inputFluids(material.value().getFluid(amount));
     }
-
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
         if (missingIngredientError(0, true, FluidRecipeCapability.CAP, input::isEmpty)) {

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -10,8 +9,6 @@ import net.minecraft.util.StringRepresentable;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Supplier;
 
 public class SimpleCoilType implements ICoilType, StringRepresentable {
 

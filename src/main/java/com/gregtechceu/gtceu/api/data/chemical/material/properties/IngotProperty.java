@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
+import net.minecraft.core.Holder;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 public class IngotProperty implements IMaterialProperty {
