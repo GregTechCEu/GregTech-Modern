@@ -71,6 +71,11 @@ public interface ISpoilableItem {
     long getSpoilTicks();
 
     /**
+     * @return whether the item should have spoiled and will be replaced when entering a supported inventory
+     */
+    boolean shouldHaveSpoiled();
+
+    /**
      * @return the amount of ticks left until the provided {@link ItemStack} spoils.
      *         The ticks still reduce even when the item is unloaded, and only pause if the
      *         overworld time pauses, as all tick calculations are done with overworld tick time
