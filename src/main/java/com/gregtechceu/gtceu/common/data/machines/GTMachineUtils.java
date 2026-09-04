@@ -397,7 +397,8 @@ public class GTMachineUtils {
                 .register();
     }
 
-    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material, int capacity,
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                               int capacity,
                                                                String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate

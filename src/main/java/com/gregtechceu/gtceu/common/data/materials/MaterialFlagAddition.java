@@ -8,28 +8,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class MaterialFlagAddition {
 
     public static void register() {
-        OreProperty oreProp = Aluminium.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Bauxite, Bauxite, Ilmenite, Rutile);
-        oreProp.setWashedIn(SodiumPersulfate);
-
-        oreProp = Beryllium.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Emerald, Emerald, Thorium);
-
-        oreProp = Cobalt.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(CobaltOxide, Cobaltite);
-        oreProp.setWashedIn(SodiumPersulfate);
-
-        oreProp = Copper.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Cobalt, Gold, Nickel, Gold);
-        oreProp.setWashedIn(Mercury);
-
-        oreProp = Gold.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Copper, Nickel, Silver);
-        oreProp.setWashedIn(Mercury);
-
-        oreProp = Iron.getProperty(PropertyKey.ORE);
-        oreProp.setOreByProducts(Nickel, Tin, Tin, Gold);
-        oreProp.setWashedIn(SodiumPersulfate);
+        OreProperty oreProp;
 
         oreProp = Lead.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Silver, Sulfur);
@@ -39,13 +18,6 @@ public class MaterialFlagAddition {
 
         oreProp = Molybdenum.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Molybdenum);
-
-        // oreProp = Magnesium.getProperty(PropertyKey.ORE);
-        // oreProp.setOreByProducts(Olivine);
-
-        // oreProp = Manganese.getProperty(PropertyKey.ORE);
-        // oreProp.setOreByProducts(Chrome, Iron);
-        // oreProp.setSeparatedInto(Iron);
 
         oreProp = Neodymium.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(RareEarth);
@@ -62,9 +34,6 @@ public class MaterialFlagAddition {
         oreProp = Plutonium239.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Uraninite, Lead, Uraninite);
 
-        // oreProp = Silicon.getProperty(PropertyKey.ORE);
-        // oreProp.setOreByProducts(SiliconDioxide);
-
         oreProp = Silver.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Lead, Sulfur, Sulfur, Gold);
         oreProp.setWashedIn(Mercury);
@@ -79,12 +48,6 @@ public class MaterialFlagAddition {
         oreProp.setOreByProducts(Iron, Zinc);
         oreProp.setSeparatedInto(Iron);
         oreProp.setWashedIn(SodiumPersulfate);
-
-        // oreProp = Titanium.getProperty(PropertyKey.ORE);
-        // oreProp.setOreByProducts(Almandine);
-
-        // oreProp = Tungsten.getProperty(PropertyKey.ORE);
-        // oreProp.setOreByProducts(Manganese, Molybdenum);
 
         oreProp = Naquadah.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Sulfur, Barite, NaquadahEnriched);

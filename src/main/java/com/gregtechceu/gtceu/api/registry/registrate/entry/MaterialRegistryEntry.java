@@ -8,19 +8,16 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.MaterialPrope
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.utils.TagUtil;
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import lombok.Getter;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import org.jetbrains.annotations.Nullable;
 
 public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
 
@@ -43,7 +40,6 @@ public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
     public MaterialFlags getFlags() {
         return value().getFlags();
     }
-
 
     /**
      * Retrieves a fluid from the material.
