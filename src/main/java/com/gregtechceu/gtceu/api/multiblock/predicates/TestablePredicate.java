@@ -55,9 +55,13 @@ class TestablePredicate extends BasePredicate {
         this.onError = onError;
     }
 
+    /// @param root the top-most multi predicate for this multi predicate
+    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     @Override
     public List<Component> getRecipeViewerTooltips(MultiPredicate root) {
-        List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
+        List<Component> tooltips = new ArrayList<>();
+        int minCount = getMinCount();
+        int maxCount = getMaxCount();
         if (minCount == maxCount && maxCount != -1) {
             tooltips.add(Component.translatable("gtceu.multiblock.pattern.exact_count", minCount));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {

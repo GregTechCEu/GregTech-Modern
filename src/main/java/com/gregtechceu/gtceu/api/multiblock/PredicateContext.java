@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
@@ -29,8 +29,8 @@ public class PredicateContext {
     private final PatternState state;
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
-    protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
-    protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
+    protected final Object2IntMap<SettingsHolder<?>> globalCount = new Object2IntOpenHashMap<>();
+    protected final Object2IntMap<SettingsHolder<?>> layerCount = new Object2IntOpenHashMap<>();
 
     private final Int2ObjectMap<List<PatternError>> sliceErrors = new Int2ObjectAVLTreeMap<>(
             IntComparators.NATURAL_COMPARATOR);
@@ -131,20 +131,20 @@ public class PredicateContext {
         this.layerCount.clear();
     }
 
-    public int incrementGlobalCount(BasePredicate predicate) {
+    public int incrementGlobalCount(SettingsHolder<?> predicate) {
         return this.globalCount.mergeInt(predicate, 1, Integer::sum);
     }
 
-    public int incrementSliceCount(BasePredicate predicate) {
+    public int incrementSliceCount(SettingsHolder<?> predicate) {
         if (!checkLayer) return 0;
         return this.layerCount.mergeInt(predicate, 1, Integer::sum);
     }
 
-    public int getGlobalCount(BasePredicate predicate) {
+    public int getGlobalCount(SettingsHolder<?> predicate) {
         return this.globalCount.getInt(predicate);
     }
 
-    public int getSliceCount(BasePredicate predicate) {
+    public int getSliceCount(SettingsHolder<?> predicate) {
         if (!checkLayer) return 0;
         return this.layerCount.getInt(predicate);
     }

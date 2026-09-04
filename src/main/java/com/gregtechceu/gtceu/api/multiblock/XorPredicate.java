@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 public class XorPredicate extends MultiPredicate {
 
@@ -19,10 +21,16 @@ public class XorPredicate extends MultiPredicate {
     /// meaning that it is possible that no predicates may be present in the multi.
     protected boolean noneValid;
 
-    public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
-        super(Logic.XOR, children, predicates, hasAir);
-        this.noneValid = expand().stream()
-                .anyMatch(p -> p.getMinCount() <= 0 && p.getMinSliceCount() <= 0);
+    public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir,
+                        @Nullable PredicateSettings settings) {
+        super(Logic.XOR, children, predicates, hasAir, settings);
+        this.noneValid = isNoneValid(this);
+    }
+
+    @Override
+    public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
+        super.updateSettings(configurator, shouldCreate);
+        this.noneValid = isNoneValid(this);
     }
 
     @Override
@@ -87,6 +95,23 @@ public class XorPredicate extends MultiPredicate {
         context.appendError(
                 PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
         context.skipFlipCheck();
+    }
+
+    private static boolean isNoneValid(MultiPredicate multiPredicate) {
+        PredicateSettings settings = multiPredicate.getSettings();
+        if (settings != null) return settings.isNoneValid();
+
+        for (BasePredicate predicate : multiPredicate.predicates()) {
+            if (predicate.getSettings().isNoneValid()) {
+                return true;
+            }
+        }
+        for (MultiPredicate child : multiPredicate.children()) {
+            if (isNoneValid(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static PassedPredicate ofPredicate(BasePredicate predicate) {

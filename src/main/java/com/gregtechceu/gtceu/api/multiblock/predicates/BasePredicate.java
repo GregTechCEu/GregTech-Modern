@@ -13,8 +13,9 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 
-public abstract class BasePredicate implements Comparable<BasePredicate> {
+public abstract class BasePredicate implements Comparable<BasePredicate>, SettingsHolder<BasePredicate> {
 
     public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
@@ -28,29 +29,8 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     private final List<BlockInfo> candidates = computeCandidates();
 
     @Getter
-    @Setter
-    protected int priority = 0;
-    @Getter
-    @Setter
-    protected int minCount = -1;
-    @Getter
-    @Setter
-    protected int maxCount = -1;
-    @Getter
-    @Setter
-    protected int minSliceCount = -1;
-    @Getter
-    @Setter
-    protected int maxSliceCount = -1;
-    @Getter
-    @Setter
-    protected int previewCount = -1;
-    @Getter
-    @Setter
-    protected boolean disableRenderFormed = false;
-    @Getter
-    @Setter
-    private @Nullable String nbtParser; // unsure what this does
+    protected PredicateSettings settings = PredicateSettings.create();
+
     @Setter
     private @Nullable MultiPredicate parent;
 
@@ -69,24 +49,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     /// @param root the top-most multi predicate for this multi predicate
     /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
-
-    public abstract BasePredicate copy();
-
-    protected void copyTo(BasePredicate other) {
-        other.priority = this.priority;
-        other.minCount = this.minCount;
-        other.maxCount = this.maxCount;
-        other.minSliceCount = this.minSliceCount;
-        other.maxSliceCount = this.maxSliceCount;
-        other.previewCount = this.previewCount;
-        other.disableRenderFormed = this.disableRenderFormed;
-        other.nbtParser = this.nbtParser;
-        other.additionalTooltips.addAll(this.additionalTooltips);
-    }
-
-    public void addTooltips(Component tooltip) {
-        this.additionalTooltips.add(tooltip);
-    }
 
     /// delegates to {@link MultiPredicate#testMaxCount(BasePredicate, PredicateContext)},
     /// with this predicate as the passing predicate
@@ -129,26 +91,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
         return false;
     }
 
-    /// simple test against global min count
-    public boolean testGlobalMin(int count) {
-        return minCount == -1 || count >= minCount;
-    }
-
-    /// simple test against slice min count
-    public boolean testSliceMin(int count) {
-        return minSliceCount == -1 || count >= minSliceCount;
-    }
-
-    /// simple test against global max count
-    public boolean testGlobalMax(int count) {
-        return maxCount == -1 || count <= maxCount;
-    }
-
-    /// simple test against slice max count
-    public boolean testSliceMax(int count) {
-        return maxSliceCount == -1 || count <= maxSliceCount;
-    }
-
     /// computes the candidates for this predicate
     public abstract List<BlockInfo> computeCandidates();
 
@@ -182,6 +124,33 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
 
     @Override
     public int compareTo(BasePredicate o) {
-        return Integer.compare(this.priority, o.priority);
+        return this.settings.comparePriority(o.settings);
+    }
+
+    public abstract BasePredicate copy();
+
+    protected void copyTo(BasePredicate other) {
+        other.setSettings(this.settings.copy());
+        other.additionalTooltips.addAll(this.additionalTooltips);
+    }
+
+    // COPY AND MUTATE
+
+    @Override
+    public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
+        BasePredicate copy = copy();
+        copy.updateSettings(configurator);
+        return copy;
+    }
+
+    // MUTATE ONLY
+
+    @Override
+    public void setSettings(PredicateSettings settings) {
+        this.settings = settings;
+    }
+
+    public void addTooltips(Component tooltip) {
+        this.additionalTooltips.add(tooltip);
     }
 }
