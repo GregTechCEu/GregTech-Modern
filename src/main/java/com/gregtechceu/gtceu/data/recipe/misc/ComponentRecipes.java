@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -153,13 +154,13 @@ public class ComponentRecipes {
 
         // Conveyors
         // Start-----------------------------------------------------------------------------------------------
-        final Map<String, Material> rubberMaterials = new Object2ObjectOpenHashMap<>();
+        final Map<String, MaterialRegistryEntry> rubberMaterials = new Object2ObjectOpenHashMap<>();
         rubberMaterials.put("rubber", Rubber);
         rubberMaterials.put("silicone_rubber", SiliconeRubber);
         rubberMaterials.put("styrene_butadiene_rubber", StyreneButadieneRubber);
 
-        for (Map.Entry<String, Material> materialEntry : rubberMaterials.entrySet()) {
-            Material material = materialEntry.getValue();
+        for (Map.Entry<String, MaterialRegistryEntry> materialEntry : rubberMaterials.entrySet()) {
+            MaterialRegistryEntry material = materialEntry.getValue();
             String name = materialEntry.getKey();
 
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
@@ -187,7 +188,7 @@ public class ComponentRecipes {
             ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_lv_" + name)
                     .inputItems(cableGtSingle, Tin)
                     .inputItems(ELECTRIC_MOTOR_LV, 2)
-                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
+                    .inputFluids(materialEntry.getValue().value().getFluid(L * 6))
                     .circuitMeta(1)
                     .outputItems(CONVEYOR_MODULE_LV)
                     .duration(100).EUt(VA[LV]).save(provider);
@@ -195,7 +196,7 @@ public class ComponentRecipes {
             ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_mv_" + name)
                     .inputItems(cableGtSingle, Copper)
                     .inputItems(ELECTRIC_MOTOR_MV, 2)
-                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
+                    .inputFluids(materialEntry.getValue().value().getFluid(L * 6))
                     .circuitMeta(1)
                     .outputItems(CONVEYOR_MODULE_MV)
                     .duration(100).EUt(VA[LV]).save(provider);
@@ -203,7 +204,7 @@ public class ComponentRecipes {
             ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_hv_" + name)
                     .inputItems(cableGtSingle, Gold)
                     .inputItems(ELECTRIC_MOTOR_HV, 2)
-                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
+                    .inputFluids(materialEntry.getValue().value().getFluid(L * 6))
                     .circuitMeta(1)
                     .outputItems(CONVEYOR_MODULE_HV)
                     .duration(100).EUt(VA[LV]).save(provider);
@@ -211,7 +212,7 @@ public class ComponentRecipes {
             ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_ev_" + name)
                     .inputItems(cableGtSingle, Aluminium)
                     .inputItems(ELECTRIC_MOTOR_EV, 2)
-                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
+                    .inputFluids(materialEntry.getValue().value().getFluid(L * 6))
                     .circuitMeta(1)
                     .outputItems(CONVEYOR_MODULE_EV)
                     .duration(100).EUt(VA[LV]).save(provider);
@@ -220,7 +221,7 @@ public class ComponentRecipes {
                 ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_iv_" + name)
                         .inputItems(cableGtSingle, Tungsten)
                         .inputItems(ELECTRIC_MOTOR_IV, 2)
-                        .inputFluids(materialEntry.getValue().getFluid(L * 6))
+                        .inputFluids(materialEntry.getValue().value().getFluid(L * 6))
                         .circuitMeta(1)
                         .outputItems(CONVEYOR_MODULE_IV)
                         .duration(100).EUt(VA[LV]).save(provider);

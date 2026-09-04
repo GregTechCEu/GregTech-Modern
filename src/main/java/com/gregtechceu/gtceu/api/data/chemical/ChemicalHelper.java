@@ -298,6 +298,14 @@ public class ChemicalHelper {
         return get(tagPrefix, material, 1);
     }
 
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        return get(tagPrefix, material, 1);
+    }
+
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
         return MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
             TagPrefix prefix = entry.tagPrefix();
@@ -355,6 +363,11 @@ public class ChemicalHelper {
     public static TagKey<Item> getTagOrThrow(TagPrefix orePrefix, Material material) {
         return Objects.requireNonNull(getTag(orePrefix, material),
                 "No item tag for %s %s".formatted(orePrefix, material));
+    }
+
+    @Nullable
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return getTag(orePrefix.value(), material.value());
     }
 
     @Nullable

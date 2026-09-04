@@ -305,7 +305,7 @@ public class WoodMachineRecipes {
                             .hangingSign(GTBlocks.TREATED_WOOD_HANGING_SIGN.asItem(), null)
                             .button(GTBlocks.TREATED_WOOD_BUTTON.asItem(), null)
                             .pressurePlate(GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asItem(), null)
-                            .material(TreatedWood)
+                            .material(TreatedWood.value())
                             .generateLogToPlankRecipe(false)
                             .registerMaterialInfo(false, true, true, true, true, true, true, true, true, true)
                             .build());
