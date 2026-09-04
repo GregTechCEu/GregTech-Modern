@@ -37,6 +37,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
+    private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
+
     @SaveField
     @SyncToClient
     @Getter
@@ -136,17 +138,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         column.child(
                 GTMuiWidgets
-                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> getVoidingMode().maxStackSize)
+                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> MAX_STACK_SIZE)
                         .setEnabledIf($ -> shouldShowStackSize()));
-    }
-
-    private int getCurrentBucketModeTransferSize() {
-        return this.globalTransferSizeMillibuckets / this.transferBucketMode.multiplier;
-    }
-
-    private void setCurrentBucketModeTransferSize(int transferSize) {
-        this.globalTransferSizeMillibuckets = Math.max(transferSize * this.transferBucketMode.multiplier, 0);
-        syncDataHolder.markClientSyncFieldDirty("globalTransferSizeMillibuckets");
     }
 
     private boolean shouldShowStackSize() {
@@ -170,7 +163,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
         setTransferBucketMode(BucketMode.values()[tag.getInt("voidBucketMode")]);
-        setCurrentBucketModeTransferSize(tag.getInt("voidSize"));
+        setGlobalTransferSizeMillibuckets(tag.getInt("voidSize"));
         super.pasteConfig(player, tag);
     }
 }
