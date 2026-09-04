@@ -185,9 +185,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        if (!isFormed())
-            return widgets;
 
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
         BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isActive));
         BooleanSyncValue isBoostAllowed = syncManager.getOrCreateSyncHandler("canBoost",
@@ -205,23 +205,25 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 "gtceu.multiblock.large_combustion_engine.output", engineOutput.getLongValue())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
-                .setEnabledIf(w -> isActive.getBoolValue());
+                .setEnabledIf(w -> isFormed.getBoolValue() && isActive.getBoolValue());
         var boostDisallowed = Text.dynamic(() -> Component.translatable(
                 "gtceu.multiblock.large_combustion_engine.boost_disallowed"))
                 .asWidget()
-                .setEnabledIf(w -> !isBoostAllowed.getBoolValue());
+                .setEnabledIf(w -> isFormed.getBoolValue() && !isBoostAllowed.getBoolValue());
         var canBoost = Text.dynamic(() -> Component.translatable(
                 isExtreme.getValue() ?
                         "gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost" :
                         "gtceu.multiblock.large_combustion_engine.supply_oxygen_to_boost"))
                 .asWidget()
-                .setEnabledIf(w -> isBoostAllowed.getBoolValue() && !isOxygenBoosted.getBoolValue());
+                .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
+                        !isOxygenBoosted.getBoolValue());
         var isBoosted = Text.dynamic(() -> Component.translatable(
                 isExtreme.getValue() ?
                         "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
                         "gtceu.multiblock.large_combustion_engine.oxygen_boosted"))
                 .asWidget()
-                .setEnabledIf(w -> isBoostAllowed.getBoolValue() && isOxygenBoosted.getBoolValue());
+                .setEnabledIf(w -> isFormed.getBoolValue() && isBoostAllowed.getBoolValue() &&
+                        isOxygenBoosted.getBoolValue());
 
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
