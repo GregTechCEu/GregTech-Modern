@@ -41,6 +41,19 @@ public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
         return value().getFlags();
     }
 
+    public long getProtons() {
+        return value().getProtons();
+    }
+
+    public long getNeutrons() {
+        return value().getNeutrons();
+    }
+
+
+    public long getMass() {
+        return value().getMass();
+    }
+
     /**
      * Retrieves a fluid from the material.
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
