@@ -608,22 +608,22 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     }
 
     public MaterialBuilderWrapper polarizesInto(Material m) {
-        internal.polarizesInto(m);
+        internal.polarizesInto(m.getRegistryHolder());
         return this;
     }
 
     public MaterialBuilderWrapper arcSmeltInto(Material m) {
-        internal.arcSmeltInto(m);
+        internal.arcSmeltInto(m.getRegistryHolder());
         return this;
     }
 
     public MaterialBuilderWrapper macerateInto(Material m) {
-        internal.macerateInto(m);
+        internal.macerateInto(m.getRegistryHolder());
         return this;
     }
 
     public MaterialBuilderWrapper ingotSmeltInto(Material m) {
-        internal.ingotSmeltInto(m);
+        internal.ingotSmeltInto(m.getRegistryHolder());
         return this;
     }
 
