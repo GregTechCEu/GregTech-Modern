@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -32,6 +33,8 @@ import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
@@ -42,11 +45,17 @@ public final class ToolRecipeHandler {
             new ItemEntry[] { GTItems.POWER_UNIT_LV, GTItems.POWER_UNIT_MV, GTItems.POWER_UNIT_HV,
                     GTItems.POWER_UNIT_EV, GTItems.POWER_UNIT_IV });
 
-    public static final Material[] softMaterials = new Material[] {
-            GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
-            GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole,
-            GTMaterials.SiliconeRubber, GTMaterials.StyreneButadieneRubber
-    };
+    public static final HashSet<Holder<Material>> softMaterials = new HashSet<>();
+
+    static {
+        softMaterials.add(GTMaterials.Wood);
+        softMaterials.add(GTMaterials.Rubber);
+        softMaterials.add(GTMaterials.Polyethylene);
+        softMaterials.add(GTMaterials.Polytetrafluoroethylene);
+        softMaterials.add(GTMaterials.Polybenzimidazole);
+        softMaterials.add(GTMaterials.SiliconeRubber);
+        softMaterials.add(GTMaterials.StyreneButadieneRubber);
+    }
 
     private ToolRecipeHandler() {}
 
@@ -184,7 +193,7 @@ public final class ToolRecipeHandler {
                             'T', new MaterialEntry(TagPrefix.screw, material),
                             'R', new MaterialEntry(TagPrefix.ring, material),
                             'S', stick);
-                } else if (!ArrayUtils.contains(softMaterials, material)) {
+                } else if (!softMaterials.contains(GTRegistries.MATERIALS.wrapAsHolder(material))) {
                     GTCEu.LOGGER
                             .info("Did not find bolt for {}, skipping wirecutter recipe", material.getName());
                 }
@@ -201,9 +210,8 @@ public final class ToolRecipeHandler {
             addDyeableToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
                     'S', rod);
-        } else if (!ArrayUtils.contains(softMaterials, material)) {
-            GTCEu.LOGGER.warn("Did not find rod for " + material.getName() +
-                    ", skipping wirecutter, butchery knife, screwdriver, crowbar recipes");
+        } else if (!softMaterials.contains(GTRegistries.MATERIALS.wrapAsHolder(material))) {
+            GTCEu.LOGGER.warn("Did not find rod for {}, skipping wirecutter, butchery knife, screwdriver, crowbar recipes", material.getName());
         }
 
         GTToolType.getTypes().forEach((s, gtToolType) -> addNetheriteToolRecipe(provider, gtToolType));
@@ -301,13 +309,11 @@ public final class ToolRecipeHandler {
                             .EUt(8L * voltageMultiplier)
                             .save(provider);
                 } else {
-                    GTCEu.LOGGER.warn("Did not find gear for " + material.getName() +
-                            ", skipping gear -> buzzsaw blade recipe");
+                    GTCEu.LOGGER.warn("Did not find gear for {}, skipping gear -> buzzsaw blade recipe", material.getName());
                 }
             }
         } else {
-            GTCEu.LOGGER.warn("Did not find plate for " + material.getName() +
-                    ", skipping electric drill, chainsaw, wrench, wirecutter, buzzsaw recipe");
+            GTCEu.LOGGER.warn("Did not find plate for {}, skipping electric drill, chainsaw, wrench, wirecutter, buzzsaw recipe", material.getName());
         }
 
         // screwdriver
@@ -322,8 +328,7 @@ public final class ToolRecipeHandler {
                         "fR", " h",
                         'R', new MaterialEntry(TagPrefix.rodLong, material));
             } else {
-                GTCEu.LOGGER.warn("Did not find long rod for " + material.getName() +
-                        ", skipping electric screwdriver recipe");
+                GTCEu.LOGGER.warn("Did not find long rod for {}, skipping electric screwdriver recipe", material.getName());
             }
         }
     }
@@ -363,7 +368,7 @@ public final class ToolRecipeHandler {
     }
 
     public static void addNetheriteToolRecipe(@NotNull RecipeOutput provider, @NotNull GTToolType tool) {
-        VanillaRecipeHelper.addToolUpgradingRecipe(provider, tool, GTMaterials.Netherite, GTMaterials.Diamond,
+        VanillaRecipeHelper.addToolUpgradingRecipe(provider, tool, GTMaterials.Netherite.value(), GTMaterials.Diamond.value(),
                 Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ChemicalHelper.get(ingot, GTMaterials.Netherite).getItem());
     }
 
