@@ -92,13 +92,13 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
         var materialStack = ChemicalHelper.getMaterialStack(fuelStack);
         if (materialStack.isEmpty()) {
             return ItemStack.EMPTY;
-        } else if (materialStack.material() == GTMaterials.Charcoal) {
+        } else if (materialStack.material() == GTMaterials.Charcoal.value()) {
             remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
             remainderChance = 0.3f;
-        } else if (materialStack.material() == GTMaterials.Coal) {
+        } else if (materialStack.material() == GTMaterials.Coal.value()) {
             remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.DarkAsh);
             remainderChance = 0.35f;
-        } else if (materialStack.material() == GTMaterials.Coke) {
+        } else if (materialStack.material() == GTMaterials.Coke.value()) {
             remainder = ChemicalHelper.get(TagPrefix.dust, GTMaterials.Ash);
             remainderChance = 0.5f;
         } else {
