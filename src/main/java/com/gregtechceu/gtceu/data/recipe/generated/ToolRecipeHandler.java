@@ -354,6 +354,19 @@ public final class ToolRecipeHandler {
         }
     }
 
+    public static void addToolRecipe(@NotNull RecipeOutput provider, @NotNull Holder<Material> material,
+                                     @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
+        ItemStack toolStack = ToolHelper.get(tool, material);
+        if (toolStack.isEmpty()) return;
+        if (mirrored) { // todo mirrored
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material.value().getName()),
+                    toolStack, recipe);
+        } else {
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material.value().getName()),
+                    toolStack, recipe);
+        }
+    }
+
     public static void addToolRecipe(@NotNull RecipeOutput provider, @NotNull Material material,
                                      @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);

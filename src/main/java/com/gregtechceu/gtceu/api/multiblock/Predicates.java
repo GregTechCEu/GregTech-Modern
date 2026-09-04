@@ -415,6 +415,11 @@ public class Predicates {
                 .or(framedPipes(frameMaterials, frameBlocks));
     }
 
+    @SafeVarargs
+    public static MultiPredicate frames(Holder<Material>... frameMaterials) {
+        return frames(Arrays.stream(frameMaterials).map(Holder::value).toArray(Material[]::new));
+    }
+
     public static MultiPredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
         return builder("FramedPipes")
                 .predicate(ctx -> {

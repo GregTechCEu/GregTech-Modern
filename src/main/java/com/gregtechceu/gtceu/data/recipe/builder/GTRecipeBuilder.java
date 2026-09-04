@@ -926,6 +926,22 @@ public class GTRecipeBuilder {
         return chancedOutput(new ItemStack(item, count), fraction);
     }
 
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Material mat, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat), chance);
+    }
+
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Material mat, int count, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
+    }
+
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Material material, int count, String fraction) {
+        return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction);
+    }
+
+    public GTRecipeBuilder chancedOutput(Holder<TagPrefix> prefix, Material material, String fraction) {
+        return chancedOutput(prefix, material, 1, fraction);
+    }
+
     public GTRecipeBuilder chancedOutput(Holder<TagPrefix> tag, Holder<Material> mat, int chance) {
         return chancedOutput(ChemicalHelper.get(tag, mat), chance);
     }
