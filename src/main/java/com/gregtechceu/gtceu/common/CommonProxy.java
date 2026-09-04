@@ -228,7 +228,8 @@ public class CommonProxy {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             GTRegistries.MATERIALS.close();
 
-            // Because material properties can't be verified while holders may be unresolved, verify all materials after the registry is closed and all elements have been registered.
+            // Because material properties can't be verified while holders may be unresolved, verify all materials after
+            // the registry is closed and all elements have been registered.
             GTRegistries.MATERIALS.forEach(Material::verifyMaterial);
 
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
@@ -238,6 +239,8 @@ public class CommonProxy {
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
+
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterial);
 
             GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
                 // Force the material lang generator to be at index 0, so that addons' lang generators can override it.

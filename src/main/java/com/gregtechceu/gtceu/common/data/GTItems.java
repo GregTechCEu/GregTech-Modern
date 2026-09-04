@@ -405,7 +405,8 @@ public class GTItems {
                             new ItemFluidContainer()))
             .register();
 
-    public static ItemEntry<ComponentItem> createFluidCell(MaterialRegistryEntry mat, int capacity, int matSize, int stackSize) {
+    public static ItemEntry<ComponentItem> createFluidCell(MaterialRegistryEntry mat, int capacity, int matSize,
+                                                           int stackSize) {
         var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
         Preconditions.checkArgument(prop != null,
                 "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",

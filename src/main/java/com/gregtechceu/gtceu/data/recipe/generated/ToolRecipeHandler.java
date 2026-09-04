@@ -211,7 +211,9 @@ public final class ToolRecipeHandler {
                     "hDS", "DSD", "SDf",
                     'S', rod);
         } else if (!softMaterials.contains(GTRegistries.MATERIALS.wrapAsHolder(material))) {
-            GTCEu.LOGGER.warn("Did not find rod for {}, skipping wirecutter, butchery knife, screwdriver, crowbar recipes", material.getName());
+            GTCEu.LOGGER.warn(
+                    "Did not find rod for {}, skipping wirecutter, butchery knife, screwdriver, crowbar recipes",
+                    material.getName());
         }
 
         GTToolType.getTypes().forEach((s, gtToolType) -> addNetheriteToolRecipe(provider, gtToolType));
@@ -309,11 +311,14 @@ public final class ToolRecipeHandler {
                             .EUt(8L * voltageMultiplier)
                             .save(provider);
                 } else {
-                    GTCEu.LOGGER.warn("Did not find gear for {}, skipping gear -> buzzsaw blade recipe", material.getName());
+                    GTCEu.LOGGER.warn("Did not find gear for {}, skipping gear -> buzzsaw blade recipe",
+                            material.getName());
                 }
             }
         } else {
-            GTCEu.LOGGER.warn("Did not find plate for {}, skipping electric drill, chainsaw, wrench, wirecutter, buzzsaw recipe", material.getName());
+            GTCEu.LOGGER.warn(
+                    "Did not find plate for {}, skipping electric drill, chainsaw, wrench, wirecutter, buzzsaw recipe",
+                    material.getName());
         }
 
         // screwdriver
@@ -328,7 +333,8 @@ public final class ToolRecipeHandler {
                         "fR", " h",
                         'R', new MaterialEntry(TagPrefix.rodLong, material));
             } else {
-                GTCEu.LOGGER.warn("Did not find long rod for {}, skipping electric screwdriver recipe", material.getName());
+                GTCEu.LOGGER.warn("Did not find long rod for {}, skipping electric screwdriver recipe",
+                        material.getName());
             }
         }
     }
@@ -381,7 +387,8 @@ public final class ToolRecipeHandler {
     }
 
     public static void addNetheriteToolRecipe(@NotNull RecipeOutput provider, @NotNull GTToolType tool) {
-        VanillaRecipeHelper.addToolUpgradingRecipe(provider, tool, GTMaterials.Netherite.value(), GTMaterials.Diamond.value(),
+        VanillaRecipeHelper.addToolUpgradingRecipe(provider, tool, GTMaterials.Netherite.value(),
+                GTMaterials.Diamond.value(),
                 Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ChemicalHelper.get(ingot, GTMaterials.Netherite).getItem());
     }
 
