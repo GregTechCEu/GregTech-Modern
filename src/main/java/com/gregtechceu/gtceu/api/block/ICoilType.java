@@ -58,7 +58,8 @@ public interface ICoilType {
     /**
      * @return the {@link Material} of the Heating Coil if it has one, otherwise {@code null}
      */
-    @Nullable Holder<Material> getMaterial();
+    @Nullable
+    Holder<Material> getMaterial();
 
     /**
      * @return the {@link ResourceLocation} defining the base texture of the coil
