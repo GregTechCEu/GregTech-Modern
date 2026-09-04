@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -155,7 +156,7 @@ public class RecipeAddition {
                     'B', new ItemStack(Items.BRICK),
                     'W', new FluidContainerIngredient(Water.getFluidTag(), 1000));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete", new ItemStack(Concrete.getBucket()),
+            VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete", new ItemStack(Concrete.value().getBucket()),
                     "CBS", "CWQ", " L ",
                     'C', new MaterialEntry(dust, Calcite),
                     'S', new MaterialEntry(dust, Stone),
@@ -1413,66 +1414,66 @@ public class RecipeAddition {
     }
 
     private static void createShovelRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                           Material material) {
+                                           Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "hPf", " S ", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createPickaxeRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                            Material material) {
+                                            Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PII", "hSf", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createAxeRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                        Material material) {
+                                        Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "PS ", "hS ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createSwordRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                          Material material) {
+                                          Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, " P ", "hPf", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createHoeRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                        Material material) {
+                                        Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "hS ", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createHelmetRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                           Material material) {
+                                           Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PPP", "PhP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createChestplateRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                               Material material) {
+                                               Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PhP", "PPP", "PPP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createLeggingsRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                             Material material) {
+                                             Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PPP", "PhP", "P P",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createBootsRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                          Material material) {
+                                          Holder<Material> material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "P P", "PhP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }

@@ -192,7 +192,7 @@ public final class WoodTypeEntry {
         this.buttonRecipeName = buttonRecipeName;
         this.pressurePlate = pressurePlate;
         this.pressurePlateRecipeName = pressurePlateRecipeName;
-        this.material = material != null ? material : GTMaterials.Wood;
+        this.material = material != null ? material : GTMaterials.Wood.value();
 
         this.addLogTag = addLogTag;
         this.addPlanksTag = addPlanksTag;
@@ -220,7 +220,7 @@ public final class WoodTypeEntry {
 
     @NotNull
     public TagKey<Item> getStick() {
-        if (this.material == GTMaterials.Wood) {
+        if (this.material == GTMaterials.Wood.value()) {
             return Tags.Items.RODS_WOODEN;
         } else {
             // noinspection DataFlowIssue is valid.

@@ -274,6 +274,10 @@ public class ChemicalHelper {
         return getItem(new MaterialEntry(tagPrefix, material));
     }
 
+    public static Item getItem(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        return getItem(new MaterialEntry(tagPrefix, material));
+    }
+
     public static ItemStack get(MaterialEntry materialEntry, int size) {
         var list = getItems(materialEntry);
         if (list.isEmpty()) return ItemStack.EMPTY;

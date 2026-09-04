@@ -484,10 +484,10 @@ public final class OreRecipeHandler {
         Material byproductMaterial = property.getOreByProduct(1, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
-        if (property.getSeparatedInto() != null && !property.getSeparatedInto().isEmpty()) {
-            List<Material> separatedMaterial = property.getSeparatedInto();
-            TagPrefixEntry prefix = (separatedMaterial.getLast().getBlastTemperature() == 0 &&
-                    separatedMaterial.getLast().hasProperty(PropertyKey.INGOT)) ? nugget : dust;
+        if (property.getSeparatedInto() != null && property.getSeparatedInto().size() != 0) {
+            List<Holder<Material>> separatedMaterial = property.getSeparatedInto().stream().toList();
+            TagPrefixEntry prefix = (separatedMaterial.getLast().value().getBlastTemperature() == 0 &&
+                    separatedMaterial.getLast().value().hasProperty(PropertyKey.INGOT)) ? nugget : dust;
 
             ItemStack separatedStack2 = ChemicalHelper.get(prefix, separatedMaterial.getLast(),
                     prefix == nugget ? 2 : 1);
