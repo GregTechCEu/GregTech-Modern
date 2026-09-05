@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,10 +27,10 @@ public class GTRecipeComponents {
 
     public static final RecipeComponent<EnergyStack.WithIO> ENERGY_STACK = EnergyStackComponent.ENERGY_STACK.instance();
 
-    public static final ContentJS<SizedIngredient> ITEM = ContentJS.create(SizedIngredientComponent.SIZED_INGREDIENT, GTRecipeCapabilities.ITEM);
-    public static final ContentJS<SizedFluidIngredient> FLUID = ContentJS.create(SizedFluidIngredientComponent.NESTED, GTRecipeCapabilities.FLUID);
-    public static final ContentJS<EnergyStack.WithIO> EU = ContentJS.create(EnergyStackComponent.ENERGY_STACK, GTRecipeCapabilities.EU);
-    public static final ContentJS<Integer> CWU = ContentJS.create(NumberComponent.NON_NEGATIVE_INT, GTRecipeCapabilities.CWU);
+    public static final ContentJS<SizedIngredient> ITEM = ContentJS.create(SizedIngredientComponent.SIZED_INGREDIENT, ItemRecipeCapability.CAP);
+    public static final ContentJS<SizedFluidIngredient> FLUID = ContentJS.create(SizedFluidIngredientComponent.NESTED, FluidRecipeCapability.CAP);
+    public static final ContentJS<EnergyStack.WithIO> EU = ContentJS.create(EnergyStackComponent.ENERGY_STACK, EURecipeCapability.CAP);
+    public static final ContentJS<Integer> CWU = ContentJS.create(NumberComponent.NON_NEGATIVE_INT, CWURecipeCapability.CAP);
 
     public static final RecipeComponent<Map<RecipeCapability<?>, ChanceLogic>> CHANCE_LOGIC_MAP = new JavaMapRecipeComponent<>(RECIPE_CAPABILITY, CHANCE_LOGIC);
     // spotless:on
@@ -42,10 +41,10 @@ public class GTRecipeComponents {
     public static final Map<RecipeCapability<?>, ContentJS<?>> VALID_CAPS = new IdentityHashMap<>();
 
     static {
-        VALID_CAPS.put(GTRecipeCapabilities.ITEM, ITEM);
-        VALID_CAPS.put(GTRecipeCapabilities.FLUID, FLUID);
-        VALID_CAPS.put(GTRecipeCapabilities.EU, EU);
-        VALID_CAPS.put(GTRecipeCapabilities.CWU, CWU);
+        VALID_CAPS.put(ItemRecipeCapability.CAP, ITEM);
+        VALID_CAPS.put(FluidRecipeCapability.CAP, FLUID);
+        VALID_CAPS.put(EURecipeCapability.CAP, EU);
+        VALID_CAPS.put(CWURecipeCapability.CAP, CWU);
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
         ModLoader.postEvent(event);

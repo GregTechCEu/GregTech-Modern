@@ -10,8 +10,7 @@ import dev.latvian.mods.kubejs.generator.KubeDataGenerator;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
-
-import java.util.Arrays;
+import org.jspecify.annotations.Nullable;
 
 public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
                                           implements IMachineBuilderKJS {
@@ -62,14 +61,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     @Override
-    public MultiblockMachineDefinition createObject() {
-        for (var def : tieredBuilder.createTransformedObject()) {
-            if (def != null) {
-                return def;
-            }
-        }
-        // should never happen.
-        throw new IllegalStateException("Empty tiered multiblock builder " + Arrays.toString(tieredBuilder.get()) +
-                " With id " + tieredBuilder.id);
+    public @Nullable MultiblockMachineDefinition createObject() {
+        return null;
     }
 }

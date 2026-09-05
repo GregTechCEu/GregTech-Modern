@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 
 import net.minecraft.resources.ResourceLocation;
@@ -538,25 +539,26 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-        internal.hazard(trigger, condition);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition));
         return this;
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                                          float progressionMultiplier) {
-        internal.hazard(trigger, condition, progressionMultiplier);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier);
         return this;
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                                          float progressionMultiplier, boolean applyToDerivatives) {
-        internal.hazard(trigger, condition, progressionMultiplier, applyToDerivatives);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier,
+                applyToDerivatives);
         return this;
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                                          boolean applyToDerivatives) {
-        internal.hazard(trigger, condition, applyToDerivatives);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), applyToDerivatives);
         return this;
     }
 

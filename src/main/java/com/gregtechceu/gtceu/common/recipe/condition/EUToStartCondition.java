@@ -37,7 +37,7 @@ public class EUToStartCondition extends RecipeCondition<EUToStartCondition> {
 
     @Override
     public RecipeConditionType<EUToStartCondition> getType() {
-        return GTRecipeConditions.EU_TO_START;
+        return GTRecipeConditions.EU_TO_START.value();
     }
 
     @Override

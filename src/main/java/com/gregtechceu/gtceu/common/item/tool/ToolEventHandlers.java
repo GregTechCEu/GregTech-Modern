@@ -122,7 +122,7 @@ public class ToolEventHandlers {
 
         ToolBehaviors behaviorTag = ToolHelper.getBehaviorsComponent(tool);
         Block block = state.getBlock();
-        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
+        if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE.value())) {
             Item iceBlock = block.asItem();
             if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
                 drops.add(new ItemStack(iceBlock));

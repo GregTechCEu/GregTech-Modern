@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
@@ -43,14 +41,17 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngre
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.item.*;
 import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
+import com.gregtechceu.gtceu.common.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
@@ -119,7 +120,6 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -143,14 +143,16 @@ public class CommonProxy {
 
         GTRegistries.init(modBus);
         REGISTRATE.registerEventListeners(modBus);
+
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        initMaterials();
+        GTMaterials.init();
         GTMedicalConditions.init();
         TagPrefix.init();
+        GTAttachmentTypes.init(modBus);
 
-        GTSoundEntries.init(modBus);
+        GTSoundEntries.init();
         GTDamageTypes.init();
         GTPlaceholders.init();
 
@@ -164,7 +166,7 @@ public class CommonProxy {
         GTBlocks.init();
         GTFluids.init();
 
-        GTDimensionMarkers.init();
+        GTDimensionMarkers.init(modBus);
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         ChanceLogic.init();
@@ -175,8 +177,8 @@ public class CommonProxy {
         GTFoods.init();
         GTToolTiers.init();
         GTToolBehaviors.init();
-        GTDataComponents.DATA_COMPONENTS.register(modBus);
-        GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
+        GTDataComponents.init(modBus);
+        GTArmorMaterials.init(modBus);
         GTItems.init();
 
         GTMachineUtils.init();
@@ -184,13 +186,11 @@ public class CommonProxy {
         GTMachines.init();
 
         GTEntityTypes.init();
-        GTIngredientTypes.ITEM_INGREDIENT_TYPES.register(modBus);
-        GTIngredientTypes.FLUID_INGREDIENT_TYPES.register(modBus);
-        GTRecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
+        GTIngredientTypes.init(modBus);
+        GTRecipeSerializers.init(modBus);
 
-        GTCommandArguments.COMMAND_ARGUMENT_TYPES.register(modBus);
-        GTMobEffects.MOB_EFFECTS.register(modBus);
-        GTParticleTypes.PARTICLE_TYPES.register(modBus);
+        GTMobEffects.init(modBus);
+        GTParticleTypes.init(modBus);
         WorldGenLayers.init();
 
         GregTechDatagen.initPost();
@@ -208,7 +208,6 @@ public class CommonProxy {
         MachineOwner.init();
 
         GTCreativeModeTabs.init();
-        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
@@ -220,14 +219,6 @@ public class CommonProxy {
 
         GTGuiTheme.registerThemes();
         SpoilableBehavior.init();
-
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
-    }
-
-    @ApiStatus.Internal
-    public static void initMaterials() {
-        GTCEu.LOGGER.info("Registering GTCEu Materials");
-        GTMaterials.init();
     }
 
     // Fire post material events after all other material registry events.
@@ -424,7 +415,7 @@ public class CommonProxy {
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(FluidHandler.ITEM, BottleItemFluidHandler::new, Items.GLASS_BOTTLE);
 
-        Stream<MachineDefinition> quantumTanks = Stream.of(GTMachines.SUPER_TANK, GTMachines.QUANTUM_TANK)
+        Stream<MachineEntry<MachineDefinition>> quantumTanks = Stream.of(GTMachines.SUPER_TANK, GTMachines.QUANTUM_TANK)
                 .flatMap(Arrays::stream);
         quantumTanks = Stream.concat(quantumTanks, Stream.of(GTMachines.CREATIVE_FLUID));
         event.registerItem(FluidHandler.ITEM, (stack, ctx) -> {
@@ -436,7 +427,7 @@ public class CommonProxy {
                 return null;
             }
             return new QuantumFluidHandlerItemStack(stack, capacity);
-        }, quantumTanks.filter(Objects::nonNull).map(MachineDefinition::getItem).toArray(Item[]::new));
+        }, quantumTanks.filter(Objects::nonNull).map(MachineEntry::getItem).toArray(Item[]::new));
 
         for (Block block : BuiltInRegistries.BLOCK) {
             if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&

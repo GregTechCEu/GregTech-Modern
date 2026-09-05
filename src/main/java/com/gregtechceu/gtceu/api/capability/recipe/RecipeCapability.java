@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -61,15 +60,6 @@ public abstract class RecipeCapability<T> {
         this.doRenderSlot = doRenderSlot;
         this.sortIndex = sortIndex;
         this.serializer = serializer;
-    }
-
-    /**
-     * @deprecated Use {@link #RecipeCapability(ResourceLocation, int, boolean, int, IContentSerializer)}
-     */
-    @Deprecated(forRemoval = true, since = "8.0.0")
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
-                               IContentSerializer<T> serializer) {
-        this(GTCEu.id(name), color, doRenderSlot, sortIndex, serializer);
     }
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {

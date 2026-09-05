@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 
 import dev.latvian.mods.kubejs.event.KubeEvent;
 
