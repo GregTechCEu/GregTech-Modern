@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -27,6 +28,10 @@ public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
 
     public String getName() {
         return getKey().location().getPath();
+    }
+
+    public ResourceLocation getId() {
+        return getKey().location();
     }
 
     public Material.MaterialInfo getMaterialInfo() {

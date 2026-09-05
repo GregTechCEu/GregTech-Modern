@@ -55,7 +55,6 @@ import java.util.function.Predicate;
 public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, GrowingPlantRender> {
 
     // spotless:off
-    @SuppressWarnings("deprecation")
     public static final MapCodec<GrowingPlantRender> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ExtraCodecs.VECTOR3F.listOf().fieldOf("offsets").forGetter(GrowingPlantRender::getOffsets),
             BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("growing_block").forGetter(GrowingPlantRender::getGrowingBlock),
