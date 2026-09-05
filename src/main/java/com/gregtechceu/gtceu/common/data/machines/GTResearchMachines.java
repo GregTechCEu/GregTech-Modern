@@ -310,12 +310,13 @@ public class GTResearchMachines {
     public static final MachineEntry<MachineDefinition> HPCA_ACTIVE_COOLER_COMPONENT = registerHPCAPart(
             "hpca_active_cooler_component", "HPCA Active Cooling Component",
             GTMachineInstanceFactories.HPCA_COOLER_ADVANCED, "active_cooler", true)
-            .tooltips(Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]),
-                    Component.translatable("gtceu.machine.hpca.component_type.cooler_active"),
-                    Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant",
-                            8, GTMaterials.PCBCoolant.value().getLocalizedName()),
-                    Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 2),
-                    Component.translatable("gtceu.part_sharing.disabled"))
+            .tooltipBuilder((stack, components) -> {
+                components.add(Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]));
+                components.add(Component.translatable("gtceu.machine.hpca.component_type.cooler_active"));
+                components.add(Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant",8, GTMaterials.PCBCoolant.value().getLocalizedName()));
+                components.add(Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 2));
+                components.add(Component.translatable("gtceu.part_sharing.disabled"));
+            })
             .register();
     public static final MachineEntry<MachineDefinition> HPCA_BRIDGE_COMPONENT = registerHPCAPart(
             "hpca_bridge_component", "HPCA Bridge Component",

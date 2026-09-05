@@ -381,30 +381,33 @@ public class GTMachineUtils {
                 HIGH_TIERS);
     }
 
-    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material,
+    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material, boolean wooden,
                                                                 int capacity,
                                                                 int rowLength, String lang) {
-        final boolean wooden = material.hasProperty(PropertyKey.WOOD);
-
         return registrate
-                .machine(material.value().getName() + "_crate",
+                .machine(material.getName() + "_crate",
                         info -> new CrateMachine(info, material.value(), capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
-                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .paintingColor(() -> wooden ? 0xFFFFFF : material.getMaterialRGB())
                 .item().color(() -> () -> (s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .register();
     }
 
-    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material,
+    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                                int capacity,
+                                                                int rowLength, String lang) {
+        return registerCrate(registrate, material, false, capacity, rowLength, lang);
+    }
+
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material, boolean wooden,
                                                                int capacity,
                                                                String lang) {
-        boolean wooden = material.hasProperty(PropertyKey.WOOD);
-        var definition = registrate
-                .machine(material.value().getName() + "_drum",
+        return registrate
+                .machine(material.getName() + "_drum",
                         info -> new DrumMachine(info, material.value(), capacity))
                 .item((holder, prop) -> DrumMachineItem.create(holder, prop, material.value())).build()
                 .langValue(lang)
@@ -420,11 +423,16 @@ public class GTMachineUtils {
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
-                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .paintingColor(() -> material.hasProperty(PropertyKey.WOOD) ? 0xFFFFFF : material.getMaterialRGB())
                 .item().color(() -> () -> (s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .onRegister(d -> DRUM_CAPACITY.put(d, capacity))
                 .register();
-        return definition;
+    }
+
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                               int capacity,
+                                                               String lang) {
+        return registerDrum(registrate, material, false, capacity, lang);
     }
 
     @SuppressWarnings("unchecked")

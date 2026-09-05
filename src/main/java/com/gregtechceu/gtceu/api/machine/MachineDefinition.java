@@ -67,7 +67,7 @@ public class MachineDefinition {
     @Getter
     private final int tier;
     @Getter
-    private final int defaultPaintingColor;
+    private final IntSupplier defaultPaintingColor;
     @Getter
     private final RecipeModifier recipeModifier;
     @Getter
@@ -284,7 +284,7 @@ public class MachineDefinition {
         private GTRecipeType[] recipeTypes = new GTRecipeType[0];
         private int tier = -1;
         private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
-        private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
+        private IntSupplier paintingColor = () -> ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
         private PartAbility[] abilities = new PartAbility[0];
         private final List<Supplier<? extends @Nullable Component>> tooltips = new ArrayList<>();
         private @Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder;
