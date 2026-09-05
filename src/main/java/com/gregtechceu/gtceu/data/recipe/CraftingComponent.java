@@ -64,7 +64,8 @@ public class CraftingComponent {
         return this;
     }
 
-    public @NotNull CraftingComponent add(int tier, @NotNull Holder<TagPrefix> prefix, @NotNull Holder<Material> material) {
+    public @NotNull CraftingComponent add(int tier, @NotNull Holder<TagPrefix> prefix,
+                                          @NotNull Holder<Material> material) {
         return add(tier, new MaterialEntry(prefix, material));
     }
 
