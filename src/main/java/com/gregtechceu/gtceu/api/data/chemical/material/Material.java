@@ -35,10 +35,13 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @SuppressWarnings("unused")
 public final class Material {
@@ -134,6 +137,11 @@ public final class Material {
 
     public String getName() {
         return materialInfo.resourceLocation.getPath();
+    }
+
+    @ApiStatus.Internal
+    public String getDefaultTranslation() {
+        return materialInfo.overriddenName != null ? materialInfo.overriddenName : toEnglishName(getName());
     }
 
     public String getModid() {
@@ -577,6 +585,10 @@ public final class Material {
          * Required.
          */
         private final ResourceLocation resourceLocation;
+
+        @Setter
+        @Getter
+        private String overriddenName;
 
         /**
          * The colors of this Material.
