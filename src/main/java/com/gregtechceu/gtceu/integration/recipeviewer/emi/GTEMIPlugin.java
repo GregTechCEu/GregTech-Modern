@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -16,11 +17,13 @@ import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTBedrockFluid
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTBedrockOreEmiCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTOreVeinEmiCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.Ae2PatternTerminalHandler;
+import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTModuleEMIRecipe;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.menu.me.items.PatternEncodingTermMenu;
@@ -29,6 +32,7 @@ import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.Comparison;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 
 @EmiEntrypoint
@@ -38,6 +42,7 @@ public class GTEMIPlugin implements EmiPlugin {
     public void register(EmiRegistry registry) {
         // Categories
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
+        registry.addCategory(GTModuleEMIRecipe.CATEGORY);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
         registry.addCategory(GTOreVeinEmiCategory.CATEGORY);
@@ -67,6 +72,7 @@ public class GTEMIPlugin implements EmiPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreEmiCategory.registerDisplays(registry);
         ProgrammedCircuitEmiCategory.registerDisplays(registry);
+        GTModuleEMIRecipe.addRecipes(registry);
 
         // workstations
         GTRecipeEMICategory.registerWorkStations(registry);
@@ -78,6 +84,8 @@ public class GTEMIPlugin implements EmiPlugin {
             GTBedrockOreEmiCategory.registerWorkStations(registry);
         registry.addWorkstation(GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
                 EmiStack.of(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+        registry.addWorkstation(GTModuleEMIRecipe.CATEGORY,
+                EmiIngredient.of(Ingredient.of(GTBlocks.EQUIPMENT_FOUNDRY)));
 
         // Comparators
         registry.setDefaultComparison(GTItems.TURBINE_ROTOR.asItem(), Comparison.compareNbt());

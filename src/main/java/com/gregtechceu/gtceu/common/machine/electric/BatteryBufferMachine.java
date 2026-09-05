@@ -401,6 +401,29 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         }
 
         @Override
+        public long removeEnergy(long energy) {
+            var batteries = getMachine().getNonEmptyBatteries();
+            if (batteries.isEmpty()) return 0;
+            long distributed = energy / batteries.size();
+            long removed = 0;
+
+            boolean changed = false;
+            for (IElectricItem electricItem : batteries) {
+                var charged = electricItem.discharge(distributed, tier, false, true, false);
+                if (charged > 0) {
+                    changed = true;
+                }
+                removed += charged;
+                energyOutputPerSec += charged;
+            }
+            if (changed) {
+                getMachine().markAsChanged();
+                checkOutputSubscription();
+            }
+            return removed;
+        }
+
+        @Override
         public long getEnergyCapacity() {
             long energyCapacity = 0L;
             for (Object battery : getMachine().getAllBatteries()) {

@@ -388,6 +388,35 @@ public class LangHandler {
         provider.add("metaarmor.tooltip.freezing", "Prevents Freezing");
         provider.add("metaarmor.tooltip.breath", "Replenishes Underwater Breath Bar");
         provider.add("metaarmor.tooltip.autoeat", "Replenishes Food Bar by Using Food from Inventory");
+        provider.add("metaarmor.tooltip.modifier.speed", "Running Speed Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.jump", "Jump Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.damage_block", "Energy Shield Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.attack_speed", "Attack Speed Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.attack_damage", "Attack Damage Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.battery", "Battery Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.block_reach", "Reach Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.jetpack", "Jetpack Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.movement_speed", "Movement Speed Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.sneak_speed", "Sneak Speed Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.step_height", "Step Height Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.swim_speed", "Swim Speed Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.sensor", "Explosion Reporting Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.wireless_charging", "Wireless Charging Module (%s)");
+        provider.add("metaarmor.tooltip.modifier.creative_flight", "Creative Flight Module");
+        provider.add("metaarmor.tooltip.modifier.battery.hud.info", "Storing %s/%s EU");
+        provider.add("metaarmor.tooltip.modifier.battery.hud.helmet", "Helmet battery: %s");
+        provider.add("metaarmor.tooltip.modifier.battery.hud.chestplate", "Chestplate battery: %s");
+        provider.add("metaarmor.tooltip.modifier.battery.hud.leggings", "Leggings battery: %s");
+        provider.add("metaarmor.tooltip.modifier.battery.hud.boots", "Boots battery: %s");
+        provider.add("metaarmor.tooltip.modifier.fluid_storage", "Additional fluid storage (%s)");
+        provider.add("metaarmor.tooltip.modifier.fluid_storage.tooltip", "Storing %s/%s mB of %s");
+        provider.add("metaarmor.tooltip.modifier", " - %s: %s");
+        provider.add("metaarmor.tooltip.modifier.empty", "Empty");
+        provider.add("metaarmor.tooltip.modifier_slot.universal", "Universal");
+        provider.add("metaarmor.tooltip.modifier_slot.tiered", "Tiered (%s)");
+        provider.add("metaarmor.tooltip.modifiers", "Module slots:");
+        provider.add("gtceu.modules", "Modules:");
+        provider.add("gtceu.machine.exploded", "%s exploded at (%d, %d, %d)");
         provider.add("metaarmor.hud.status.enabled", "§aON");
         provider.add("metaarmor.hud.status.disabled", "§cOFF");
         provider.add("metaarmor.hud.energy_lvl", "Energy Level: %s");
@@ -402,6 +431,55 @@ public class LangHandler {
         provider.add("metaarmor.energy_share.tooltip", "Supply mode: %s");
         provider.add("metaarmor.energy_share.tooltip.guide",
                 "To change mode shift-right click when holding item");
+        provider.add("gtceu.module.speed", "Increases sprint speed by %s%%");
+        provider.add("gtceu.module.jump", "Increases jump height by %s blocks");
+        provider.add("gtceu.module.damage_block",
+                "Blocks any amount of damage with EU (%s EU per HP, requires any battery module)");
+        provider.add("gtceu.module.attack_speed", "Increases attack speed by %s%%");
+        provider.add("gtceu.module.attack_damage", "Increases attack damage by %s%%");
+        provider.add("gtceu.module.battery",
+                "Allows the item to store energy or increases its capacity (capacity is equal to the battery's)");
+        provider.add("gtceu.module.block_reach", "Increases block reach by %s blocks");
+        provider.add("gtceu.module.liquid_fuel_jetpack",
+                "Makes the chestplate work like a liquid fueled jetpack (requires any fluid storage module)");
+        provider.add("gtceu.module.jetpack", "Makes the chestplate work like a jetpack (requires any battery module)");
+        provider.add("gtceu.module.advanced_jetpack",
+                "Makes the chestplate work like an advanced jetpack (requires any battery module)");
+        provider.add("gtceu.module.movement_speed", "Increases all movement speed by %s%%");
+        provider.add("gtceu.module.sneak_speed", "Increases sneaking speed by %s%%");
+        provider.add("gtceu.module.step_height", "Increases step height by %s blocks");
+        provider.add("gtceu.module.swim_speed", "Increases swim speed by %s%%");
+        provider.add("gtceu.module.sensor", "Reports machine explosions (for machines placed by the player)");
+        provider.add("gtceu.module.wireless_charging",
+                "Allows wireless charging in the range of %s blocks (1A %s max), bind to a charger by right-clicking on it");
+        provider.add("gtceu.module.wireless_charging.interdimensional",
+                "%s blocks, 1A %s max, interdimensional if an at least %s field generator is present");
+        provider.add("gtceu.module.creative_flight", "Allows creative flight (consumes %s EU/t while flying)");
+        provider.add("gtceu.module.fluid_storage",
+                "Allows the item to store liquids or increases its capacity (capacity is equal to the tank's)");
+        provider.add("gtceu.module.nightvision", "Provides night vision (consumes %s EU/t while active)");
+        provider.add("gtceu.module.ppe",
+                "Provides protection from environmental hazards if applied to all armor pieces");
+        provider.add("gtceu.module.damage_block.short", "%s EU per HP");
+        provider.add("gtceu.module.short_percentage", "... by %s%%");
+        provider.add("gtceu.module.wireless_charging.short", "%s blocks, 1A %s max");
+        provider.add("gtceu.module.block_reach.short", "... by %s blocks");
+        provider.add("gtceu.module.gui.enabled", "Enabled:");
+        provider.add("gtceu.module.gui.jump_boost", "Boost:");
+        provider.add("gtceu.module.gui.power", "Power:");
+        provider.add("gtceu.module.gui.charge", "Charge:");
+        provider.add("gtceu.module.gui.energy_limit", "Energy limit:");
+        provider.add("gtceu.module.gui.hp", "HP:");
+        provider.add("gtceu.module.gui.select_an_item", "Select an item");
+        provider.add("gtceu.module.gui.invalid_item", "This item does not accept modules");
+        provider.add("emi.category.gtceu.equipment_foundry", "Equipment Foundry");
+        provider.add("gtceu.equipment_foundry.gui.applied_to", "Applied to:");
+        provider.add("gtceu.equipment_foundry.gui.module_item", "Module item:");
+        provider.add("gtceu.equipment_foundry.gui.supports_tiers", "Module tiers: %s-%s");
+        provider.add("gtceu.equipment_foundry.gui.tier", "Viewing stats for tier: %s");
+        provider.add("gtceu.equipment_foundry.gui.tier_too_high", "No module item exists for this tier");
+        provider.add("gtceu.equipment_foundry.gui.tooltip.tier_switch",
+                "Left-click to increase tier by 1\nRight-click to decrease tier by 1");
         provider.add("metaitem.record.sus.tooltip", "§7Leonz - Among Us Drip");
         provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
         provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
@@ -766,6 +844,7 @@ public class LangHandler {
         provider.add("item.gtceu.small_iridium_metal_residue_dust", "Small Pile of Iridium Metal Residue");
         provider.add("item.gtceu.iridium_metal_residue_dust", "Iridium Metal Residue");
 
+        provider.add("behaviour.charger_linked", "Linked charger");
         provider.add("behaviour.hoe", "Can till dirt");
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");

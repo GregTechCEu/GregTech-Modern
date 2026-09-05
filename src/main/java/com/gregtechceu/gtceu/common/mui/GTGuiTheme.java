@@ -71,6 +71,11 @@ public class GTGuiTheme {
             .fluidSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
             .build();
 
+    public static final GTGuiTheme EQUIPMENT_FOUNDRY = templateBuilder("equipment_foundry")
+            .panel(GTGuiTextures.IDs.EQUIPMENT_FOUNDRY_BACKGROUND)
+            .color(0xff69645f)
+            .build();
+
     private final String themeId;
 
     private final List<Consumer<JsonBuilder>> elementBuilder;

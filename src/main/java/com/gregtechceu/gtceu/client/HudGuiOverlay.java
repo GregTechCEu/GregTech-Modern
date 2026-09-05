@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
+import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,7 +24,8 @@ public class HudGuiOverlay implements IGuiOverlay {
     public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, float partialTick, int screenWidth,
                        int screenHeight) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.isWindowActive() && mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
+        if (mc.isWindowActive() && mc.level != null && mc.player != null && !mc.options.renderDebug &&
+                !mc.options.hideGui) {
             renderHUDMetaArmor(mc.player.getItemBySlot(EquipmentSlot.HEAD), guiGraphics);
             renderHUDMetaArmor(mc.player.getItemBySlot(EquipmentSlot.CHEST), guiGraphics);
             renderHUDMetaArmor(mc.player.getItemBySlot(EquipmentSlot.LEGS), guiGraphics);
@@ -39,6 +41,7 @@ public class HudGuiOverlay implements IGuiOverlay {
                 IItemHUDProvider.tryDrawHud(provider, stack, guiGraphics);
             }
         }
+        IHUDProviderItemModule.tryDrawHUD(stack, guiGraphics);
     }
 
     private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
@@ -49,5 +52,6 @@ public class HudGuiOverlay implements IGuiOverlay {
                 }
             }
         }
+        IHUDProviderItemModule.tryDrawHUD(stack, guiGraphics);
     }
 }

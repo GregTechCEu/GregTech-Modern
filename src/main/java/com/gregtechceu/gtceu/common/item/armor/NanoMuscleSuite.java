@@ -149,11 +149,11 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         ItemStack currentChest = Minecraft.getInstance().player.getInventory()
                 .getArmor(ArmorItem.Type.CHESTPLATE.getSlot().getIndex());
         ItemStack advancedChest = GTItems.NANO_CHESTPLATE_ADVANCED.asStack();
-        String armorTexture = "nano_muscule_suite";
+        String armorTexture = "nano_muscle_suite";
         if (advancedChest.is(currentChest.getItem())) armorTexture = "advanced_nano_muscle_suite";
         return slot != EquipmentSlot.LEGS ?
-                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
-                GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
+                GTCEu.id(String.format("textures/models/armor/%s_1.png", armorTexture)) :
+                GTCEu.id(String.format("textures/models/armor/%s_2.png", armorTexture));
     }
 
     @Override

@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -59,9 +61,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -359,7 +363,7 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onEntityLivingFallEvent(LivingFallEvent event) {
+    public static void onLivingFall(LivingFallEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             if (player.fallDistance < 3.2f)
                 return;
@@ -384,6 +388,24 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
+    public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+        LivingEntity entity = event.getEntity();
+
+        for (ItemStack stack : entity.getArmorSlots()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.armorTick(entity));
+        }
+
+        if (entity instanceof Player player) {
+            for (ItemStack stack : entity.getAllSlots()) {
+                IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                if (modularItem == null) continue;
+                modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.inventoryTick(player));
+            }
+        }
+    }
+
     public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
         if (event.phase == TickEvent.Phase.START && !player.level().isClientSide) {
@@ -424,20 +446,59 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void stepAssistHandler(LivingEvent.LivingTickEvent event) {
         float MAGIC_STEP_HEIGHT = 1.0023f;
-        if (event.getEntity() == null || !(event.getEntity() instanceof Player player)) return;
-        CompoundTag tag = player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
-        if (!player.isCrouching() && player.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
+        LivingEntity entity = event.getEntity();
+        CompoundTag tag = entity.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag();
+        if (!entity.isCrouching() && entity.getItemBySlot(EquipmentSlot.FEET).is(CustomTags.STEP_BOOTS) &&
                 (!tag.contains("stepAssist") || tag.getBoolean("stepAssist"))) {
-            if (player.getStepHeight() < MAGIC_STEP_HEIGHT) {
-                player.setMaxUpStep(MAGIC_STEP_HEIGHT);
+            if (entity.getStepHeight() < MAGIC_STEP_HEIGHT) {
+                entity.setMaxUpStep(MAGIC_STEP_HEIGHT);
             }
-        } else if (player.getStepHeight() == MAGIC_STEP_HEIGHT) {
-            player.setMaxUpStep(0.6f);
+        } else if (entity.getStepHeight() == MAGIC_STEP_HEIGHT) {
+            entity.setMaxUpStep(0.6f);
         }
     }
 
     @SubscribeEvent
-    public static void onEntityDie(LivingDeathEvent event) {
+    public static void onLivingEquipmentChange(LivingEquipmentChangeEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final ItemStack old = event.getFrom();
+        final ItemStack current = event.getTo();
+
+        if (ItemStack.matches(old, current)) {
+            return;
+        }
+
+        if (!old.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
+            if (modularItem != null)
+                modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.unequip(entity));
+        }
+
+        if (!current.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
+            if (modularItem != null)
+                modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.equip(entity));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingHurtEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final DamageSource source = event.getSource();
+
+        for (final ItemStack stack : entity.getArmorSlots()) {
+            float amount = event.getAmount();
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            for (AppliedItemModule appliedItemModule : modularItem.getAppliedModules()) {
+                amount = appliedItemModule.changeDamage(entity, amount, source);
+            }
+            event.setAmount(amount);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
             MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             if (tracker == null) {

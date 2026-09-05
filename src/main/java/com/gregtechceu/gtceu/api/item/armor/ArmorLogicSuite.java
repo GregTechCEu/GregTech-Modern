@@ -87,7 +87,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
             @Override
             public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                         TooltipFlag isAdvanced) {
-                addInfo(stack, tooltipComponents);
+                // addInfo(stack, tooltipComponents);
             }
         });
     }

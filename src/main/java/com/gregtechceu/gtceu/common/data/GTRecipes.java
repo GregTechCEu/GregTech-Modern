@@ -93,7 +93,8 @@ public class GTRecipes {
         // GCYM
         GCYMRecipes.init(consumer);
 
-        // Config-dependent recipes
+        // non-GTRecipe things
+        EquipmentFoundryRecipes.init(consumer);
         RecipeAddition.init(consumer);
 
         AddonFinder.getAddons().forEach(addon -> addon.addRecipes(consumer));

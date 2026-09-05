@@ -11,6 +11,11 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTBlockEntities {
 
+    public static final BlockEntityEntry<EquipmentFoundryBlockEntity> EQUIPMENT_FOUNDRY = REGISTRATE
+            .blockEntity("equipment_foundry", EquipmentFoundryBlockEntity::new)
+            .validBlock(GTBlocks.EQUIPMENT_FOUNDRY)
+            .register();
+
     @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<CableBlockEntity> CABLE = REGISTRATE
             .blockEntity("cable", CableBlockEntity::new)

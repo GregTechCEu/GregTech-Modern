@@ -1194,6 +1194,15 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.get(HV), 'M',
                 GTItems.ELECTRIC_MOTOR_HV.asStack(), 'C', CustomTags.HV_CIRCUITS);
 
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "equipment_foundry", GTBlocks.EQUIPMENT_FOUNDRY.asStack(),
+                "APA",
+                "AHA",
+                "PCP",
+                'A', GTItems.ROBOT_ARM_LV,
+                'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Steel),
+                'H', GTMachines.HULL[LV].asStack(),
+                'C', GTMachines.STEEL_CRATE.asStack());
+
         if (ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
             registerMachineRecipe(provider, true, GTMachines.ENERGY_CONVERTER_1A, " WW", "RMC", " WW", 'C', CIRCUIT,
                     'M', HULL, 'W', CABLE, 'R', new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy));

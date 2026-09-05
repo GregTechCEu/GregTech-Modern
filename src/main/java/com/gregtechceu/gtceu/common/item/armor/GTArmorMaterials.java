@@ -30,7 +30,25 @@ public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
         map.put(ArmorItem.Type.CHESTPLATE, 0);
         map.put(ArmorItem.Type.HELMET, 0);
     }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, () -> Ingredient.EMPTY),
-    ARMOR("armor", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+    NANO_MUSCLE("gtceu:nano_muscle_suite", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        map.put(ArmorItem.Type.BOOTS, 3);
+        map.put(ArmorItem.Type.LEGGINGS, 4);
+        map.put(ArmorItem.Type.CHESTPLATE, 4);
+        map.put(ArmorItem.Type.HELMET, 2);
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 0.0F, () -> Ingredient.EMPTY),
+    ADVANCED_NANO_MUSCLE("gtceu:advanced_nano_muscle_suite", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        map.put(ArmorItem.Type.BOOTS, 0);
+        map.put(ArmorItem.Type.LEGGINGS, 0);
+        map.put(ArmorItem.Type.CHESTPLATE, 0);
+        map.put(ArmorItem.Type.HELMET, 0);
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 5.0F, 0.0F, () -> Ingredient.EMPTY),
+    QUARK_TECH("gtceu:quark_tech_suite", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        map.put(ArmorItem.Type.BOOTS, 0);
+        map.put(ArmorItem.Type.LEGGINGS, 0);
+        map.put(ArmorItem.Type.CHESTPLATE, 0);
+        map.put(ArmorItem.Type.HELMET, 0);
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 5.0F, 0.0F, () -> Ingredient.EMPTY),
+    ADVANCED_QUARK_TECH("gtceu:advanced_quark_tech_suite", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 0);
         map.put(ArmorItem.Type.LEGGINGS, 0);
         map.put(ArmorItem.Type.CHESTPLATE, 0);

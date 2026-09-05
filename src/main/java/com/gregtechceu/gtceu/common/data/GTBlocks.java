@@ -191,6 +191,12 @@ public class GTBlocks {
         DUCT_PIPES[index] = entry;
     }
 
+    public static final BlockEntry<EquipmentFoundryBlock> EQUIPMENT_FOUNDRY = REGISTRATE
+            .block("equipment_foundry", EquipmentFoundryBlock::new)
+            .initialProperties(() -> Blocks.SMITHING_TABLE)
+            .simpleItem()
+            .register();
+
     // Long Distance Item Pipe Blocks
     public static final BlockEntry<LongDistancePipeBlock> LD_ITEM_PIPE = REGISTRATE
             .block("long_distance_item_pipeline",

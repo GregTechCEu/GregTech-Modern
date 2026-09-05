@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.utils.input;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.mui.factory.ModularItemUIFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoader;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.GuiManager;
 import com.mojang.blaze3d.platform.InputConstants;
 
 public final class SyncedKeyMappings {
@@ -41,6 +44,12 @@ public final class SyncedKeyMappings {
     public static final SyncedKeyMapping STEP_ASSIST_ENABLE = SyncedKeyMapping.createConfigurable(
             "gtceu.key.enable_step_assist", KeyConflictContext.IN_GAME,
             InputConstants.KEY_APOSTROPHE);
+    public static final SyncedKeyMapping MODULAR_ITEM_GUI = SyncedKeyMapping.createConfigurable(
+            "gtceu.key.modular_item_gui", KeyConflictContext.IN_GAME,
+            InputConstants.KEY_V).registerGlobalListener((player, key, isDown) -> {
+                if (isDown)
+                    GuiManager.open(ModularItemUIFactory.INSTANCE, new GuiData(player), player);
+            });
 
     public static void init() {
         if (GTCEu.isClientSide()) {

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
@@ -318,7 +319,7 @@ public class VanillaRecipeHelper {
      * <li>{@code 'w'} - {@code craftingToolWrench}</li>
      * <li>{@code 'x'} - {@code craftingToolWireCutter}</li>
      * </ul>
-     * 
+     *
      * @param setMaterialInfoData whether to add material decomposition information to the recipe output
      *
      * @param matchSize
@@ -655,6 +656,47 @@ public class VanillaRecipeHelper {
                         baseMaterial.getName()),
                 upgradeToolStack.getItem(), baseToolStack.getItem(),
                 template, addition);
+    }
+
+    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                                 @NotNull Ingredient equipment,
+                                                 @NotNull Object ingredient, @NotNull ItemModule[] modifiers) {
+        var builder = new EquipmentFoundryRecipeBuilder(regName).equipment(equipment).modifier(modifiers);
+        if (ingredient instanceof Ingredient ing) {
+            builder.ingredient(ing);
+        } else if (ingredient instanceof ItemStack itemStack) {
+            builder.ingredient(itemStack);
+        } else if (ingredient instanceof TagKey<?> key) {
+            builder.ingredient((TagKey<Item>) key);
+        } else if (ingredient instanceof ItemLike itemLike) {
+            builder.ingredient(itemLike);
+        } else if (ingredient instanceof MaterialEntry entry) {
+            TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
+            if (tag != null) {
+                builder.ingredient(tag);
+            } else builder.ingredient(ChemicalHelper.get(entry.tagPrefix(), entry.material()));
+        } else if (ingredient instanceof Character c) {
+            builder.ingredient(ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+        }
+        builder.save(provider);
+    }
+
+    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                                 @NotNull Ingredient equipment,
+                                                 @NotNull Object ingredient, @NotNull ItemModule[] modifiers) {
+        addEquipmentFoundryRecipe(provider, GTCEu.id(regName), equipment, ingredient, modifiers);
+    }
+
+    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
+                                                 @NotNull Ingredient equipment,
+                                                 @NotNull Object ingredient, @NotNull ItemModule modifier) {
+        addEquipmentFoundryRecipe(provider, GTCEu.id(regName), equipment, ingredient, modifier);
+    }
+
+    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                                 @NotNull Ingredient equipment,
+                                                 @NotNull Object ingredient, @NotNull ItemModule modifier) {
+        addEquipmentFoundryRecipe(provider, regName, equipment, ingredient, new ItemModule[] { modifier });
     }
 
     /**
