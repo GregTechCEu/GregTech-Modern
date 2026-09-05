@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +28,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable MultiblockMachineDefinition @NotNull []>
                                         implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<?, ?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
+    private final MultiblockMachineBuilder<?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -92,7 +92,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> builder = GTRegistrate
+            MultiblockMachineBuilder<?, ?> builder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace())
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier));

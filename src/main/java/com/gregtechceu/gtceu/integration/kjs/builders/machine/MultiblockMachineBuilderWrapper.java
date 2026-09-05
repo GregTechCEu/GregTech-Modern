@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -15,26 +13,21 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
@@ -50,10 +43,10 @@ import java.util.function.*;
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
                                              implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
+    private final MultiblockMachineBuilder<?, ?> internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id,
-                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal) {
+                                           MultiblockMachineBuilder<?, ?> internal) {
         super(id);
         this.internal = internal;
         this.dummyBuilder = true;
@@ -94,11 +87,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper definition(Function<ResourceLocation, MultiblockMachineDefinition> definition) {
-        internal.definition(definition);
-        return this;
-    }
-
     public MultiblockMachineBuilderWrapper blockEntityFactory(MachineInstanceFactory machine) {
         internal.instanceFactory(machine);
         return this;
@@ -135,26 +123,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper blockProp(NonNullUnaryOperator<BlockBehaviour.Properties> blockProp) {
-        internal.blockProp(blockProp);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
-        internal.itemProp(itemProp);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper blockBuilder(@Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
-        internal.blockBuilder(blockBuilder);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper itemBuilder(@Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
-        internal.itemBuilder(itemBuilder);
-        return this;
-    }
-
     public MultiblockMachineBuilderWrapper recipeTypes(GTRecipeType... recipeTypes) {
         internal.recipeTypes(recipeTypes);
         return this;
@@ -177,11 +145,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public MultiblockMachineBuilderWrapper addOutputLimit(RecipeCapability<?> capability, int limit) {
         internal.addOutputLimit(capability, limit);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper itemColor(BiFunction<ItemStack, Integer, Integer> itemColor) {
-        internal.itemColor(itemColor);
         return this;
     }
 
@@ -400,8 +363,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
         var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
                 WorkableElectricMultiblockMachine::new);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
@@ -409,10 +370,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
                                                                  KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
         var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
-                machine::create);
+                id.getPath(), machine::create);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 }

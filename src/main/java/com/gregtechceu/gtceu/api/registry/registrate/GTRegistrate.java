@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.core.Registry;
@@ -15,7 +14,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -40,14 +38,13 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
@@ -157,45 +154,16 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
-    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
-                                                                                             Consumer<CreativeModeTab.Builder> config) {
-        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
-            var builder = CreativeModeTab.builder()
-                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
-                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
-            config.accept(builder);
-            return builder.build();
-        });
-    }
-
-    public <DEFINITION extends MachineDefinition,
-            MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
-                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
-                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, definitionFactory,
-                blockFactory, itemFactory, blockEntityFactory);
-    }
+    /// Machine Builders
 
     public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
                                                                                                MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new,
-                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
+        return new MachineBuilder<>(this, name, MachineDefinition::new, blockEntityFactory);
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name,
-                blockFactory, itemFactory, blockEntityFactory);
-    }
-
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
-                blockEntityFactory);
+    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE, ?> multiblock(String name,
+                                                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return new MultiblockMachineBuilder<>(this, name, blockEntityFactory);
     }
 
     public SoundEntryBuilder sound(String name) {
@@ -232,7 +200,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private static final Map<RegistryEntry<?, ?>, @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
     public @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
         return this.currentTab;
@@ -273,7 +241,20 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return entry;
     }
 
-    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
+                                                                                             Consumer<CreativeModeTab.Builder> config) {
+        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
+            var builder = CreativeModeTab.builder()
+                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
+                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
+            config.accept(builder);
+            return builder.build();
+        });
+    }
+
+    @Override
+    @SuppressWarnings("NullableProblems")
+    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(@NotNull P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
     }

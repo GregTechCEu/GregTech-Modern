@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
@@ -21,7 +21,7 @@ public interface IMachineBuilderKJS {
         if (builder.model() == null && builder.blockModel() == null) return;
 
         // Fake a data provider for the GT model builders
-        DataGenContext<Block, MetaMachineBlock> context = new DataGenContext<>(definition::get,
+        DataGenContext<Block, MetaMachineBlock> context = new DataGenContext<>(definition::getBlock,
                 definition.getName(), definition.getId());
         if (builder.blockModel() != null) {
             builder.blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);

@@ -107,9 +107,9 @@ public class GTMultiMachines {
                     .slice("XXX", "X#X", "XXX")
                     .slice("XXX", "XYX", "XXX")
                     .where('X',
-                            blocks(CASING_COKE_BRICKS.get()).and(blocks(COKE_OVEN_HATCH.get()).setMaxGlobalLimited(5)))
+                            blocks(CASING_COKE_BRICKS.get()).and(machines(COKE_OVEN_HATCH).setMaxGlobalLimited(5)))
                     .where('#', Predicates.air())
-                    .where('Y', Predicates.controller(blocks(definition.getBlock())))
+                    .where('Y', Predicates.controller(definition))
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_coke_bricks"),
                     GTCEu.id("block/multiblock/coke_oven"))
@@ -226,7 +226,7 @@ public class GTMultiMachines {
                     .slice("XXX", "XXX", "XXX")
                     .slice("XXX", "X#X", "XXX")
                     .slice("XXX", "XSX", "XXX")
-                    .where('S', controller(blocks(definition.get())))
+                    .where('S', controller(definition))
                     .where('X', blocks(CASING_STEEL_SOLID.get()).setMinGlobalLimited(14)
                             .and(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .and(Predicates.autoAbilities(true, true, false)))
@@ -247,7 +247,7 @@ public class GTMultiMachines {
                     .slice("CCC", "C#C", "CCC")
                     .slice("CCC", "C#C", "CCC")
                     .slice("XXX", "XSX", "XXX")
-                    .where('S', Predicates.controller(blocks(definition.get())))
+                    .where('S', Predicates.controller(definition))
                     .where('X',
                             blocks(MACHINE_CASING_ULV.get()).setMinGlobalLimited(6)
                                     .and(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -285,7 +285,7 @@ public class GTMultiMachines {
                     .slice("XXX", "CCC", "XXX")
                     .slice("XXX", "C#C", "XMX")
                     .slice("XSX", "CCC", "XXX")
-                    .where('S', controller(blocks(definition.get())))
+                    .where('S', controller(definition))
                     .where('X', blocks(CASING_INVAR_HEATPROOF.get()).setMinGlobalLimited(9)
                             .and(autoAbilities(definition.getRecipeTypes()))
                             .and(autoAbilities(true, false, false)))
@@ -328,7 +328,7 @@ public class GTMultiMachines {
                     .slice("HCHCH", "HCHCH", "HCHCH")
                     .slice("HCHCH", "H###H", "HCHCH")
                     .slice("HCHCH", "HCOCH", "HCHCH")
-                    .where('O', Predicates.controller(blocks(definition.get())))
+                    .where('O', Predicates.controller(definition))
                     .where('H', blocks(CASING_STAINLESS_CLEAN.get()).setMinGlobalLimited(12)
                             .and(Predicates.autoAbilities(definition.getRecipeTypes()))
                             .and(Predicates.autoAbilities(true, true, false)))
@@ -362,7 +362,7 @@ public class GTMultiMachines {
             .pattern(definition -> {
                 MultiPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded()) {
-                    exportPredicate = exportPredicate.xor(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                    exportPredicate = exportPredicate.xor(machines(GTAEMachines.FLUID_EXPORT_HATCH_ME));
                 }
                 exportPredicate = exportPredicate.setMaxLayerLimited(1);
                 MultiPredicate maint = autoAbilities(true, false, false)
@@ -460,12 +460,12 @@ public class GTMultiMachines {
                     .slice("XXXX", "##F#", "##F#")
                     .slice("XXHX", "F##F", "FFFF")
                     .slice("SXXX", "##F#", "##F#")
-                    .where('S', Predicates.controller(blocks(definition.getBlock())))
+                    .where('S', Predicates.controller(definition))
                     .where('X', blocks(CASING_PUMP_DECK.get()))
                     .where('F', Predicates.frames(GTMaterials.TreatedWood))
                     .where('H',
                             Predicates.abilities(PartAbility.PUMP_FLUID_HATCH)
-                                    .xor(blocks(FLUID_EXPORT_HATCH[ULV].get(), FLUID_EXPORT_HATCH[LV].get())))
+                                    .xor(machines(FLUID_EXPORT_HATCH[ULV], FLUID_EXPORT_HATCH[LV])))
                     .where('#', Predicates.any())
                     .build())
             .allowExtendedFacing(false)
@@ -572,7 +572,7 @@ public class GTMultiMachines {
                                 .slice("####CC###CC####", "###EAAOGOAAE###", "####CC###CC####")
                                 .slice("######ICI######", "####GGAAAGG####", "######ICI######")
                                 .slice("###############", "######OSO######", "###############")
-                                .where('S', controller(blocks(definition.get())))
+                                .where('S', controller(definition))
                                 .where('G', blocks(FUSION_GLASS.get()).or(casing))
                                 .where('E', casing.and(
                                         blocks(PartAbility.INPUT_ENERGY.getBlockRange(tier, UV).toArray(Block[]::new))
@@ -612,7 +612,7 @@ public class GTMultiMachines {
                             .slice("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .slice("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                             .slice("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .where('S', controller(blocks(definition.get())))
+                            .where('S', controller(definition))
                             .where('X', blocks(FluidDrillMachine.getCasingState(tier)).setMinGlobalLimited(3)
                                     .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                             .setMaxGlobalLimited(2))
@@ -862,7 +862,7 @@ public class GTMultiMachines {
                             .slice("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
                             .slice("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
                             .slice("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .where('S', controller(blocks(definition.get())))
+                            .where('S', controller(definition))
                             .where('X',
                                     blocks(BedrockOreMinerMachine.getCasingState(tier)).setMinGlobalLimited(3)
                                             .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)

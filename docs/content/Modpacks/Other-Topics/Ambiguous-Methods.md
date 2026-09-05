@@ -18,7 +18,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 you'd get the error:
 ```
-Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
+Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
     class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(java.util.List)
     class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
 ```
