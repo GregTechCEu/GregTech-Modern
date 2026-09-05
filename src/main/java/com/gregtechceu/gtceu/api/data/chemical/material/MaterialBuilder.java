@@ -71,7 +71,15 @@ public class MaterialBuilder {
         properties = new MaterialProperties();
         flags = new MaterialFlags();
     }
-    
+
+    /**
+     * @param name Set the material's (US english) localized name to this value
+     */
+    public MaterialBuilder langValue(String name) {
+        materialInfo.setOverriddenName(name);
+        return this;
+    }
+
     /*
      * Material Types
      */
