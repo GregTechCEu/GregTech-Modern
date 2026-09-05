@@ -49,7 +49,6 @@ public class MaterialRegistryEntry extends RegistryEntry<Material, Material> {
         return value().getNeutrons();
     }
 
-
     public long getMass() {
         return value().getMass();
     }

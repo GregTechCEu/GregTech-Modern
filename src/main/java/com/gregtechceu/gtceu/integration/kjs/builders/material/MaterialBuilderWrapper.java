@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -678,7 +677,6 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         internal.itemPipeProperties(priority, stacksPerSec);
         return this;
     }
-
 
     @Override
     public Material createObject() {
