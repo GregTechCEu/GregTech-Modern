@@ -376,6 +376,11 @@ public class ChemicalHelper {
     }
 
     @Nullable
+    public static Block getBlock(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return getBlock(new MaterialEntry(orePrefix, material));
+    }
+
+    @Nullable
     public static TagKey<Block> getBlockTag(TagPrefix orePrefix, Material material) {
         var tags = orePrefix.getBlockTags(material);
         if (!tags.isEmpty()) {

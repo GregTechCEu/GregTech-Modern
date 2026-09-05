@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -276,11 +277,11 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         int oldTemperature = temperature;
         setTemperature(getDefaultTemp());
 
-        TagPrefix uninsulatedPrefix = getPipeType().getUninsulated().tagPrefix.value();
-        CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS.get(uninsulatedPrefix, getPipeBlock().material).get();
-        level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
+        CableBlock newBlock = (CableBlock)ChemicalHelper.getBlock(getPipeType().getUninsulated().tagPrefix, getPipeBlock().material);
+        if (newBlock == null) return;
+        getLevel().setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
 
-        CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(getBlockPos());
+        CableBlockEntity newCable = (CableBlockEntity) getLevel().getBlockEntity(getBlockPos());
         if (newCable != null) { // should never be null
             newCable.setTemperature(oldTemperature);
             newCable.subscribeHeat();
