@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import com.mojang.serialization.MapCodec;
 
+@SuppressWarnings("unused")
 public class GTIndicatorGenerators {
 
     // spotless:off

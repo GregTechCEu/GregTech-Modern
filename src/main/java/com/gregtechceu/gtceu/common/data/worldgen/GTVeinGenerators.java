@@ -35,5 +35,7 @@ public class GTVeinGenerators {
     }
     
     //spotless:on
-    public static void init(IEventBus modBus) {}
+    public static void init(IEventBus modBus) {
+        VEIN_GENERATORS.register(modBus);
+    }
 }
