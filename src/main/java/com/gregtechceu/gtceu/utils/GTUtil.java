@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.core.mixins.MapColorAccessor;
 import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
 import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
@@ -90,6 +89,17 @@ public class GTUtil {
     });
 
     private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
+
+    private static final MapColor[] MAP_COLORS;
+
+    static {
+        int maxId = MapColor.GLOW_LICHEN.id;
+        MAP_COLORS = new MapColor[maxId];
+        for (int i = 0; i < maxId; i++) {
+            // Skip MapColor.NONE
+            MAP_COLORS[i] = MapColor.byId(i + 1);
+        }
+    }
 
     /**
      * Convenience method to get from VN -> Tier
@@ -457,8 +467,7 @@ public class GTUtil {
      * Determines map color nearest to specified RGB color
      */
     public static MapColor determineMapColor(int rgbColor) {
-        return closestColor(rgbColor, MapColorAccessor.gtceu$getMaterialColors(),
-                c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+        return closestColor(rgbColor, MAP_COLORS, c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
     }
 
     private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {
