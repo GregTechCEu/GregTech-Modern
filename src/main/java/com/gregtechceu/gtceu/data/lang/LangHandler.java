@@ -690,6 +690,7 @@ public class LangHandler {
         provider.add("item.gtceu.flawless_glass_gem", "Flawless Glass Crystal");
         provider.add("item.gtceu.exquisite_glass_gem", "Exquisite Glass Crystal");
         provider.add("item.gtceu.glass_plate", "Glass Pane");
+        provider.add("item.gtceu.glass_lens", "Glass Lens (White)");
         provider.add("item.gtceu.tiny_blaze_dust", "Tiny Pile of Blaze Powder");
         provider.add("item.gtceu.small_blaze_dust", "Small Pile of Blaze Powder");
         provider.add("item.gtceu.tiny_sugar_dust", "Tiny Pile of Sugar");

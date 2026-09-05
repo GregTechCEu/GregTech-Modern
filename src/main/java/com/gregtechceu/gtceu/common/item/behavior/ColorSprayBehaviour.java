@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
@@ -112,10 +112,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     public final int totalUses;
     private final IntIntPair durabilityBarColors;
 
-    public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, int color) {
+    public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, @Nullable DyeColor color) {
         this.empty = empty;
-        DyeColor[] colors = DyeColor.values();
-        this.color = color >= colors.length || color < 0 ? null : colors[color];
+        this.color = color;
         // default to a gray color if this.color is null (like for solvent spray)
         int colorValue = this.color == null ? 0x969696 : this.color.getTextColor();
         this.totalUses = totalUses;
@@ -331,12 +330,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK)) {
+        if (block.defaultBlockState().is(GTTags.Blocks.CONCRETES)) {
             if (recolorBlockNoState(CONCRETE_MAP, this.color, world, pos)) {
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK)) {
+        if (block.defaultBlockState().is(GTTags.Blocks.CONCRETE_POWDERS)) {
             if (recolorBlockNoState(CONCRETE_POWDER_MAP, this.color, world, pos)) {
                 return true;
             }
@@ -398,11 +397,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             world.setBlockAndUpdate(pos, Blocks.WHITE_CARPET.defaultBlockState());
             return true;
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK) && block != Blocks.WHITE_CONCRETE) {
+        if (block.defaultBlockState().is(GTTags.Blocks.CONCRETES) && block != Blocks.WHITE_CONCRETE) {
             world.setBlockAndUpdate(pos, Blocks.WHITE_CONCRETE.defaultBlockState());
             return true;
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK) && block != Blocks.WHITE_CONCRETE_POWDER) {
+        if (block.defaultBlockState().is(GTTags.Blocks.CONCRETE_POWDERS) && block != Blocks.WHITE_CONCRETE_POWDER) {
             world.setBlockAndUpdate(pos, Blocks.WHITE_CONCRETE_POWDER.defaultBlockState());
             return true;
         }

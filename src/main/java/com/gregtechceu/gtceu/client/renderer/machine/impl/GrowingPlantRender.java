@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.GrowingPlantBlockAccessor;
 import com.gregtechceu.gtceu.core.mixins.IntegerPropertyAccessor;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -232,7 +232,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
         if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF) ||
                 state.hasProperty(BlockStateProperties.HALF) ||
-                state.is(CustomTags.TALL_PLANTS)) {
+                state.is(GTTags.Blocks.TALL_PLANTS)) {
             return GrowthMode.DOUBLE_TRANSLATE;
         } else if (state.is(BlockTags.FLOWERS)) {
             return GrowthMode.TRANSLATE;
