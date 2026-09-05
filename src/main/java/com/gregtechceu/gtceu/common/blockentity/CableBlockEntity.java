@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
@@ -16,7 +15,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
 import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.common.block.CableBlock;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -277,7 +275,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         int oldTemperature = temperature;
         setTemperature(getDefaultTemp());
 
-        CableBlock newBlock = (CableBlock)ChemicalHelper.getBlock(getPipeType().getUninsulated().tagPrefix, getPipeBlock().material);
+        CableBlock newBlock = (CableBlock) ChemicalHelper.getBlock(getPipeType().getUninsulated().tagPrefix,
+                getPipeBlock().material);
         if (newBlock == null) return;
         getLevel().setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
 
