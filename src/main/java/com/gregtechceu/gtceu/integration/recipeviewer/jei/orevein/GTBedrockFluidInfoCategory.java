@@ -21,16 +21,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class GTBedrockFluidInfoCategory extends
-                                        ModularUIRecipeCategory<GTBedrockFluidInfoCategory.BedrockFluidInfoWrapper> {
+                                        ModularUIRecipeCategory<BedrockFluidDefinition> {
 
-    public final static RecipeType<BedrockFluidInfoWrapper> RECIPE_TYPE = new RecipeType<>(
-            GTCEu.id("bedrock_fluid_diagram"), BedrockFluidInfoWrapper.class);
+    public final static RecipeType<BedrockFluidDefinition> RECIPE_TYPE = new RecipeType<>(
+            GTCEu.id("bedrock_fluid_diagram"), BedrockFluidDefinition.class);
     private final IDrawable icon;
 
     public GTBedrockFluidInfoCategory(IJeiHelpers helpers) {
-        super(v -> new OreVeinRecipeWidget(v.fluid),
+        super(OreVeinRecipeWidget::new,
                 v -> Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                        .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).getKey(v.fluid));
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).getKey(v));
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(GTMaterials.Oil.getBucket().getDefaultInstance());
     }
@@ -38,7 +38,6 @@ public class GTBedrockFluidInfoCategory extends
     public static void registerRecipes(IRecipeRegistration registry) {
         registry.addRecipes(RECIPE_TYPE, Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
                 .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).stream()
-                .map(BedrockFluidInfoWrapper::new)
                 .toList());
     }
 
@@ -49,7 +48,7 @@ public class GTBedrockFluidInfoCategory extends
 
     @NotNull
     @Override
-    public RecipeType<BedrockFluidInfoWrapper> getRecipeType() {
+    public RecipeType<BedrockFluidDefinition> getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -64,6 +63,4 @@ public class GTBedrockFluidInfoCategory extends
     public IDrawable getIcon() {
         return icon;
     }
-
-    public record BedrockFluidInfoWrapper(BedrockFluidDefinition fluid) {}
 }

@@ -22,17 +22,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class GTBedrockOreInfoCategory extends
-                                      ModularUIRecipeCategory<GTBedrockOreInfoCategory.GTBedrockOreInfoWrapper> {
+                                      ModularUIRecipeCategory<BedrockOreDefinition> {
 
-    public final static RecipeType<GTBedrockOreInfoWrapper> RECIPE_TYPE = new RecipeType<>(
-            GTCEu.id("bedrock_ore_diagram"), GTBedrockOreInfoWrapper.class);
+    public final static RecipeType<BedrockOreDefinition> RECIPE_TYPE = new RecipeType<>(
+            GTCEu.id("bedrock_ore_diagram"), BedrockOreDefinition.class);
     @Getter
     private final IDrawable icon;
 
     public GTBedrockOreInfoCategory(IJeiHelpers helpers) {
-        super(v -> new OreVeinRecipeWidget(v.bedrockOre),
+        super(OreVeinRecipeWidget::new,
                 v -> Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                        .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE).getKey(v.bedrockOre));
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE).getKey(v));
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(Items.RAW_IRON.getDefaultInstance());
     }
@@ -41,7 +41,6 @@ public class GTBedrockOreInfoCategory extends
         registry.addRecipes(RECIPE_TYPE, Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
                 .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)
                 .stream()
-                .map(GTBedrockOreInfoWrapper::new)
                 .toList());
     }
 
@@ -52,7 +51,7 @@ public class GTBedrockOreInfoCategory extends
 
     @NotNull
     @Override
-    public RecipeType<GTBedrockOreInfoWrapper> getRecipeType() {
+    public RecipeType<BedrockOreDefinition> getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -61,6 +60,4 @@ public class GTBedrockOreInfoCategory extends
     public Component getTitle() {
         return Component.translatable("gtceu.jei.bedrock_ore_diagram");
     }
-
-    public record GTBedrockOreInfoWrapper(BedrockOreDefinition bedrockOre) {}
 }

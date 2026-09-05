@@ -22,7 +22,6 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.WidgetHolder;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -99,11 +98,6 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
                         (pos, state) -> blockCount.mergeInt(state.getBlockState().getBlock(), 1, Integer::sum));
                 blockCount.forEach((block, count) -> containedBlocks.add(EmiStack.of(block.asItem(), count)));
             }
-        }
-
-        @Override
-        public void addWidgets(WidgetHolder widgets) {
-            super.addWidgets(widgets);
         }
 
         @Override
