@@ -138,7 +138,7 @@ public class ToolHelper {
     }
 
     public static ItemStack get(GTToolType toolType, Holder<Material> material) {
-        return get(toolType, material);
+        return get(toolType, material.value());
     }
 
     public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
