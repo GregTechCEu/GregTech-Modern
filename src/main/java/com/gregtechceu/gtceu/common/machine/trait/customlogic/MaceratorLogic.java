@@ -120,7 +120,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
 
         assert pickaxeRecipe != null : "Default Tool Decomp recipe couldn't be generated";
         pickaxeRecipe.setId(pickaxeRecipe.getId().withPrefix("/"));
-        MACERATOR_RECYCLING.addRecipe(pickaxeRecipe);
-        MACERATOR_RECYCLING.addRecipe(rotorRecipe);
+        MACERATOR_RECYCLING.value().addRecipe(pickaxeRecipe);
+        MACERATOR_RECYCLING.value().addRecipe(rotorRecipe);
     }
 }

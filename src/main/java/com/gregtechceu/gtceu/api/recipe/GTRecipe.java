@@ -94,6 +94,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
      * as well as combining all I/O data into a {@link GTRecipeSerializer.RecipeIO} record.
      * Necessary for {@link GTRecipeSerializer}
      */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public GTRecipe(GTRecipeType recipeType,
                     GTRecipeSerializer.RecipeIO recipeIO,
                     List<RecipeCondition<?>> conditions,
@@ -101,7 +102,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     CompoundTag data,
                     int duration,
                     GTRecipeSerializer.RecipeParallels allParallels,
-                    GTRecipeCategory recipeCategory,
+                    Optional<GTRecipeCategory> recipeCategory,
                     int groupColor,
                     boolean keepSpoilingProgress) {
         this(recipeType, null, recipeIO.inputs(), recipeIO.outputs(), recipeIO.tickInputs(), recipeIO.tickOutputs(),
@@ -109,12 +110,14 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 recipeIO.tickOutputChanceLogics(),
                 conditions, ingredientActions, data, duration, allParallels.parallels(),
                 allParallels.subtickParallels(),
-                allParallels.batchParallels(), recipeCategory, groupColor, keepSpoilingProgress);
+                allParallels.batchParallels(), recipeCategory.orElseGet(recipeType::getCategory), groupColor,
+                keepSpoilingProgress);
     }
 
     /**
      * non-KJS version for {@link GTRecipeSerializer}
      */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
                     Map<RecipeCapability<?>, List<Content>> outputs,
@@ -125,16 +128,17 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
                     List<RecipeCondition<?>> conditions,
-                    @NotNull CompoundTag data,
+                    CompoundTag data,
                     int duration,
                     List<Integer> allParallels,
-                    @NotNull GTRecipeCategory recipeCategory,
+                    Optional<GTRecipeCategory> recipeCategory,
                     int groupColor,
                     boolean keepSpoilingProgress) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, List.of(), data, duration, allParallels.get(0), allParallels.get(1),
-                allParallels.get(2), recipeCategory, groupColor, keepSpoilingProgress);
+                allParallels.get(2), recipeCategory.orElseGet(recipeType::getCategory), groupColor,
+                keepSpoilingProgress);
     }
 
     /**
@@ -197,7 +201,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration, int parallels, int subtickParallels, int batchParallels,
-                    @NotNull GTRecipeCategory recipeCategory, int groupColor,
+                    GTRecipeCategory recipeCategory, int groupColor,
                     boolean keepSpoilingProgress) {
         this.recipeType = recipeType;
         this.id = id;
@@ -219,7 +223,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
         this.parallels = parallels;
         this.subtickParallels = subtickParallels;
         this.batchParallels = batchParallels;
-        this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
+        this.recipeCategory = recipeCategory;
         this.groupColor = groupColor;
         this.keepSpoilingProgress = keepSpoilingProgress;
     }
@@ -325,18 +329,18 @@ public class GTRecipe implements Recipe<RecipeInput> {
     public ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap, IO io, boolean isTick) {
         if (io == IO.OUT) {
             if (isTick) {
-                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             } else {
-                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             }
         } else if (io == IO.IN) {
             if (isTick) {
-                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             } else {
-                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             }
         }
-        return ChanceLogic.OR;
+        return ChanceLogic.OR.value();
     }
 
     public GTRecipeSerializer.RecipeIO getRecipeIO() {

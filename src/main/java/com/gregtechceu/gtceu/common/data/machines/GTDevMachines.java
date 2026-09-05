@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
@@ -14,7 +15,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTDevMachines {
 
-    public static final MultiblockMachineDefinition CONNECTED_TEXTURE_TEST = REGISTRATE
+    public static final MachineEntry<MultiblockMachineDefinition> CONNECTED_TEXTURE_TEST = REGISTRATE
             .multiblock("connected_texture_test", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
@@ -30,7 +31,7 @@ public class GTDevMachines {
                     .slice("         ", "         ", "         ", "         ", "         ")
                     .slice("         ", "         ", "         ", "         ", "         ")
                     .slice("         ", "         ", "       XX", "       XX", "       XX")
-                    .where('S', controller(blocks(definition.get())))
+                    .where('S', controller(definition))
                     .where('X', blocks(CTM_TEST)
                             .or(autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true, true)))

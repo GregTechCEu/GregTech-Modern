@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.registry.registrate;
+package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 
@@ -18,6 +18,9 @@ import com.tterrag.registrate.util.nullness.*;
 
 import java.util.function.Supplier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     // spotless:off
@@ -87,7 +90,7 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     @Override
     public GTBlockBuilder<T, P> blockstate(NonNullBiConsumer<DataGenContext<Block, T>, RegistrateBlockstateProvider> cons) {
-        return (GTBlockBuilder<T, P>) setData(ProviderType.BLOCKSTATE, cons);
+        return setData(ProviderType.BLOCKSTATE, cons);
     }
 
     @Override
@@ -114,12 +117,6 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     public GTBlockBuilder<T, P> recipe(NonNullBiConsumer<DataGenContext<Block, T>, RegistrateRecipeProvider> cons) {
         return (GTBlockBuilder<T, P>) super.recipe(cons);
     }
-
-    // why is it final >:(
-    // @SafeVarargs
-    // public final BlockBuilder<T, P> tag(TagKey<Block>... tags) {
-    //     return tag(ProviderType.BLOCK_TAGS, tags);
-    // }
 
     public <D extends RegistrateProvider> GTBlockBuilder<T, P> setDataGeneric(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, ? extends Block>, D> cons) {
         getOwner().setDataGenerator(this, type, prov -> cons.accept(DataGenContext.from(this), prov));

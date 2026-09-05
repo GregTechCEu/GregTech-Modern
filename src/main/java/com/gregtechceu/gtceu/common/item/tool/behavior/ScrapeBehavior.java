@@ -106,6 +106,6 @@ public class ScrapeBehavior implements IToolBehavior<ScrapeBehavior> {
 
     @Override
     public ToolBehaviorType<ScrapeBehavior> getType() {
-        return GTToolBehaviors.SCRAPE;
+        return GTToolBehaviors.SCRAPE.value();
     }
 }
