@@ -110,7 +110,8 @@ public class GTRecipe implements Recipe<RecipeInput> {
                 recipeIO.tickOutputChanceLogics(),
                 conditions, ingredientActions, data, duration, allParallels.parallels(),
                 allParallels.subtickParallels(),
-                allParallels.batchParallels(), recipeCategory.orElseGet(recipeType::getCategory), groupColor, keepSpoilingProgress);
+                allParallels.batchParallels(), recipeCategory.orElseGet(recipeType::getCategory), groupColor,
+                keepSpoilingProgress);
     }
 
     /**
@@ -136,7 +137,8 @@ public class GTRecipe implements Recipe<RecipeInput> {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, List.of(), data, duration, allParallels.get(0), allParallels.get(1),
-                allParallels.get(2), recipeCategory.orElseGet(recipeType::getCategory), groupColor, keepSpoilingProgress);
+                allParallels.get(2), recipeCategory.orElseGet(recipeType::getCategory), groupColor,
+                keepSpoilingProgress);
     }
 
     /**
