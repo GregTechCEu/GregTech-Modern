@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -31,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -138,8 +140,9 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
             return;
         }
         if (pipeNode.getFrameMaterial() != null) {
-            BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
-                    .getDefaultState();
+            Block frameBlock = ChemicalHelper.getBlock(TagPrefix.frameGt, pipeNode.getFrameMaterial());
+            if (frameBlock == null) return;
+            BlockState frameState = frameBlock.defaultBlockState();
             ((MaterialBlock) frameState.getBlock()).entityInside(frameState, level, pos, entity);
             return;
         }
