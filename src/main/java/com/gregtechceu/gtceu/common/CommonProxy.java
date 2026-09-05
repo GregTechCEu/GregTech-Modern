@@ -142,7 +142,7 @@ public class CommonProxy {
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
-        GTRegistries.init(modBus);
+        GTRegistries.init();
         REGISTRATE.registerEventListeners(modBus);
 
         GTElements.init();

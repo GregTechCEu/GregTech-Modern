@@ -128,7 +128,7 @@ public class ChemicalHelper {
         return Objects.requireNonNull(getPrefix(itemLike), "No tag prefix present for %s".formatted(itemLike.asItem()));
     }
 
-    public static TagPrefix getPrefix(ItemStack itemStack) {
+    public static @Nullable TagPrefix getPrefix(ItemStack itemStack) {
         return getPrefix(itemStack.getItem());
     }
 
@@ -343,7 +343,12 @@ public class ChemicalHelper {
 
     @Nullable
     public static Block getBlock(Holder<TagPrefix> orePrefix, Material material) {
-        return getBlock(new MaterialEntry(orePrefix.value(), material));
+        return getBlock(new MaterialEntry(orePrefix, material));
+    }
+
+    @Nullable
+    public static Block getBlock(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return getBlock(new MaterialEntry(orePrefix, material));
     }
 
     @Nullable
@@ -380,11 +385,6 @@ public class ChemicalHelper {
     }
 
     public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Material material) {
-        return Objects.requireNonNull(getTag(orePrefix, material),
-                "No item tag for %s %s".formatted(orePrefix, material));
-    }
-
-    public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Holder<Material> material) {
         return Objects.requireNonNull(getTag(orePrefix, material),
                 "No item tag for %s %s".formatted(orePrefix, material));
     }
