@@ -73,6 +73,15 @@ public class MaterialBuilder {
     }
 
     /**
+     * @param name Set the material's (US english) localized name to this value
+     */
+    public MaterialBuilder langValue(String name) {
+        materialInfo.setOverriddenName(name);
+        return this;
+    }
+
+
+    /**
      * Adds a property to this material.
      */
     public <T extends IMaterialProperty> MaterialBuilder property(PropertyKey<T> key, T value) {

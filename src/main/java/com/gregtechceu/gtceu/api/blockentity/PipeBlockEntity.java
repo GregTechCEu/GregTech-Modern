@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -90,6 +91,15 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         this.coverContainer = new PipeCoverContainer(this);
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        if (tag.contains("frameMaterial") && tag.getString("frameMaterial").equals("gtceu:null")) {
+            tag.remove("frameMaterial");
+        }
+        super.loadAdditional(tag, registries);
+
     }
 
     //////////////////////////////////////
