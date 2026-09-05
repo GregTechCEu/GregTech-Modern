@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -382,8 +383,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
         } else if (toolType.contains(GTToolType.CROWBAR)) {
             if (frameMaterial != null) {
-                Block.popResource(context.getLevel(), this.getBlockPos(),
-                        GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
+                Block frameBlock = ChemicalHelper.getBlock(TagPrefix.frameGt, frameMaterial);
+                if (frameBlock == null) return Pair.of(null, InteractionResult.FAIL);
+                Block.popResource(context.getLevel(), this.getBlockPos(), frameBlock.asItem().getDefaultInstance());
                 frameMaterial = null;
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }

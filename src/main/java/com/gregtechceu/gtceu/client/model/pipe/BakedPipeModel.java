@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.model.pipe;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.Node;
@@ -98,11 +99,11 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         if (pipeNode.getFrameMaterial() == null) {
             return quads;
         }
-        var frameBlockEntry = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial());
+        var frameBlockEntry = ChemicalHelper.getBlock(TagPrefix.frameGt, pipeNode.getFrameMaterial());
         if (frameBlockEntry == null) {
             return quads;
         }
-        BlockState frameState = frameBlockEntry.getDefaultState();
+        BlockState frameState = frameBlockEntry.defaultBlockState();
         BakedModel frameModel = RenderUtil.getModelForState(frameState);
 
         modelData = frameModel.getModelData(level, pos, frameState, modelData);
