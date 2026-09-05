@@ -156,7 +156,6 @@ public class CommonEventListener {
             }
 
             var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
-
             HazardProperty property = material.getProperty(PropertyKey.HAZARD);
 
             if (property.hazardTrigger.protectionType().isProtected(player)) {

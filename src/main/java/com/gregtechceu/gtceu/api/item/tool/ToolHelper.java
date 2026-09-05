@@ -31,10 +31,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.*;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -140,6 +137,10 @@ public class ToolHelper {
         return ItemStack.EMPTY;
     }
 
+    public static ItemStack get(GTToolType toolType, Holder<Material> material) {
+        return get(toolType, material.value());
+    }
+
     public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
         if (material.hasProperty(PropertyKey.ARMOR)) {
             var entry = GTMaterialItems.ARMOR_ITEMS.get(material, armorType);
@@ -212,7 +213,7 @@ public class ToolHelper {
 
     public static void playToolSound(@Nullable GTToolType toolType, ServerPlayer player) {
         if (toolType != null && toolType.soundEntry != null) {
-            toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
+            toolType.soundEntry.value().playOnServer(player.level(), player.blockPosition());
         }
     }
 
@@ -386,7 +387,7 @@ public class ToolHelper {
             DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
                     dummyInputs, dummyOutputs);
 
-            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
+            Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.value().searchRecipe(capHolder,
                     r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
             GTRecipe hammerRecipe = null;
             // find the first valid recipe
@@ -417,7 +418,7 @@ public class ToolHelper {
                     continue;
                 }
                 // Only apply fortune on ore -> crushed forge hammer recipes
-                if (ChemicalHelper.getPrefix(output.getItem()) != TagPrefix.crushed) {
+                if (ChemicalHelper.getPrefix(output.getItem()) != TagPrefix.crushed.value()) {
                     continue;
                 }
                 if (fortuneDropMultiplier == null) {
@@ -563,7 +564,7 @@ public class ToolHelper {
         IGTTool tool = (IGTTool) stack.getItem();
         ToolHelper.damageItem(stack, player);
         if (tool.getSound() != null) {
-            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().getMainEvent(),
+            level.playSound(player, pos.x, pos.y, pos.z, tool.getSound().value().getMainEvent(),
                     SoundSource.PLAYERS, 1.0F, 1.0F);
         }
     }

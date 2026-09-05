@@ -8,19 +8,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
+import com.tterrag.registrate.util.entry.RegistryEntry;
+
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
+
 public class GTRecipeCapabilities {
 
-    public final static RecipeCapability<SizedIngredient> ITEM = ItemRecipeCapability.CAP;
-    public final static RecipeCapability<SizedFluidIngredient> FLUID = FluidRecipeCapability.CAP;
-    public final static RecipeCapability<BlockState> BLOCK_STATE = BlockStateRecipeCapability.CAP;
-    public final static RecipeCapability<EnergyStack> EU = EURecipeCapability.CAP;
-    public final static RecipeCapability<Integer> CWU = CWURecipeCapability.CAP;
+    // spotless:off
+    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<SizedIngredient>> ITEM = register(ItemRecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<SizedFluidIngredient>> FLUID = register(FluidRecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<BlockState>> BLOCK_STATE = register(BlockStateRecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<EnergyStack>> EU = register(EURecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<Integer>> CWU = register(CWURecipeCapability.CAP);
+    //spotless:on
 
-    public static void init() {
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, ITEM.id, ITEM);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, FLUID.id, FLUID);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, BLOCK_STATE.id, BLOCK_STATE);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, EU.id, EU);
-        GTRegistries.register(GTRegistries.RECIPE_CAPABILITIES, CWU.id, CWU);
+    public static void init() {}
+
+    private static <T extends RecipeCapability<?>> RegistryEntry<RecipeCapability<?>, T> register(T cap) {
+        return REGISTRATE.simple(cap.id.getPath(), GTRegistries.Keys.RECIPE_CAPABILITY, () -> cap);
     }
 }

@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.common.data.GCYMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -404,9 +404,9 @@ public class GCYMRecipes {
                 .save(provider);
     }
 
-    private static void registerBinaryAlloy(@NotNull Material input1, int input1Amount,
-                                            @NotNull Material input2, int input2Amount,
-                                            @NotNull Material output, int outputAmount,
+    private static void registerBinaryAlloy(@NotNull MaterialRegistryEntry input1, int input1Amount,
+                                            @NotNull MaterialRegistryEntry input2, int input2Amount,
+                                            @NotNull MaterialRegistryEntry output, int outputAmount,
                                             int duration,
                                             RecipeOutput provider) {
         GCYMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(output.getName())
@@ -421,10 +421,10 @@ public class GCYMRecipes {
     }
 
     @SuppressWarnings("SameParameterValue")
-    private static void registerTrinaryAlloy(@NotNull Material input1, int input1Amount,
-                                             @NotNull Material input2, int input2Amount,
-                                             @NotNull Material input3, int input3Amount,
-                                             @NotNull Material output, int outputAmount,
+    private static void registerTrinaryAlloy(@NotNull MaterialRegistryEntry input1, int input1Amount,
+                                             @NotNull MaterialRegistryEntry input2, int input2Amount,
+                                             @NotNull MaterialRegistryEntry input3, int input3Amount,
+                                             @NotNull MaterialRegistryEntry output, int outputAmount,
                                              int duration,
                                              RecipeOutput provider) {
         GCYMRecipeTypes.ALLOY_BLAST_RECIPES.recipeBuilder(output.getName())

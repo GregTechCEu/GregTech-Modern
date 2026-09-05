@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -73,7 +74,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         float outputAmount = (durability * fullAmount);
         int dustAmount = (int) outputAmount;
         int leftover = (int) ((outputAmount - (float) dustAmount) * 36.f);
-        TagPrefix tag = leftover % 4 >= leftover % 9 ? dustSmall : dustTiny;
+        Holder<TagPrefix> tag = leftover % 4 >= leftover % 9 ? dustSmall : dustTiny;
         int leftAmount = leftover % 4 >= leftover % 9 ? leftover / 9 : leftover / 4;
 
         if (dustAmount == 0 && leftAmount == 0) return null;
@@ -102,7 +103,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         float durability = 0.75f;
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
         assert turbineBehaviour != null : "Default Turbine Stack doesn't have Turbine Behaviour";
-        turbineBehaviour.setPartMaterial(stack, GTMaterials.Iron);
+        turbineBehaviour.setPartMaterial(stack, GTMaterials.Iron.value());
         turbineBehaviour.setPartDamage(stack, 8928);
 
         rotorRecipe = applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
@@ -111,16 +112,16 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         rotorRecipe.setId(rotorRecipe.getId().withPrefix("/"));
 
         // noinspection DataFlowIssue
-        stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron, GTToolType.PICKAXE).asStack();
+        stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron.value(), GTToolType.PICKAXE).asStack();
         stack.set(DataComponents.CUSTOM_NAME, Component.translatable("gtceu.auto_decomp.tool"));
         stack.setDamageValue(79);
-        pickaxeRecipe = applyDurabilityRecipe("tool_decomp", stack, GTMaterials.Iron,
+        pickaxeRecipe = applyDurabilityRecipe("tool_decomp", stack, GTMaterials.Iron.value(),
                 (float) (GTToolType.PICKAXE.materialAmount / GTValues.M), durability,
                 GTValues.VH[GTValues.LV], 2);
 
         assert pickaxeRecipe != null : "Default Tool Decomp recipe couldn't be generated";
         pickaxeRecipe.setId(pickaxeRecipe.getId().withPrefix("/"));
-        MACERATOR_RECYCLING.addRecipe(pickaxeRecipe);
-        MACERATOR_RECYCLING.addRecipe(rotorRecipe);
+        MACERATOR_RECYCLING.value().addRecipe(pickaxeRecipe);
+        MACERATOR_RECYCLING.value().addRecipe(rotorRecipe);
     }
 }

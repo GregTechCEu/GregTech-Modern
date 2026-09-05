@@ -169,7 +169,7 @@ public record MaterialIconType(String name) {
                         .format("textures/block/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
                 if (GTUtil.resourceExists(location))
                     break;
-                iconSet = iconSet.parentIconset;
+                iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
             }
         }
 
@@ -210,7 +210,7 @@ public record MaterialIconType(String name) {
                         .withPath(String.format("models/block/material_sets/%s/%s.json", iconSet.getName(), this.name));
                 if (GTUtil.resourceExists(location))
                     break;
-                iconSet = iconSet.parentIconset;
+                iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
             }
         }
 
@@ -241,7 +241,7 @@ public record MaterialIconType(String name) {
 
                 if (GTUtil.resourceExists(location))
                     break;
-                iconSet = iconSet.parentIconset;
+                iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
             }
         }
 
@@ -285,7 +285,7 @@ public record MaterialIconType(String name) {
 
                 if (GTUtil.resourceExists(location))
                     break;
-                iconSet = iconSet.parentIconset;
+                iconSet = iconSet.parentIconset == null ? null : iconSet.parentIconset.value();
             }
         }
 

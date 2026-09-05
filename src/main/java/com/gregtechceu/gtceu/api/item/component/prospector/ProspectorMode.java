@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component.prospector;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -335,7 +336,9 @@ public abstract class ProspectorMode<T> {
         public IDrawable getItemIcon(BedrockOreInfo item) {
             Material material = item.material;
             ItemStack stack = GTUtil.getFirstNonEmpty(
-                    ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
+                    ChemicalHelper
+                            .get(GTRegistries.TAG_PREFIXES.getOrThrow(ResourceKey.create(GTRegistries.Keys.TAG_PREFIX,
+                                    GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix))), material),
                     ChemicalHelper.get(TagPrefix.crushed, material),
                     ChemicalHelper.get(TagPrefix.gem, material),
                     ChemicalHelper.get(TagPrefix.ore, material),

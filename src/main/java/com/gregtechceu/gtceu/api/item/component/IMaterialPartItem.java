@@ -28,7 +28,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         var material = itemStack.get(GTDataComponents.ITEM_MATERIAL);
         var defaultMaterial = GTMaterials.Aluminium;
         if (material == null || !material.hasProperty(PropertyKey.INGOT)) {
-            return defaultMaterial;
+            return defaultMaterial.value();
         }
         return material;
     }

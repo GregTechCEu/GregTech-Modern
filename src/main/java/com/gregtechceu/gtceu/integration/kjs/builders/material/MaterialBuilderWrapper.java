@@ -2,36 +2,39 @@ package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.MaterialBuilder;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unused")
 public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
-    private final Material.Builder internal;
+    private final MaterialBuilder internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
-        this.internal = new Material.Builder(this.id);
-        this.dummyBuilder = true;
+        this.internal = new MaterialBuilder(id);
     }
 
     /*
@@ -437,12 +440,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
                   @Param(name = "iconSet", value = "The `MaterialIconSet` of this Material.")
           })
     public MaterialBuilderWrapper iconSet(MaterialIconSet iconSet) {
-        internal.iconSet(iconSet);
+        internal.iconSet(GTRegistries.MATERIAL_ICON_SETS.wrapAsHolder(iconSet));
         return this;
     }
 
-    public MaterialBuilderWrapper components(MaterialStackWrapper... components) {
-        internal.kjs$components(components);
+    public MaterialBuilderWrapper components(DeferredMaterialStack... components) {
+        internal.componentStacks(components);
         return this;
     }
 
@@ -473,16 +476,17 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
+    @SafeVarargs
     @Info("""
             Added `TagPrefix` to be ignored by this Material.
             """)
-    public MaterialBuilderWrapper ignoredTagPrefixes(TagPrefix... prefixes) {
+    public final MaterialBuilderWrapper ignoredTagPrefixes(Holder<TagPrefix>... prefixes) {
         internal.ignoredTagPrefixes(prefixes);
         return this;
     }
 
     public MaterialBuilderWrapper element(Element element) {
-        internal.element(element);
+        internal.element(GTRegistries.ELEMENTS.wrapAsHolder(element));
         return this;
     }
 
@@ -538,25 +542,26 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
-        internal.hazard(trigger, condition);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition));
         return this;
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                                          float progressionMultiplier) {
-        internal.hazard(trigger, condition, progressionMultiplier);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier);
         return this;
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                                          float progressionMultiplier, boolean applyToDerivatives) {
-        internal.hazard(trigger, condition, progressionMultiplier, applyToDerivatives);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), progressionMultiplier,
+                applyToDerivatives);
         return this;
     }
 
     public MaterialBuilderWrapper hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                                          boolean applyToDerivatives) {
-        internal.hazard(trigger, condition, applyToDerivatives);
+        internal.hazard(trigger, GTRegistries.MEDICAL_CONDITIONS.wrapAsHolder(condition), applyToDerivatives);
         return this;
     }
 
@@ -580,48 +585,50 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m) {
+    public MaterialBuilderWrapper washedIn(Holder<Material> m) {
         internal.washedIn(m);
         return this;
     }
 
     public MaterialBuilderWrapper washedIn(Material m, int washedAmount) {
-        internal.washedIn(m, washedAmount);
+        internal.washedIn(m.getRegistryHolder(), washedAmount);
         return this;
     }
 
-    public MaterialBuilderWrapper separatedInto(Material... m) {
-        internal.separatedInto(m);
+    @SuppressWarnings("unchecked")
+    public final MaterialBuilderWrapper separatedInto(Material... m) {
+        internal.oreByproducts(Arrays.stream(m).map(Material::getRegistryHolder).toArray(Holder[]::new));
         return this;
     }
 
     public MaterialBuilderWrapper oreSmeltInto(Material m) {
-        internal.oreSmeltInto(m);
+        internal.oreSmeltInto(m.getRegistryHolder());
         return this;
     }
 
     public MaterialBuilderWrapper polarizesInto(Material m) {
-        internal.polarizesInto(m);
+        internal.polarizesInto(m.getRegistryHolder());
         return this;
     }
 
     public MaterialBuilderWrapper arcSmeltInto(Material m) {
-        internal.arcSmeltInto(m);
+        internal.arcSmeltInto(m.getRegistryHolder());
         return this;
     }
 
     public MaterialBuilderWrapper macerateInto(Material m) {
-        internal.macerateInto(m);
+        internal.macerateInto(m.getRegistryHolder());
         return this;
     }
 
     public MaterialBuilderWrapper ingotSmeltInto(Material m) {
-        internal.ingotSmeltInto(m);
+        internal.ingotSmeltInto(m.getRegistryHolder());
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public MaterialBuilderWrapper addOreByproducts(Material... byproducts) {
-        internal.addOreByproducts(byproducts);
+        internal.oreByproducts(Arrays.stream(byproducts).map(Material::getRegistryHolder).toArray(Holder[]::new));
         return this;
     }
 
@@ -659,15 +666,6 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     @Override
     public Material createObject() {
-        return internal.buildAndRegister();
-    }
-
-    @Override
-    public Material transformObject(Material material) {
-        // this method is called right after `createObject`.
-        // here, you can add things that have to be done after registration
-        // but would be nice to do without using a separate material modification event.
-
-        return super.transformObject(material);
+        return internal.createMaterial();
     }
 }

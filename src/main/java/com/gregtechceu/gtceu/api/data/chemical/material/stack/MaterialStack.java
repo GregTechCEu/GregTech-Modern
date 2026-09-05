@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -12,9 +14,13 @@ import java.util.WeakHashMap;
 
 public record MaterialStack(@Nullable Material material, long amount) {
 
-    public static final MaterialStack EMPTY = new MaterialStack(null, 0);
+    public static final MaterialStack EMPTY = new MaterialStack((Material) null, 0);
 
     private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
+
+    public MaterialStack(Holder<Material> materialHolder, long amount) {
+        this(materialHolder.value(), amount);
+    }
 
     public MaterialStack copy() {
         if (isEmpty()) return EMPTY;
@@ -74,7 +80,7 @@ public record MaterialStack(@Nullable Material material, long amount) {
     public String toString() {
         String string = "";
         if (this.isEmpty()) return "";
-        if (material.getChemicalFormula() == null || material.getChemicalFormula().isEmpty()) {
+        if (material.getChemicalFormula().isEmpty()) {
             string += "?";
         } else if (material.getMaterialComponents().size() > 1) {
             string += '(' + material.getChemicalFormula() + ')';

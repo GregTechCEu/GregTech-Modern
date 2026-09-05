@@ -1,23 +1,39 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.block.OreBlock;
+import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.MaterialBuilder;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
+import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.EventPriority;
@@ -40,15 +56,17 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
@@ -157,56 +175,116 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
-    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
-                                                                                             Consumer<CreativeModeTab.Builder> config) {
-        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
-            var builder = CreativeModeTab.builder()
-                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
-                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
-            config.accept(builder);
-            return builder.build();
-        });
+    /// Machine Builders
+
+    @SuppressWarnings("unchecked")
+    public <MACHINE extends MetaMachine, S extends MachineBuilder<MachineDefinition, MACHINE, S>> S machine(String name,
+                                                                                                            MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return entry(name,
+                callback -> (S) new MachineBuilder<>(this, name, callback, blockEntityFactory));
     }
 
-    public <DEFINITION extends MachineDefinition,
-            MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
-                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
-                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, definitionFactory,
-                blockFactory, itemFactory, blockEntityFactory);
+    @SuppressWarnings("unchecked")
+    public <MACHINE extends MultiblockControllerMachine,
+            S extends MultiblockMachineBuilder<MACHINE, S>> S multiblock(String name,
+                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return entry(name, callback -> (S) new MultiblockMachineBuilder<>(this, name, callback, blockEntityFactory));
     }
 
-    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
-                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new,
-                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
+    /// Element Registration
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds,
+                                                   @Nullable String decayTo,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return simple(name, GTRegistries.Keys.ELEMENT,
+                () -> new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope));
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name,
-                blockFactory, itemFactory, blockEntityFactory);
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return element(name, protons, neutrons, -1, null, displayName, symbol, isIsotope);
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
-                blockEntityFactory);
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return element(name, protons, neutrons, halfLifeSeconds, null, displayName, symbol, isIsotope);
     }
 
-    public SoundEntryBuilder sound(String name) {
-        return new SoundEntryBuilder(GTCEu.id(name));
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
+                                                   String displayName, String symbol) {
+        return element(name, protons, neutrons, -1, null, displayName, symbol, false);
     }
 
-    public SoundEntryBuilder sound(ResourceLocation name) {
-        return new SoundEntryBuilder(name);
+    /// Material builder
+
+    public MaterialRegistryEntry material(String name, UnaryOperator<MaterialBuilder> materialBuilderCallback) {
+        return entry(name,
+                callback -> new RegistrateMaterialBuilderWrapper(this, name, callback, materialBuilderCallback))
+                .register();
     }
 
-    // Blocks
+    /// TagPrefix Builder
+
+    public TagPrefixBuilder tagPrefix(String name) {
+        return entry(name, callback -> new TagPrefixBuilder(this, name, callback));
+    }
+
+    public TagPrefixBuilder oreTagPrefix(String name, TagKey<Block> miningToolTag) {
+        return entry(name, callback -> new TagPrefixBuilder(this, name, callback)
+                .defaultTagPath("ores/%s")
+                .prefixOnlyTagPath("ores_in_ground/%s")
+                .unformattedTagPath("ores")
+                .materialIconType(MaterialIconType.ore)
+                .miningToolTag(miningToolTag)
+                .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
+                .generationCondition(hasOreProperty));
+    }
+
+    /// Material Icon Set registration
+
+    /**
+     * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
+     *
+     * @param name the name of the iconset
+     */
+    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name) {
+        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(name)));
+    }
+
+    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name,
+                                                                           @Nullable Holder<MaterialIconSet> parentIconSet) {
+        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET,
+                () -> new MaterialIconSet(makeResourceLocation(name), parentIconSet, parentIconSet == null));
+    }
+
+    /// Cover Registration
+
+    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name,
+                                                                 CoverDefinition.CoverBehaviourProvider behaviorCreator,
+                                                                 Supplier<Supplier<ICoverRenderer>> coverRenderer) {
+        return simple(name, GTRegistries.Keys.COVER,
+                () -> new CoverDefinition(makeResourceLocation(name), behaviorCreator, coverRenderer));
+    }
+
+    public RegistryEntry<CoverDefinition, CoverDefinition> cover(String name,
+                                                                 CoverDefinition.CoverBehaviourProvider behaviorCreator) {
+        return cover(name, behaviorCreator, () -> () -> new SimpleCoverRenderer(
+                ResourceLocation.fromNamespaceAndPath(getModid(), "block/cover/" + name)));
+    }
+
+    /// Sound Builder
+
+    public SoundEntryBuilder<GTRegistrate> sound(String name) {
+        return sound(this, name);
+    }
+
+    public <P> SoundEntryBuilder<P> sound(P parent, String name) {
+        return entry(name, callback -> new SoundEntryBuilder<>(this, parent, name, callback));
+    }
+
+    /// Block Builder
+
     @Override
     public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return block(this, factory);
@@ -219,20 +297,74 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     @Override
-    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent,
+    @SuppressWarnings("NullableProblems")
+    public <T extends Block, P> GTBlockBuilder<T, P> block(@NotNull P parent,
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return block(parent, currentName(), factory);
     }
 
     @Override
-    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent, String name,
+    @SuppressWarnings("NullableProblems")
+    public <T extends Block, P> GTBlockBuilder<T, P> block(@NotNull P parent, String name,
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return (GTBlockBuilder<T, P>) entry(name,
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
+    /// Recipe Type Builder
+
+    public GTRecipeTypeBuilder recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
+        return entry(name, callback -> new GTRecipeTypeBuilder(this, name, callback, group, proxyRecipes));
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            @Nullable CategoryIcon icon,
+                                                                            boolean isXEIVisible) {
+        return simple(name, GTRegistries.Keys.RECIPE_CATEGORY,
+                () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
+                        .setIcon(icon)
+                        .setXEIVisible(isXEIVisible));
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            @Nullable CategoryIcon icon) {
+        return recipeCategory(name, recipeType, icon, true);
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType) {
+        return recipeCategory(name, recipeType, null, true);
+    }
+
+    /// Medical Conditions
+
+    public RegistryEntry<MedicalCondition, MedicalCondition> medicalCondition(String name, int color,
+                                                                              int maxProgression,
+                                                                              MedicalCondition.IdleProgressionType progressionType,
+                                                                              float progressionRate,
+                                                                              boolean canBePermanent,
+                                                                              Consumer<GTRecipeBuilder> recipeModifier,
+                                                                              Symptom.ConfiguredSymptom... symptoms) {
+        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name),
+                color, maxProgression, progressionType, progressionRate, canBePermanent, recipeModifier, symptoms));
+    }
+
+    public RegistryEntry<MedicalCondition, MedicalCondition> medicalCondition(String name, int color,
+                                                                              int maxProgression,
+                                                                              MedicalCondition.IdleProgressionType progressionType,
+                                                                              float progressionRate,
+                                                                              boolean canBePermanent,
+                                                                              Symptom.ConfiguredSymptom... symptoms) {
+        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name),
+                color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms));
+    }
+
+    /// Creative Mode Tabs
+
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private static final Map<RegistryEntry<?, ?>, @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
     public @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
         return this.currentTab;
@@ -273,7 +405,20 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return entry;
     }
 
-    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
+                                                                                             Consumer<CreativeModeTab.Builder> config) {
+        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
+            var builder = CreativeModeTab.builder()
+                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
+                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
+            config.accept(builder);
+            return builder.build();
+        });
+    }
+
+    @Override
+    @SuppressWarnings("NullableProblems")
+    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(@NotNull P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
     }

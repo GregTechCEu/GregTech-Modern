@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
@@ -318,6 +319,10 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
         public VeinBlockDefinition(Material block, int weight) {
             this(Either.right(block), weight);
+        }
+
+        public VeinBlockDefinition(Holder<Material> block, int weight) {
+            this(Either.right(block.value()), weight);
         }
 
         public VeinBlockDefinition(List<TargetBlockState> block, int weight) {

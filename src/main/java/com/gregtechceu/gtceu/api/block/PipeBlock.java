@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
@@ -17,7 +18,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -343,7 +343,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         if (stack.getItem() instanceof PipeBlockItem itemPipe) {
             BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
             BlockState stateAtSide = level.getBlockState(offsetPos);
-            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
+            if (stateAtSide.getBlock() instanceof MaterialBlock matBlock &&
+                    matBlock.tagPrefix == TagPrefix.frameGt.value()) {
                 if (itemPipe.getBlock().pipeType == pipeType) {
                     boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, stack,
                             hit);
@@ -378,10 +379,11 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return;
         }
         if (pipeNode.getFrameMaterial() != null) {
-            BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS
-                    .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
-                    .getDefaultState();
-            ((MaterialBlock) frameState.getBlock()).entityInside(frameState, level, pos, entity);
+            MaterialBlock frameBlock = (MaterialBlock) ChemicalHelper.getBlock(TagPrefix.frameGt,
+                    pipeNode.getFrameMaterial());
+            if (frameBlock == null) return;
+            BlockState frameState = frameBlock.defaultBlockState();
+            frameBlock.entityInside(frameState, level, pos, entity);
         }
         super.entityInside(state, level, pos, entity);
     }
@@ -474,8 +476,9 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (blockEntity instanceof IPipeNode<?, ?> pipeTile) {
             if (pipeTile.getFrameMaterial() != null) {
-                drops.addAll(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial())
-                        .getDefaultState().getDrops(builder));
+                Block frameBlock = ChemicalHelper.getBlock(TagPrefix.frameGt, pipeTile.getFrameMaterial());
+                if (frameBlock == null) return drops;
+                drops.addAll(frameBlock.defaultBlockState().getDrops(builder));
             }
             for (Direction direction : GTUtil.DIRECTIONS) {
                 pipeTile.getCoverContainer().removeCover(direction, null);

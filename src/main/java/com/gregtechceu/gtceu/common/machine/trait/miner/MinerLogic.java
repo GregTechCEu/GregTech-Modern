@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -195,7 +196,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private static BlockState findMiningReplacementBlock(Level level, BlockPos pos) {
         if (ConfigHolder.INSTANCE.machines.replaceWithCobbleVersion) {
             BlockState oreState = level.getBlockState(pos);
-            TagPrefix prefix = ChemicalHelper.getPrefix(oreState.getBlock());
+            Holder<TagPrefix> prefix = ChemicalHelper.getPrefix(oreState.getBlock()).getRegistryHolder();
             if (prefix == null || !GTBlocks.COBBLE_BLOCKS.containsKey(prefix))
                 return Blocks.COBBLESTONE.defaultBlockState();
             return GTBlocks.COBBLE_BLOCKS.get(prefix).get();

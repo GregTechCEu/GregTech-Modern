@@ -38,6 +38,7 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -245,10 +246,10 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<TransparentBlock> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
-    public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
+    public static final ImmutableMap<Holder<Material>, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
     static {
-        ImmutableMap.Builder<Material, BlockEntry<Block>> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<Holder<Material>, BlockEntry<Block>> builder = ImmutableMap.builder();
         builder.put(GTMaterials.Bronze, CASING_BRONZE_BRICKS);
         builder.put(GTMaterials.Invar, CASING_INVAR_HEATPROOF);
         builder.put(GTMaterials.Aluminium, CASING_ALUMINIUM_FROSTPROOF);
@@ -1173,7 +1174,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/signs/machine_casing_stripes_b"));
 
     public static Table<StoneBlockType, StoneTypes, BlockEntry<Block>> STONE_BLOCKS;
-    public static Map<TagPrefix, Supplier<BlockState>> COBBLE_BLOCKS = new HashMap<>();
+    public static Map<Holder<TagPrefix>, Supplier<BlockState>> COBBLE_BLOCKS = new HashMap<>();
 
     public static BlockEntry<Block> RED_GRANITE;
     public static BlockEntry<Block> MARBLE;
@@ -1394,19 +1395,15 @@ public class GTBlocks {
         };
     }
 
-    public static void registerCobbleBlock(TagPrefix orePrefix, Supplier<BlockState> state) {
+    public static void registerCobbleBlock(Holder<TagPrefix> orePrefix, Supplier<BlockState> state) {
         COBBLE_BLOCKS.put(orePrefix, state);
     }
 
-    public static void removeCobbleBlock(TagPrefix orePrefix) {
+    public static void removeCobbleBlock(Holder<TagPrefix> orePrefix) {
         COBBLE_BLOCKS.remove(orePrefix);
     }
 
     public static void init() {
-        // Decor Blocks
-        generateStoneBlocks();
-        initializeCobbleReplacements();
-
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
         generateLaserPipeBlocks();    // Laser Pipe Blocks
@@ -1422,7 +1419,7 @@ public class GTBlocks {
         }
     }
 
-    private static void initializeCobbleReplacements() {
+    public static void initializeCobbleReplacements() {
         // replacement blocks for mc based stone types
         COBBLE_BLOCKS.put(TagPrefix.ore, Blocks.COBBLESTONE::defaultBlockState);
         COBBLE_BLOCKS.put(TagPrefix.oreDeepslate, Blocks.COBBLED_DEEPSLATE::defaultBlockState);

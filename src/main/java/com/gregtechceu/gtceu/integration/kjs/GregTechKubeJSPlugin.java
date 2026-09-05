@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.DeferredMaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -80,20 +81,13 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.ElementBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidDefinitionBuilderJS;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreDefinitionBuilderJS;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.OreVeinDefinitionBuilderJS;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.*;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
@@ -135,8 +129,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                 DimensionMarkerBuilder::new);
         registry.addDefault(GTRegistries.Keys.MATERIAL, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
         registry.of(GTRegistries.Keys.TAG_PREFIX, reg -> {
-            reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
-            reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
+            reg.addDefault(TagPrefixBuilderJS.class, TagPrefixBuilderJS::new);
+            reg.add(GTCEu.id("ore"), OreTagPrefixBuilderJS.class, OreTagPrefixBuilderJS::new);
         });
 
         registry.of(Registries.RECIPE_TYPE, reg -> {
@@ -170,6 +164,11 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("active"), ActiveBlockBuilder.class, ActiveBlockBuilder::new);
             reg.add(GTCEu.id("coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
+
+        registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilderJS.class,
+                WorldGenLayerBuilderJS::new);
+        registry.addDefault(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSetBuilder.class,
+                MaterialIconSetBuilder::new);
 
         registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilderJS.class,
                 OreVeinDefinitionBuilderJS::new);
@@ -390,12 +389,12 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
-        registry.register(MaterialStackWrapper.class, o -> {
+        registry.register(DeferredMaterialStack.class, o -> {
             o = Wrapper.unwrapped(o);
-            if (o instanceof MaterialStackWrapper wrapper) return wrapper;
-            if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
-            if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
-            if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
+            if (o instanceof DeferredMaterialStack wrapper) return wrapper;
+            if (o instanceof MaterialStack stack) return new DeferredMaterialStack(stack::material, stack.amount());
+            if (o instanceof Material material) return new DeferredMaterialStack(() -> material, 1);
+            if (o instanceof CharSequence chars) return DeferredMaterialStack.fromString(chars);
             return null;
         });
 

@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
@@ -34,12 +36,12 @@ import java.util.*;
 
 public class HazardProperty implements IMaterialProperty {
 
-    public final MedicalCondition condition;
+    public final Holder<MedicalCondition> condition;
     public final HazardTrigger hazardTrigger;
     public final boolean applyToDerivatives;
     public final float progressionMultiplier;
 
-    public HazardProperty(HazardTrigger hazardTrigger, MedicalCondition condition, float progressionMultiplier,
+    public HazardProperty(HazardTrigger hazardTrigger, Holder<MedicalCondition> condition, float progressionMultiplier,
                           boolean applyToDerivatives) {
         this.hazardTrigger = hazardTrigger;
         this.condition = condition;
@@ -50,7 +52,7 @@ public class HazardProperty implements IMaterialProperty {
     @Override
     public void verifyProperty(MaterialProperties properties) {}
 
-    public record HazardTrigger(String name, ProtectionType protectionType, Set<TagPrefix> affectedTagPrefixes)
+    public record HazardTrigger(String name, ProtectionType protectionType, HolderSet<TagPrefix> affectedTagPrefixes)
             implements StringRepresentable {
 
         public static final Map<String, HazardTrigger> ALL_TRIGGERS = new HashMap<>();
@@ -68,13 +70,13 @@ public class HazardProperty implements IMaterialProperty {
             ALL_TRIGGERS.put(name, this);
         }
 
-        public HazardTrigger(String name, ProtectionType protectionType, TagPrefix... tagPrefixes) {
-            this(name, protectionType, new HashSet<>());
-            affectedTagPrefixes.addAll(Arrays.asList(tagPrefixes));
+        @SafeVarargs
+        public HazardTrigger(String name, ProtectionType protectionType, Holder<TagPrefix>... tagPrefixes) {
+            this(name, protectionType, HolderSet.direct(tagPrefixes));
         }
 
-        public boolean isAffected(TagPrefix prefix) {
-            if (affectedTagPrefixes.isEmpty()) return true; // empty list means all prefixes are affected
+        public boolean isAffected(Holder<TagPrefix> prefix) {
+            if (affectedTagPrefixes.size() == 0) return true; // empty list means all prefixes are affected
             return affectedTagPrefixes.contains(prefix);
         }
 
@@ -197,7 +199,7 @@ public class HazardProperty implements IMaterialProperty {
         }
 
         HazardProperty property = (material == null) ? null : material.getProperty(PropertyKey.HAZARD);
-        if (property == null || prefix != null && !property.hazardTrigger.isAffected(prefix)) {
+        if (property == null || prefix != null && !property.hazardTrigger.isAffected(prefix.getRegistryHolder())) {
             return null;
         }
 

@@ -23,6 +23,8 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -67,6 +69,14 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
         super(info, tier);
         this.inventory = attachTrait(new NotifiableItemStackHandler(1, IO.NONE, IO.NONE));
         this.maxRotorHolderSpeed = 2000 + 1000 * tier;
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        if (tag.contains("rotorMaterial") && tag.getString("rotorMaterial").equals("gtceu:null")) {
+            tag.remove("rotorMaterial");
+        }
+        super.loadAdditional(tag, registries);
     }
 
     //////////////////////////////////////

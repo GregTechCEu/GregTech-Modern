@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.gametest.util;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -18,12 +18,12 @@ import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.GTRecipeTypeEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -40,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
@@ -199,7 +200,7 @@ public class TestUtils {
      * Creates a dummy recipe type that also includes a basic, HV, 1 tick, cobblestone -> stone recipe
      * Requires a {@link GTRecipeType} to inherit I/O counts from
      */
-    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeType original) {
+    public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeTypeEntry original) {
         GTRecipeType type = createRecipeType(name, original);
         type.getAdditionHandler().beginStaging();
         type.getAdditionHandler().addStaging(type
@@ -213,7 +214,7 @@ public class TestUtils {
 
     /**
      * Creates a dummy recipe type. Safe for use in recipe lookup.
-     * DO NOT USE THIS FOR MACHINE RECIPES. Use {@link #createRecipeType(String, GTRecipeType)} for that.
+     * DO NOT USE THIS FOR MACHINE RECIPES. Use {@link #createRecipeType(String, GTRecipeTypeEntry)} for that.
      */
     @Deprecated
     public static GTRecipeType createRecipeType(String name) {
@@ -224,7 +225,7 @@ public class TestUtils {
      * Creates a recipe type for writing test cases.
      * Requires a {@link GTRecipeType} to inherit I/O counts from.
      */
-    public static GTRecipeType createRecipeType(String name, GTRecipeType original) {
+    public static GTRecipeType createRecipeType(String name, GTRecipeTypeEntry original) {
         return createRecipeType(name,
                 original.getMaxInputs(ItemRecipeCapability.CAP),
                 original.getMaxOutputs(ItemRecipeCapability.CAP),
@@ -235,7 +236,7 @@ public class TestUtils {
     /**
      * Creates a recipe type for writing test cases.
      * Requires setting I/O counts manually.
-     * You probably want to be using {@link #createRecipeType(String, GTRecipeType)}
+     * You probably want to be using {@link #createRecipeType(String, GTRecipeTypeEntry)}
      */
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
                                                 int maxFluidOutputs) {
@@ -243,13 +244,19 @@ public class TestUtils {
             return (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(GTCEu.id(name));
         ((MappedRegistry<GTRecipeCategory>) GTRegistries.RECIPE_CATEGORIES).unfreeze();
         ((MappedRegistry<RecipeType<?>>) BuiltInRegistries.RECIPE_TYPE).unfreeze();
-        GTRecipeType type = new GTRecipeType(GTCEu.id(name), ELECTRIC, RecipeType.SMELTING)
-                .setEUIO(IO.IN)
-                .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
+        ((MappedRegistry<RecipeSerializer<?>>) BuiltInRegistries.RECIPE_SERIALIZER).unfreeze();
 
-        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
+        GTRecipeType.Properties properties = new GTRecipeType.Properties(ELECTRIC, RecipeType.SMELTING);
+        properties.maxInputs().put(EURecipeCapability.CAP, 1);
+        properties.maxInputs().put(ItemRecipeCapability.CAP, maxInputs);
+        properties.maxInputs().put(FluidRecipeCapability.CAP, maxFluidInputs);
+        properties.maxOutputs().put(ItemRecipeCapability.CAP, maxOutputs);
+        properties.maxOutputs().put(FluidRecipeCapability.CAP, maxFluidInputs);
+        GTRecipeType type = new GTRecipeType(GTCEu.id(name), properties);
+        Registry.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
         GTRegistries.RECIPE_CATEGORIES.freeze();
         BuiltInRegistries.RECIPE_TYPE.freeze();
+        BuiltInRegistries.RECIPE_SERIALIZER.freeze();
         return type;
     }
 
@@ -275,9 +282,8 @@ public class TestUtils {
         CoverDefinition coverDefinition = null;
         if (stack.getItem() instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
-                if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
-                    helper.assertTrue(coverDefinition == null, "stack has multiple coverPlaceBehaviours");
-                    coverDefinition = coverPlaceBehavior.coverDefinition();
+                if (component instanceof CoverPlaceBehavior(Holder<CoverDefinition> definition)) {
+                    coverDefinition = definition.value();
                 }
             }
         }
@@ -287,9 +293,14 @@ public class TestUtils {
         return machine.getCoverContainer().getCoverAtSide(direction);
     }
 
+    public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineEntry<MachineDefinition> entry) {
+        helper.setBlock(pos, entry.getBlock());
+        return Objects.requireNonNull(helper.getBlockEntity(pos));
+    }
+
     public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
-        return ((MetaMachine) Objects.requireNonNull(helper.getBlockEntity(pos)));
+        return Objects.requireNonNull(helper.getBlockEntity(pos));
     }
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {

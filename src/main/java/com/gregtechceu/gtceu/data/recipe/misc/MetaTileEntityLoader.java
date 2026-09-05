@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -18,6 +19,7 @@ import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -32,6 +34,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.data.recipe.GTCraftingComponents.*;
@@ -332,8 +335,8 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack());
 
         var multiHatchMaterials = new Material[] {
-                GTMaterials.Titanium, GTMaterials.TungstenSteel, GTMaterials.NiobiumTitanium,
-                GTMaterials.Iridium, GTMaterials.Naquadah, GTMaterials.Neutronium
+                GTMaterials.Titanium.value(), GTMaterials.TungstenSteel.value(), GTMaterials.NiobiumTitanium.value(),
+                GTMaterials.Iridium.value(), GTMaterials.Naquadah.value(), GTMaterials.Neutronium.value()
         };
         for (int i = 0; i < multiHatchMaterials.length; i++) {
             var tier = GTMachineUtils.MULTI_HATCH_TIERS[i];
@@ -906,8 +909,8 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 Tags.Items.CHESTS_WOODEN, 'B', CABLE, 'C', CIRCUIT);
 
-        Material[] fluidMap = new Material[] { GTMaterials.Glue, GTMaterials.Polyethylene,
-                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };
+        Material[] fluidMap = new Material[] { GTMaterials.Glue.value(), GTMaterials.Polyethylene.value(),
+                GTMaterials.Polytetrafluoroethylene.value(), GTMaterials.Polybenzimidazole.value() };
 
         for (var machine : GTMachines.FLUID_IMPORT_HATCH) {
             if (machine == null) continue;
@@ -1239,6 +1242,21 @@ public class MetaTileEntityLoader {
     public static void registerMachineRecipe(RecipeOutput provider, MachineDefinition[] machines,
                                              Object... recipe) {
         registerMachineRecipe(provider, true, machines, recipe);
+    }
+
+    public static void registerMachineRecipe(RecipeOutput provider, boolean setMaterialInfoData,
+                                             MachineEntry<? extends MachineDefinition>[] machines, Object... recipe) {
+        registerMachineRecipe(provider, setMaterialInfoData,
+                Arrays.stream(machines).filter(Objects::nonNull).map(Holder::value).toArray(MachineDefinition[]::new),
+                recipe);
+    }
+
+    public static void registerMachineRecipe(RecipeOutput provider,
+                                             MachineEntry<? extends MachineDefinition>[] machines,
+                                             Object... recipe) {
+        registerMachineRecipe(provider, true,
+                Arrays.stream(machines).filter(Objects::nonNull).map(Holder::value).toArray(MachineDefinition[]::new),
+                recipe);
     }
 
     private static Object[] prepareRecipe(int tier, Object... recipe) {

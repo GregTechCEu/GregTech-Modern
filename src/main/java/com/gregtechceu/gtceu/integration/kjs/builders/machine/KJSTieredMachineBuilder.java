@@ -7,7 +7,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 
@@ -20,7 +21,6 @@ import dev.latvian.mods.kubejs.registry.BuilderBase;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -29,10 +29,13 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @Accessors(fluent = true, chain = true)
-public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefinition @NotNull []>
+public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
                                      implements IMachineBuilderKJS {
 
     private final MachineBuilder<?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
+
+    @SuppressWarnings("unchecked")
+    public final MachineEntry<MachineDefinition>[] machines = new MachineEntry[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -67,14 +70,14 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Override
     public void generateMachineModels() {
         for (int tier : this.tiers) {
-            generateMachineModel(this.builders[tier], this.object[tier]);
+            generateMachineModel(this.builders[tier], this.machines[tier].value());
         }
     }
 
     @Override
     public void generateAssets(KubeAssetGenerator generator) {
         for (int tier : this.tiers) {
-            MachineDefinition definition = this.object[tier];
+            MachineEntry<MachineDefinition> definition = this.machines[tier];
             if (definition == null) continue;
 
             final ResourceLocation id = definition.getId();
@@ -86,29 +89,30 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     public void generateLang(LangKubeEvent lang) {
         super.generateLang(lang);
         for (int tier : this.tiers) {
-            MachineDefinition def = this.object[tier];
-            if (def != null && def.getLangValue() != null) {
-                lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
+            MachineEntry<MachineDefinition> definition = this.machines[tier];
+            if (definition == null) continue;
+            if (definition.value().getLangValue() != null) {
+                lang.add(GTCEu.MOD_ID, definition.value().getDescriptionId(), definition.value().getLangValue());
             }
         }
     }
 
     @Override
-    public @Nullable MachineDefinition @NotNull [] createObject() {
+    public @org.jspecify.annotations.Nullable MachineDefinition createObject() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
-        @Nullable
-        MachineDefinition @NotNull [] definitions = new MachineDefinition[TIER_COUNT];
+
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
-            MachineBuilder<?, ?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+            MachineBuilder<MachineDefinition, ?, ?> builder = GTRegistrate
+                    .createIgnoringListenerErrors(this.id.getNamespace())
                     .machine(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier, tankFunction));
 
@@ -119,34 +123,29 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
             }
             this.definition.apply(tier, builder);
 
-            if (builder.recipeTypes().length > 0) {
-                GTRecipeType recipeType = builder.recipeTypes()[0];
+            if (builder.properties().recipeTypes().length > 0) {
+                GTRecipeType recipeType = builder.properties().recipeTypes()[0];
                 if (tankScalingFunction != null && addDefaultTooltips) {
                     builder.tooltips(
-                            GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                            GTMachineUtils.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64,
+                                    () -> recipeType,
                                     tankScalingFunction.applyAsInt(tier), !isGenerator));
                 }
             }
-            if (builder.ui() == null) {
+            if (builder.properties().ui() == null) {
                 builder.ui(GTSingleblockMachinePanels.GENERAL_MACHINE);
             }
 
             this.builders[tier] = builder;
-            definitions[tier] = builder.register();
+            machines[tier] = builder.register();
         }
-        return definitions;
+        return null;
     }
 
     @FunctionalInterface
     public interface TieredCreationFunction {
 
         MetaMachine create(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScaling);
-    }
-
-    @FunctionalInterface
-    public interface CreationFunction<T extends MetaMachine> {
-
-        T create(BlockEntityCreationInfo info);
     }
 
     @FunctionalInterface
