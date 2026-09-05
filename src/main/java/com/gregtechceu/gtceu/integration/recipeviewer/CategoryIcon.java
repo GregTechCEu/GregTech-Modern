@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.integration.recipeviewer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.datafixers.util.Either;
 import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiStack;

@@ -30,7 +30,6 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,27 +56,30 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerCategories(@NotNull IRecipeCategoryRegistration registry) {
+    public void registerCategories(IRecipeCategoryRegistration registry) {
         if (GTCEu.Mods.isEMILoaded()) return;
-        GTCEu.LOGGER.info("JEI register categories");
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
+
         registry.addRecipeCategories(new MultiblockInfoJeiCategory(jeiHelpers));
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             registry.addRecipeCategories(new GTOreProcessingJeiCategory(jeiHelpers));
+
         registry.addRecipeCategories(new GTOreVeinInfoCategory(jeiHelpers));
         registry.addRecipeCategories(new GTBedrockFluidInfoCategory(jeiHelpers));
+        registry.addRecipeCategories(new ProgrammedCircuitJeiCategory(jeiHelpers));
+
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             registry.addRecipeCategories(new GTBedrockOreInfoCategory(jeiHelpers));
+
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (category.shouldRegisterDisplays()) {
-                // registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
+                registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
             }
         }
-        registry.addRecipeCategories(new ProgrammedCircuitJeiCategory(jeiHelpers));
     }
 
     @Override
-    public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         if (GTCEu.Mods.isEMILoaded()) return;
         GTRecipeJEICategory.registerRecipeCatalysts(registration);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -92,7 +94,7 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(@NotNull IRecipeRegistration registration) {
+    public void registerRecipes(IRecipeRegistration registration) {
         if (GTCEu.Mods.isEMILoaded()) return;
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoJeiCategory.registerRecipes(registration);
@@ -105,12 +107,6 @@ public class GTJEIPlugin implements IModPlugin {
             GTBedrockOreInfoCategory.registerRecipes(registration);
         registration.addRecipes(ProgrammedCircuitJeiCategory.RECIPE_TYPE,
                 List.of(new ProgrammedCircuitJeiCategory.GTProgrammedCircuitWrapper()));
-    }
-
-    @Override
-    public void registerIngredients(@NotNull IModIngredientRegistration registry) {
-        if (GTCEu.Mods.isEMILoaded()) return;
-        GTCEu.LOGGER.info("JEI register ingredients");
     }
 
     @Override
