@@ -279,7 +279,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public MultiblockMachineBuilderWrapper paintingColor(int paintingColor) {
-        internal.paintingColor(paintingColor);
+        internal.paintingColor(() -> paintingColor);
         return this;
     }
 
