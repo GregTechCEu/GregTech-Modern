@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.core.mixins.MappedRegistryAccessor;
 
 import net.minecraft.core.Holder;
@@ -52,11 +51,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> {
     private Material register(ResourceLocation id, Material material) {
         this.register(ResourceKey.create(this.key(), id), material, RegistrationInfo.BUILT_IN);
         return material;
-    }
-
-    public Material getMaterial(ResourceLocation name) {
-        Material value = get(name);
-        return value != null ? value : GTMaterials.NULL;
     }
 
     @Override

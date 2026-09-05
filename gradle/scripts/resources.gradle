@@ -49,6 +49,8 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             jade_version        : forge.versions.jade.get(),
             modernfix_version   : forge.versions.modernfix.get(),
             sable_version       : forge.versions.sable.get(),
+            sodium_version      : forge.versions.sodium.get(),
+            embeddium_version   : forge.versions.embeddium.get(),
             mod_license         : mod_license,
             mod_name            : mod_name,
             mod_description     : mod_description,
