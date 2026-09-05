@@ -366,8 +366,13 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static Block getBlock(Holder<TagPrefix> orePrefix, Material material) {
-        return getBlock(new MaterialEntry(orePrefix.value(), material));
+    public static Block getBlock(Holder<TagPrefix> tagPrefix, Material material) {
+        return getBlock(new MaterialEntry(tagPrefix.value(), material));
+    }
+
+    public static Block getBlockOrThrow(Holder<TagPrefix> tagPrefix, Material material) {
+        return Objects.requireNonNull(getBlock(tagPrefix, material),
+                "Block for (%s, %s) was null.".formatted(tagPrefix, material));
     }
 
     @Nullable

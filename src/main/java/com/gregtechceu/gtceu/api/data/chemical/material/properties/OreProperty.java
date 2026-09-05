@@ -89,7 +89,7 @@ public class OreProperty implements IMaterialProperty {
      * Default: none.
      */
     @Getter
-    private HolderSet<Material> separatedInto = null;
+    private @Nullable HolderSet<Material> separatedInto = null;
 
     public OreProperty(int oreMultiplier, int byProductMultiplier) {
         this.oreMultiplier = oreMultiplier;
@@ -180,6 +180,10 @@ public class OreProperty implements IMaterialProperty {
             directSmeltResult.value().getProperties().ensureSet(PropertyKey.DUST, true);
         if (washedIn != null)
             washedIn.value().getProperties().ensureSet(PropertyKey.FLUID, true);
+
+        if (separatedInto == null) separatedInto = HolderSet.empty();
+        if (oreByProducts == null) oreByProducts = HolderSet.empty();
+
         separatedInto.forEach(m -> m.value().getProperties().ensureSet(PropertyKey.DUST, true));
         oreByProducts.forEach(m -> m.value().getProperties().ensureSet(PropertyKey.DUST, true));
     }

@@ -34,6 +34,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -45,7 +46,7 @@ public final class ToolRecipeHandler {
             new ItemEntry[] { GTItems.POWER_UNIT_LV, GTItems.POWER_UNIT_MV, GTItems.POWER_UNIT_HV,
                     GTItems.POWER_UNIT_EV, GTItems.POWER_UNIT_IV });
 
-    public static final HashSet<Holder<Material>> softMaterials = new HashSet<>();
+    public static final HashSet<Holder<Material>> softMaterials = new LinkedHashSet<>();
 
     static {
         softMaterials.add(GTMaterials.Wood);
