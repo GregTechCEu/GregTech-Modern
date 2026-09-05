@@ -206,14 +206,17 @@ public class MachineDefinition {
 
     static final ThreadLocal<@Nullable MachineDefinition> STATE = new ThreadLocal<>();
 
+    @ApiStatus.Internal
     public static MachineDefinition getBuilt() {
         return Objects.requireNonNull(STATE.get());
     }
 
+    @ApiStatus.Internal
     public static void setBuilt(MachineDefinition state) {
         STATE.set(state);
     }
 
+    @ApiStatus.Internal
     public static void clearBuilt() {
         STATE.remove();
     }
