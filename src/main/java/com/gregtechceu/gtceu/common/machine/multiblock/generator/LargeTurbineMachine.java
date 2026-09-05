@@ -137,16 +137,16 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        if (!isFormed())
-            return widgets;
 
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
         var rotorHolder = getRotorHolder();
         if (!(rotorHolder != null && rotorHolder.hasRotor())) {
             widgets.add(
                     Text.dynamic(() -> (Component.translatable("gtceu.multiblock.turbine.no_rotor"))
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                             .asWidget()
-                            .setEnabledIf(w -> true));
+                            .setEnabledIf(w -> isFormed.getBoolValue()));
             return widgets;
         }
 
@@ -177,18 +177,18 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                 FormattingUtil.formatNumbers(maxRotorSpeed.getIntValue()))
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
-                .setEnabledIf(w -> true);
+                .setEnabledIf(w -> isFormed.getBoolValue());
         var turbineEfficiencyDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.efficiency",
                 totalEfficiency.getIntValue())
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
-                .setEnabledIf(w -> true);
+                .setEnabledIf(w -> isFormed.getBoolValue());
         var turbinePowerDisplay = Text.dynamic(() -> Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
                 FormattingUtil.formatNumbers(currentOutput.getIntValue()),
                 FormattingUtil.formatNumbers(maxOutput.getIntValue()))
                 .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE)))
                 .asWidget()
-                .setEnabledIf(w -> isActive.getBoolValue());
+                .setEnabledIf(w -> isFormed.getBoolValue() && isActive.getBoolValue());
         var rotorDurabilityDisplay = Text
                 .dynamic(() -> Component.translatable("gtceu.multiblock.turbine.rotor_durability",
                         rotorDurability.getIntValue())
@@ -196,7 +196,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                                 Style.EMPTY.withColor(ChatFormatting.WHITE) :
                                 Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
-                .setEnabledIf(w -> true);
+                .setEnabledIf(w -> isFormed.getBoolValue());
 
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
