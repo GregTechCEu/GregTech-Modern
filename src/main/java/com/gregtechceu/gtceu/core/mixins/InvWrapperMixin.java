@@ -41,7 +41,8 @@ public abstract class InvWrapperMixin {
 
     @WrapOperation(method = { "setStackInSlot", "insertItem" },
                    at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/world/Container;setItem(ILnet/minecraft/world/item/ItemStack;)V"))
+                            target = "Lnet/minecraft/world/Container;setItem(ILnet/minecraft/world/item/ItemStack;)V",
+                            remap = true))
     private void gtceu$spoilInsertedItem(Container instance, int slot, ItemStack itemStack, Operation<Void> original) {
         SpoilUtils.update(itemStack, gtceu$getSpoilContext().withSlot(slot));
         original.call(instance, slot, itemStack);

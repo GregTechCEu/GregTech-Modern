@@ -21,6 +21,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -61,7 +62,7 @@ public abstract class VeinGenerator {
         return getAllEntries().stream()
                 .sorted((a, b) -> Integer.compare(b.chance, a.chance))
                 .map(VeinEntry::mapToMaterial)
-                .filter(mat -> !mat.isNull())
+                .filter(Objects::nonNull)
                 .toList();
     }
 
@@ -72,7 +73,7 @@ public abstract class VeinGenerator {
     public List<ObjectIntPair<Material>> getValidMaterialsChances() {
         return getAllEntries().stream()
                 .map(entry -> ObjectIntPair.of(entry.mapToMaterial(), entry.chance))
-                .filter(pair -> !pair.first().isNull())
+                .filter(pair -> pair.first() != null)
                 .toList();
     }
 
@@ -115,11 +116,12 @@ public abstract class VeinGenerator {
 
         public BlockState mapToBlockState() {
             return vein.map(Function.identity(),
-                    material -> ChemicalHelper.getBlock(TagPrefix.ore, material).defaultBlockState());
+                    material -> ChemicalHelper.getBlockOrThrow(TagPrefix.ore, material).defaultBlockState());
         }
 
-        public Material mapToMaterial() {
-            return vein.map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).material(), Function.identity());
+        public @Nullable Material mapToMaterial() {
+            return vein.map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).isEmpty() ? null :
+                    ChemicalHelper.getMaterialStack(state.getBlock()).material(), Function.identity());
         }
     }
 

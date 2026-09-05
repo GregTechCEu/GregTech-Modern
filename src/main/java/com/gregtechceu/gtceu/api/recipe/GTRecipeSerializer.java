@@ -96,10 +96,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    @Override
-    @NotNull
-    public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
+    public static GTRecipe fromNetworkWithoutDatapackSync(@NotNull FriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
+        ResourceLocation id = buf.readResourceLocation();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(
@@ -143,23 +142,34 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
 
-        RecipeSpoilageData spoilageData = RecipeSpoilageData.readFromNetwork(buf);
+        boolean keepSpoilingProgress = buf.readBoolean();
 
-        GTRecipe recipe = new GTRecipe(type, id,
+        return new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, ingredientActions, data, duration, parallels, subtickParallels, batchParallels, category,
-                groupColor, spoilageData);
+                groupColor, keepSpoilingProgress);
+    }
+
+    /**
+     * Do not call when reading a recipe from the network manually, use
+     * {@link #fromNetworkWithoutDatapackSync(FriendlyByteBuf)} instead
+     */
+    @Override
+    @NotNull
+    public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
+        GTRecipe recipe = fromNetworkWithoutDatapackSync(buf);
 
         recipe.recipeCategory.addRecipe(recipe);
 
         // a little special piece of code for loading all the research entries into the recipe type's list on the
         // client.
-        ResearchCondition researchCondition = conditions.stream().filter(ResearchCondition.class::isInstance).findAny()
+        ResearchCondition researchCondition = recipe.conditions.stream().filter(ResearchCondition.class::isInstance)
+                .findAny()
                 .map(ResearchCondition.class::cast).orElse(null);
         if (researchCondition != null) {
             for (ResearchData.ResearchEntry entry : researchCondition.data) {
-                type.addDataStickEntry(entry.getResearchId(), recipe);
+                recipe.recipeType.addDataStickEntry(entry.getResearchId(), recipe);
             }
         }
         return recipe;
@@ -168,6 +178,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     @Override
     public void toNetwork(FriendlyByteBuf buf, GTRecipe recipe) {
         buf.writeResourceLocation(recipe.recipeType.registryName);
+        buf.writeResourceLocation(recipe.id);
         buf.writeCollection(recipe.inputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.tickInputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.outputs.entrySet(), GTRecipeSerializer::entryWriter);
@@ -197,6 +208,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeVarInt(recipe.batchParallels);
         buf.writeInt(recipe.groupColor);
         buf.writeResourceLocation(recipe.recipeCategory.registryKey);
+        buf.writeBoolean(recipe.keepSpoilingProgress);
     }
 
     /**
@@ -215,12 +227,12 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
-                            RecipeSpoilageData.CODEC.fieldOf("spoilageData").forGetter(val -> val.spoilageData))
+                            Codec.BOOL.optionalFieldOf("keepSpoilingProgress", true).forGetter(val -> val.keepSpoilingProgress))
                     .apply(instance, (type,
                                       recipeIO,
-                                      conditions, data, duration, allParallels, recipeCategory, groupColor, spoilageData) ->
+                                      conditions, data, duration, allParallels, recipeCategory, groupColor, keepSpoilingProgress) ->
                             new GTRecipe(type, recipeIO,
-                                    conditions, List.of(), data, duration, allParallels, recipeCategory, groupColor, spoilageData)));
+                                    conditions, List.of(), data, duration, allParallels, recipeCategory, groupColor, keepSpoilingProgress)));
         } else {
             return RecordCodecBuilder.create(instance -> instance.group(
                             GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
@@ -232,7 +244,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                             RecipeParallels.CODEC.optionalFieldOf("all_parallels", new RecipeParallels(1, 1, 1)).forGetter(val -> new RecipeParallels(val.parallels, val.subtickParallels, val.batchParallels)),
                             GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory),
                             Codec.INT.optionalFieldOf("groupColor", -1).forGetter(val -> val.groupColor),
-                            RecipeSpoilageData.CODEC.fieldOf("spoilageData").forGetter(val -> val.spoilageData))
+                            Codec.BOOL.optionalFieldOf("keepSpoilingProgress", true).forGetter(val -> val.keepSpoilingProgress))
                     .apply(instance, GTRecipe::new));
         }
         // spotless:on

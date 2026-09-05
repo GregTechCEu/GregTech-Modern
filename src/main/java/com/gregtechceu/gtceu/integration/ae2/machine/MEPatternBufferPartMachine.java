@@ -528,7 +528,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void setCustomName(String newName) {
         customName = newName;
         syncDataHolder.markClientSyncFieldDirty("customName");
-        markAsChanged();
     }
 
     @Override

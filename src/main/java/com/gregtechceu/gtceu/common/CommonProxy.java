@@ -52,7 +52,6 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.server.packs.PackType;
@@ -172,7 +171,6 @@ public class CommonProxy {
         IndicatorGenerators.registerAddonGenerators();
 
         CustomBlockRotations.init();
-        KeyBind.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
 

@@ -62,7 +62,6 @@ import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -142,6 +141,7 @@ public class GTRecipeBuilder {
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
         this.recipeCategory = toCopy.recipeCategory;
+        this.keepSpoilingProgress = toCopy.keepSpoilingProgress;
     }
 
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
@@ -173,6 +173,7 @@ public class GTRecipeBuilder {
         copy.perTick = this.perTick;
         copy.recipeCategory = this.recipeCategory;
         copy.onSave = this.onSave;
+        copy.keepSpoilingProgress = this.keepSpoilingProgress;
         return copy;
     }
 
@@ -431,11 +432,14 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(MaterialEntry input, int count) {
-        return inputItems(input.tagPrefix(), input.material(), count);
+        TagPrefix tagPrefix = input.tagPrefix();
+        Material material = input.material();
+        return inputItems(tagPrefix, material, count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @NotNull Material material, int count) {
-        if (tagPrefix.isEmpty() || material.isNull()) {
+    @SuppressWarnings("ConstantValue")
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, Material material, int count) {
+        if (tagPrefix == null || material == null) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
                     id, tagPrefix, material, count);
@@ -579,22 +583,23 @@ public class GTRecipeBuilder {
         return outputItems(new ItemStack(input.get().asItem(), amount));
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material) {
-        return outputItems(orePrefix, material, 1);
+    public GTRecipeBuilder outputItems(TagPrefix tagPrefix, Material material) {
+        return outputItems(tagPrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
-        if (orePrefix.isEmpty() || material.isNull()) {
+    public GTRecipeBuilder outputItems(TagPrefix tagPrefix, Material material, int count) {
+        // noinspection ConstantValue
+        if (tagPrefix == null || material == null) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, orePrefix, material, count);
+                    id, tagPrefix, material, count);
             return this;
         }
-        var item = ChemicalHelper.get(orePrefix, material, count);
+        var item = ChemicalHelper.get(tagPrefix, material, count);
         if (item.isEmpty()) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
-                    id, orePrefix, material, count);
+                    id, tagPrefix, material, count);
             return this;
         }
         return outputItems(item);
@@ -960,7 +965,7 @@ public class GTRecipeBuilder {
             return this;
         }
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
-        if (!matStack.isNull() && chance != 0 && chance == maxChance) {
+        if (matStack != null && chance != 0 && chance == maxChance) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, FluidIngredient.of(
@@ -976,7 +981,7 @@ public class GTRecipeBuilder {
                 return this;
             } else {
                 var matStack = ChemicalHelper.getMaterial(fluid.getFluid());
-                if (!matStack.isNull()) {
+                if (matStack != null) {
                     if (chance == maxChance && chance != 0) {
                         tempFluidStacks.add(new MaterialStack(matStack, fluid.getAmount() * GTValues.M / GTValues.L));
                     }
@@ -1225,82 +1230,6 @@ public class GTRecipeBuilder {
         return addCondition(new AdjacentFluidCondition(isReverse, List.copyOf(fluids)));
     }
 
-    /**
-     * @deprecated use {@link #adjacentFluids(Fluid...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public final GTRecipeBuilder adjacentFluid(Fluid... fluids) {
-        return adjacentFluids(fluids);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(boolean, Fluid...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public final GTRecipeBuilder adjacentFluid(boolean isReverse, Fluid... fluids) {
-        return adjacentFluids(isReverse, fluids);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluidTag(TagKey<Fluid>... tags) {
-        return adjacentFluids(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluidTag(boolean isReverse, TagKey<Fluid>... tags) {
-        return adjacentFluids(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluid(TagKey<Fluid>... tags) {
-        return adjacentFluids(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentFluid(boolean isReverse, TagKey<Fluid>... tags) {
-        return adjacentFluids(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(Collection)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids) {
-        return adjacentFluids(fluids);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentFluids(Collection, boolean)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentFluid(Collection<HolderSet<Fluid>> fluids, boolean isReverse) {
-        return adjacentFluids(fluids, isReverse);
-    }
-
     public GTRecipeBuilder adjacentBlocks(Block... blocks) {
         return adjacentBlocks(false, blocks);
     }
@@ -1337,86 +1266,6 @@ public class GTRecipeBuilder {
             return this;
         }
         return addCondition(new AdjacentBlockCondition(isReverse, List.copyOf(blocks)));
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(Block...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(Block... blocks) {
-        return adjacentBlock(false, blocks);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(boolean, Block...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(boolean isReverse, Block... blocks) {
-        if (blocks.length > GTUtil.NON_CORNER_NEIGHBOURS.size()) {
-            GTCEu.LOGGER.error("Adjacent block condition has too many blocks, not adding to recipe. id: {}", this.id);
-            return this;
-        }
-        return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlock(TagKey<Block>... tags) {
-        return adjacentBlocks(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlock(boolean isReverse, TagKey<Block>... tags) {
-        return adjacentBlocks(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlockTag(TagKey<Block>... tags) {
-        return adjacentBlocks(tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(boolean, TagKey...)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    @SafeVarargs
-    public final GTRecipeBuilder adjacentBlockTag(boolean isReverse, TagKey<Block>... tags) {
-        return adjacentBlocks(isReverse, tags);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(Collection)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks) {
-        return adjacentBlocks(blocks);
-    }
-
-    /**
-     * @deprecated use {@link #adjacentBlocks(Collection, boolean)} instead
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.2.1", forRemoval = true)
-    public GTRecipeBuilder adjacentBlock(Collection<HolderSet<Block>> blocks, boolean isReverse) {
-        return adjacentBlocks(blocks, isReverse);
     }
 
     public GTRecipeBuilder daytime(boolean isNight) {
@@ -1803,7 +1652,7 @@ public class GTRecipeBuilder {
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
                 conditions, List.of(), data, duration, recipeCategory, -1,
-                new RecipeSpoilageData(keepSpoilingProgress));
+                keepSpoilingProgress);
     }
 
     protected void warnTooManyIngredients(RecipeCapability<?> capability,
