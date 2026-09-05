@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.HIGH_SIFTER_OUTPUT;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -57,7 +56,7 @@ public final class OreRecipeHandler {
 
     private static void processMetalSmelting(@NotNull RecipeOutput provider, @NotNull OreProperty property,
                                              @NotNull TagPrefix prefix, @NotNull Material material) {
-        Material smeltingResult = property.getDirectSmeltResult().isNull() ? material : property.getDirectSmeltResult();
+        Material smeltingResult = property.getDirectSmeltResult() == null ? material : property.getDirectSmeltResult();
         if (smeltingResult.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
 
@@ -85,7 +84,7 @@ public final class OreRecipeHandler {
             byproductStack = ChemicalHelper.get(dust, byproductMaterial);
         }
 
-        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+        Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                 property.getDirectSmeltResult();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
@@ -161,7 +160,7 @@ public final class OreRecipeHandler {
             byproductStack = ChemicalHelper.get(dust, byproductMaterial);
         }
 
-        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+        Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                 property.getDirectSmeltResult();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
@@ -220,10 +219,10 @@ public final class OreRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, "compress_" + material.getName() + "_to_ore_block",
                     ChemicalHelper.get(rawOreBlock, material),
                     "BBB", "BBB", "BBB",
-                    'B', ChemicalHelper.getTag(rawOre, material));
+                    'B', ChemicalHelper.getTagOrThrow(rawOre, material));
             VanillaRecipeHelper.addShapelessRecipe(provider, "decompress_" + material.getName() + "_from_ore_block",
                     ChemicalHelper.get(rawOre, material, 9),
-                    ChemicalHelper.getTag(rawOreBlock, material));
+                    ChemicalHelper.getTagOrThrow(rawOreBlock, material));
         }
 
         COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_to_raw_ore_block")
@@ -302,7 +301,7 @@ public final class OreRecipeHandler {
                 .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
-        if (!property.getWashedIn().first().isNull()) {
+        if (property.getWashedIn().first() != null) {
             Material washingByproduct = property.getOreByProduct(3, material);
             ObjectIntPair<Material> washedInTuple = property.getWashedIn();
             CHEMICAL_BATH_RECIPES.recipeBuilder("bathe_" + material.getName() + "_crushed_ore_to_purified_ore")
