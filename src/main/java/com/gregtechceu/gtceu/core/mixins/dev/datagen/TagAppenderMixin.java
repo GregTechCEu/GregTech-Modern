@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.core.mixins;
+package com.gregtechceu.gtceu.core.mixins.dev.datagen;
 
 import com.gregtechceu.gtceu.core.util.extensions.TagAppenderExt;
 
