@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -1218,6 +1219,14 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder environmentalHazard(MedicalCondition condition) {
+        return environmentalHazard(condition, false);
+    }
+
+    public GTRecipeBuilder environmentalHazard(Holder<MedicalCondition> condition, boolean reverse) {
+        return addCondition(new EnvironmentalHazardCondition(condition.value()).setReverse(reverse));
+    }
+
+    public GTRecipeBuilder environmentalHazard(Holder<MedicalCondition> condition) {
         return environmentalHazard(condition, false);
     }
 

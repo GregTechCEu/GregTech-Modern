@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.registry.registrate;
+package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 
@@ -18,6 +18,9 @@ import com.tterrag.registrate.util.nullness.*;
 
 import java.util.function.Supplier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     // spotless:off

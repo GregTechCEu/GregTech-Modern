@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.registry.registrate;
+package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;

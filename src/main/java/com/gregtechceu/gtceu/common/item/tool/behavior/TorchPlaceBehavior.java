@@ -140,7 +140,7 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
 
     @Override
     public ToolBehaviorType<TorchPlaceBehavior> getType() {
-        return GTToolBehaviors.TORCH_PLACE;
+        return GTToolBehaviors.TORCH_PLACE.value();
     }
 
     @Override

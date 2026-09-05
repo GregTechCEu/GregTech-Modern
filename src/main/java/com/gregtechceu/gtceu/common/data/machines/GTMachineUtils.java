@@ -30,8 +30,8 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -95,7 +95,6 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine.AMPS_PER_BATTERY_NORMAL;
-import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 public class GTMachineUtils {
@@ -779,7 +778,8 @@ public class GTMachineUtils {
     }
 
     public static Component defaultEnvironmentRequirement() {
-        return environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
+        // TODO fix
+        return Component.empty();// environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
     }
 
     public static BiConsumer<ItemStack, List<Component>> TANK_TOOLTIPS = (stack, list) -> {
