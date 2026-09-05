@@ -48,6 +48,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     public static final int SPEED_INCREMENT = 1;
     public static final int SPEED_DECREMENT = 3;
     @SaveField
+    @SyncToClient
     public final NotifiableItemStackHandler inventory;
     @Getter
     public final int maxRotorHolderSpeed;
