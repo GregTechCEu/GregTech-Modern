@@ -17,8 +17,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
@@ -51,6 +49,8 @@ import com.gregtechceu.gtceu.common.data.loot.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
+import com.gregtechceu.gtceu.common.data.worldgen.GTIndicatorGenerators;
+import com.gregtechceu.gtceu.common.data.worldgen.GTVeinGenerators;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
@@ -199,8 +199,8 @@ public class CommonProxy {
         GTPlacementModifiers.init(modBus);
         GTLootConditions.init(modBus);
         GTLootFunctions.init(modBus);
-        VeinGenerators.registerAddonGenerators();
-        IndicatorGenerators.registerAddonGenerators();
+        GTVeinGenerators.init(modBus);
+        GTIndicatorGenerators.init(modBus);
         WaypointManager.init();
 
         CustomBlockRotations.init();

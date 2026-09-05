@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.worldgen.GTVeinGenerators;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.Util;
@@ -304,8 +305,8 @@ public class GeodeVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public MapCodec<? extends VeinGenerator> codec() {
-        return CODEC;
+    public VeinGeneratorType<?> type() {
+        return GTVeinGenerators.GEODE.value();
     }
 
     public record GeodeBlockSettings(Either<BlockStateProvider, Material> fillingProvider,
