@@ -172,10 +172,6 @@ public class MachineDefinition {
         return this.cache.computeIfAbsent(direction, dir -> GTUtil.rotateVoxelShape(shape, dir));
     }
 
-    public MetaMachineBlock get() {
-        return blockHolder.value();
-    }
-
     public String getName() {
         return id.getPath();
     }
