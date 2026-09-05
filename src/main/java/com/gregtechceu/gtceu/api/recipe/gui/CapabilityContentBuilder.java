@@ -97,6 +97,7 @@ public interface CapabilityContentBuilder {
         });
     };
 
+    @SuppressWarnings("unchecked")
     CapabilityContentBuilder FLUID = (widget, content, io, perTick,
                                       recipeType, recipe, chanceTier, recipeTier) -> {
         if (!(widget instanceof RecipeViewerSlotWidget<?, ?> recipeViewerSlot)) return;
