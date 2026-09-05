@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
+import brachy.modularui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
@@ -147,7 +148,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
                                 .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
                                 .tooltip(false, t -> t.add("cover.advanced_energy_detector.invert.disabled"))
                                 .tooltip(true, t -> t.add("cover.advanced_energy_detector.invert.enabled")))
-                        .child(new ToggleButton().value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent))
+                        .child(new ToggleButton()
+                                .value(new BooleanSyncValue(this::isUsePercent, this::setUsePercent).allowC2S())
                                 .background(true, ThemeAPI.INSTANCE.getTheme(settings.getTheme())
                                         .getToggleButtonTheme().theme().getBackground())
                                 .overlay(false, GTGuiTextures.BUTTON_EU)

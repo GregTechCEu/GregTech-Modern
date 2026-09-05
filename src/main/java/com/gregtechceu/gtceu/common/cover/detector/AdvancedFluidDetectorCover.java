@@ -129,12 +129,14 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
         syncManager.syncValue("maxValue", maxValueSync);
 
         var buttonRow = coverUIRow()
-                .child(new ToggleButton().value(new BooleanSyncValue(this::isInverted, this::setInverted))
+                .child(new ToggleButton()
+                        .value(new BooleanSyncValue(this::isInverted, this::setInverted).allowC2S())
                         .overlay(false, GTGuiTextures.OVERLAY_REDSTONE_OFF)
                         .overlay(true, GTGuiTextures.OVERLAY_REDSTONE_ON)
                         .tooltip(false, t -> t.add("cover.advanced_fluid_detector.invert.disabled"))
                         .tooltip(true, t -> t.add("cover.advanced_fluid_detector.invert.enabled")))
-                .child(new ToggleButton().value(new BooleanSyncValue(this::isLatched, this::setLatched))
+                .child(new ToggleButton()
+                        .value(new BooleanSyncValue(this::isLatched, this::setLatched).allowC2S())
                         .overlay(false, GTGuiTextures.BUTTON_LOCK)
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)
                         .tooltip(false, t -> t.add("cover.advanced_detector.latch.disabled"))
