@@ -339,7 +339,7 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
             itemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
-            return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
+            return inputItems(ChemicalHelper.getTagOrThrow(orePrefix, material), count);
         }
 
         public GTRecipeJS inputItems(MachineDefinition machine) {
@@ -453,7 +453,6 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS notConsumable(TagPrefix orePrefix, Material material) {
             validateItems("not consumable", orePrefix);
-
             int lastChance = this.chance;
             this.chance = 0;
             inputItems(orePrefix, material);
@@ -726,7 +725,7 @@ public interface GTRecipeSchema {
             for (var fluidIng : inputs) {
                 for (var stack : fluidIng.ingredient().getStacks()) {
                     var mat = ChemicalHelper.getMaterial(stack.getFluid());
-                    if (!mat.isNull()) {
+                    if (mat != null) {
                         fluidMaterialStacks.add(new MaterialStack(mat,
                                 ((long) stack.getAmount() * GTValues.M) / GTValues.L));
                     }
@@ -809,7 +808,7 @@ public interface GTRecipeSchema {
 
         private void validateItems(@NotNull String type, TagPrefix... items) {
             for (var item : items) {
-                if (item == null || item.isEmpty()) {
+                if (item == null) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
             }

@@ -291,12 +291,12 @@ public class FluidBuilder {
 
     private void determineName(@NotNull Material material, @Nullable FluidStorageKey key) {
         if (name != null) return;
-        if (material.isNull() || key == null) throw new IllegalArgumentException("Fluid must have a name");
+        if (key == null) throw new IllegalArgumentException("Fluid must have a name");
         name = key.getRegistryNameFor(material);
     }
 
     private void determineTextures(@NotNull Material material, @Nullable FluidStorageKey key, @NotNull String modid) {
-        if (!material.isNull() && key != null) {
+        if (key != null) {
             if (hasCustomStill) {
                 still = ResourceLocation.fromNamespaceAndPath(modid, "block/fluids/fluid." + name);
             } else {
@@ -315,40 +315,36 @@ public class FluidBuilder {
 
     private void determineTemperature(@NotNull Material material) {
         if (temperature != INFER_TEMPERATURE) return;
-        if (material.isNull()) {
-            temperature = ROOM_TEMPERATURE;
+        BlastProperty property = material.getProperty(PropertyKey.BLAST);
+        if (property == null) {
+            temperature = switch (state) {
+                case LIQUID -> {
+                    if (material.hasProperty(PropertyKey.DUST)) {
+                        yield SOLID_LIQUID_TEMPERATURE;
+                    }
+                    yield ROOM_TEMPERATURE;
+                }
+                case GAS -> ROOM_TEMPERATURE;
+                case PLASMA -> {
+                    if (material.hasFluid() && material.getFluidBuilder() != null &&
+                            material.getFluidBuilder() != material.getFluidBuilder(FluidStorageKeys.PLASMA)) {
+                        yield BASE_PLASMA_TEMPERATURE + material.getFluidBuilder().temperature;
+                    }
+                    yield BASE_PLASMA_TEMPERATURE;
+                }
+            };
         } else {
-            BlastProperty property = material.getProperty(PropertyKey.BLAST);
-            if (property == null) {
-                temperature = switch (state) {
-                    case LIQUID -> {
-                        if (material.hasProperty(PropertyKey.DUST)) {
-                            yield SOLID_LIQUID_TEMPERATURE;
-                        }
-                        yield ROOM_TEMPERATURE;
-                    }
-                    case GAS -> ROOM_TEMPERATURE;
-                    case PLASMA -> {
-                        if (material.hasFluid() && material.getFluidBuilder() != null &&
-                                material.getFluidBuilder() != material.getFluidBuilder(FluidStorageKeys.PLASMA)) {
-                            yield BASE_PLASMA_TEMPERATURE + material.getFluidBuilder().temperature;
-                        }
-                        yield BASE_PLASMA_TEMPERATURE;
-                    }
-                };
-            } else {
-                temperature = property.getBlastTemperature() + switch (state) {
-                    case LIQUID -> LIQUID_TEMPERATURE_OFFSET;
-                    case GAS -> GAS_TEMPERATURE_OFFSET;
-                    case PLASMA -> BASE_PLASMA_TEMPERATURE;
-                };
-            }
+            temperature = property.getBlastTemperature() + switch (state) {
+                case LIQUID -> LIQUID_TEMPERATURE_OFFSET;
+                case GAS -> GAS_TEMPERATURE_OFFSET;
+                case PLASMA -> BASE_PLASMA_TEMPERATURE;
+            };
         }
     }
 
     private void determineColor(@NotNull Material material) {
         if (color != INFER_COLOR) return;
-        if (isColorEnabled && !material.isNull()) {
+        if (isColorEnabled) {
             color = GTUtil.convertRGBtoARGB(material.getMaterialRGB());
         }
     }
@@ -366,15 +362,11 @@ public class FluidBuilder {
         if (luminosity != INFER_LUMINOSITY) return;
         if (state == FluidState.PLASMA) {
             luminosity = 15;
-        } else if (!material.isNull()) {
-            if (material.hasFlag(MaterialFlags.PHOSPHORESCENT)) {
-                luminosity = 15;
-            } else if (state == FluidState.LIQUID && material.hasProperty(PropertyKey.DUST)) {
-                // liquids only glow if not phosphorescent
-                luminosity = 10;
-            } else {
-                luminosity = 0;
-            }
+        } else if (material.hasFlag(MaterialFlags.PHOSPHORESCENT)) {
+            luminosity = 15;
+        } else if (state == FluidState.LIQUID && material.hasProperty(PropertyKey.DUST)) {
+            // liquids only glow if not phosphorescent
+            luminosity = 10;
         } else {
             luminosity = 0;
         }
@@ -384,7 +376,7 @@ public class FluidBuilder {
         if (viscosity != INFER_VISCOSITY) return;
         viscosity = switch (state) {
             case LIQUID -> {
-                if (!material.isNull() && material.hasFlag(MaterialFlags.STICKY)) {
+                if (material.hasFlag(MaterialFlags.STICKY)) {
                     yield STICKY_LIQUID_VISCOSITY;
                 }
                 yield DEFAULT_LIQUID_VISCOSITY;

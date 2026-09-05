@@ -95,7 +95,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
                 modelData, renderType);
 
-        if (pipeNode.getFrameMaterial().isNull()) {
+        if (pipeNode.getFrameMaterial() == null) {
             return quads;
         }
         var frameBlockEntry = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial());

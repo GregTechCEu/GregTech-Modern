@@ -12,9 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
@@ -28,20 +26,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.gregtechceu.gtceu.api.GTValues.M;
 import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.*;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@SuppressWarnings("deprecation")
 public class ChemicalHelper {
 
     public static @Nullable ItemMaterialInfo getMaterialInfo(@Nullable Object object) {
@@ -72,19 +66,17 @@ public class ChemicalHelper {
         return getMaterialStack(itemStack.getItem());
     }
 
-    public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
+    public static MaterialStack getMaterialStack(MaterialEntry entry) {
         Material entryMaterial = entry.material();
-        if (!entryMaterial.isNull()) {
-            return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
-        }
-        return MaterialStack.EMPTY;
+        return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
     }
 
     public static MaterialStack getMaterialStack(ItemLike itemLike) {
         var entry = getMaterialEntry(itemLike);
-        if (!entry.isEmpty()) {
+        if (entry != null) {
             Material entryMaterial = entry.material();
-            return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
+            return new MaterialStack(entryMaterial,
+                    entry.tagPrefix().getMaterialAmount(Objects.requireNonNull(entryMaterial)));
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike.asItem());
         if (info == null) return MaterialStack.EMPTY;
@@ -95,7 +87,7 @@ public class ChemicalHelper {
         return info.getMaterial();
     }
 
-    public static Material getMaterial(Fluid fluid) {
+    public static @Nullable Material getMaterial(Fluid fluid) {
         if (FLUID_MATERIAL.isEmpty()) {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
             for (final Material material : GTRegistries.MATERIALS) {
@@ -113,16 +105,16 @@ public class ChemicalHelper {
                 }
             }
         }
-        return FLUID_MATERIAL.getOrDefault(fluid, GTMaterials.NULL);
+        return FLUID_MATERIAL.get(fluid);
     }
 
-    public static TagPrefix getPrefix(ItemLike itemLike) {
+    public static @Nullable TagPrefix getPrefix(ItemLike itemLike) {
         MaterialEntry entry = getMaterialEntry(itemLike);
-        if (!entry.isEmpty()) return entry.tagPrefix();
-        return TagPrefix.NULL_PREFIX;
+        if (entry != null) return entry.tagPrefix();
+        return null;
     }
 
-    public static TagPrefix getPrefix(ItemStack itemStack) {
+    public static @Nullable TagPrefix getPrefix(ItemStack itemStack) {
         return getPrefix(itemStack.getItem());
     }
 
@@ -141,6 +133,7 @@ public class ChemicalHelper {
     }
 
     public static ItemStack getDust(MaterialStack materialStack) {
+        if (materialStack.isEmpty()) return ItemStack.EMPTY;
         return getDust(materialStack.material(), materialStack.amount());
     }
 
@@ -167,10 +160,12 @@ public class ChemicalHelper {
     }
 
     public static ItemStack getIngotOrDust(MaterialStack materialStack) {
+        if (materialStack.isEmpty()) return ItemStack.EMPTY;
         return getIngotOrDust(materialStack.material(), materialStack.amount());
     }
 
     public static ItemStack getGem(MaterialStack materialStack) {
+        if (materialStack.isEmpty()) return ItemStack.EMPTY;
         if (materialStack.material().hasProperty(PropertyKey.GEM) &&
                 !TagPrefix.gem.isIgnored(materialStack.material()) &&
                 materialStack.amount() == TagPrefix.gem.getMaterialAmount(materialStack.material())) {
@@ -179,7 +174,7 @@ public class ChemicalHelper {
         return getDust(materialStack);
     }
 
-    public static MaterialEntry getMaterialEntry(ItemLike itemLike) {
+    public static @Nullable MaterialEntry getMaterialEntry(ItemLike itemLike) {
         // asItem is a bit slow, avoid calling it multiple times
         var itemKey = itemLike.asItem();
         var materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.get(itemKey);
@@ -189,31 +184,35 @@ public class ChemicalHelper {
             // for unification entries.
             for (var entry : ITEM_MATERIAL_ENTRY) {
                 ITEM_MATERIAL_ENTRY_COLLECTED.put(entry.getFirst().get().asItem(), entry.getSecond());
+                ITEMS_WITHOUT_MATERIAL.remove(entry.getFirst().get().asItem());
             }
             ITEM_MATERIAL_ENTRY.clear();
+
+            if (ITEMS_WITHOUT_MATERIAL.contains(itemKey)) return null;
 
             // guess an entry based on the item's tags if none are pre-registered.
             materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
-                    if (!materialEntry1.isEmpty() &&
+                    if (materialEntry1 != null &&
                             materialEntry1.tagPrefix().getItemParentTags().stream().noneMatch(itemTag::equals)) {
                         return materialEntry1;
                     }
                 }
-                return MaterialEntry.NULL_ENTRY;
+                ITEMS_WITHOUT_MATERIAL.add(item);
+                return null;
             });
         }
         return materialEntry;
     }
 
-    public static MaterialEntry getMaterialEntry(TagKey<Item> tag) {
+    public static @Nullable MaterialEntry getMaterialEntry(TagKey<Item> tag) {
         if (TAG_MATERIAL_ENTRY.isEmpty()) {
             // If the map is empty, resolve all possible tags to their values in an attempt to save time on later
             // lookups.
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
-            for (TagPrefix prefix : TagPrefix.values()) {
+            for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
                 for (Material material : GTRegistries.MATERIALS) {
                     prefix.getItemTags(material).stream()
                             .filter(allItemTags::contains)
@@ -225,15 +224,14 @@ public class ChemicalHelper {
                 }
             }
         }
-        return TAG_MATERIAL_ENTRY.getOrDefault(tag, MaterialEntry.NULL_ENTRY);
+        return TAG_MATERIAL_ENTRY.getOrDefault(tag, null);
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
-        if (materialEntry.material().isNull()) return new ArrayList<>();
         return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
             TagPrefix prefix = entry.tagPrefix();
             var items = new ArrayList<Supplier<? extends Item>>();
-            for (TagKey<Item> tag : prefix.getItemTags(entry.material())) {
+            for (TagKey<Item> tag : prefix.getItemTags(Objects.requireNonNull(entry.material()))) {
                 for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                     items.add(itemHolder::value);
                 }
@@ -272,7 +270,6 @@ public class ChemicalHelper {
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
-        if (materialEntry.isEmpty()) return Collections.emptyList();
         return MATERIAL_ENTRY_BLOCK_MAP.computeIfAbsent(materialEntry, entry -> {
             TagPrefix prefix = entry.tagPrefix();
             var blocks = new ArrayList<Supplier<? extends Block>>();
@@ -299,26 +296,41 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static Block getBlock(TagPrefix orePrefix, Material material) {
-        return getBlock(new MaterialEntry(orePrefix, material));
+    public static Block getBlock(TagPrefix tagPrefix, Material material) {
+        return getBlock(new MaterialEntry(tagPrefix, material));
+    }
+
+    public static Block getBlockOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getBlock(tagPrefix, material),
+                "Block for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
     }
 
     @Nullable
-    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
-        var tags = orePrefix.getBlockTags(material);
+    public static TagKey<Block> getBlockTag(TagPrefix tagPrefix, Material material) {
+        var tags = tagPrefix.getBlockTags(material);
         if (tags.isEmpty()) {
             return null;
         }
         return tags.get(0);
     }
 
+    public static TagKey<Block> getBlockTagOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getBlockTag(tagPrefix, material),
+                "Block tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
+    }
+
     @Nullable
-    public static TagKey<Item> getTag(TagPrefix orePrefix, Material material) {
-        var tags = orePrefix.getItemTags(material);
+    public static TagKey<Item> getTag(TagPrefix tagPrefix, Material material) {
+        var tags = tagPrefix.getItemTags(material);
         if (tags.isEmpty()) {
             return null;
         }
         return tags.get(0);
+    }
+
+    public static TagKey<Item> getTagOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getTag(tagPrefix, material),
+                "Item tag for (%s, %s) was null.".formatted(tagPrefix.id(), material.getID()));
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

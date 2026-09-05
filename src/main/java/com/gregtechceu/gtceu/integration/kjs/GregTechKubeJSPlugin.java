@@ -687,7 +687,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             }
 
             var prefix = ChemicalHelper.getPrefix(item);
-            if (!prefix.isEmpty()) {
+            if (prefix != null) {
                 for (var ms : prefix.secondaryMaterials()) {
                     materials.addTo(ms.material(), (ms.amount() * inCount) / outCount);
                 }
