@@ -19,6 +19,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jspecify.annotations.NullUnmarked;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
  * - iconSet: DULL
  * - color: 0xFFFFFF
  */
+@NullUnmarked
 public class GTMaterials {
 
     public static Map<DyeColor, MaterialRegistryEntry> DYE_MATERIALS = new Object2ObjectOpenHashMap<>();

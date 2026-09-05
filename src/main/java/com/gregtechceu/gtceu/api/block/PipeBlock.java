@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -380,7 +379,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return;
         }
         if (pipeNode.getFrameMaterial() != null) {
-            MaterialBlock frameBlock = (MaterialBlock)ChemicalHelper.getBlock(TagPrefix.frameGt, pipeNode.getFrameMaterial());
+            MaterialBlock frameBlock = (MaterialBlock) ChemicalHelper.getBlock(TagPrefix.frameGt,
+                    pipeNode.getFrameMaterial());
             if (frameBlock == null) return;
             BlockState frameState = frameBlock.defaultBlockState();
             frameBlock.entityInside(frameState, level, pos, entity);

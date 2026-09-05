@@ -960,7 +960,7 @@ public class MaterialBuilder {
      * @param progressionMultiplier Multiplier for how quickly the condition will progress.
      */
     public MaterialBuilder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
-                                                                                        float progressionMultiplier) {
+                                  float progressionMultiplier) {
         properties.setProperty(PropertyKey.HAZARD,
                 new HazardProperty(trigger, condition, progressionMultiplier, false));
         return this;
@@ -977,7 +977,7 @@ public class MaterialBuilder {
      *                              components list.
      */
     public MaterialBuilder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
-                                                                                        float progressionMultiplier, boolean applyToDerivatives) {
+                                  float progressionMultiplier, boolean applyToDerivatives) {
         properties.setProperty(PropertyKey.HAZARD,
                 new HazardProperty(trigger, condition, progressionMultiplier, applyToDerivatives));
         return this;
@@ -996,7 +996,7 @@ public class MaterialBuilder {
      *                           components list.
      */
     public MaterialBuilder hazard(HazardProperty.HazardTrigger trigger, Holder<MedicalCondition> condition,
-                                                                                        boolean applyToDerivatives) {
+                                  boolean applyToDerivatives) {
         properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
         return this;
     }
@@ -1234,7 +1234,7 @@ public class MaterialBuilder {
      *                            Not currently utilized and intended for addons to use.
      */
     public MaterialBuilder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
-                                                                                                 int criticalTemperature) {
+                                           int criticalTemperature) {
         properties.ensureSet(PropertyKey.DUST);
         properties.setProperty(PropertyKey.WIRE,
                 new WireProperties(voltage, amperage, loss, isSuperCon, criticalTemperature));
@@ -1268,7 +1268,7 @@ public class MaterialBuilder {
      * @param plasmaProof Whether this Pipe can hold Plasmas. If not, the Pipe may lose fluid or cause damage.
      */
     public MaterialBuilder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
-                                                                                                     boolean cryoProof, boolean plasmaProof) {
+                                               boolean cryoProof, boolean plasmaProof) {
         properties.setProperty(PropertyKey.FLUID_PIPE,
                 new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
         return this;

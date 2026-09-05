@@ -50,7 +50,8 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         ResourceLocation oreTexture = MaterialIconType.rawOre
-                .getItemTexturePath(material == null ? MaterialIconSet.DULL.value() : material.getMaterialIconSet(), true);
+                .getItemTexturePath(material == null ? MaterialIconSet.DULL.value() : material.getMaterialIconSet(),
+                        true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)

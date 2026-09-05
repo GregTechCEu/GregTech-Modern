@@ -15,11 +15,13 @@ import com.tterrag.registrate.builders.BuilderCallback;
 import java.util.function.UnaryOperator;
 
 @SuppressWarnings({ "UnusedReturnValue", "unused" })
-public class RegistrateMaterialBuilderWrapper extends AbstractBuilder<Material, Material, GTRegistrate, RegistrateMaterialBuilderWrapper> {
+public class RegistrateMaterialBuilderWrapper extends
+                                              AbstractBuilder<Material, Material, GTRegistrate, RegistrateMaterialBuilderWrapper> {
 
     private final UnaryOperator<MaterialBuilder> materialBuilderCallback;
 
-    public RegistrateMaterialBuilderWrapper(GTRegistrate owner, String name, BuilderCallback callback, UnaryOperator<MaterialBuilder> materialBuilderCallback) {
+    public RegistrateMaterialBuilderWrapper(GTRegistrate owner, String name, BuilderCallback callback,
+                                            UnaryOperator<MaterialBuilder> materialBuilderCallback) {
         super(owner, owner, name, callback, GTRegistries.Keys.MATERIAL);
         this.materialBuilderCallback = materialBuilderCallback;
     }
@@ -40,6 +42,7 @@ public class RegistrateMaterialBuilderWrapper extends AbstractBuilder<Material, 
 
     @Override
     protected Material createEntry() {
-        return materialBuilderCallback.apply(new MaterialBuilder(getOwner().makeResourceLocation(getName()))).createMaterial();
+        return materialBuilderCallback.apply(new MaterialBuilder(getOwner().makeResourceLocation(getName())))
+                .createMaterial();
     }
 }
