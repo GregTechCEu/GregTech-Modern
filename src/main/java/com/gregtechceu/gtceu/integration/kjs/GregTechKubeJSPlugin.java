@@ -25,12 +25,9 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.NoopIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator.IndicatorPlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
@@ -103,6 +100,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -125,6 +123,8 @@ import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import dev.latvian.mods.rhino.Context;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.type.TypeInfo;
+
+import java.util.Objects;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
@@ -399,11 +399,19 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             return null;
         });
 
+        registry.register(VeinGenerator.class, o -> {
+            o = Wrapper.unwrapped(o);
+            if (o instanceof VeinGenerator wrapper) return wrapper;
+            if (o instanceof ResourceLocation loc)
+                return Objects.requireNonNull(GTRegistries.VEIN_GENERATORS.get(loc)).defaultInstance().get();
+            if (o instanceof CharSequence chars)
+                return Objects.requireNonNull(GTRegistries.VEIN_GENERATORS.get(GTCEu.id(chars.toString())))
+                        .defaultInstance().get();
+            return null;
+        });
+
         registry.registerMapCodec(HeightRangePlacement.class, HeightRangePlacement.CODEC);
         registry.registerCodec(BiomeWeightModifier.class, BiomeWeightModifier.CODEC, BiomeWeightModifier.EMPTY);
-        registry.registerCodec(VeinGenerator.class, VeinGenerator.DIRECT_CODEC, NoopVeinGenerator.INSTANCE);
-        registry.registerCodec(IndicatorGenerator.class, IndicatorGenerator.DIRECT_CODEC,
-                NoopIndicatorGenerator.INSTANCE);
         registry.registerCodec(IndicatorPlacement.class, IndicatorPlacement.CODEC, IndicatorPlacement.SURFACE);
 
         registry.register(IWorldGenLayer.RuleTestSupplier.class, (cx, o, t) -> {
