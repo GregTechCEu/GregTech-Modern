@@ -79,12 +79,14 @@ public class MedicalConditionTracker implements INBTSerializable<CompoundTag> {
 
     public void progressRelatedCondition(@NotNull Material material, int count) {
         HazardProperty materialHazard = material.getProperty(PropertyKey.HAZARD);
+        if (materialHazard == null) return;
         float strength = (float) count * materialHazard.progressionMultiplier;
-        progressCondition(materialHazard.condition, strength);
+        progressCondition(materialHazard.condition.value(), strength);
     }
 
     public void progressRelatedCondition(@NotNull MaterialEntry materialEntry, int count) {
         HazardProperty materialHazard = materialEntry.material().getProperty(PropertyKey.HAZARD);
+        if (materialHazard == null) return;
         float strength = (float) (materialEntry.getMaterialAmount() / GTValues.M) * count *
                 materialHazard.progressionMultiplier;
         progressCondition(materialHazard.condition.value(), strength);
