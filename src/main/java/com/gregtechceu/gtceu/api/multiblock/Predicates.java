@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -407,9 +408,8 @@ public class Predicates {
      */
     public static MultiPredicate frames(Material... frameMaterials) {
         var frameBlocks = Arrays.stream(frameMaterials)
-                .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
-                .filter(obj -> Objects.nonNull(obj) && obj.isBound())
-                .map(RegistryEntry::get)
+                .map(m -> ChemicalHelper.getBlock(TagPrefix.frameGt, m))
+                .filter(Objects::nonNull)
                 .toArray(Block[]::new);
         return blocks("Frames", frameBlocks)
                 .or(framedPipes(frameMaterials, frameBlocks));
