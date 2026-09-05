@@ -11,7 +11,7 @@ public class MaterialLangGenerator {
     public static void generate(RegistrateLangProvider provider, String modId) {
         for (var material : GTRegistries.MATERIALS) {
             if (material.getModid().equals(modId)) {
-                provider.add(material.getUnlocalizedName(), toEnglishName(material.getName()));
+                provider.add(material.getUnlocalizedName(), material.getDefaultTranslation());
             }
         }
     }
