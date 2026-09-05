@@ -99,7 +99,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             tag.remove("frameMaterial");
         }
         super.loadAdditional(tag, registries);
-
     }
 
     //////////////////////////////////////
