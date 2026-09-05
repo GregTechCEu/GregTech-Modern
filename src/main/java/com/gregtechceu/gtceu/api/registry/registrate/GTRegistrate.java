@@ -218,7 +218,9 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     /// Material builder
 
     public MaterialRegistryEntry material(String name, UnaryOperator<MaterialBuilder> materialBuilderCallback) {
-        return entry(name, callback -> new RegistrateMaterialBuilderWrapper(this, name, callback, materialBuilderCallback)).register();
+        return entry(name,
+                callback -> new RegistrateMaterialBuilderWrapper(this, name, callback, materialBuilderCallback))
+                .register();
     }
 
     /// TagPrefix Builder

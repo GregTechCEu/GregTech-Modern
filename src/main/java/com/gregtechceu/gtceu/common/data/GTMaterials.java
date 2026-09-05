@@ -20,6 +20,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jspecify.annotations.NullUnmarked;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
  * - iconSet: DULL
  * - color: 0xFFFFFF
  */
+@NullUnmarked
 public class GTMaterials {
 
     public static Map<DyeColor, MaterialRegistryEntry> DYE_MATERIALS = new Object2ObjectOpenHashMap<>();
@@ -285,7 +287,7 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Bone, 5);
     }
 
-    private static void excludeAllGems(Material material, ItemLike... items) {
+    private static void excludeAllGems(Holder<Material> material, ItemLike... items) {
         gem.setIgnored(material, items);
         excludeAllGemsButNormal(material);
     }

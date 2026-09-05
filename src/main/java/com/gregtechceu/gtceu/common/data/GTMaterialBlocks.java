@@ -26,7 +26,6 @@ import com.google.common.collect.Table;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 

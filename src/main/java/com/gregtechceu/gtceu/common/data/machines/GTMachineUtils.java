@@ -382,7 +382,8 @@ public class GTMachineUtils {
                 HIGH_TIERS);
     }
 
-    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material, boolean wooden,
+    public static MachineEntry<MachineDefinition> registerCrate(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                                boolean wooden,
                                                                 int capacity,
                                                                 int rowLength, String lang) {
         return registrate
@@ -404,7 +405,8 @@ public class GTMachineUtils {
         return registerCrate(registrate, material, false, capacity, rowLength, lang);
     }
 
-    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material, boolean wooden,
+    public static MachineEntry<MachineDefinition> registerDrum(GTRegistrate registrate, MaterialRegistryEntry material,
+                                                               boolean wooden,
                                                                int capacity,
                                                                String lang) {
         return registrate

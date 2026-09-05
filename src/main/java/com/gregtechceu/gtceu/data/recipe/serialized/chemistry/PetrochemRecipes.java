@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
+
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -426,7 +425,8 @@ public class PetrochemRecipes {
                 .duration(32).EUt(24).save(provider);
     }
 
-    private static void lightlyCrack(RecipeOutput provider, MaterialRegistryEntry raw, MaterialRegistryEntry hydroCracked,
+    private static void lightlyCrack(RecipeOutput provider, MaterialRegistryEntry raw,
+                                     MaterialRegistryEntry hydroCracked,
                                      MaterialRegistryEntry steamCracked) {
         CRACKING_RECIPES.recipeBuilder("lightly_hydro_crack_" + raw.getName())
                 .circuitMeta(1)
@@ -457,7 +457,8 @@ public class PetrochemRecipes {
                 .duration(160).duration(VA[LV]).save(provider);
     }
 
-    private static void moderatelyCrack(RecipeOutput provider, MaterialRegistryEntry raw, MaterialRegistryEntry hydroCracked,
+    private static void moderatelyCrack(RecipeOutput provider, MaterialRegistryEntry raw,
+                                        MaterialRegistryEntry hydroCracked,
                                         MaterialRegistryEntry steamCracked) {
         CRACKING_RECIPES.recipeBuilder("hydro_crack_" + raw.getName())
                 .circuitMeta(2)
@@ -488,7 +489,8 @@ public class PetrochemRecipes {
                 .duration(240).EUt(VA[LV]).save(provider);
     }
 
-    private static void severelyCrack(RecipeOutput provider, MaterialRegistryEntry raw, MaterialRegistryEntry hydroCracked,
+    private static void severelyCrack(RecipeOutput provider, MaterialRegistryEntry raw,
+                                      MaterialRegistryEntry hydroCracked,
                                       MaterialRegistryEntry steamCracked) {
         CRACKING_RECIPES.recipeBuilder("severely_hydro_crack_" + raw.getName())
                 .circuitMeta(2)

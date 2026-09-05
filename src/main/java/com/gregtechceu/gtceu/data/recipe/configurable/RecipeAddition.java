@@ -156,7 +156,8 @@ public class RecipeAddition {
                     'B', new ItemStack(Items.BRICK),
                     'W', new FluidContainerIngredient(Water.getFluidTag(), 1000));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete", new ItemStack(Concrete.value().getBucket()),
+            VanillaRecipeHelper.addShapedRecipe(provider, "bucket_of_concrete",
+                    new ItemStack(Concrete.value().getBucket()),
                     "CBS", "CWQ", " L ",
                     'C', new MaterialEntry(dust, Calcite),
                     'S', new MaterialEntry(dust, Stone),
@@ -1425,7 +1426,8 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PII", "hSf", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot,
+                        material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
@@ -1434,7 +1436,8 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "PS ", "hS ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot,
+                        material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
@@ -1450,7 +1453,8 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "hS ", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
-                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material),
+                new MaterialEntry(material.value().hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot,
+                        material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
