@@ -590,7 +590,7 @@ public final class Material {
 
         @Setter
         @Getter
-        private String overriddenName;
+        private @Nullable String overriddenName = null;
 
         /**
          * The colors of this Material.
