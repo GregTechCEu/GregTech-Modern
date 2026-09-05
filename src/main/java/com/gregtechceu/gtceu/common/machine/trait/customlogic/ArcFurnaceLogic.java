@@ -73,6 +73,7 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
 
         var material = mat.getProperty(PropertyKey.INGOT);
         var materialArc = material.getArcSmeltingInto();
+        if (materialArc == null) materialArc = mat;
 
         float outputAmount = (durability * fullAmount);
         int dustAmount = (int) outputAmount;

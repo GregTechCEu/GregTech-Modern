@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.FaceLayer;
 import com.gregtechceu.gtceu.client.model.FaceLayerCompositor;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
@@ -14,7 +15,6 @@ import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.ctm.CTMMeshBuilder;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -234,8 +234,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             renderTypeSets.add(coverRenderTypes);
         }
 
-        renderTypeSets.add(ChunkRenderTypeSet.of(GTRenderTypes.machineFaceOverlay()));
-
         return ChunkRenderTypeSet.union(renderTypeSets);
     }
 
@@ -254,17 +252,12 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         boolean blockRender = modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS);
         List<BakedQuad> quads;
         if (blockRender) {
-            boolean overlayPass = renderType == GTRenderTypes.machineFaceOverlay();
-            quads = getMachineQuads(state, side, rand, modelData, overlayPass ? null : renderType);
-            if (overlayPass) {
-                FaceLayerCompositor.retainOverlayLayers(quads);
-            } else {
-                FaceLayerCompositor.retainBaseLayers(quads);
-            }
+            quads = getMachineQuads(state, side, rand, modelData, renderType);
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
             quads = renderMachine(null, null, null, state, side, rand, modelData, renderType);
         }
+        FaceLayerCompositor.compose(quads);
         postTransform.processInPlace(quads);
         return quads;
     }
@@ -287,20 +280,22 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
                 var itemFace = outputTrait.getItemOutputDirection();
                 if (itemFace != null && side == itemFace) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite)
+                            .gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     if (outputTrait.isAutoOutputItems()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                                itemOutputOverlaySprite));
+                                itemOutputOverlaySprite).gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     }
                 }
             }
             if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
                 var fluidFace = outputTrait.getFluidOutputDirection();
                 if (fluidFace != null && side == fluidFace) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite)
+                            .gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     if (outputTrait.isAutoOutputFluids()) {
                         quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                                fluidOutputOverlaySprite));
+                                fluidOutputOverlaySprite).gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
                     }
                 }
             }

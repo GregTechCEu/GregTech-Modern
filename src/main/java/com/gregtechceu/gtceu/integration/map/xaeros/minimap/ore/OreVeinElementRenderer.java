@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
@@ -44,12 +45,12 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
         int iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
 
         Material material = OreRenderLayer.getMaterial(vein);
-        int materialARGB = material.getMaterialARGB();
+        int materialARGB = material == null ? 0xFFFFFFFF : material.getMaterialARGB();
         float[] colors = RenderUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         ResourceLocation oreTexture = MaterialIconType.rawOre
-                .getItemTexturePath(material.getMaterialIconSet(), true);
+                .getItemTexturePath(material == null ? MaterialIconSet.DULL : material.getMaterialIconSet(), true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)

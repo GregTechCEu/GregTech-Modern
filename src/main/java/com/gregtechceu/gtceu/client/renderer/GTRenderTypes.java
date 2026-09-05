@@ -47,17 +47,10 @@ public class GTRenderTypes extends RenderType {
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
-    // Bloom sits in front of base faces but behind facades and overlays using polygon offset and sort.
-    private static final LayeringStateShard BLOOM_LAYERING = new LayeringStateShard(
-            "bloom_layering",
-            () -> {
-                RenderSystem.polygonOffset(-0.5F, -5.0F);
-                RenderSystem.enablePolygonOffset();
-            },
-            () -> {
-                RenderSystem.polygonOffset(0.0F, 0.0F);
-                RenderSystem.disablePolygonOffset();
-            });
+    // Model space offsets establish local order; polygon offset preserves them after depth quantization.
+    private static final LayeringStateShard CUSTOM_CHUNK_LAYERING = createDepthLayering("custom_chunk_layering", -0.5F,
+            -5.0F);
+    private static final LayeringStateShard FACADE_LAYERING = POLYGON_OFFSET_LAYERING;
 
     private static final RenderType BLOOM = RenderType.create("gtceu:bloom",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -67,21 +60,21 @@ public class GTRenderTypes extends RenderType {
                     .setOutputState(BLOOM_TARGET)
                     .setWriteMaskState(COLOR_WRITE)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
-                    .setLayeringState(BLOOM_LAYERING)
+                    .setLayeringState(CUSTOM_CHUNK_LAYERING)
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true));
 
-    private static final RenderType MACHINE_FACE_OVERLAY = RenderType.create("gtceu:machine_face_overlay",
+    private static final RenderType FACE_LAYER = RenderType.create("gtceu:face_layer",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
             RenderType.BIG_BUFFER_SIZE, true, false,
             RenderType.CompositeState.builder()
-                    .setLightmapState(LIGHTMAP)
-                    .setShaderState(RENDERTYPE_CUTOUT_SHADER)
-                    .setTextureState(BLOCK_SHEET)
-                    .setWriteMaskState(COLOR_WRITE)
+                    .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
+                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setWriteMaskState(COLOR_DEPTH_WRITE)
                     .setDepthTestState(LEQUAL_DEPTH_TEST)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(CUSTOM_CHUNK_LAYERING)
+                    .setLightmapState(LIGHTMAP)
                     .createCompositeState(true));
 
     private static final RenderType FACADE_SOLID = RenderType.create("gtceu:facade_solid",
@@ -91,7 +84,7 @@ public class GTRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_SOLID_SHADER)
                     .setTextureState(BLOCK_SHEET_MIPPED)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_CUTOUT_MIPPED = RenderType.create("gtceu:facade_cutout_mipped",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -100,7 +93,7 @@ public class GTRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
                     .setTextureState(BLOCK_SHEET_MIPPED)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_CUTOUT = RenderType.create("gtceu:facade_cutout",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -109,7 +102,7 @@ public class GTRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_CUTOUT_SHADER)
                     .setTextureState(BLOCK_SHEET)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_TRANSLUCENT = RenderType.create("gtceu:facade_translucent",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -120,7 +113,7 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setOutputState(TRANSLUCENT_TARGET)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final RenderType FACADE_TRIPWIRE = RenderType.create("gtceu:facade_tripwire",
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
@@ -131,7 +124,7 @@ public class GTRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setOutputState(WEATHER_TARGET)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
+                    .setLayeringState(FACADE_LAYERING)
                     .createCompositeState(true));
     private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
         return create("gtceu:entity_bloom",
@@ -182,6 +175,19 @@ public class GTRenderTypes extends RenderType {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
     }
 
+    private static LayeringStateShard createDepthLayering(String name, float factor, float units) {
+        return new LayeringStateShard(
+                name,
+                () -> {
+                    RenderSystem.polygonOffset(factor, units);
+                    RenderSystem.enablePolygonOffset();
+                },
+                () -> {
+                    RenderSystem.polygonOffset(0.0F, 0.0F);
+                    RenderSystem.disablePolygonOffset();
+                });
+    }
+
     public static RenderType lightRing() {
         return LIGHT_RING;
     }
@@ -190,8 +196,8 @@ public class GTRenderTypes extends RenderType {
         return BLOOM;
     }
 
-    public static RenderType machineFaceOverlay() {
-        return MACHINE_FACE_OVERLAY;
+    public static RenderType faceLayer() {
+        return FACE_LAYER;
     }
 
     public static RenderType facade(RenderType source) {
