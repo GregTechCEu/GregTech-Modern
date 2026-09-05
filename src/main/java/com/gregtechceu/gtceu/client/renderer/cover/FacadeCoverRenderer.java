@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.FaceLayer;
+import com.gregtechceu.gtceu.client.model.FaceLayerCompositor;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
@@ -191,7 +193,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 // fix the quad's UVs based on the original & clamped vertices
                 interpolator.transform(emitter);
 
-                quads.add(emitter.toBlockBakedQuad());
+                quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(getFacadeLayer(quad)));
                 emitter.emit();
             }
         }
@@ -278,6 +280,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             renderCover(quads, facade.attachedSide, rand, facade, pos, level,
                     ModelData.EMPTY, renderType);
             if (quads.isEmpty()) continue;
+            FaceLayerCompositor.compose(quads);
 
             RenderType facadeRenderType = GTRenderTypes.facade(renderType);
             modelRenderer.tesselateBlock(level, new DynamicFacadeModel(quads), holderState, pos, poseStack,
@@ -347,6 +350,10 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return defaultItemModel.getOverrides();
         }
         return super.getOverrides();
+    }
+
+    private static FaceLayer getFacadeLayer(BakedQuad quad) {
+        return quad.gtceu$getFaceLayer() == FaceLayer.EMISSIVE ? FaceLayer.COVER_EMISSIVE : FaceLayer.COVER;
     }
 
     private static class FacadeItemBakedModel extends BakedModelWrapper<BakedModel> implements IDynamicBakedModel {
@@ -441,7 +448,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         // fix the quad's UVs based on the original & clamped vertices
                         interpolator.transform(emitter);
 
-                        quads.add(emitter.toBlockBakedQuad());
+                        quads.add(emitter.toBlockBakedQuad().gtceu$setFaceLayer(getFacadeLayer(quad)));
                         emitter.emit();
                     }
                 }
