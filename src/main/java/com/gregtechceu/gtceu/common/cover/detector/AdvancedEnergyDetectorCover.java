@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
-import brachy.modularui.value.sync.DoubleSyncValue;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
