@@ -3,46 +3,39 @@ package com.gregtechceu.gtceu.integration.recipeviewer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 
+import com.mojang.datafixers.util.Either;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import dev.emi.emi.api.render.EmiRenderable;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiStack;
-import me.shedaniel.rei.api.client.gui.Renderer;
-import me.shedaniel.rei.api.client.gui.widgets.Widgets;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
+import org.jetbrains.annotations.Nullable;
 
 // Generic recipe viewer category icon
 public class CategoryIcon {
 
-    private Object wrappedValue;
+    private @Nullable Object wrappedValue;
+    private Either<ResourceLocation, ItemStack> texture;
 
     public CategoryIcon(ResourceLocation texture) {
         if (!GTCEu.isClientSide()) return;
-        if (GTCEu.Mods.isEMILoaded()) {
-            wrappedValue = EmiCallWrapper.getRenderable(texture);
-        } else if (GTCEu.Mods.isREILoaded()) {
-            wrappedValue = ReiCallWrapper.getRenderable(texture);
-        } else if (GTCEu.Mods.isJEILoaded()) {
-            wrappedValue = JeiCallWrapper.getRenderable(texture);
-        }
+        this.texture = Either.left(texture);
     }
 
     public CategoryIcon(ItemStack stack) {
         if (!GTCEu.isClientSide()) return;
-        if (GTCEu.Mods.isEMILoaded()) {
-            wrappedValue = EmiCallWrapper.getRenderable(stack);
-        } else if (GTCEu.Mods.isREILoaded()) {
-            wrappedValue = ReiCallWrapper.getRenderable(stack);
-        } else if (GTCEu.Mods.isJEILoaded()) {
-            wrappedValue = JeiCallWrapper.getRenderable(stack);
-        }
+        this.texture = Either.right(stack);
     }
 
     public Object get() {
+        if (wrappedValue != null) return wrappedValue;
+        if (GTCEu.Mods.isEMILoaded()) {
+            wrappedValue = texture.map(EmiCallWrapper::getRenderable, EmiCallWrapper::getRenderable);
+        } else if (GTCEu.Mods.isJEILoaded()) {
+            wrappedValue = texture.map(JeiCallWrapper::getRenderable, JeiCallWrapper::getRenderable);
+        }
         return wrappedValue;
     }
 
@@ -54,17 +47,6 @@ public class CategoryIcon {
 
         public static EmiRenderable getRenderable(ItemStack stack) {
             return EmiStack.of(stack);
-        }
-    }
-
-    private static class ReiCallWrapper {
-
-        public static Renderer getRenderable(ResourceLocation location) {
-            return Widgets.createTexturedWidget(location, 0, 0, 16, 16);
-        }
-
-        public static Renderer getRenderable(ItemStack stack) {
-            return EntryStack.of(VanillaEntryTypes.ITEM, stack);
         }
     }
 
