@@ -389,6 +389,11 @@ public class ChemicalHelper {
                 "No item tag for %s %s".formatted(orePrefix, material));
     }
 
+    public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return Objects.requireNonNull(getTag(orePrefix, material),
+                "No item tag for %s %s".formatted(orePrefix, material));
+    }
+
     public static List<TagKey<Item>> getTags(TagPrefix orePrefix, Material material) {
         return orePrefix.getItemTags(material);
     }
