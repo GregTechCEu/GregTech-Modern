@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
@@ -100,7 +99,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             tag.remove("frameMaterial");
         }
         super.loadAdditional(tag, registries);
-
     }
 
     //////////////////////////////////////

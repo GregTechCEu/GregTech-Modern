@@ -686,7 +686,8 @@ public class GTMachines {
     public static final MachineEntry<MachineDefinition>[] QUANTUM_TANK = registerQuantumTanks(REGISTRATE,
             "quantum_tank", HIGH_TIERS);
 
-    public static final MachineEntry<MachineDefinition> WOODEN_CRATE = registerCrate(REGISTRATE, GTMaterials.Wood, true, 27,
+    public static final MachineEntry<MachineDefinition> WOODEN_CRATE = registerCrate(REGISTRATE, GTMaterials.Wood, true,
+            27,
             9, "Wooden Crate");
     public static final MachineEntry<MachineDefinition> BRONZE_CRATE = registerCrate(REGISTRATE, GTMaterials.Bronze, 54,
             9, "Bronze Crate");
