@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
@@ -14,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 
-import brachy.modularui.api.drawable.Text;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,25 +55,26 @@ class TestablePredicate extends BasePredicate {
         this.onError = onError;
     }
 
-    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
-    public List<Component> getRecipeViewerTooltips() {
+    @Override
+    public List<Component> getRecipeViewerTooltips(MultiPredicate root) {
         List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
         if (minCount == maxCount && maxCount != -1) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.exact", minCount));
+            tooltips.add(Component.translatable("gtceu.multiblock.pattern.exact_count", minCount));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
-            tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.range", minCount, maxCount));
+            tooltips.add(Component.translatable("gtceu.multiblock.pattern.between_count", minCount, maxCount));
         } else {
-            // todo actual lang
             if (minCount > 0) {
-                tooltips.add(Component.literal(Text.RED + "At least: " + Text.RESET + minCount));
-                // tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count", minCount,
-                // ctx.getGlobalCount(this)));
+                tooltips.add(Component.translatable("gtceu.multiblock.pattern.min_count", minCount));
             }
             if (maxCount != -1) {
-                tooltips.add(Component.literal(Text.RED + "At most: " + Text.RESET + maxCount));
-                // tooltips.add(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count", maxCount,
-                // ctx.getGlobalCount(this)));
+                tooltips.add(Component.translatable("gtceu.multiblock.pattern.max_count", maxCount));
             }
+        }
+        if (root.isSingle()) {
+            tooltips.add(Component.translatable("gtceu.multiblock.pattern.single"));
+        }
+        if (root.hasAir()) {
+            tooltips.add(Component.translatable("gtceu.multiblock.pattern.replaceable_air"));
         }
         return tooltips;
     }

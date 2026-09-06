@@ -32,7 +32,7 @@ public class GTRecipeUIModifiers {
 
             ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
-            if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
+            if (requiredCoil != null && requiredCoil.getMaterial() != null) {
                 coilRow.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
                         Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
                                 .getString())));

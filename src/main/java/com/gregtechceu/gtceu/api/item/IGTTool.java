@@ -409,9 +409,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         }
 
         MaterialEntry entry = ChemicalHelper.getMaterialEntry(repair.getItem());
-        if (entry.isEmpty()) return false;
 
-        if (entry.material() == this.getMaterial()) {
+        if (entry != null && entry.material() == this.getMaterial()) {
             // special case wood to allow Wood Planks
             if (VanillaRecipeHelper.isMaterialWood(entry.material())) {
                 return entry.tagPrefix() == TagPrefix.planks;
