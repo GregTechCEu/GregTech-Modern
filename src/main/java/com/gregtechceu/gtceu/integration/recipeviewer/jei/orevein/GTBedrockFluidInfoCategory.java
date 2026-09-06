@@ -9,15 +9,21 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidge
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.neoforge.NeoForgeTypes;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class GTBedrockFluidInfoCategory extends
@@ -46,19 +52,35 @@ public class GTBedrockFluidInfoCategory extends
         registration.addRecipeCatalyst(GTItems.PROSPECTOR_LuV.asStack(), RECIPE_TYPE);
     }
 
-    @NotNull
+    public int getMaxHeight() {
+        return 250;
+    }
+
+    public int getMaxWidth() {
+        return 180;
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayoutBuilder builder, BedrockFluidDefinition fluid,
+                          IFocusGroup focuses) {
+        Arrays.stream(OreVeinRecipeWidget.getDimensionMarkers(fluid.dimensionFilter))
+                .forEach(v -> builder.addSlot(RecipeIngredientRole.INPUT).addIngredient(VanillaTypes.ITEM_STACK,
+                        v.getIcon()));
+
+        builder.addSlot(RecipeIngredientRole.OUTPUT).addIngredient(NeoForgeTypes.FLUID_STACK,
+                new FluidStack(fluid.getStoredFluid(), 1000));
+    }
+
     @Override
     public RecipeType<BedrockFluidDefinition> getRecipeType() {
         return RECIPE_TYPE;
     }
 
-    @NotNull
     @Override
     public Component getTitle() {
         return Component.translatable("gtceu.jei.bedrock_fluid_diagram");
     }
 
-    @NotNull
     @Override
     public IDrawable getIcon() {
         return icon;

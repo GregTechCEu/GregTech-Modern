@@ -7,42 +7,39 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.gui.navigation.ScreenPosition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotDrawable;
-import mezz.jei.api.gui.inputs.RecipeSlotUnderMouse;
-import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
-import mezz.jei.api.gui.widgets.ISlottedRecipeWidget;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeRegistration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MultiblockInfoJeiCategory extends
-                                       ModularUIRecipeCategory<MultiblockInfoJeiCategory.MultiblockPreviewInfoWrapper> {
+                                       ModularUIRecipeCategory<MultiblockMachineDefinition> {
 
-    public final static RecipeType<MultiblockPreviewInfoWrapper> RECIPE_TYPE = new RecipeType<>(
+    public final static RecipeType<MultiblockMachineDefinition> RECIPE_TYPE = new RecipeType<>(
             GTCEu.id("multiblock_info"),
-            MultiblockPreviewInfoWrapper.class);
+            MultiblockMachineDefinition.class);
     private final IDrawable icon;
 
     public MultiblockInfoJeiCategory(IJeiHelpers helpers) {
-        super(v -> new MultiblockPreviewWidget(v.definition, null, 200, 180), v -> v.definition.getId());
+        super(v -> new MultiblockPreviewWidget(v, null, 200, 180), v -> v.getId());
         IGuiHelper guiHelper = helpers.getGuiHelper();
         this.icon = guiHelper.createDrawableItemStack(GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack());
     }
@@ -52,61 +49,38 @@ public class MultiblockInfoJeiCategory extends
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
                 .filter(MultiblockMachineDefinition::isRenderXEIPreview)
-                .map(MultiblockPreviewInfoWrapper::new)
                 .toList());
     }
 
-    @Override
-    public void createRecipeExtras(@NotNull IRecipeExtrasBuilder builder, @NotNull MultiblockPreviewInfoWrapper recipe,
-                                   @NotNull IFocusGroup focuses) {
-        super.createRecipeExtras(builder, recipe, focuses);
-        List<IRecipeSlotDrawable> slots = new ArrayList<>(builder.getRecipeSlots().getSlots());
-        class ProxyRecipeWidget implements ISlottedRecipeWidget {
+    public int getMaxWidth() {
+        return 200;
+    }
 
-            private final ScreenPosition position = new ScreenPosition(0, 0);
-
-            @Override
-            public Optional<RecipeSlotUnderMouse> getSlotUnderMouse(double mouseX, double mouseY) {
-                return slots.stream().findFirst().map(slot -> new RecipeSlotUnderMouse(slot, 0, 0));
-                /*
-                 * var panel = recipe.getWidget();
-                 * var pos = panel.getSelfPosition();
-                 * var size = panel.getSize();
-                 * boolean inParent = Widget.isMouseOver(pos.x, pos.y, size.width, size.height, mouseX, mouseY);
-                 * if (!inParent) return Optional.empty();
-                 * List<Widget> widgets = recipe.modularUI.getFlatWidgetCollection();
-                 * return slots.stream()
-                 * .filter(slot -> {
-                 * Optional<String> slotName = slot.getSlotName();
-                 * if (slotName.isEmpty()) return false;
-                 * String name = slotName.get();
-                 * int index = Integer.parseInt(name.substring(5));
-                 * Widget widget = widgets.get(index);
-                 * slot.setPosition(widget.getPositionX(), widget.getPositionY());
-                 * return slot.isMouseOver(mouseX, mouseY);
-                 * })
-                 * .findFirst()
-                 * .map(slot -> new RecipeSlotUnderMouse(slot, 0, 0));
-                 */
-            }
-
-            @Override
-            public ScreenPosition getPosition() {
-                return position;
-            }
-        }
-
-        builder.addSlottedWidget(new ProxyRecipeWidget(), slots);
+    public int getMaxHeight() {
+        return 180;
     }
 
     @Override
-    public @Nullable ResourceLocation getRegistryName(MultiblockPreviewInfoWrapper recipe) {
-        return recipe.definition.getId();
+    public void setRecipe(IRecipeLayoutBuilder builder, MultiblockMachineDefinition definition,
+                          IFocusGroup focuses) {
+        List<ItemStack> containedBlocks = MultiblockPreviewWidget.initializeContainedBlocks(definition);
+
+        builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT).addIngredient(VanillaTypes.ITEM_STACK,
+                new ItemStack(definition.getBlock()));
+
+        for (var stack : containedBlocks) {
+            builder.addInvisibleIngredients(RecipeIngredientRole.INPUT).addIngredient(VanillaTypes.ITEM_STACK, stack);
+        }
+    }
+
+    @Override
+    public @Nullable ResourceLocation getRegistryName(MultiblockMachineDefinition recipe) {
+        return recipe.getId();
     }
 
     @Override
     @NotNull
-    public RecipeType<MultiblockPreviewInfoWrapper> getRecipeType() {
+    public RecipeType<MultiblockMachineDefinition> getRecipeType() {
         return RECIPE_TYPE;
     }
 
@@ -120,6 +94,4 @@ public class MultiblockInfoJeiCategory extends
     public IDrawable getIcon() {
         return icon;
     }
-
-    public record MultiblockPreviewInfoWrapper(MultiblockMachineDefinition definition) {}
 }

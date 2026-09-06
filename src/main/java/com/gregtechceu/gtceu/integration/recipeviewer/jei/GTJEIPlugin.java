@@ -66,7 +66,7 @@ public class GTJEIPlugin implements IModPlugin {
             registry.addRecipeCategories(new GTBedrockOreInfoCategory(jeiHelpers));
         for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
             if (category.shouldRegisterDisplays()) {
-                // registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
+                registry.addRecipeCategories(new GTRecipeJEICategory(jeiHelpers, category));
             }
         }
         registry.addRecipeCategories(new ProgrammedCircuitJeiCategory(jeiHelpers));

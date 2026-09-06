@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -44,7 +45,10 @@ import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -54,6 +58,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 @Accessors(chain = true)
 public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidget> {
@@ -494,5 +500,40 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         public ItemStack stack() {
             return info().getItemStackForm();
         }
+    }
+
+    public static List<ItemStack> initializeContainedBlocks(MultiblockMachineDefinition definition) {
+        List<ItemStack> containedBlocks = new ArrayList<>();
+        Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
+
+        IBlockPattern pattern = definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+        AbstractStructureHelper structureHelper = null;
+        if (pattern instanceof BlockPattern blockPattern) {
+            var sliceRepeats = new Int2IntArrayMap();
+            for (int i = 0; i < blockPattern.getSlices().length; i++) {
+                sliceRepeats.put(i, blockPattern.getSlices()[i].getMinRepeats());
+            }
+            structureHelper = AbstractStructureHelper.blockPattern(sliceRepeats);
+        } else if (pattern instanceof ExpandablePattern expandablePattern) {
+            var userDimensions = new IntArrayList();
+            expandablePattern.getBoundsConstraints().apply().stream()
+                    .mapToInt(Pair::left)
+                    .forEach(userDimensions::add);
+            structureHelper = AbstractStructureHelper.expandable(userDimensions);
+        }
+        if (structureHelper != null) {
+            structureHelper.populate(resultStructure, pattern, null,
+                    definition.getRotationState().defaultDirection, switch (definition.getRotationState()) {
+                        case Y_AXIS -> Direction.NORTH;
+                        case ALL, NON_Y_AXIS, NONE -> Direction.UP;
+                    }, false);
+
+            Object2IntMap<Block> blockCount = new Object2IntOpenHashMap<>();
+            resultStructure.forEach(
+                    (pos, state) -> blockCount.mergeInt(state.getBlockState().getBlock(), 1, Integer::sum));
+            blockCount.forEach((block, count) -> containedBlocks.add(new ItemStack(block.asItem(), count)));
+        }
+
+        return containedBlocks;
     }
 }
