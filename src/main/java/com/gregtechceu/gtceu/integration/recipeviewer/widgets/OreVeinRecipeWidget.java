@@ -58,7 +58,7 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
     public OreVeinRecipeWidget(BedrockFluidDefinition fluid) {
         this(WIDTH, 140, getFluidName(fluid), fluid.getWeight(), null, fluid.dimensionFilter, veinYield(fluid),
                 depletion(fluid));
-        drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create()
+        drawUI(Flow.row().coverChildren().child(RecipeViewerSlotWidget.create(FluidStack.class)
                 .value(new FluidStack(fluid.getStoredFluid().get(), 1000)).recipeSlotRole(RecipeSlotRole.OUTPUT)));
     }
 
@@ -72,7 +72,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
         var slots = Flow.row().coverChildren();
         for (int i = 0; i < containedOresAsItemStacks.size(); i++) {
-            RecipeViewerSlotWidget<?> oreSlot = RecipeViewerSlotWidget.create().value(containedOresAsItemStacks.get(i))
+            RecipeViewerSlotWidget<ItemStack, ?> oreSlot = RecipeViewerSlotWidget.create(ItemStack.class)
+                    .value(containedOresAsItemStacks.get(i))
                     .recipeSlotRole(RecipeSlotRole.OUTPUT);
             int finalI = i;
             oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.get(finalI))));
@@ -91,7 +92,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
 
         var slots = Flow.row().coverChildren();
         for (int i = 0; i < containedOresAsItemStacks.size(); i++) {
-            RecipeViewerSlotWidget<?> oreSlot = RecipeViewerSlotWidget.create().value(containedOresAsItemStacks.get(i))
+            RecipeViewerSlotWidget<ItemStack, ?> oreSlot = RecipeViewerSlotWidget.create(ItemStack.class)
+                    .value(containedOresAsItemStacks.get(i))
                     .recipeSlotRole(RecipeSlotRole.OUTPUT);
             int finalI = i;
             oreSlot.tooltipBuilder(r -> r.add(Text.lang("gtceu.jei.ore_vein_diagram.chance", chances.getInt(finalI))));
@@ -118,7 +120,8 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
             Flow row = Flow.row().coverChildren().padding(2);
 
             for (DimensionMarker dimMarker : getDimensionMarkers(dimensionFilter)) {
-                RecipeViewerSlotWidget<?> dimSlot = RecipeViewerSlotWidget.create().value(dimMarker.getIcon())
+                RecipeViewerSlotWidget<ItemStack, ?> dimSlot = RecipeViewerSlotWidget.create(ItemStack.class)
+                        .value(dimMarker.getIcon())
                         .recipeSlotRole(RecipeSlotRole.CATALYST).background(IDrawable.NONE);
                 if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
                     dimSlot.overlay(

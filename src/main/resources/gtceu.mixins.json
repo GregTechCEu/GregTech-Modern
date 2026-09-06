@@ -47,7 +47,6 @@
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
         "jei.RecipesGuiAccessor",
-        "rei.FluidEntryRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",
         "xaerominimap.MinimapFBORendererMixin",
         "xaeroworldmap.GuiMapMixin",
@@ -107,8 +106,6 @@
         "jei.FluidHelperMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
-        "rei.InputSlotCrafterMixin",
-        "rei.RecipeFinderMixin"
     ],
     "injectors": {
         "defaultRequire": 1,
