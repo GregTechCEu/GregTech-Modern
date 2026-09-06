@@ -13,6 +13,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 public class GTEmiRecipe extends ModularUIEmiRecipe {
 
@@ -43,7 +44,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
 
-            ingredients.add(EmiStackConverter.ITEM.convertTo(mapped, chance));
+            ingredients.add(EmiStackConverter.ITEM.convertTo(mapped, chance, UnaryOperator.identity()));
         }
 
         for (var fluidContent : fluids) {
@@ -52,7 +53,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
 
-            ingredients.add(EmiStackConverter.FLUID.convertTo(mapped, chance));
+            ingredients.add(EmiStackConverter.FLUID.convertTo(mapped, chance, UnaryOperator.identity()));
         }
 
         return ingredients;
