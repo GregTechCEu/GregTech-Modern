@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -49,12 +50,34 @@ public class ListTransformer<T> implements ValueTransformer<List<T>> {
         var current = context.currentValue();
         ListTag listTag = ValueTransformer.assertTagType(ListTag.class, tag, context);
         if (current != null) current.clear();
-        else current = new ArrayList<>();
-        List<T> finalCurrent = current;
+        else current = new ArrayList<>(listTag.size());
         for (var t : listTag) {
             T val = getElemTransformer(context).deserializeNBT(TagCompatibilityFixer.stripLDLibPayloadWrapper(t),
                     getInnerElemContext(null, context));
-            if (val != null) finalCurrent.add(val);
+            if (val != null) current.add(val);
+        }
+        return current;
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, List<T> value, TransformerContext<List<T>> context) {
+        buf.writeVarInt(value.size());
+        for (T elem : value) {
+            getElemTransformer(context).writeToPacket(buf, elem, getInnerElemContext(elem, context));
+        }
+    }
+
+    @Override
+    public @Nullable List<T> readFromPacket(FriendlyByteBuf buf, TransformerContext<List<T>> context) {
+        var len = buf.readVarInt();
+        var current = context.currentValue();
+
+        if (current != null) current.clear();
+        else current = new ArrayList<>(len);
+
+        for (int i = 0; i < len; i++) {
+            T val = getElemTransformer(context).readFromPacket(buf, getInnerElemContext(null, context));
+            if (val != null) current.add(val);
         }
         return current;
     }

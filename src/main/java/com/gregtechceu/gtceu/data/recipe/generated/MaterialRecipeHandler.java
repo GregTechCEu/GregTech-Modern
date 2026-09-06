@@ -118,9 +118,9 @@ public final class MaterialRecipeHandler {
 
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
-                if (!smeltingResult.isNull()) {
+                if (smeltingResult != null) {
                     VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
-                            ChemicalHelper.getTag(dust, material), ChemicalHelper.get(ingot, smeltingResult));
+                            ChemicalHelper.getTagOrThrow(dust, material), ChemicalHelper.get(ingot, smeltingResult));
                 }
             }
 
@@ -131,7 +131,7 @@ public final class MaterialRecipeHandler {
                 ItemStack ingotStack = ChemicalHelper.get(hasHotIngot ? ingotHot : ingot, material);
                 if (ingotStack.isEmpty() && oreProperty != null) {
                     Material smeltingResult = oreProperty.getDirectSmeltResult();
-                    if (!smeltingResult.isNull()) {
+                    if (smeltingResult != null) {
                         ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     }
                 }
@@ -142,15 +142,15 @@ public final class MaterialRecipeHandler {
                     if (!material.hasFlag(IS_MAGNETIC)) {
                         // do not register inputs by tag prefix here. Let other mods register their own dust -> ingots
                         VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
-                                ChemicalHelper.getTag(dust, material), ingotStack);
+                                ChemicalHelper.getTagOrThrow(dust, material), ingotStack);
                     }
                 } else {
-                    IngotProperty ingotProperty = material.getProperty(PropertyKey.INGOT);
-                    BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
+                    IngotProperty ingotProperty = material.getPropertyOrThrow(PropertyKey.INGOT);
+                    BlastProperty blastProperty = material.getPropertyOrThrow(PropertyKey.BLAST);
 
                     processEBFRecipe(material, blastProperty, ingotStack, provider);
 
-                    if (!ingotProperty.getMagneticMaterial().isNull()) {
+                    if (ingotProperty.getMagneticMaterial() != null) {
                         processEBFRecipe(ingotProperty.getMagneticMaterial(), blastProperty, ingotStack, provider);
                     }
                 }
@@ -166,11 +166,11 @@ public final class MaterialRecipeHandler {
             // Some Ores with Direct Smelting Results have neither ingot nor gem properties
             if (oreProperty != null) {
                 Material smeltingResult = oreProperty.getDirectSmeltResult();
-                if (!smeltingResult.isNull()) {
+                if (smeltingResult != null) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
                         VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + id + "_to_ingot",
-                                ChemicalHelper.getTag(dust, material), ingotStack);
+                                ChemicalHelper.getTagOrThrow(dust, material), ingotStack);
                     }
                 }
             }
@@ -318,7 +318,8 @@ public final class MaterialRecipeHandler {
         }
 
         var magMaterial = material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
+                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
 
         if (material.hasFlag(GENERATE_ROD)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_%s", material.getName()),
@@ -384,8 +385,7 @@ public final class MaterialRecipeHandler {
 
         if (material.hasFlag(GENERATE_PLATE) && !material.hasFlag(NO_WORKING)) {
             if (!material.hasFlag(NO_SMASHING)) {
-                ItemStack plateStack = ChemicalHelper.get(plate, material.hasFlag(IS_MAGNETIC) ?
-                        material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+                ItemStack plateStack = ChemicalHelper.get(plate, magMaterial);
                 if (!plateStack.isEmpty()) {
                     BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_to_plate")
                             .circuitMeta(1)
@@ -488,8 +488,12 @@ public final class MaterialRecipeHandler {
 
         ItemStack nuggetStack = ChemicalHelper.get(nugget, material);
         if (material.hasProperty(PropertyKey.INGOT)) {
-            ItemStack ingotStack = ChemicalHelper.get(ingot, material.hasFlag(IS_MAGNETIC) ?
-                    material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+
+            var magMaterial = material.hasFlag(IS_MAGNETIC) ?
+                    material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
+            if (magMaterial == null) magMaterial = material;
+
+            ItemStack ingotStack = ChemicalHelper.get(ingot, magMaterial);
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
                 if (!ingot.isIgnored(material)) {
@@ -573,8 +577,11 @@ public final class MaterialRecipeHandler {
             return;
         }
 
-        ItemStack blockStack = ChemicalHelper.get(block, material.hasFlag(IS_MAGNETIC) ?
-                material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+        var magMaterial = material.hasFlag(IS_MAGNETIC) ?
+                material.getPropertyOrThrow(PropertyKey.INGOT).getMacerateInto() : material;
+        if (magMaterial == null) magMaterial = material;
+
+        ItemStack blockStack = ChemicalHelper.get(block, magMaterial);
         long materialAmount = block.getMaterialAmount(material);
         if (material.hasFluid()) {
             FluidStack stack = material.getProperty(PropertyKey.FLUID).solidifiesFrom((int) (materialAmount * L / M));
@@ -589,8 +596,7 @@ public final class MaterialRecipeHandler {
         }
 
         if (material.hasFlag(GENERATE_PLATE)) {
-            ItemStack plateStack = ChemicalHelper.get(plate, material.hasFlag(IS_MAGNETIC) ?
-                    material.getProperty(PropertyKey.INGOT).getMacerateInto() : material);
+            ItemStack plateStack = ChemicalHelper.get(plate, magMaterial);
             if (!plateStack.isEmpty()) {
                 CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_block_to_plate")
                         .inputItems(block, material)
@@ -649,7 +655,8 @@ public final class MaterialRecipeHandler {
                         .save(provider);
 
                 Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
-                        material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
+                        material.getPropertyOrThrow(PropertyKey.INGOT).getSmeltingInto() : material;
+                if (nonMagneticMaterial == null) nonMagneticMaterial = material;
                 if (!nonMagneticMaterial.hasProperty(PropertyKey.BLAST)) {
                     ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_dust_to_block")
                             .inputItems(dust, material, (int) (materialAmount / M))

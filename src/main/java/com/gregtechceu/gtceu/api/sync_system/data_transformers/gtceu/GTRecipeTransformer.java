@@ -36,8 +36,7 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         CompoundTag tag = new CompoundTag();
         tag.putString("id", value.id.toString());
         tag.put("recipe",
-                GTRecipeSerializer.CODEC.encodeStart(NbtOps.INSTANCE, value).result().orElse(new CompoundTag()));
-        tag.putInt("parallels", value.parallels);
+                GTRecipeSerializer.CODEC.encodeStart(context.nbtOps(), value).result().orElse(new CompoundTag()));
         tag.putInt("ocLevel", value.ocLevel);
         return tag;
     }
@@ -48,10 +47,9 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         RecipeManager recipeManager = getRecipeManager();
         GTRecipe result = null;
         if (tag instanceof CompoundTag compoundTag) {
-            result = GTRecipeSerializer.CODEC.parse(NbtOps.INSTANCE, compoundTag.get("recipe")).result().orElse(null);
+            result = GTRecipeSerializer.CODEC.parse(context.nbtOps(), compoundTag.get("recipe")).result().orElse(null);
             if (result != null) {
                 result.id = ResourceLocation.parse(compoundTag.getString("id"));
-                result.parallels = compoundTag.contains("parallels") ? compoundTag.getInt("parallels") : 1;
                 result.ocLevel = compoundTag.getInt("ocLevel");
             }
         } else if (tag instanceof StringTag stringTag) { // Backwards Compatibility
@@ -69,5 +67,15 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
             buf.release();
         }
         return result;
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, GTRecipe value, TransformerContext<GTRecipe> context) {
+        GTRecipeSerializer.SERIALIZER.toNetwork(buf, value);
+    }
+
+    @Override
+    public @Nullable GTRecipe readFromPacket(FriendlyByteBuf buf, TransformerContext<GTRecipe> context) {
+        return GTRecipeSerializer.fromNetworkWithoutDatapackSync(buf);
     }
 }

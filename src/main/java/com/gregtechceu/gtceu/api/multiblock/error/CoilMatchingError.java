@@ -15,7 +15,7 @@ public class CoilMatchingError extends MismatchError<ICoilType> {
 
     public CoilMatchingError(BlockPos pos, ICoilType expected, ICoilType actual) {
         super(pos, expected, actual);
-        valueToString(coil -> coil.getMaterial().getName());
+        valueToString(ICoilType::getName);
     }
 
     @Override

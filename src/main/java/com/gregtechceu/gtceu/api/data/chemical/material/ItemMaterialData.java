@@ -25,10 +25,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import com.mojang.datafixers.util.Pair;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,8 +38,19 @@ public class ItemMaterialData {
 
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<Item, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectOpenHashMap<>();
-    /** Mapping of an item to a "prefix, material" pair */
+    /**
+     * Temporary mapping of item suppliers to a material entry. All supplies are resolved and this list is cleared after
+     * item material data is accessed for the first time.
+     */
     public static final List<Pair<Supplier<? extends Item>, MaterialEntry>> ITEM_MATERIAL_ENTRY = new ArrayList<>();
+
+    /**
+     * Set containing items where no material entry has been found.
+     */
+    public static final Set<Item> ITEMS_WITHOUT_MATERIAL = new ObjectOpenHashSet<>();
+    /**
+     * Mapping of an item to a material entry.
+     */
     public static final Map<Item, MaterialEntry> ITEM_MATERIAL_ENTRY_COLLECTED = new Object2ObjectOpenHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, MaterialEntry> TAG_MATERIAL_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
@@ -122,10 +130,8 @@ public class ItemMaterialData {
                 !ORES_INVERSE.containsValue(materialEntry.tagPrefix())) {
             ORES_INVERSE.put(TagPrefix.ORES.get(materialEntry.tagPrefix()).stoneType(), materialEntry.tagPrefix());
         }
-        if (!materialEntry.isEmpty()) {
-            for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
-                TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
-            }
+        for (TagKey<Item> tag : materialEntry.tagPrefix().getAllItemTags(materialEntry.material())) {
+            TAG_MATERIAL_ENTRY.putIfAbsent(tag, materialEntry);
         }
     }
 

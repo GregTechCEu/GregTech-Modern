@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,40 +26,30 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return nullTag;
         }
 
-        return serialize(value, context.lookup(), context.isClientSync(), context.isClientFullSyncUpdate());
-    }
-
-    @Override
-    public @Nullable CoverBehavior deserializeNBT(Tag tag,
-                                                  CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
-        var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
-        if (compoundTag.getBoolean("null")) {
-            return null;
-        }
-
-        if (context.holder() instanceof ICoverable coverable) {
-            return deserialize(compoundTag, context.lookup(), coverable, context.currentValue(),
-                    context.isClientSync());
-        }
-        GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
-        return null;
-    }
-
-    private CompoundTag serialize(CoverBehavior cover, HolderLookup.Provider lookup, boolean isSync, boolean fullSync) {
         var compound = new CompoundTag();
-
-        compound.putInt("side", cover.attachedSide.ordinal());
-        compound.putString("coverType", cover.coverDefinition.getId().toString());
-        CompoundTag serializedCover = isSync ? cover.getSyncDataHolder().serializeClientData(lookup, fullSync) :
-                cover.getSyncDataHolder().serializeNBT(lookup);
+        compound.putString("side", value.attachedSide.getSerializedName());
+        compound.putString("coverType", value.coverDefinition.getId().toString());
+        CompoundTag serializedCover = value.getSyncDataHolder().serializeNBT(context.lookup());
         compound.put("data", serializedCover);
-
         return compound;
     }
 
-    public @Nullable CoverBehavior deserialize(CompoundTag tag, HolderLookup.Provider lookup, ICoverable holder,
-                                               @Nullable CoverBehavior cover,
-                                               boolean isSync) {
+    @Override
+    public @Nullable CoverBehavior deserializeNBT(Tag t,
+                                                  CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
+        CompoundTag tag = ValueTransformer.assertTagType(CompoundTag.class, t, context);
+        if (tag.getBoolean("null")) {
+            return null;
+        }
+
+        if (!(context.holder() instanceof ICoverable holder)) {
+            GTCEu.LOGGER.error("Sync: Object attempting to load cover does not implement ICoverable {}", context);
+            return null;
+
+        }
+
+        CoverBehavior cover = context.currentValue();
+
         /// Ldlib backwards compat
         if (tag.contains("payload") && tag.contains("uid")) {
             tag.putInt("side", tag.getCompound("uid").getInt("side"));
@@ -67,7 +57,16 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             tag.put("data", tag.getCompound("payload").getCompound("d"));
         }
 
-        Direction side = Direction.values()[tag.getInt("side")];
+        Direction side;
+        if (tag.contains("side", Tag.TAG_STRING)) {
+            side = Direction.CODEC.byName(tag.getString("side"));
+        } else if (tag.contains("side", Tag.TAG_ANY_NUMERIC)) {
+            // backwards compat
+            side = Direction.values()[tag.getInt("side")];
+        } else {
+            GTCEu.LOGGER.error("Error during NBT load: invalid side {}", tag.get("side"));
+            return null;
+        }
 
         if (tag.isEmpty() || tag.getString("coverType").isEmpty()) {
             holder.setCoverAtSide(null, side);
@@ -87,13 +86,55 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
 
-        if (isSync) newCover.getSyncDataHolder().deserializeNBT(lookup, tag.getCompound("data"));
-        else newCover.getSyncDataHolder().deserializeNBT(lookup, tag.getCompound("data"));
+        newCover.getSyncDataHolder().deserializeNBT(context.lookup(), tag.getCompound("data"));
 
-        if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {
+        if (newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");
             holder.setCoverAtSide(null, side);
         }
+
+        return newCover;
+    }
+
+    @Override
+    public void writeToPacket(FriendlyByteBuf buf, @Nullable CoverBehavior value,
+                              TransformerContext<CoverBehavior> context) {
+        buf.writeBoolean(value != null);
+        if (value == null) return;
+        buf.writeEnum(value.attachedSide);
+        buf.writeResourceLocation(value.coverDefinition.getId());
+        if (context.isClientFullSyncUpdate()) value.getSyncDataHolder().resyncAllFields();
+        value.getSyncDataHolder().writeClientPacket(context.lookup(), buf);
+    }
+
+    @Override
+    public @Nullable CoverBehavior readFromPacket(FriendlyByteBuf buf, TransformerContext<CoverBehavior> context) {
+        if (!(context.holder() instanceof ICoverable holder)) {
+            GTCEu.LOGGER.error("Sync: Object attempting to sync cover does not implement ICoverable {}", context);
+            return null;
+        }
+
+        if (!buf.readBoolean()) {
+            return null;
+        }
+
+        Direction side = buf.readEnum(Direction.class);
+        ResourceLocation coverId = buf.readResourceLocation();
+        CoverBehavior cover = context.currentValue();
+
+        if (cover == null || !cover.coverDefinition.getId().equals(coverId)) {
+            var coverReg = GTRegistries.COVERS.get(coverId);
+            if (coverReg == null) {
+                GTCEu.LOGGER.error("Error during packet read: unknown cover type {}", coverId);
+                return null;
+            }
+            holder.setCoverAtSide(coverReg.createCoverBehavior(holder, side), side);
+        }
+
+        CoverBehavior newCover = holder.getCoverAtSide(side);
+        if (newCover == null) return null;
+
+        newCover.getSyncDataHolder().readClientPacket(context.lookup(), buf);
 
         return newCover;
     }

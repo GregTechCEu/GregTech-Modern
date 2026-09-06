@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
-import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -66,8 +65,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.runtime.IRecipesGui;
@@ -778,8 +775,6 @@ public class GTUtil {
             EmiCallWrapper.openRecipeCategory(category);
         } else if (GTCEu.Mods.isJEILoaded()) {
             JeiCallWrapper.openRecipeCategory(category);
-        } else if (GTCEu.Mods.isREILoaded()) {
-            ReiCallWrapper.openRecipeCategory(category);
         }
     }
 
@@ -817,20 +812,6 @@ public class GTUtil {
                         .getRecipeCategory(GTRecipeJEICategory.machineType(category));
                 accessor.gtceu$getLogic().setRecipeCategory(specificCategory);
             }
-        }
-    }
-
-    private static class ReiCallWrapper {
-
-        public static void openRecipeCategory(GTRecipeCategory category) {
-            List<CategoryIdentifier<?>> categories = category.getRecipeType().getCategories().stream()
-                    .map(GTRecipeREICategory::machineCategory)
-                    .collect(Collectors.toList());
-            ViewSearchBuilder.builder()
-                    .addCategories(categories)
-                    // switch to the requested category if possible
-                    .setPreferredOpenedCategory(GTRecipeREICategory.machineCategory(category))
-                    .open();
         }
     }
 }

@@ -18,7 +18,6 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
-import me.shedaniel.rei.api.client.REIRuntime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -157,12 +156,8 @@ public class GTCEu {
     public static class Mods {
 
         public static boolean isJEILoaded() {
-            return !(isModLoaded(GTValues.MODID_EMI) || isModLoaded(GTValues.MODID_REI)) &&
+            return !isModLoaded(GTValues.MODID_EMI) &&
                     isModLoaded(GTValues.MODID_JEI);
-        }
-
-        public static boolean isREILoaded() {
-            return isModLoaded(GTValues.MODID_REI) && (!isClientSide() || REIRuntime.getInstance().isOverlayVisible());
         }
 
         public static boolean isEMILoaded() {

@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.utils.EqualityTest;
 import brachy.modularui.utils.serialization.network.*;
@@ -35,8 +34,7 @@ public class GTByteBufAdapters {
             if (!buffer.readBoolean()) {
                 return null;
             }
-            ResourceLocation id = buffer.readResourceLocation();
-            return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buffer);
+            return GTRecipeSerializer.fromNetworkWithoutDatapackSync(buffer);
         }
 
         @Override
@@ -46,7 +44,6 @@ public class GTByteBufAdapters {
                 return;
             }
             buffer.writeBoolean(true);
-            buffer.writeResourceLocation(u.getId());
             GTRecipeSerializer.SERIALIZER.toNetwork(buffer, u);
         }
 

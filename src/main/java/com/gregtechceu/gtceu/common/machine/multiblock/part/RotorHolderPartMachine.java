@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
@@ -58,7 +57,8 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     public int rotorSpeed;
     @SaveField
     @SyncToClient
-    public Material rotorMaterial = GTMaterials.NULL; // 0 - no rotor
+    @Getter
+    public @Nullable Material rotorMaterial = null; // 0 - no rotor
     @Nullable
     protected TickableSubscription rotorSpeedSubs;
     @Nullable
@@ -76,6 +76,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
 
     @Override
     public int tintColor(int index) {
+        if (getRotorMaterial() == null) return super.tintColor(index);
         if (index >= 2) {
             return getRotorMaterial().getLayerARGB(index - 2);
         } else if (index <= -103) {
@@ -117,15 +118,6 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     // ****** Rotor Holder ******//
     //////////////////////////////////////
 
-    public Material getRotorMaterial() {
-        // handles clients trying to get the material before server data sync
-        // noinspection ConstantValue
-        if (rotorMaterial == null) {
-            return GTMaterials.NULL;
-        }
-        return rotorMaterial;
-    }
-
     private void onRotorInventoryChanged() {
         var stack = getRotorStack();
         var rotorBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
@@ -138,7 +130,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
                     .setValue(HAS_ROTOR, true)
                     .setValue(IS_EMISSIVE_ROTOR, emissive));
         } else {
-            this.rotorMaterial = GTMaterials.NULL;
+            this.rotorMaterial = null;
             setRenderState(getRenderState()
                     .setValue(HAS_ROTOR, false)
                     .setValue(IS_EMISSIVE_ROTOR, false));
