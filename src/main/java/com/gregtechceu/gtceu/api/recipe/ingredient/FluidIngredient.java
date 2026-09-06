@@ -111,8 +111,9 @@ public class FluidIngredient implements Predicate<FluidStack> {
             return false;
         }
         for (FluidStack fluidStack : this.getStacks()) {
-            if (fluidStack.getFluid() != stack.getFluid()) continue;
-            return true;
+            if (fluidStack.getFluid().isSame(stack.getFluid())) {
+                return true;
+            }
         }
         return false;
     }
