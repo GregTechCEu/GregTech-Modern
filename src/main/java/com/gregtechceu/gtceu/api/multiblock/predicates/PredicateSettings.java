@@ -22,6 +22,9 @@ public record PredicateSettings(int priority,
     ).apply(instance, PredicateSettings::new));
     // spotless:on
 
+    public static final int MAX_PRIORITY = Integer.MAX_VALUE;
+    public static final int MIN_PRIORITY = Integer.MIN_VALUE;
+
     // helper for xor
     public boolean isNoneValid() {
         return minCount <= 0 && minSliceCount <= 0;

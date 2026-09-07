@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.CheckReturnValue;
 
 import java.util.function.UnaryOperator;
 
@@ -14,7 +15,7 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     boolean hasSettings();
 
     default int getPriority() {
-        return hasSettings() ? getSettings().priority() : -1;
+        return hasSettings() ? getSettings().priority() : PredicateSettings.MIN_PRIORITY;
     }
 
     default int getMinCount() {
@@ -97,30 +98,44 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     /// @return a copy with these settings applied
     S withSettings(UnaryOperator<PredicateSettings> configurator);
 
+    /// @return a copy of this object with the given priority
+    @CheckReturnValue
     default S withPriority(int priority) {
         return withSettings(s -> s.withPriority(priority));
     }
 
+    /// @return a copy of this object with the given min global count
+    @CheckReturnValue
     default S withMinCount(int minCount) {
         return withSettings(s -> s.withMinCount(minCount));
     }
 
+    /// @return a copy of this object with the given max global count
+    @CheckReturnValue
     default S withMaxCount(int maxCount) {
         return withSettings(s -> s.withMaxCount(maxCount));
     }
 
+    /// @return a copy of this object with the given min slice count
+    @CheckReturnValue
     default S withMinSliceCount(int minSliceCount) {
         return withSettings(s -> s.withMinSliceCount(minSliceCount));
     }
 
+    /// @return a copy of this object with the given max slice count
+    @CheckReturnValue
     default S withMaxSliceCount(int maxSliceCount) {
         return withSettings(s -> s.withMaxSliceCount(maxSliceCount));
     }
 
+    /// @return a copy of this object with the given preview count
+    @CheckReturnValue
     default S withPreviewCount(int previewCount) {
         return withSettings(s -> s.withPreviewCount(previewCount));
     }
 
+    /// @return a copy of this object with the given render form disabled
+    @CheckReturnValue
     default S withDisableRenderFormed(boolean disableRenderFormed) {
         return withSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
     }
