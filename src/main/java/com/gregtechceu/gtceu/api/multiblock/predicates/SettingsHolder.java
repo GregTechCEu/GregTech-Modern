@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.UnaryOperator;
@@ -50,7 +51,7 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
         setSettings(configurator.apply(getSettings()));
     }
 
-    ///  mutates this object with the given priority
+    /// mutates this object with the given priority
     @ApiStatus.Internal
     default void setPriority(int priority) {
         updateSettings(s -> s.withPriority(priority));
