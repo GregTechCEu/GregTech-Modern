@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import lombok.AccessLevel;
+import lombok.Setter;
 import net.minecraft.network.chat.Component;
 
 import dev.latvian.mods.rhino.util.RemapForJS;
@@ -23,13 +25,29 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     private static final MultiPredicate EMPTY = of(Logic.OR, List.of()).markImmutable();
 
-    public static final MultiPredicate AIR = of(BasePredicate.AIR).markImmutable();
+    /// use {@link Predicates#air()} instead
+    @ApiStatus.Internal
+    public static final MultiPredicate AIR = of(BasePredicate.AIR)
+            .isAir(true).markImmutable();
 
-    public static final MultiPredicate ANY = of(BasePredicate.ANY).markImmutable();
+    /// use {@link Predicates#any()} instead
+    @ApiStatus.Internal
+    public static final MultiPredicate ANY = of(BasePredicate.ANY)
+            .isAny(true).markImmutable();
 
     private final List<BasePredicate> predicates;
     private final List<MultiPredicate> children;
     private final boolean hasAir;
+
+    @Accessors(fluent = true)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter
+    private boolean isAir = false;
+
+    @Accessors(fluent = true)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter
+    private boolean isAny = false;
 
     @Getter
     private final Logic type;
@@ -167,14 +185,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @ApiStatus.Internal
     public boolean isEmpty() {
         return this == EMPTY;
-    }
-
-    public boolean isAny() {
-        return this == ANY;
-    }
-
-    public boolean isAir() {
-        return this == AIR;
     }
 
     public boolean hasAir() {
@@ -509,7 +519,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// @return A multi predicate with default settings
     private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
         MultiPredicate predicate = type.makePredicate(List.of(), predicates, predicates.stream()
-                .anyMatch(p -> p == BasePredicate.AIR));
+                .anyMatch(BasePredicate::isAir));
         predicate.setSettings(PredicateSettings.create());
         return predicate;
     }

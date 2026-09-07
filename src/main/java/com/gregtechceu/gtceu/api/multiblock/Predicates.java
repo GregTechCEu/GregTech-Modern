@@ -202,11 +202,11 @@ public class Predicates {
     }
 
     public static MultiPredicate any() {
-        return MultiPredicate.ANY;
+        return MultiPredicate.ANY.deepCopy();
     }
 
     public static MultiPredicate air() {
-        return MultiPredicate.AIR;
+        return MultiPredicate.AIR.deepCopy();
     }
 
     public static MultiPredicate abilities(PartAbility ability) {
