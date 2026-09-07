@@ -12,47 +12,31 @@ public class OrPredicate extends MultiPredicate {
 
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
-        boolean result = false;
         for (BasePredicate predicate : predicates()) {
             if (predicate.testGlobalMin(ctx)) {
-                result = true;
-                break;
+                return true;
             }
         }
-        if (!result) {
-            for (MultiPredicate child : children()) {
-                if (child.testGlobalMin(ctx)) {
-                    result = true;
-                    break;
-                }
+        for (MultiPredicate child : children()) {
+            if (child.testGlobalMin(ctx)) {
+                return true;
             }
         }
-        if (result) {
-            result = TestType.GLOBAL_MIN.testSettings(this, ctx);
-        }
-        return result;
+        return false;
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
-        boolean result = false;
         for (BasePredicate predicate : predicates()) {
             if (predicate.testSliceMin(ctx)) {
-                result = true;
-                break;
+                return true;
             }
         }
-        if (!result) {
-            for (MultiPredicate child : children()) {
-                if (child.testSliceMin(ctx)) {
-                    result = true;
-                    break;
-                }
+        for (MultiPredicate child : children()) {
+            if (child.testSliceMin(ctx)) {
+                return true;
             }
         }
-        if (result) {
-            result = TestType.SLICE_MIN.testSettings(this, ctx);
-        }
-        return result;
+        return false;
     }
 }

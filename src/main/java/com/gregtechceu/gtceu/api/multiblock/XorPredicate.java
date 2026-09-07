@@ -68,21 +68,13 @@ public class XorPredicate extends MultiPredicate {
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
-        boolean passed = passedPredicate != null && passedPredicate.testGlobalMin(ctx);
-        if (passed) {
-            passed = TestType.GLOBAL_MIN.testSettings(this, ctx);
-        }
-        return passed;
+        return passedPredicate != null && passedPredicate.testGlobalMin(ctx);
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
-        boolean passed = passedPredicate != null && passedPredicate.testSliceMin(ctx);
-        if (passed && hasSettings()) {
-            passed = TestType.SLICE_MIN.testSettings(this, ctx);
-        }
-        return passed;
+        return passedPredicate != null && passedPredicate.testSliceMin(ctx);
     }
 
     @Override
