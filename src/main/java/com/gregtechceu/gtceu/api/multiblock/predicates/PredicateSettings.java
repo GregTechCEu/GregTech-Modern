@@ -41,10 +41,6 @@ public record PredicateSettings(int priority,
                 this.disableRenderFormed);
     }
 
-    public int comparePriority(PredicateSettings other) {
-        return Integer.compare(this.priority, other.priority);
-    }
-
     public static PredicateSettings create() {
         return new PredicateSettings(
                 0,
