@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -19,6 +20,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -43,6 +45,7 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     @NotNull
     protected EnergyContainerList energyContainer;
     @Getter
+    @DescSynced
     protected int tier;
     @Persisted
     @Getter
@@ -202,7 +205,7 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
 
     @Override
     public long getDisplayRecipeVoltage() {
-        return energyContainer.getHighestVoltage();
+        return GTValues.V[tier];
     }
 
     /**
