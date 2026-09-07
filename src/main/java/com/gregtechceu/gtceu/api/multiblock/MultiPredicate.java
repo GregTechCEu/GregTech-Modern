@@ -486,32 +486,18 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         List<BasePredicate> predicates = new ArrayList<>();
         List<MultiPredicate> children = new ArrayList<>();
 
-        // if a and b have different settings, they need to be added
-        // as children to the new predicate to maintain expected behavior
-        boolean equalSettings = Objects.equals(a.getSettings(), b.getSettings());
-
-        appendPredicates(type, a.deepCopy(), predicates, children, equalSettings);
-        appendPredicates(type, b.deepCopy(), predicates, children, equalSettings);
+        appendPredicates(type, a.deepCopy(), predicates, children);
+        appendPredicates(type, b.deepCopy(), predicates, children);
 
         predicates.sort(BasePredicate::compareTo);
 
-        // if the settings are the same, we can reuse one of them
-        PredicateSettings newSettings;
-        if (!equalSettings) {
-            newSettings = PredicateSettings.create();
-        } else if (a.getSettings() == null) {
-            newSettings = null;
-        } else {
-            newSettings = a.getSettings().copy();
-        }
-
-        return type.makePredicate(children, predicates, a.hasAir || b.hasAir);
+        return type.makePredicate(children, predicates, a.hasAir || b.hasAir)
+                .recursive();
     }
 
     private static void appendPredicates(Logic type, MultiPredicate multiPredicate,
-                                         List<BasePredicate> predicates, List<MultiPredicate> children,
-                                         boolean equalSettings) {
-        if (multiPredicate.isSingle() || (multiPredicate.isType(type) && equalSettings)) {
+                                         List<BasePredicate> predicates, List<MultiPredicate> children) {
+        if (multiPredicate.isSingle() || multiPredicate.isType(type)) {
             predicates.addAll(multiPredicate.predicates());
             children.addAll(multiPredicate.children());
         } else {
