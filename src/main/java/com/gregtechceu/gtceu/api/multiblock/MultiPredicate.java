@@ -277,13 +277,14 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return this;
     }
 
-    /// If single, mutates the only predicate <br/>
-    /// Otherwise mutates this multipredicate, adds setting if it was null and {@code shouldCreate} is true
     @Override
     public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
         this.updateSettings(configurator, false);
     }
 
+    /// Mutates this multi predicate with the configured settings
+    /// @param shouldCreate if settings should be able to be created for this multi predicate
+    @ApiStatus.Internal
     public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
         if (isSingle()) {
             // the idea is that if we only have a single predicate, we mutate that predicate instead of ourselves

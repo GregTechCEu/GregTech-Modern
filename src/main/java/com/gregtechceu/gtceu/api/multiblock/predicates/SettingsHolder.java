@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.UnaryOperator;
 
@@ -40,37 +41,53 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     }
 
     // mutate only
+    @ApiStatus.Internal
     void setSettings(PredicateSettings settings);
 
     /// mutates this object with the configured setting
+    @ApiStatus.Internal
     default void updateSettings(UnaryOperator<PredicateSettings> configurator) {
         setSettings(configurator.apply(getSettings()));
     }
 
+    ///  mutates this object with the given priority
+    @ApiStatus.Internal
     default void setPriority(int priority) {
         updateSettings(s -> s.withPriority(priority));
     }
 
+    /// mutates this object with the given min global count
+    @ApiStatus.Internal
     default void setMinCount(int minCount) {
         updateSettings(s -> s.withMinCount(minCount));
     }
 
+    /// mutates this object with the given max global count
+    @ApiStatus.Internal
     default void setMaxCount(int maxCount) {
         updateSettings(s -> s.withMaxCount(maxCount));
     }
 
+    /// mutates this object with the given min slice count
+    @ApiStatus.Internal
     default void setMinSliceCount(int minSliceCount) {
         updateSettings(s -> s.withMinSliceCount(minSliceCount));
     }
 
+    /// mutates this object with the given max slice count
+    @ApiStatus.Internal
     default void setMaxSliceCount(int maxSliceCount) {
         updateSettings(s -> s.withMaxSliceCount(maxSliceCount));
     }
 
+    /// mutates this object with the given preview count
+    @ApiStatus.Internal
     default void setPreviewCount(int previewCount) {
         updateSettings(s -> s.withPreviewCount(previewCount));
     }
 
+    /// mutates this object with the given render formed disabled
+    @ApiStatus.Internal
     default void setDisableRenderFormed(boolean disableRenderFormed) {
         updateSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
     }
