@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-public abstract class BasePredicate implements Comparable<BasePredicate>, SettingsHolder<BasePredicate> {
+public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
 
     public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
@@ -122,11 +122,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
         appendContents(builder);
         builder.append('}');
         return builder.toString();
-    }
-
-    @Override
-    public int compareTo(BasePredicate o) {
-        return this.settings.comparePriority(o.settings);
     }
 
     private BasePredicate markImmutable() {

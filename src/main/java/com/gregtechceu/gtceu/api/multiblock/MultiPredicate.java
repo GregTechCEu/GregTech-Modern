@@ -323,13 +323,13 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     protected MultiPredicate deepCopy() {
         List<BasePredicate> copiedPredicates = predicates().stream()
                 .map(BasePredicate::copy)
-                // sort high to low
+                // sort high to low (descending)
                 .sorted(Collections.reverseOrder(BasePredicate::compareTo))
                 .toList();
         List<MultiPredicate> copiedChildren = children().stream()
                 .map(MultiPredicate::deepCopy)
-                // sort high to low
-                .sorted(Comparator.<SettingsHolder<?>>comparingInt(SettingsHolder::getPriority).reversed())
+                // sort high to low (descending)
+                .sorted(Collections.reverseOrder(MultiPredicate::compareTo))
                 .toList();
         MultiPredicate copy = this.type.makePredicate(copiedChildren, copiedPredicates, this.hasAir);
         copy.setSettings(this.settings);

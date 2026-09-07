@@ -7,7 +7,7 @@ import org.jetbrains.annotations.CheckReturnValue;
 
 import java.util.function.UnaryOperator;
 
-public interface SettingsHolder<S extends SettingsHolder<S>> {
+public interface SettingsHolder<S extends SettingsHolder<S>> extends Comparable<SettingsHolder<S>> {
 
     // getters
     PredicateSettings getSettings();
@@ -159,6 +159,11 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     /// simple test against slice max count
     default boolean testSliceMax(int count) {
         return getMaxSliceCount() == -1 || count <= getMaxSliceCount();
+    }
+
+    @Override
+    default int compareTo(SettingsHolder<S> o) {
+        return Integer.compare(getPriority(), o.getPriority());
     }
 
     enum TestType {
