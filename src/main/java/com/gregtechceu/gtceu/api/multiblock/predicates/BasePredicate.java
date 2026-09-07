@@ -19,11 +19,15 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
 
     public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
-            .build();
+            .build()
+            .markImmutable();
 
     public static final BasePredicate ANY = new PredicateBuilder("Any")
             .predicate(ctx -> true)
-            .build();
+            .build()
+            .markImmutable();
+
+    private boolean mutable = true;
 
     @Getter(lazy = true)
     private final List<BlockInfo> candidates = computeCandidates();
@@ -127,6 +131,12 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
         return this.settings.comparePriority(o.settings);
     }
 
+
+    private BasePredicate markImmutable() {
+        this.mutable = false;
+        return this;
+    }
+
     @Override
     public boolean hasSettings() {
         return true;
@@ -144,7 +154,9 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
     @Override
     public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
         BasePredicate copy = copy();
-        copy.updateSettings(configurator);
+        if (mutable) {
+            copy.updateSettings(configurator);
+        }
         return copy;
     }
 
@@ -152,7 +164,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
 
     @Override
     public void setSettings(PredicateSettings settings) {
-        this.settings = settings;
+        if (mutable) this.settings = settings;
     }
 
     public void addTooltips(Component tooltip) {

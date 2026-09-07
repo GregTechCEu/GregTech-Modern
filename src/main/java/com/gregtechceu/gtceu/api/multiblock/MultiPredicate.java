@@ -23,11 +23,11 @@ import java.util.function.UnaryOperator;
 
 public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
-    private static final MultiPredicate EMPTY = of(Logic.OR, List.of());
+    private static final MultiPredicate EMPTY = of(Logic.OR, List.of()).markImmutable();
 
-    public static final MultiPredicate AIR = of(BasePredicate.AIR);
+    public static final MultiPredicate AIR = of(BasePredicate.AIR).markImmutable();
 
-    public static final MultiPredicate ANY = of(BasePredicate.ANY);
+    public static final MultiPredicate ANY = of(BasePredicate.ANY).markImmutable();
 
     private final List<BasePredicate> predicates;
     private final List<MultiPredicate> children;
@@ -37,7 +37,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     private final Logic type;
 
     @Getter
-    @Setter
     @Accessors(chain = true)
     private boolean controller;
 
@@ -48,8 +47,8 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     @Nullable
     @Getter
-    @Setter
     private MultiPredicate parent;
+    private boolean mutable = true;
 
     /// @param children list of multi predicate children
     /// @param predicates list of testable predicates, should be sorted already
@@ -124,6 +123,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     // go up the parent chain to test settings of parents
+
     private boolean testParents(TestType type, BasePredicate passedPredicate, PredicateContext context) {
         MultiPredicate parent = passedPredicate.getParent();
         while (parent != null) {
@@ -134,7 +134,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         }
         return true;
     }
-
     public List<List<BlockInfo>> getCandidates() {
         List<List<BlockInfo>> result = new ArrayList<>();
         for (BasePredicate predicate : predicates()) {
@@ -262,19 +261,19 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     @RemapForJS("addTooltip")
-    @Contract(mutates = "this")
     public MultiPredicate addTooltips(Component tooltip) {
-        forEach(p -> p.addTooltips(tooltip));
-        forEachChild(mp -> mp.addTooltips(tooltip));
-        return this;
+        var mutated = mutable ? this : deepCopy();
+        mutated.forEach(p -> p.addTooltips(tooltip));
+        mutated.forEachChild(mp -> mp.addTooltips(tooltip));
+        return mutated;
     }
 
     @CheckReturnValue
-    @Contract(mutates = "this")
     public MultiPredicate addTooltips(Component... tooltip) {
-        forEach(p -> Collections.addAll(p.getAdditionalTooltips(), tooltip));
-        forEachChild(mp -> mp.addTooltips(tooltip));
-        return this;
+        var mutated = mutable ? this : deepCopy();
+        mutated.forEach(p -> Collections.addAll(p.getAdditionalTooltips(), tooltip));
+        mutated.forEachChild(mp -> mp.addTooltips(tooltip));
+        return mutated;
     }
 
     @Override
@@ -286,6 +285,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// @param shouldCreate if settings should be able to be created for this multi predicate
     @ApiStatus.Internal
     public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
+        if (!mutable) return;
         if (isSingle()) {
             // the idea is that if we only have a single predicate, we mutate that predicate instead of ourselves
             // as we're basically the same as that predicate
@@ -311,9 +311,25 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     protected void onSettingsChanged() {}
 
+    private MultiPredicate markImmutable() {
+        this.mutable = false;
+        return this;
+    }
+
     public void setSettings(@Nullable PredicateSettings settings) {
+        if (!mutable) return;
         this.settings = settings == null ? null : settings.copy();
         onSettingsChanged();
+    }
+
+    public void setParent(MultiPredicate parent) {
+        if (mutable) this.parent = parent;
+    }
+
+    public MultiPredicate setController(boolean controller) {
+        var mutated = mutable ? this : deepCopy();
+        mutated.controller = controller;
+        return mutated;
     }
 
     /*
