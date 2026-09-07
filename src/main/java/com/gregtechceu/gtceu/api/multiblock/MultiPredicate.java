@@ -484,7 +484,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         if (a.isEmpty()) return b;
 
         MultiPredicate combined = type.makePredicate(List.of(a, b), List.of(), a.hasAir || b.hasAir);
-        combined.setSettings(null);
+        combined.setSettings(PredicateSettings.create());
         return combined;
     }
 
