@@ -66,7 +66,7 @@ public class ExampleCondition extends RecipeCondition<ExampleCondition> {
 
     @Override
     protected boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return recipeLogic.getMachine().getHolder().getCurrentPos().getY() >= height;
+        return recipeLogic.getMachine().getBlockPos().getY() >= height;
     }
 
     @Override
