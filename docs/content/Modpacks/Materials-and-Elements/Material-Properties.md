@@ -9,10 +9,9 @@ Properties can be applied to a material to decide how they behave. An example of
 
 === "Java"
     ```java
-    public static Material MY_MATERIAL = new Material.Builder(ADDON_MOD.id("my_material"))
-    /// ...
-    .blastTemp(3700, BlastProperty.GasTier.MID, GTValues.VA[GTValues.EV], 1600)
-    .buildAndRegister();
+    public static Material MY_MATERIAL = ADDON_REGISTRATE.material("my_material", builder -> builder
+        /// ...
+        .blastTemp(3700, BlastProperty.GasTier.MID, GTValues.VA[GTValues.EV], 1600));
     ```
 === "Javascript"
     ```js

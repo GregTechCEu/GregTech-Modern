@@ -11,7 +11,7 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
 
 === "Java"
     ```java title="MultiMachines.java"
-    public static final MultiblockMachineDefinition LARGE_STEAM_COMPRESSOR = REGISTRATE
+    public static final MachineEntry<MultiblockMachineDefinition> LARGE_STEAM_COMPRESSOR = REGISTRATE
             .multiblock("large_steam_compressor", (info) -> new SteamParallelMultiblockMachine(info, 4))
             .langValue("Large Steam Compressor")
             .rotationState(RotationState.NON_Y_AXIS)

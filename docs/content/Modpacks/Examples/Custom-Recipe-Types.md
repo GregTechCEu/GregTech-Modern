@@ -7,12 +7,13 @@ title: Custom Recipe Type
 
 === "Java"
     ```java title="AddonRecipeTypes.java"
-    public static final GTRecipeType TEST_RECIPE_TYPE = GTRecipeTypes.register(AddonMod.id("test_recipe_type"), GTRecipeTypes.ELECTRIC)
+    public static final GTRecipeTypeEntry TEST_RECIPE_TYPE = ADDON_REGISTRATE.recipeType("test_recipe_type", GTRecipeTypes.ELECTRIC)
         .setEUIO(IO.IN)
         .setMaxIOSize(3, 3, 3, 3) // (1)
         .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                 .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SOLIDIFIER_OVERLAY))
-        .setSound(GTSoundEntries.COOLING);
+        .setSound(GTSoundEntries.COOLING)
+        .register();
 
     ```
 === "JavaScript"
