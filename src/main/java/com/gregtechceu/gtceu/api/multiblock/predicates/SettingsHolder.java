@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+
 import java.util.function.UnaryOperator;
 
 public interface SettingsHolder<S extends SettingsHolder<S>> {
@@ -124,5 +126,24 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     /// simple test against slice max count
     default boolean testSliceMax(int count) {
         return getMaxSliceCount() == -1 || count <= getMaxSliceCount();
+    }
+
+    enum TestType {
+        GLOBAL_MIN,
+        GLOBAL_MAX,
+        SLICE_MIN,
+        SLICE_MAX;
+
+        // should return true if null settings
+        // otherwise test settings
+        public boolean testSettings(SettingsHolder<?> holder, PredicateContext ctx) {
+            if (!holder.hasSettings()) return true;
+            return switch (this) {
+                case GLOBAL_MIN -> holder.testGlobalMin(ctx.getGlobalCount(holder));
+                case GLOBAL_MAX -> holder.testGlobalMax(ctx.incrementGlobalCount(holder));
+                case SLICE_MIN -> holder.testSliceMin(ctx.getSliceCount(holder));
+                case SLICE_MAX -> holder.testSliceMax(ctx.incrementSliceCount(holder));
+            };
+        }
     }
 }

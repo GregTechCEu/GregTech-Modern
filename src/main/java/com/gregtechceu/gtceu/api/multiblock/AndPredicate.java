@@ -16,31 +16,47 @@ public class AndPredicate extends MultiPredicate {
 
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
+        boolean result = true;
         for (BasePredicate predicate : predicates()) {
             if (!predicate.testGlobalMin(ctx)) {
-                return false;
+                result = false;
+                break;
             }
         }
-        for (MultiPredicate child : children()) {
-            if (!child.testGlobalMin(ctx)) {
-                return false;
+        if (result) {
+            for (MultiPredicate child : children()) {
+                if (!child.testGlobalMin(ctx)) {
+                    result = false;
+                    break;
+                }
             }
         }
-        return true;
+        if (result) {
+            result = !hasSettings() || TestType.GLOBAL_MIN.testSettings(this, ctx);
+        }
+        return result;
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
+        boolean result = true;
         for (BasePredicate predicate : predicates()) {
             if (!predicate.testSliceMin(ctx)) {
-                return false;
+                result = false;
+                break;
             }
         }
-        for (MultiPredicate child : children()) {
-            if (!child.testSliceMin(ctx)) {
-                return false;
+        if (result) {
+            for (MultiPredicate child : children()) {
+                if (!child.testSliceMin(ctx)) {
+                    result = false;
+                    break;
+                }
             }
         }
-        return true;
+        if (result) {
+            result = !hasSettings() || TestType.SLICE_MIN.testSettings(this, ctx);
+        }
+        return result;
     }
 }

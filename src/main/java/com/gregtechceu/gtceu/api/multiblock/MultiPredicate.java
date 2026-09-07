@@ -109,11 +109,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// Usually used for testing the slice min of predicates
     public final boolean postSliceTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
-        boolean passed = testSliceMin(ctx);
-        if (this.settings != null) {
-            passed &= SettingsHolder.super.testSliceMin(ctx.getSliceCount(this));
-        }
-        if (passed) return true;
+        if (testSliceMin(ctx)) return true;
         for (Component content : getDescriptiveContents()) {
             ctx.appendError(PatternStringError.of(content));
         }
@@ -125,18 +121,11 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// test against global/slice max counts
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
         context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
-        boolean passed = passedPredicate.testGlobalMax(context);
-        if (this.settings != null) {
-            passed &= this.testGlobalMax(context.incrementGlobalCount(this));
+        if (!(passedPredicate.testGlobalMax(context) && TestType.GLOBAL_MAX.testSettings(this, context))) {
+            return false;
         }
-        if (passed) {
-            context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
-            passed = passedPredicate.testSliceMax(context);
-            if (this.settings != null) {
-                passed &= this.testSliceMax(context.incrementSliceCount(this));
-            }
-        }
-        return passed;
+        context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
+        return passedPredicate.testSliceMax(context) && TestType.SLICE_MAX.testSettings(this, context);
     }
 
     public List<List<BlockInfo>> getCandidates() {
@@ -290,12 +279,23 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
         if (isSingle()) {
+            // the idea is that if we only have a single predicate, we mutate that predicate instead of ourselves
+            // as we're basically the same as that predicate
             predicates().get(0).updateSettings(configurator);
             return;
         }
+        // shouldCreate should be true when updating settings through withSettings()
+        // otherwise it is false
         PredicateSettings settings = shouldCreate ? getOrCreateSettings() : getSettings();
         if (settings != null) {
             setSettings(Objects.requireNonNull(configurator.apply(settings)));
+        } else {
+            // update predicate settings
+            forEach(p -> p.updateSettings(configurator));
+            // update children
+            // if they have settings, they should mutate themselves (non-recursive)
+            // otherwise they should mutate their predicates and children instead (recursive)
+            forEachChild(mp -> mp.updateSettings(configurator));
         }
     }
 
