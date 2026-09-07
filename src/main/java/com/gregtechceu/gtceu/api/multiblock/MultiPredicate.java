@@ -249,6 +249,11 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return expanded;
     }
 
+    @Override
+    public boolean hasSettings() {
+        return this.settings != null;
+    }
+
     /*
      * MUTATE AND DO NOT COPY
      */

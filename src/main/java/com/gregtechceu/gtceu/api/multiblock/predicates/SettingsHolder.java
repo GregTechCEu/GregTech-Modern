@@ -7,32 +7,34 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     // getters
     PredicateSettings getSettings();
 
+    boolean hasSettings();
+
     default int getPriority() {
-        return getSettings().priority();
+        return hasSettings() ?  getSettings().priority() : -1;
     }
 
     default int getMinCount() {
-        return getSettings().minCount();
+        return hasSettings() ? getSettings().minCount() : -1;
     }
 
     default int getMaxCount() {
-        return getSettings().maxCount();
+        return hasSettings() ? getSettings().maxCount() : -1;
     }
 
     default int getMinSliceCount() {
-        return getSettings().minSliceCount();
+        return hasSettings() ? getSettings().minSliceCount() : -1;
     }
 
     default int getMaxSliceCount() {
-        return getSettings().maxSliceCount();
+        return hasSettings() ? getSettings().maxSliceCount() : -1;
     }
 
     default int getPreviewCount() {
-        return getSettings().previewCount();
+        return hasSettings() ? getSettings().previewCount() : -1;
     }
 
     default boolean isRenderFormedDisabled() {
-        return getSettings().disableRenderFormed();
+        return hasSettings() && getSettings().disableRenderFormed();
     }
 
     // mutate only

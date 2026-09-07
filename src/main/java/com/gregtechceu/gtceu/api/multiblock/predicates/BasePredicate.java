@@ -127,6 +127,11 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
         return this.settings.comparePriority(o.settings);
     }
 
+    @Override
+    public boolean hasSettings() {
+        return true;
+    }
+
     public abstract BasePredicate copy();
 
     protected void copyTo(BasePredicate other) {
