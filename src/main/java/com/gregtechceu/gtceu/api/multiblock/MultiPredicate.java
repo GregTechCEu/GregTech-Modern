@@ -488,16 +488,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return combined;
     }
 
-    private static void appendPredicates(Logic type, MultiPredicate multiPredicate,
-                                         List<BasePredicate> predicates, List<MultiPredicate> children) {
-        if (multiPredicate.isSingle() || multiPredicate.isType(type)) {
-            predicates.addAll(multiPredicate.predicates());
-            children.addAll(multiPredicate.children());
-        } else {
-            children.add(multiPredicate);
-        }
-    }
-
     public static MultiPredicate empty() {
         return EMPTY;
     }
