@@ -252,13 +252,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
      * MUTATE AND DO NOT COPY
      */
 
-    protected PredicateSettings getOrCreateSettings() {
-        if (this.settings == null) {
-            this.settings = PredicateSettings.create();
-        }
-        return this.settings;
-    }
-
     @RemapForJS("addTooltip")
     public MultiPredicate addTooltips(Component tooltip) {
         var mutated = mutable ? this : deepCopy();
