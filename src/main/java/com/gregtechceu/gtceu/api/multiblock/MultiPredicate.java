@@ -91,11 +91,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// Usually used for testing the global min of predicates
     public final boolean postGlobalTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
-        boolean passed = testGlobalMin(ctx);
-        if (this.settings != null) {
-            passed &= SettingsHolder.super.testGlobalMin(ctx.getGlobalCount(this));
-        }
-        if (passed) return true;
+        if (testGlobalMin(ctx)) return true;
         for (Component content : getDescriptiveContents()) {
             ctx.appendError(PatternStringError.of(content));
         }
@@ -120,11 +116,23 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// test against global/slice max counts
     public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
         context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
-        if (!(passedPredicate.testGlobalMax(context) && TestType.GLOBAL_MAX.testSettings(this, context))) {
+        if (!(passedPredicate.testGlobalMax(context) && testParents(TestType.GLOBAL_MAX, passedPredicate, context))) {
             return false;
         }
         context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
-        return passedPredicate.testSliceMax(context) && TestType.SLICE_MAX.testSettings(this, context);
+        return passedPredicate.testSliceMax(context) && testParents(TestType.SLICE_MAX, passedPredicate, context);
+    }
+
+    // go up the parent chain to test settings of parents
+    private boolean testParents(TestType type, BasePredicate passedPredicate, PredicateContext context) {
+        MultiPredicate parent = passedPredicate.getParent();
+        while (parent != null) {
+            if (!type.testSettings(parent, context)) {
+                return false;
+            }
+            parent = parent.getParent();
+        }
+        return true;
     }
 
     public List<List<BlockInfo>> getCandidates() {
