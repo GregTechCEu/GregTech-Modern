@@ -260,14 +260,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return this.settings;
     }
 
-    /// Sets the setting of this multipredicate to its children, then makes {@code this.settings} null
-    public void applySettingsToChildren() {
-        if (this.settings == null || isSingle()) return;
-        forEach(p -> p.setSettings(this.settings));
-        forEachChild(mp -> mp.setSettings(this.settings));
-        this.settings = null;
-    }
-
     @RemapForJS("addTooltip")
     @Contract(mutates = "this")
     public MultiPredicate addTooltips(Component tooltip) {
