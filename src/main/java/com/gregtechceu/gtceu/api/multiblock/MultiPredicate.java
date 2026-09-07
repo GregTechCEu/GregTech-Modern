@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
-import lombok.AccessLevel;
-import lombok.Setter;
 import net.minecraft.network.chat.Component;
 
 import dev.latvian.mods.rhino.util.RemapForJS;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
