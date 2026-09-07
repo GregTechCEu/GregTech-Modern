@@ -12,7 +12,7 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     boolean hasSettings();
 
     default int getPriority() {
-        return hasSettings() ?  getSettings().priority() : -1;
+        return hasSettings() ? getSettings().priority() : -1;
     }
 
     default int getMinCount() {
@@ -129,6 +129,7 @@ public interface SettingsHolder<S extends SettingsHolder<S>> {
     }
 
     enum TestType {
+
         GLOBAL_MIN,
         GLOBAL_MAX,
         SLICE_MIN,

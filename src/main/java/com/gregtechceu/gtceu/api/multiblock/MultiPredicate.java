@@ -53,15 +53,14 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     /// @param children list of multi predicate children
     /// @param predicates list of testable predicates, should be sorted already
-    protected MultiPredicate(Logic type, List<MultiPredicate> children, List<BasePredicate> predicates,
-                             boolean hasAir, @Nullable PredicateSettings settings) {
+    protected MultiPredicate(Logic type, List<MultiPredicate> children,
+                             List<BasePredicate> predicates, boolean hasAir) {
         predicates.forEach(p -> p.setParent(this));
         children.forEach(mp -> mp.setParent(this));
         this.predicates = Collections.unmodifiableList(predicates);
         this.children = Collections.unmodifiableList(children);
         this.type = type;
         this.hasAir = hasAir;
-        this.settings = settings; // settings set as-is, ideally copied prior
     }
 
     /// @return innermost base predicate that passes state check at given pos
@@ -282,25 +281,30 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
             // the idea is that if we only have a single predicate, we mutate that predicate instead of ourselves
             // as we're basically the same as that predicate
             predicates().get(0).updateSettings(configurator);
-            return;
-        }
-        // shouldCreate should be true when updating settings through withSettings()
-        // otherwise it is false
-        PredicateSettings settings = shouldCreate ? getOrCreateSettings() : getSettings();
-        if (settings != null) {
-            setSettings(Objects.requireNonNull(configurator.apply(settings)));
+            onSettingsChanged();
         } else {
-            // update predicate settings
-            forEach(p -> p.updateSettings(configurator));
-            // update children
-            // if they have settings, they should mutate themselves (non-recursive)
-            // otherwise they should mutate their predicates and children instead (recursive)
-            forEachChild(mp -> mp.updateSettings(configurator));
+            // shouldCreate should be true when updating settings through withSettings()
+            // otherwise it is false
+            PredicateSettings settings = shouldCreate ? getOrCreateSettings() : getSettings();
+            if (settings != null) {
+                setSettings(Objects.requireNonNull(configurator.apply(settings)));
+            } else {
+                // update predicate settings
+                forEach(p -> p.updateSettings(configurator));
+                // update children
+                // if they have settings, they should mutate themselves (non-recursive)
+                // otherwise they should mutate their predicates and children instead (recursive)
+                forEachChild(mp -> mp.updateSettings(configurator));
+                onSettingsChanged();
+            }
         }
     }
 
+    protected void onSettingsChanged() {}
+
     public void setSettings(@Nullable PredicateSettings settings) {
         this.settings = settings == null ? null : settings.copy();
+        onSettingsChanged();
     }
 
     /*
@@ -309,10 +313,10 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     @CheckReturnValue
     protected MultiPredicate deepCopy() {
-        MultiPredicate copy = this.type.makePredicate(
-                children().stream().map(MultiPredicate::deepCopy).toList(),
-                predicates().stream().map(BasePredicate::copy).toList(),
-                this.hasAir, this.settings);
+        List<BasePredicate> copiedPredicates = predicates().stream().map(BasePredicate::copy).toList();
+        List<MultiPredicate> copiedChildren = children().stream().map(MultiPredicate::deepCopy).toList();
+        MultiPredicate copy = this.type.makePredicate(copiedChildren, copiedPredicates, this.hasAir);
+        copy.setSettings(this.settings);
         copy.setController(this.controller);
         return copy;
     }
@@ -336,15 +340,16 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @CheckReturnValue
     public MultiPredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
         return copyWith(p -> {
-            // is this (the current reference being copied) have their settings set to null?
-            if (this.settings == null) {
-                // apply the settings to each predicate and child, creating new settings if needed
-                p.forEach(predicate -> predicate.updateSettings(configurator));
-                p.forEachChild(child -> child.updateSettings(configurator, true));
-            } else {
-                // the current reference has settings, it should've been copied by this point
-                p.updateSettings(configurator);
-            }
+            p.updateSettings(configurator);
+            // // is this (the current reference being copied) have their settings set to null?
+            // if (this.settings == null) {
+            // // apply the settings to each predicate and child, creating new settings if needed
+            // p.forEach(predicate -> predicate.updateSettings(configurator));
+            // p.forEachChild(child -> child.updateSettings(configurator, true));
+            // } else {
+            // // the current reference has settings, it should've been copied by this point
+            // p.updateSettings(configurator);
+            // }
         });
     }
 
@@ -502,7 +507,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
             newSettings = a.getSettings().copy();
         }
 
-        return type.makePredicate(children, predicates, a.hasAir || b.hasAir, newSettings);
+        return type.makePredicate(children, predicates, a.hasAir || b.hasAir);
     }
 
     private static void appendPredicates(Logic type, MultiPredicate multiPredicate,
@@ -526,8 +531,10 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     /// @return A multi predicate with default settings
     private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
-        return type.makePredicate(List.of(), predicates, predicates.stream()
-                .anyMatch(p -> p == BasePredicate.AIR), PredicateSettings.create());
+        MultiPredicate predicate = type.makePredicate(List.of(), predicates, predicates.stream()
+                .anyMatch(p -> p == BasePredicate.AIR));
+        predicate.setSettings(PredicateSettings.create());
+        return predicate;
     }
 
     protected enum Logic {
@@ -537,16 +544,16 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         XOR;
 
         public MultiPredicate makePredicate(List<MultiPredicate> children, List<BasePredicate> predicates,
-                                            boolean hasAir, @Nullable PredicateSettings settings) {
+                                            boolean hasAir) {
             return switch (this) {
-                case OR -> new OrPredicate(children, predicates, hasAir, settings);
-                case AND -> new AndPredicate(children, predicates, hasAir, settings);
-                case XOR -> new XorPredicate(children, predicates, hasAir, settings);
+                case OR -> new OrPredicate(children, predicates, hasAir);
+                case AND -> new AndPredicate(children, predicates, hasAir);
+                case XOR -> new XorPredicate(children, predicates, hasAir);
             };
         }
 
         public MultiPredicate makePredicate(BasePredicate predicate, boolean hasAir) {
-            return makePredicate(List.of(), List.of(predicate), hasAir, null);
+            return makePredicate(List.of(), List.of(predicate), hasAir);
         }
     }
 }

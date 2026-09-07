@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
 
 public class XorPredicate extends MultiPredicate {
 
@@ -21,15 +20,12 @@ public class XorPredicate extends MultiPredicate {
     /// meaning that it is possible that no predicates may be present in the multi.
     protected boolean noneValid;
 
-    public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir,
-                        @Nullable PredicateSettings settings) {
-        super(Logic.XOR, children, predicates, hasAir, settings);
-        this.noneValid = isNoneValid(this);
+    public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
+        super(Logic.XOR, children, predicates, hasAir);
     }
 
     @Override
-    public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
-        super.updateSettings(configurator, shouldCreate);
+    protected void onSettingsChanged() {
         this.noneValid = isNoneValid(this);
     }
 
