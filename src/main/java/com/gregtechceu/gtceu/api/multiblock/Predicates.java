@@ -75,16 +75,15 @@ public class Predicates {
                 states.add(state.setValue(activeProp, !state.getValue(activeProp)));
             }
         }
-        return builder(debugName == null ? "States" : debugName)
-                .predicate(ctx -> states.contains(ctx.state()))
-                // .errorConsumer(ctx -> PLACEHOLDER)
-                .candidates(states.stream().map(BlockInfo::fromBlockState))
-                .contents(builder -> {
-                    StringJoiner joiner = new StringJoiner(", ");
-                    states.forEach(state -> joiner.add(blockToString(state)));
-                    builder.append(joiner);
-                })
-                .toMultiPredicate();
+        List<BasePredicate> predicates = new ArrayList<>();
+        for (BlockState state : states) {
+            predicates.add(builder(debugName == null ? "State" : debugName)
+                    .predicate(ctx -> ctx.state() == state)
+                    .states(state)
+                    .contents(builder -> builder.append(blockToString(state)))
+                    .build());
+        }
+        return MultiPredicate.or(predicates);
     }
 
     @HideFromJS
@@ -103,35 +102,22 @@ public class Predicates {
 
     @RemapForJS("blocksDebug")
     public static MultiPredicate blocks(@Nullable String debugName, Block... blocks) {
-        return blocks(debugName, Arrays.stream(blocks));
+        return blocks(debugName, Arrays.asList(blocks));
     }
 
     @HideFromJS
     public static MultiPredicate blocks(@Nullable String debugName,
-                                        Stream<Block> blocks) {
-        List<Block> blockList = blocks.toList();
-        return blocks(debugName, blockList, blockList.stream());
-    }
-
-    @HideFromJS
-    public static MultiPredicate blocks(@Nullable String debugName,
-                                        List<Block> blocks,
-                                        Stream<Block> candidates) {
-        return builder(debugName == null ? "Blocks" : debugName)
-                .predicate(ctx -> {
-                    for (var block : blocks) {
-                        if (ctx.state().is(block)) return true;
-                    }
-                    return false;
-                })
-                .errorFunction(ctx -> new BlockMatchingError(ctx.pos(), blocks))
-                .candidates(candidates.map(BlockInfo::fromBlock))
-                .contents(builder -> {
-                    StringJoiner joiner = new StringJoiner(", ");
-                    blocks.forEach(block -> joiner.add(blockToString(block)));
-                    builder.append(joiner);
-                })
-                .toMultiPredicate();
+                                        List<Block> blocks) {
+        List<BasePredicate> predicates = new ArrayList<>();
+        for (Block block : blocks) {
+            predicates.add(builder(debugName == null ? "Block" : debugName)
+                    .predicate(ctx -> ctx.state().is(block))
+                    .errorFunction(ctx -> new BlockMatchingError(ctx.pos(), List.of(block)))
+                    .blocks(block)
+                    .contents(builder -> builder.append(blockToString(block)))
+                    .build());
+        }
+        return MultiPredicate.or(predicates);
     }
 
     // todo these two methods below should be moved into a util class
@@ -155,7 +141,7 @@ public class Predicates {
         if (blocks.isEmpty()) {
             throw new IllegalStateException("All machine definitions are null!");
         }
-        return blocks("MachineDefinitions", blocks, blocks.stream());
+        return blocks("MachineDefinitions", blocks);
     }
 
     public static MultiPredicate blockTag(TagKey<Block> tag) {
@@ -163,6 +149,7 @@ public class Predicates {
         ITagManager<Block> manager = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags());
         return builder("BlockTag")
                 .blockTag(tag)
+                .contents(builder -> builder.append(tag.location()))
                 .predicate(ctx -> ctx.state().is(tag))
                 .errorFunction(ctx -> new BlockMatchingError(ctx.pos(), manager.getTag(tag)
                         .stream().toList()))
@@ -198,6 +185,7 @@ public class Predicates {
                 .predicate(ctx -> ctx.fluidState().is(tag))
                 // .errorConsumer(ctx -> ctx.appendError(PLACEHOLDER))
                 .fluidTag(tag)
+                .contents(builder -> builder.append(tag.location()))
                 .toMultiPredicate();
     }
 
@@ -340,31 +328,21 @@ public class Predicates {
     public static MultiPredicate heatingCoils() {
         return blocks("HeatingCoils",
                 GTCEuAPI.HEATING_COILS.values().stream()
-                        .<Block>map(Supplier::get).toList(),
-                GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
-                        .map(e -> e.getValue().get()))
+                        .<Block>map(Supplier::get).toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
                 .setPriority(0);
     }
 
     public static MultiPredicate cleanroomFilters() {
         return blocks("CleanroomFilters",
-                GTCEuAPI.CLEANROOM_FILTERS.values().stream().map(Supplier::get).toList(),
-                GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
-                        .map(entry -> entry.getValue().get()))
+                GTCEuAPI.CLEANROOM_FILTERS.values().stream().map(Supplier::get).toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
     }
 
     public static MultiPredicate powerSubstationBatteries() {
         return blocks("PSS-Batteries",
                 GTCEuAPI.PSS_BATTERIES.values()
-                        .stream().map(Supplier::get).map(Block.class::cast).toList(),
-                GTCEuAPI.PSS_BATTERIES.entrySet()
-                        .stream()
-                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
-                        .map(e -> e.getValue().get()))
+                        .stream().map(Supplier::get).map(Block.class::cast).toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
     }
 
@@ -402,7 +380,7 @@ public class Predicates {
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());
                 })
                 // .errorConsumer(ctx -> PLACEHOLDER)
-                .candidates(Arrays.stream(frameBlocks).map(BlockInfo::fromBlock))
+                .blocks(frameBlocks)
                 .contents(builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
                     Arrays.stream(frameBlocks).forEach(block -> joiner.add(blockToString(block)));

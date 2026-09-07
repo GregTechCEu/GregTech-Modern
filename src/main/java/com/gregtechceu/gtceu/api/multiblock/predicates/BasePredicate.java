@@ -24,9 +24,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
             .predicate(ctx -> true)
             .build();
 
-    @Getter(lazy = true)
-    private final List<BlockInfo> candidates = computeCandidates();
-
     @Getter
     @Setter
     protected int priority = 0;
@@ -149,8 +146,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
         return maxSliceCount == -1 || count <= maxSliceCount;
     }
 
-    /// computes the candidates for this predicate
-    public abstract List<BlockInfo> computeCandidates();
+    public abstract List<BlockInfo> getCandidates();
 
     public List<ItemStack> getCandidateStacks() {
         return getCandidates().stream()
