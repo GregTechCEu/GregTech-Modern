@@ -78,8 +78,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                             .withGlobalMinMax(1, 2).withPreviewCount(1))
                     .and(Predicates.abilities(PartAbility.DATA_ACCESS).withPreviewCount(1)
                             .or(Predicates.machines(GTMachines.BATTERY_BUFFER_4).withPreviewCount(0))
-                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16))
-                            .withMaxGlobalLimited(4, 0))
+                            .or(Predicates.machines(GTMachines.BATTERY_BUFFER_16).withPreviewCount(0))
+                            .withMaxGlobalLimited(4))
                     .and(Predicates.machines(GTMachines.HULL).withPreviewCount(0))
                     .and(Predicates.machines(GTMachines.ADVANCED_MONITOR))
                     .and(Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()));

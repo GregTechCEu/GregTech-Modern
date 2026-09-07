@@ -277,13 +277,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     @Override
     public void updateSettings(UnaryOperator<PredicateSettings> configurator) {
-        this.updateSettings(configurator, false);
-    }
-
-    /// Mutates this multi predicate with the configured settings
-    /// @param shouldCreate if settings should be able to be created for this multi predicate
-    @ApiStatus.Internal
-    public void updateSettings(UnaryOperator<PredicateSettings> configurator, boolean shouldCreate) {
         if (!mutable) return;
         if (isSingle()) {
             // the idea is that if we only have a single predicate, we mutate that predicate instead of ourselves
@@ -291,9 +284,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
             predicates().get(0).updateSettings(configurator);
             onSettingsChanged();
         } else {
-            // shouldCreate should be true when updating settings through withSettings()
-            // otherwise it is false
-            PredicateSettings settings = shouldCreate ? getOrCreateSettings() : getSettings();
+            PredicateSettings settings = getSettings();
             if (settings != null) {
                 setSettings(Objects.requireNonNull(configurator.apply(settings)));
             } else {
@@ -337,7 +328,8 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     @CheckReturnValue
     protected MultiPredicate deepCopy() {
-        List<BasePredicate> copiedPredicates = predicates().stream().map(BasePredicate::copy).toList();
+        List<BasePredicate> copiedPredicates = predicates().stream()
+                .map(BasePredicate::copy).sorted(BasePredicate::compareTo).toList();
         List<MultiPredicate> copiedChildren = children().stream().map(MultiPredicate::deepCopy).toList();
         MultiPredicate copy = this.type.makePredicate(copiedChildren, copiedPredicates, this.hasAir);
         copy.setSettings(this.settings);
@@ -509,7 +501,9 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     public static MultiPredicate of(BasePredicate predicate) {
-        return Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
+        MultiPredicate multiPredicate = Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
+        multiPredicate.setSettings(PredicateSettings.create());
+        return multiPredicate;
     }
 
     /// @return A multi predicate with default settings

@@ -103,7 +103,7 @@ public class XorPredicate extends MultiPredicate {
 
     private static boolean isNoneValid(MultiPredicate multiPredicate) {
         PredicateSettings settings = multiPredicate.getSettings();
-        if (settings != null) return settings.isNoneValid();
+        if (settings != null && settings.isNoneValid()) return true;
 
         for (BasePredicate predicate : multiPredicate.predicates()) {
             if (predicate.getSettings().isNoneValid()) {
