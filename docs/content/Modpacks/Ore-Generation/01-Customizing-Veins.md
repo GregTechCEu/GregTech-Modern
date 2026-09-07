@@ -11,34 +11,101 @@ It is also possible to modify or even delete existing ones.
 
 ## Creating New Veins
 
-```js title="server_scripts/custom_ore_vein.js"
-GTCEuServerEvents.oreVeins(event => {
-    event.add("kubejs:custom_vein", vein => {
-        // Basic vein generation properties
-        vein.weight(200) // [*] (1)
-        vein.clusterSize(40) // [*] (2)
-        vein.density(0.25) // [*] (3)
-        vein.discardChanceOnAirExposure(0) // (4)
+=== "JSON"
+    ```json title="resources/data/your_mod_id/gtceu/ore_vein/custom_vein.json"
+    {
+        "weight": 80, // [*] (1)
+        "cluster_size": { // [*] (2)
+            "type": "minecraft:uniform",
+            "max_inclusive": 52,
+            "min_inclusive": 40
+        },
+        "density": 1.0, // [*] (3)
+        "discard_chance_on_air_exposure": 0.0, // [*] (4)
+        "layer": "gtceu:stone", // [*] (5)
+        "dimension_filter": [ // [*] (6)
+            "minecraft:overworld"
+        ],
+        "biomes": "#minecraft:is_overworld", // [*] (7)
+        "height_range": { // [*] (8)
+            "height": {
+                "type": "minecraft:uniform",
+                "max_inclusive": {
+                    "absolute": 80
+                },
+                "min_inclusive": {
+                    "absolute": 10
+                }
+            }
+        },
+        "generator": { // [*] (11)
+          "type": "gtceu:veined",
+          "edge_roundoff_begin": 3,
+          "filler_block": {
+            "Name": "minecraft:air"
+          },
+          "max_edge_roundoff": 0.10000000149011612,
+          "max_richness": 1.0,
+          "max_richness_threshold": 0.175,
+          "max_y": 80,
+          "min_richness": 0.7,
+          "min_y": 10,
+          "ore_blocks": [
+            {
+              "block": "gtceu:tin",
+              "weight": 4
+            }
+          ],
+          "rare_block_chance": 0.33,
+          "rare_blocks": [
+            {
+              "block": "gtceu:cassiterite",
+              "weight": 2
+            }
+          ],
+          "veininess_threshold": 0.01
+        },
+        "indicators": [ // [*] (12)
+          {
+            "type": "gtceu:surface",
+            "block": "gtceu:cassiterite",
+            "density": 0.2,
+            "placement": "surface",
+            "radius": 5
+          }
+        ]
+    }
+    ```
 
-        // Define where the vein can generate
-        vein.layer("deepslate") // [*] (5)
-        vein.dimensions("minecraft:overworld") // (6)
-        vein.biomes("#minecraft:is_overworld") // (7)
-
-        // Define a height range:
-        // You must choose EXACTLY ONE of these options! [*]
-        vein.heightRangeUniform(-60, 20) // (8)
-        vein.heightRangeTriangle(-60, 20) // (9)
-        vein.heightRange(/* ... */) // (10)
-
-        // Define the vein's generator:
-        vein.generator(/* ... */) // [*] (11)
-
-        // Add one or more type of surface indicator to the vein:
-        vein.addIndicator(/* ... */) // (12)
+=== "JavaScript"
+    ```js title="server_scripts/custom_ore_vein.js"
+    GTCEuServerEvents.oreVeins(event => {
+        event.add("kubejs:custom_vein", vein => {
+            // Basic vein generation properties
+            vein.weight(200) // [*] (1)
+            vein.clusterSize(40) // [*] (2)
+            vein.density(0.25) // [*] (3)
+            vein.discardChanceOnAirExposure(0) // (4)
+    
+            // Define where the vein can generate
+            vein.layer("deepslate") // [*] (5)
+            vein.dimensions("minecraft:overworld") // (6)
+            vein.biomes("#minecraft:is_overworld") // (7)
+    
+            // Define a height range:
+            // You must choose EXACTLY ONE of these options! [*]
+            vein.heightRangeUniform(-60, 20) // (8)
+            vein.heightRangeTriangle(-60, 20) // (9)
+            vein.heightRange(/* ... */) // (10)
+    
+            // Define the vein's generator:
+            vein.generator(/* ... */) // [*] (11)
+    
+            // Add one or more type of surface indicator to the vein:
+            vein.addIndicator(/* ... */) // (12)
+        })
     })
-})
-```
+    ```
 
 1. An ore vein's weight determines the chance of it being chosen over another vein type, to be generated at a possible vein location.  
    The higher the weight, the more frequently an ore vein type will be generated.
@@ -89,11 +156,16 @@ GTCEuServerEvents.oreVeins(event => {
 
 ## Removing an Existing Ore Vein
 
-```js title="server_scripts/remove_ore_vein.js"
-GTCEuServerEvents.oreVeins(event => {
-     event.remove("gtceu:magnetite_vein_ow") 
-})
-```
+=== "JSON"
+    ```json title="resources/data/gtceu/gtceu/ore_vein/magnetite_vein_ow.json
+        {"neoforge:conditions":[{"type":"neoforge:never"}]}
+    ```
+=== "JavaScript"
+    ```js title="server_scripts/remove_ore_vein.js"
+    GTCEuServerEvents.oreVeins(event => {
+         event.remove("gtceu:magnetite_vein_ow") 
+    })
+    ```
 
 
 ??? example "Removing all ore veins"
