@@ -16,8 +16,6 @@ They are registered using
 public class ExampleMod {
     
     public ExampleMod(IEventBus modBus, FMLModContainer container) {
-        modBus.addListener(CommonInit::onRegister);
-        bus.addListener(RecipeConditionType.class, this::registerConditions);
         RECIPE_CONDITIONS.register(modBus);
     }
 
