@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -35,7 +34,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
     @Getter
     protected PredicateSettings settings = PredicateSettings.create();
 
-    @Setter
     private @Nullable MultiPredicate parent;
 
     @Getter
@@ -131,7 +129,6 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
         return this.settings.comparePriority(o.settings);
     }
 
-
     private BasePredicate markImmutable() {
         this.mutable = false;
         return this;
@@ -167,7 +164,11 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
         if (mutable) this.settings = settings;
     }
 
+    public void setParent(@Nullable MultiPredicate parent) {
+        if (mutable) this.parent = parent;
+    }
+
     public void addTooltips(Component tooltip) {
-        this.additionalTooltips.add(tooltip);
+        if (mutable) this.additionalTooltips.add(tooltip);
     }
 }

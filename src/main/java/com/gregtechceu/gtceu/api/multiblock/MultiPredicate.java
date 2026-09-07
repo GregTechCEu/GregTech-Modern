@@ -10,11 +10,9 @@ import net.minecraft.network.chat.Component;
 
 import dev.latvian.mods.rhino.util.RemapForJS;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -134,6 +132,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         }
         return true;
     }
+
     public List<List<BlockInfo>> getCandidates() {
         List<List<BlockInfo>> result = new ArrayList<>();
         for (BasePredicate predicate : predicates()) {
