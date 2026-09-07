@@ -151,9 +151,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate>, Settin
     @Override
     public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
         BasePredicate copy = copy();
-        if (mutable) {
-            copy.updateSettings(configurator);
-        }
+        copy.updateSettings(configurator);
         return copy;
     }
 
