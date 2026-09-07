@@ -483,26 +483,8 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         if (b == null || b.isEmpty()) return a; // no op
         if (a.isEmpty()) return b;
 
-        List<BasePredicate> predicates = new ArrayList<>();
-        List<MultiPredicate> children = new ArrayList<>();
-
-        boolean canMerge = !a.hasSettings() && !b.hasSettings() && a.isType(b.getType());
-        PredicateSettings settings;
-
-        if (!canMerge) {
-            children.add(a);
-            children.add(b);
-            settings = null;
-        } else {
-            appendPredicates(type, a.deepCopy(), predicates, children);
-            appendPredicates(type, b.deepCopy(), predicates, children);
-            settings = a.getSettings();
-        }
-
-        predicates.sort(BasePredicate::compareTo);
-
-        MultiPredicate combined = type.makePredicate(children, predicates, a.hasAir || b.hasAir);
-        combined.setSettings(settings);
+        MultiPredicate combined = type.makePredicate(List.of(a, b), List.of(), a.hasAir || b.hasAir);
+        combined.setSettings(null);
         return combined;
     }
 
