@@ -148,7 +148,7 @@ public class CommonProxy {
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        GTMaterials.init(modBus);
+        GTMaterials.init();
         GTMedicalConditions.init();
         TagPrefix.init();
 
