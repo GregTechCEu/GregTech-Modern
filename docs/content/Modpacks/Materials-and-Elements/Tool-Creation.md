@@ -22,12 +22,10 @@ toolStats has the following arguments:
 An example of this being used is included below.
 === "Java"
     ```java title="ExampleToolMaterial.java"
-        public static Material ALUMINFROST = new Material.Builder(
-            your_mod_id.id("aluminfrost"))
+        public static Material ALUMINFROST = ADDON_REGISTRATE.material("aluminfrost", builder -> builder
             .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
             .toolStats(new ToolProperty(12.0F, 7.0F, 3072, 6,
-                    new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER }))
-            .buildAndRegister();
+                    new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER })));
     ```
 === "JavaScript"
     ```js title="example_tool_material.js"

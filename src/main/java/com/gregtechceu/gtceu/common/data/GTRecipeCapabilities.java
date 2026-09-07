@@ -15,11 +15,11 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTRecipeCapabilities {
 
     // spotless:off
-    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<SizedIngredient>> ITEM = register(ItemRecipeCapability.CAP);
-    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<SizedFluidIngredient>> FLUID = register(FluidRecipeCapability.CAP);
-    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<BlockState>> BLOCK_STATE = register(BlockStateRecipeCapability.CAP);
-    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<EnergyStack>> EU = register(EURecipeCapability.CAP);
-    public final static RegistryEntry<RecipeCapability<?>, RecipeCapability<Integer>> CWU = register(CWURecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, ItemRecipeCapability> ITEM = register(ItemRecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, FluidRecipeCapability> FLUID = register(FluidRecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, BlockStateRecipeCapability> BLOCK_STATE = register(BlockStateRecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, EURecipeCapability> EU = register(EURecipeCapability.CAP);
+    public final static RegistryEntry<RecipeCapability<?>, CWURecipeCapability> CWU = register(CWURecipeCapability.CAP);
     //spotless:on
 
     public static void init() {}

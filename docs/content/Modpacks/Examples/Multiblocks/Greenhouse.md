@@ -10,11 +10,12 @@ title: "Greenhouse"
 
 === "Java"
     ```java title="RecipeTypes.java"
-        public final static GTRecipeType GREENHOUSE_RECIPES = register(AddonMod.id("greenhouse"), MULTIBLOCK)
+        public final static GTRecipeTypeEntry GREENHOUSE_RECIPES = ADDON_REGISTRATE.recipeType("greenhouse", MULTIBLOCK)
             .setMaxIOSize(2, 1, 1, 1)
             .setEUIO(IO.IN)
             .UI(ui -> ui.setProgressBar(GTGuiTextures.PROGRESS_ARROW))
-            .setSound(GTSoundEntries.BATH);
+            .setSound(GTSoundEntries.BATH)
+            .register();
     ```
 === "JavaScript"
     ```js title="greenhouse_recipe_type.js"
@@ -31,7 +32,7 @@ title: "Greenhouse"
 
 === "Java"
     ```java title="MultiMachines.java"
-        public static final MultiblockMachineDefinition GREENHOUSE = REGISTRATE
+        public static final MachineEntry<MultiblockMachineDefinition> GREENHOUSE = REGISTRATE
             .multiblock("greenhouse", WorkableElectricMultiblockMachine::new)
             .langValue("Greenhouse")
             .rotationState(RotationState.NON_Y_AXIS)
