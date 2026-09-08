@@ -179,8 +179,8 @@ public interface SettingsHolder<S extends SettingsHolder<S>> extends Comparable<
         public boolean testAndIncrement(SettingsHolder<?> holder, PredicateContext ctx) {
             if (!holder.hasSettings()) return true;
             return switch (this) {
-                case GLOBAL_MAX -> holder.testGlobalMax(ctx.incrementGlobalCount(holder));
-                case SLICE_MAX -> holder.testSliceMax(ctx.incrementSliceCount(holder));
+                case GLOBAL_MAX -> holder.getMaxCount() == -1 || holder.testGlobalMax(ctx.incrementGlobalCount(holder));
+                case SLICE_MAX -> holder.getMaxSliceCount() == -1 || holder.testSliceMax(ctx.incrementSliceCount(holder));
                 default -> testCounts(holder, ctx);
             };
         }

@@ -508,12 +508,12 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         List<BasePredicate> predicates;
         if (b.isSingle()) {
             predicates = Stream.concat(a.predicates().stream(), Stream.of(b.predicates().get(0)))
-                    .map(BasePredicate::copy)
                     .toList();
-            children = a.children().stream().map(MultiPredicate::deepCopy).toList();
+            children = a.children().stream()
+                    .toList();
         } else {
             predicates = List.of();
-            children = List.of(a.deepCopy(), b.deepCopy());
+            children = List.of(a, b);
         }
 
         MultiPredicate combined = type.makePredicate(children, predicates, a.hasAir || b.hasAir);
