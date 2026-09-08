@@ -20,7 +20,7 @@ import java.util.function.UnaryOperator;
 
 public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
 
-    /// use {@link Predicates#air()} instead
+    /// use {@link com.gregtechceu.gtceu.api.multiblock.Predicates#air() Predicates.air()} instead
     @ApiStatus.Internal
     public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
@@ -28,7 +28,7 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
             .isAir(true)
             .markImmutable();
 
-    /// use {@link Predicates#any()} instead
+    /// use {@link com.gregtechceu.gtceu.api.multiblock.Predicates#any() Predicates.any()} instead
     @ApiStatus.Internal
     public static final BasePredicate ANY = new PredicateBuilder("Any")
             .predicate(ctx -> true)
@@ -142,6 +142,19 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
         appendContents(builder);
         builder.append('}');
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BasePredicate predicate)) return false;
+        return Objects.equals(getCandidates(), predicate.candidates) &&
+                Objects.equals(settings, predicate.settings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCandidates(), settings);
     }
 
     private BasePredicate markImmutable() {

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
@@ -503,8 +504,19 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         if (b == null || b.isEmpty()) return a; // no op
         if (a.isEmpty()) return b;
 
-        List<MultiPredicate> children = List.of(a.deepCopy(), b.deepCopy());
-        MultiPredicate combined = type.makePredicate(children, List.of(), a.hasAir || b.hasAir);
+        List<MultiPredicate> children;
+        List<BasePredicate> predicates;
+        if (b.isSingle()) {
+            predicates = Stream.concat(a.predicates().stream(), Stream.of(b.predicates().get(0)))
+                    .map(BasePredicate::copy)
+                    .toList();
+            children = a.children().stream().map(MultiPredicate::deepCopy).toList();
+        } else {
+            predicates = List.of();
+            children = List.of(a.deepCopy(), b.deepCopy());
+        }
+
+        MultiPredicate combined = type.makePredicate(children, predicates, a.hasAir || b.hasAir);
         combined.setSettings(PredicateSettings.create());
         return combined;
     }
