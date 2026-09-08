@@ -150,16 +150,14 @@ public class PredicateBuilder {
     /// fills candidates with this block tag
     public PredicateBuilder blockTag(TagKey<Block> tag) {
         Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
-                .getTag(tag).stream().map(BlockInfo::fromBlock)
-                .forEach(this.candidates::add);
+                .getTag(tag).forEach(this::blocks);
         return this;
     }
 
     /// fills candidates with this fluid tag
     public PredicateBuilder fluidTag(TagKey<Fluid> tag) {
         Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
-                .getTag(tag).stream().map(BlockInfo::fromFluid)
-                .forEach(this.candidates::add);
+                .getTag(tag).forEach(this::fluids);
         return this;
     }
 
