@@ -106,7 +106,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// Usually used for testing the global min of predicates
     public final boolean postGlobalTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
-        if (testGlobalMin(ctx) && TestType.GLOBAL_MIN.testSettings(this, ctx)) {
+        if (testGlobalMin(ctx) && TestType.GLOBAL_MIN.testCounts(this, ctx)) {
             return true;
         }
         for (Component content : getDescriptiveContents()) {
@@ -121,7 +121,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     /// Usually used for testing the slice min of predicates
     public final boolean postSliceTest(PredicateContext ctx) {
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MIN);
-        if (testSliceMin(ctx) && TestType.SLICE_MIN.testSettings(this, ctx)) {
+        if (testSliceMin(ctx) && TestType.SLICE_MIN.testCounts(this, ctx)) {
             return true;
         }
         for (Component content : getDescriptiveContents()) {
@@ -146,7 +146,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     private boolean testParents(TestType type, BasePredicate passedPredicate, PredicateContext context) {
         MultiPredicate parent = passedPredicate.getParent();
         while (parent != null) {
-            if (!type.testSettings(parent, context)) {
+            if (!type.testAndIncrement(parent, context)) {
                 return false;
             }
             parent = parent.getParent();
