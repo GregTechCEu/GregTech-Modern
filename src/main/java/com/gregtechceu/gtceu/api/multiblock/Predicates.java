@@ -327,22 +327,27 @@ public class Predicates {
 
     public static MultiPredicate heatingCoils() {
         return blocks("HeatingCoils",
-                GTCEuAPI.HEATING_COILS.values().stream()
-                        .<Block>map(Supplier::get).toList())
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
+                        .map(e -> (Block) e.getValue().get()).toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
                 .setPriority(0);
     }
 
     public static MultiPredicate cleanroomFilters() {
         return blocks("CleanroomFilters",
-                GTCEuAPI.CLEANROOM_FILTERS.values().stream().map(Supplier::get).toList())
+                GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
+                        .map(entry -> entry.getValue().get())
+                        .toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
     }
 
     public static MultiPredicate powerSubstationBatteries() {
-        return blocks("PSS-Batteries",
-                GTCEuAPI.PSS_BATTERIES.values()
-                        .stream().map(Supplier::get).map(Block.class::cast).toList())
+        return blocks("PSS-Batteries", GTCEuAPI.PSS_BATTERIES.entrySet()
+                .stream().sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
+                .map(e -> (Block) e.getValue().get())
+                .toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
     }
 
