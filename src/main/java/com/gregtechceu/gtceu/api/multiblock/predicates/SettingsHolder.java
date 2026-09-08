@@ -173,8 +173,9 @@ public interface SettingsHolder<S extends SettingsHolder<S>> extends Comparable<
         SLICE_MIN,
         SLICE_MAX;
 
-        // should return true if null settings
-        // otherwise test settings
+        /// @implNote The count of the holder WILL be incremented for glabal/slice max
+        /// @return {@code true}, if the holder does not have settings,
+        /// or passes their settings according to the type
         public boolean testSettings(SettingsHolder<?> holder, PredicateContext ctx) {
             if (!holder.hasSettings()) return true;
             return switch (this) {
