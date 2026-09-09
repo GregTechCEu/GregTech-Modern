@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.data.loot.GTLootModifications;
 import com.gregtechceu.gtceu.data.loot.GTLootTables;
+import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.tags.DamageTypeTagsLoader;
 
@@ -48,7 +49,8 @@ public class DataGenerators {
                             .add(Registries.JUKEBOX_SONG, GTJukeboxSongs::bootstrap)
                             .add(Registries.ENCHANTMENT_PROVIDER, GTEnchantmentProviders::bootstrap)
                             .add(GTRegistries.Keys.BEDROCK_FLUID, GTBedrockFluids::bootstrap)
-                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap),
+                            .add(GTRegistries.Keys.ORE_VEIN, GTOreVeins::bootstrap)
+                            .add(GTRegistries.Keys.CRAFTING_COMPONENT, GTCraftingComponents::bootstrap),
                     set));
             generator.addProvider(true,
                     new DamageTypeTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));

@@ -6,12 +6,21 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
 public record MaterialEntry(TagPrefix tagPrefix, Material material) {
+
+    // spotless:off
+    public static final Codec<MaterialEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            GTRegistries.TAG_PREFIXES.byNameCodec().fieldOf("tag_prefix").forGetter(MaterialEntry::tagPrefix),
+            GTRegistries.MATERIALS.byNameCodec().fieldOf("material").forGetter(MaterialEntry::material)
+    ).apply(instance, MaterialEntry::new));
+    // spotless:on
 
     public MaterialEntry {
         Preconditions.checkNotNull(tagPrefix, "MaterialEntry TagPrefix cannot be null!");

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEven
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 
@@ -69,6 +70,10 @@ public class GTCraftingComponents {
     public static CraftingComponent FRAME;
     public static CraftingComponent SMALL_SPRING_TRANSFORMER;
     public static CraftingComponent SPRING_TRANSFORMER;
+
+    public static void bootstrap(BootstrapContext<CraftingComponent> context) {
+
+    }
 
     public static void init() {
         CraftingComponent.ALL_COMPONENTS.clear();

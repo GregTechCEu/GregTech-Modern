@@ -5,8 +5,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,15 +21,14 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.GTValues.V;
 
 public class CraftingComponent {
 
     public static final Map<String, CraftingComponent> ALL_COMPONENTS = new Object2ReferenceOpenHashMap<>();
-
-    public static final CraftingComponent EMPTY = CraftingComponent.of("empty", ItemStack.EMPTY);
-
+    
     private final @Nullable CraftingComponentEntry[] values = new CraftingComponentEntry[V.length];
     @Setter
     private CraftingComponentEntry fallback;
@@ -72,7 +76,6 @@ public class CraftingComponent {
     }
 
     public CraftingComponentEntry get(int tier) {
-        if (this == EMPTY) return fallback;
         if (tier < 0 || tier >= values.length)
             throw new IllegalArgumentException("Tier out of range of ULV-MAX, tier: " + tier);
         var val = values[tier];
@@ -80,13 +83,11 @@ public class CraftingComponent {
     }
 
     public CraftingComponent add(int tier, ItemStack value) {
-        if (this == EMPTY) return this;
         values[tier] = new CraftingComponentEntry(value);
         return this;
     }
 
     public CraftingComponent add(int tier, MaterialEntry value) {
-        if (this == EMPTY) return this;
         values[tier] = new CraftingComponentEntry(value);
         return this;
     }
@@ -96,22 +97,18 @@ public class CraftingComponent {
     }
 
     public CraftingComponent add(int tier, TagKey<Item> value) {
-        if (this == EMPTY) return this;
         values[tier] = new CraftingComponentEntry(value);
         return this;
     }
 
     public void remove(int tier) {
-        if (this == EMPTY) return;
-        if (tier < 0 || tier >= values.length)
-            throw new IllegalArgumentException("Tier out of range of ULV-MAX, tier: " + tier);
+        if (tier < 0 || tier >= values.length) throw new IllegalArgumentException("Tier out of range of ULV-MAX, tier: " + tier);
         values[tier] = null;
     }
 
     public static CraftingComponent get(String id) {
         if (!ALL_COMPONENTS.containsKey(id)) {
-            GTCEu.LOGGER.error("No such crafting component: {}", id);
-            return EMPTY;
+            throw new IllegalArgumentException("No such crafting component: " + id);
         }
         return ALL_COMPONENTS.get(id);
     }
@@ -142,5 +139,45 @@ public class CraftingComponent {
         public CraftingComponentEntry(TagKey<Item> itemTag) {
             this(null, null, itemTag);
         }
+
+        public static final Codec<CraftingComponentEntry> CODEC = new Codec<>() {
+
+            private static final Codec<TagKey<Item>> TAG_KEY_CODEC = TagKey.hashedCodec(Registries.ITEM);
+
+            @Override
+            public <T> DataResult<Pair<CraftingComponentEntry, T>> decode(DynamicOps<T> ops, T input) {
+                final DataResult<Pair<CraftingComponentEntry, T>> firstRead = ItemStack.CODEC.decode(ops, input).map(p -> p.mapFirst(CraftingComponentEntry::new));
+                if (firstRead.isSuccess()) {
+                    return firstRead;
+                }
+                final DataResult<Pair<CraftingComponentEntry, T>> secondRead = TAG_KEY_CODEC.decode(ops, input).map(p -> p.mapFirst(CraftingComponentEntry::new));
+                if (secondRead.isSuccess()) {
+                    return secondRead;
+                }
+                final DataResult<Pair<CraftingComponentEntry, T>> thirdRead = MaterialEntry.CODEC.decode(ops, input).map(p -> p.mapFirst(CraftingComponentEntry::new));
+                if (thirdRead.isSuccess()) {
+                    return thirdRead;
+                }
+                if (firstRead.hasResultOrPartial()) {
+                    return firstRead;
+                }
+                if (secondRead.hasResultOrPartial()) {
+                    return secondRead;
+                }
+                if (thirdRead.hasResultOrPartial()) {
+                    return thirdRead;
+                }
+                return DataResult.error(() -> "Failed to parse crafting component entry. First: " + firstRead.error().orElseThrow().message() +
+                        "; Second: " + secondRead.error().orElseThrow().message() +
+                        "; Third: " + thirdRead.error().orElseThrow().message());
+            }
+
+            @Override
+            public <T> DataResult<T> encode(CraftingComponentEntry input, DynamicOps<T> ops, T prefix) {
+                if (input.itemStack() != null) return ItemStack.CODEC.encode(input.itemStack(), ops, prefix);
+                if (input.itemTag() != null) return TAG_KEY_CODEC.encode(input.itemTag(), ops, prefix);
+                return MaterialEntry.CODEC.encode(Objects.requireNonNull(input.materialEntry()), ops, prefix);
+            }
+        };
     }
 }
