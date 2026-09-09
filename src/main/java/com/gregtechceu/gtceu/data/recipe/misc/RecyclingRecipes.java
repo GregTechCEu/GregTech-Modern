@@ -91,7 +91,7 @@ public class RecyclingRecipes {
 
             // Skip Ingot -> Ingot Arc Recipes
             if (ChemicalHelper.getPrefix(input.getItem()) == TagPrefix.ingot.value() &&
-                    m.getPropertyOrThrow(PropertyKey.INGOT).getArcSmeltingInto() == m) {
+                    m.getPropertyOrThrow(PropertyKey.INGOT).getArcSmeltingInto() == m.getRegistryHolder()) {
                 return;
             }
 
