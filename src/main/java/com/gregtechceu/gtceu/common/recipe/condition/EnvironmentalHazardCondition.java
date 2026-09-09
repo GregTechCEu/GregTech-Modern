@@ -32,7 +32,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
     // spotless:on
 
     @Getter
-    private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING;
+    private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING.value();
 
     public EnvironmentalHazardCondition(boolean isReverse, MedicalCondition condition) {
         super(isReverse);
@@ -41,7 +41,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
 
     @Override
     public RecipeConditionType<EnvironmentalHazardCondition> getType() {
-        return GTRecipeConditions.ENVIRONMENTAL_HAZARD;
+        return GTRecipeConditions.ENVIRONMENTAL_HAZARD.value();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
         }
         EnvironmentalHazardSavedData savedData = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
         var zone = savedData.getZoneByContainedPos(recipeLogic.getMachine().getBlockPos());
-        return zone != null && zone.strength() > 0;
+        return zone != null && zone.strength() > 0 && zone.condition() == condition;
     }
 
     @Override

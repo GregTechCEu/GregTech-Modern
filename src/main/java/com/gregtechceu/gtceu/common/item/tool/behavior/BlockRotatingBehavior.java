@@ -99,7 +99,7 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
 
     @Override
     public ToolBehaviorType<BlockRotatingBehavior> getType() {
-        return GTToolBehaviors.BLOCK_ROTATING;
+        return GTToolBehaviors.BLOCK_ROTATING.value();
     }
 
     public static BlockHitResult retraceBlock(BlockGetter level, Player player, BlockPos pos) {

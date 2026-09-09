@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.integration.create;
 
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.createmod.catnip.data.Couple;
@@ -36,7 +38,7 @@ public class GTCreateIntegration {
     }
 
     public static void initPlaceholders() {
-        PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
+        GTRegistration.REGISTRATE.simple("redstone", GTRegistries.Keys.PLACEHOLDER, () -> new Placeholder("redstone") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -44,18 +46,20 @@ public class GTCreateIntegration {
                 return processRedstonePlaceholder(ctx, args);
             }
         });
-        PlaceholderHandler.addPlaceholder(new Placeholder("displayTarget") {
+        GTRegistration.REGISTRATE.simple("display_target", GTRegistries.Keys.PLACEHOLDER,
+                () -> new Placeholder("display_target") {
 
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
-                if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover)) throw new NotSupportedException();
-                int i = PlaceholderUtils.toInt(args.get(0));
-                PlaceholderUtils.checkRange("line number", 1, 100, i);
-                return MultiLineComponent.of(cover.getCreateDisplayTargetBuffer().get(i - 1));
-            }
-        });
+                    @Override
+                    public MultiLineComponent apply(PlaceholderContext ctx,
+                                                    List<MultiLineComponent> args) throws PlaceholderException {
+                        PlaceholderUtils.checkArgs(args, 1);
+                        if (!(ctx.cover() instanceof IPlaceholderInfoProviderCover cover))
+                            throw new NotSupportedException();
+                        int i = PlaceholderUtils.toInt(args.get(0));
+                        PlaceholderUtils.checkRange("line number", 1, 100, i);
+                        return MultiLineComponent.of(cover.getCreateDisplayTargetBuffer().get(i - 1));
+                    }
+                });
     }
 
     private static int getRedstoneLinkPower(PlaceholderContext ctx,
