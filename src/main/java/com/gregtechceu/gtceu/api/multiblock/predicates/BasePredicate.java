@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -44,8 +43,6 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
     @Getter
     protected PredicateSettings settings = PredicateSettings.create();
 
-    private @Nullable MultiPredicate parent;
-
     @Getter
     private final List<Component> additionalTooltips = new ArrayList<>();
 
@@ -59,10 +56,6 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
     @Getter
     private boolean isAny = false;
 
-    public MultiPredicate getParent() {
-        return Objects.requireNonNull(this.parent);
-    }
-
     /// the main testing method
     public abstract boolean test(PredicateContext ctx);
 
@@ -71,12 +64,6 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
     /// @param root the top-most multi predicate for this multi predicate
     /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
-
-    /// delegates to {@link MultiPredicate#testMaxCount(BasePredicate, PredicateContext)},
-    /// with this predicate as the passing predicate
-    public boolean checkMaxCount(PredicateContext context) {
-        return getParent().testMaxCount(this, context);
-    }
 
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
@@ -190,10 +177,6 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
     @Override
     public void setSettings(PredicateSettings settings) {
         if (mutable) this.settings = settings;
-    }
-
-    public void setParent(@Nullable MultiPredicate parent) {
-        if (mutable) this.parent = parent;
     }
 
     public void addTooltips(Component tooltip) {

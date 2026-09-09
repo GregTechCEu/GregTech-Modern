@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
+import com.gregtechceu.gtceu.api.multiblock.predicates.TestType;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
@@ -62,17 +63,12 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @Getter
     private PredicateSettings settings;
 
-    @Nullable
-    @Getter
-    private MultiPredicate parent;
     private boolean mutable = true;
 
     /// @param children list of multi predicate children
     /// @param predicates list of testable predicates, should be sorted already
     protected MultiPredicate(Logic type, List<MultiPredicate> children,
                              List<BasePredicate> predicates, boolean hasAir) {
-        predicates.forEach(p -> p.setParent(this));
-        children.forEach(mp -> mp.setParent(this));
         this.predicates = Collections.unmodifiableList(predicates);
         this.children = Collections.unmodifiableList(children);
         this.type = type;
@@ -80,25 +76,34 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     /// @return innermost base predicate that passes state check at given pos
-    public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
+    public PredicateResult getPredicateAtPos(PredicateContext context) {
         context.setStage(PredicateContext.PredicateStage.INTERNAL);
         for (BasePredicate predicate : predicates()) {
             if (predicate.test(context)) {
-                return predicate;
+                PredicateResult result = onPredicateMatched(PredicateResult.of(predicate, this), context);
+                if (result.failed()) return PredicateResult.noMatch();
+                if (result.hasMatched()) return result;
             }
         }
         for (MultiPredicate predicates : children()) {
-            BasePredicate p = predicates.getPredicateAtPos(context);
-            if (p != null) return p;
+            var result = predicates.getPredicateAtPos(context);
+            if (result.hasMatched()) {
+                result = onPredicateMatched(result, context);
+                return result.failed() ? PredicateResult.noMatch() : result.appendParent(this);
+            }
         }
-        if (isRoot()) {
-            onError(context);
-        }
-        return null;
+
+        return PredicateResult.noMatch();
+    }
+
+    /// @param result a result with the passed predicate and call chain
+    /// @return by default returns {@code result}, but can return a modified result (see {@link XorPredicate})
+    protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
+        return result;
     }
 
     /// called when all predicates failed
-    protected void onError(PredicateContext ctx) {
+    public void onError(PredicateContext ctx) {
         this.forEach(p -> p.onError(ctx));
         this.forEachChild(mp -> mp.onError(ctx));
     }
@@ -132,28 +137,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     protected abstract boolean testSliceMin(PredicateContext ctx);
-
-    /// test against global/slice max counts
-    public boolean testMaxCount(BasePredicate passedPredicate, PredicateContext context) {
-        context.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
-        if (!(passedPredicate.testGlobalMax(context) && testParents(TestType.GLOBAL_MAX, passedPredicate, context))) {
-            return false;
-        }
-        context.setStage(PredicateContext.PredicateStage.SLICE_MAX);
-        return passedPredicate.testSliceMax(context) && testParents(TestType.SLICE_MAX, passedPredicate, context);
-    }
-
-    // go up the parent chain to test settings of parents
-    private boolean testParents(TestType type, BasePredicate passedPredicate, PredicateContext context) {
-        MultiPredicate parent = passedPredicate.getParent();
-        while (parent != null) {
-            if (!type.testAndIncrement(parent, context)) {
-                return false;
-            }
-            parent = parent.getParent();
-        }
-        return true;
-    }
 
     public List<List<BlockInfo>> getCandidates() {
         List<List<BlockInfo>> result = new ArrayList<>();
@@ -195,24 +178,9 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return this.hasAir;
     }
 
-    /// @return {@code true} if this multi predicate has only one predicate, has no children, and has no parent
+    /// @return {@code true} if this multi predicate has only one predicate and has no children
     public boolean isSingle() {
-        return predicates.size() == 1 && isLeaf() && isRoot();
-    }
-
-    /// @return {@code true} if this multi predicate has no parent
-    public boolean isRoot() {
-        return getParent() == null;
-    }
-
-    /// @return {@code true} if this multi predicate has children and is not a root predicate
-    public boolean isBranch() {
-        return !isLeaf() && !isRoot();
-    }
-
-    /// @return {@code true} if this multi predicate has no children multi predicates
-    public boolean isLeaf() {
-        return this.children.isEmpty();
+        return predicates.size() == 1 && this.children.isEmpty();
     }
 
     public List<Component> getDescriptiveContents() {
@@ -251,7 +219,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     /// @return a flattened list of all base predicates
     public List<BasePredicate> expand() {
-        if (isLeaf()) return this.predicates;
+        if (this.children.isEmpty()) return this.predicates;
         List<BasePredicate> expanded = new ArrayList<>(this.predicates);
         forEachChild(mp -> expanded.addAll(mp.expand()));
         return expanded;
@@ -317,10 +285,6 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         if (!mutable) return;
         this.settings = settings == null ? null : settings.copy();
         onSettingsChanged();
-    }
-
-    public void setParent(MultiPredicate parent) {
-        if (mutable) this.parent = parent;
     }
 
     public MultiPredicate setController(boolean controller) {

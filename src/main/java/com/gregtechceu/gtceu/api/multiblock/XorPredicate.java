@@ -30,39 +30,27 @@ public class XorPredicate extends MultiPredicate {
     }
 
     @Override
-    public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
-        context.setStage(PredicateContext.PredicateStage.INTERNAL);
-        for (BasePredicate predicate : predicates()) {
-            if (predicate.test(context)) {
-                if (this.passedPredicate != null && !this.passedPredicate.is(predicate)) {
-                    xorError(context, predicate, this.passedPredicate);
-                    // error
-                    return null;
-                }
-                if (this.passedPredicate == null) {
-                    this.passedPredicate = ofPredicate(predicate);
-                }
-                return predicate;
+    protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
+        if (result.match() == null) return result;
+        if (result.isTop(this)) {
+            if (this.passedPredicate != null && !this.passedPredicate.is(result.match())) {
+                xorError(context, result.match(), this.passedPredicate);
+                return result.setFailed();
+            }
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofPredicate(result.match());
+            }
+        } else {
+            MultiPredicate bottom = Objects.requireNonNull(result.getBottom());
+            if (this.passedPredicate != null && !this.passedPredicate.is(bottom)) {
+                xorError(context, result.match(), this.passedPredicate);
+                return result.setFailed();
+            }
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofChild(bottom);
             }
         }
-        for (MultiPredicate child : children()) {
-            BasePredicate p = child.getPredicateAtPos(context);
-            if (p != null) {
-                if (this.passedPredicate != null && !this.passedPredicate.is(child)) {
-                    xorError(context, p, this.passedPredicate);
-                    // error
-                    return null;
-                }
-                if (this.passedPredicate == null) {
-                    this.passedPredicate = ofChild(child);
-                }
-                return p;
-            }
-        }
-        if (isRoot()) {
-            onError(context);
-        }
-        return null;
+        return result;
     }
 
     @Override
@@ -95,7 +83,7 @@ public class XorPredicate extends MultiPredicate {
 
     private static boolean isNoneValid(MultiPredicate multiPredicate) {
         PredicateSettings settings = multiPredicate.getSettings();
-        if (settings != null && settings.isNoneValid()) return true;
+        if (settings != null && !settings.isNoneValid()) return false;
 
         for (BasePredicate predicate : multiPredicate.predicates()) {
             if (predicate.getSettings().isNoneValid()) {

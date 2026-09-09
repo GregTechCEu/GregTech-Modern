@@ -139,7 +139,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         CONTEXT.setCheckLayer(false);
         CONTEXT.updateLevel(level);
         CONTEXT.updatePos(pos);
-        return getMultiPredicate().getPredicateAtPos(CONTEXT) != null;
+        return getMultiPredicate().getPredicateAtPos(CONTEXT).hasMatched();
     }
 
     public void updateStructureDimensions() {
