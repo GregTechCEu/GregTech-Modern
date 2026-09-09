@@ -1,38 +1,32 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.drawable.Text;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class BlockMatchingError extends PatternError {
 
+    // spotless:off
     public static final MapCodec<BlockMatchingError> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            Codec.list(BuiltInRegistries.BLOCK.byNameCodec()).fieldOf("blocks")
-                    .forGetter(BlockMatchingError::getBlocks))
-            .apply(instance, BlockMatchingError::new));
-
-    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("block_matching_error"), CODEC);
+            BuiltInRegistries.BLOCK.byNameCodec().listOf().fieldOf("blocks").forGetter(BlockMatchingError::getBlocks))
+    .apply(instance, BlockMatchingError::new));
+    //spotless:on
 
     @Getter
     private final List<Block> blocks;
 
     public BlockMatchingError(BlockPos pos, List<Block> blocks) {
-        super(pos, Collections.emptyList());
+        super(pos);
         this.blocks = blocks;
     }
 
@@ -43,7 +37,6 @@ public class BlockMatchingError extends PatternError {
             for (Block block : blocks) {
                 comps.add(block.getName());
             }
-            Objects.requireNonNull(pos);
             comps.add(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(), pos.getY(), pos.getZ()));
             comps.forEach(comp -> parent.child(Text.of(comp).asWidget()));
         };
@@ -51,6 +44,6 @@ public class BlockMatchingError extends PatternError {
 
     @Override
     public PatternErrorType type() {
-        return TYPE;
+        return GTPatternErrors.BLOCK_MATCHING_ERROR.value();
     }
 }

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
@@ -197,17 +198,21 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final GTRecipe doModifyRecipe(GTRecipe recipe) {
+    @MustBeInvokedByOverriders
+    public GTRecipe doModifyRecipe(GTRecipe recipe) {
+        recipe = self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+        if (recipe == null) return null;
+
         for (MultiblockPartMachine part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
         }
-        return getRealRecipe(recipe);
-    }
 
-    @Nullable
-    protected GTRecipe getRealRecipe(GTRecipe recipe) {
-        return getDefinition().getRecipeModifier().applyModifier(this, recipe);
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            recipe = rlTrait.modifyRecipe(recipe);
+            if (recipe == null) return null;
+        }
+        return recipe;
     }
 
     public void updateActiveBlocks(boolean active) {
