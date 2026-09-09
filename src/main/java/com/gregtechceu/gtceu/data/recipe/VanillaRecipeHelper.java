@@ -387,6 +387,14 @@ public class VanillaRecipeHelper {
                             builder.define(sign, tag);
                         } else builder.define(sign, ChemicalHelper.get(tagPrefix, material));
                     }
+                    case CraftingComponent.CraftingComponentEntry entry when entry.itemStack() != null -> builder.define(sign, entry.itemStack());
+                    case CraftingComponent.CraftingComponentEntry entry when entry.itemTag() != null -> builder.define(sign, entry.itemTag());
+                    case CraftingComponent.CraftingComponentEntry entry when entry.materialEntry() != null -> {
+                        TagKey<Item> tag = ChemicalHelper.getTag(entry.materialEntry());
+                        if (tag != null) {
+                            builder.define(sign, tag);
+                        } else builder.define(sign, ChemicalHelper.get(entry.materialEntry(), 1));
+                    }
                     default -> {}
                 }
             }

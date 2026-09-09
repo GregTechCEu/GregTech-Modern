@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.codec.CodecUtils;
@@ -312,6 +313,9 @@ public class GTRecipeBuilder {
             case MachineDefinition machine -> inputItems(machine);
             case IntProviderIngredient ingredient -> inputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
+            case CraftingComponent.CraftingComponentEntry entry when entry.itemStack() != null -> inputItems(entry.itemStack());
+            case CraftingComponent.CraftingComponentEntry entry when entry.itemTag() != null -> inputItems(entry.itemTag());
+            case CraftingComponent.CraftingComponentEntry entry when entry.materialEntry() != null -> inputItems(entry.materialEntry());
             default -> {
                 GTCEu.LOGGER.error(
                         """

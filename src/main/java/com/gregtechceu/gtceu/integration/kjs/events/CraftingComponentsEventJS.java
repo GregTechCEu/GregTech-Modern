@@ -27,49 +27,31 @@ import java.util.Map;
 @NoArgsConstructor
 public class CraftingComponentsEventJS implements KubeStartupEvent {
 
-    private ComponentWrapper create(String id, Object fallback) {
-        return ComponentWrapper.of(id, fallback);
-    }
-
     public ComponentWrapper createItem(String id, ItemStack stack) {
-        return create(id, stack);
+        return ComponentWrapper.of(id, stack);
     }
 
     public ComponentWrapper createTag(String id, TagKey<Item> tag) {
-        return create(id, tag);
+        return ComponentWrapper.of(id, tag);
     }
 
     public ComponentWrapper createMaterialEntry(String id, MaterialEntry entry) {
-        return create(id, entry);
+        return ComponentWrapper.of(id, entry);
     }
 
     // Set singular
-    private void set(CraftingComponent craftingComponent, int tier, Object value) {
-        craftingComponent.add(tier, value);
-    }
 
     public void setItem(CraftingComponent craftingComponent, int tier, ItemStack item) {
-        set(craftingComponent, tier, item);
+        craftingComponent.add(tier, item);
     }
 
     public void setTag(CraftingComponent craftingComponent, int tier, TagKey<Item> tag) {
-        set(craftingComponent, tier, tag);
+        craftingComponent.add(tier, tag);
     }
 
     public void setMaterialEntry(CraftingComponent craftingComponent, int tier,
                                  MaterialEntry matEntry) {
-        set(craftingComponent, tier, matEntry);
-    }
-
-    // Set from Map methods
-    public void set(Context cx, CraftingComponent craftingComponent, Map<Object, Object> map) {
-        for (var val : map.entrySet()) {
-            int tier = parseTier(val.getKey());
-            if (tier == -1) return;
-            Object obj = parseObject(cx, val.getValue());
-            if (obj == null) return;
-            craftingComponent.add(tier, obj);
-        }
+        craftingComponent.add(tier, matEntry);
     }
 
     public void setItems(Context cx, CraftingComponent craftingComponent, Map<Object, ItemStack> map) {
@@ -112,15 +94,15 @@ public class CraftingComponentsEventJS implements KubeStartupEvent {
     }
 
     public void setFallbackItem(CraftingComponent craftingComponent, ItemStack stack) {
-        craftingComponent.setFallback(stack);
+        craftingComponent.setFallback(new CraftingComponent.CraftingComponentEntry(stack));
     }
 
     public void setFallbackTag(CraftingComponent craftingComponent, TagKey<Item> tag) {
-        craftingComponent.setFallback(tag);
+        craftingComponent.setFallback(new CraftingComponent.CraftingComponentEntry(tag));
     }
 
     public void setFallbackMaterialEntry(CraftingComponent craftingComponent, MaterialEntry materialEntry) {
-        craftingComponent.setFallback(materialEntry);
+        craftingComponent.setFallback(new CraftingComponent.CraftingComponentEntry(materialEntry));
     }
 
     public void removeTier(CraftingComponent craftingComponent, int tier) {
@@ -180,46 +162,61 @@ public class CraftingComponentsEventJS implements KubeStartupEvent {
 
     public static class ComponentWrapper extends CraftingComponent {
 
-        private final String id;
-
-        private ComponentWrapper(String id, Object fallback) {
-            super(fallback);
-            this.id = id;
+        private ComponentWrapper() {
+            super();
         }
 
-        public static ComponentWrapper of(@NotNull String id, @NotNull Object fallback) {
+        public static ComponentWrapper of(@NotNull String id, @NotNull ItemStack fallback) {
             if (ALL_COMPONENTS.containsKey(id)) {
                 // Throw here because we don't want Kubers to mess with existing components
                 throw new IllegalArgumentException("Duplicate crafting component: " + id);
             }
-            var ret = new ComponentWrapper(id, fallback);
+            var ret = new ComponentWrapper();
+            ret.setFallback(new CraftingComponentEntry(fallback));
             ALL_COMPONENTS.put(id, ret);
             return ret;
         }
 
-        public @NotNull ComponentWrapper add(int tier, @NotNull Object value) {
-            try {
-                super.add(tier, value);
-            } catch (RuntimeException e) {
-                ConsoleJS.STARTUP.error("Problem with component " + id, e);
+        public static ComponentWrapper of(@NotNull String id, @NotNull MaterialEntry fallback) {
+            if (ALL_COMPONENTS.containsKey(id)) {
+                // Throw here because we don't want Kubers to mess with existing components
+                throw new IllegalArgumentException("Duplicate crafting component: " + id);
             }
-            return this;
+            var ret = new ComponentWrapper();
+            ret.setFallback(new CraftingComponentEntry(fallback));
+            ALL_COMPONENTS.put(id, ret);
+            return ret;
+        }
+
+        public static ComponentWrapper of(@NotNull String id, @NotNull TagKey<Item> fallback) {
+            if (ALL_COMPONENTS.containsKey(id)) {
+                // Throw here because we don't want Kubers to mess with existing components
+                throw new IllegalArgumentException("Duplicate crafting component: " + id);
+            }
+            var ret = new ComponentWrapper();
+            ret.setFallback(new CraftingComponentEntry(fallback));
+            ALL_COMPONENTS.put(id, ret);
+            return ret;
         }
 
         public ComponentWrapper addItem(int tier, ItemStack stack) {
-            return add(tier, stack);
+            add(tier, stack);
+            return this;
         }
 
         public ComponentWrapper addTag(int tier, ResourceLocation tag) {
-            return add(tier, TagKey.create(Registries.ITEM, tag));
+            add(tier, TagKey.create(Registries.ITEM, tag));
+            return this;
         }
 
         public ComponentWrapper addMaterialEntry(int tier, MaterialEntry entry) {
-            return add(tier, entry);
+            add(tier, entry);
+            return this;
         }
 
         public ComponentWrapper addMaterialEntry(int tier, TagPrefix prefix, Material mat) {
-            return add(tier, new MaterialEntry(prefix, mat));
+            add(tier, new MaterialEntry(prefix, mat));
+            return this;
         }
     }
 }

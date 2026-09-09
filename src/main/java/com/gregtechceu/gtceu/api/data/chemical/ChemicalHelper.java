@@ -311,13 +311,13 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static Block getBlock(TagPrefix orePrefix, Material material) {
-        return getBlock(new MaterialEntry(orePrefix, material));
+    public static Block getBlock(TagPrefix tagPrefix, Material material) {
+        return getBlock(new MaterialEntry(tagPrefix, material));
     }
 
     @Nullable
-    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
-        var tags = orePrefix.getBlockTags(material);
+    public static TagKey<Block> getBlockTag(TagPrefix tagPrefix, @NotNull Material material) {
+        var tags = tagPrefix.getBlockTags(material);
         if (!tags.isEmpty()) {
             return tags.getFirst();
         }
@@ -325,21 +325,26 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Item> getTag(TagPrefix orePrefix, Material material) {
-        var tags = orePrefix.getItemTags(material);
+    public static TagKey<Item> getTag(TagPrefix tagPrefix, Material material) {
+        var tags = tagPrefix.getItemTags(material);
         if (!tags.isEmpty()) {
             return tags.getFirst();
         }
         return null;
     }
 
-    public static TagKey<Item> getTagOrThrow(TagPrefix orePrefix, Material material) {
-        return Objects.requireNonNull(getTag(orePrefix, material),
-                "No item tag for %s %s".formatted(orePrefix, material));
+    @Nullable
+    public static TagKey<Item> getTag(MaterialEntry materialEntry) {
+        return getTag(materialEntry.tagPrefix(), materialEntry.material());
     }
 
-    public static List<TagKey<Item>> getTags(TagPrefix orePrefix, @NotNull Material material) {
-        return orePrefix.getItemTags(material);
+    public static TagKey<Item> getTagOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getTag(tagPrefix, material),
+                "No item tag for %s %s".formatted(tagPrefix, material));
+    }
+
+    public static List<TagKey<Item>> getTags(TagPrefix tagPrefix, @NotNull Material material) {
+        return tagPrefix.getItemTags(material);
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

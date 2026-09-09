@@ -5,13 +5,15 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -23,47 +25,80 @@ public class CraftingComponent {
 
     public static final CraftingComponent EMPTY = CraftingComponent.of("empty", ItemStack.EMPTY);
 
-    private final Object[] values = new Object[V.length];
+    private final @Nullable CraftingComponentEntry[] values = new CraftingComponentEntry[V.length];
     @Setter
-    private @NotNull Object fallback;
+    private CraftingComponentEntry fallback;
 
-    protected CraftingComponent(@NotNull Object fallback) {
-        checkType(fallback);
+    protected CraftingComponent(CraftingComponentEntry fallback) {
         this.fallback = fallback;
     }
 
-    public static CraftingComponent of(@NotNull String id, @NotNull Object fallback) {
+    public static CraftingComponent of(String id, ItemStack fallback) {
         var existing = ALL_COMPONENTS.get(id);
         if (existing != null) {
             GTCEu.LOGGER.error("Duplicate crafting component id: {}, check components", id);
             return existing;
         }
-        var ret = new CraftingComponent(fallback);
+        var ret = new CraftingComponent(new CraftingComponentEntry(fallback));
         ALL_COMPONENTS.put(id, ret);
         return ret;
     }
 
-    public static CraftingComponent of(@NotNull String id, @NotNull TagPrefix prefix, @NotNull Material material) {
+    public static CraftingComponent of(String id, MaterialEntry fallback) {
+        var existing = ALL_COMPONENTS.get(id);
+        if (existing != null) {
+            GTCEu.LOGGER.error("Duplicate crafting component id: {}, check components", id);
+            return existing;
+        }
+        var ret = new CraftingComponent(new CraftingComponentEntry(fallback));
+        ALL_COMPONENTS.put(id, ret);
+        return ret;
+    }
+
+    public static CraftingComponent of(String id, TagKey<Item> fallback) {
+        var existing = ALL_COMPONENTS.get(id);
+        if (existing != null) {
+            GTCEu.LOGGER.error("Duplicate crafting component id: {}, check components", id);
+            return existing;
+        }
+        var ret = new CraftingComponent(new CraftingComponentEntry(fallback));
+        ALL_COMPONENTS.put(id, ret);
+        return ret;
+    }
+
+
+    public static CraftingComponent of(String id, TagPrefix prefix, Material material) {
         return of(id, new MaterialEntry(prefix, material));
     }
 
-    public @NotNull Object get(int tier) {
-        if (this == EMPTY) return ItemStack.EMPTY;
+    public CraftingComponentEntry get(int tier) {
+        if (this == EMPTY) return fallback;
         if (tier < 0 || tier >= values.length)
             throw new IllegalArgumentException("Tier out of range of ULV-MAX, tier: " + tier);
         var val = values[tier];
         return val == null ? fallback : val;
     }
 
-    public @NotNull CraftingComponent add(int tier, @NotNull Object value) {
+    public CraftingComponent add(int tier, ItemStack value) {
         if (this == EMPTY) return this;
-        checkType(value);
-        values[tier] = value;
+        values[tier] = new CraftingComponentEntry(value);
         return this;
     }
 
-    public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull Material material) {
+    public CraftingComponent add(int tier, MaterialEntry value) {
+        if (this == EMPTY) return this;
+        values[tier] = new CraftingComponentEntry(value);
+        return this;
+    }
+
+    public CraftingComponent add(int tier, TagPrefix prefix, Material material) {
         return add(tier, new MaterialEntry(prefix, material));
+    }
+
+    public CraftingComponent add(int tier, TagKey<Item> value) {
+        if (this == EMPTY) return this;
+        values[tier] = new CraftingComponentEntry(value);
+        return this;
     }
 
     public void remove(int tier) {
@@ -73,21 +108,39 @@ public class CraftingComponent {
         values[tier] = null;
     }
 
-    private void checkType(@NotNull Object o) {
-        if ((o instanceof TagKey<?> tag)) {
-            if (!tag.isFor(BuiltInRegistries.ITEM.key())) {
-                throw new IllegalArgumentException("TagKey must be of type TagKey<Item>");
-            }
-        } else if (!(o instanceof ItemStack || o instanceof MaterialEntry)) {
-            throw new IllegalArgumentException("Object is not of type ItemStack, MaterialEntry or TagKey<Item>");
-        }
-    }
-
     public static CraftingComponent get(String id) {
         if (!ALL_COMPONENTS.containsKey(id)) {
             GTCEu.LOGGER.error("No such crafting component: {}", id);
             return EMPTY;
         }
         return ALL_COMPONENTS.get(id);
+    }
+
+    @Accessors(fluent = true)
+    public static class CraftingComponentEntry {
+        @Getter
+        private final @Nullable ItemStack itemStack;
+        @Getter
+        private final @Nullable MaterialEntry materialEntry;
+        @Getter
+        private final @Nullable TagKey<Item> itemTag;
+
+        private CraftingComponentEntry(@Nullable ItemStack itemStack, @Nullable MaterialEntry materialEntry, @Nullable TagKey<Item> itemTag) {
+            this.itemStack = itemStack;
+            this.materialEntry = materialEntry;
+            this.itemTag = itemTag;
+        }
+
+        public CraftingComponentEntry(ItemStack stack) {
+            this(stack, null, null);
+        }
+
+        public CraftingComponentEntry(MaterialEntry materialEntry) {
+            this(null, materialEntry, null);
+        }
+
+        public CraftingComponentEntry(TagKey<Item> itemTag) {
+            this(null, null, itemTag);
+        }
     }
 }
