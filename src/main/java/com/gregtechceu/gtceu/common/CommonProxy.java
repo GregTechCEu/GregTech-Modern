@@ -206,8 +206,7 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-
-        GTCreativeModeTabs.init();
+        GTAttachmentTypes.init(modBus);
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
