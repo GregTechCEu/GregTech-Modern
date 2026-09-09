@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
@@ -42,15 +42,15 @@ public class SinglePredicateError extends PatternError {
     public final int predMaxLayerCount;
     public final String debugName;
 
-    public SinglePredicateError(BasePredicate failingPredicate,
-                                ErrorType type, int actualCount) {
+    public SinglePredicateError(SettingsHolder<?> holder,
+                                List<BlockInfo> candidates, ErrorType type, int actualCount) {
         this(type, actualCount,
-                failingPredicate.getMinCount(),
-                failingPredicate.getMaxCount(),
-                failingPredicate.getMinSliceCount(),
-                failingPredicate.getMaxSliceCount(),
-                failingPredicate.toString(),
-                failingPredicate.getCandidates());
+                holder.getMinCount(),
+                holder.getMaxCount(),
+                holder.getMinSliceCount(),
+                holder.getMaxSliceCount(),
+                holder.toString(),
+                candidates);
     }
 
     public SinglePredicateError(ErrorType type, int actualCount, int minCount, int maxCount, int minLayerCount,
@@ -80,20 +80,24 @@ public class SinglePredicateError extends PatternError {
         };
     }
 
-    public static SinglePredicateError maxCount(BasePredicate failingPredicate, int actualCount) {
-        return new SinglePredicateError(failingPredicate, ErrorType.MAX_COUNT, actualCount);
+    public static SinglePredicateError maxCount(SettingsHolder<?> failingPredicate, List<BlockInfo> candidates,
+                                                int actualCount) {
+        return new SinglePredicateError(failingPredicate, candidates, ErrorType.MAX_COUNT, actualCount);
     }
 
-    public static SinglePredicateError minCount(BasePredicate failingPredicate, int actualCount) {
-        return new SinglePredicateError(failingPredicate, ErrorType.MIN_COUNT, actualCount);
+    public static SinglePredicateError minCount(SettingsHolder<?> failingPredicate, List<BlockInfo> candidates,
+                                                int actualCount) {
+        return new SinglePredicateError(failingPredicate, candidates, ErrorType.MIN_COUNT, actualCount);
     }
 
-    public static SinglePredicateError maxLayerCount(BasePredicate failingPredicate, int actualCount) {
-        return new SinglePredicateError(failingPredicate, ErrorType.MAX_LAYER_COUNT, actualCount);
+    public static SinglePredicateError maxLayerCount(SettingsHolder<?> failingPredicate, List<BlockInfo> candidates,
+                                                     int actualCount) {
+        return new SinglePredicateError(failingPredicate, candidates, ErrorType.MAX_LAYER_COUNT, actualCount);
     }
 
-    public static SinglePredicateError minLayerCount(BasePredicate failingPredicate, int actualCount) {
-        return new SinglePredicateError(failingPredicate, ErrorType.MIN_LAYER_COUNT, actualCount);
+    public static SinglePredicateError minLayerCount(SettingsHolder<?> failingPredicate, List<BlockInfo> candidates,
+                                                     int actualCount) {
+        return new SinglePredicateError(failingPredicate, candidates, ErrorType.MIN_LAYER_COUNT, actualCount);
     }
 
     @Getter

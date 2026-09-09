@@ -82,7 +82,7 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
     public boolean testGlobalMax(PredicateContext ctx) {
         int count = ctx.incrementGlobalCount(this);
         if (testGlobalMax(count)) return true;
-        ctx.appendError(SinglePredicateError.maxCount(this, count));
+        ctx.appendError(SinglePredicateError.maxCount(this, getCandidates(), count));
         return false;
     }
 
@@ -91,7 +91,7 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
         if (!ctx.isCheckLayer()) return true;
         int count = ctx.incrementSliceCount(this);
         if (testSliceMax(count)) return true;
-        ctx.appendError(SinglePredicateError.maxLayerCount(this, count));
+        ctx.appendError(SinglePredicateError.maxLayerCount(this, getCandidates(), count));
         return false;
     }
 
@@ -100,7 +100,7 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
         if (getMinCount() == -1) return true;
         int count = ctx.getGlobalCount(this);
         if (testGlobalMin(count)) return true;
-        ctx.appendError(SinglePredicateError.minCount(this, count));
+        ctx.appendError(SinglePredicateError.minCount(this, getCandidates(), count));
         return false;
     }
 
@@ -109,7 +109,7 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
         if (!ctx.isCheckLayer()) return true;
         int count = ctx.getSliceCount(this);
         if (testSliceMin(count)) return true;
-        ctx.appendError(SinglePredicateError.minLayerCount(this, count));
+        ctx.appendError(SinglePredicateError.minLayerCount(this, getCandidates(), count));
         return false;
     }
 
