@@ -148,13 +148,13 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BasePredicate predicate)) return false;
-        return Objects.equals(getCandidates(), predicate.candidates) &&
-                Objects.equals(settings, predicate.settings);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getCandidates(), settings);
+        List<BlockInfo> thisCandidates = this.getCandidates();
+        List<BlockInfo> thatCandidates = predicate.getCandidates();
+        if (thisCandidates.size() != thatCandidates.size()) return false;
+        for (int i = 0; i < thisCandidates.size(); i++) {
+            if (!Objects.equals(thisCandidates.get(i), thatCandidates.get(i))) return false;
+        }
+        return true;
     }
 
     private BasePredicate markImmutable() {
