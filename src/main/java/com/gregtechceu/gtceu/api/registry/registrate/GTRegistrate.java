@@ -15,8 +15,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBu
 import com.gregtechceu.gtceu.api.registry.registrate.builder.SoundEntryBuilder;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
