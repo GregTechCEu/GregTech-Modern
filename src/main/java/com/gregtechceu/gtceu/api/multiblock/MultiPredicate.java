@@ -440,21 +440,20 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("MultiPredicate");
+        if (isSingle()) return predicates().get(0).toString();
+        StringBuilder builder = new StringBuilder();
+        if (isController()) builder.append("C");
         builder.append('[');
-        if (isController()) builder.append("Controller=true, ");
-        switch (this.type) {
-            case OR -> builder.append("Logic=OR");
-            case AND -> builder.append("Logic=AND");
-            case XOR -> builder.append("Logic=XOR");
-        }
-        builder.append(']');
-        builder.append('{');
-        StringJoiner joiner = new StringJoiner(", ");
+        var delimiter = switch (this.type) {
+            case OR -> " OR ";
+            case AND -> " AND ";
+            case XOR -> " XOR ";
+        };
+        StringJoiner joiner = new StringJoiner(delimiter);
         this.forEach(p -> joiner.add(p.toString()));
         this.forEachChild(mp -> joiner.add(mp.toString()));
         builder.append(joiner);
-        builder.append('}');
+        builder.append(']');
         return builder.toString();
     }
 
