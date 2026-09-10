@@ -312,6 +312,8 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         MultiPredicate copy = this.type.makePredicate(copiedChildren, copiedPredicates, this.hasAir);
         copy.setSettings(this.settings);
         copy.setController(this.controller);
+        copy.isAir(this.isAir);
+        copy.isAny(this.isAny);
         return copy;
     }
 
@@ -469,16 +471,21 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
         List<MultiPredicate> children;
         List<BasePredicate> predicates;
-        if (b.isSingle()) {
-            predicates = Stream.concat(a.predicates().stream(), Stream.of(b.predicates().get(0)))
+        if (a.isSingle() && b.isSingle()) {
+            predicates = Stream.concat(a.predicates().stream(), b.predicates().stream())
                     .map(BasePredicate::copy)
+                    .sorted(Collections.reverseOrder(BasePredicate::compareTo))
                     .toList();
             children = a.children().stream()
                     .map(MultiPredicate::deepCopy)
+                    .sorted(Collections.reverseOrder(MultiPredicate::compareTo))
                     .toList();
         } else {
             predicates = List.of();
-            children = Stream.of(a, b).map(MultiPredicate::deepCopy).toList();
+            children = Stream.of(a, b)
+                    .map(MultiPredicate::deepCopy)
+                    .sorted(Collections.reverseOrder(MultiPredicate::compareTo))
+                    .toList();
         }
 
         MultiPredicate combined = type.makePredicate(children, predicates, a.hasAir || b.hasAir);
