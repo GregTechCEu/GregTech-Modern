@@ -423,6 +423,26 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         return builder.toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof MultiPredicate mp)) return false;
+        if (mp.predicates().size() != this.predicates().size()) return false;
+        for (int i = 0; i < this.predicates().size(); i++) {
+            if (!Objects.equals(this.predicates().get(i), mp.predicates().get(i))) return false;
+        }
+        if (mp.children().size() != this.children().size()) return false;
+        for (int i = 0; i < this.children().size(); i++) {
+            if (!Objects.equals(this.children().get(i), mp.children().get(i))) return false;
+        }
+        return isType(mp.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.predicates(), this.children(), this.getType());
+    }
+
     /*
      * LOGIC AND COMBINATION
      */

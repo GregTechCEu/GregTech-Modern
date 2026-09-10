@@ -105,10 +105,7 @@ class TestablePredicate extends BasePredicate {
 
     @Override
     public int hashCode() {
-        if (contents == null) return Objects.hash(null, name);
-        StringBuilder builder = new StringBuilder();
-        contents.accept(builder);
-        return Objects.hash(builder.toString(), name);
+        return Objects.hash(contents, name, predicate);
     }
 
     @Override
