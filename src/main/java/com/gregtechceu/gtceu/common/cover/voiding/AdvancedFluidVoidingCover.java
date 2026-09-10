@@ -37,8 +37,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
-    private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
-
     @SaveField
     @SyncToClient
     @Getter
@@ -138,7 +136,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         column.child(
                 GTMuiWidgets
-                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> MAX_STACK_SIZE)
+                        .createIntInputWithBucketMode(voidingLimit, bucketModeSync, () -> Integer.MAX_VALUE)
                         .setEnabledIf($ -> shouldShowStackSize()));
     }
 
