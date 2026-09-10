@@ -397,9 +397,6 @@ public final class MaterialRecipeHandler {
                             .outputItems(plateStack.copyWithCount(2))
                             .EUt(16).duration((int) material.getMass())
                             .save(provider);
-
-                    VanillaRecipeHelper.addShapedRecipe(provider, String.format("plate_%s", material.getName()),
-                            plateStack, "h", "I", "I", 'I', new MaterialEntry(ingot, material));
                 }
             }
 
@@ -432,17 +429,6 @@ public final class MaterialRecipeHandler {
             return;
         }
 
-        long materialAmount = prefix.getMaterialAmount(material);
-        ItemStack crushedStack = ChemicalHelper.getDust(material, materialAmount);
-
-        if (material.hasFlag(MORTAR_GRINDABLE)) {
-            VanillaRecipeHelper.addShapedRecipe(provider,
-                    String.format("gem_to_dust_%s_%s", material.getName(),
-                            FormattingUtil.toLowerCaseUnderscore(prefix.name)),
-                    crushedStack,
-                    "X", "m", 'X', new MaterialEntry(prefix, material));
-        }
-
         if (lowerPrefix == null) {
             return;
         }
@@ -451,12 +437,6 @@ public final class MaterialRecipeHandler {
         if (prevStack.isEmpty()) {
             return;
         }
-
-        VanillaRecipeHelper.addShapelessRecipe(provider,
-                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name),
-                        material.getName()),
-                prevStack,
-                'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
                 .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +

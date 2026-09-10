@@ -85,15 +85,6 @@ public class FusionLoader {
                 .fusionStartEU(200_000_000)
                 .save(provider);
 
-        FUSION_RECIPES.recipeBuilder("americium_and_naquadria_to_neutronium_plasma")
-                .inputFluids(GTMaterials.Americium.getFluid(128))
-                .inputFluids(GTMaterials.Naquadria.getFluid(128))
-                .outputFluids(GTMaterials.Neutronium.getFluid(32))
-                .duration(200)
-                .EUt(98304)
-                .fusionStartEU(600_000_000)
-                .save(provider);
-
         FUSION_RECIPES.recipeBuilder("silver_and_copper_to_osmium_plasma")
                 .inputFluids(GTMaterials.Silver.getFluid(16))
                 .inputFluids(GTMaterials.Copper.getFluid(16))

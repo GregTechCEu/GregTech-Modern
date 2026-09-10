@@ -595,12 +595,6 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // Coke Brick and Firebrick decomposition
-        EXTRACTOR_RECIPES.recipeBuilder("extract_coke_oven_bricks")
-                .inputItems(GTBlocks.CASING_COKE_BRICKS.asStack())
-                .outputItems(COKE_OVEN_BRICK, 4)
-                .duration(300).EUt(2)
-                .save(provider);
-
         EXTRACTOR_RECIPES.recipeBuilder("extract_primitive_bricks")
                 .inputItems(GTBlocks.CASING_PRIMITIVE_BRICKS.asStack())
                 .outputItems(FIRECLAY_BRICK, 4)

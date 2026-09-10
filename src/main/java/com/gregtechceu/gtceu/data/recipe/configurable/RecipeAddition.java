@@ -162,23 +162,10 @@ public class RecipeAddition {
                     'Q', new MaterialEntry(dust, QuartzSand),
                     'L', new MaterialEntry(dust, Clay),
                     'B', new ItemStack(Items.BUCKET));
-
-            VanillaRecipeHelper.addShapedFluidContainerRecipe(provider, true, "casing_primitive_bricks",
-                    GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
-                    "BGB", "BCB", "BGB",
-                    'B', GTItems.FIRECLAY_BRICK.asStack(),
-                    'G', new MaterialEntry(dust, Gypsum),
-                    'C', new FluidContainerIngredient(Concrete.getFluidTag(), 1000));
-
             VanillaRecipeHelper.addShapelessRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(),
                     WOODEN_FORM_BRICK.asStack(), new ItemStack(Items.CLAY_BALL));
             VanillaRecipeHelper.addSmeltingRecipe(provider, "brick_from_compressed_clay", COMPRESSED_CLAY.asStack(),
                     new ItemStack(Items.BRICK), 0.3f);
-        } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_primitive_bricks",
-                    GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),
-                    "XX", "XX",
-                    'X', GTItems.FIRECLAY_BRICK);
         }
     }
 
@@ -979,12 +966,6 @@ public class RecipeAddition {
                     'S', new MaterialEntry(screw, Wood),
                     'B', new MaterialEntry(toolHeadBuzzSaw, Iron));
 
-            ASSEMBLER_RECIPES.recipeBuilder("stonecutter")
-                    .inputItems(toolHeadBuzzSaw, Iron)
-                    .inputItems(new ItemStack(Blocks.STONE_SLAB))
-                    .outputItems(new ItemStack(Blocks.STONECUTTER))
-                    .duration(80).EUt(6).save(provider);
-
             VanillaRecipeHelper.addShapedRecipe(provider, "cartography_table", new ItemStack(Blocks.CARTOGRAPHY_TABLE),
                     "sPd",
                     "WWW", "SLS",
@@ -1032,13 +1013,6 @@ public class RecipeAddition {
                     'B', new MaterialEntry(toolHeadBuzzSaw, Iron),
                     'I', new MaterialEntry(bolt, Iron),
                     'W', new MaterialEntry(rodLong, Wood));
-
-            ASSEMBLER_RECIPES.recipeBuilder("grindstone")
-                    .inputItems(new ItemStack(Blocks.STONE_SLAB))
-                    .inputItems(toolHeadBuzzSaw, Iron)
-                    .inputItems(rodLong, Wood, 2)
-                    .outputItems(new ItemStack(Blocks.GRINDSTONE))
-                    .duration(80).EUt(6).save(provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, "loom", new ItemStack(Blocks.LOOM), "SSS",
                     "PdP", "XPX",
@@ -1256,9 +1230,6 @@ public class RecipeAddition {
             ASSEMBLER_RECIPES.recipeBuilder("tinted_glass").duration(100).EUt(VA[LV])
                     .inputItems(Items.AMETHYST_SHARD, 2).inputItems(Items.GLASS)
                     .outputItems(new ItemStack(Blocks.TINTED_GLASS)).save(provider);
-            ASSEMBLER_RECIPES.recipeBuilder("stonecutter").duration(100).EUt(VA[LV])
-                    .inputItems(Items.STONE, 3).inputFluids(Iron.getFluid(GTValues.L))
-                    .outputItems(new ItemStack(Blocks.STONECUTTER)).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("cartography_table").duration(100).EUt(VA[LV])
                     .inputItems(ItemTags.PLANKS, 4).inputItems(Items.PAPER, 2)
                     .outputItems(new ItemStack(Blocks.CARTOGRAPHY_TABLE)).circuitMeta(7).save(provider);
@@ -1268,9 +1239,6 @@ public class RecipeAddition {
             ASSEMBLER_RECIPES.recipeBuilder("smithing_table").duration(100).EUt(VA[LV])
                     .inputItems(ItemTags.PLANKS, 4).inputFluids(Iron.getFluid(GTValues.L * 2))
                     .outputItems(new ItemStack(Blocks.SMITHING_TABLE)).circuitMeta(7).save(provider);
-            ASSEMBLER_RECIPES.recipeBuilder("grindstone").duration(100).EUt(VA[LV])
-                    .inputItems(Tags.Items.RODS_WOODEN, 2).inputItems(Items.STONE_SLAB).inputItems(ItemTags.PLANKS, 2)
-                    .outputItems(new ItemStack(Blocks.GRINDSTONE)).circuitMeta(7).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("loom").duration(100).EUt(VA[LV])
                     .inputItems(ItemTags.PLANKS, 2).inputItems(Items.STRING, 2).outputItems(new ItemStack(Blocks.LOOM))
                     .circuitMeta(7).save(provider);

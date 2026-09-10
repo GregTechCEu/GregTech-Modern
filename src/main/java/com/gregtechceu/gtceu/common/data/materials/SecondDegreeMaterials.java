@@ -478,6 +478,7 @@ public class SecondDegreeMaterials {
         AmmoniumChloride = new Material.Builder(GTCEu.id("ammonium_chloride"))
                 .dust()
                 .color(0x60a1c5).secondaryColor(0x48619c)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Ammonia, 1, HydrochloricAcid, 1)
                 .buildAndRegister()
                 .setFormula("NH4Cl", true);

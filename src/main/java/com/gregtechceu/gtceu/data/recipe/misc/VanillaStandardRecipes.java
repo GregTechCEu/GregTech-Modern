@@ -170,21 +170,6 @@ public class VanillaStandardRecipes {
                 .outputItems(dust, QuartzSand)
                 .duration(30).EUt(2).save(provider);
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "glass_dust_flint", ChemicalHelper.get(dust, Glass),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dustTiny, Flint));
-
-        VanillaRecipeHelper.addShapelessRecipe(provider, "glass_full_dust_flint", ChemicalHelper.get(dust, Glass, 8),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, QuartzSand),
-                new MaterialEntry(dust, Flint));
-
         MIXER_RECIPES.recipeBuilder("glass_from_quartzite").duration(160).EUt(VA[ULV])
                 .inputItems(dustSmall, Flint)
                 .inputItems(dust, Quartzite, 4)

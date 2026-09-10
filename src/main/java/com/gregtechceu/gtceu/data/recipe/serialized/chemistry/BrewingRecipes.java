@@ -29,12 +29,6 @@ public class BrewingRecipes {
                     .inputFluids(Creosote.getFluid(1000))
                     .outputFluids(Lubricant.getFluid(1000))
                     .duration(128).EUt(4).save(provider);
-
-            BREWING_RECIPES.recipeBuilder("lubricant_from_seed_oil_and_" + material.getName())
-                    .inputItems(dust, material)
-                    .inputFluids(SeedOil.getFluid(1000))
-                    .outputFluids(Lubricant.getFluid(1000))
-                    .duration(128).EUt(4).save(provider);
         }
 
         // Biomass

@@ -61,8 +61,6 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, false, GTMachines.HULL, "PLP", "CHC", 'P', HULL_PLATE, 'L', PLATE, 'C', CABLE,
                 'H', CASING);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_coke_bricks", GTBlocks.CASING_COKE_BRICKS.asStack(),
-                "XX", "XX", 'X', GTItems.COKE_OVEN_BRICK);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_bronze_bricks",
                 GTBlocks.CASING_BRONZE_BRICKS.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PBP",
                 "PwP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Bronze), 'B',
@@ -192,17 +190,6 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_GRATE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PVP", "PFP", "PMP", 'P',
                 new ItemStack(Blocks.IRON_BARS, 1), 'F', new MaterialEntry(TagPrefix.frameGt, GTMaterials.Steel),
                 'M', GTItems.ELECTRIC_MOTOR_MV, 'V', new MaterialEntry(TagPrefix.rotor, GTMaterials.Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_assembly_control",
-                GTBlocks.CASING_ASSEMBLY_CONTROL.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "CPC", "SFE",
-                "CMC", 'C', CustomTags.EV_CIRCUITS, 'P', GTItems.HIGH_POWER_INTEGRATED_CIRCUIT, 'S',
-                GTItems.SENSOR_IV.asStack(), 'F', new MaterialEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel),
-                'E', GTItems.EMITTER_IV.asStack(), 'M', GTItems.ELECTRIC_MOTOR_IV);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_assembly_line",
-                GTBlocks.CASING_ASSEMBLY_LINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PGP", "AFA",
-                "PGP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Steel), 'G',
-                new MaterialEntry(TagPrefix.gear, GTMaterials.Ruridit), 'A', GTItems.ROBOT_ARM_IV.asStack(), 'F',
-                ChemicalHelper.get(TagPrefix.frameGt, GTMaterials.TungstenSteel));
-
         VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_yellow_stripes",
                 GTBlocks.YELLOW_STRIPES_BLOCK_A.asStack(), "Y  ", " M ", "  B", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);

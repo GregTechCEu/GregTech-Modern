@@ -328,12 +328,6 @@ public final class PartsRecipeHandler {
         var magMaterial = material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
         if (material.hasFlag(GENERATE_PLATE)) {
-            if (!material.hasFlag(NO_SMASHING)) {
-                VanillaRecipeHelper.addShapedRecipe(provider, String.format("plate_double_%s", material.getName()),
-                        ChemicalHelper.get(plateDouble, magMaterial),
-                        "h", "P", "P", 'P', new MaterialEntry(plate, material));
-            }
-
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_double_plate")
                     .EUt(96).duration((int) material.getMass() * 2)
                     .inputItems(plate, material, 2)
@@ -543,22 +537,6 @@ public final class PartsRecipeHandler {
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_%s", material.getName()),
                 stickStack.copyWithCount(2),
                 "s", "X", 'X', new MaterialEntry(rodLong, material));
-
-        if (material.hasProperty(PropertyKey.GEM)) {
-            VanillaRecipeHelper.addShapedRecipe(provider,
-                    String.format("stick_long_gem_flawless_%s", material.getName()),
-                    stickStack,
-                    "sf",
-                    "G ",
-                    'G', new MaterialEntry(gemFlawless, material));
-
-            VanillaRecipeHelper.addShapedRecipe(provider,
-                    String.format("stick_long_gem_exquisite_%s", material.getName()),
-                    stickStack.copyWithCount(2),
-                    "sf", "G ",
-                    'G', new MaterialEntry(gemExquisite, material));
-
-        }
 
         VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_stick_%s", material.getName()), stack,
                 "ShS",
