@@ -45,6 +45,10 @@ public interface IInteractionItem extends IItemComponent {
         return stack.getItem().isEdible() ? UseAnim.EAT : UseAnim.NONE;
     }
 
+    default int getUseDuration(ItemStack stack) {
+        return 0;
+    }
+
     default boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         return false;
     }

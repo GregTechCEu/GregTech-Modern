@@ -219,6 +219,16 @@ public class ComponentItem extends Item
     }
 
     @Override
+    public int getUseDuration(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IInteractionItem interactionItem) {
+                return interactionItem.getUseDuration(stack);
+            }
+        }
+        return super.getUseDuration(stack);
+    }
+
+    @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
