@@ -29,8 +29,8 @@ public class PredicateContext {
     private final PatternState state;
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
-    protected final Object2IntMap<SettingsHolder<?>> globalCount = new Object2IntArrayMap<>();
-    protected final Object2IntMap<SettingsHolder<?>> layerCount = new Object2IntArrayMap<>();
+    protected final Object2IntMap<SettingsHolder<?>> globalCount = new Object2IntOpenHashMap<>();
+    protected final Object2IntMap<SettingsHolder<?>> layerCount = new Object2IntOpenHashMap<>();
 
     private final Int2ObjectMap<List<PatternError>> sliceErrors = new Int2ObjectAVLTreeMap<>(
             IntComparators.NATURAL_COMPARATOR);
