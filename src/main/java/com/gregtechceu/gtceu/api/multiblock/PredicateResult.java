@@ -83,7 +83,7 @@ public record PredicateResult(@Nullable BasePredicate match, List<MultiPredicate
                 var error = type == TestType.GLOBAL_MAX ?
                         SinglePredicateError.maxCount(parent,
                                 parent.getCandidates().stream().flatMap(Collection::stream).toList(),
-                                context.getGlobalCount(this.match)) :
+                                context.getGlobalCount(parent)) :
                         SinglePredicateError.maxLayerCount(parent,
                                 parent.getCandidates().stream().flatMap(Collection::stream).toList(),
                                 context.getSliceCount(this.match));
