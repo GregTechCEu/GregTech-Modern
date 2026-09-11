@@ -425,7 +425,7 @@ public class CommonProxy {
                 return null;
             }
             return new QuantumFluidHandlerItemStack(stack, capacity);
-        }, quantumTanks.filter(Objects::nonNull).map(MachineEntry::getItem).toArray(Item[]::new));
+        }, quantumTanks.filter(Objects::nonNull).map(MachineEntry::asItem).toArray(Item[]::new));
 
         for (Block block : BuiltInRegistries.BLOCK) {
             if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&

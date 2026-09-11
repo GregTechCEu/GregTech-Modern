@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,7 +51,7 @@ import java.util.function.*;
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition {
+public class MachineDefinition implements ItemLike {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -59,9 +60,8 @@ public class MachineDefinition {
     // This is only stored here for KJS use.
     @Getter
     @Nullable
-    private String langValue;
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    private DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
+    private final String langValue;
+    private final DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
     @Setter(onMethod_ = @ApiStatus.Internal)
     private DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
     @Setter
@@ -175,20 +175,21 @@ public class MachineDefinition {
         return blockHolder.get();
     }
 
-    public MetaMachineItem getItem() {
+    @Override
+    public Item asItem() {
         return itemHolder.get();
+    }
+
+    public ItemStack asStack() {
+        return new ItemStack(this);
+    }
+
+    public ItemStack asStack(int count) {
+        return new ItemStack(this, count);
     }
 
     public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
         return blockEntityTypeSupplier.get();
-    }
-
-    public ItemStack asStack() {
-        return new ItemStack(getItem());
-    }
-
-    public ItemStack asStack(int count) {
-        return new ItemStack(getItem(), count);
     }
 
     public VoxelShape getShape(Direction direction) {

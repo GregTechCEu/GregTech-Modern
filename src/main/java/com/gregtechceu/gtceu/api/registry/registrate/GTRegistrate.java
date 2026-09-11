@@ -172,11 +172,9 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 callback -> (S) new MachineBuilder<>(this, name, callback, blockEntityFactory));
     }
 
-    @SuppressWarnings("unchecked")
-    public <MACHINE extends MultiblockControllerMachine,
-            S extends MultiblockMachineBuilder<MACHINE, S>> S multiblock(String name,
-                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return entry(name, callback -> (S) new MultiblockMachineBuilder<>(this, name, callback, blockEntityFactory));
+    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE> multiblock(String name,
+                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
+        return entry(name, callback -> new MultiblockMachineBuilder<>(this, name, callback, blockEntityFactory));
     }
 
     /// Cover Registration

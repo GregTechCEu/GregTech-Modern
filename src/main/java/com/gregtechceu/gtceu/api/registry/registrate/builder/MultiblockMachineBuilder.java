@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,15 +26,9 @@ import org.jspecify.annotations.NonNull;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<
-        MACHINE extends MultiblockControllerMachine,
-        SELF extends MultiblockMachineBuilder<MACHINE, SELF>>
-                                     extends MachineBuilder<MultiblockMachineDefinition, MACHINE, SELF> {
+public class MultiblockMachineBuilder<MACHINE extends MultiblockControllerMachine> extends
+                                     MachineBuilder<MultiblockMachineDefinition, MACHINE, MultiblockMachineBuilder<MACHINE>> {
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     BuilderCallback callback,
@@ -47,71 +40,72 @@ public class MultiblockMachineBuilder<
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
 
-    public SELF generator(boolean generator) {
+    public MultiblockMachineBuilder<MACHINE> generator(boolean generator) {
         getProperties().generator(generator);
         return getThis();
     }
 
-    public SELF pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilder<MACHINE> pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         getProperties().patterns().put(MultiblockControllerMachine.DEFAULT_STRUCTURE, pattern);
         return getThis();
     }
 
-    public SELF pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilder<MACHINE> pattern(String structureName,
+                                                     Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         getProperties().patterns().put(structureName, pattern);
         return getThis();
     }
 
-    public SELF allowFlip(boolean allowFlip) {
+    public MultiblockMachineBuilder<MACHINE> allowFlip(boolean allowFlip) {
         getProperties().allowFlip(allowFlip);
         return getThis();
     }
 
-    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
+    public MultiblockMachineBuilder<MACHINE> partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
         getProperties().partSorter(partSorter);
         return getThis();
     }
 
-    public SELF partAppearance(TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilder<MACHINE> partAppearance(TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         getProperties().partAppearance(partAppearance);
         return getThis();
     }
 
-    public SELF additionalDisplay(BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay) {
+    public MultiblockMachineBuilder<MACHINE> additionalDisplay(BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay) {
         getProperties().additionalDisplay(additionalDisplay);
         return getThis();
     }
 
-    public SELF recoveryItems(Supplier<ItemLike[]> items) {
+    public MultiblockMachineBuilder<MACHINE> recoveryItems(Supplier<ItemLike[]> items) {
         getProperties().recoveryItems()
                 .add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
                         .toArray(ItemStack[]::new));
         return getThis();
     }
 
-    public SELF recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public MultiblockMachineBuilder<MACHINE> recoveryStacks(Supplier<ItemStack[]> stacks) {
         getProperties().recoveryItems().add(stacks);
         return getThis();
     }
 
     @Tolerate
-    public SELF partSorter(Comparator<MultiblockPartMachine> sorter) {
+    public MultiblockMachineBuilder<MACHINE> partSorter(Comparator<MultiblockPartMachine> sorter) {
         getProperties().partSorter($ -> sorter);
         return getThis();
     }
 
-    public SELF renderMultiblockWorldPreview(boolean renderMultiblockWorldPreview) {
+    public MultiblockMachineBuilder<MACHINE> renderMultiblockWorldPreview(boolean renderMultiblockWorldPreview) {
         getProperties().renderMultiblockWorldPreview(renderMultiblockWorldPreview);
         return getThis();
     }
 
-    public SELF renderMultiblockXEIPreview(boolean renderMultiblockXEIPreview) {
+    public MultiblockMachineBuilder<MACHINE> renderMultiblockXEIPreview(boolean renderMultiblockXEIPreview) {
         getProperties().renderMultiblockXEIPreview(renderMultiblockXEIPreview);
         return getThis();
     }
 
-    public SELF multiblockPreviewRenderer(boolean multiblockWorldPreview,
-                                          boolean multiblockXEIPreview) {
+    public MultiblockMachineBuilder<MACHINE> multiblockPreviewRenderer(boolean multiblockWorldPreview,
+                                                                       boolean multiblockXEIPreview) {
         renderMultiblockWorldPreview(multiblockWorldPreview);
         renderMultiblockXEIPreview(multiblockXEIPreview);
         return getThis();
@@ -130,6 +124,7 @@ public class MultiblockMachineBuilder<
     @Override
     @SuppressWarnings("NullableProblems")
     protected @NonNull MultiblockMachineDefinition createEntry() {
+        createAdditionalObjects();
         return new MultiblockMachineDefinition(getOwner().makeResourceLocation(getName()), getProperties());
     }
 }

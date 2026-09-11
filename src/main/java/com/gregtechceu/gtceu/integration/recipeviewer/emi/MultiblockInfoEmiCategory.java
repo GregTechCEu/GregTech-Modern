@@ -42,7 +42,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
     public static final MultiblockInfoEmiCategory CATEGORY = new MultiblockInfoEmiCategory();
 
     private MultiblockInfoEmiCategory() {
-        super(GTCEu.id("multiblock_info"), EmiStack.of(GTMultiMachines.ELECTRIC_BLAST_FURNACE.getItem()));
+        super(GTCEu.id("multiblock_info"), EmiStack.of(GTMultiMachines.ELECTRIC_BLAST_FURNACE));
     }
 
     public static void registerDisplays(EmiRegistry registry) {

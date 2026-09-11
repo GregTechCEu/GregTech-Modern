@@ -43,10 +43,10 @@ import java.util.function.*;
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
                                              implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<?, ?> internal;
+    private final MultiblockMachineBuilder<?> internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id,
-                                           MultiblockMachineBuilder<?, ?> internal) {
+                                           MultiblockMachineBuilder<?> internal) {
         super(id);
         this.internal = internal;
         this.dummyBuilder = true;
@@ -362,15 +362,15 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
-        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace()).multiblock(id.getPath(),
-                WorkableElectricMultiblockMachine::new);
+        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace())
+                .multiblock(id.getPath(), WorkableElectricMultiblockMachine::new);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
                                                                  MachineInstanceFactory<? extends MultiblockControllerMachine> machine) {
-        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace()).multiblock(id.getPath(),
-                machine);
+        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace())
+                .multiblock(id.getPath(), machine);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 }

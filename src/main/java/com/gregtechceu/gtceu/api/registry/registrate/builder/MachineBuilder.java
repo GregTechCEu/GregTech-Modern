@@ -34,6 +34,7 @@ import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -58,6 +59,7 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -86,9 +88,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @Getter
     private final MachineDefinition.Properties properties;
 
-    private @Nullable BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> blockBuilder;
-    private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
-    private @Nullable ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> itemBuilder;
+    private boolean defaultBlock = true;
+    private boolean defaultItem = true;
 
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
 
@@ -154,13 +155,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     /**
-     * Gets the {@link MetaMachineBlock} builder for this machine so that further customization can be done.<br>
+     * Creates a {@link MetaMachineBlock} builder for this machine so that further customization can be done.<br>
      * If the {@link BlockBuilder} has not been created yet, then the default one is created.
      *
      * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
      */
     public BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> block() {
-        if (blockBuilder != null) return blockBuilder;
         return block(MetaMachineBlock::new);
     }
 
@@ -175,12 +175,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
      */
     public <B extends MetaMachineBlock> BlockBuilder<B, MachineBuilder<DEFINITION, MACHINE, SELF>> block(BiFunction<BlockBehaviour.Properties, DEFINITION, B> factory) {
-        if (blockBuilder != null) throw new IllegalStateException(
+        if (!defaultBlock) throw new IllegalStateException(
                 "Block builder for machine %s has already been initialized.".formatted(getName()));
 
-        var newBlockBuilder = this.getOwner().block(this, getName(), properties -> {
+        defaultBlock = false;
+
+        return this.getOwner().block(this, getName(), properties1 -> {
             MachineDefinition.setBuilt(this.asSupplier().get());
-            var b = factory.apply(properties, this.asSupplier().get());
+            var b = factory.apply(properties1, this.asSupplier().get());
             MachineDefinition.clearBuilt();
             return b;
         })
@@ -191,19 +193,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                 .exBlockstate(properties.blockModel() != null ? properties.blockModel() :
                         createMachineModel(properties.model()))
                 .onRegister(b -> Arrays.stream(properties.abilities()).forEach(a -> a.register(properties.tier(), b)));
-
-        blockBuilder = newBlockBuilder;
-        return newBlockBuilder;
     }
 
     /**
-     * Gets the {@link MetaMachineItem} builder for this machine so that further customization can be done.<br>
+     * Creates {@link MetaMachineItem} builder for this machine so that further customization can be done.<br>
      * If the {@link ItemBuilder} has not been created yet, then the default one is created.
      *
      * @return The {@link ItemBuilder} for the {@link MetaMachineItem}
      */
     public ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> item() {
-        if (itemBuilder != null) return itemBuilder;
         return item(MetaMachineItem::new);
     }
 
@@ -217,14 +215,19 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
      */
     public <I extends MetaMachineItem> ItemBuilder<I, MachineBuilder<DEFINITION, MACHINE, SELF>> item(BiFunction<MetaMachineBlock, Item.Properties, I> factory) {
-        if (itemBuilder != null) throw new IllegalStateException(
+        if (!defaultItem) throw new IllegalStateException(
                 "Item builder for machine %s has already been initialized.".formatted(getName()));
 
-        var newItemBuilder = getOwner()
+        defaultItem = false;
+
+        return getOwner()
                 .item(this, getName(),
-                        properties -> factory.apply(
-                                Objects.requireNonNull(blockEntry, "Item factory called before block resolved.").get(),
-                                properties))
+                        properties1 -> factory.apply(
+                                (MetaMachineBlock) Objects
+                                        .requireNonNull(BlockEntry.cast(getOwner().get(getName(), Registries.BLOCK)),
+                                                "Item factory called before block resolved.")
+                                        .get(),
+                                properties1))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 // copied from BlockBuilder#item
                 .model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
@@ -239,9 +242,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                         return ItemWithBERModelRenderer.INSTANCE;
                     }
                 });
-
-        itemBuilder = newItemBuilder;
-        return newItemBuilder;
     }
 
     public SELF onBlockEntityRegister(NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister) {
@@ -322,7 +322,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return langValue(name);
     }
 
-    public SELF langValue(String langValue) {
+    public SELF langValue(@Nullable String langValue) {
+        if (langValue != null) {
+            this.lang(MachineDefinition::getDescriptionId, langValue);
+        } else {
+            this.setData(ProviderType.LANG, NonNullBiConsumer.noop());
+        }
         properties.langValue(langValue);
         return getThis();
     }
@@ -619,8 +624,46 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
+    protected void createAdditionalObjects() {
+        if (properties.model() == null && properties.blockModel() == null) {
+            simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
+        }
+
+        final BlockEntry<? extends MetaMachineBlock> block;
+        if (defaultBlock) {
+            block = this.block().register();
+        } else {
+            block = BlockEntry.cast(getOwner().get(getName(), Registries.BLOCK));
+        }
+
+        final ItemEntry<? extends MetaMachineItem> item;
+        if (defaultItem) {
+            item = this.item().register();
+        } else {
+            item = ItemEntry.cast(getOwner().get(getName(), Registries.ITEM));
+        }
+
+        var blockEntityBuilder = getOwner()
+                .<MACHINE, MachineBuilder<DEFINITION, MACHINE, SELF>>blockEntity(this, getName(),
+                        (type, pos, state) -> instanceFactory
+                                .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
+                .onRegister(onBlockEntityRegister)
+                .validBlock(block);
+
+        if (properties.hasBER()) {
+            blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
+        }
+
+        var blockEntityEntry = blockEntityBuilder.register();
+
+        properties.blockHolder(block);
+        properties.itemHolder(item);
+        properties.blockEntityTypeSupplier(blockEntityEntry::get);
+    }
+
     @SuppressWarnings({ "NullableProblems", "unchecked" })
     protected @NonNull DEFINITION createEntry() {
+        createAdditionalObjects();
         return (DEFINITION) new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }
 
@@ -635,30 +678,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent(event);
         }
-
-        if (properties.model() == null && properties.blockModel() == null) {
-            simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
-        }
-        if (properties.langValue() != null) {
-            block().lang(properties.langValue());
-        }
-
-        blockEntry = block().register();
-
-        var blockEntityBuilder = getOwner()
-                .<MACHINE, MachineBuilder<DEFINITION, MACHINE, SELF>>blockEntity(this, getName(),
-                        (type, pos, state) -> instanceFactory
-                                .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
-                .onRegister(onBlockEntityRegister)
-                .validBlock(blockEntry);
-
-        if (properties.hasBER()) {
-            blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
-        }
-
-        properties.blockHolder(blockEntry);
-        properties.itemHolder(item().register());
-        properties.blockEntityTypeSupplier(blockEntityBuilder.register()::get);
 
         return (MachineEntry<DEFINITION>) super.register();
     }
