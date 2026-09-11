@@ -339,52 +339,52 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     }
 
     @CheckReturnValue
-    public MultiPredicate withMinGlobalLimited(int min) {
-        return this.withMinCount(min);
+    public MultiPredicate setMinGlobalLimited(int min) {
+        return this.setMinCount(min);
     }
 
     @CheckReturnValue
-    public MultiPredicate withMinGlobalLimited(int min, int previewCount) {
+    public MultiPredicate setMinGlobalLimited(int min, int previewCount) {
         return withSettings(s -> s.withMinCount(min).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate withMaxGlobalLimited(int max) {
-        return this.withMaxCount(max);
+    public MultiPredicate setMaxGlobalLimited(int max) {
+        return this.setMaxCount(max);
     }
 
     @CheckReturnValue
-    public MultiPredicate withMaxGlobalLimited(int max, int previewCount) {
+    public MultiPredicate setMaxGlobalLimited(int max, int previewCount) {
         return withSettings(s -> s.withMaxCount(max).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate withGlobalMinMax(int min, int max) {
+    public MultiPredicate setGlobalMinMax(int min, int max) {
         return withSettings(s -> s.withMinCount(min).withMaxCount(max));
     }
 
     @CheckReturnValue
-    public MultiPredicate withMinLayerLimited(int min) {
-        return this.withMinSliceCount(min);
+    public MultiPredicate setMinLayerLimited(int min) {
+        return this.setMinSliceCount(min);
     }
 
     @CheckReturnValue
-    public MultiPredicate withMinLayerLimited(int min, int previewCount) {
+    public MultiPredicate setMinLayerLimited(int min, int previewCount) {
         return withSettings(s -> s.withMinSliceCount(min).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate withMaxLayerLimited(int max) {
-        return this.withMaxSliceCount(max);
+    public MultiPredicate setMaxLayerLimited(int max) {
+        return this.setMaxSliceCount(max);
     }
 
     @CheckReturnValue
-    public MultiPredicate withMaxLayerLimited(int max, int previewCount) {
+    public MultiPredicate setMaxLayerLimited(int max, int previewCount) {
         return withSettings(s -> s.withMaxSliceCount(max).withPreviewCount(previewCount));
     }
 
     @CheckReturnValue
-    public MultiPredicate withLayerMinMax(int min, int max) {
+    public MultiPredicate setLayerMinMax(int min, int max) {
         return withSettings(s -> s.withMinSliceCount(min).withMaxSliceCount(max));
     }
 
@@ -394,14 +394,14 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
      * @param limit The Maximum and Minimum limit
      */
     @CheckReturnValue
-    public MultiPredicate withExactLimit(int limit) {
-        return this.withGlobalMinMax(limit, limit);
+    public MultiPredicate setExactLimit(int limit) {
+        return this.setGlobalMinMax(limit, limit);
     }
 
     /// @return a copy of this multi predicate with render formed disabled
     @CheckReturnValue
     public MultiPredicate disabledRenderFormed() {
-        return withDisableRenderFormed(true);
+        return setDisableRenderFormed(true);
     }
 
     @Override

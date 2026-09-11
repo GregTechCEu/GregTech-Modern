@@ -50,91 +50,49 @@ public interface SettingsHolder<S extends SettingsHolder<S>> extends Comparable<
         setSettings(configurator.apply(getSettings()));
     }
 
-    /// mutates this object with the given priority
-    @ApiStatus.Internal
-    default void setPriority(int priority) {
-        updateSettings(s -> s.withPriority(priority));
-    }
-
-    /// mutates this object with the given min global count
-    @ApiStatus.Internal
-    default void setMinCount(int minCount) {
-        updateSettings(s -> s.withMinCount(minCount));
-    }
-
-    /// mutates this object with the given max global count
-    @ApiStatus.Internal
-    default void setMaxCount(int maxCount) {
-        updateSettings(s -> s.withMaxCount(maxCount));
-    }
-
-    /// mutates this object with the given min slice count
-    @ApiStatus.Internal
-    default void setMinSliceCount(int minSliceCount) {
-        updateSettings(s -> s.withMinSliceCount(minSliceCount));
-    }
-
-    /// mutates this object with the given max slice count
-    @ApiStatus.Internal
-    default void setMaxSliceCount(int maxSliceCount) {
-        updateSettings(s -> s.withMaxSliceCount(maxSliceCount));
-    }
-
-    /// mutates this object with the given preview count
-    @ApiStatus.Internal
-    default void setPreviewCount(int previewCount) {
-        updateSettings(s -> s.withPreviewCount(previewCount));
-    }
-
-    /// mutates this object with the given render formed disabled
-    @ApiStatus.Internal
-    default void setDisableRenderFormed(boolean disableRenderFormed) {
-        updateSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
-    }
-
     // copy and mutate
     /// @return a copy with these settings applied
     S withSettings(UnaryOperator<PredicateSettings> configurator);
 
     /// @return a copy of this object with the given priority
     @CheckReturnValue
-    default S withPriority(int priority) {
+    default S setPriority(int priority) {
         return withSettings(s -> s.withPriority(priority));
     }
 
     /// @return a copy of this object with the given min global count
     @CheckReturnValue
-    default S withMinCount(int minCount) {
+    default S setMinCount(int minCount) {
         return withSettings(s -> s.withMinCount(minCount));
     }
 
     /// @return a copy of this object with the given max global count
     @CheckReturnValue
-    default S withMaxCount(int maxCount) {
+    default S setMaxCount(int maxCount) {
         return withSettings(s -> s.withMaxCount(maxCount));
     }
 
     /// @return a copy of this object with the given min slice count
     @CheckReturnValue
-    default S withMinSliceCount(int minSliceCount) {
+    default S setMinSliceCount(int minSliceCount) {
         return withSettings(s -> s.withMinSliceCount(minSliceCount));
     }
 
     /// @return a copy of this object with the given max slice count
     @CheckReturnValue
-    default S withMaxSliceCount(int maxSliceCount) {
+    default S setMaxSliceCount(int maxSliceCount) {
         return withSettings(s -> s.withMaxSliceCount(maxSliceCount));
     }
 
     /// @return a copy of this object with the given preview count
     @CheckReturnValue
-    default S withPreviewCount(int previewCount) {
+    default S setPreviewCount(int previewCount) {
         return withSettings(s -> s.withPreviewCount(previewCount));
     }
 
     /// @return a copy of this object with the given render form disabled
     @CheckReturnValue
-    default S withDisableRenderFormed(boolean disableRenderFormed) {
+    default S setDisableRenderFormed(boolean disableRenderFormed) {
         return withSettings(s -> s.withDisableRenderFormed(disableRenderFormed));
     }
 
