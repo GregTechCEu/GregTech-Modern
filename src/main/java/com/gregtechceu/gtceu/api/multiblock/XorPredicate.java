@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 
+import com.gregtechceu.gtceu.api.multiblock.predicates.TestType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -55,14 +56,16 @@ public class XorPredicate extends MultiPredicate {
 
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
-        if (passedPredicate == null && noneValid) return true;
-        return passedPredicate != null && passedPredicate.testGlobalMin(ctx);
+        boolean result = TestType.GLOBAL_MIN.testCounts(this, ctx);
+        result &= (noneValid && passedPredicate == null) || (passedPredicate != null && passedPredicate.testGlobalMin(ctx));
+        return result;
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
-        if (passedPredicate == null && noneValid) return true;
-        return passedPredicate != null && passedPredicate.testSliceMin(ctx);
+        boolean result = TestType.SLICE_MIN.testCounts(this, ctx);
+        result &= (noneValid && passedPredicate == null) || (passedPredicate != null && passedPredicate.testSliceMin(ctx));
+        return result;
     }
 
     @Override
