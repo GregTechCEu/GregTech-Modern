@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -54,7 +55,10 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<S
     }
 
     public void setCurrentCircuit(int circuit) {
-        storage.setStackInSlot(0, IntCircuitBehaviour.stack(circuit));
+        if (circuit > 0)
+            storage.setStackInSlot(0, IntCircuitBehaviour.stack(circuit));
+        else
+            storage.setStackInSlot(0, ItemStack.EMPTY);
     }
 
     @Override
