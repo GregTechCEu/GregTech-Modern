@@ -763,10 +763,6 @@ public class MachineRecipeLoader {
                 .inputItems(frameGt, Titanium).circuitMeta(6)
                 .outputItems(GTBlocks.CASING_TITANIUM_STABLE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6)
-                .inputItems(frameGt, Europium).circuitMeta(6)
-                .outputItems(GTBlocks.CASING_HSSE_STURDY.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
-                .duration(50).addMaterialInfo(true).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_palladium_substation").EUt(16).inputItems(plate, Palladium, 6)
                 .inputItems(frameGt, Iridium).circuitMeta(6)
                 .outputItems(

@@ -153,12 +153,6 @@ public class CraftingRecipeLoader {
                 "III", "MFR", 'B', new ItemStack(Blocks.IRON_BARS), 'I', ITEM_FILTER.asStack(), 'M',
                 ELECTRIC_MOTOR_MV.asStack(), 'F', new MaterialEntry(frameGt, Steel), 'R',
                 new MaterialEntry(rotor, Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing_sterile",
-                GTBlocks.FILTER_CASING_STERILE.asStack(), "BEB", "ISI", "MFR", 'B',
-                new MaterialEntry(pipeLargeFluid, Polybenzimidazole), 'E', EMITTER_ZPM.asStack(), 'I',
-                ITEM_FILTER.asStack(), 'S', BLACKLIGHT.asStack(), 'M', ELECTRIC_MOTOR_ZPM.asStack(), 'F',
-                new MaterialEntry(frameGt, Tritanium), 'R', new MaterialEntry(rotor, NaquadahAlloy));
-
         ///////////////////////////////////////////////////
         // Shapes and Molds //
         ///////////////////////////////////////////////////

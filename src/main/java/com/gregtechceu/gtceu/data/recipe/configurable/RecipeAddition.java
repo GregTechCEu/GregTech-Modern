@@ -661,7 +661,6 @@ public class RecipeAddition {
             createShovelRecipe(provider, "diamond_shovel", new ItemStack(Items.DIAMOND_SHOVEL), GTMaterials.Diamond);
             createPickaxeRecipe(provider, "diamond_pickaxe", new ItemStack(Items.DIAMOND_PICKAXE), GTMaterials.Diamond);
             createAxeRecipe(provider, "diamond_axe", new ItemStack(Items.DIAMOND_AXE), GTMaterials.Diamond);
-            createSwordRecipe(provider, "diamond_sword", new ItemStack(Items.DIAMOND_SWORD), GTMaterials.Diamond);
             createHoeRecipe(provider, "diamond_hoe", new ItemStack(Items.DIAMOND_HOE), GTMaterials.Diamond);
             createHelmetRecipe(provider, "diamond_helmet", new ItemStack(Items.DIAMOND_HELMET), GTMaterials.Diamond);
             createChestplateRecipe(provider, "diamond_chestplate", new ItemStack(Items.DIAMOND_CHESTPLATE),

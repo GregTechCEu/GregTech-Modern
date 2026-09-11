@@ -112,12 +112,6 @@ public class FuelRecipes {
                 .save(provider);
 
         // diesel generator fuels
-        COMBUSTION_GENERATOR_FUELS.recipeBuilder("naphtha")
-                .inputFluids(Naphtha.getFluid(1))
-                .duration(10)
-                .EUt(-V[LV])
-                .save(provider);
-
         COMBUSTION_GENERATOR_FUELS.recipeBuilder("sulfuric_light_fuel")
                 .inputFluids(SulfuricLightFuel.getFluid(4))
                 .duration(5)
@@ -139,30 +133,6 @@ public class FuelRecipes {
         COMBUSTION_GENERATOR_FUELS.recipeBuilder("octane")
                 .inputFluids(Octane.getFluid(2))
                 .duration(5)
-                .EUt(-V[LV])
-                .save(provider);
-
-        COMBUSTION_GENERATOR_FUELS.recipeBuilder("biodiesel")
-                .inputFluids(BioDiesel.getFluid(1))
-                .duration(8)
-                .EUt(-V[LV])
-                .save(provider);
-
-        COMBUSTION_GENERATOR_FUELS.recipeBuilder("light_fuel")
-                .inputFluids(LightFuel.getFluid(1))
-                .duration(10)
-                .EUt(-V[LV])
-                .save(provider);
-
-        COMBUSTION_GENERATOR_FUELS.recipeBuilder("diesel")
-                .inputFluids(Diesel.getFluid(1))
-                .duration(15)
-                .EUt(-V[LV])
-                .save(provider);
-
-        COMBUSTION_GENERATOR_FUELS.recipeBuilder("cetane_diesel")
-                .inputFluids(CetaneBoostedDiesel.getFluid(2))
-                .duration(45)
                 .EUt(-V[LV])
                 .save(provider);
 
@@ -217,12 +187,6 @@ public class FuelRecipes {
                 .EUt(-V[LV])
                 .save(provider);
 
-        GAS_TURBINE_FUELS.recipeBuilder("wood_gas")
-                .inputFluids(WoodGas.getFluid(8))
-                .duration(6)
-                .EUt(-V[LV])
-                .save(provider);
-
         GAS_TURBINE_FUELS.recipeBuilder("sulfuric_gas")
                 .inputFluids(SulfuricGas.getFluid(32))
                 .duration(25)
@@ -232,12 +196,6 @@ public class FuelRecipes {
         GAS_TURBINE_FUELS.recipeBuilder("sulfuric_naphtha")
                 .inputFluids(SulfuricNaphtha.getFluid(4))
                 .duration(5)
-                .EUt(-V[LV])
-                .save(provider);
-
-        GAS_TURBINE_FUELS.recipeBuilder("coal_gas")
-                .inputFluids(CoalGas.getFluid(1))
-                .duration(3)
                 .EUt(-V[LV])
                 .save(provider);
 
@@ -295,12 +253,6 @@ public class FuelRecipes {
                 .EUt(-V[LV])
                 .save(provider);
 
-        GAS_TURBINE_FUELS.recipeBuilder("benzene")
-                .inputFluids(Benzene.getFluid(1))
-                .duration(11)
-                .EUt(-V[LV])
-                .save(provider);
-
         GAS_TURBINE_FUELS.recipeBuilder("butane")
                 .inputFluids(Butane.getFluid(4))
                 .duration(37)
@@ -310,12 +262,6 @@ public class FuelRecipes {
         GAS_TURBINE_FUELS.recipeBuilder("lpg")
                 .inputFluids(LPG.getFluid(1))
                 .duration(10)
-                .EUt(-V[LV])
-                .save(provider);
-
-        GAS_TURBINE_FUELS.recipeBuilder("nitrobenzene") // TODO Too OP pls nerf
-                .inputFluids(Nitrobenzene.getFluid(1))
-                .duration(40)
                 .EUt(-V[LV])
                 .save(provider);
 

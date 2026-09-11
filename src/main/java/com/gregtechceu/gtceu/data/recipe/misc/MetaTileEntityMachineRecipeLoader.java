@@ -161,21 +161,6 @@ public class MetaTileEntityMachineRecipeLoader {
                         .EUt(VA[ZPM]))
                 .duration(800).EUt(VA[UV]).save(provider);
 
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("dynamo_hatch_uhv")
-                .inputItems(HULL[UHV])
-                .inputItems(spring, Europium, 4)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(CustomTags.UHV_CIRCUITS)
-                .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate, 2)
-                .inputFluids(SodiumPotassium, 12000)
-                .inputFluids(SolderingAlloy, 40 * L)
-                .outputItems(ENERGY_OUTPUT_HATCH[UHV])
-                .stationResearch(b -> b
-                        .researchStack(ENERGY_OUTPUT_HATCH[UV].asStack())
-                        .CWUt(128)
-                        .EUt(VA[UV]))
-                .duration(1000).EUt(VA[UHV]).save(provider);
-
         // Energy Input Hatches
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "energy_hatch_ulv", ENERGY_INPUT_HATCH[ULV].asStack(),
@@ -294,21 +279,6 @@ public class MetaTileEntityMachineRecipeLoader {
                         .CWUt(64)
                         .EUt(VA[ZPM]))
                 .duration(800).EUt(VA[UV]).save(provider);
-
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("energy_hatch_uhv")
-                .inputItems(HULL[UHV])
-                .inputItems(cableGtSingle, Europium, 4)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(CustomTags.UHV_CIRCUITS)
-                .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate, 2)
-                .inputFluids(SodiumPotassium, 12000)
-                .inputFluids(SolderingAlloy, 40 * L)
-                .outputItems(ENERGY_INPUT_HATCH[UHV])
-                .stationResearch(b -> b
-                        .researchStack(ENERGY_INPUT_HATCH[UV].asStack())
-                        .CWUt(128)
-                        .EUt(VA[UV]))
-                .duration(1000).EUt(VA[UHV]).save(provider);
 
         // Transformers
         for (int tier = 0; tier < TRANSFORMER.length; tier++) {

@@ -533,12 +533,6 @@ public class ReactorRecipes {
                 .outputItems(dust, Calcite, 5)
                 .duration(500).EUt(VA[LV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("calcite_from_quicklime")
-                .inputItems(dust, Quicklime, 2)
-                .inputFluids(CarbonDioxide.getFluid(1000))
-                .outputItems(dust, Calcite, 5)
-                .duration(80).EUt(VA[LV]).save(provider);
-
         CHEMICAL_RECIPES.recipeBuilder("magnesite_from_magnesia")
                 .inputItems(dust, Magnesia, 2)
                 .inputFluids(CarbonDioxide.getFluid(1000))

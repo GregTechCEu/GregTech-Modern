@@ -186,6 +186,7 @@ public class FirstDegreeMaterials {
 
         Cooperite = new Material.Builder(GTCEu.id("cooperite"))
                 .langValue("Sheldonite") // greg's humor is now on 1.20...
+                .flags(DISABLE_DECOMPOSITION)
                 .dust(1).ore()
                 .color(0xe9ffa7).secondaryColor(0x665f2f).iconSet(METALLIC)
                 .components(Platinum, 3, Nickel, 1, Sulfur, 1, Palladium, 1)

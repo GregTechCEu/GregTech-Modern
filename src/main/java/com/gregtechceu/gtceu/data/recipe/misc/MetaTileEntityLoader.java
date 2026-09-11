@@ -89,11 +89,6 @@ public class MetaTileEntityLoader {
                 GTBlocks.CASING_TUNGSTENSTEEL_ROBUST.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP",
                 "PFP", "PwP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.TungstenSteel), 'F',
                 new MaterialEntry(TagPrefix.frameGt, GTMaterials.TungstenSteel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_hsse_sturdy",
-                GTBlocks.CASING_HSSE_STURDY.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PFP", "PwP",
-                'P', new MaterialEntry(TagPrefix.plate, GTMaterials.HSSE), 'F',
-                new MaterialEntry(TagPrefix.frameGt, GTMaterials.Europium));
-
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_steel_turbine_casing",
                 GTBlocks.CASING_STEEL_TURBINE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft), "PhP", "PFP",
                 "PwP", 'P', new MaterialEntry(TagPrefix.plate, GTMaterials.Magnalium), 'F',
@@ -381,12 +376,6 @@ public class MetaTileEntityLoader {
                 GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), "CMC", "RHR", "CMC", 'C', CIRCUIT.get(HV), 'M',
                 GTMachines.MAINTENANCE_HATCH.asStack(), 'R', ROBOT_ARM.get(HV), 'H',
                 GTMachines.HULL[HV].asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "maintenance_hatch_cleaning",
-                GTMachines.CLEANING_MAINTENANCE_HATCH.asStack(), "CMC", "RHR", "WCW", 'C',
-                CIRCUIT.get(GTValues.UV), 'M', GTMachines.AUTO_MAINTENANCE_HATCH.asStack(), 'R',
-                ROBOT_ARM.get(GTValues.UV), 'H', GTMachines.HULL[GTValues.UV].asStack(), 'W',
-                new MaterialEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate));
-
         // TODO Access Interface
         // VanillaRecipeHelper.addShapedRecipe(provider, true, "machine_access_interface",
         // GTMachines.MACHINE_HATCH.getStackForm(), "CHS", 'C', CustomTags.IV), 'H',

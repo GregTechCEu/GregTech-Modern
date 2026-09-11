@@ -435,13 +435,6 @@ public class SeparationRecipes {
                 .outputFluids(Hydrogen.getFluid(6000))
                 .duration(480).EUt(VA[MV]).save(provider);
 
-        ELECTROLYZER_RECIPES.recipeBuilder("tungstic_acid_electrolysis")
-                .inputItems(dust, TungsticAcid, 7)
-                .outputItems(dust, Tungsten)
-                .outputFluids(Hydrogen.getFluid(2000))
-                .outputFluids(Oxygen.getFluid(4000))
-                .duration(210).EUt(960).save(provider);
-
         ELECTROLYZER_RECIPES.recipeBuilder("sodium_hydroxide_electrolysis")
                 .inputItems(dust, SodiumHydroxide, 3)
                 .outputItems(dust, Sodium)
