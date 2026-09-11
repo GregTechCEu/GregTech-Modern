@@ -310,7 +310,6 @@ public class GTRecipeBuilder {
             case SizedIngredient ingredient -> inputItems(ingredient);
             case MaterialEntry entry -> inputItems(entry);
             case TagKey<?> tag -> inputItems((TagKey<Item>) tag);
-            case MachineDefinition machine -> inputItems(machine);
             case IntProviderIngredient ingredient -> inputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {
@@ -334,7 +333,6 @@ public class GTRecipeBuilder {
             case SizedIngredient ingredient -> inputItems(ingredient.ingredient(), count);
             case MaterialEntry entry -> inputItems(entry, count);
             case TagKey<?> tag -> inputItems((TagKey<Item>) tag, count);
-            case MachineDefinition machine -> inputItems(machine, count);
             case IntProviderIngredient ingredient -> inputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {
@@ -518,7 +516,6 @@ public class GTRecipeBuilder {
             case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> outputItems(item.asItem());
             case ItemStack stack -> outputItems(stack);
             case MaterialEntry entry -> outputItems(entry);
-            case MachineDefinition machine -> outputItems(machine);
             case IntProviderIngredient ingredient -> outputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {
@@ -538,7 +535,6 @@ public class GTRecipeBuilder {
             case Supplier<?> supplier when supplier.get() instanceof ItemLike item -> outputItems(item.asItem(), count);
             case ItemStack stack -> outputItems(stack.copyWithCount(count));
             case MaterialEntry entry -> outputItems(entry, count);
-            case MachineDefinition machine -> outputItems(machine, count);
             case IntProviderIngredient ingredient -> outputItems(
                     new SizedIngredient(ingredient.toVanilla(), ingredient.getCountProvider().getMaxValue()));
             default -> {

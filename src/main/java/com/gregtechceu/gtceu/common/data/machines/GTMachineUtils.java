@@ -402,7 +402,9 @@ public class GTMachineUtils {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate
                 .machine(material.getName() + "_drum", info -> new DrumMachine(info, material, capacity))
-                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material)).build()
+                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material))
+                .color(() -> () -> (s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .build()
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
@@ -417,7 +419,6 @@ public class GTMachineUtils {
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .item().color(() -> () -> (s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .onRegister(d -> DRUM_CAPACITY.put(d, capacity))
                 .register();
         return definition;
@@ -484,8 +485,8 @@ public class GTMachineUtils {
                                                                                    Supplier<Block> casing,
                                                                                    MachineEntry<MachineDefinition> valve,
                                                                                    @Nullable PropertyFluidFilter filter,
-                                                                                   BiConsumer<MultiblockMachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
-        MultiblockMachineBuilder<?, ?> builder = registrate
+                                                                                   BiConsumer<MultiblockMachineBuilder<?>, ResourceLocation> rendererSetup) {
+        MultiblockMachineBuilder<?> builder = registrate
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
                 .tooltips(
@@ -528,7 +529,7 @@ public class GTMachineUtils {
             MACHINE extends MultiblockControllerMachine> MachineEntry<MultiblockMachineDefinition>[] registerTieredMultis(GTRegistrate registrate,
                                                                                                                           String name,
                                                                                                                           MachineInstanceFactory.Tiered<MACHINE> factory,
-                                                                                                                          BiFunction<Integer, MultiblockMachineBuilder<MACHINE, ?>, MachineEntry<MultiblockMachineDefinition>> builder,
+                                                                                                                          BiFunction<Integer, MultiblockMachineBuilder<MACHINE>, MachineEntry<MultiblockMachineDefinition>> builder,
                                                                                                                           int... tiers) {
         MachineEntry<MultiblockMachineDefinition>[] definitions = new MachineEntry[GTValues.TIER_COUNT];
         for (int tier : tiers) {

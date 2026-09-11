@@ -98,7 +98,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
     }
 
     @Override
-    public @org.jspecify.annotations.Nullable MachineDefinition createObject() {
+    public @Nullable MachineDefinition createObject() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
