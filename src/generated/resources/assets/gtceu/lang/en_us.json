@@ -3552,6 +3552,7 @@
   "gtceu.multiblock.turbine.energy_per_tick_maxed": "Energy Output: %s EU/t",
   "gtceu.multiblock.turbine.fuel_amount": "Fuel Amount: %sL (%s)",
   "gtceu.multiblock.turbine.fuel_needed": "Consumes %s per %s ticks",
+  "gtceu.multiblock.turbine.no_rotor": "Missing Rotor",
   "gtceu.multiblock.turbine.obstructed": "Turbine Face Obstructed",
   "gtceu.multiblock.turbine.rotor_durability": "Rotor Durability: %s%%",
   "gtceu.multiblock.turbine.rotor_speed": "Rotor Speed: %s/%s RPM",
