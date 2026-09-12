@@ -866,6 +866,11 @@ public class MachineLang {
         provider.add("gtceu.machine.object_holder.tooltip", "Advanced Holding Mechanism for Research Station");
 
         // Multiblock tooltips
+        provider.add("gtceu.multiblock.general.energy_consumption", "Using ");
+        provider.add("gtceu.multiblock.general.energy_production", "Producing ");
+        provider.add("gtceu.multiblock.general.energy_consumption_waiting", "Trying to Use ");
+        provider.add("gtceu.multiblock.general.energy_production_waiting", "Trying to Produce ");
+        provider.add("gtceu.multiblock.general.amp_volt_eut", "%s §cA §a@ %s §f(%s §fEU/t)§7");
         provider.add("gtceu.multiblock.blast_furnace.max_temperature", "Heat Capacity: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_level", "Heating Coil Level: %s");
         provider.add("gtceu.multiblock.multi_furnace.heating_coil_discount", "Heating Coil EU Boost: %sx");
@@ -891,6 +896,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.turbine.efficiency", "Turbine Efficiency: %s%%");
         provider.add("gtceu.multiblock.turbine.energy_per_tick", "Energy Output: %s/%s EU/t");
         provider.add("gtceu.multiblock.turbine.energy_per_tick_maxed", "Energy Output: %s EU/t");
+        provider.add("gtceu.multiblock.turbine.no_rotor", "Missing Rotor");
         provider.add("gtceu.multiblock.turbine.obstructed", "Turbine Face Obstructed");
         provider.add("gtceu.multiblock.turbine.efficiency_tooltip",
                 "Each Rotor Holder above %s§7 adds §f10%% efficiency and multiplies EU/t by 2§7.");

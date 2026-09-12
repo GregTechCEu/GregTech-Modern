@@ -174,6 +174,49 @@ public class GTMultiblockTextUtil {
                 .setEnabledIf(widget -> isFormed.getBoolValue());
     }
 
+    public static TextWidget<?> addEnergyUsageExactLine(WorkableElectricMultiblockMachine weMachine,
+                                                        PanelSyncManager syncManager, LongSyncValue energyUsage,
+                                                        LongSyncValue displayVoltage, boolean isGenerator) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isFormed));
+        BooleanSyncValue isActive = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isActive));
+        BooleanSyncValue isWaiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isWaiting));
+        BooleanSyncValue isSuspend = syncManager.getOrCreateSyncHandler("isSuspend", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(weMachine::isSuspend));
+
+        return Text.dynamic(() -> {
+            long EUt = energyUsage.getLongValue();
+            long voltage = displayVoltage.getLongValue();
+            float minAmperage = (float) EUt / voltage;
+            int tier = GTUtil.getTierByVoltage(voltage);
+
+            MutableComponent productionLine;
+            if (isWaiting.getBoolValue() || isSuspend.getBoolValue()) {
+                productionLine = Component.translatable(isGenerator ?
+                        "gtceu.multiblock.general.energy_production_waiting" :
+                        "gtceu.multiblock.general.energy_consumption_waiting").withStyle(ChatFormatting.GRAY);
+            } else {
+                productionLine = Component.translatable(isGenerator ?
+                        "gtceu.multiblock.general.energy_production" :
+                        "gtceu.multiblock.general.energy_consumption").withStyle(ChatFormatting.GRAY);
+            }
+            productionLine.append(Component.translatable(
+                    "gtceu.multiblock.general.amp_volt_eut", // A @ V (EUt)
+                    Component.literal(FormattingUtil.formatNumber2Places(minAmperage))
+                            .withStyle(ChatFormatting.RED),
+                    tier < GTValues.TIER_COUNT ? Component.literal(GTValues.VNF[tier])
+                            .withStyle(style -> style.withColor(GTValues.VC[tier])) : voltage,
+                    Component.literal(FormattingUtil.formatNumbers(energyUsage.getLongValue()))
+                            .withStyle(ChatFormatting.WHITE)));
+
+            return productionLine;
+        })
+                .asWidget()
+                .setEnabledIf(widget -> isFormed.getBoolValue() && isActive.getBoolValue());
+    }
+
     public static Component addEnergyTierLine(boolean formed, int tier) {
         if (!formed || tier < GTValues.ULV || tier > GTValues.MAX)
             return Text.EMPTY;
