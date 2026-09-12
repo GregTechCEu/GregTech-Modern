@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
@@ -241,8 +242,11 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
     @CheckReturnValue
     public MultiPredicate addTooltips(Component... tooltip) {
         var mutated = mutable ? this : deepCopy();
-        mutated.forEach(p -> Collections.addAll(p.getAdditionalTooltips(), tooltip));
-        mutated.forEachChild(mp -> mp.addTooltips(tooltip));
+        for (BasePredicate predicate : mutated.expand()) {
+            for (Component component : tooltip) {
+                predicate.addTooltips(component);
+            }
+        }
         return mutated;
     }
 
