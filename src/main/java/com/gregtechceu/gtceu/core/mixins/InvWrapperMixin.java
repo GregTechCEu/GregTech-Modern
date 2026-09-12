@@ -30,7 +30,7 @@ public abstract class InvWrapperMixin {
 
     @Unique
     private SpoilContext gtceu$getSpoilContext() {
-        SpoilContext ctx = new SpoilContext();
+        SpoilContext ctx = SpoilContext.EMPTY;
         if (inv instanceof BlockEntity blockEntity) {
             return ctx
                     .withLevel(blockEntity.getLevel())
