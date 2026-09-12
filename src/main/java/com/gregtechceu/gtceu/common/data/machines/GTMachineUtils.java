@@ -546,7 +546,7 @@ public class GTMachineUtils {
                         .slice("CCC", "CSC", "CCC")
                         .where('S', controller(blocks(definition.get())))
                         .where('C', blocks(casing.get())
-                                .and(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
+                                .and(blocks(valve.get()).withMaxGlobalLimited(2, 0)))
                         .where('#', air())
                         .build())
                 .appearanceBlock(casing);
@@ -604,15 +604,15 @@ public class GTMachineUtils {
                         controller.getBlockPos().below().getY() == part.getBlockPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
-                    MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
-                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .and(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
+                    MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).withMinGlobalLimited(3)
+                            .and(Predicates.abilities(PartAbility.IMPORT_FLUIDS)
+                                    .withMinGlobalLimited(1, 1))
+                            .and(Predicates.abilities(PartAbility.IMPORT_ITEMS)
+                                    .withMaxGlobalLimited(1, 1))
+                            .and(Predicates.abilities(PartAbility.MUFFLER).withExactLimit(1));
 
                     if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-                        fireboxPred = fireboxPred.and(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
+                        fireboxPred = fireboxPred.and(Predicates.abilities(PartAbility.MAINTENANCE).withExactLimit(1));
                     }
 
                     return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
@@ -622,9 +622,9 @@ public class GTMachineUtils {
                             .where('S', Predicates.controller(blocks(definition.getBlock())))
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
-                            .where('C', blocks(casing.get()).setMinGlobalLimited(20)
-                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1)
-                                            .setPreviewCount(1)))
+                            .where('C', blocks(casing.get()).withMinGlobalLimited(20)
+                                    .and(Predicates.abilities(PartAbility.EXPORT_FLUIDS)
+                                            .withMinGlobalLimited(1, 1)))
                             .build();
                 })
                 .recoveryItems(
@@ -665,7 +665,7 @@ public class GTMachineUtils {
                         .slice("AAA", "AYA", "AAA")
                         .where('X', blocks(casing.get()))
                         .where('G', blocks(gear.get()))
-                        .where('C', blocks(casing.get()).setMinGlobalLimited(3)
+                        .where('C', blocks(casing.get()).withMinGlobalLimited(3)
                                 .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
                                 .and(autoAbilities(true, true, false)))
                         .where('D',
@@ -727,8 +727,8 @@ public class GTMachineUtils {
                         .where('S', controller(blocks(definition.getBlock())))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()))
-                        .where('R', rotorHolder(tier).setExactLimit(1)
-                                .and(abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1)))
+                        .where('R', rotorHolder(tier).withExactLimit(1)
+                                .and(abilities(PartAbility.OUTPUT_ENERGY).withExactLimit(1)))
                         .where('H', blocks(casing.get())
                                 .and(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
                                 .and(autoAbilities(true, needsMuffler, false)))

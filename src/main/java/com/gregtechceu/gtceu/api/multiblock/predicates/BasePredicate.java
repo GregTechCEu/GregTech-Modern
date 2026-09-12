@@ -8,58 +8,53 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 
-public abstract class BasePredicate implements Comparable<BasePredicate> {
+public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
 
+    /// use {@link com.gregtechceu.gtceu.api.multiblock.Predicates#air() Predicates.air()} instead
+    @ApiStatus.Internal
     public static final BasePredicate AIR = new PredicateBuilder("Air")
             .predicate(ctx -> ctx.state().isAir())
-            .build();
+            .build()
+            .isAir(true)
+            .markImmutable();
 
+    /// use {@link com.gregtechceu.gtceu.api.multiblock.Predicates#any() Predicates.any()} instead
+    @ApiStatus.Internal
     public static final BasePredicate ANY = new PredicateBuilder("Any")
             .predicate(ctx -> true)
-            .build();
+            .build()
+            .isAny(true)
+            .markImmutable();
+
+    private boolean mutable = true;
 
     @Getter(lazy = true)
     private final List<BlockInfo> candidates = computeCandidates();
 
     @Getter
-    @Setter
-    protected int priority = 0;
-    @Getter
-    @Setter
-    protected int minCount = -1;
-    @Getter
-    @Setter
-    protected int maxCount = -1;
-    @Getter
-    @Setter
-    protected int minSliceCount = -1;
-    @Getter
-    @Setter
-    protected int maxSliceCount = -1;
-    @Getter
-    @Setter
-    protected int previewCount = -1;
-    @Getter
-    @Setter
-    protected boolean disableRenderFormed = false;
-    @Getter
-    @Setter
-    private @Nullable String nbtParser; // unsure what this does
-    @Setter
-    private @Nullable MultiPredicate parent;
+    protected PredicateSettings settings = PredicateSettings.create();
 
     @Getter
     private final List<Component> additionalTooltips = new ArrayList<>();
 
-    public MultiPredicate getParent() {
-        return Objects.requireNonNull(this.parent);
-    }
+    @Accessors(fluent = true)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter
+    private boolean isAir = false;
+
+    @Accessors(fluent = true)
+    @Setter(AccessLevel.PRIVATE)
+    @Getter
+    private boolean isAny = false;
 
     /// the main testing method
     public abstract boolean test(PredicateContext ctx);
@@ -70,35 +65,11 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     public abstract List<Component> getRecipeViewerTooltips(MultiPredicate root);
 
-    public abstract BasePredicate copy();
-
-    protected void copyTo(BasePredicate other) {
-        other.priority = this.priority;
-        other.minCount = this.minCount;
-        other.maxCount = this.maxCount;
-        other.minSliceCount = this.minSliceCount;
-        other.maxSliceCount = this.maxSliceCount;
-        other.previewCount = this.previewCount;
-        other.disableRenderFormed = this.disableRenderFormed;
-        other.nbtParser = this.nbtParser;
-        other.additionalTooltips.addAll(this.additionalTooltips);
-    }
-
-    public void addTooltips(Component tooltip) {
-        this.additionalTooltips.add(tooltip);
-    }
-
-    /// delegates to {@link MultiPredicate#testMaxCount(BasePredicate, PredicateContext)},
-    /// with this predicate as the passing predicate
-    public boolean checkMaxCount(PredicateContext context) {
-        return getParent().testMaxCount(this, context);
-    }
-
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
         int count = ctx.incrementGlobalCount(this);
         if (testGlobalMax(count)) return true;
-        ctx.appendError(SinglePredicateError.maxCount(this, count));
+        ctx.appendError(SinglePredicateError.maxCount(this, getCandidates(), count));
         return false;
     }
 
@@ -107,7 +78,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
         if (!ctx.isCheckLayer()) return true;
         int count = ctx.incrementSliceCount(this);
         if (testSliceMax(count)) return true;
-        ctx.appendError(SinglePredicateError.maxLayerCount(this, count));
+        ctx.appendError(SinglePredicateError.maxLayerCount(this, getCandidates(), count));
         return false;
     }
 
@@ -116,7 +87,7 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
         if (getMinCount() == -1) return true;
         int count = ctx.getGlobalCount(this);
         if (testGlobalMin(count)) return true;
-        ctx.appendError(SinglePredicateError.minCount(this, count));
+        ctx.appendError(SinglePredicateError.minCount(this, getCandidates(), count));
         return false;
     }
 
@@ -125,28 +96,8 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
         if (!ctx.isCheckLayer()) return true;
         int count = ctx.getSliceCount(this);
         if (testSliceMin(count)) return true;
-        ctx.appendError(SinglePredicateError.minLayerCount(this, count));
+        ctx.appendError(SinglePredicateError.minLayerCount(this, getCandidates(), count));
         return false;
-    }
-
-    /// simple test against global min count
-    public boolean testGlobalMin(int count) {
-        return minCount == -1 || count >= minCount;
-    }
-
-    /// simple test against slice min count
-    public boolean testSliceMin(int count) {
-        return minSliceCount == -1 || count >= minSliceCount;
-    }
-
-    /// simple test against global max count
-    public boolean testGlobalMax(int count) {
-        return maxCount == -1 || count <= maxCount;
-    }
-
-    /// simple test against slice max count
-    public boolean testSliceMax(int count) {
-        return maxSliceCount == -1 || count <= maxSliceCount;
     }
 
     /// computes the candidates for this predicate
@@ -181,7 +132,54 @@ public abstract class BasePredicate implements Comparable<BasePredicate> {
     }
 
     @Override
-    public int compareTo(BasePredicate o) {
-        return Integer.compare(this.priority, o.priority);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BasePredicate predicate)) return false;
+        List<BlockInfo> thisCandidates = this.getCandidates();
+        List<BlockInfo> thatCandidates = predicate.getCandidates();
+        if (thisCandidates.size() != thatCandidates.size()) return false;
+        for (int i = 0; i < thisCandidates.size(); i++) {
+            if (!Objects.equals(thisCandidates.get(i), thatCandidates.get(i))) return false;
+        }
+        return true;
+    }
+
+    private BasePredicate markImmutable() {
+        this.mutable = false;
+        return this;
+    }
+
+    @Override
+    public boolean hasSettings() {
+        return true;
+    }
+
+    public abstract BasePredicate copy();
+
+    protected void copyTo(BasePredicate other) {
+        other.setSettings(this.settings.copy());
+        other.additionalTooltips.addAll(this.additionalTooltips);
+        other.isAir = this.isAir;
+        other.isAny = this.isAny;
+    }
+
+    // COPY AND MUTATE
+
+    @Override
+    public BasePredicate withSettings(UnaryOperator<PredicateSettings> configurator) {
+        BasePredicate copy = copy();
+        copy.updateSettings(configurator);
+        return copy;
+    }
+
+    // MUTATE ONLY
+
+    @Override
+    public void setSettings(PredicateSettings settings) {
+        if (mutable) this.settings = settings;
+    }
+
+    public void addTooltips(Component tooltip) {
+        if (mutable) this.additionalTooltips.add(tooltip);
     }
 }

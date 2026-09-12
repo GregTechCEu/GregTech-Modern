@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,44 +22,35 @@ public class XorPredicate extends MultiPredicate {
 
     public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
         super(Logic.XOR, children, predicates, hasAir);
-        this.noneValid = expand().stream()
-                .anyMatch(p -> p.getMinCount() <= 0 && p.getMinSliceCount() <= 0);
     }
 
     @Override
-    public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
-        context.setStage(PredicateContext.PredicateStage.INTERNAL);
-        for (BasePredicate predicate : predicates()) {
-            if (predicate.test(context)) {
-                if (this.passedPredicate != null && !this.passedPredicate.is(predicate)) {
-                    xorError(context, predicate, this.passedPredicate);
-                    // error
-                    return null;
-                }
-                if (this.passedPredicate == null) {
-                    this.passedPredicate = ofPredicate(predicate);
-                }
-                return predicate;
+    protected void onSettingsChanged() {
+        this.noneValid = isNoneValid(this);
+    }
+
+    @Override
+    protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
+        if (result.match() == null) return result;
+        if (result.isTop(this)) {
+            if (this.passedPredicate != null && !this.passedPredicate.is(result.match())) {
+                xorError(context, result.match(), this.passedPredicate);
+                return result.setFailed();
+            }
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofPredicate(result.match());
+            }
+        } else {
+            MultiPredicate bottom = Objects.requireNonNull(result.getBottom());
+            if (this.passedPredicate != null && !this.passedPredicate.is(bottom)) {
+                xorError(context, result.match(), this.passedPredicate);
+                return result.setFailed();
+            }
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofChild(bottom);
             }
         }
-        for (MultiPredicate child : children()) {
-            BasePredicate p = child.getPredicateAtPos(context);
-            if (p != null) {
-                if (this.passedPredicate != null && !this.passedPredicate.is(child)) {
-                    xorError(context, p, this.passedPredicate);
-                    // error
-                    return null;
-                }
-                if (this.passedPredicate == null) {
-                    this.passedPredicate = ofChild(child);
-                }
-                return p;
-            }
-        }
-        if (isRoot()) {
-            onError(context);
-        }
-        return null;
+        return result;
     }
 
     @Override
@@ -87,6 +79,23 @@ public class XorPredicate extends MultiPredicate {
         context.appendError(
                 PatternStringError.literal("XOR error\n" + found.getString() + "\n" + expected.getString()));
         context.skipFlipCheck();
+    }
+
+    private static boolean isNoneValid(MultiPredicate multiPredicate) {
+        PredicateSettings settings = multiPredicate.getSettings();
+        if (settings != null && !settings.isNoneValid()) return false;
+
+        for (BasePredicate predicate : multiPredicate.predicates()) {
+            if (predicate.getSettings().isNoneValid()) {
+                return true;
+            }
+        }
+        for (MultiPredicate child : multiPredicate.children()) {
+            if (isNoneValid(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static PassedPredicate ofPredicate(BasePredicate predicate) {

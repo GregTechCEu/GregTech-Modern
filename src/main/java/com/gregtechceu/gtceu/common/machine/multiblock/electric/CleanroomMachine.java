@@ -316,12 +316,12 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return (definition) -> {
             MultiPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
             MultiPredicate energyPredicate = autoAbilities(true, false, false).and(abilities(PartAbility.INPUT_ENERGY)
-                    .setMinGlobalLimited(1).setMaxGlobalLimited(3));
+                    .withMinGlobalLimited(1).withMaxGlobalLimited(3));
 
             MultiPredicate edgePredicate = wallPredicate.and(energyPredicate);
             MultiPredicate facePredicate = wallPredicate.and(energyPredicate)
-                    .and(doorPredicate().setMaxGlobalLimited(8))
-                    .and(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+                    .and(doorPredicate().withMaxGlobalLimited(8))
+                    .and(abilities(PartAbility.PASSTHROUGH_HATCH).withMaxGlobalLimited(30));
             MultiPredicate filterPredicate = cleanroomFilters();
             MultiPredicate innerPredicate = innerPredicate();
             MultiPredicate verticalEdgePredicate = edgePredicate.and(blocks(getGlassState().getBlock()));
