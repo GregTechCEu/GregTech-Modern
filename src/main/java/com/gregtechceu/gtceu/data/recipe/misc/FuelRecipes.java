@@ -166,12 +166,6 @@ public class FuelRecipes {
                 .EUt(-V[LV])
                 .save(provider);
 
-        COMBUSTION_GENERATOR_FUELS.recipeBuilder("raw_oil")
-                .inputFluids(RawOil.getFluid(64))
-                .duration(15)
-                .EUt(-V[LV])
-                .save(provider);
-
         // steam generator fuels
         STEAM_TURBINE_FUELS.recipeBuilder("steam")
                 .inputFluids(Steam.getFluid(640))

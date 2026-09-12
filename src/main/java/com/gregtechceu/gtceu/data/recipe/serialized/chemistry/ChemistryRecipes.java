@@ -69,11 +69,6 @@ public class ChemistryRecipes {
                 .outputFluids(LiquidEnderAir.getFluid(4000))
                 .duration(80).EUt(VA[IV]).save(provider);
 
-        VACUUM_RECIPES.recipeBuilder("liquid_oxygen")
-                .inputFluids(Oxygen.getFluid(1000))
-                .outputFluids(Oxygen.getFluid(FluidStorageKeys.LIQUID, 1000))
-                .duration(240).EUt(VA[EV]).save(provider);
-
         VACUUM_RECIPES.recipeBuilder("liquid_helium")
                 .inputFluids(Helium.getFluid(1000))
                 .outputFluids(Helium.getFluid(FluidStorageKeys.LIQUID, 1000))
@@ -85,11 +80,6 @@ public class ChemistryRecipes {
                 .outputItems(ingot, NickelZincFerrite)
                 .blastFurnaceTemp(1500)
                 .duration(400).EUt(VA[MV]).save(provider);
-
-        FERMENTING_RECIPES.recipeBuilder("fermented_biomass")
-                .inputFluids(Biomass.getFluid(100))
-                .outputFluids(FermentedBiomass.getFluid(100))
-                .duration(150).EUt(2).save(provider);
 
         WIREMILL_RECIPES.recipeBuilder("string_from_polycaprolactam")
                 .inputItems(ingot, Polycaprolactam)

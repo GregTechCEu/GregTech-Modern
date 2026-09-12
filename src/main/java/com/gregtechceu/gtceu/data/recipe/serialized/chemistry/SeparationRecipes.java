@@ -419,22 +419,6 @@ public class SeparationRecipes {
                 .outputFluids(Water.getFluid(2000))
                 .duration(784).EUt(VA[LV] * 2L).save(provider);
 
-        ELECTROLYZER_RECIPES.recipeBuilder("bauxite_electrolysis")
-                .inputItems(dust, Bauxite, 15)
-                .outputItems(dust, Aluminium, 6)
-                .outputItems(dust, Rutile)
-                .outputFluids(Oxygen.getFluid(9000))
-                .duration(270).EUt(VA[LV] * 2L).save(provider);
-
-        ELECTROLYZER_RECIPES.recipeBuilder("bentonite_electrolysis")
-                .inputItems(dust, Bentonite, 30)
-                .outputItems(dust, Sodium)
-                .outputItems(dust, Magnesium, 6)
-                .outputItems(dust, Silicon, 12)
-                .outputFluids(Water.getFluid(5000))
-                .outputFluids(Hydrogen.getFluid(6000))
-                .duration(480).EUt(VA[MV]).save(provider);
-
         ELECTROLYZER_RECIPES.recipeBuilder("sodium_hydroxide_electrolysis")
                 .inputItems(dust, SodiumHydroxide, 3)
                 .outputItems(dust, Sodium)

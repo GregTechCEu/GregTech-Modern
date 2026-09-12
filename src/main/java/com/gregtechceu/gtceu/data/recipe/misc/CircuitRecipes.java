@@ -105,18 +105,6 @@ public class CircuitRecipes {
                 .inputItems(NEUTRONIUM_WAFER).notConsumable(lens, Color.Red)
                 .outputItems(INTEGRATED_LOGIC_CIRCUIT_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(lens, Color.Green).outputItems(RANDOM_ACCESS_MEMORY_WAFER).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(lens, Color.Green)
-                .outputItems(RANDOM_ACCESS_MEMORY_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(lens, Color.Green).outputItems(RANDOM_ACCESS_MEMORY_WAFER, 8)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ram_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(lens, Color.Green)
-                .outputItems(RANDOM_ACCESS_MEMORY_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
-
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
                 .notConsumable(lens, Color.LightBlue).outputItems(CENTRAL_PROCESSING_UNIT_WAFER).save(provider);
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_cpu_phosphorus").duration(500).EUt(VA[HV])
@@ -144,30 +132,6 @@ public class CircuitRecipes {
                 .inputItems(NEUTRONIUM_WAFER).notConsumable(lens, Color.Blue)
                 .outputItems(ULTRA_LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 16).cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
-
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(lens, Color.Orange).outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(lens, Color.Orange)
-                .outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(lens, Color.Orange)
-                .outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 8).cleanroom(CleanroomType.CLEANROOM).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_lpic_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(lens, Color.Orange)
-                .outputItems(LOW_POWER_INTEGRATED_CIRCUIT_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
-
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_silicon").duration(900).EUt(VA[MV]).inputItems(SILICON_WAFER)
-                .notConsumable(lens, Color.Cyan).outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_phosphorus").duration(500).EUt(VA[HV])
-                .inputItems(PHOSPHORUS_WAFER).notConsumable(lens, Color.Cyan)
-                .outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER, 4).cleanroom(CleanroomType.CLEANROOM).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_naquadah").duration(200).EUt(VA[EV])
-                .inputItems(NAQUADAH_WAFER).notConsumable(lens, Color.Cyan).outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER, 8)
-                .cleanroom(CleanroomType.CLEANROOM).save(provider);
-        LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_ssoc_neutronium").duration(50).EUt(VA[IV])
-                .inputItems(NEUTRONIUM_WAFER).notConsumable(lens, Color.Cyan)
-                .outputItems(SIMPLE_SYSTEM_ON_CHIP_WAFER, 16).cleanroom(CleanroomType.CLEANROOM).save(provider);
 
         LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_nand_phosphorus").duration(900).EUt(VA[HV])
                 .inputItems(PHOSPHORUS_WAFER).notConsumable(lens, Color.Gray).outputItems(NAND_MEMORY_CHIP_WAFER)
@@ -305,37 +269,6 @@ public class CircuitRecipes {
     }
 
     private static void componentRecipes(Consumer<FinishedRecipe> provider) {
-        // Vacuum Tube
-        VanillaRecipeHelper.addShapedRecipe(provider, "vacuum_tube", VACUUM_TUBE.asStack(),
-                "PTP", "WWW",
-                'P', new MaterialEntry(bolt, Steel),
-                'T', GLASS_TUBE.asStack(),
-                'W', new MaterialEntry(wireGtSingle, Copper));
-
-        ASSEMBLER_RECIPES.recipeBuilder("vacuum_tube_plain")
-                .inputItems(GLASS_TUBE)
-                .inputItems(bolt, Steel)
-                .inputItems(wireGtSingle, Copper, 2)
-                .circuitMeta(1)
-                .outputItems(VACUUM_TUBE, 2)
-                .duration(120).EUt(VA[ULV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("vacuum_tube_red_alloy")
-                .inputItems(GLASS_TUBE)
-                .inputItems(bolt, Steel)
-                .inputItems(wireGtSingle, Copper, 2)
-                .inputFluids(RedAlloy.getFluid(18))
-                .outputItems(VACUUM_TUBE, 3)
-                .duration(40).EUt(VA[ULV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("vacuum_tube_red_alloy_annealed")
-                .inputItems(GLASS_TUBE)
-                .inputItems(bolt, Steel)
-                .inputItems(wireGtSingle, AnnealedCopper, 2)
-                .inputFluids(RedAlloy.getFluid(18))
-                .outputItems(VACUUM_TUBE, 4)
-                .duration(40).EUt(VA[ULV]).save(provider);
-
         ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_glass_tube")
                 .inputItems(dust, Glass)
                 .notConsumable(SHAPE_MOLD_BALL)
@@ -767,22 +700,6 @@ public class CircuitRecipes {
     }
 
     private static void boardRecipes(Consumer<FinishedRecipe> provider) {
-        // Coated Board
-        VanillaRecipeHelper.addShapedRecipe(provider, "coated_board", COATED_BOARD.asStack(3),
-                "RRR", "PPP", "RRR",
-                'R', STICKY_RESIN.asStack(),
-                'P', ItemTags.PLANKS);
-
-        VanillaRecipeHelper.addShapelessRecipe(provider, "coated_board_1x", COATED_BOARD.asStack(),
-                ItemTags.PLANKS,
-                STICKY_RESIN.asStack(),
-                STICKY_RESIN.asStack());
-
-        VanillaRecipeHelper.addShapedRecipe(provider, "basic_circuit_board", BASIC_CIRCUIT_BOARD.asStack(),
-                "WWW", "WBW", "WWW",
-                'W', new MaterialEntry(wireGtSingle, Copper),
-                'B', COATED_BOARD.asStack());
-
         // Basic Circuit Board
         ASSEMBLER_RECIPES.recipeBuilder("basic_circuit_board")
                 .inputItems(foil, Copper, 4)
@@ -1004,15 +921,6 @@ public class CircuitRecipes {
 
         // T1: Electronic ==============================================================================================
 
-        // LV
-        VanillaRecipeHelper.addShapedRecipe(provider, "electronic_circuit_lv", ELECTRONIC_CIRCUIT_LV.asStack(),
-                "RPR", "VBV", "CCC",
-                'R', RESISTOR.asStack(),
-                'P', new MaterialEntry(plate, Steel),
-                'V', VACUUM_TUBE.asStack(),
-                'B', BASIC_CIRCUIT_BOARD.asStack(),
-                'C', new MaterialEntry(cableGtSingle, RedAlloy));
-
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_lv").EUt(16).duration(200)
                 .inputItems(BASIC_CIRCUIT_BOARD)
                 .inputItems(CustomTags.RESISTORS, 2)
@@ -1020,15 +928,6 @@ public class CircuitRecipes {
                 .inputItems(CustomTags.ULV_CIRCUITS, 2)
                 .outputItems(ELECTRONIC_CIRCUIT_LV, outputAmount)
                 .save(provider);
-
-        // MV
-        VanillaRecipeHelper.addShapedRecipe(provider, "electronic_circuit_mv", ELECTRONIC_CIRCUIT_MV.asStack(),
-                "DPD", "CBC", "WCW",
-                'W', new MaterialEntry(wireGtSingle, Copper),
-                'P', new MaterialEntry(plate, Steel),
-                'C', ELECTRONIC_CIRCUIT_LV.asStack(),
-                'B', GOOD_CIRCUIT_BOARD.asStack(),
-                'D', DIODE.asStack());
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("electronic_circuit_mv").EUt(VA[LV]).duration(300)
                 .inputItems(GOOD_CIRCUIT_BOARD)
@@ -1093,99 +992,7 @@ public class CircuitRecipes {
                 .outputItems(NAND_CHIP_ULV, outputAmount * 6)
                 .save(provider);
 
-        // Microprocessor LV
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("microprocessor_lv").EUt(60).duration(200)
-                .inputItems(PLASTIC_CIRCUIT_BOARD)
-                .inputItems(CENTRAL_PROCESSING_UNIT)
-                .inputItems(CustomTags.RESISTORS, 2)
-                .inputItems(CustomTags.CAPACITORS, 2)
-                .inputItems(CustomTags.TRANSISTORS, 2)
-                .inputItems(wireFine, Copper, 2)
-                .outputItems(MICROPROCESSOR_LV, ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 2 : 3)
-                .save(provider);
-
-        // Microprocessor LV SoC
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("microprocessor_lv_soc").EUt(600).duration(50)
-                .inputItems(PLASTIC_CIRCUIT_BOARD)
-                .inputItems(SYSTEM_ON_CHIP)
-                .inputItems(wireFine, Copper, 2)
-                .inputItems(bolt, Tin, 2)
-                .outputItems(MICROPROCESSOR_LV, ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 3 : 6)
-                .cleanroom(CleanroomType.CLEANROOM)
-                .save(provider);
-
-        // T3: Processor ===============================================================================================
-
-        // MV
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("processor_mv").EUt(60).duration(200)
-                .inputItems(PLASTIC_CIRCUIT_BOARD)
-                .inputItems(CENTRAL_PROCESSING_UNIT)
-                .inputItems(CustomTags.RESISTORS, 4)
-                .inputItems(CustomTags.CAPACITORS, 4)
-                .inputItems(CustomTags.TRANSISTORS, 4)
-                .inputItems(wireFine, RedAlloy, 4)
-                .outputItems(PROCESSOR_MV, outputAmount)
-                .save(provider);
-
-        // MV SoC
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("processor_mv_soc").EUt(2400).duration(50)
-                .inputItems(PLASTIC_CIRCUIT_BOARD)
-                .inputItems(SYSTEM_ON_CHIP)
-                .inputItems(wireFine, RedAlloy, 4)
-                .inputItems(bolt, AnnealedCopper, 4)
-                .outputItems(PROCESSOR_MV, outputAmount * 2)
-                .cleanroom(CleanroomType.CLEANROOM)
-                .save(provider);
-
-        // HV
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("processor_assembly_hv").EUt(VA[MV]).duration(400)
-                .inputItems(PLASTIC_CIRCUIT_BOARD)
-                .inputItems(PROCESSOR_MV, 2)
-                .inputItems(CustomTags.INDUCTORS, 4)
-                .inputItems(CustomTags.CAPACITORS, 8)
-                .inputItems(RANDOM_ACCESS_MEMORY, 4)
-                .inputItems(wireFine, RedAlloy, 8)
-                .outputItems(PROCESSOR_ASSEMBLY_HV, 2)
-                .solderMultiplier(2)
-                .save(provider);
-
-        // EV
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("workstation_ev").EUt(VA[MV]).duration(400)
-                .inputItems(PLASTIC_CIRCUIT_BOARD)
-                .inputItems(PROCESSOR_ASSEMBLY_HV, 2)
-                .inputItems(CustomTags.DIODES, 4)
-                .inputItems(RANDOM_ACCESS_MEMORY, 4)
-                .inputItems(wireFine, Electrum, 16)
-                .inputItems(bolt, BlueAlloy, 16)
-                .outputItems(WORKSTATION_EV)
-                .solderMultiplier(2)
-                .cleanroom(CleanroomType.CLEANROOM)
-                .save(provider);
-
-        // IV
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("mainframe_iv").EUt(VA[HV]).duration(800)
-                .inputItems(frameGt, Aluminium, 2)
-                .inputItems(WORKSTATION_EV, 2)
-                .inputItems(CustomTags.INDUCTORS, 8)
-                .inputItems(CustomTags.CAPACITORS, 16)
-                .inputItems(RANDOM_ACCESS_MEMORY, 16)
-                .inputItems(wireGtSingle, AnnealedCopper, 16)
-                .outputItems(MAINFRAME_IV)
-                .solderMultiplier(4)
-                .cleanroom(CleanroomType.CLEANROOM)
-                .save(provider);
-
-        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("mainframe_iv_asmd").EUt(VA[HV]).duration(400)
-                .inputItems(frameGt, Aluminium, 2)
-                .inputItems(WORKSTATION_EV, 2)
-                .inputItems(ADVANCED_SMD_INDUCTOR, 2)
-                .inputItems(ADVANCED_SMD_CAPACITOR, 4)
-                .inputItems(RANDOM_ACCESS_MEMORY, 16)
-                .inputItems(wireGtSingle, AnnealedCopper, 16)
-                .outputItems(MAINFRAME_IV)
-                .solderMultiplier(4)
-                .cleanroom(CleanroomType.CLEANROOM)
-                .save(provider);
+        // T3: Processor =======================================================================================================
 
         // T4: Nano ====================================================================================================
 

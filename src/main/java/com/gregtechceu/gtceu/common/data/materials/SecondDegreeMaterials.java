@@ -47,6 +47,7 @@ public class SecondDegreeMaterials {
         Borax = new Material.Builder(GTCEu.id("borax"))
                 .dust(1).ore(2, 1)
                 .color(0xFAFAFA).secondaryColor(0xd7e7e7).iconSet(FINE)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 2, Boron, 4, Water, 10, Oxygen, 7)
                 .buildAndRegister();
 
@@ -201,7 +202,7 @@ public class SecondDegreeMaterials {
         GraniteRed = new Material.Builder(GTCEu.id("granite_red"))
                 .dust()
                 .color(0xFF0080).iconSet(ROUGH)
-                .flags(NO_SMASHING)
+                .flags(NO_SMASHING, DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, PotassiumFeldspar, 1, Oxygen, 3)
                 .buildAndRegister();
 
@@ -222,6 +223,7 @@ public class SecondDegreeMaterials {
         Pollucite = new Material.Builder(GTCEu.id("pollucite"))
                 .dust().ore()
                 .color(0xeed9e1).secondaryColor(0x72a6a7)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Caesium, 2, Aluminium, 2, Silicon, 4, Water, 2, Oxygen, 12)
                 .buildAndRegister();
 
@@ -236,6 +238,7 @@ public class SecondDegreeMaterials {
                 .langValue("Fuller's Earth")
                 .dust().ore(2, 1)
                 .color(0xf3efbb).secondaryColor(0xb8d066).iconSet(FINE)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Magnesium, 2, Silicon, 4, Oxygen, 14, Hydrogen, 4, Water, 1)
                 .buildAndRegister();
 
@@ -504,7 +507,7 @@ public class SecondDegreeMaterials {
         Clay = new Material.Builder(GTCEu.id("clay"))
                 .dust(1)
                 .color(0xbec9e8).secondaryColor(0x373944).iconSet(ROUGH)
-                .flags(MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
+                .flags(MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, DISABLE_DECOMPOSITION)
                 .components(Sodium, 2, Lithium, 1, Aluminium, 2, Silicon, 2, Water, 6)
                 .buildAndRegister();
 

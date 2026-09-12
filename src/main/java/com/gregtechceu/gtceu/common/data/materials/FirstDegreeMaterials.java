@@ -26,12 +26,14 @@ public class FirstDegreeMaterials {
         Almandine = new Material.Builder(GTCEu.id("almandine"))
                 .gem(1).ore(3, 1)
                 .color(0xa21717).secondaryColor(0x4b1e0c)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Iron, 3, Silicon, 3, Oxygen, 12)
                 .buildAndRegister();
 
         Andradite = new Material.Builder(GTCEu.id("andradite"))
                 .gem(1)
                 .color(0xffce26).secondaryColor(0x647d59).iconSet(RUBY)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Calcium, 3, Iron, 2, Silicon, 3, Oxygen, 12)
                 .buildAndRegister();
 
@@ -49,6 +51,7 @@ public class FirstDegreeMaterials {
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.ASBESTOSIS)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
@@ -76,7 +79,7 @@ public class FirstDegreeMaterials {
         BlueTopaz = new Material.Builder(GTCEu.id("blue_topaz"))
                 .gem(3).ore(2, 1)
                 .color(0xdbfeff).secondaryColor(0xa0c4d7).iconSet(GEM_HORIZONTAL)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 4, Fluorine, 2)
                 .buildAndRegister();
 
@@ -153,6 +156,7 @@ public class FirstDegreeMaterials {
         Chromite = new Material.Builder(GTCEu.id("chromite"))
                 .dust(1).ore()
                 .color(0xc5c1a8).secondaryColor(0x4c1a69).iconSet(METALLIC)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Iron, 1, Chromium, 2, Oxygen, 4)
                 .buildAndRegister();
 
@@ -234,7 +238,7 @@ public class FirstDegreeMaterials {
                 .gem().ore(2, 1)
                 .color(0x17ff6c).secondaryColor(0x003f00).iconSet(EMERALD)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT,
-                        EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, GENERATE_LENS)
+                        EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, GENERATE_LENS, DISABLE_DECOMPOSITION)
                 .components(Beryllium, 3, Aluminium, 2, Silicon, 6, Oxygen, 18)
                 .buildAndRegister();
 
@@ -254,13 +258,14 @@ public class FirstDegreeMaterials {
         GreenSapphire = new Material.Builder(GTCEu.id("green_sapphire"))
                 .gem().ore()
                 .color(0x9ae6b0).secondaryColor(0x64C882).iconSet(GEM_HORIZONTAL)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Oxygen, 3)
                 .buildAndRegister();
 
         Grossular = new Material.Builder(GTCEu.id("grossular"))
                 .gem(1).ore(3, 1)
                 .color(0xffb777).secondaryColor(0x856f48).iconSet(RUBY)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Calcium, 3, Aluminium, 2, Silicon, 3, Oxygen, 12)
                 .buildAndRegister();
 
@@ -324,7 +329,7 @@ public class FirstDegreeMaterials {
                 .gem(1).ore(6, 4)
                 .color(0x2836f1).secondaryColor(0x183ca3).iconSet(LAPIS)
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_ROD,
-                        DECOMPOSITION_BY_ELECTROLYZING)
+                        DISABLE_DECOMPOSITION)
                 .components(Aluminium, 6, Silicon, 6, Calcium, 8, Sodium, 8)
                 .buildAndRegister();
 
@@ -393,7 +398,8 @@ public class FirstDegreeMaterials {
         Obsidian = new Material.Builder(GTCEu.id("obsidian"))
                 .dust(3)
                 .color(0x3b2754).secondaryColor(0x000001).iconSet(SHINY)
-                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE, GENERATE_DENSE)
+                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE, GENERATE_DENSE,
+                        DISABLE_DECOMPOSITION)
                 .components(Magnesium, 1, Iron, 1, Silicon, 2, Oxygen, 4)
                 .buildAndRegister();
 
@@ -467,6 +473,7 @@ public class FirstDegreeMaterials {
         Biotite = new Material.Builder(GTCEu.id("biotite"))
                 .dust(1)
                 .color(0x343b34).secondaryColor(0x121200).iconSet(METALLIC)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Potassium, 1, Magnesium, 3, Aluminium, 3, Fluorine, 2, Silicon, 3, Oxygen, 10)
                 .buildAndRegister();
 
@@ -492,6 +499,7 @@ public class FirstDegreeMaterials {
         Pyrope = new Material.Builder(GTCEu.id("pyrope"))
                 .gem().ore(3, 1)
                 .color(0xe81958).secondaryColor(0x811e00).iconSet(RUBY)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Magnesium, 3, Silicon, 3, Oxygen, 12)
                 .buildAndRegister();
 
@@ -528,7 +536,8 @@ public class FirstDegreeMaterials {
         Ruby = new Material.Builder(GTCEu.id("ruby"))
                 .gem().ore()
                 .color(0xd72310).secondaryColor(0x960b6d).iconSet(RUBY)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS,
+                        DISABLE_DECOMPOSITION)
                 .components(Chromium, 1, Aluminium, 2, Oxygen, 3)
                 .buildAndRegister();
 
@@ -549,7 +558,8 @@ public class FirstDegreeMaterials {
         Sapphire = new Material.Builder(GTCEu.id("sapphire"))
                 .gem().ore()
                 .color(0x3235e3).secondaryColor(0x211455).iconSet(EMERALD)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS,
+                        DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Oxygen, 3)
                 .buildAndRegister();
 
@@ -565,7 +575,7 @@ public class FirstDegreeMaterials {
                 .gem(1).ore(6, 4)
                 .color(0x3d54ff).secondaryColor(0x210d78).iconSet(LAPIS)
                 .flags(GENERATE_PLATE, GENERATE_ROD, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE,
-                        DECOMPOSITION_BY_ELECTROLYZING)
+                        DISABLE_DECOMPOSITION)
                 .components(Aluminium, 3, Silicon, 3, Sodium, 4, Chlorine, 1)
                 .buildAndRegister();
 
@@ -598,6 +608,7 @@ public class FirstDegreeMaterials {
         Spessartine = new Material.Builder(GTCEu.id("spessartine"))
                 .gem().ore(3, 1)
                 .color(0xffa81e).secondaryColor(0xb33700).iconSet(RUBY)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Manganese, 3, Silicon, 3, Oxygen, 12)
                 .buildAndRegister();
 
@@ -668,7 +679,7 @@ public class FirstDegreeMaterials {
         Topaz = new Material.Builder(GTCEu.id("topaz"))
                 .gem(3).ore()
                 .color(0xe8d73a).secondaryColor(0xf4680f).iconSet(GEM_HORIZONTAL)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 5, Fluorine, 1, Hydrogen, 1)
                 .buildAndRegister();
 
@@ -705,6 +716,7 @@ public class FirstDegreeMaterials {
         Uvarovite = new Material.Builder(GTCEu.id("uvarovite"))
                 .gem()
                 .color(0x2ded4c).secondaryColor(0x00697c).iconSet(RUBY)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Calcium, 3, Chromium, 2, Silicon, 3, Oxygen, 12)
                 .buildAndRegister();
 
@@ -886,7 +898,7 @@ public class FirstDegreeMaterials {
         SiliconDioxide = new Material.Builder(GTCEu.id("silicon_dioxide"))
                 .dust(1)
                 .color(0xf2f2f2).secondaryColor(0xb2c4c7).iconSet(QUARTZ)
-                .flags(NO_SMASHING, NO_SMELTING)
+                .flags(NO_SMASHING, NO_SMELTING, DISABLE_DECOMPOSITION)
                 .components(Silicon, 1, Oxygen, 2)
                 .hazard(HazardProperty.HazardTrigger.INHALATION, GTMedicalConditions.SILICOSIS, false)
                 .buildAndRegister();
@@ -1011,6 +1023,7 @@ public class FirstDegreeMaterials {
         Ferrosilite = new Material.Builder(GTCEu.id("ferrosilite"))
                 .dust(1)
                 .color(0x968c80).secondaryColor(0x97732a)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Iron, 1, Silicon, 1, Oxygen, 3)
                 .buildAndRegister();
 
@@ -1048,18 +1061,21 @@ public class FirstDegreeMaterials {
         Spodumene = new Material.Builder(GTCEu.id("spodumene"))
                 .dust().ore()
                 .color(0xffbcbc).secondaryColor(0xc490ff)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Lithium, 1, Aluminium, 1, Silicon, 2, Oxygen, 6)
                 .buildAndRegister();
 
         Lepidolite = new Material.Builder(GTCEu.id("lepidolite"))
                 .dust().ore(2, 1)
                 .color(0xffdae4).secondaryColor(0x75376f).iconSet(FINE)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Potassium, 1, Lithium, 3, Aluminium, 4, Fluorine, 2, Oxygen, 10)
                 .buildAndRegister();
 
         GlauconiteSand = new Material.Builder(GTCEu.id("glauconite_sand"))
                 .dust().ore(3, 1)
                 .color(0x1da351).secondaryColor(0x1a6e8f).iconSet(SAND)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Potassium, 1, Magnesium, 2, Aluminium, 2, Silicon, 3, Oxygen, 12, Hydrogen, 2, Water, 1)
                 .buildAndRegister();
 
@@ -1072,6 +1088,7 @@ public class FirstDegreeMaterials {
         Mica = new Material.Builder(GTCEu.id("mica"))
                 .dust().ore(2, 1)
                 .color(0xecfeff).secondaryColor(0xc2a03c).iconSet(FINE)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Potassium, 1, Aluminium, 3, Silicon, 3, Fluorine, 2, Oxygen, 10)
                 .buildAndRegister();
 
@@ -1084,24 +1101,28 @@ public class FirstDegreeMaterials {
         Alunite = new Material.Builder(GTCEu.id("alunite"))
                 .dust().ore(3, 1)
                 .color(0xfbd677).secondaryColor(0xe11e0a).iconSet(METALLIC)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Potassium, 1, Aluminium, 2, Silicon, 2, Hydrogen, 6, Oxygen, 14)
                 .buildAndRegister();
 
         Talc = new Material.Builder(GTCEu.id("talc"))
                 .dust().ore(2, 1)
                 .color(0xebffe9).secondaryColor(0x6fe19b).iconSet(FINE)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Magnesium, 3, Silicon, 4, Hydrogen, 2, Oxygen, 12)
                 .buildAndRegister();
 
         Soapstone = new Material.Builder(GTCEu.id("soapstone"))
                 .dust(1).ore(3, 1)
                 .color(0x5a7261).secondaryColor(0x464c4b).iconSet(ROUGH)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Magnesium, 3, Silicon, 4, Hydrogen, 2, Oxygen, 12)
                 .buildAndRegister();
 
         Kyanite = new Material.Builder(GTCEu.id("kyanite"))
                 .dust().ore()
                 .color(0xd5ffff).secondaryColor(0x5a69d6).iconSet(FLINT)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Aluminium, 2, Silicon, 1, Oxygen, 5)
                 .buildAndRegister();
 
@@ -1279,6 +1300,7 @@ public class FirstDegreeMaterials {
         PotassiumFeldspar = new Material.Builder(GTCEu.id("potassium_feldspar"))
                 .dust(1)
                 .color(0xffe3bc).secondaryColor(0xd4918a).iconSet(FINE)
+                .flags(DISABLE_DECOMPOSITION)
                 .components(Potassium, 1, Aluminium, 1, Silicon, 3, Oxygen, 8)
                 .buildAndRegister();
 

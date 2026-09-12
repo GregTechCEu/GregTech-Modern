@@ -103,18 +103,6 @@ public class DistillationRecipes {
                 .outputFluids(Lubricant.getFluid(500))
                 .duration(16).EUt(96).save(provider);
 
-        DISTILLATION_RECIPES.recipeBuilder("distill_fermented_biomass")
-                .inputFluids(FermentedBiomass.getFluid(1000))
-                .outputItems(FERTILIZER)
-                .outputFluids(AceticAcid.getFluid(25))
-                .outputFluids(Water.getFluid(375))
-                .outputFluids(Ethanol.getFluid(150))
-                .outputFluids(Methanol.getFluid(150))
-                .outputFluids(Ammonia.getFluid(100))
-                .outputFluids(CarbonDioxide.getFluid(400))
-                .outputFluids(Methane.getFluid(600))
-                .duration(75).EUt(180).save(provider);
-
         DISTILLATION_RECIPES.recipeBuilder("distill_biomass")
                 .inputFluids(Biomass.getFluid(1000))
                 .chancedOutput(dust, Wood, 5000, 0)

@@ -84,8 +84,6 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addSmeltingRecipe(provider, "fireclay_brick", COMPRESSED_FIRECLAY.asStack(),
                 FIRECLAY_BRICK.asStack(), 0.3f);
 
-        VanillaRecipeHelper.addSmeltingRecipe(provider, "wrought_iron_nugget", ChemicalHelper.getTag(nugget, Iron),
-                ChemicalHelper.get(nugget, WroughtIron));
         VanillaRecipeHelper.addShapelessRecipe(provider, "nugget_disassembling_iron",
                 new ItemStack(Items.IRON_NUGGET, 9), new ItemStack(Items.IRON_INGOT), 's');
 
@@ -106,11 +104,6 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "styrene_rubber_ring",
                 ChemicalHelper.get(ring, StyreneButadieneRubber), "k", "P", 'P',
                 ChemicalHelper.get(plate, StyreneButadieneRubber));
-
-        VanillaRecipeHelper.addShapelessRecipe(provider, "iron_magnetic_stick", ChemicalHelper.get(rod, IronMagnetic),
-                new MaterialEntry(rod, Iron), new MaterialEntry(dust, Redstone),
-                new MaterialEntry(dust, Redstone), new MaterialEntry(dust, Redstone),
-                new MaterialEntry(dust, Redstone));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "component_grinder_diamond", COMPONENT_GRINDER_DIAMOND.asStack(),
                 "XSX", "SDS", "XSX", 'X', new MaterialEntry(dust, Diamond), 'S',

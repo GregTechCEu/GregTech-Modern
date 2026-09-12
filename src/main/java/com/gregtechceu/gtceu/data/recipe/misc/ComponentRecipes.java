@@ -26,79 +26,6 @@ public class ComponentRecipes {
     public static void init(Consumer<FinishedRecipe> provider) {
         // Motors
         // Start--------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_lv_steel", ELECTRIC_MOTOR_LV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new MaterialEntry(cableGtSingle, Tin), 'W',
-                new MaterialEntry(wireGtSingle, Copper), 'R', new MaterialEntry(rod, Steel), 'M',
-                new MaterialEntry(rod, SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_lv_iron", ELECTRIC_MOTOR_LV.asStack(),
-                "CWR", "WMW", "RWC", 'C', new MaterialEntry(cableGtSingle, Tin), 'W',
-                new MaterialEntry(wireGtSingle, Copper), 'R', new MaterialEntry(rod, Iron), 'M',
-                new MaterialEntry(rod, IronMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_mv", ELECTRIC_MOTOR_MV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new MaterialEntry(cableGtSingle, Copper), 'W',
-                new MaterialEntry(wireGtDouble, Cupronickel), 'R', new MaterialEntry(rod, Aluminium), 'M',
-                new MaterialEntry(rod, SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_hv", ELECTRIC_MOTOR_HV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new MaterialEntry(cableGtDouble, Silver), 'W',
-                new MaterialEntry(wireGtDouble, Electrum), 'R', new MaterialEntry(rod, StainlessSteel), 'M',
-                new MaterialEntry(rod, SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_ev", ELECTRIC_MOTOR_EV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new MaterialEntry(cableGtDouble, Aluminium), 'W',
-                new MaterialEntry(wireGtDouble, Kanthal), 'R', new MaterialEntry(rod, Titanium), 'M',
-                new MaterialEntry(rod, NeodymiumMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_iv", ELECTRIC_MOTOR_IV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new MaterialEntry(cableGtDouble, Tungsten), 'W',
-                new MaterialEntry(wireGtDouble, Graphene), 'R', new MaterialEntry(rod, TungstenSteel), 'M',
-                new MaterialEntry(rod, NeodymiumMagnetic));
-
-        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_lv_iron")
-                .inputItems(cableGtSingle, Tin, 2)
-                .inputItems(rod, Iron, 2)
-                .inputItems(rod, IronMagnetic)
-                .inputItems(wireGtSingle, Copper, 4)
-                .outputItems(ELECTRIC_MOTOR_LV)
-                .duration(100).EUt(VA[LV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_lv_steel")
-                .inputItems(cableGtSingle, Tin, 2)
-                .inputItems(rod, Steel, 2)
-                .inputItems(rod, SteelMagnetic)
-                .inputItems(wireGtSingle, Copper, 4)
-                .outputItems(ELECTRIC_MOTOR_LV)
-                .duration(100).EUt(VA[LV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_mv")
-                .inputItems(cableGtSingle, Copper, 2)
-                .inputItems(rod, Aluminium, 2)
-                .inputItems(rod, SteelMagnetic)
-                .inputItems(wireGtDouble, Cupronickel, 4)
-                .outputItems(ELECTRIC_MOTOR_MV)
-                .duration(100).EUt(VA[LV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_hv")
-                .inputItems(cableGtDouble, Silver, 2)
-                .inputItems(rod, StainlessSteel, 2)
-                .inputItems(rod, SteelMagnetic)
-                .inputItems(wireGtDouble, Electrum, 4)
-                .outputItems(ELECTRIC_MOTOR_HV)
-                .duration(100).EUt(VA[LV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_ev")
-                .inputItems(cableGtDouble, Aluminium, 2)
-                .inputItems(rod, Titanium, 2)
-                .inputItems(rod, NeodymiumMagnetic)
-                .inputItems(wireGtDouble, Kanthal, 4)
-                .outputItems(ELECTRIC_MOTOR_EV)
-                .duration(100).EUt(VA[LV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("electric_motor_iv")
-                .inputItems(cableGtDouble, Tungsten, 2)
-                .inputItems(rod, TungstenSteel, 2)
-                .inputItems(rod, NeodymiumMagnetic)
-                .inputItems(wireGtDouble, Graphene, 4)
-                .outputItems(ELECTRIC_MOTOR_IV)
-                .duration(100).EUt(VA[LV]).save(provider);
-
         ASSEMBLY_LINE_RECIPES.recipeBuilder("electric_motor_luv")
                 .inputItems(rodLong, SamariumMagnetic)
                 .inputItems(rodLong, HSSS, 2)
@@ -165,10 +92,6 @@ public class ComponentRecipes {
             String name = materialEntry.getKey();
 
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
-                    String.format("conveyor_module_lv_%s", name), CONVEYOR_MODULE_LV.asStack(), "RRR", "MCM", "RRR",
-                    'R', new MaterialEntry(plate, material), 'C', new MaterialEntry(cableGtSingle, Tin), 'M',
-                    ELECTRIC_MOTOR_LV.asStack());
-            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
                     String.format("conveyor_module_mv_%s", name), CONVEYOR_MODULE_MV.asStack(), "RRR", "MCM", "RRR",
                     'R', new MaterialEntry(plate, material), 'C', new MaterialEntry(cableGtSingle, Copper), 'M',
                     ELECTRIC_MOTOR_MV.asStack());
@@ -185,14 +108,6 @@ public class ComponentRecipes {
                         String.format("conveyor_module_iv_%s", materialEntry.getKey()), CONVEYOR_MODULE_IV.asStack(),
                         "RRR", "MCM", "RRR", 'R', new MaterialEntry(plate, material), 'C',
                         new MaterialEntry(cableGtSingle, Tungsten), 'M', ELECTRIC_MOTOR_IV.asStack());
-
-            ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_lv_" + name)
-                    .inputItems(cableGtSingle, Tin)
-                    .inputItems(ELECTRIC_MOTOR_LV, 2)
-                    .inputFluids(materialEntry.getValue().getFluid(L * 6))
-                    .circuitMeta(1)
-                    .outputItems(CONVEYOR_MODULE_LV)
-                    .duration(100).EUt(VA[LV]).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("conveyor_module_mv_" + name)
                     .inputItems(cableGtSingle, Copper)
@@ -230,11 +145,6 @@ public class ComponentRecipes {
             // Pumps
             // Start---------------------------------------------------------------------------------------------------
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
-                    String.format("electric_pump_lv_%s", name), ELECTRIC_PUMP_LV.asStack(), "SXR", "dPw", "RMC", 'S',
-                    new MaterialEntry(screw, Tin), 'X', new MaterialEntry(rotor, Tin), 'P',
-                    new MaterialEntry(pipeNormalFluid, Bronze), 'R', new MaterialEntry(ring, material), 'C',
-                    new MaterialEntry(cableGtSingle, Tin), 'M', ELECTRIC_MOTOR_LV.asStack());
-            VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),
                     String.format("electric_pump_mv_%s", name), ELECTRIC_PUMP_MV.asStack(), "SXR", "dPw", "RMC", 'S',
                     new MaterialEntry(screw, Bronze), 'X', new MaterialEntry(rotor, Bronze), 'P',
                     new MaterialEntry(pipeNormalFluid, Steel), 'R', new MaterialEntry(ring, material), 'C',
@@ -256,16 +166,6 @@ public class ComponentRecipes {
                         new MaterialEntry(rotor, TungstenSteel), 'P',
                         new MaterialEntry(pipeNormalFluid, TungstenSteel), 'R', new MaterialEntry(ring, material),
                         'C', new MaterialEntry(cableGtSingle, Tungsten), 'M', ELECTRIC_MOTOR_IV.asStack());
-
-            ASSEMBLER_RECIPES.recipeBuilder("electric_pump_lv_" + name)
-                    .inputItems(cableGtSingle, Tin)
-                    .inputItems(pipeNormalFluid, Bronze)
-                    .inputItems(screw, Tin)
-                    .inputItems(rotor, Tin)
-                    .inputItems(ring, materialEntry.getValue(), 2)
-                    .inputItems(ELECTRIC_MOTOR_LV)
-                    .outputItems(ELECTRIC_PUMP_LV)
-                    .duration(100).EUt(VA[LV]).save(provider);
 
             ASSEMBLER_RECIPES.recipeBuilder("electric_pump_mv_" + name)
                     .inputItems(cableGtSingle, Copper)
@@ -422,15 +322,6 @@ public class ComponentRecipes {
         // Fluid
         // Regulators----------------------------------------------------------------------------------------------
 
-        ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_lv")
-                .inputItems(ELECTRIC_PUMP_LV)
-                .inputItems(CustomTags.LV_CIRCUITS, 2)
-                .circuitMeta(1)
-                .outputItems(FLUID_REGULATOR_LV)
-                .EUt(VA[LV])
-                .duration(400)
-                .save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("fluid_regulator_mv")
                 .inputItems(ELECTRIC_PUMP_MV)
                 .inputItems(CustomTags.MV_CIRCUITS, 2)
@@ -539,10 +430,6 @@ public class ComponentRecipes {
 
         // Pistons
         // Start-------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_piston_lv", ELECTRIC_PISTON_LV.asStack(), "PPP",
-                "CRR", "CMG", 'P', new MaterialEntry(plate, Steel), 'C', new MaterialEntry(cableGtSingle, Tin),
-                'R', new MaterialEntry(rod, Steel), 'G', new MaterialEntry(gearSmall, Steel), 'M',
-                ELECTRIC_MOTOR_LV.asStack());
         VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_piston_mv", ELECTRIC_PISTON_MV.asStack(), "PPP",
                 "CRR", "CMG", 'P', new MaterialEntry(plate, Aluminium), 'C',
                 new MaterialEntry(cableGtSingle, Copper), 'R', new MaterialEntry(rod, Aluminium), 'G',
@@ -559,15 +446,6 @@ public class ComponentRecipes {
                 "CRR", "CMG", 'P', new MaterialEntry(plate, TungstenSteel), 'C',
                 new MaterialEntry(cableGtSingle, Tungsten), 'R', new MaterialEntry(rod, TungstenSteel), 'G',
                 new MaterialEntry(gearSmall, TungstenSteel), 'M', ELECTRIC_MOTOR_IV.asStack());
-
-        ASSEMBLER_RECIPES.recipeBuilder("electric_piston_lv")
-                .inputItems(rod, Steel, 2)
-                .inputItems(cableGtSingle, Tin, 2)
-                .inputItems(plate, Steel, 3)
-                .inputItems(gearSmall, Steel)
-                .inputItems(ELECTRIC_MOTOR_LV)
-                .outputItems(ELECTRIC_PISTON_LV)
-                .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("electric_piston_mv")
                 .inputItems(rod, Aluminium, 2)
@@ -665,9 +543,6 @@ public class ComponentRecipes {
 
         // Robot Arms Start
         // ---------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_lv", ROBOT_ARM_LV.asStack(), "CCC", "MRM", "PXR",
-                'C', new MaterialEntry(cableGtSingle, Tin), 'R', new MaterialEntry(rod, Steel), 'M',
-                ELECTRIC_MOTOR_LV.asStack(), 'P', ELECTRIC_PISTON_LV.asStack(), 'X', CustomTags.LV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_mv", ROBOT_ARM_MV.asStack(), "CCC", "MRM", "PXR",
                 'C', new MaterialEntry(cableGtSingle, Copper), 'R', new MaterialEntry(rod, Aluminium), 'M',
                 ELECTRIC_MOTOR_MV.asStack(), 'P', ELECTRIC_PISTON_MV.asStack(), 'X', CustomTags.MV_CIRCUITS);
@@ -680,15 +555,6 @@ public class ComponentRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "robot_arm_iv", ROBOT_ARM_IV.asStack(), "CCC", "MRM", "PXR",
                 'C', new MaterialEntry(cableGtSingle, Tungsten), 'R', new MaterialEntry(rod, TungstenSteel), 'M',
                 ELECTRIC_MOTOR_IV.asStack(), 'P', ELECTRIC_PISTON_IV.asStack(), 'X', CustomTags.IV_CIRCUITS);
-
-        ASSEMBLER_RECIPES.recipeBuilder("robot_arm_lv")
-                .inputItems(cableGtSingle, Tin, 3)
-                .inputItems(rod, Steel, 2)
-                .inputItems(ELECTRIC_MOTOR_LV, 2)
-                .inputItems(ELECTRIC_PISTON_LV)
-                .inputItems(CustomTags.LV_CIRCUITS)
-                .outputItems(ROBOT_ARM_LV)
-                .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("robot_arm_mv")
                 .inputItems(cableGtSingle, Copper, 3)
@@ -1017,9 +883,6 @@ public class ComponentRecipes {
 
         // Emitters
         // Start------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_lv", EMITTER_LV.asStack(), "CRX", "RGR", "XRC",
-                'R', new MaterialEntry(rod, Brass), 'C', new MaterialEntry(cableGtSingle, Tin), 'G',
-                GTCraftingComponents.SENSOR_EMITTER_GEM.get(LV), 'X', CustomTags.LV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_mv", EMITTER_MV.asStack(), "CRX", "RGR", "XRC",
                 'R', new MaterialEntry(rod, Electrum), 'C', new MaterialEntry(cableGtSingle, Copper), 'G',
                 GTCraftingComponents.SENSOR_EMITTER_GEM.get(MV), 'X', CustomTags.MV_CIRCUITS);
@@ -1032,15 +895,6 @@ public class ComponentRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "emitter_iv", EMITTER_IV.asStack(), "CRX", "RGR", "XRC",
                 'R', new MaterialEntry(rod, Iridium), 'C', new MaterialEntry(cableGtSingle, Tungsten), 'G',
                 GTCraftingComponents.SENSOR_EMITTER_GEM.get(IV), 'X', CustomTags.IV_CIRCUITS);
-
-        ASSEMBLER_RECIPES.recipeBuilder("emitter_lv")
-                .inputItems(rod, Brass, 4)
-                .inputItems(cableGtSingle, Tin, 2)
-                .inputItems(CustomTags.LV_CIRCUITS, 2)
-                .inputItems(GTCraftingComponents.SENSOR_EMITTER_GEM.get(LV))
-                .circuitMeta(1)
-                .outputItems(EMITTER_LV)
-                .duration(100).EUt(VA[LV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("emitter_mv")
                 .inputItems(rod, Electrum, 4)

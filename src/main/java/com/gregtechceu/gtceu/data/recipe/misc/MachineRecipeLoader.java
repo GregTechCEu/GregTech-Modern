@@ -612,18 +612,6 @@ public class MachineRecipeLoader {
                 .addMaterialInfo(true)
                 .save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("cover_ender_fluid_link")
-                .inputItems(plate, EnderPearl, 9)
-                .inputItems(plateDouble, StainlessSteel)
-                .inputItems(SENSOR_HV)
-                .inputItems(EMITTER_HV)
-                .inputItems(ELECTRIC_PUMP_HV)
-                .inputFluids(Polyethylene, L * 2)
-                .outputItems(COVER_ENDER_FLUID_LINK)
-                .EUt(VA[HV]).duration(320)
-                .addMaterialInfo(true, true)
-                .save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("cover_ender_item_link")
                 .inputItems(plate, EnderPearl, 9)
                 .inputItems(plateDouble, StainlessSteel)
@@ -886,28 +874,6 @@ public class MachineRecipeLoader {
                 .inputItems(rotor, Steel)
                 .outputItems(GTBlocks.CASING_GRATE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
                 .duration(800)
-                .EUt(VA[IV])
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("assembly_line_casing")
-                .inputItems(gear, Ruridit, 2)
-                .inputItems(plate, Steel, 4)
-                .inputItems(ROBOT_ARM_IV, 2)
-                .inputItems(frameGt, TungstenSteel)
-                .outputItems(GTBlocks.CASING_ASSEMBLY_LINE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
-                .duration(650)
-                .EUt(VA[IV])
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("assembly_control_casing")
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(CustomTags.EV_CIRCUITS, 4)
-                .inputItems(SENSOR_IV)
-                .inputItems(EMITTER_IV)
-                .inputItems(ELECTRIC_MOTOR_IV)
-                .inputItems(frameGt, TungstenSteel)
-                .outputItems(GTBlocks.CASING_ASSEMBLY_CONTROL, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
-                .duration(650)
                 .EUt(VA[IV])
                 .save(provider);
 

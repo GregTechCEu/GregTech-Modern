@@ -117,11 +117,6 @@ public final class PartsRecipeHandler {
 
         var magMaterial = material.hasFlag(IS_MAGNETIC) ?
                 material.getProperty(PropertyKey.INGOT).getMacerateInto() : material;
-        if (!material.hasFlag(NO_SMASHING))
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("foil_%s", material.getName()),
-                    ChemicalHelper.get(foil, material, 2),
-                    "hP ", 'P', new MaterialEntry(plate, magMaterial));
-
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_foil")
                 .inputItems(plate, material)
                 .outputItems(foil, magMaterial, 4)
@@ -408,10 +403,6 @@ public final class PartsRecipeHandler {
 
         boolean isSmall = prefix == springSmall;
         if (isSmall) {
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_small_%s", material.getName()),
-                    ChemicalHelper.get(springSmall, material),
-                    " s ", "fRx", 'R', new MaterialEntry(rod, material));
-
             BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_rod_to_small_spring")
                     .duration((int) (material.getMass() / 2)).EUt(VA[ULV])
                     .inputItems(rod, material)
@@ -426,10 +417,6 @@ public final class PartsRecipeHandler {
                     .duration(200)
                     .EUt(16)
                     .save(provider);
-
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_%s", material.getName()),
-                    ChemicalHelper.get(spring, material),
-                    " s ", "fRx", " R ", 'R', new MaterialEntry(rodLong, material));
         }
     }
 
