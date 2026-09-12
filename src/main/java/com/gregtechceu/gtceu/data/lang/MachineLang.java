@@ -883,6 +883,7 @@ public class MachineLang {
                 "Supply §bOxygen§7 to boost.");
         provider.add("gtceu.multiblock.large_combustion_engine.supply_liquid_oxygen_to_boost",
                 "Supply §9Liquid Oxygen§7 to boost.");
+        provider.add("gtceu.multiblock.large_combustion_engine.output", "Producing %s EU/t");
         provider.add("gtceu.multiblock.large_combustion_engine.obstructed", "Engine Intakes Obstructed.");
         provider.add("gtceu.multiblock.large_combustion_engine.no_lubricant", "Machine needs Lubricant to run");
         provider.add("gtceu.multiblock.turbine.fuel_amount", "Fuel Amount: %sL (%s)");
