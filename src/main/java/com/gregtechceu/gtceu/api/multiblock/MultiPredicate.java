@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
-import com.gregtechceu.gtceu.api.multiblock.predicates.TestType;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
