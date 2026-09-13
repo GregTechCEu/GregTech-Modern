@@ -13,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,7 +37,7 @@ public class SpoilableBehavior {
     private final Function<ItemStack, Long> ticks;
     private final SpoilResultProvider spoilResult;
     private final Function<ItemStack, Component> spoilsIntoTooltip;
-    private final List<Item> attachedTo = new ArrayList<>();
+    private final List<ItemLike> attachedTo = new ArrayList<>();
 
     public static void init(IEventBus eventBus) {
         RegisterSpoilablesEvent event = new RegisterSpoilablesEvent(SpoilableBehavior::builder);
@@ -70,14 +69,14 @@ public class SpoilableBehavior {
         if (attachedTo.isEmpty()) {
             MinecraftForge.EVENT_BUS.register(this);
         }
-        attachedTo.add(item.asItem());
+        attachedTo.add(item);
         return this;
     }
 
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
-        if (attachedTo.stream().anyMatch(stack::is)) {
+        if (attachedTo.stream().map(ItemLike::asItem).anyMatch(stack::is)) {
             event.addCapability(GTCEu.id("spoilable"), new SpoilableBehaviourStack(stack));
         }
     }
@@ -117,8 +116,8 @@ public class SpoilableBehavior {
     public static class Builder {
 
         private Function<ItemStack, Long> ticks;
-        private SpoilResultProvider result;
-        private Function<ItemStack, Component> tooltip;
+        private final List<SpoilResultProvider> result = new ArrayList<>();
+        private final List<Function<ItemStack, Component>> tooltip = new ArrayList<>();
 
         private Builder() {
             ticks(100);
@@ -126,7 +125,23 @@ public class SpoilableBehavior {
         }
 
         public SpoilableBehavior build() {
-            return new SpoilableBehavior(ticks, result, tooltip);
+            return new SpoilableBehavior(ticks, (stack, ctx, simulate) -> {
+                ItemStack lastResult = ItemStack.EMPTY;
+                for (SpoilResultProvider spoilResult : result) {
+                    ItemStack tempResult = spoilResult.getSpoilResult(stack, ctx, simulate);
+                    if (!tempResult.isEmpty()) lastResult = tempResult;
+                }
+                return lastResult;
+            }, stack -> {
+                MutableComponent component = Component.empty();
+                this.tooltip.stream()
+                        .map(func -> func.apply(stack))
+                        .forEach(c -> {
+                            if (!component.getString().isEmpty()) component.append(", ");
+                            component.append(c);
+                        });
+                return component;
+            });
         }
 
         public Builder ticks(Function<ItemStack, Long> ticks) {
@@ -135,12 +150,12 @@ public class SpoilableBehavior {
         }
 
         public Builder result(SpoilResultProvider result) {
-            this.result = result;
+            this.result.add(result);
             return this;
         }
 
         public Builder tooltip(Function<ItemStack, Component> tooltip) {
-            this.tooltip = tooltip;
+            this.tooltip.add(tooltip);
             return this;
         }
 
@@ -170,39 +185,49 @@ public class SpoilableBehavior {
         }
 
         public Builder result(Supplier<? extends EntityType<? extends Mob>> entityType) {
-            SpoilResultProvider previousResult = result;
-            Function<ItemStack, Component> previousTooltip = tooltip;
             return result((stack, spoilContext, simulate) -> {
                 if (!simulate) {
                     EntityType<? extends Mob> type = entityType.get();
                     SpoilUtils.spawnEntity(spoilContext, type, stack.getCount());
                 }
-                return previousResult.getSpoilResult(stack, spoilContext, simulate);
+                return ItemStack.EMPTY;
             }).tooltip(stack -> {
                 EntityType<? extends Mob> type = entityType.get();
-                MutableComponent component = type.getDescription().copy();
-                Component previous = previousTooltip.apply(stack);
-                if (!previous.getString().isEmpty()) component.append(", ").append(previous);
-                return component;
+                return type.getDescription().copy();
             });
         }
 
-        public Builder multiplyResult(int mult) {
-            SpoilResultProvider prevResult = result;
-            Function<ItemStack, Component> previousTooltip = tooltip;
-            return result((stack, spoilContext, simulate) -> {
-                ItemStack total = prevResult.getSpoilResult(stack, spoilContext, simulate);
-                for (int i = 1; i < mult; i++) {
-                    ItemStack temp = prevResult.getSpoilResult(stack, spoilContext, simulate);
-                    if (ItemStack.isSameItemSameTags(total, temp)) total.grow(temp.getCount());
-                }
-                return total;
-            }).tooltip(stack -> {
-                MutableComponent component = Component.literal("(");
-                component.append(previousTooltip.apply(stack));
-                component.append(") x").append(Integer.toString(mult));
-                return component;
-            });
+        public Builder multiplyLastResult(float mult) {
+            if (!this.result.isEmpty()) {
+                SpoilResultProvider lastResult = this.result.get(this.result.size() - 1);
+                this.result.remove(this.result.size() - 1);
+
+                this.result((stack, spoilContext, simulate) -> {
+                    ItemStack total = ItemStack.EMPTY;
+                    for (float multLeft = mult; multLeft > 0; multLeft--) {
+                        if (multLeft < 1 && Math.random() > multLeft) continue;
+                        ItemStack temp = lastResult.getSpoilResult(stack, spoilContext, simulate);
+                        if (total.isEmpty()) total = temp;
+                        else if (ItemStack.isSameItemSameTags(total, temp)) total.grow(temp.getCount());
+                    }
+                    return total;
+                });
+            }
+
+            if (!this.tooltip.isEmpty()) {
+                Function<ItemStack, Component> lastTooltip = this.tooltip.get(this.tooltip.size() - 1);
+                this.tooltip.remove(this.tooltip.size() - 1);
+                this.tooltip(stack -> {
+                    MutableComponent component = Component.empty();
+                    if (mult < 1) component.append("%.0f%% ".formatted(mult * 100));
+                    else if (mult == (int) mult) component.append("%d x ".formatted((int) mult));
+                    else component.append("%s x ".formatted(mult));
+                    component.append(lastTooltip.apply(stack));
+                    return component;
+                });
+            }
+
+            return this;
         }
 
         public Builder tooltip(Component tooltip) {
