@@ -135,6 +135,8 @@ public class CommonProxy {
         }
         modBus.register(CommonProxy.class);
 
+        REGISTRATE.registerEventListeners(modBus);
+
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
