@@ -89,7 +89,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
     IGTToolDefinition getToolStats();
 
     @Nullable
-    SoundEntry getSound();
+    Holder<SoundEntry> getSound();
 
     boolean playSoundOnBlockDestroy();
 
@@ -283,7 +283,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
             return;
         }
         if (!areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING);
+            var behavior = getBehaviorsComponent(stack).getBehavior(GTToolBehaviors.TREE_FELLING.value());
             if (behavior != null && behavior.isEnabled() && state.is(BlockTags.LOGS)) {
                 TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
             }
@@ -723,7 +723,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
 
     default void playSound(Player player) {
         if (ConfigHolder.INSTANCE.client.toolUseSounds && getSound() != null) {
-            player.level().playSound(null, player, getSound().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
+            player.level().playSound(null, player, getSound().value().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
         }
     }
 

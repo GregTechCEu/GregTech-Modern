@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import dev.latvian.mods.kubejs.level.ruletest.AnyMatchRuleTest;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.experimental.Accessors;
 
@@ -16,30 +17,30 @@ import java.util.List;
 import java.util.Set;
 
 @Accessors(fluent = true, chain = true)
-public class WorldGenLayerBuilder {
+public class WorldGenLayerBuilderJS extends BuilderBase<IWorldGenLayer> {
 
-    public transient ResourceLocation id;
     public transient List<IWorldGenLayer.RuleTestSupplier> targets = new ObjectArrayList<>();
     public transient List<ResourceKey<Level>> dimensions = new ObjectArrayList<>();
 
-    public WorldGenLayerBuilder(ResourceLocation id) {
-        this.id = id;
+    public WorldGenLayerBuilderJS(ResourceLocation id) {
+        super(id);
     }
 
-    public SimpleWorldGenLayer build() {
-        return new SimpleWorldGenLayer(
-                this.id,
-                () -> new AnyMatchRuleTest(targets.stream().map(IWorldGenLayer.RuleTestSupplier::get).toList()),
-                Set.copyOf(dimensions));
-    }
-
-    public WorldGenLayerBuilder targets(IWorldGenLayer.RuleTestSupplier... targets) {
+    public WorldGenLayerBuilderJS targets(IWorldGenLayer.RuleTestSupplier... targets) {
         Collections.addAll(this.targets, targets);
         return this;
     }
 
-    public WorldGenLayerBuilder dimensions(List<ResourceKey<Level>> dimensions) {
+    public WorldGenLayerBuilderJS dimensions(List<ResourceKey<Level>> dimensions) {
         this.dimensions.addAll(dimensions);
         return this;
+    }
+
+    @Override
+    public IWorldGenLayer createObject() {
+        return new SimpleWorldGenLayer(
+                this.id,
+                () -> new AnyMatchRuleTest(targets.stream().map(IWorldGenLayer.RuleTestSupplier::get).toList()),
+                Set.copyOf(dimensions));
     }
 }

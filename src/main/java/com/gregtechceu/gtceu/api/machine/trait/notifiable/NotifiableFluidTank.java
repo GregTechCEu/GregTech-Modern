@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
@@ -15,7 +12,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.core.Direction;
@@ -202,14 +198,14 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
                                     for (MultiblockControllerMachine controller : partMachine.getControllers()) {
                                         RecipeLogic logic = controller.getTrait(RecipeLogic.class);
                                         if (logic != null && logic.getStartingRecipe() == recipe) {
-                                            logic.getConsumedInputs().addConsumedInput(GTRecipeCapabilities.FLUID,
+                                            logic.getConsumedInputs().addConsumedInput(FluidRecipeCapability.CAP,
                                                     SizedFluidIngredient.of(copied));
                                         }
                                     }
                                 } else {
                                     getMachine().getTraitOptional(RecipeLogic.class)
                                             .map(RecipeLogic::getConsumedInputs)
-                                            .ifPresent(inputs -> inputs.addConsumedInput(GTRecipeCapabilities.FLUID,
+                                            .ifPresent(inputs -> inputs.addConsumedInput(FluidRecipeCapability.CAP,
                                                     SizedFluidIngredient.of(copied)));
                                 }
                             }

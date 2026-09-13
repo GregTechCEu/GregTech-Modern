@@ -177,6 +177,10 @@ public class GTOreDefinition {
         return this;
     }
 
+    public GTOreDefinition layer(Holder<IWorldGenLayer> layer) {
+        return layer(layer.value());
+    }
+
     public GTOreDefinition dimensions(Set<ResourceKey<Level>> dimensions) {
         this.dimensionFilter = dimensions;
         return this;

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.component.SpoilContext;
@@ -26,6 +27,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +72,7 @@ public class GTRecipeModifiers {
                 ConsumedInputsData inputs = machine.getTraitOptional(RecipeLogic.class)
                         .map(RecipeLogic::getConsumedInputs).orElse(null);
                 if (inputs == null) return;
-                for (Object inObject : inputs.getConsumedInputs(GTRecipeCapabilities.ITEM)) {
+                for (Object inObject : inputs.getConsumedInputs(ItemRecipeCapability.CAP)) {
                     if (!(inObject instanceof SizedIngredient ingredient)) continue;
                     if (ingredient.getItems().length == 0) continue;
                     ItemStack in = ingredient.getItems()[0];
@@ -87,14 +89,14 @@ public class GTRecipeModifiers {
                 }
             }).build();
 
-    public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
-            .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
+    public static final BiFunction<Holder<MedicalCondition>, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
+            .memoize((conditionHolder, maxAllowedStrength) -> (machine, recipe) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return ModifierFunction.IDENTITY;
                 if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
 
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
                 BlockPos machinePos = machine.getBlockPos();
-                var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
+                var zone = data.getZoneByContainedPosAndCondition(machinePos, conditionHolder.value());
                 if (zone == null) return ModifierFunction.IDENTITY;
 
                 float strength = zone.strength();

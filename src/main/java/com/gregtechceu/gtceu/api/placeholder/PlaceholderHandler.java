@@ -67,10 +67,6 @@ public class PlaceholderHandler {
         public static final Map<String, IPlaceholderRenderer> renderers = new HashMap<>();
     }
 
-    public static void addPlaceholder(Placeholder placeholder) {
-        GTRegistries.register(GTRegistries.PLACEHOLDERS, placeholder.getId(), placeholder);
-    }
-
     @OnlyIn(Dist.CLIENT)
     public static void addRenderer(String id, IPlaceholderRenderer renderer) {
         RendererHolder.renderers.put(id, renderer);

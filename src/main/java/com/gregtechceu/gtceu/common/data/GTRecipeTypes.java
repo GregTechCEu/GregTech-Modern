@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -468,7 +469,7 @@ public class GTRecipeTypes {
 
     public static final GTRecipeType RESEARCH_STATION_RECIPES = register("research_station", ELECTRIC)
             .setEUIO(IO.IN)
-            .setMaxSize(IO.IN, GTRecipeCapabilities.CWU, 1)
+            .setMaxSize(IO.IN, CWURecipeCapability.CAP, 1)
             .setMaxIOSize(2, 1, 0, 0)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_ARROW)
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.SCANNER_OVERLAY)

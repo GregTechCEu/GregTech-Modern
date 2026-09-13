@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class GTMobEffects {
 
-    public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT,
+    private static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT,
             GTCEu.MOD_ID);
 
     public static final DeferredHolder<MobEffect, GTPoisonEffect> WEAK_POISON = MOB_EFFECTS.register("weak_poison",

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.registry.registrate;
+package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -15,6 +17,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 import com.google.gson.JsonObject;
+import com.tterrag.registrate.AbstractRegistrate;
+import com.tterrag.registrate.builders.AbstractBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -22,7 +28,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-public class SoundEntryBuilder {
+@SuppressWarnings("unused")
+public class SoundEntryBuilder<P> extends AbstractBuilder<SoundEntry, SoundEntry, P, SoundEntryBuilder<P>> {
 
     public static class SoundEntryProvider implements DataProvider {
 
@@ -55,7 +62,6 @@ public class SoundEntryBuilder {
         }
     }
 
-    protected ResourceLocation id;
     @Nullable
     protected String subtitle = "unregistered";
     protected SoundSource category = SoundSource.BLOCKS;
@@ -63,59 +69,69 @@ public class SoundEntryBuilder {
     protected List<ResourceLocation> variants;
     protected int attenuationDistance;
 
-    public SoundEntryBuilder(ResourceLocation id) {
+    public SoundEntryBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback) {
+        super(owner, parent, name, callback, GTRegistries.Keys.SOUND);
         wrappedEvents = new ArrayList<>();
         variants = new ArrayList<>();
-        this.id = id;
     }
 
-    public SoundEntryBuilder subtitle(String subtitle) {
+    public SoundEntryBuilder<P> subtitle(String subtitle) {
         this.subtitle = subtitle;
         return this;
     }
 
-    public SoundEntryBuilder attenuationDistance(int distance) {
+    public SoundEntryBuilder<P> attenuationDistance(int distance) {
         this.attenuationDistance = distance;
         return this;
     }
 
-    public SoundEntryBuilder noSubtitle() {
+    public SoundEntryBuilder<P> noSubtitle() {
         this.subtitle = null;
         return this;
     }
 
-    public SoundEntryBuilder category(SoundSource category) {
+    public SoundEntryBuilder<P> category(SoundSource category) {
         this.category = category;
         return this;
     }
 
-    public SoundEntryBuilder addVariant(String name) {
+    public SoundEntryBuilder<P> addVariant(String name) {
         return addVariant(GTCEu.id(name));
     }
 
-    public SoundEntryBuilder addVariant(ResourceLocation id) {
+    public SoundEntryBuilder<P> addVariant(ResourceLocation id) {
         variants.add(id);
         return this;
     }
 
-    public SoundEntryBuilder playExisting(Supplier<SoundEvent> event, float volume, float pitch) {
+    public SoundEntryBuilder<P> playExisting(Supplier<SoundEvent> event, float volume, float pitch) {
         wrappedEvents.add(new ConfiguredSoundEvent(event, volume, pitch));
         return this;
     }
 
-    public SoundEntryBuilder playExisting(SoundEvent event, float volume, float pitch) {
+    public SoundEntryBuilder<P> playExisting(SoundEvent event, float volume, float pitch) {
         return playExisting(() -> event, volume, pitch);
     }
 
-    public SoundEntryBuilder playExisting(SoundEvent event) {
+    public SoundEntryBuilder<P> playExisting(SoundEvent event) {
         return playExisting(event, 1, 1);
     }
 
-    public SoundEntry build() {
+    @Override
+    protected SoundEntry createEntry() {
         SoundEntry entry = wrappedEvents.isEmpty() ?
-                new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance) :
-                new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
-        GTRegistries.register(GTRegistries.SOUNDS, entry.getId(), entry);
+                new CustomSoundEntry(ResourceLocation.fromNamespaceAndPath(getOwner().getModid(), getName()), variants,
+                        subtitle, category, attenuationDistance) :
+                new WrappedSoundEntry(ResourceLocation.fromNamespaceAndPath(getOwner().getModid(), getName()), subtitle,
+                        wrappedEvents, category, attenuationDistance);
+        entry.prepare();
+        entry.register(
+                soundEvent -> Registry.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
         return entry;
+    }
+
+    @Override
+    public RegistryEntry<SoundEntry, SoundEntry> register() {
+        return super.register();
     }
 }

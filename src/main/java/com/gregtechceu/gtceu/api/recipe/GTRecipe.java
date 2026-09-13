@@ -325,18 +325,18 @@ public class GTRecipe implements Recipe<RecipeInput> {
     public ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap, IO io, boolean isTick) {
         if (io == IO.OUT) {
             if (isTick) {
-                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             } else {
-                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             }
         } else if (io == IO.IN) {
             if (isTick) {
-                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             } else {
-                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
+                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR.value());
             }
         }
-        return ChanceLogic.OR;
+        return ChanceLogic.OR.value();
     }
 
     public GTRecipeSerializer.RecipeIO getRecipeIO() {
