@@ -228,7 +228,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
 
     @Override
     public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return GTCEu.id("textures/armor/advanced_nano_muscle_suite_1.png");
+        return GTCEu.id("textures/models/armor/advanced_nano_muscle_suite_layer_1.png");
     }
 
     @Override
@@ -307,7 +307,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     }
 
     @Override
-    public boolean isPPE() {
+    public boolean isPPE(ItemStack stack) {
         return true;
     }
 }

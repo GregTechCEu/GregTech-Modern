@@ -1,0 +1,30 @@
+{
+  "values": [
+    "gtceu:lv_super_tank",
+    "gtceu:mv_super_tank",
+    "gtceu:hv_super_tank",
+    "gtceu:ev_super_tank",
+    "gtceu:iv_quantum_tank",
+    "gtceu:luv_quantum_tank",
+    "gtceu:zpm_quantum_tank",
+    "gtceu:uv_quantum_tank",
+    "gtceu:uhv_quantum_tank",
+    "gtceu:uev_quantum_tank",
+    "gtceu:uiv_quantum_tank",
+    "gtceu:uxv_quantum_tank",
+    "gtceu:opv_quantum_tank",
+    "gtceu:wood_drum",
+    "gtceu:bronze_drum",
+    "gtceu:steel_drum",
+    "gtceu:aluminium_drum",
+    "gtceu:stainless_steel_drum",
+    "gtceu:gold_drum",
+    "gtceu:titanium_drum",
+    "gtceu:tungsten_steel_drum",
+    "gtceu:steel_fluid_cell",
+    "gtceu:aluminium_fluid_cell",
+    "gtceu:stainless_steel_fluid_cell",
+    "gtceu:titanium_fluid_cell",
+    "gtceu:tungsten_steel_fluid_cell"
+  ]
+}

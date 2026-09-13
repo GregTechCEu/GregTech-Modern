@@ -30,9 +30,6 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class CraftingRecipeLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        // todo facades
-        // registerFacadeRecipe(provider, Iron, 4);
-
         VanillaRecipeHelper.addShapedRecipe(provider, "small_wooden_pipe", ChemicalHelper.get(pipeSmallFluid, Wood),
                 "sWr", 'W', ItemTags.PLANKS);
         VanillaRecipeHelper.addShapedRecipe(provider, "normal_wooden_pipe", ChemicalHelper.get(pipeNormalFluid, Wood),

@@ -96,7 +96,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         IElectricItem container = getIElectricItem(stack);
         if (container == null)
             return;
-        container.discharge(amount, tier, true, false, false);
+        container.discharge(amount, container.getTier(), true, false, false);
     }
 
     @Override

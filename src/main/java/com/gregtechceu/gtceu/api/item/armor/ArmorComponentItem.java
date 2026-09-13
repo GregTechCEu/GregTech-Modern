@@ -24,6 +24,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
+@Accessors(chain = true)
 @NotNullByDefault
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
@@ -162,11 +164,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltips,
                                 TooltipFlag isAdvanced) {
         for (IItemComponent component : components) {
             if (component instanceof IAddInformation addInformation) {
-                addInformation.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+                addInformation.appendHoverText(stack, level, tooltips, isAdvanced);
             }
         }
     }
