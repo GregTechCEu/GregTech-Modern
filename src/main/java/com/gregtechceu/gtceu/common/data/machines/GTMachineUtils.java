@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
-import brachy.modularui.api.drawable.Text;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -72,6 +71,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 
+import brachy.modularui.api.drawable.Text;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -775,7 +775,8 @@ public class GTMachineUtils {
     }
 
     public static Component environmentRequirement(Holder<MedicalCondition> condition) {
-        return Text.dynamic(() -> Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.value().getTranslatableName()));
+        return Text.dynamic(() -> Component.translatable("gtceu.recipe.environmental_hazard.reverse",
+                condition.value().getTranslatableName()));
     }
 
     public static Component defaultEnvironmentRequirement() {
