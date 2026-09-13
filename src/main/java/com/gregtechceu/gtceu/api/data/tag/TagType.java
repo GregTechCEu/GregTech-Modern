@@ -35,6 +35,16 @@ public class TagType {
 
     /**
      * Create a tag with a specified path, with the "default" formatter, meaning
+     * that there is 1 "%s" format character in the path, intended for the Material name.
+     */
+    public static TagType withGTNamespaceDefaultFormatter(String tagPath) {
+        TagType type = new TagType(tagPath);
+        type.formatter = (prefix, mat) -> TagUtil.createModItemTag(type.tagPath.formatted(mat.getName()));
+        return type;
+    }
+
+    /**
+     * Create a tag with a specified path, with the "default" formatter, meaning
      * that there is 2 "%s" format characters in the path, with the first being the
      * prefix name, and the second being the material name.
      */
@@ -60,6 +70,13 @@ public class TagType {
     public static TagType withNoFormatter(String tagPath, boolean isVanilla) {
         TagType type = new TagType(tagPath);
         type.formatter = (prefix, material) -> TagUtil.createItemTag(type.tagPath, isVanilla);
+        type.isParentTag = true;
+        return type;
+    }
+
+    public static TagType withGTNamespaceNoFormatter(String tagPath) {
+        TagType type = new TagType(tagPath);
+        type.formatter = (prefix, material) -> TagUtil.createModItemTag(type.tagPath);
         type.isParentTag = true;
         return type;
     }

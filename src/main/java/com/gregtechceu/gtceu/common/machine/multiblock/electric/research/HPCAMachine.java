@@ -61,7 +61,7 @@ import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.gregtechceu.gtceu.data.recipe.CustomTags.HPCA_COOLANTS;
+import static com.gregtechceu.gtceu.data.tags.GTTags.Fluids.HPCA_COOLANTS;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

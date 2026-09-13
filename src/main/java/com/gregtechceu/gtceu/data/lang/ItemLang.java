@@ -159,7 +159,6 @@ public class ItemLang {
         provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
         // multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
         // given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
-        provider.add("item.glass_lens", "Glass Lens (White)"); // todo move to material overrides
         provider.add("item.gtceu.silicon_boule.tooltip", "§7Raw Circuit");
         provider.add("item.gtceu.phosphorus_boule.tooltip", "§7Raw Circuit");
         provider.add("item.gtceu.naquadah_boule.tooltip", "§7Raw Circuit");

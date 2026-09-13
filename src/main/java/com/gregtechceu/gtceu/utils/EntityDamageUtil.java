@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -48,7 +47,7 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // fire/lava mobs cannot be burned
-        if (entity.getType().is(CustomTags.HEAT_IMMUNE))
+        if (entity.getType().is(GTTags.EntityTypes.HEAT_IMMUNE))
             return;
         // fire resistance entities cannot be burned
         if (entity.getEffect(MobEffects.FIRE_RESISTANCE) != null) return;
@@ -96,7 +95,7 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // skeletons cannot breathe in the toxins
-        if (entity.getType().is(CustomTags.CHEMICAL_IMMUNE))
+        if (entity.getType().is(GTTags.EntityTypes.CHEMICAL_IMMUNE))
             return;
 
         entity.hurt(GTDamageTypes.CHEMICAL.source(entity.level()), damage);

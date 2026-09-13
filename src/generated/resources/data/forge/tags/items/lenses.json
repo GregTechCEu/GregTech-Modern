@@ -1,19 +1,21 @@
 {
   "values": [
-    "gtceu:orange_glass_lens",
-    "gtceu:magenta_glass_lens",
-    "gtceu:light_blue_glass_lens",
-    "gtceu:yellow_glass_lens",
-    "gtceu:lime_glass_lens",
-    "gtceu:pink_glass_lens",
-    "gtceu:gray_glass_lens",
-    "gtceu:light_gray_glass_lens",
-    "gtceu:cyan_glass_lens",
-    "gtceu:purple_glass_lens",
-    "gtceu:blue_glass_lens",
-    "gtceu:brown_glass_lens",
-    "gtceu:green_glass_lens",
-    "gtceu:red_glass_lens",
-    "gtceu:black_glass_lens"
+    "#forge:lenses/white",
+    "#forge:lenses/orange",
+    "#forge:lenses/magenta",
+    "#forge:lenses/light_blue",
+    "#forge:lenses/yellow",
+    "#forge:lenses/lime",
+    "#forge:lenses/pink",
+    "#forge:lenses/gray",
+    "#forge:lenses/light_gray",
+    "#forge:lenses/cyan",
+    "#forge:lenses/purple",
+    "#forge:lenses/blue",
+    "#forge:lenses/brown",
+    "#forge:lenses/green",
+    "#forge:lenses/red",
+    "#forge:lenses/black",
+    "#forge:lenses/glass"
   ]
 }

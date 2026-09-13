@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -240,9 +241,11 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             // Color pipes/cables on place if holding spray can in off-hand
             if (placer instanceof Player player) {
                 ItemStack offhand = placer.getOffhandItem();
-                for (int i = 0; i < DyeColor.values().length; i++) {
-                    if (offhand.is(GTItems.SPRAY_CAN_DYES[i].get())) {
-                        ((IInteractionItem) GTItems.SPRAY_CAN_DYES[i].get().getComponents().get(0))
+                for (DyeColor color : DyeColor.values()) {
+                    ComponentItem sprayCan = GTItems.SPRAY_CANS.get(color).get();
+
+                    if (offhand.is(sprayCan)) {
+                        ((IInteractionItem) sprayCan.getComponents().get(0))
                                 .useOn(new UseOnContext(player, InteractionHand.OFF_HAND,
                                         new BlockHitResult(Vec3.ZERO, player.getDirection(), pos, false)));
                         break;

@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.tags.GTTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
@@ -112,7 +112,7 @@ public class ClientEventListener {
         float multi = 1;
         var state = player.level().getBlockState(player.getOnPos());
 
-        if (state.is(CustomTags.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
+        if (state.is(GTTags.Blocks.VERY_FAST_WALKABLE_BLOCKS)) multi /= 1.2F;
 
         multi = (float) Mth.lerp(Minecraft.getInstance().options.fovEffectScale().get(), 1.0F, multi);
         event.setNewFovModifier(event.getNewFovModifier() * multi);
