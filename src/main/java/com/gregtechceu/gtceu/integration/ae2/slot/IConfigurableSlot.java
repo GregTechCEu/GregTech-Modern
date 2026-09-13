@@ -15,5 +15,7 @@ public interface IConfigurableSlot {
 
     void setStock(GenericStack val);
 
+    boolean setStockSilent(GenericStack val);
+
     IConfigurableSlot copy();
 }
