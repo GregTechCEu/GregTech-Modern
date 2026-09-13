@@ -14,27 +14,36 @@ import mezz.jei.api.gui.drawable.IDrawable;
 // Generic recipe viewer category icon
 public class CategoryIcon {
 
+    // Resolved lazily: constructing icons happens during RegisterEvent dispatch
+    // (GTRecipeCategories.init), when the JEI runtime does not exist yet —
+    // calling GTJEIPlugin.getRuntime() there crashes the client (unbound
+    // gtceu:data_item follow-up). Defer wrapper creation to first get().
     private Object wrappedValue;
+    private ResourceLocation texture;
+    private ItemStack stack;
+    private boolean resolved = false;
 
     public CategoryIcon(ResourceLocation texture) {
-        if (!GTCEu.isClientSide()) return;
-        if (GTCEu.Mods.isEMILoaded()) {
-            wrappedValue = EmiCallWrapper.getRenderable(texture);
-        } else if (GTCEu.Mods.isJEILoaded()) {
-            wrappedValue = JeiCallWrapper.getRenderable(texture);
-        }
+        this.texture = texture;
     }
 
     public CategoryIcon(ItemStack stack) {
-        if (!GTCEu.isClientSide()) return;
-        if (GTCEu.Mods.isEMILoaded()) {
-            wrappedValue = EmiCallWrapper.getRenderable(stack);
-        } else if (GTCEu.Mods.isJEILoaded()) {
-            wrappedValue = JeiCallWrapper.getRenderable(stack);
-        }
+        this.stack = stack;
     }
 
     public Object get() {
+        if (!resolved) {
+            resolved = true;
+            if (GTCEu.isClientSide()) {
+                if (GTCEu.Mods.isEMILoaded()) {
+                    wrappedValue = texture != null ? EmiCallWrapper.getRenderable(texture) :
+                            EmiCallWrapper.getRenderable(stack);
+                } else if (GTCEu.Mods.isJEILoaded()) {
+                    wrappedValue = texture != null ? JeiCallWrapper.getRenderable(texture) :
+                            JeiCallWrapper.getRenderable(stack);
+                }
+            }
+        }
         return wrappedValue;
     }
 
