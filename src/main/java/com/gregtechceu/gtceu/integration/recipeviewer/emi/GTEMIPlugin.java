@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -16,7 +14,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTBedrockFluidEmiCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTBedrockOreEmiCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTOreVeinEmiCategory;
-import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.Ae2PatternTerminalHandler;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTModuleEMIRecipe;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 
@@ -26,8 +23,6 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
-import appeng.menu.me.items.PatternEncodingTermMenu;
-import de.mari_023.ae2wtlib.wet.WETMenu;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -53,12 +48,6 @@ public class GTEMIPlugin implements EmiPlugin {
             if (category.shouldRegisterDisplays()) {
                 registry.addCategory(GTRecipeEMICategory.CATEGORIES.apply(category));
             }
-        }
-        if (GTCEu.Mods.isAE2Loaded()) {
-            registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new Ae2PatternTerminalHandler<>());
-        }
-        if (GTCEu.isModLoaded(GTValues.MODID_AE2WTLIB)) {
-            registry.addRecipeHandler(WETMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }
         registry.addCategory(ProgrammedCircuitEmiCategory.CATEGORY);
 
