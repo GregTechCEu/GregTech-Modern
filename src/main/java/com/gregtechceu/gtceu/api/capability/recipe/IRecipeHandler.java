@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +27,8 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
 
     /**
      * matching or handling the given recipe.
+     * The implementations must not produce any visible side effects when simulate == true.
+     * Multiple handleRecipeInner invocations with simulate == true can happen in parallel during recipe lookup.
      *
      * @param io       the IO type of this recipe. always be one of the {@link IO#IN} or {@link IO#OUT}
      * @param recipe   recipe.
@@ -42,18 +45,37 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
     /**
      * container size, if it has one. otherwise -1.
      */
+    @Contract(pure = true)
     default int getSize() {
         return -1;
     }
 
+    /**
+     * Returns a list of contents of this handler for the purposes of recipe searching.
+     * The implementations must be pure, e.g. should not introduce no visible side effects.
+     * Multiple getContents invocations can happen in parallel during recipe lookup.
+     * 
+     * @return a list of ingredients for recipe lookup.
+     */
     @NotNull
+    @Contract(pure = true)
     List<Object> getContents();
 
+    /**
+     * Returns a total amount of contents (meaning of that is content type-specific)
+     * in this handler for purposes of recipe searching.
+     * The implementations must be pure, e.g. should not introduce no visible side effects.
+     * Multiple getContents invocations can happen in parallel during recipe lookup.
+     *
+     * @return a total amount of content within this handler
+     */
+    @Contract(pure = true)
     double getTotalContentAmount();
 
     /**
      * Whether the content of same capability can only be handled distinct.
      */
+    @Contract(pure = true)
     default boolean isDistinct() {
         return false;
     }
@@ -64,6 +86,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      * 
      * @return {@code true} if this {@code IRecipeHandler} has content to be searched
      */
+    @Contract(pure = true)
     default boolean shouldSearchContent() {
         return true;
     }
