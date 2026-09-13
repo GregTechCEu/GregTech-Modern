@@ -126,8 +126,9 @@ public class ToolHelper {
         return stack.getOrDefault(GTDataComponents.TOOL_BEHAVIORS, ToolBehaviors.EMPTY);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean hasBehaviorsComponent(ItemStack stack) {
-        return stack.has(GTDataComponents.TOOL_BEHAVIORS);
+        return !getBehaviorsComponent(stack).isEmpty();
     }
 
     public static ItemStack get(GTToolType toolType, Material material) {
@@ -281,7 +282,17 @@ public class ToolHelper {
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        AoESymmetrical value = stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        if (stack.has(GTDataComponents.MAX_AOE)) {
+            AoESymmetrical max = stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO);
+            return value.min(max);
+        } else {
+            return value;
+        }
+    }
+
+    public static AoESymmetrical.Mutable getAoEStateMutable(ItemStack stack) {
+        return getAoEDefinition(stack).toMutable(stack.getOrDefault(GTDataComponents.MAX_AOE, AoESymmetrical.ZERO));
     }
 
     public static List<BlockPos> iterateAoE(AoESymmetrical aoeDefinition, Predicate<UseOnContext> predicate,
