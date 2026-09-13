@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +19,9 @@ import java.util.List;
 import java.util.function.Function;
 
 public class ModularItemStack implements IModularItem {
+
+    // spotless:off
+    //spotless:on
 
     public static final String MODULE_SLOTS_KEY = "ModuleSlots";
     public static final String MODULES_TAG = "Modules";
@@ -54,6 +58,22 @@ public class ModularItemStack implements IModularItem {
             if (getModuleInSlot(i) == null) return attach(module, i, simulate);
         }
         return null;
+    }
+
+    @Override
+    public boolean detachModule(int slot) {
+        AppliedItemModule module = getModuleInSlot(slot);
+        if (module == null) return true;
+        return detachModule(module);
+    }
+
+    @Override
+    public boolean detachModule(AppliedItemModule module) {
+        if (!module.getModule().canRemove(module)) return false;
+        module.getModule().onRemove(module);
+        stack.getOrCreateTagElement(ModularItemStack.MODULES_TAG).remove(String.valueOf(module.getSlot()));
+        module.setAppliedTo(null);
+        return true;
     }
 
     @Override

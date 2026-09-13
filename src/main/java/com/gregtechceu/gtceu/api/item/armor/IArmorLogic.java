@@ -58,7 +58,7 @@ public interface IArmorLogic {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem != null) {
             for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                if (module.isPPE()) return true;
+                if (module.getModule().isPPE(module)) return true;
             }
         }
         return false;

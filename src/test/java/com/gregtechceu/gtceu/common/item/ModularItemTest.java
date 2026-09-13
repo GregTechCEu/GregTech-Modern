@@ -143,7 +143,7 @@ public class ModularItemTest {
         helper.assertTrue(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute with re-enabled module");
 
-        module.detach();
+        modular.detachModule(module);
         helper.assertFalse(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
                 "modular item had damage attribute with detached module");
         TestUtils.assertEqual(helper, modular.getModuleInSlot(0), null,

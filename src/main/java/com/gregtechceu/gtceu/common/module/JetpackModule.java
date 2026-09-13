@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.common.item.armor.Jetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -54,7 +55,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
                 .bool(Text.lang("metaarmor.hud.hover_mode"),
                         () -> module.getAppliedTo().getOrCreateTag().getBoolean("hover"),

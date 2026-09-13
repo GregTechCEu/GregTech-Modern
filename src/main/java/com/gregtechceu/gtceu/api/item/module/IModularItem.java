@@ -28,4 +28,8 @@ public interface IModularItem {
     AppliedItemModule attach(ItemModule module, int slot, boolean simulate);
 
     AppliedItemModule attach(ItemModule module, boolean simulate);
+
+    boolean detachModule(AppliedItemModule module);
+
+    boolean detachModule(int slot);
 }

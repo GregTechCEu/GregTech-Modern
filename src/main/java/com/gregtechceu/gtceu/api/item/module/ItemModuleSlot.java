@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.item.module;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +16,9 @@ import java.util.Map;
 
 public abstract class ItemModuleSlot {
 
-    private static final Map<ResourceLocation, ItemModuleSlot> SLOTS = new HashMap<>();
+    private static final BiMap<ResourceLocation, ItemModuleSlot> SLOTS = HashBiMap.create();
+
+    public static final Codec<ItemModuleSlot> CODEC = ResourceLocation.CODEC.xmap(SLOTS::get, (r) -> SLOTS.inverse().get(r));
 
     @Getter
     private final ResourceLocation id;

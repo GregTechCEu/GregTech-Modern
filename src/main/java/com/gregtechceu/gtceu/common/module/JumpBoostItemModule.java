@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IJumpBoostItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 
 import net.minecraft.network.chat.Component;
@@ -51,7 +52,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
                 .num(Text.lang("gtceu.module.gui.jump_boost"),
                         () -> getJumpBoost(module),

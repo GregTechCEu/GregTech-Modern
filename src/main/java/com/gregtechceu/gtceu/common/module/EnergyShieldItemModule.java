@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 
 import net.minecraft.network.chat.Component;
@@ -87,7 +88,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
                 .num(Text.lang("gtceu.module.gui.energy_limit"),
                         () -> module.getTag().getDouble(PERCENTAGE_KEY),

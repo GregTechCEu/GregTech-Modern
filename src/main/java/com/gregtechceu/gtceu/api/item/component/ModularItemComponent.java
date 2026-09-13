@@ -131,7 +131,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                 AppliedItemModule module = modularItem.getModuleInSlot(slotI);
                 if (module != null) {
                     int prevIndex = tooltipComponents.size();
-                    module.appendHoverText(level, isAdvanced, tooltipComponents);
+                    module.getModule().appendHoverText(level, isAdvanced, tooltipComponents, module);
                     if (tooltipComponents.size() > prevIndex) {
                         tooltipComponents.set(prevIndex, Component.translatable(
                                 "metaarmor.tooltip.modifier",

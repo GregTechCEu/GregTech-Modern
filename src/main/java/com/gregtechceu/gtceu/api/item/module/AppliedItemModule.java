@@ -90,13 +90,6 @@ public final class AppliedItemModule {
         this.tag = tag;
     }
 
-    public void detach() {
-        if (this.appliedTo == null || !this.module.canRemove(this)) return;
-        this.module.onRemove(this);
-        this.appliedTo.getOrCreateTagElement(ModularItemStack.MODULES_TAG).remove(String.valueOf(slot));
-        this.appliedTo = null;
-    }
-
     public void inventoryTick(Player player) {
         if (this.isEnabled()) this.module.onInventoryTick(player, this);
         this.module.onTickRaw(this, player, player.level(), null);
@@ -122,23 +115,11 @@ public final class AppliedItemModule {
         return this.isEnabled() ? this.module.changeDamage(entity, this, damage, source) : damage;
     }
 
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
-        this.module.appendHoverText(level, isAdvanced, tooltips, this);
-    }
-
     public boolean isEnabled() {
         return this.module.isEnabled(this);
     }
 
     public void setEnabled(boolean enabled) {
         this.module.setEnabled(this, enabled);
-    }
-
-    public boolean isPPE() {
-        return this.module.isPPE(this) && this.isEnabled();
-    }
-
-    public boolean canRemove() {
-        return this.module.canRemove(this);
     }
 }

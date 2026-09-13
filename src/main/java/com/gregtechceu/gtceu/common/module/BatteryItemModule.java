@@ -4,10 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
-import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
-import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.client.Minecraft;
@@ -140,7 +137,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
         if (electricItem == null) return super.getSettings(module, psm, id);
         return super.getSettings(module, psm, id)

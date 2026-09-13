@@ -155,7 +155,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         IModularItem modularItem = GTCapabilityHelper.getModularItem(equipment);
         if (modularItem == null) return true;
         AppliedItemModule module = modularItem.getModuleInSlot(slot);
-        if (module != null) return !(module.canRemove() && module.getModuleItem() != null);
+        if (module != null) return !(module.getModule().canRemove(module) && module.getModuleItem() != null);
         return modularItem.getSlots().size() <= slot;
     }
 
@@ -179,9 +179,11 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         } else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
-            for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                if (module.getSlot() < MAX_MODIFIER_SLOTS && module.getModuleItem() != null) {
-                    moduleSlots.setStackInSlot(module.getSlot(), module.getModuleItem());
+            List<AppliedItemModule> appliedItemModules = modularItem.getAppliedModules();
+            for (int i=0; i<appliedItemModules.size(); i++) {
+                AppliedItemModule module = appliedItemModules.get(i);
+                if (i < MAX_MODIFIER_SLOTS && module.getModuleItem() != null) {
+                    moduleSlots.setStackInSlot(i, module.getModuleItem());
                 }
             }
             List<ItemModuleSlot> slots = modularItem.getSlots();
@@ -203,7 +205,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         }
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         AppliedItemModule prevModule = modularItem == null ? null : modularItem.getModuleInSlot(slot);
-        if (prevModule != null) prevModule.detach();
+        if (prevModule != null) modularItem.detachModule(prevModule);
         ItemStack newModule = moduleSlots.getStackInSlot(slot);
         if (newModule.isEmpty()) return;
         RecipeWrapper recipeWrapper = new RecipeWrapper(new CombinedInvWrapper(
