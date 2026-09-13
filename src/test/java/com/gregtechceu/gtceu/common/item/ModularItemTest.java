@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -60,10 +60,11 @@ public class ModularItemTest {
         return modular;
     }
 
-    private void checkModule(GameTestHelper helper, IModularItem modular, int slot, ItemModule module, ItemLike item) {
-        AppliedItemModule appliedModule = modular.getModuleInSlot(slot);
+    private void checkModule(GameTestHelper helper, IModularItem modular, int slot, ItemModuleType<?> module,
+                             ItemLike item) {
+        ItemModule appliedModule = modular.getModuleInSlot(slot);
         TestUtils.assertNotNull(helper, appliedModule, "module in slot %d was null".formatted(slot));
-        TestUtils.assertEqual(helper, appliedModule.getModule(), module, "incorrect module in slot %d".formatted(slot));
+        TestUtils.assertEqual(helper, appliedModule.type(), module, "incorrect module in slot %d".formatted(slot));
         TestUtils.assertEqual(helper, appliedModule.getModuleItem(), new ItemStack(item),
                 "incorrect module item in slot %d".formatted(slot));
     }
@@ -131,7 +132,7 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        AppliedItemModule module = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], false);
+        ItemModule module = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], false);
         helper.assertTrue(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute");
 

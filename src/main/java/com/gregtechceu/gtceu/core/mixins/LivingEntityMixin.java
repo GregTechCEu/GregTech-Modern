@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IJumpBoostItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
 
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
@@ -58,9 +58,9 @@ public abstract class LivingEntityMixin {
         for (ItemStack stack : this.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                if (module.getModule() instanceof IJumpBoostItemModule jumpBoostModule) {
-                    add += jumpBoostModule.getJumpBoost(module);
+            for (ItemModule module : modularItem.getModules()) {
+                if (module instanceof IJumpBoostItemModule jumpBoostModule) {
+                    add += jumpBoostModule.getJumpBoost();
                 }
             }
         }

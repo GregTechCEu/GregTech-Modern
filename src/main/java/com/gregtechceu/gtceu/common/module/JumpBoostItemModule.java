@@ -1,27 +1,46 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
-import com.gregtechceu.gtceu.api.item.module.IJumpBoostItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModuleSettingsBuilder;
-import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
+import com.gregtechceu.gtceu.api.item.module.*;
+import com.gregtechceu.gtceu.common.data.GTItemModules;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 
 import java.util.List;
 
 public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostItemModule {
 
-    private static final String JUMP_BOOST_KEY = "jump_boost";
+    // spotless:off
+    public static final Codec<JumpBoostItemModule> CODEC = RecordCodecBuilder.create(instance -> tieredBaseCodec(instance).and(
+            Codec.FLOAT.fieldOf("jump_boost").forGetter(JumpBoostItemModule::getJumpBoost)
+    ).apply(instance, JumpBoostItemModule::new));
+    //spotless:on
 
-    public JumpBoostItemModule(ResourceLocation id, int tier) {
-        super(id, tier);
+    @Getter
+    private float jumpBoost = 0;
+
+    public JumpBoostItemModule(boolean isEnabled, ItemStack attachItem, int tier, float jumpBoost) {
+        super(isEnabled, attachItem, tier);
+        this.jumpBoost = jumpBoost;
+    }
+
+    public JumpBoostItemModule(ItemStack attachItem, int tier) {
+        super(attachItem, tier);
+        this.jumpBoost = getMaxJumpBoost();
+    }
+
+    @Override
+    public ItemModuleType<JumpBoostItemModule> type() {
+        return GTItemModules.JUMP_BOOST[getTier()];
     }
 
     @Override
@@ -30,16 +49,8 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     }
 
     @Override
-    public float getJumpBoost(AppliedItemModule module) {
-        if (module.getTag().contains(JUMP_BOOST_KEY))
-            return module.getTag().getFloat(JUMP_BOOST_KEY);
-        return getMaxJumpBoost();
-    }
-
-    @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.jump", GTValues.VNF[getTier()]));
     }
 
@@ -47,16 +58,17 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
         return getTier() / 4f;
     }
 
-    public void setJumpBoost(AppliedItemModule module, float jumpBoost) {
-        module.getTag().putFloat(JUMP_BOOST_KEY, jumpBoost);
+    public void setJumpBoost(float jumpBoost) {
+        this.jumpBoost = jumpBoost;
+        getModularItemStack().saveModuleData();
     }
 
     @Override
-    public ItemModuleSettingsBuilder getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
-        return super.getSettings(module, psm, id)
+    public ItemModuleSettingsBuilder getSettings(PanelSyncManager psm, int id) {
+        return super.getSettings(psm, id)
                 .num(Text.lang("gtceu.module.gui.jump_boost"),
-                        () -> getJumpBoost(module),
-                        x -> setJumpBoost(module, (float) x),
+                        this::getJumpBoost,
+                        x -> setJumpBoost((float) x),
                         0, getMaxJumpBoost());
     }
 }

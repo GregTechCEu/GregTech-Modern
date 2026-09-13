@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.utils.input;
 
-import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.factory.PlayerInventoryUIFactory;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
@@ -12,8 +10,6 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoader;
 
-import brachy.modularui.factory.GuiData;
-import brachy.modularui.factory.GuiManager;
 import com.mojang.blaze3d.platform.InputConstants;
 
 public final class SyncedKeyMappings {

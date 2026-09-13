@@ -179,8 +179,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         } else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
-            List<AppliedItemModule> appliedItemModules = modularItem.getAppliedModules();
-            for (int i=0; i<appliedItemModules.size(); i++) {
+            List<AppliedItemModule> appliedItemModules = modularItem.getModules();
+            for (int i = 0; i < appliedItemModules.size(); i++) {
                 AppliedItemModule module = appliedItemModules.get(i);
                 if (i < MAX_MODIFIER_SLOTS && module.getModuleItem() != null) {
                     moduleSlots.setStackInSlot(i, module.getModuleItem());

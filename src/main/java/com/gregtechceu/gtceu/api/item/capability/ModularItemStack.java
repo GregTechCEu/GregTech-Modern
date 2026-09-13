@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.item.capability;
 
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -18,57 +21,73 @@ import java.util.List;
 
 public class ModularItemStack implements IModularItem {
 
-    // spotless:off
-    //spotless:on
-
     public static final String MODULES_TAG = "Modules";
 
     private final ItemStack stack;
     private final List<ItemModuleSlot> moduleSlots;
+    private final List<ItemModule> modules;
+
     public ModularItemStack(ItemStack stack, List<ItemModuleSlot> slots) {
         this.stack = stack;
         this.moduleSlots = slots;
+
+        modules = new ArrayList<>();
+        if (!stack.getOrCreateTagElement(MODULES_TAG).isEmpty()) {
+            ModularItemData data = ModularItemData.CODEC
+                    .decode(NbtOps.INSTANCE, stack.getOrCreateTagElement(MODULES_TAG))
+                    .getOrThrow(false, GTCEu.LOGGER::error).getFirst();
+
+            for (int i = 0; i < data.modules.size(); i++) {
+                var module = data.modules.get(i);
+                module.setModularItemStack(this);
+                module.setAppliedTo(stack);
+                modules.add(module);
+            }
+        }
     }
 
+    public void saveModuleData() {}
+
     @Override
-    public AppliedItemModule attach(ItemModule module, int slot, boolean simulate) {
-        CompoundTag modulesTag = stack.getOrCreateTagElement(MODULES_TAG);
+    public @Nullable <T extends ItemModule> T attach(ItemModuleType<T> moduleType, int slot, boolean simulate) {
+        ItemModule module = moduleType.defaultInstance().apply(ItemStack.EMPTY);
+
         ItemModuleSlot moduleSlot = getSlots().get(slot);
         if (moduleSlot == null || !moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
-        if (!modulesTag.contains(String.valueOf(slot)) && !simulate)
-            modulesTag.put(String.valueOf(slot), new CompoundTag());
-        AppliedItemModule appliedModule = new AppliedItemModule(
-                simulate ? new CompoundTag() : modulesTag.getCompound(String.valueOf(slot)),
-                module,
-                slot);
-        appliedModule.setAppliedTo(stack);
+
         if (!simulate) {
-            module.onAttach(appliedModule);
+            module.setModularItemStack(this);
+            module.setAppliedTo(stack);
+            module.onAttach();
+            modules.add(module);
         }
-        return appliedModule;
+        return null;
     }
 
     @Override
-    public @Nullable AppliedItemModule attach(ItemModule module, boolean simulate) {
+    public @Nullable <T extends ItemModule> T attach(ItemModuleType<T> module, boolean simulate) {
         for (int i = 0; i < getSlots().size(); i++) {
-            if (getModuleInSlot(i) == null) return attach(module, i, simulate);
+            if (getModuleInSlot(i) == null) {
+                return attach(module, i, simulate);
+            }
         }
         return null;
     }
 
     @Override
     public boolean detachModule(int slot) {
-        AppliedItemModule module = getModuleInSlot(slot);
+        ItemModule module = getModuleInSlot(slot);
         if (module == null) return true;
         return detachModule(module);
     }
 
     @Override
-    public boolean detachModule(AppliedItemModule module) {
-        if (!module.getModule().canRemove(module)) return false;
-        module.getModule().onRemove(module);
-        stack.getOrCreateTagElement(ModularItemStack.MODULES_TAG).remove(String.valueOf(module.getSlot()));
+    public boolean detachModule(ItemModule module) {
+        if (!module.canRemove()) return false;
+        module.onRemove();
+        module.setModularItemStack(null);
         module.setAppliedTo(null);
+        modules.remove(module);
         return true;
     }
 
@@ -78,26 +97,13 @@ public class ModularItemStack implements IModularItem {
     }
 
     @Override
-    public @Nullable AppliedItemModule getModuleInSlot(int slot) {
-        CompoundTag modulesTag = stack.getOrCreateTagElement(MODULES_TAG);
-        if (!modulesTag.contains(String.valueOf(slot))) return null;
-        return new AppliedItemModule(modulesTag.getCompound(String.valueOf(slot)), stack, slot);
+    public @Nullable ItemModule getModuleInSlot(int slot) {
+        return modules.get(slot);
     }
 
     @Override
-    public @NotNull List<AppliedItemModule> getAppliedModules() {
-        CompoundTag modulesTag = stack.getOrCreateTagElement(MODULES_TAG);
-        List<AppliedItemModule> modules = new ArrayList<>();
-        for (String key : modulesTag.getAllKeys()) {
-            modules.add(new AppliedItemModule(modulesTag.getCompound(key), stack, Integer.parseInt(key)));
-        }
-        return modules;
-    }
-
-    @Override
-    public @Nullable AppliedItemModule getModule(ItemModule module) {
-        return getAppliedModules().stream().filter(appliedModule -> appliedModule.getModule() == module).findAny()
-                .orElse(null);
+    public @NotNull List<ItemModule> getModules() {
+        return Collections.unmodifiableList(modules);
     }
 
     @Override
@@ -111,5 +117,15 @@ public class ModularItemStack implements IModularItem {
     @Override
     public List<ItemModuleSlot> getSlots() {
         return Collections.unmodifiableList(moduleSlots);
+    }
+
+    private record ModularItemData(List<ItemModule> modules, List<ItemStack> moduleItems) {
+
+        // spotless:off
+        public static final Codec<ModularItemData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ItemModule.CODEC.listOf().fieldOf("modules").forGetter(ModularItemData::modules),
+                ItemStack.CODEC.listOf().fieldOf("module_items").forGetter(ModularItemData::moduleItems)
+        ).apply(instance, ModularItemData::new));
+        //spotless:on
     }
 }

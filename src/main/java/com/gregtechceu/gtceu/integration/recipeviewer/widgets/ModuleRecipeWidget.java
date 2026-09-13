@@ -72,7 +72,7 @@ public class ModuleRecipeWidget extends Flow {
 
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
         assert defaultModularItem != null;
-        AppliedItemModule defaultAppliedModule = defaultModularItem.getModule(module);
+        AppliedItemModule defaultAppliedModule = defaultModularItem.get(module);
 
         // noinspection UnstableApiUsage
         return Flow.col()

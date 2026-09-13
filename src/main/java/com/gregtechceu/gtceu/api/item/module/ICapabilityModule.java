@@ -7,5 +7,5 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ICapabilityModule {
 
-    <T> @NotNull LazyOptional<T> getCapability(AppliedItemModule module, @NotNull Capability<T> cap);
+    <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap);
 }

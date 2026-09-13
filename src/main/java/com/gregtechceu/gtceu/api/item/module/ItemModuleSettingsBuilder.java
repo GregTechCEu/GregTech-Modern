@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item.module;
 
+import net.minecraft.network.chat.Component;
+
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.DrawableStack;
@@ -17,7 +19,6 @@ import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.function.*;
@@ -78,7 +79,8 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
         return num(label, getter, setter, min, max, "%d");
     }
 
-    public ItemModuleSettingsBuilder num(Text label, IntSupplier getter, IntConsumer setter, int min, int max, String sliderLabel) {
+    public ItemModuleSettingsBuilder num(Text label, IntSupplier getter, IntConsumer setter, int min, int max,
+                                         String sliderLabel) {
         custom(label,
                 SyncHandlers.intNumber(getter, setter)
                         .allowC2S(),
@@ -92,11 +94,13 @@ public final class ItemModuleSettingsBuilder extends ArrayList<IWidget> {
         return this;
     }
 
-    public ItemModuleSettingsBuilder num(Text label, DoubleSupplier getter, DoubleConsumer setter, double min, double max) {
+    public ItemModuleSettingsBuilder num(Text label, DoubleSupplier getter, DoubleConsumer setter, double min,
+                                         double max) {
         return num(label, getter, setter, min, max, "%.2f"::formatted);
     }
 
-    public ItemModuleSettingsBuilder num(Text label, DoubleSupplier getter, DoubleConsumer setter, double min, double max,
+    public ItemModuleSettingsBuilder num(Text label, DoubleSupplier getter, DoubleConsumer setter, double min,
+                                         double max,
                                          DoubleFunction<String> sliderLabel) {
         custom(label,
                 SyncHandlers.doubleNumber(getter, setter)

@@ -3,24 +3,38 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
+import com.gregtechceu.gtceu.common.data.GTItemModules;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import com.mojang.serialization.Codec;
 
 import java.util.List;
 
 public class CreativeFlightModule extends ItemModule implements ITieredItemModule {
 
-    public CreativeFlightModule(ResourceLocation id) {
-        super(id);
+    public static final Codec<CreativeFlightModule> CODEC = simpleCodec(CreativeFlightModule::new);
+
+    public CreativeFlightModule(boolean isEnabled, ItemStack moduleItem) {
+        super(isEnabled, moduleItem);
+    }
+
+    public CreativeFlightModule(ItemStack moduleItem) {
+        super(moduleItem);
+    }
+
+    @Override
+    public ItemModuleType<CreativeFlightModule> type() {
+        return GTItemModules.CREATIVE_FLIGHT;
     }
 
     @Override
@@ -42,21 +56,21 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     }
 
     @Override
-    public void onEquip(LivingEntity entity, AppliedItemModule module) {
-        super.onEquip(entity, module);
+    public void onEquip(LivingEntity entity) {
+        super.onEquip(entity);
         setMayFly(entity, true);
     }
 
     @Override
-    public void onUnequip(LivingEntity entity, AppliedItemModule module) {
-        super.onUnequip(entity, module);
+    public void onUnequip(LivingEntity entity) {
+        super.onUnequip(entity);
         setMayFly(entity, false);
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, AppliedItemModule module) {
-        super.onArmorTick(entity, module);
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
+    public void onArmorTick(LivingEntity entity) {
+        super.onArmorTick(entity);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(getAppliedTo());
         if (electricItem == null || !isFlying(entity)) return;
         if (!electricItem.canUse(2048)) setMayFly(entity, false);
         else {
@@ -66,9 +80,8 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.creative_flight")
                 .withStyle(ChatFormatting.LIGHT_PURPLE));
     }

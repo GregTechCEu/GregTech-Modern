@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -394,14 +394,14 @@ public class CommonEventListener {
         for (ItemStack stack : entity.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.armorTick(entity));
+            modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onArmorTick(entity));
         }
 
         if (entity instanceof Player player) {
             for (ItemStack stack : entity.getAllSlots()) {
                 IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
                 if (modularItem == null) continue;
-                modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.inventoryTick(player));
+                modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onInventoryTick(player));
             }
         }
     }
@@ -471,13 +471,13 @@ public class CommonEventListener {
         if (!old.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
             if (modularItem != null)
-                modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.unequip(entity));
+                modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onUnequip(entity));
         }
 
         if (!current.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
             if (modularItem != null)
-                modularItem.getAppliedModules().forEach(appliedItemModule -> appliedItemModule.equip(entity));
+                modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onEquip(entity));
         }
     }
 
@@ -490,7 +490,7 @@ public class CommonEventListener {
             float amount = event.getAmount();
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            for (AppliedItemModule appliedItemModule : modularItem.getAppliedModules()) {
+            for (ItemModule appliedItemModule : modularItem.getModules()) {
                 amount = appliedItemModule.changeDamage(entity, amount, source);
             }
             event.setAmount(amount);

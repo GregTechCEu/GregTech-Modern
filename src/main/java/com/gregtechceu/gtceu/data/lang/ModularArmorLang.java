@@ -5,7 +5,6 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 public class ModularArmorLang {
 
     public static void init(RegistrateLangProvider provider) {
-
         provider.add("tooltip.gtceu.configure_modular_armor", "Press [%s] when holding to configure modular item");
 
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
@@ -131,5 +130,4 @@ public class ModularArmorLang {
         provider.add("gtceu.module.gui.select_an_item", "Select an item");
         provider.add("gtceu.module.gui.invalid_item", "This item does not accept modules");
     }
-
 }

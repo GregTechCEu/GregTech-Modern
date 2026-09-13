@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.modular_item;
 
-import brachy.modularui.factory.*;
-import brachy.modularui.factory.inventory.InventoryType;
-import brachy.modularui.factory.inventory.InventoryTypes;
 import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,6 +7,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
 import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.*;
+import brachy.modularui.factory.inventory.InventoryType;
+import brachy.modularui.factory.inventory.InventoryTypes;
 
 public class ModularItemUIFactory extends AbstractUIFactory<PlayerInventoryGuiData<?>> {
 
@@ -21,7 +21,8 @@ public class ModularItemUIFactory extends AbstractUIFactory<PlayerInventoryGuiDa
 
     public void openFromHand(Player player, InteractionHand hand) {
         GuiManager.open(
-                this, PlayerInventoryGuiData.of(player, InventoryTypes.PLAYER, null, player.getInventory().selected), verifyServerSide(player));
+                this, PlayerInventoryGuiData.of(player, InventoryTypes.PLAYER, null, player.getInventory().selected),
+                verifyServerSide(player));
     }
 
     @Override

@@ -4,14 +4,10 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.capability.ModularItemStack;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
-import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
+import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
-
-import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -56,9 +52,9 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
         else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem != null) {
-                for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                    if (module.getModule() instanceof ICapabilityModule capabilityModule) {
-                        LazyOptional<T> optional = capabilityModule.getCapability(module, cap);
+                for (ItemModule module : modularItem.getModules()) {
+                    if (module instanceof ICapabilityModule capabilityModule) {
+                        LazyOptional<T> optional = capabilityModule.getCapability(cap);
                         if (optional.isPresent()) return optional;
                     }
                 }
@@ -71,8 +67,8 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(player.getItemInHand(usedHand));
         if (modularItem != null) {
-            for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                InteractionResultHolder<ItemStack> result = module.getModule().use(module, level, player, usedHand);
+            for (ItemModule module : modularItem.getModules()) {
+                InteractionResultHolder<ItemStack> result = module.use(level, player, usedHand);
                 if (result.getResult() != InteractionResult.PASS) return result;
             }
         }
@@ -83,8 +79,8 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public InteractionResult useOn(UseOnContext context) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(context.getItemInHand());
         if (modularItem != null) {
-            for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                InteractionResult result = module.getModule().useOn(module, context);
+            for (ItemModule module : modularItem.getModules()) {
+                InteractionResult result = module.useOn(context);
                 if (result != InteractionResult.PASS) return result;
             }
         }
@@ -95,8 +91,8 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(itemStack);
         if (modularItem != null) {
-            for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                InteractionResult result = module.getModule().onItemUseFirst(module, context);
+            for (ItemModule module : modularItem.getModules()) {
+                InteractionResult result = module.onItemUseFirst(context);
                 if (result != InteractionResult.PASS) return result;
             }
         }
@@ -108,8 +104,8 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                                                   InteractionHand usedHand) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem != null) {
-            for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                InteractionResult result = module.getModule().interactLivingEntity(module, player, interactionTarget,
+            for (ItemModule module : modularItem.getModules()) {
+                InteractionResult result = module.interactLivingEntity(player, interactionTarget,
                         usedHand);
                 if (result != InteractionResult.PASS) return result;
             }
@@ -122,16 +118,19 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                                 TooltipFlag isAdvanced) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem != null) {
-            tooltipComponents.add(Component.translatable("tooltip.gtceu.configure_modular_armor", SyncedKeyMappings.MODULAR_ITEM_GUI.getKeyMapping().getKey().getDisplayName()).withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component
+                    .translatable("tooltip.gtceu.configure_modular_armor",
+                            SyncedKeyMappings.MODULAR_ITEM_GUI.getKeyMapping().getKey().getDisplayName())
+                    .withStyle(ChatFormatting.GRAY));
             List<ItemModuleSlot> slots = modularItem.getSlots();
             if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("metaarmor.tooltip.modifiers"));
             for (int slotI = 0; slotI < slots.size(); slotI++) {
                 ItemModuleSlot slot = slots.get(slotI);
                 if (slot == null) continue;
-                AppliedItemModule module = modularItem.getModuleInSlot(slotI);
+                ItemModule module = modularItem.getModuleInSlot(slotI);
                 if (module != null) {
                     int prevIndex = tooltipComponents.size();
-                    module.getModule().appendHoverText(level, isAdvanced, tooltipComponents, module);
+                    module.appendHoverText(level, isAdvanced, tooltipComponents);
                     if (tooltipComponents.size() > prevIndex) {
                         tooltipComponents.set(prevIndex, Component.translatable(
                                 "metaarmor.tooltip.modifier",

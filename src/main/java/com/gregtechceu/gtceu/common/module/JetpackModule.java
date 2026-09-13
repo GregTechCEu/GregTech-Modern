@@ -2,33 +2,59 @@ package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
-import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
-import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModuleSettingsBuilder;
+import com.gregtechceu.gtceu.api.item.module.*;
+import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.item.armor.Jetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class JetpackModule extends ArmorLogicItemModule implements ITieredItemModule {
 
+    // spotless:off
+    public static final Codec<JetpackModule> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
+            Codec.BOOL.fieldOf("hover").forGetter(JetpackModule::isHover)
+    ).apply(instance, JetpackModule::new));
+    // spotless:on
+
     private static final Jetpack JETPACK = new Jetpack(
             15,
             1_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
             ConfigHolder.INSTANCE.tools.voltageTierImpeller);
 
-    public JetpackModule(ResourceLocation id) {
-        super(id);
+    @Getter
+    private boolean hover;
+
+    public JetpackModule(boolean isEnabled, ItemStack moduleItem, boolean hover) {
+        super(isEnabled, moduleItem);
+        this.hover = hover;
+    }
+
+    public JetpackModule(ItemStack moduleItem) {
+        super(moduleItem);
+        this.hover = false;
+    }
+
+    @Override
+    public ItemModuleType<JetpackModule> type() {
+        return GTItemModules.JETPACK;
+    }
+
+    public void setHover(boolean hover) {
+        this.hover = hover;
+        getModularItemStack().saveModuleData();
     }
 
     @Override
@@ -37,7 +63,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    protected @Nullable IArmorLogic getArmorLogic(AppliedItemModule module) {
+    protected @Nullable IArmorLogic getArmorLogic() {
         return JETPACK;
     }
 
@@ -47,18 +73,17 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(level, isAdvanced, tooltips);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.jetpack", module.getModuleItem().getHoverName()));
+                Component.translatable("metaarmor.tooltip.modifier.jetpack", getModuleItem().getHoverName()));
     }
 
     @Override
-    public ItemModuleSettingsBuilder getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
-        return super.getSettings(module, psm, id)
+    public ItemModuleSettingsBuilder getSettings(PanelSyncManager psm, int id) {
+        return super.getSettings(psm, id)
                 .bool(Text.lang("metaarmor.hud.hover_mode"),
-                        () -> module.getAppliedTo().getOrCreateTag().getBoolean("hover"),
-                        b -> module.getAppliedTo().getOrCreateTag().putBoolean("hover", b));
+                        () -> hover,
+                        b -> setHover(hover));
     }
 }
