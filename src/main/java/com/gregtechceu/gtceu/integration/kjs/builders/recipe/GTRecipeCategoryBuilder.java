@@ -1,10 +1,9 @@
-package com.gregtechceu.gtceu.integration.kjs.builders;
+package com.gregtechceu.gtceu.integration.kjs.builders.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -12,6 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -37,6 +38,11 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
         langValue = null;
     }
 
+    @Override
+    public RegistryInfo<GTRecipeCategory> getRegistryType() {
+        return GTRegistryInfo.RECIPE_CATEGORY;
+    }
+
     public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
         this.icon = new CategoryIcon(location);
         return this;
@@ -50,15 +56,14 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     @Override
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
-        if (langValue != null) lang.add(value.getLanguageKey(), langValue);
-        else lang.add(GTCEu.MOD_ID, value.getLanguageKey(), FormattingUtil.toEnglishName(value.name));
+        if (langValue != null) lang.add(object.getLanguageKey(), langValue);
+        else lang.add(GTCEu.MOD_ID, object.getLanguageKey(), FormattingUtil.toEnglishName(object.name));
     }
 
     @Override
-    public GTRecipeCategory register() {
-        var category = GTRecipeCategories.register(name, recipeType)
+    public GTRecipeCategory createObject() {
+        return new GTRecipeCategory(name, recipeType)
                 .setIcon(icon)
                 .setXEIVisible(isXEIVisible);
-        return value = category;
     }
 }

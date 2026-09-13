@@ -173,7 +173,7 @@ public final class ResearchManager {
         // spotless:off
         public static final Codec<ResearchItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("research_id").forGetter(ResearchItem::researchId),
-                GTRegistries.RECIPE_TYPES.codec().fieldOf("research_type").forGetter(ResearchItem::recipeType)
+                GTRegistries.RECIPE_TYPES.byNameCodec().fieldOf("research_type").forGetter(ResearchItem::recipeType)
         ).apply(instance, ResearchItem::new));
         // spotless:on
     }

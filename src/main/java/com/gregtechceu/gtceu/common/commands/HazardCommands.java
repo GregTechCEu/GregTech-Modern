@@ -2,21 +2,24 @@ package com.gregtechceu.gtceu.common.commands;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
-import com.gregtechceu.gtceu.common.commands.arguments.MedicalConditionArgument;
 
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import static net.minecraft.commands.Commands.*;
 
@@ -27,7 +30,7 @@ public class HazardCommands {
         dispatcher.register(
                 literal("environmental_hazard")
                         .requires(source -> source.hasPermission(LEVEL_ADMINS))
-                        .then(argument("condition", MedicalConditionArgument.medicalCondition())
+                        .then(argument("condition", ResourceKeyArgument.key(GTRegistries.Keys.MEDICAL_CONDITION))
                                 .then(argument("can_spread", BoolArgumentType.bool())
                                         .then(argument("source", BlockPosArgument.blockPos())
                                                 .then(literal("chunk")
@@ -43,40 +46,42 @@ public class HazardCommands {
                                             BlockPos source = BlockPosArgument.getBlockPos(context, "source");
                                             return clearEnvironmentalHazard(context, source, null);
                                         })
-                                        .then(argument("condition", MedicalConditionArgument.medicalCondition())
+                                        .then(argument("condition", ResourceKeyArgument.key(GTRegistries.Keys.MEDICAL_CONDITION))
                                                 .executes(context -> {
                                                     BlockPos source = BlockPosArgument.getBlockPos(context, "source");
-                                                    MedicalCondition condition = MedicalConditionArgument.getCondition(context, "condition");
-                                                    return clearEnvironmentalHazard(context, source, condition);
+                                                    Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition", GTRegistries.Keys.MEDICAL_CONDITION, MedicalConditionCommands.ERROR_UNKNOWN_CONDITION);
+                                                    return clearEnvironmentalHazard(context, source, condition.get());
                                                 })))));
     }
     // spotless:on
 
-    private static int spawnChunkEnvironmentalHazard(CommandContext<CommandSourceStack> context) {
+    private static int spawnChunkEnvironmentalHazard(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel serverLevel = context.getSource().getLevel();
 
         BlockPos source = BlockPosArgument.getBlockPos(context, "source");
         int strength = IntegerArgumentType.getInteger(context, "strength");
-        MedicalCondition condition = MedicalConditionArgument.getCondition(context, "condition");
+        Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition",
+                GTRegistries.Keys.MEDICAL_CONDITION, MedicalConditionCommands.ERROR_UNKNOWN_CONDITION);
         boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
 
         EnvironmentalHazardSavedData.getOrCreate(serverLevel)
-                .addZone(source, strength, canSpread, HazardProperty.HazardTrigger.INHALATION, condition);
+                .addZone(source, strength, canSpread, HazardProperty.HazardTrigger.INHALATION, condition.get());
 
         return 1;
     }
 
-    private static int spawnLocalEnvironmentalHazard(CommandContext<CommandSourceStack> context) {
+    private static int spawnLocalEnvironmentalHazard(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel serverLevel = context.getSource().getLevel();
         BlockPos source = BlockPosArgument.getBlockPos(context, "source");
         BlockPos from = BlockPosArgument.getBlockPos(context, "from");
         BlockPos to = BlockPosArgument.getBlockPos(context, "to");
 
-        MedicalCondition condition = MedicalConditionArgument.getCondition(context, "condition");
+        Holder<MedicalCondition> condition = ResourceKeyArgument.resolveKey(context, "condition",
+                GTRegistries.Keys.MEDICAL_CONDITION, MedicalConditionCommands.ERROR_UNKNOWN_CONDITION);
         boolean canSpread = BoolArgumentType.getBool(context, "can_spread");
 
         LocalizedHazardSavedData.getOrCreate(serverLevel)
-                .addCuboidZone(source, from, to, canSpread, HazardProperty.HazardTrigger.INHALATION, condition);
+                .addCuboidZone(source, from, to, canSpread, HazardProperty.HazardTrigger.INHALATION, condition.get());
 
         return 1;
     }

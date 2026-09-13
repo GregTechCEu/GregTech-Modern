@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.registry.registrate.forge;
+package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 

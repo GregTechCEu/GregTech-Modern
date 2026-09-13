@@ -1,22 +1,16 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public class MaterialIconSet {
-
-    static {
-        GTRegistries.MATERIAL_ICON_SETS.unfreeze();
-    }
 
     public static final MaterialIconSet DULL = new MaterialIconSet(GTCEu.id("dull"), null, true);
     public static final MaterialIconSet METALLIC = new MaterialIconSet(GTCEu.id("metallic"));
@@ -120,6 +114,12 @@ public class MaterialIconSet {
      */
     public MaterialIconSet(ResourceLocation id, @Nullable MaterialIconSet parentIconset,
                            boolean isRootIconset) {
+        this(id, parentIconset, isRootIconset, true);
+    }
+
+    @ApiStatus.Internal
+    public MaterialIconSet(ResourceLocation id, @Nullable MaterialIconSet parentIconset, boolean isRootIconset,
+                           boolean register) {
         this.id = id;
 
         if (id.getPath().contains("/"))
@@ -129,7 +129,7 @@ public class MaterialIconSet {
         this.isRootIconset = isRootIconset;
         this.parentIconset = parentIconset;
 
-        GTRegistries.MATERIAL_ICON_SETS.register(this.id, this);
+        if (register) GTRegistries.register(GTRegistries.MATERIAL_ICON_SETS, this.id, this);
     }
 
     /**
@@ -149,11 +149,5 @@ public class MaterialIconSet {
         return id.toString();
     }
 
-    public static void init() {
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class));
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.MATERIAL_ICON_SETS.getRegistryName());
-        }
-        GTRegistries.MATERIAL_ICON_SETS.freeze();
-    }
+    public static void init() {}
 }

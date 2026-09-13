@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;
@@ -34,15 +33,15 @@ import java.util.Map;
 public class GTMaterialBlocks {
 
     // Reference Table Builders
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends Block>> MATERIAL_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends Block>> MATERIAL_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    static ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS_BUILDER = ImmutableMap
+    private static ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS_BUILDER = ImmutableMap
             .builder();
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
 
     // Reference Tables
@@ -56,7 +55,7 @@ public class GTMaterialBlocks {
     public static void generateMaterialBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Material Blocks...");
 
-        for (TagPrefix tagPrefix : TagPrefix.values()) {
+        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
             if (!TagPrefix.ORES.containsKey(tagPrefix) && tagPrefix.doGenerateBlock()) {
                 for (Material material : GTRegistries.MATERIALS) {
                     if (tagPrefix.doGenerateBlock(material)) {
@@ -110,7 +109,7 @@ public class GTMaterialBlocks {
             final TagPrefix.OreType oreType = ore.getValue();
             String typePrefix = "";
             if (oreTag != TagPrefix.ore) {
-                typePrefix = FormattingUtil.toLowerCaseUnderscore(oreTag.name) + "_";
+                typePrefix = oreTag.name + "_";
             }
             var entry = registrate.block("%s%s_ore".formatted(typePrefix, material.getName()),
                     properties -> oreTag.blockConstructor().create(properties, oreTag, material))
@@ -144,7 +143,6 @@ public class GTMaterialBlocks {
                 registerOreIndicator(material, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
             }
         }
-        SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Surface Rock Indicator Blocks... Complete!");
     }
 
@@ -182,7 +180,6 @@ public class GTMaterialBlocks {
                 }
             }
         }
-        CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks... Complete!");
     }
 
@@ -223,7 +220,6 @@ public class GTMaterialBlocks {
                 }
             }
         }
-        FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks... Complete!");
     }
 
@@ -269,7 +265,6 @@ public class GTMaterialBlocks {
                 }
             }
         }
-        ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks... Complete!");
     }
 
@@ -301,5 +296,18 @@ public class GTMaterialBlocks {
                 .build()
                 .register();
         ITEM_PIPE_BLOCKS_BUILDER.put(itemPipeType.getTagPrefix(), material, entry);
+    }
+
+    public static void finaliseMaterialBlocks() {
+        MATERIAL_BLOCKS = MATERIAL_BLOCKS_BUILDER.buildOrThrow();
+        MATERIAL_BLOCKS_BUILDER = null;
+        SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.buildOrThrow();
+        SURFACE_ROCK_BLOCKS_BUILDER = null;
+        ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.buildOrThrow();
+        ITEM_PIPE_BLOCKS_BUILDER = null;
+        FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.buildOrThrow();
+        FLUID_PIPE_BLOCKS_BUILDER = null;
+        CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.buildOrThrow();
+        CABLE_BLOCKS_BUILDER = null;
     }
 }

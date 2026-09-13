@@ -1,19 +1,23 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraftforge.fml.ModLoader;
-
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.PATTERN_ERRORS;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
 
 public class GTPatternErrors {
 
-    public static void register(PatternError.PatternErrorType patternErrorType) {
-        PATTERN_ERRORS.register(patternErrorType.id(), patternErrorType);
+    private static final DeferredRegister<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = DeferredRegister
+            .create(GTRegistries.Keys.PATTERN_ERROR_TYPE, GTCEu.MOD_ID);
+
+    private static void register(PatternError.PatternErrorType patternErrorType) {
+        PATTERN_ERROR_TYPES.register(patternErrorType.id().getPath(), () -> patternErrorType);
     }
 
-    public static void init() {
-        PATTERN_ERRORS.unfreeze();
+    public static void init(IEventBus modBus) {
+        PATTERN_ERROR_TYPES.register(modBus);
+
         register(PlaceholderError.TYPE);
         register(BlockMatchingError.TYPE);
         register(PartAbilityError.TYPE);
@@ -22,9 +26,5 @@ public class GTPatternErrors {
         register(PatternStringError.TYPE);
         register(SinglePredicateError.TYPE);
         register(SimplePatternError.TYPE);
-
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(PATTERN_ERRORS, PatternError.PatternErrorType.class));
-
-        PATTERN_ERRORS.freeze();
     }
 }

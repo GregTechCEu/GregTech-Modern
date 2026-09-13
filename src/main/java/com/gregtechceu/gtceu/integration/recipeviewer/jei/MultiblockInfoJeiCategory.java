@@ -45,7 +45,7 @@ public class MultiblockInfoJeiCategory extends ModularUIJeiCategory<MultiblockMa
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(RECIPE_TYPE, GTRegistries.MACHINES.values().stream()
+        registry.addRecipes(RECIPE_TYPE, GTRegistries.MACHINES.stream()
                 .filter(MultiblockMachineDefinition.class::isInstance)
                 .map(MultiblockMachineDefinition.class::cast)
                 .filter(MultiblockMachineDefinition::isRenderXEIPreview)

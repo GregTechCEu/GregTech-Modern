@@ -84,7 +84,7 @@ public class GTLayerPattern {
     public static class Layer {
 
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()))
+                Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.byNameCodec()))
                         .fieldOf("targets")
                         .forGetter(layer -> layer.targets),
                 Codec.intRange(0, Integer.MAX_VALUE)

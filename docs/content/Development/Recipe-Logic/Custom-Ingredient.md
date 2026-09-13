@@ -378,16 +378,14 @@ public class BonkRecipeCapabilities {
 }
 ```
 The following parts, you would do in your main java class and your main GTAddon class, assuming you are working off of the [Addon Template](https://github.com/JuiceyBeans/GregTech-Addon-Template):
-```java title="Bonk.java"
-@Mod(Bonk.MOD_ID)
-public class Bonk {
-    // ...
-    private void registerRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
+```java title="BonkMod.java"
+@Mod(BonkMod.MOD_ID)
+public class BonkMod {
+    
+    public BonkMod() {
         BonkRecipeTypes.init();
-    }
-
-    private void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
         BonkMachines.init();
+        BonkRecipeCapabilities.init();
     }
 }
 ```
@@ -403,11 +401,6 @@ public class BonkGTAddon implements IGTAddon {
     @Override
     public void addRecipes(Consumer<FinishedRecipe> provider) {
         BonkRecipes.init(provider);
-    }
-
-    @Override
-    public void registerRecipeCapabilities() {
-        BonkRecipeCapabilities.init();
     }
 }
 

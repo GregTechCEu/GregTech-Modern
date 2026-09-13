@@ -1,21 +1,14 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 
-import net.minecraftforge.fml.ModLoader;
-
 import com.mojang.serialization.Codec;
 
 public final class GTRecipeConditions {
-
-    static {
-        GTRegistries.RECIPE_CONDITIONS.unfreeze();
-    }
 
     private GTRecipeConditions() {}
 
@@ -49,18 +42,12 @@ public final class GTRecipeConditions {
         if (GTCEu.Mods.isHeraclesLoaded()) {
             HERACLES_QUEST = register("heracles_quest", HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC);
         }
-        // fix the rock breaker condition's ID
-        GTRegistries.RECIPE_CONDITIONS.remap(GTCEu.id("rock_breaker"), GTCEu.id("adjacent_fluid"));
-
-        // noinspection unchecked
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
-                (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
-        GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 
     private static <T extends RecipeCondition<T>> RecipeConditionType<T> register(String name,
                                                                                   RecipeConditionType.ConditionFactory<T> factory,
                                                                                   Codec<T> codec) {
-        return GTRegistries.RECIPE_CONDITIONS.register(GTCEu.id(name), new RecipeConditionType<>(factory, codec));
+        return GTRegistries.register(GTRegistries.RECIPE_CONDITIONS, GTCEu.id(name),
+                new RecipeConditionType<>(factory, codec));
     }
 }

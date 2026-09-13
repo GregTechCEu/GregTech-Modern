@@ -1,21 +1,21 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
-import net.minecraftforge.fml.ModLoader;
+import net.minecraft.core.registries.Registries;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
+
+import java.util.Objects;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GTSoundEntries {
-
-    static {
-        GTRegistries.SOUNDS.unfreeze();
-    }
 
     // Machine Sounds
     public static final SoundEntry FORGE_HAMMER = REGISTRATE.sound("forge_hammer").build();
@@ -58,18 +58,16 @@ public class GTSoundEntries {
     public static final SoundEntry PORTAL_CLOSING = REGISTRATE.sound("portal_closing").build();
     public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
 
-    public static void init() {
-        AddonFinder.getAddons().forEach(IGTAddon::registerSounds);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
-        GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
-        registerSounds();
+    public static void init() {}
 
-        GTRegistries.SOUNDS.freeze();
-    }
-
-    private static void registerSounds() {
-        for (SoundEntry entry : GTRegistries.SOUNDS) {
-            entry.register(soundEvent -> ForgeRegistries.SOUND_EVENTS.register(soundEvent.getLocation(), soundEvent));
+    @SubscribeEvent
+    public static void registerSounds(RegisterEvent registerEvent) {
+        if (Objects.equals(registerEvent.getForgeRegistry(), ForgeRegistries.SOUND_EVENTS)) {
+            for (SoundEntry entry : GTRegistries.SOUNDS) {
+                entry.prepare();
+                entry.register(soundEvent -> registerEvent.register(Registries.SOUND_EVENT, soundEvent.getLocation(),
+                        () -> soundEvent));
+            }
         }
     }
 }

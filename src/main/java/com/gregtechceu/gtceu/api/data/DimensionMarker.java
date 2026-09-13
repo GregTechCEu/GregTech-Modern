@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.data;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
@@ -14,12 +12,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import dev.latvian.mods.rhino.util.HideFromJS;
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class DimensionMarker {
@@ -27,13 +26,15 @@ public class DimensionMarker {
     public static final int MAX_TIER = 99;
 
     @Getter
-    public final int tier; // not only used to represent dimension tier, but also for sorting
+    @Setter
+    public int tier; // not only used to represent dimension tier, but also for sorting
 
     @Getter
+    @Setter
     @Nullable
-    private final String overrideName; // there may be other uses, so we store it
+    private String overrideName; // there may be other uses, so we store it
 
-    private final MemoizedSupplier<ItemStack> iconSupplier;
+    private MemoizedSupplier<ItemStack> iconSupplier;
 
     public DimensionMarker(int tier, ResourceLocation itemKey, @Nullable String overrideName) {
         this.tier = tier;
@@ -50,6 +51,17 @@ public class DimensionMarker {
         this.iconSupplier = GTMemoizer.memoize(() -> getStack(supplier.get().asItem()));
     }
 
+    public void setIcon(ResourceLocation itemKey) {
+        this.iconSupplier = GTMemoizer.memoize(() -> ForgeRegistries.ITEMS.getDelegate(itemKey)
+                .map(Holder::get)
+                .map(this::getStack)
+                .orElse(ItemStack.EMPTY));
+    }
+
+    public void setIcon(Supplier<? extends ItemLike> supplier) {
+        this.iconSupplier = GTMemoizer.memoize(() -> getStack(supplier.get().asItem()));
+    }
+
     public ItemStack getIcon() {
         return iconSupplier.get();
     }
@@ -58,7 +70,7 @@ public class DimensionMarker {
         if (tier < 0 || tier >= MAX_TIER) {
             throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
         }
-        GTRegistries.DIMENSION_MARKERS.register(dimKey, this);
+        GTRegistries.register(GTRegistries.DIMENSION_MARKERS, dimKey, this);
     }
 
     private ItemStack getStack(Item item) {
@@ -69,37 +81,37 @@ public class DimensionMarker {
         return stack;
     }
 
-    @Setter
-    @Accessors(fluent = true, chain = true)
-    public static class Builder extends BuilderBase<DimensionMarker> {
+    public static DimensionMarker get(ResourceLocation dimKey) {
+        return GTRegistries.DIMENSION_MARKERS.get(dimKey);
+    }
 
+    @Accessors(fluent = true, chain = true)
+    public static class Builder {
+
+        private final ResourceLocation id;
+        @Setter
         private Supplier<Item> iconSupplier;
+        @Setter
         private int tier = 0;
         @Nullable
+        @Setter
         private String overrideName;
 
         public Builder(ResourceLocation dimKey) {
-            super(dimKey);
+            id = dimKey;
         }
 
-        public Builder(ResourceLocation dimKey, Object... args) {
-            this(dimKey);
-        }
-
-        @HideFromJS
         public DimensionMarker buildAndRegister() {
-            Validator.validate(
-                    id,
-                    Validator.errorIfNull(iconSupplier, "icon"),
-                    Validator.errorIfOutOfRange(tier, "tier", 0, MAX_TIER - 1));
+            Objects.requireNonNull(id);
+            Objects.requireNonNull(iconSupplier, "iconSupplier cannot be null;");
+            Preconditions.checkArgument(tier >= 0 && tier < MAX_TIER, "Tier must be between 0 and " + MAX_TIER);
             DimensionMarker marker = new DimensionMarker(tier, iconSupplier, overrideName);
             marker.register(id);
             return marker;
         }
 
-        @Override
         public DimensionMarker register() {
-            return value = buildAndRegister();
+            return buildAndRegister();
         }
     }
 }
