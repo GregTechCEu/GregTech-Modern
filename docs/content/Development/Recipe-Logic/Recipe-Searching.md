@@ -34,6 +34,9 @@ During the `RecipeLogic.serverTick` method (see [Recipe Logic](./Recipe-Logic.md
 This checks if the `lastRecipe` is set, and if it can be matched, runs it again.
 If it can't be matched, it calls `handleSearchingRecipes(searchRecipe())`
 
+For an idle machine with no matching recipe, this call is skipped while its inputs are unchanged since the last empty search, 
+so the lookup below is not traversed again for nothing.
+
 `searchRecipe()` is the actual recipe searching logic. In big lines, it finds what ingredients are currently available in the machine, groups those, and traverses the `RecipeLookup` to create an iterator of recipes that are available.  
 `handleSearchingRecipes()` then goes through that iterator, and for every recipe it runs the recipe modifier, checks if this machine can run it, if the inputs are there, if it has enough output space etc.  
 
