@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.core.Direction;
@@ -124,6 +125,8 @@ public class MultiblockMachineBuilder<MACHINE extends MultiblockControllerMachin
     @Override
     @SuppressWarnings("NullableProblems")
     protected @NonNull MultiblockMachineDefinition createEntry() {
+        getProperties().recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull)
+                .toArray(GTRecipeType[]::new));
         createAdditionalObjects();
         return new MultiblockMachineDefinition(getOwner().makeResourceLocation(getName()), getProperties());
     }

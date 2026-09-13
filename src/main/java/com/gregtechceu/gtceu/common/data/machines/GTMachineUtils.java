@@ -237,7 +237,7 @@ public class GTMachineUtils {
     }
 
     public static MachineEntry<MachineDefinition>[] registerSimpleGenerator(GTRegistrate registrate, String name,
-                                                                            GTRecipeType recipeType,
+                                                                            Supplier<GTRecipeType> recipeType,
                                                                             Int2IntFunction tankScalingFunction,
                                                                             float hazardStrengthPerOperation,
                                                                             int... tiers) {
@@ -261,7 +261,7 @@ public class GTMachineUtils {
 
     public static Pair<MachineEntry<MachineDefinition>, MachineEntry<MachineDefinition>> registerSimpleSteamMachines(GTRegistrate registrate,
                                                                                                                      String name,
-                                                                                                                     GTRecipeType recipeType) {
+                                                                                                                     Supplier<GTRecipeType> recipeType) {
         return registerSteamMachines(registrate, "steam_" + name, SimpleSteamMachine::new,
                 (pressure, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -658,7 +658,7 @@ public class GTMachineUtils {
 
     public static MachineEntry<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
                                                                                  String name, int tier,
-                                                                                 GTRecipeType recipeType,
+                                                                                 Supplier<GTRecipeType> recipeType,
                                                                                  Supplier<? extends Block> casing,
                                                                                  Supplier<? extends Block> gear,
                                                                                  ResourceLocation casingTexture,
@@ -669,7 +669,7 @@ public class GTMachineUtils {
 
     public static MachineEntry<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
                                                                                  String name, int tier,
-                                                                                 GTRecipeType recipeType,
+                                                                                 Supplier<GTRecipeType> recipeType,
                                                                                  Supplier<? extends Block> casing,
                                                                                  Supplier<? extends Block> gear,
                                                                                  ResourceLocation casingTexture,
@@ -766,24 +766,29 @@ public class GTMachineUtils {
         }
     };
 
-    public static Component[] workableTiered(int tier, long voltage, long energyCapacity, GTRecipeType recipeType,
-                                             long tankCapacity, boolean input) {
-        List<Component> tooltipComponents = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public static Supplier<@Nullable Component>[] workableTiered(int tier, long voltage, long energyCapacity,
+                                                                 Supplier<GTRecipeType> recipeType,
+                                                                 long tankCapacity, boolean input) {
+        List<Supplier<Component>> tooltipComponents = new ArrayList<>();
         tooltipComponents.add(input ?
-                Component.translatable("gtceu.universal.tooltip.voltage_in",
+                () -> Component.translatable("gtceu.universal.tooltip.voltage_in",
                         FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]) :
-                Component.translatable("gtceu.universal.tooltip.voltage_out",
+                () -> Component.translatable("gtceu.universal.tooltip.voltage_out",
                         FormattingUtil.formatNumbers(voltage), GTValues.VNF[tier]));
-        tooltipComponents.add(Component.translatable(
+        tooltipComponents.add(() -> Component.translatable(
                 "gtceu.universal.tooltip.energy_storage_capacity",
                 FormattingUtil.formatNumbers(energyCapacity)));
-        if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
-                recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
-            tooltipComponents.add(Component.translatable(
-                    "gtceu.universal.tooltip.fluid_storage_capacity",
-                    FormattingUtil.formatNumbers(tankCapacity)));
-        }
-        return tooltipComponents.toArray(Component[]::new);
+        tooltipComponents.add(() -> {
+            if (recipeType.get().getMaxInputs(FluidRecipeCapability.CAP) > 0 ||
+                    recipeType.get().getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
+                return (Component.translatable(
+                        "gtceu.universal.tooltip.fluid_storage_capacity",
+                        FormattingUtil.formatNumbers(tankCapacity)));
+            }
+            return null;
+        });
+        return tooltipComponents.toArray(Supplier[]::new);
     }
 
     @Accessors(chain = true, fluent = true)
@@ -793,7 +798,7 @@ public class GTMachineUtils {
         @Setter
         private String name;
         @Setter
-        private GTRecipeType recipeType;
+        private Supplier<GTRecipeType> recipeType;
         @Setter
         private Int2IntFunction tankScalingFunction = defaultTankSizeFunction;
         @Setter
@@ -803,7 +808,7 @@ public class GTMachineUtils {
         private int[] tiers = ELECTRIC_TIERS;
 
         // Simple Machines need to have a name, recipe type, and a registrate to register the machine to.
-        public SimpleMachineBuilder(GTRegistrate registrate, String name, GTRecipeType recipeType) {
+        public SimpleMachineBuilder(GTRegistrate registrate, String name, Supplier<GTRecipeType> recipeType) {
             this.registrate = registrate;
             this.name = name;
             this.recipeType = recipeType;

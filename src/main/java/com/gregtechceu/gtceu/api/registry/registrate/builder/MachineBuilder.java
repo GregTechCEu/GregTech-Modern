@@ -63,6 +63,7 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -90,6 +91,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     private boolean defaultBlock = true;
     private boolean defaultItem = true;
+
+    protected final Set<Supplier<GTRecipeType>> unresolvedRecipeTypes = new ObjectArraySet<>();
 
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
 
@@ -332,33 +335,24 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF recipeType(GTRecipeType type) {
-        Objects.requireNonNull(type,
-                "Tried to set null recipe type on machine %s. Did you create the recipe type before this machine?"
-                        .formatted(
-                                getOwner().makeResourceLocation(getName())));
-
-        properties.recipeTypes(ArrayUtils.add(properties.recipeTypes(), type));
+    public SELF recipeType(Supplier<GTRecipeType> type) {
+        unresolvedRecipeTypes.add(type);
         initRecipeMachineModelProperties(type);
         return getThis();
     }
 
-    @Tolerate
-    public SELF recipeTypes(GTRecipeType... types) {
+    @SafeVarargs
+    public final SELF recipeTypes(Supplier<GTRecipeType>... types) {
         Validate.noNullElements(types, "Cannot add null recipe type to machine.");
 
-        List<GTRecipeType> typeList = new ArrayList<>();
-        Collections.addAll(typeList, properties.recipeTypes());
-
-        for (GTRecipeType type : types) {
+        for (Supplier<GTRecipeType> type : types) {
             initRecipeMachineModelProperties(type);
-            typeList.add(type);
+            unresolvedRecipeTypes.add(type);
         }
-        properties.recipeTypes(typeList.toArray(GTRecipeType[]::new));
         return getThis();
     }
 
-    protected void initRecipeMachineModelProperties(GTRecipeType type) {
+    protected void initRecipeMachineModelProperties(Supplier<GTRecipeType> type) {
         if (type == GTRecipeTypes.DUMMY_RECIPES) {
             return;
         }
@@ -509,13 +503,27 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF tooltips(@Nullable Component... components) {
-        return tooltips(Arrays.asList(components));
+    @SafeVarargs
+    public final SELF tooltips(@Nullable Supplier<? extends @Nullable Component>... components) {
+        for (var comp : components) {
+            if (comp == null) continue;
+            properties.tooltips().add(comp);
+        }
+        return getThis();
     }
 
-    @SuppressWarnings("NullableProblems")
-    public SELF tooltips(List<? extends @Nullable Component> components) {
-        properties.tooltips().addAll(components.stream().filter(Objects::nonNull).toList());
+    public SELF tooltips(@Nullable Component... components) {
+        for (var comp : components) {
+            if (comp == null) continue;
+            properties.tooltips().add(() -> comp);
+        }
+        return getThis();
+    }
+
+    public SELF tooltips(List<? extends Component> components) {
+        for (var comp : components) {
+            properties.tooltips().add(() -> comp);
+        }
         return getThis();
     }
 
@@ -525,7 +533,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF conditionalTooltip(Component component, boolean condition) {
         if (condition)
-            properties.tooltips().add(component);
+            properties.tooltips().add(() -> component);
         return getThis();
     }
 
@@ -663,6 +671,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @SuppressWarnings({ "NullableProblems", "unchecked" })
     protected @NonNull DEFINITION createEntry() {
+        properties.recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull).toArray(GTRecipeType[]::new));
         createAdditionalObjects();
         return (DEFINITION) new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }
