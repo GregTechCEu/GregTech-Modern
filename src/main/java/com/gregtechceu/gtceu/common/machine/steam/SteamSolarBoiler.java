@@ -71,6 +71,11 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     }
 
     @Override
+    protected boolean shouldDiscountFuelConsumptionAtMaxTemperature() {
+        return false; // does not really make sense for solar boiler
+    }
+
+    @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         super.buildMainUI(mainWidget, guiData, syncManager, settings);
