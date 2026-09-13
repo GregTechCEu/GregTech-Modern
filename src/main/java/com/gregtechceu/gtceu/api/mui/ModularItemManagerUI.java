@@ -1,12 +1,10 @@
-package com.gregtechceu.gtceu.api.mui.factory;
+package com.gregtechceu.gtceu.api.mui;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
-import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
-import com.gregtechceu.gtceu.api.mui.SelectableSlot;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
@@ -36,40 +34,38 @@ import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 @Setter(AccessLevel.PRIVATE)
 @Getter(AccessLevel.PRIVATE)
-public class ModularItemUIHolder implements IUIHolder<GuiData> {
+public class ModularItemManagerUI implements IUIHolder<GuiData> {
 
     private final Player player;
     private boolean inventoryLocked = true;
-    private IntSyncValue selectedSlotSyncValue = null;
     private int selectedSlot = -1;
     private int panelCount = 0;
-    private DynamicLinkedSyncHandler<IntSyncValue> dynamicSyncHandler = null;
 
-    public ModularItemUIHolder(Player player) {
+    public ModularItemManagerUI(Player player) {
         this.player = player;
-    }
-
-    private void registerSyncValues(PanelSyncManager syncManager) {
-        selectedSlotSyncValue = SyncHandlers.intNumber(this::getSelectedSlot, this::setSelectedSlot)
-                .allowC2S();
-        syncManager.syncValue("selectedSlot", selectedSlotSyncValue);
-        dynamicSyncHandler = new DynamicLinkedSyncHandler<>(selectedSlotSyncValue)
-                .allowC2S()
-                .widgetProvider(this::getStackInfoWidget);
     }
 
     @Override
     public ModularPanel<?> buildUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        registerSyncValues(syncManager);
+        IntSyncValue selectedSlotSyncValue = SyncHandlers.intNumber(this::getSelectedSlot, this::setSelectedSlot)
+                .allowC2S();
+        syncManager.syncValue("selectedSlot", selectedSlotSyncValue);
+
+        DynamicLinkedSyncHandler<IntSyncValue> dynamicSyncHandler = new DynamicLinkedSyncHandler<>(
+                selectedSlotSyncValue)
+                .allowC2S()
+                .widgetProvider(this::getStackInfoWidget);
+
         return new ModularPanel<>("modularItem")
-                .leftRel(.2f)
+                .horizontalCenter()
                 .width(250)
                 .child(GTMuiWidgets.createTitleBar(null, "Modules", 250,
                         GTGuiTextures.BACKGROUND))
-                .child(playerInventory())
+                .child(playerInventory(selectedSlotSyncValue))
                 .child(new ToggleButton()
                         .value(new BooleanSyncValue(this::isInventoryLocked, this::setInventoryLocked))
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)
@@ -138,29 +134,25 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
     }
 
     private ModularPanel<?> createPanelForModule(PanelSyncManager psm, int index) {
-        ItemStack stack = getSelectedItem();
-        assert stack != null;
-        IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-        assert modularItem != null;
-        AppliedItemModule appliedModule = modularItem.getModuleInSlot(index);
-        assert appliedModule != null;
+        ItemStack stack = Objects.requireNonNull(getSelectedItem());
+        IModularItem modularItem = Objects.requireNonNull(GTCapabilityHelper.getModularItem(stack));
+        AppliedItemModule appliedModule = Objects.requireNonNull(modularItem.getModuleInSlot(index));
         ItemModule module = appliedModule.getModule();
         ItemStack moduleItem = appliedModule.getModuleItem();
+
         return new ModularPanel<>("module" + index)
                 .leftRelOffset(0.2f, 250 + 2 - 154 * (panelCount / 3))
                 .topRelOffset(0.5f, -83 + 80 * (panelCount++ % 3) + 2)
-                .width(154)
-                .coverChildrenHeight(80)
+                .coverChildren()
                 .child(Flow.col()
+                        .margin(4)
                         .coverChildren()
-                        .marginBottom(5)
                         .crossAxisAlignment(Alignment.CrossAxis.START)
-                        .left(5)
-                        .childPadding(3)
                         .childIf(moduleItem == null || moduleItem.isEmpty(),
                                 () -> new TextWidget<>(Text.dynamic(() -> module.getDisplayName(appliedModule)))
                                         .scale(0.75f)
-                                        .horizontalCenter())
+                                        .horizontalCenter()
+                                        .paddingBottom(2))
                         .childIf(moduleItem != null && !moduleItem.isEmpty(), () -> {
                             assert moduleItem != null;
                             return Flow.row()
@@ -195,7 +187,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         return new GTGuiScreen(mainPanel);
     }
 
-    private Flow playerInventory() {
+    private Flow playerInventory(IntSyncValue selectedSlotSyncValue) {
         SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
         slotGroupWidget.coverChildren();
         slotGroupWidget.name("player_inventory");

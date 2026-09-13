@@ -18,7 +18,6 @@ import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
@@ -47,7 +46,8 @@ public class ModuleRecipeWidget extends Flow {
         this.tier = new IntValue(0);
         this.width(150)
                 .coverChildrenHeight()
-                .horizontalCenter();
+                .horizontalCenter()
+                .padding(3);
         var cycleWidget = new CycleButtonWidget()
                 .length(modules.length)
                 .background(IDrawable.NONE)
@@ -73,10 +73,12 @@ public class ModuleRecipeWidget extends Flow {
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
         assert defaultModularItem != null;
         AppliedItemModule defaultAppliedModule = defaultModularItem.getModule(module);
+
         // noinspection UnstableApiUsage
         return Flow.col()
                 .coverChildrenHeight()
                 .horizontalCenter()
+                .childPadding(2)
                 .child(Flow.row()
                         .coverChildrenHeight()
                         .childPadding(4)
@@ -99,9 +101,8 @@ public class ModuleRecipeWidget extends Flow {
                         .child(RecipeViewerSlotWidget.create(ItemStack.class)
                                 .value(ItemStackList.of(allResults))
                                 .recipeSlotRole(RecipeSlotRole.OUTPUT)))
-                .child(new TextWidget<>(module.getInfo()))
-                .childIf(getTier(module) != -1, () -> new TextWidget<>(Text.dynamic(
-                        () -> Component.literal(GTValues.VNF[getTier(module)])))
+                .child(new TextWidget<>(module.getInfo()).horizontalCenter())
+                .childIf(getTier(module) != -1, () -> new TextWidget<>(Component.literal(GTValues.VNF[getTier(module)]))
                         .right(3));
     }
 
