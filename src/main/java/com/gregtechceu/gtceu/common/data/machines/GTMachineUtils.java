@@ -60,6 +60,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -79,9 +80,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -688,6 +687,7 @@ public class GTMachineUtils {
                         () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingModel(casingTexture, overlayModel)
+                .additionalDisplay(LargeCombustionEngineMachine::additionalDisplay)
                 .tooltips(
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier]),
                         Component.translatable("gtceu.universal.tooltip.uses_per_hour_lubricant",
@@ -771,8 +771,9 @@ public class GTMachineUtils {
         return null;
     }
 
-    public static Component environmentRequirement(MedicalCondition condition) {
-        return Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.getTranslatableName());
+    public static Component environmentRequirement(Holder<MedicalCondition> condition) {
+        return Text.dynamic(() -> Component.translatable("gtceu.recipe.environmental_hazard.reverse",
+                condition.value().getTranslatableName()));
     }
 
     public static Component defaultEnvironmentRequirement() {
