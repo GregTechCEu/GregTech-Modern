@@ -21,7 +21,7 @@ public interface IMachineBuilderKJS {
         if (builder.model() == null && builder.blockModel() == null) return;
 
         // Fake a data provider for the GT model builders
-        DataGenContext<Block, MetaMachineBlock> context = new DataGenContext<>(definition::get,
+        DataGenContext<Block, MetaMachineBlock> context = new DataGenContext<>(definition::getBlock,
                 definition.getName(), definition.getId());
         if (builder.blockModel() != null) {
             builder.blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);

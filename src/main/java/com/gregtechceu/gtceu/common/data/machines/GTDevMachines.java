@@ -30,7 +30,7 @@ public class GTDevMachines {
                     .slice("         ", "         ", "         ", "         ", "         ")
                     .slice("         ", "         ", "         ", "         ", "         ")
                     .slice("         ", "         ", "       XX", "       XX", "       XX")
-                    .where('S', controller(blocks(definition.get())))
+                    .where('S', controller(definition))
                     .where('X', blocks(CTM_TEST)
                             .or(autoAbilities(definition.getRecipeTypes()))
                             .or(Predicates.autoAbilities(true, true, true)))

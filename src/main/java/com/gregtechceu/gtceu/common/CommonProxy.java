@@ -139,6 +139,7 @@ public class CommonProxy {
         GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
+        REGISTRATE.registerEventListeners(modBus);
 
         GTElements.init();
         MaterialIconSet.init();
