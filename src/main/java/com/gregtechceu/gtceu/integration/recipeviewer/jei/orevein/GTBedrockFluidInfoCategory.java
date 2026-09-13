@@ -32,7 +32,7 @@ public class GTBedrockFluidInfoCategory extends
                 v -> Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
                         .registryOrThrow(GTRegistries.Keys.BEDROCK_FLUID).getKey(v.fluid));
         this.icon = helpers.getGuiHelper()
-                .createDrawableItemStack(GTMaterials.Oil.getBucket().getDefaultInstance());
+                .createDrawableItemStack(GTMaterials.Oil.value().getBucket().getDefaultInstance());
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {

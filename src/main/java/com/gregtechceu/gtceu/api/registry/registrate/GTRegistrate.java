@@ -1,7 +1,12 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.MaterialBuilder;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -12,16 +17,19 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -56,6 +64,9 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
@@ -176,6 +187,73 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MACHINE> multiblock(String name,
                                                                                                       MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return entry(name, callback -> new MultiblockMachineBuilder<>(this, name, callback, blockEntityFactory));
+    }
+
+    /// Element Registration
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds,
+                                                   @Nullable String decayTo,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return simple(name, GTRegistries.Keys.ELEMENT,
+                () -> new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope));
+    }
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return element(name, protons, neutrons, -1, null, displayName, symbol, isIsotope);
+    }
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, double halfLifeSeconds,
+                                                   String displayName, String symbol, boolean isIsotope) {
+        return element(name, protons, neutrons, halfLifeSeconds, null, displayName, symbol, isIsotope);
+    }
+
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons,
+                                                   String displayName, String symbol) {
+        return element(name, protons, neutrons, -1, null, displayName, symbol, false);
+    }
+
+    /// Material builder
+
+    public MaterialRegistryEntry material(String name, UnaryOperator<MaterialBuilder> materialBuilderCallback) {
+        return entry(name,
+                callback -> new RegistrateMaterialBuilderWrapper(this, name, callback, materialBuilderCallback))
+                .register();
+    }
+
+    /// TagPrefix Builder
+
+    public TagPrefixBuilder tagPrefix(String name) {
+        return entry(name, callback -> new TagPrefixBuilder(this, name, callback));
+    }
+
+    public TagPrefixBuilder oreTagPrefix(String name, TagKey<Block> miningToolTag) {
+        return entry(name, callback -> new TagPrefixBuilder(this, name, callback)
+                .defaultTagPath("ores/%s")
+                .prefixOnlyTagPath("ores_in_ground/%s")
+                .unformattedTagPath("ores")
+                .materialIconType(MaterialIconType.ore)
+                .miningToolTag(miningToolTag)
+                .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
+                .generationCondition(hasOreProperty));
+    }
+
+    /// Material Icon Set registration
+
+    /**
+     * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
+     *
+     * @param name the name of the iconset
+     */
+    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name) {
+        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(name)));
+    }
+
+    public RegistryEntry<MaterialIconSet, MaterialIconSet> materialIconSet(String name,
+                                                                           @Nullable Holder<MaterialIconSet> parentIconSet) {
+        return simple(name, GTRegistries.Keys.MATERIAL_ICON_SET,
+                () -> new MaterialIconSet(makeResourceLocation(name), parentIconSet, parentIconSet == null));
     }
 
     /// Cover Registration

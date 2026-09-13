@@ -85,6 +85,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                            extends AbstractBuilder<MachineDefinition, DEFINITION, GTRegistrate, SELF> {
 
     protected MachineInstanceFactory<MACHINE> instanceFactory;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    public Function<ResourceLocation, DEFINITION> definitionFactory;
 
     @Getter
     private final MachineDefinition.Properties properties;
@@ -237,7 +239,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                         getOwner().makeResourceLocation("block/machine/" + ctx.getName())))
                 .color(() -> () -> ((itemStack, tintIndex) -> tintIndex == 2 ?
                         GTValues.VC[properties.tier() == -1 ? 0 : properties.tier()] :
-                        tintIndex == 1 ? properties.paintingColor() : -1))
+                        tintIndex == 1 ? properties.paintingColor().getAsInt() : -1))
                 .clientExtension(() -> () -> new IClientItemExtensions() {
 
                     @Override
@@ -262,7 +264,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF paintingColor(int paintingColor) {
+    public SELF paintingColor(IntSupplier paintingColor) {
         properties.paintingColor(paintingColor);
         return getThis();
     }

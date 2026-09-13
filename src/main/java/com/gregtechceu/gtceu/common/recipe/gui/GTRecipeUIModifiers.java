@@ -34,7 +34,7 @@ public class GTRecipeUIModifiers {
 
             if (requiredCoil != null && requiredCoil.getMaterial() != null) {
                 coilRow.child(new TextWidget<>(Text.lang("gtceu.recipe.coil.tier",
-                        Component.translatable(requiredCoil.getMaterial().getUnlocalizedName())
+                        Component.translatable(requiredCoil.getMaterial().value().getUnlocalizedName())
                                 .getString())));
             }
 

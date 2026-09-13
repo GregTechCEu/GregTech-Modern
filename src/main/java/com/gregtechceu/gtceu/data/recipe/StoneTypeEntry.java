@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public class StoneTypeEntry {
     public final Item pressurePlate;
     @Nullable
     public final Item wall;
-    public final @Nullable Material material;
+    public final @Nullable Holder<Material> material;
     public final long materialAmount;
     public final boolean addStoneTag;
     public final boolean addPolishedStoneTag;
@@ -60,7 +61,7 @@ public class StoneTypeEntry {
                            @Nullable Item crackedStone, @Nullable Item slab,
                            @Nullable Item stair, @Nullable Item button,
                            @Nullable Item wall, @Nullable Item pressurePlate,
-                           @Nullable Material material, long materialAmount,
+                           @Nullable Holder<Material> material, long materialAmount,
                            boolean addStoneTag, boolean addPolishedStoneTag,
                            boolean addSlabTag,
                            boolean addStairTag, boolean addButtonTag,
@@ -118,7 +119,7 @@ public class StoneTypeEntry {
         public Item wall = null;
         public Item pressurePlate = null;
         @Nullable
-        private Material material = null;
+        private Holder<Material> material = null;
         private long materialAmount = GTValues.M;
         public boolean addStoneTag = false;
         public boolean addPolishedStoneTag = false;
@@ -193,11 +194,11 @@ public class StoneTypeEntry {
             return this;
         }
 
-        public Builder material(@NotNull Material material) {
+        public Builder material(@NotNull Holder<Material> material) {
             return material(material, GTValues.M);
         }
 
-        public Builder material(@Nullable Material material, long materialAmount) {
+        public Builder material(@Nullable Holder<Material> material, long materialAmount) {
             this.material = material;
             this.materialAmount = materialAmount;
             return this;

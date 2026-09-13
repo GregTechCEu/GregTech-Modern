@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.core.mixins.MappedRegistryAccessor;
 
@@ -12,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Lifecycle;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -20,9 +20,9 @@ import java.util.stream.Stream;
 public final class MaterialRegistry extends MappedRegistry<Material> {
 
     private final Set<String> usedNamespaces = new HashSet<>();
-    private final Map<String, Material> fallbackMaterials = new HashMap<>();
 
-    private boolean isRegistryClosed = false;
+    @Getter
+    private boolean registryClosed = false;
 
     public MaterialRegistry(ResourceKey<Registry<Material>> key) {
         super(key, Lifecycle.stable());
@@ -62,7 +62,7 @@ public final class MaterialRegistry extends MappedRegistry<Material> {
     public Holder.@NotNull Reference<Material> register(int id,
                                                         @NotNull ResourceKey<Material> key, @NotNull Material value,
                                                         @NotNull RegistrationInfo registrationInfo) {
-        if (isRegistryClosed) {
+        if (registryClosed) {
             throw new IllegalStateException(
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the RegisterEvent. Skipping material %s..."
                             .formatted(key.location()));
@@ -71,38 +71,11 @@ public final class MaterialRegistry extends MappedRegistry<Material> {
         return super.register(id, key, value, registrationInfo);
     }
 
-    /**
-     * Set the fallback material for a namespace.
-     * This is only for manual fallback usage.
-     *
-     * @param modId    the namespace to set the fallback for
-     * @param material the fallback material
-     */
-    public void setFallbackMaterial(@NotNull String modId, @NotNull Material material) {
-        fallbackMaterials.put(modId, material);
-    }
-
-    /**
-     * This is only for manual fallback usage.
-     *
-     * @param modId the namespace to get the fallback for
-     * @return the fallback material, used for when another material does not exist
-     */
-    @NotNull
-    public Material getFallbackMaterial(@NotNull String modId) {
-        return fallbackMaterials.getOrDefault(modId, getDefaultFallback());
-    }
-
-    @NotNull
-    public Material getDefaultFallback() {
-        return fallbackMaterials.get(GTCEu.MOD_ID);
-    }
-
     public boolean isFrozen() {
         return ((MappedRegistryAccessor) (Object) this).gtceu$isFrozen();
     }
 
     public void close() {
-        isRegistryClosed = true;
+        registryClosed = true;
     }
 }

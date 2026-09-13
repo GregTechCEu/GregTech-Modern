@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -139,13 +140,13 @@ public class CommonProxy {
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
-        GTRegistries.init(modBus);
+        GTRegistries.init();
         REGISTRATE.registerEventListeners(modBus);
 
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        GTMaterials.init();
+        GTMaterials.init(modBus);
         GTMedicalConditions.init();
         TagPrefix.init();
 
@@ -161,7 +162,7 @@ public class CommonProxy {
         GTCreativeModeTabs.init();
 
         GTBlocks.init();
-        GTFluids.init();
+        GTFluids.init(modBus);
 
         GTDimensionMarkers.init(modBus);
         GTRecipeCapabilities.init();
@@ -223,14 +224,21 @@ public class CommonProxy {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
+            GTRegistries.MATERIALS.close();
+
+            // Because material properties can't be verified while holders may be unresolved, verify all materials after
+            // the registry is closed and all elements have been registered.
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterial);
+
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
             GTCEu.LOGGER.info("Firing material register late event");
-            GTRegistries.MATERIALS.close();
             ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
+
+            GTRegistries.MATERIALS.forEach(Material::verifyMaterial);
 
             GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
                 // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
@@ -269,6 +277,11 @@ public class CommonProxy {
             GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
             GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
+
+            // Other
+            GTBlocks.generateStoneBlocks();
+            GTBlocks.initializeCobbleReplacements();
+
             // --spacer--
         } else if (event.getRegistryKey() == Registries.ITEM) {
             // Material Items & Tools

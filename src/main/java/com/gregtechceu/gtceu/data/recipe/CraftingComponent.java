@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +44,8 @@ public class CraftingComponent {
         return ret;
     }
 
-    public static CraftingComponent of(@NotNull String id, @NotNull TagPrefix prefix, @NotNull Material material) {
+    public static CraftingComponent of(@NotNull String id, @NotNull Holder<TagPrefix> prefix,
+                                       @NotNull Holder<Material> material) {
         return of(id, new MaterialEntry(prefix, material));
     }
 
@@ -62,7 +64,8 @@ public class CraftingComponent {
         return this;
     }
 
-    public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull Material material) {
+    public @NotNull CraftingComponent add(int tier, @NotNull Holder<TagPrefix> prefix,
+                                          @NotNull Holder<Material> material) {
         return add(tier, new MaterialEntry(prefix, material));
     }
 

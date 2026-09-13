@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import com.mojang.datafixers.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -38,6 +38,7 @@ import static com.gregtechceu.gtceu.api.GTValues.M;
 import static com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterialItems.ITEMS_WITHOUT_MATERIAL;
 
+@SuppressWarnings("unused")
 public class ChemicalHelper {
 
     public static @Nullable ItemMaterialInfo getMaterialInfo(@Nullable Object object) {
@@ -77,7 +78,7 @@ public class ChemicalHelper {
         return getMaterialStack(itemStack.getItem());
     }
 
-    public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
+    public static MaterialStack getMaterialStack(MaterialEntry entry) {
         Material entryMaterial = entry.material();
         return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
     }
@@ -103,18 +104,18 @@ public class ChemicalHelper {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     FluidStorageKey.allKeys().stream()
-                            .map(property::get)
+                            .map(Objects.requireNonNull(property)::get)
                             .filter(Objects::nonNull)
                             .map(f -> Pair.of(f, TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(f).getPath())))
                             .filter(pair -> allFluidTags.contains(pair.getSecond()))
                             .forEach(pair -> {
                                 allFluidTags.remove(pair.getSecond());
-                                FLUID_MATERIAL.put(pair.getFirst(), material);
+                                FLUID_MATERIAL.put(Objects.requireNonNull(pair.getFirst()), material);
                             });
                 }
             }
         }
-        return FLUID_MATERIAL.getOrDefault(fluid, null);
+        return FLUID_MATERIAL.get(fluid);
     }
 
     public static @Nullable TagPrefix getPrefix(ItemLike itemLike) {
@@ -127,7 +128,7 @@ public class ChemicalHelper {
         return Objects.requireNonNull(getPrefix(itemLike), "No tag prefix present for %s".formatted(itemLike.asItem()));
     }
 
-    public static TagPrefix getPrefix(ItemStack itemStack) {
+    public static @Nullable TagPrefix getPrefix(ItemStack itemStack) {
         return getPrefix(itemStack.getItem());
     }
 
@@ -202,7 +203,8 @@ public class ChemicalHelper {
 
             // guess an entry based on the item's tags if none are pre-registered.
             materialEntry = ITEM_MATERIAL_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
-                for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
+                ResourceKey<Item> itemResourceKey = BuiltInRegistries.ITEM.getResourceKey(item).orElseThrow();
+                for (TagKey<Item> itemTag : BuiltInRegistries.ITEM.getHolderOrThrow(itemResourceKey).tags().toList()) {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's null and that it's not a parent tag
                     if (materialEntry1 != null &&
@@ -239,7 +241,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        return TAG_MATERIAL_ENTRY.getOrDefault(tag, null);
+        return TAG_MATERIAL_ENTRY.get(tag);
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
@@ -261,10 +263,18 @@ public class ChemicalHelper {
     public static Item getItem(MaterialEntry materialEntry) {
         List<ItemLike> items = getItems(materialEntry);
         if (items.isEmpty()) return Items.AIR;
-        return items.get(0).asItem();
+        return items.getFirst().asItem();
     }
 
     public static Item getItem(TagPrefix tagPrefix, Material material) {
+        return getItem(new MaterialEntry(tagPrefix, material));
+    }
+
+    public static Item getItem(Holder<TagPrefix> tagPrefix, Material material) {
+        return getItem(new MaterialEntry(tagPrefix, material));
+    }
+
+    public static Item getItem(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
         return getItem(new MaterialEntry(tagPrefix, material));
     }
 
@@ -281,6 +291,22 @@ public class ChemicalHelper {
     }
 
     public static ItemStack get(TagPrefix tagPrefix, Material material) {
+        return get(tagPrefix, material, 1);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material) {
+        return get(tagPrefix, material, 1);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
         return get(tagPrefix, material, 1);
     }
 
@@ -316,7 +342,17 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
+    public static Block getBlock(Holder<TagPrefix> orePrefix, Material material) {
+        return getBlock(new MaterialEntry(orePrefix, material));
+    }
+
+    @Nullable
+    public static Block getBlock(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return getBlock(new MaterialEntry(orePrefix, material));
+    }
+
+    @Nullable
+    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, Material material) {
         var tags = orePrefix.getBlockTags(material);
         if (!tags.isEmpty()) {
             return tags.getFirst();
@@ -333,12 +369,32 @@ public class ChemicalHelper {
         return null;
     }
 
+    @Nullable
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return getTag(orePrefix.value(), material.value());
+    }
+
+    @Nullable
+    public static TagKey<Item> getTag(Holder<TagPrefix> orePrefix, Material material) {
+        return getTag(orePrefix.value(), material);
+    }
+
     public static TagKey<Item> getTagOrThrow(TagPrefix orePrefix, Material material) {
         return Objects.requireNonNull(getTag(orePrefix, material),
                 "No item tag for %s %s".formatted(orePrefix, material));
     }
 
-    public static List<TagKey<Item>> getTags(TagPrefix orePrefix, @NotNull Material material) {
+    public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Material material) {
+        return Objects.requireNonNull(getTag(orePrefix, material),
+                "No item tag for %s %s".formatted(orePrefix, material));
+    }
+
+    public static TagKey<Item> getTagOrThrow(Holder<TagPrefix> orePrefix, Holder<Material> material) {
+        return Objects.requireNonNull(getTag(orePrefix, material),
+                "No item tag for %s %s".formatted(orePrefix, material));
+    }
+
+    public static List<TagKey<Item>> getTags(TagPrefix orePrefix, Material material) {
         return orePrefix.getItemTags(material);
     }
 

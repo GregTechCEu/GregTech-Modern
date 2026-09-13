@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -13,7 +14,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -90,6 +91,14 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         this.coverContainer = new PipeCoverContainer(this);
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        if (tag.contains("frameMaterial") && tag.getString("frameMaterial").equals("gtceu:null")) {
+            tag.remove("frameMaterial");
+        }
+        super.loadAdditional(tag, registries);
     }
 
     //////////////////////////////////////
@@ -372,8 +381,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
         } else if (toolType.contains(GTToolType.CROWBAR)) {
             if (frameMaterial != null) {
-                Block.popResource(context.getLevel(), this.getBlockPos(),
-                        GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
+                Block frameBlock = ChemicalHelper.getBlock(TagPrefix.frameGt, frameMaterial);
+                if (frameBlock == null) return Pair.of(null, InteractionResult.FAIL);
+                Block.popResource(context.getLevel(), this.getBlockPos(), frameBlock.asItem().getDefaultInstance());
                 frameMaterial = null;
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }

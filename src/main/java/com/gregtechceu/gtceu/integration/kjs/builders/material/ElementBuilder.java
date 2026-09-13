@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.common.data.GTElements;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +36,7 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     @Override
     public Element createObject() {
-        return GTElements.createAndRegister(id, protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
+        return new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
                 isIsotope);
     }
 }

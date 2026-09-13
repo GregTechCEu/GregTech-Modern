@@ -468,7 +468,7 @@ public class GTMultiMachines {
                     .slice("SXXX", "##F#", "##F#")
                     .where('S', Predicates.controller(definition))
                     .where('X', blocks(CASING_PUMP_DECK.get()))
-                    .where('F', Predicates.frames(GTMaterials.TreatedWood))
+                    .where('F', Predicates.frames(GTMaterials.TreatedWood.value()))
                     .where('H',
                             Predicates.abilities(PartAbility.PUMP_FLUID_HATCH)
                                     .xor(machines(FLUID_EXPORT_HATCH[ULV], FLUID_EXPORT_HATCH[LV])))
@@ -652,7 +652,7 @@ public class GTMultiMachines {
                                     .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                             .setMaxGlobalLimited(2).setPreviewCount(1)))
                             .where('C', blocks(LargeMinerMachine.getCasingState(tier)))
-                            .where('F', frames(LargeMinerMachine.getMaterial(tier)))
+                            .where('F', frames(LargeMinerMachine.getMaterial(tier).value()))
                             .where('#', any())
                             .build())
                     .allowExtendedFacing(true)
@@ -684,7 +684,7 @@ public class GTMultiMachines {
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
-                                DrillingFluid.getLocalizedName()));
+                                DrillingFluid.value().getLocalizedName()));
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range",
