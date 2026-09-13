@@ -52,7 +52,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack stack, @NotNull Capability<T> cap) {
         if (cap == GTCapability.CAPABILITY_MODULAR_ITEM)
             return GTCapability.CAPABILITY_MODULAR_ITEM.orEmpty(cap,
-                    LazyOptional.of(() -> new ModularItemStack(stack, defaultSlotGetter)));
+                    LazyOptional.of(() -> new ModularItemStack(stack, defaultSlotGetter.apply(stack))));
         else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem != null) {

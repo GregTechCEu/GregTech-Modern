@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,23 +13,21 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 public class ModularItemStack implements IModularItem {
 
     // spotless:off
     //spotless:on
 
-    public static final String MODULE_SLOTS_KEY = "ModuleSlots";
     public static final String MODULES_TAG = "Modules";
 
     private final ItemStack stack;
-    private final Function<ItemStack, List<ItemModuleSlot>> defaultSlotGetter;
-
-    public ModularItemStack(ItemStack stack, Function<ItemStack, List<ItemModuleSlot>> defaultSlotGetter) {
+    private final List<ItemModuleSlot> moduleSlots;
+    public ModularItemStack(ItemStack stack, List<ItemModuleSlot> slots) {
         this.stack = stack;
-        this.defaultSlotGetter = defaultSlotGetter;
+        this.moduleSlots = slots;
     }
 
     @Override
@@ -104,36 +100,16 @@ public class ModularItemStack implements IModularItem {
                 .orElse(null);
     }
 
-    public List<ItemModuleSlot> getDefaultSlots() {
-        return this.defaultSlotGetter.apply(stack);
-    }
-
     @Override
     public void setSlots(List<ItemModuleSlot> slots) {
-        CompoundTag tag = new CompoundTag();
-        for (int i = 0; i < slots.size(); i++) {
-            ItemModuleSlot slot = slots.get(i);
-            if (slot != null) tag.put(String.valueOf(i), slot.serializeNBT());
-        }
-        stack.getOrCreateTag().put(MODULE_SLOTS_KEY, tag);
+        clearModules();
+        moduleSlots.clear();
+        moduleSlots.addAll(slots);
     }
 
     @Unmodifiable
     @Override
     public List<ItemModuleSlot> getSlots() {
-        if (!stack.getOrCreateTag().contains(MODULE_SLOTS_KEY, Tag.TAG_COMPOUND)) {
-            List<ItemModuleSlot> slots = getDefaultSlots();
-            setSlots(slots);
-            return slots;
-        } else {
-            List<ItemModuleSlot> slots = new ArrayList<>();
-            CompoundTag tag = stack.getOrCreateTagElement(MODULE_SLOTS_KEY);
-            for (String key : tag.getAllKeys()) {
-                int i = Integer.parseInt(key);
-                while (slots.size() <= i) slots.add(null);
-                slots.set(i, ItemModuleSlot.fromNBT(tag.getCompound(key)));
-            }
-            return slots;
-        }
+        return Collections.unmodifiableList(moduleSlots);
     }
 }
