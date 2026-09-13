@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.EquipmentFoundryRecipeBuilder;
 
@@ -24,7 +25,7 @@ public class EquipmentFoundryRecipeHelper {
 
     public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                                  @NotNull Ingredient equipment,
-                                                 @NotNull Object ingredient, @NotNull ItemModule[] modifiers) {
+                                                 @NotNull Object ingredient, @NotNull ItemModuleType<?>[] modifiers) {
         var builder = new EquipmentFoundryRecipeBuilder(regName).equipment(equipment).modifier(modifiers);
         if (ingredient instanceof Ingredient ing) {
             builder.ingredient(ing);
@@ -48,19 +49,19 @@ public class EquipmentFoundryRecipeHelper {
 
     public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                                  @NotNull Ingredient equipment,
-                                                 @NotNull Object ingredient, @NotNull ItemModule[] modifiers) {
+                                                 @NotNull Object ingredient, @NotNull ItemModuleType<?>[] modifiers) {
         addEquipmentFoundryRecipe(provider, GTCEu.id(regName), equipment, ingredient, modifiers);
     }
 
     public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
                                                  @NotNull Ingredient equipment,
-                                                 @NotNull Object ingredient, @NotNull ItemModule modifier) {
+                                                 @NotNull Object ingredient, @NotNull ItemModuleType<?> modifier) {
         addEquipmentFoundryRecipe(provider, GTCEu.id(regName), equipment, ingredient, modifier);
     }
 
     public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                                  @NotNull Ingredient equipment,
-                                                 @NotNull Object ingredient, @NotNull ItemModule modifier) {
-        addEquipmentFoundryRecipe(provider, regName, equipment, ingredient, new ItemModule[] { modifier });
+                                                 @NotNull Object ingredient, @NotNull ItemModuleType<?> modifier) {
+        addEquipmentFoundryRecipe(provider, regName, equipment, ingredient, new ItemModuleType<?>[] { modifier });
     }
 }

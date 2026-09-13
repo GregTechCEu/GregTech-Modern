@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.machine.misc;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -154,8 +154,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         ItemStack equipment = equipmentSlot.getStackInSlot(0);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(equipment);
         if (modularItem == null) return true;
-        AppliedItemModule module = modularItem.getModuleInSlot(slot);
-        if (module != null) return !(module.getModule().canRemove(module) && module.getModuleItem() != null);
+        ItemModule module = modularItem.getModuleInSlot(slot);
+        if (module != null) return !(module.canRemove() && module.getModuleItem() != null);
         return modularItem.getSlots().size() <= slot;
     }
 
@@ -179,9 +179,9 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         } else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
-            List<AppliedItemModule> appliedItemModules = modularItem.getModules();
-            for (int i = 0; i < appliedItemModules.size(); i++) {
-                AppliedItemModule module = appliedItemModules.get(i);
+            List<ItemModule> modules = modularItem.getModules();
+            for (int i = 0; i < modules.size(); i++) {
+                ItemModule module = modules.get(i);
                 if (i < MAX_MODIFIER_SLOTS && module.getModuleItem() != null) {
                     moduleSlots.setStackInSlot(i, module.getModuleItem());
                 }
@@ -204,7 +204,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             return;
         }
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-        AppliedItemModule prevModule = modularItem == null ? null : modularItem.getModuleInSlot(slot);
+        ItemModule prevModule = modularItem == null ? null : modularItem.getModuleInSlot(slot);
         if (prevModule != null) modularItem.detachModule(prevModule);
         ItemStack newModule = moduleSlots.getStackInSlot(slot);
         if (newModule.isEmpty()) return;

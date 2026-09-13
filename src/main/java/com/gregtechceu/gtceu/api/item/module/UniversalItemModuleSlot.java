@@ -9,10 +9,6 @@ import brachy.modularui.api.drawable.IDrawable;
 
 public class UniversalItemModuleSlot extends ItemModuleSlot {
 
-    public UniversalItemModuleSlot(ResourceLocation id) {
-        super(id);
-    }
-
     @Override
     public boolean acceptsModule(ItemModule module) {
         return true;

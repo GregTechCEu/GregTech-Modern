@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.common.recipe.type;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -40,18 +38,17 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final Ingredient ingredient;
     @Getter
-    private final ItemModule[] modules;
+    private final ItemModuleType<?>[] modules;
 
-    public @Nullable ItemModule getModule(int tier) {
-        int lowestTier = (modules[0] instanceof ITieredItemModule tieredModule) ? tieredModule.getTier() :
-                GTValues.ULV;
+    public @Nullable ItemModuleType<?> getModule(int tier) {
+        int lowestTier = GTValues.ULV;
         if (modules.length == 1) return modules[0];
         if (tier < lowestTier) return null;
         if (tier - lowestTier >= modules.length) return null;
         return modules[tier - lowestTier];
     }
 
-    public @Nullable ItemModule getModule(ItemStack ingredient) {
+    public @Nullable ItemModuleType<?> getModule(ItemStack ingredient) {
         int tier = GTUtil.getTier(ingredient.getItem());
         return getModule(tier);
     }
@@ -74,10 +71,10 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             }
         }
         if (foundIngredient == null || foundItem == null) return false;
-        ItemModule module = getModule(foundIngredient);
+        ItemModuleType<?> module = getModule(foundIngredient);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(foundItem);
         if (module == null || modularItem == null) return false;
-        return (slot == -1 ? modularItem.attach(module, true) : modularItem.attach(module, slot, true)) != null;
+        return (slot == -1 ? modularItem.attach(module, ItemStack.EMPTY, true) : modularItem.attach(module, ItemStack.EMPTY, slot, true)) != null;
     }
 
     @Override
@@ -102,14 +99,12 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         if (foundIngredient == null || result.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemModule module = getModule(foundIngredient);
+        ItemModuleType<?> module = getModule(foundIngredient);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(result);
         if (modularItem == null || module == null) return ItemStack.EMPTY;
-        if (!module.canApplyTo(result)) return ItemStack.EMPTY;
-        AppliedItemModule attachedModule = slot == -1 ? modularItem.attach(module, false) :
-                modularItem.attach(module, slot, false);
+        ItemModule attachedModule = slot == -1 ? modularItem.attach(module, foundIngredient, false) :
+                modularItem.attach(module, foundIngredient, slot, false);
         if (attachedModule != null) {
-            attachedModule.setModuleItem(foundIngredient);
             return result;
         }
         return ItemStack.EMPTY;
@@ -141,9 +136,9 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             Ingredient equipment = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "equipment"), false);
             Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "ingredient"), false);
             JsonArray arr = json.getAsJsonArray("modifier");
-            ItemModule[] modifier = new ItemModule[arr.size()];
+            ItemModuleType<?>[] modifier = new ItemModuleType<?>[arr.size()];
             for (int i = 0; i < arr.size(); i++)
-                modifier[i] = ItemModule.getModuleById(ResourceLocation.parse(arr.get(i).getAsString()));
+                modifier[i] = GTRegistries.ITEM_MODULES.get(ResourceLocation.parse(arr.get(i).getAsString()));
 
             return new EquipmentFoundryRecipe(recipeId, equipment, ingredient, modifier);
         }
@@ -152,8 +147,8 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             Ingredient equipment = Ingredient.fromNetwork(buffer);
             Ingredient ingredient = Ingredient.fromNetwork(buffer);
             int length = buffer.readInt();
-            ItemModule[] modifier = new ItemModule[length];
-            for (int i = 0; i < length; i++) modifier[i] = ItemModule.getModuleById(buffer.readResourceLocation());
+            ItemModuleType<?>[] modifier = new ItemModuleType<?>[length];
+            for (int i = 0; i < length; i++) modifier[i] = GTRegistries.ITEM_MODULES.get(buffer.readResourceLocation());
             return new EquipmentFoundryRecipe(recipeId, equipment, ingredient, modifier);
         }
 
@@ -161,7 +156,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             recipe.equipment.toNetwork(buffer);
             recipe.ingredient.toNetwork(buffer);
             buffer.writeInt(recipe.modules.length);
-            for (ItemModule module : recipe.modules) buffer.writeResourceLocation(module.getId());
+            for (ItemModuleType<?> module : recipe.modules) buffer.writeResourceLocation(module.id());
         }
     }
 }

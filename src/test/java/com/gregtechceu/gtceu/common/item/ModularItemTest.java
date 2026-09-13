@@ -72,7 +72,7 @@ public class ModularItemTest {
     private void attachFullBattery(ItemStack stack) {
         IModularItem modular = GTCapabilityHelper.getModularItem(stack);
         assert modular != null;
-        modular.attach(GTItemModules.BATTERY, false).setModuleItem(chargeToMax(GTItems.ULTIMATE_BATTERY.asStack()));
+        modular.attach(GTItemModules.BATTERY, chargeToMax(GTItems.ULTIMATE_BATTERY.asStack()), false);
     }
 
     private ItemStack chargeToMax(ItemStack stack) {
@@ -132,7 +132,7 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        ItemModule module = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], false);
+        ItemModule module = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], ItemStack.EMPTY, false);
         helper.assertTrue(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute");
 
@@ -157,7 +157,7 @@ public class ModularItemTest {
     public void testFlightModule(GameTestHelper helper) {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
-        modular.attach(GTItemModules.CREATIVE_FLIGHT, false);
+        modular.attach(GTItemModules.CREATIVE_FLIGHT, ItemStack.EMPTY, false);
         attachFullBattery(armor);
         Player player = helper.makeMockSurvivalPlayer();
         helper.assertFalse(player.getAbilities().mayfly, "default survival player had ability to fly");
@@ -173,7 +173,7 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        modular.attach(GTItemModules.DAMAGE_BLOCK[GTValues.LuV], false);
+        modular.attach(GTItemModules.DAMAGE_BLOCK[GTValues.LuV], ItemStack.EMPTY, false);
         attachFullBattery(armor);
 
         helper.setBlock(0, 0, 0, Blocks.SMOOTH_QUARTZ);
@@ -214,8 +214,8 @@ public class ModularItemTest {
         ItemStack sensor = GTItems.SENSOR_LuV.asStack();
         sensor.onItemUseFirst(new UseOnContext(helper.getLevel(), player, InteractionHand.MAIN_HAND, sensor,
                 new BlockHitResult(Vec3.ZERO, Direction.UP, buffer.getBlockPos(), false)));
-        modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], false).setModuleItem(sensor);
-        modular.attach(GTItemModules.BATTERY, false).setModuleItem(GTItems.BATTERY_MV_LITHIUM.asStack());
+        modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], sensor, false);
+        modular.attach(GTItemModules.BATTERY, GTItems.BATTERY_MV_LITHIUM.asStack(), false);
 
         player.setItemSlot(EquipmentSlot.CHEST, armor);
 

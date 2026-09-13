@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.module;
 
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,9 +25,9 @@ public interface IModularItem {
 
     void setSlots(List<ItemModuleSlot> slots);
 
-    <T extends ItemModule> T attach(ItemModuleType<T> module, int slot, boolean simulate);
+    <T extends ItemModule> T attach(ItemModuleType<T> module, ItemStack attachItem, int slot, boolean simulate);
 
-    <T extends ItemModule> T attach(ItemModuleType<T> module, boolean simulate);
+    <T extends ItemModule> T attach(ItemModuleType<T> module, ItemStack attachItem, boolean simulate);
 
     boolean detachModule(ItemModule module);
 

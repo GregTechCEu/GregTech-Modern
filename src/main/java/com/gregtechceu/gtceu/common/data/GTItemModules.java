@@ -21,9 +21,8 @@ public class GTItemModules {
     }
 
     // spotless:off
-    public static final ItemModuleSlot UNIVERSAL_SLOT = new UniversalItemModuleSlot(GTCEu.id("universal"));
-    public static final TieredItemModuleSlot[] TIERED_SLOTS = TieredItemModuleSlot.create(GTCEu.id("tiered"),
-            TieredItemModuleSlot::new);
+    public static final ItemModuleSlot UNIVERSAL_SLOT = new UniversalItemModuleSlot();
+    public static final TieredItemModuleSlot[] TIERED_SLOTS = TieredItemModuleSlot.create(TieredItemModuleSlot::new);
 
     public static final ItemModuleType<SpeedItemModule>[] SPEED = registerTiered(GTCEu.id("speed"), SpeedItemModule.CODEC, SpeedItemModule::new);
     public static final ItemModuleType<EnergyShieldItemModule>[] DAMAGE_BLOCK = registerTiered(GTCEu.id("damage_block"), EnergyShieldItemModule.CODEC, EnergyShieldItemModule::new);
@@ -51,7 +50,7 @@ public class GTItemModules {
 
     public static <T extends ItemModule> ItemModuleType<T> register(ResourceLocation id, Codec<T> codec,
                                                                     Function<ItemStack, T> defaultInstance) {
-        ItemModuleType<T> type = new ItemModuleType<>(codec, defaultInstance);
+        ItemModuleType<T> type = new ItemModuleType<>(id, codec, defaultInstance);
         GTRegistries.ITEM_MODULES.register(id, type);
         return type;
     }
@@ -66,7 +65,7 @@ public class GTItemModules {
             int finalI = i;
 
             ResourceLocation resourceLocation = id.withSuffix("_" + (i + minTier));
-            result[i] = new ItemModuleType<>(codec, s -> constructor.apply(s, finalI));
+            result[i] = new ItemModuleType<>(id, codec, s -> constructor.apply(s, finalI));
             GTRegistries.ITEM_MODULES.register(resourceLocation, result[i]);
         }
         return result;

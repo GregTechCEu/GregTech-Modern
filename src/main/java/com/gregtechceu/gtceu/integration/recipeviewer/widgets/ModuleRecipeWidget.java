@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
@@ -41,7 +38,7 @@ public class ModuleRecipeWidget extends Flow {
 
     public ModuleRecipeWidget(EquipmentFoundryRecipe recipe) {
         super(GuiAxis.Y);
-        ItemModule[] modules = recipe.getModules();
+        ItemModuleType<?>[] modules = recipe.getModules();
         this.recipe = recipe;
         this.tier = new IntValue(0);
         this.width(150)
@@ -62,7 +59,7 @@ public class ModuleRecipeWidget extends Flow {
     }
 
     private IWidget getUIForTier(int tier) {
-        ItemModule module = recipe.getModules()[tier];
+        ItemModuleType<?> module = recipe.getModules()[tier];
         ItemStack[] allModuleItems = getModuleItems(recipe);
         ItemStack[] moduleItems = getModuleItems(recipe, module);
         ItemStack[] allEquipment = getEquipment(recipe, module);
@@ -72,7 +69,7 @@ public class ModuleRecipeWidget extends Flow {
 
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
         assert defaultModularItem != null;
-        AppliedItemModule defaultAppliedModule = defaultModularItem.get(module);
+        ItemModule defaultModule = module.defaultInstance().apply(ItemStack.EMPTY);
 
         // noinspection UnstableApiUsage
         return Flow.col()
@@ -85,7 +82,7 @@ public class ModuleRecipeWidget extends Flow {
                         .horizontalCenter()
                         .child(RecipeViewerSlotWidget.create(ItemStack.class)
                                 .value(ItemStackList.of(List.of(allModuleItems))))
-                        .child(new TextWidget<>(module.getDisplayName(defaultAppliedModule))
+                        .child(new TextWidget<>(defaultModule.getDisplayName())
                                 .scale(0.75f)
                                 .width(100)))
                 .child(Flow.row()
@@ -101,8 +98,8 @@ public class ModuleRecipeWidget extends Flow {
                         .child(RecipeViewerSlotWidget.create(ItemStack.class)
                                 .value(ItemStackList.of(allResults))
                                 .recipeSlotRole(RecipeSlotRole.OUTPUT)))
-                .child(new TextWidget<>(module.getInfo()).horizontalCenter())
-                .childIf(getTier(module) != -1, () -> new TextWidget<>(Component.literal(GTValues.VNF[getTier(module)]))
+                .child(new TextWidget<>(defaultModule.getInfo()).horizontalCenter())
+                .childIf(getTier(defaultModule) != -1, () -> new TextWidget<>(Component.literal(GTValues.VNF[getTier(defaultModule)]))
                         .right(3));
     }
 
@@ -116,7 +113,7 @@ public class ModuleRecipeWidget extends Flow {
         return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
     }
 
-    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, ItemModule module) {
+    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, ItemModuleType<?> module) {
         ItemStack[] stacks = recipe.getIngredient().getItems();
         stacks = Arrays.stream(stacks)
                 .filter(stack -> recipe.getModule(stack) == module)
@@ -124,19 +121,19 @@ public class ModuleRecipeWidget extends Flow {
         return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
     }
 
-    private static ItemStack[] getEquipment(EquipmentFoundryRecipe recipe, ItemModule module) {
+    private static ItemStack[] getEquipment(EquipmentFoundryRecipe recipe, ItemModuleType<?> module) {
         return Arrays.stream(recipe.getEquipment().getItems())
                 .filter(stack -> stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM).map(
-                        modularItem -> modularItem.attach(module, true) != null).orElse(false))
+                        modularItem -> modularItem.attach(module, ItemStack.EMPTY, true) != null).orElse(false))
                 .toArray(ItemStack[]::new);
     }
 
     private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem,
-                                       ItemModule module) {
+                                       ItemModuleType<?> module) {
         ItemStack copy = equipment.copy();
         if (moduleItem == NO_ITEM) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(copy);
-            if (modularItem != null) modularItem.attach(module, false);
+            if (modularItem != null) modularItem.attach(module, ItemStack.EMPTY, false);
             return copy;
         }
         RecipeWrapper wrapper = new RecipeWrapper(new CombinedInvWrapper(

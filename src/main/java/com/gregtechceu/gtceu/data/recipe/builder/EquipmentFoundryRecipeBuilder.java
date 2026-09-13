@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -33,7 +33,7 @@ public class EquipmentFoundryRecipeBuilder {
     @Setter
     private Ingredient ingredient;
     @Setter
-    private ItemModule[] modifier;
+    private ItemModuleType<?>[] modifier;
 
     public EquipmentFoundryRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -60,7 +60,7 @@ public class EquipmentFoundryRecipeBuilder {
     }
 
     protected ResourceLocation defaultId() {
-        return modifier[0].getId();
+        return modifier[0].id();
     }
 
     public void toJson(JsonObject json) {
@@ -68,7 +68,7 @@ public class EquipmentFoundryRecipeBuilder {
         json.add("ingredient", ingredient.toJson());
 
         JsonArray arr = new JsonArray();
-        for (ItemModule module : modifier) arr.add(module.getId().toString());
+        for (ItemModuleType<?> module : modifier) arr.add(module.id().toString());
         json.add("modifier", arr);
     }
 
