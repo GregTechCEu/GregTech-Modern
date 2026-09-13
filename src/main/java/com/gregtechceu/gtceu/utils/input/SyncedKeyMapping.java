@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketKeyDown;
 
+import lombok.Getter;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,6 +34,7 @@ public final class SyncedKeyMapping {
     private static final Int2ObjectMap<SyncedKeyMapping> KEYMAPPINGS = new Int2ObjectOpenHashMap<>();
     private static int syncIndex = 0;
 
+    @Getter
     @OnlyIn(Dist.CLIENT)
     private KeyMapping keyMapping;
     @OnlyIn(Dist.CLIENT)

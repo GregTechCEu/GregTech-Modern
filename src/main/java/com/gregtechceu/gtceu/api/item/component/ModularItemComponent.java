@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMapping;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -120,6 +122,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                                 TooltipFlag isAdvanced) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem != null) {
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.configure_modular_armor", SyncedKeyMappings.MODULAR_ITEM_GUI.getKeyMapping().getKey().getDisplayName()).withStyle(ChatFormatting.GRAY));
             List<ItemModuleSlot> slots = modularItem.getSlots();
             if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("metaarmor.tooltip.modifiers"));
             for (int slotI = 0; slotI < slots.size(); slotI++) {

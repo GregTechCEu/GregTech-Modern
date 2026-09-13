@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
 import com.gregtechceu.gtceu.api.events.RegisterSpoilablesEvent;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.api.mui.factory.ModularItemUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;

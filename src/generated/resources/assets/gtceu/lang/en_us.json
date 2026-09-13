@@ -6141,6 +6141,7 @@
   "tooltip.gtceu.antidote.description.effect_removed": "Removes %s%% of current conditions' effects",
   "tooltip.gtceu.antidote.description.effect_removed.all": "Removes all of current conditions' effects",
   "tooltip.gtceu.antidote.description_shift": "§aCures these conditions:",
+  "tooltip.gtceu.configure_modular_armor": "Press [%s] when holding to configure modular item",
   "tooltip.gtceu.hazard_trigger": "Caused by:",
   "tooltip.gtceu.hazard_trigger.any": "Any contact",
   "tooltip.gtceu.hazard_trigger.inhalation": "Inhalation",
