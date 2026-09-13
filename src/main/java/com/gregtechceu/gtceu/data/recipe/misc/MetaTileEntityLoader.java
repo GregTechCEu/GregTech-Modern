@@ -1194,7 +1194,7 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.rotor, GTMaterials.StainlessSteel), 'H', HULL.get(HV), 'M',
                 GTItems.ELECTRIC_MOTOR_HV.asStack(), 'C', CustomTags.HV_CIRCUITS);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "equipment_foundry", GTBlocks.EQUIPMENT_FOUNDRY.asStack(),
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "equipment_foundry", GTMachines.EQUIPMENT_FOUNDRY.asStack(),
                 "APA",
                 "AHA",
                 "PCP",

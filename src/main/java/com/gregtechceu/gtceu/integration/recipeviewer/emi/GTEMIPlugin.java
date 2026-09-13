@@ -2,10 +2,7 @@ package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTFluids;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
@@ -72,15 +69,15 @@ public class GTEMIPlugin implements EmiPlugin {
         if (ConfigHolder.INSTANCE.machines.doBedrockOres)
             GTBedrockOreEmiCategory.registerWorkStations(registry);
         registry.addWorkstation(GTRecipeEMICategory.CATEGORIES.apply(GTRecipeTypes.CHEMICAL_RECIPES.getCategory()),
-                EmiStack.of(GTMultiMachines.LARGE_CHEMICAL_REACTOR.asStack()));
+                EmiStack.of(GTMultiMachines.LARGE_CHEMICAL_REACTOR));
         registry.addWorkstation(GTModuleEMIRecipe.CATEGORY,
-                EmiIngredient.of(Ingredient.of(GTBlocks.EQUIPMENT_FOUNDRY)));
+                EmiIngredient.of(Ingredient.of(GTMachines.EQUIPMENT_FOUNDRY)));
 
         // Comparators
-        registry.setDefaultComparison(GTItems.TURBINE_ROTOR.asItem(), Comparison.compareNbt());
+        registry.setDefaultComparison(GTItems.TURBINE_ROTOR, Comparison.compareNbt());
 
-        registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT.asItem(), Comparison.compareNbt());
-        registry.removeEmiStacks(EmiStack.of(GTItems.PROGRAMMED_CIRCUIT.asStack()));
+        registry.setDefaultComparison(GTItems.PROGRAMMED_CIRCUIT, Comparison.compareNbt());
+        registry.removeEmiStacks(EmiStack.of(GTItems.PROGRAMMED_CIRCUIT));
         registry.addEmiStack(EmiStack.of(IntCircuitBehaviour.stack(0)));
         registry.addWorkstation(ProgrammedCircuitEmiCategory.CATEGORY, EmiStack.of(IntCircuitBehaviour.stack(0)));
 

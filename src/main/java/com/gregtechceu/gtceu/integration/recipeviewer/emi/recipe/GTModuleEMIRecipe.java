@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.ModuleRecipeWidget;
@@ -20,7 +20,7 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
 
     public static final EmiRecipeCategory CATEGORY = new EmiRecipeCategory(
             GTCEu.id("equipment_foundry"),
-            EmiIngredient.of(Ingredient.of(GTBlocks.EQUIPMENT_FOUNDRY)));
+            EmiIngredient.of(Ingredient.of(GTMachines.EQUIPMENT_FOUNDRY)));
 
     private final EquipmentFoundryRecipe recipe;
 
@@ -48,7 +48,7 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
 
     @Override
     public List<EmiIngredient> getCatalysts() {
-        return List.of(EmiIngredient.of(Ingredient.of(GTBlocks.EQUIPMENT_FOUNDRY)));
+        return List.of(EmiIngredient.of(Ingredient.of(GTMachines.EQUIPMENT_FOUNDRY)));
     }
 
     public static void addRecipes(EmiRegistry registry) {

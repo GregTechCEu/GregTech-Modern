@@ -72,7 +72,6 @@ public class GTGuiTheme {
             .build();
 
     public static final GTGuiTheme EQUIPMENT_FOUNDRY = templateBuilder("equipment_foundry")
-            .panel(GTGuiTextures.IDs.EQUIPMENT_FOUNDRY_BACKGROUND)
             .color(0xff69645f)
             .build();
 

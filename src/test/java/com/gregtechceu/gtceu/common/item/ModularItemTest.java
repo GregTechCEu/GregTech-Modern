@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -94,7 +93,7 @@ public class ModularItemTest {
 
     @GameTest(template = "empty_5x5", batch = "modularItemTests")
     public void testEquipmentFoundry(GameTestHelper helper) {
-        helper.setBlock(0, 0, 0, GTBlocks.EQUIPMENT_FOUNDRY.get());
+        helper.setBlock(0, 0, 0, GTMachines.EQUIPMENT_FOUNDRY.getBlock());
         ItemStack armor = makeModularItem(helper);
 
         IItemHandler top = TestUtils.getItemHandler(helper, BlockPos.ZERO, Direction.UP);

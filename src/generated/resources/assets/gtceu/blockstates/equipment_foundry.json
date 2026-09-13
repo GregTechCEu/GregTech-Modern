@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/equipment_foundry"
+      "model": "gtceu:block/machine/equipment_foundry"
     }
   }
 }

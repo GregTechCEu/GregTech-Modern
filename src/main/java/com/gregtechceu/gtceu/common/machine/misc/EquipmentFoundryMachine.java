@@ -1,71 +1,60 @@
-package com.gregtechceu.gtceu.common.blockentity;
+package com.gregtechceu.gtceu.common.machine.misc;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
-import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-import brachy.modularui.api.IUIHolder;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
-import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
-                                         implements ICapabilityProvider, IUIHolder<PosGuiData> {
+public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine {
 
     public static final int MAX_MODIFIER_SLOTS = 10;
-
-    @Getter
-    private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     @SaveField
     private final CustomItemStackHandler equipmentSlot;
     @SaveField
     private final CustomItemStackHandler moduleSlots;
 
-    public EquipmentFoundryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+    public EquipmentFoundryMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.equipmentSlot = new CustomItemStackHandler(1) {
 
             @Override
@@ -74,14 +63,14 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
             }
 
             @Override
-            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
                 ItemStack itemStack = super.insertItem(slot, stack, simulate);
                 if (!simulate) onEquipmentSlotChanged(null, List.of());
                 return itemStack;
             }
 
             @Override
-            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            public ItemStack extractItem(int slot, int amount, boolean simulate) {
                 ItemStack itemStack = super.extractItem(slot, amount, simulate);
                 if (!simulate) onEquipmentSlotChanged(null, List.of());
                 return itemStack;
@@ -99,7 +88,7 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
             }
 
             @Override
-            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            public boolean isItemValid(int slot, ItemStack stack) {
                 return super.isItemValid(slot, stack) && (!isModifierSlotBlocked(slot) || stack.isEmpty()) &&
                         isModuleValid(slot, stack);
             }
@@ -112,7 +101,7 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
         };
     }
 
-    public boolean isModuleValid(int slot, @NotNull ItemStack stack) {
+    public boolean isModuleValid(int slot, ItemStack stack) {
         if (this.getLevel() == null) {
             return false;
         }
@@ -127,7 +116,11 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
     }
 
     @Override
-    public ModularPanel<?> buildUI(PosGuiData posGuiData, PanelSyncManager panelSyncManager, UISettings uiSettings) {
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        ParentWidget<?> main = new ParentWidget<>().background(GTGuiTextures.BACKGROUND_EQUIPMENT_FOUNDRY).size(168,
+                75);
+
         List<ItemSlot> moduleSlots = new ArrayList<>();
         for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
             moduleSlots.add(new ItemSlot()
@@ -135,22 +128,17 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
                     .slot(new ModularSlot(this.moduleSlots, i)
                             .singletonSlotGroup()));
         }
-        return new ModularPanel<>("equipment_foundry")
-                .size(168, 75)
-                .topRel(.5f, -72, 0)
-                .bindPlayerInventory(-80)
-                .child(GTMuiWidgets.createTitleBar(GTBlocks.EQUIPMENT_FOUNDRY::asStack, 176,
-                        GTGuiTextures.BACKGROUND_STEEL))
-                .child(new ItemSlot()
-                        .left(10)
-                        .top(28)
-                        .background()
-                        .slot(equipmentSlot, 0)
-                        .slot(new ModularSlot(equipmentSlot, 0)
-                                .singletonSlotGroup()
-                                .changeListener((stack, onlyAmount, client, init) -> {
-                                    onEquipmentSlotChanged(posGuiData.getPlayer(), moduleSlots);
-                                })))
+
+        main.child(new ItemSlot()
+                .left(10)
+                .top(28)
+                .background()
+                .slot(equipmentSlot, 0)
+                .slot(new ModularSlot(equipmentSlot, 0)
+                        .singletonSlotGroup()
+                        .changeListener((stack, onlyAmount, client, init) -> {
+                            onEquipmentSlotChanged(guiData.getPlayer(), moduleSlots);
+                        })))
                 .child(new Grid()
                         .background()
                         .left(34)
@@ -158,6 +146,8 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
                         .minColWidth(26)
                         .minRowHeight(39)
                         .gridOf(5, moduleSlots));
+
+        mainWidget.child(main);
     }
 
     public boolean isModifierSlotBlocked(int slot) {
@@ -197,9 +187,7 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
             List<ItemModuleSlot> slots = modularItem.getSlots();
             for (int i = 0; i < slots.size() && i < slotWidgets.size(); i++) {
                 ItemSlot slotWidget = slotWidgets.get(i);
-                if (slots.get(i) != null && slotWidget != null) {
-                    slotWidget.background(slots.get(i).getSlotTexture());
-                }
+                slotWidget.background(slots.get(i).getSlotTexture());
             }
         }
     }
@@ -233,7 +221,7 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         if (cap == ForgeCapabilities.ITEM_HANDLER && side != null) {
             if (side.getAxis().isVertical())
                 return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> equipmentSlot));

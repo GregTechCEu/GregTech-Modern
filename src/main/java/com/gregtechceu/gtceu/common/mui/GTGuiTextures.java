@@ -28,7 +28,6 @@ public interface GTGuiTextures {
         String BRONZE_BACKGROUND = "gtceu:bronze_bg";
         String STEEL_BACKGROUND = "gtceu:steel_bg";
         String PRIMITIVE_BACKGROUND = "gtceu:primitive_bg";
-        String EQUIPMENT_FOUNDRY_BACKGROUND = "gregtech_equipment_foundry_bg";
 
         String STANDARD_SLOT = "gtceu:standard_slot";
         String BRONZE_SLOT = "gtceu:bronze_slot";
@@ -101,7 +100,6 @@ public interface GTGuiTextures {
             .location(GTCEu.MOD_ID, "textures/gui/widget/equipment_foundry_background.png")
             .imageSize(168, 75)
             .adaptable(4)
-            .name(IDs.EQUIPMENT_FOUNDRY_BACKGROUND)
             .build();
 
     UITexture BLANK_TRANSPARENT = fullImage("textures/gui/base/blank_transparent.png");
