@@ -18,15 +18,16 @@ public interface IMachineBuilderKJS {
     default void generateMachineModel(@Nullable MachineBuilder<?, ?, ?> builder,
                                       @Nullable MachineDefinition definition) {
         if (builder == null || definition == null) return;
-        if (builder.model() == null && builder.blockModel() == null) return;
+        if (builder.properties().model() == null && builder.properties().blockModel() == null) return;
 
         // Fake a data provider for the GT model builders
         DataGenContext<Block, MetaMachineBlock> context = new DataGenContext<>(definition::getBlock,
                 definition.getName(), definition.getId());
-        if (builder.blockModel() != null) {
-            builder.blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);
+        if (builder.properties().blockModel() != null) {
+            builder.properties().blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);
         } else {
-            GTMachineModels.createMachineModel(builder.model()).accept(context, RuntimeBlockstateProvider.INSTANCE);
+            GTMachineModels.createMachineModel(builder.properties().model()).accept(context,
+                    RuntimeBlockstateProvider.INSTANCE);
         }
     }
 }

@@ -56,7 +56,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
                              PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-        if (CREATIVE_FLUID_ITEM == null) CREATIVE_FLUID_ITEM = GTMachines.CREATIVE_FLUID.getItem();
+        if (CREATIVE_FLUID_ITEM == null) CREATIVE_FLUID_ITEM = GTMachines.CREATIVE_FLUID.asItem();
 
         LargeFluidContent content = stack.get(GTDataComponents.LARGE_FLUID_CONTENT);
         if (content != null) {

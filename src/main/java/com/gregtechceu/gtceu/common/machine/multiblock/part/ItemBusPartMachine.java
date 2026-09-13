@@ -221,9 +221,9 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         BlockPos blockPos = getBlockPos();
         MachineDefinition newDefinition = null;
         if (io == IO.IN) {
-            newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()];
+            newDefinition = GTMachines.ITEM_EXPORT_BUS[this.getTier()].value();
         } else if (io == IO.OUT) {
-            newDefinition = GTMachines.ITEM_IMPORT_BUS[this.getTier()];
+            newDefinition = GTMachines.ITEM_IMPORT_BUS[this.getTier()].value();
         }
 
         if (newDefinition == null) return false;
