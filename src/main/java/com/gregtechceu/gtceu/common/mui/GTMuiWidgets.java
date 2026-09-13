@@ -641,6 +641,7 @@ public class GTMuiWidgets {
         if (bucketMode == BucketMode.MILLI_BUCKET) return Integer.parseInt(uiInput);
         if (!uiInput.contains(".")) return Integer.parseInt(uiInput) * 1000;
         String[] splitInput = uiInput.split("\\.");
+        if (splitInput.length > 1 && splitInput[1].length() > 3) splitInput[1] = splitInput[1].substring(0, 3);
         return (Integer.parseInt(splitInput[0]) * 1000) + Integer.parseInt(splitInput[1]);
     }
 
