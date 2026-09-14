@@ -4,14 +4,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.*;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.drawable.IDrawable;
@@ -64,7 +61,7 @@ public class ModuleRecipeWidget extends Flow {
         ItemStack[] moduleItems = getModuleItems(recipe, module);
         ItemStack[] allEquipment = getEquipment(recipe, module);
         List<ItemStack> allResults = Arrays.stream(allEquipment)
-                .map(equipment -> getResult(recipe, equipment, moduleItems[0], module))
+                .map(equipment -> getResult(recipe, equipment, moduleItems[0]))
                 .toList();
 
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
@@ -129,17 +126,12 @@ public class ModuleRecipeWidget extends Flow {
                 .toArray(ItemStack[]::new);
     }
 
-    private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem,
-                                       ItemModuleType<?> module) {
+    private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem) {
         ItemStack copy = equipment.copy();
         if (moduleItem == NO_ITEM) {
-            IModularItem modularItem = GTCapabilityHelper.getModularItem(copy);
-            if (modularItem != null) modularItem.attach(module, ItemStack.EMPTY, false);
             return copy;
         }
-        RecipeWrapper wrapper = new RecipeWrapper(new CombinedInvWrapper(
-                new CustomItemStackHandler(copy),
-                new CustomItemStackHandler(moduleItem)));
-        return recipe.assemble(wrapper, 0);
+        recipe.applyToItem(copy, moduleItem, 0);
+        return copy;
     }
 }

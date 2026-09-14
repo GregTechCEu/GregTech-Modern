@@ -38,14 +38,13 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final Ingredient ingredient;
     @Getter
-    private final ItemModuleType<?>[] modules;
+    private final @Nullable ItemModuleType<?>[] modules;
 
     public @Nullable ItemModuleType<?> getModule(int tier) {
-        int lowestTier = GTValues.ULV;
-        if (modules.length == 1) return modules[0];
-        if (tier < lowestTier) return null;
-        if (tier - lowestTier >= modules.length) return null;
-        return modules[tier - lowestTier];
+        for (var module: modules) {
+            if (module != null && module.tier() == tier) return module;
+        }
+        return modules[0];
     }
 
     public @Nullable ItemModuleType<?> getModule(ItemStack ingredient) {
@@ -55,32 +54,30 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
     @Override
     public boolean matches(RecipeWrapper container, Level level) {
-        return matches(container, -1);
+        return matches(container.getItem(0), container.getItem(1));
     }
 
-    public boolean matches(RecipeWrapper container, int slot) {
-        ItemStack foundItem = null, foundIngredient = null;
-        for (int i = 0; i < container.getContainerSize(); ++i) {
-            ItemStack stack = container.getItem(i);
-            if (!stack.isEmpty()) {
-                if (equipment.test(stack) && foundItem == null) {
-                    foundItem = stack;
-                } else if (ingredient.test(stack)) {
-                    foundIngredient = stack;
-                }
-            }
-        }
-        if (foundIngredient == null || foundItem == null) return false;
-        ItemModuleType<?> module = getModule(foundIngredient);
-        IModularItem modularItem = GTCapabilityHelper.getModularItem(foundItem);
+    public boolean matches(ItemStack equipmentItem, ItemStack itemToApply) {
+        if (!equipment.test(equipmentItem) || !ingredient.test(itemToApply)) return false;
+
+        ItemModuleType<?> module = getModule(itemToApply);
+        IModularItem modularItem = GTCapabilityHelper.getModularItem(equipmentItem);
         if (module == null || modularItem == null) return false;
-        return (slot == -1 ? modularItem.attach(module, ItemStack.EMPTY, true) :
-                modularItem.attach(module, ItemStack.EMPTY, slot, true)) != null;
+        return modularItem.attach(module, itemToApply, true) != null;
     }
 
     @Override
     public ItemStack assemble(RecipeWrapper container, RegistryAccess registryAccess) {
         return assemble(container, -1);
+    }
+
+    public void applyToItem(ItemStack equipmentItem, ItemStack itemToApply, int slot) {
+        if (!equipment.test(equipmentItem) || !ingredient.test(itemToApply)) return;
+
+        ItemModuleType<?> module = getModule(itemToApply);
+        IModularItem modularItem = GTCapabilityHelper.getModularItem(equipmentItem);
+        if (module == null || modularItem == null) return;
+        modularItem.attach(module, itemToApply, slot, false);
     }
 
     public ItemStack assemble(RecipeWrapper container, int slot) {

@@ -13,10 +13,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
-import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -25,8 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
@@ -42,7 +38,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine {
 
@@ -89,7 +84,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
 
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
-                return super.isItemValid(slot, stack) && (!isModifierSlotBlocked(slot) || stack.isEmpty()) &&
+                return (!isModifierSlotBlocked(slot) || stack.isEmpty()) &&
                         isModuleValid(slot, stack);
             }
 
@@ -105,14 +100,10 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         if (this.getLevel() == null) {
             return false;
         }
-        NonNullList<ItemStack> stacks = NonNullList.create();
-        stacks.add(this.equipmentSlot.getStackInSlot(0));
-        stacks.add(stack);
-        RecipeWrapper newWrapper = new RecipeWrapper(new CustomItemStackHandler(stacks));
 
         return getLevel().getRecipeManager()
-                .getRecipeFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get(), newWrapper, this.getLevel())
-                .map(recipe -> recipe.matches(newWrapper, slot)).orElse(false);
+                .getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())
+                .stream().anyMatch(recipe -> recipe.matches(this.equipmentSlot.getStackInSlot(0), stack));
     }
 
     @Override
@@ -199,26 +190,22 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             return;
         }
 
-        ItemStack stack = equipmentSlot.getStackInSlot(0);
-        if (stack.isEmpty()) {
+        ItemStack equipmentItem = equipmentSlot.getStackInSlot(0);
+        if (equipmentItem.isEmpty()) {
             return;
         }
-        IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+
+        IModularItem modularItem = GTCapabilityHelper.getModularItem(equipmentItem);
         ItemModule prevModule = modularItem == null ? null : modularItem.getModuleInSlot(slot);
         if (prevModule != null) modularItem.detachModule(prevModule);
+
         ItemStack newModule = moduleSlots.getStackInSlot(slot);
         if (newModule.isEmpty()) return;
-        RecipeWrapper recipeWrapper = new RecipeWrapper(new CombinedInvWrapper(
-                this.equipmentSlot,
-                new CustomItemStackHandler(newModule)));
-        Optional<EquipmentFoundryRecipe> recipe = getLevel().getRecipeManager().getRecipeFor(
-                GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get(),
-                recipeWrapper,
-                this.getLevel());
-        if (recipe.isPresent()) {
-            ItemStack newStack = recipe.get().assemble(recipeWrapper, slot);
-            if (newStack.isEmpty()) return;
-            equipmentSlot.setStackInSlot(0, newStack);
+
+        for (var recipe: getLevel().getRecipeManager().getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())) {
+            if (recipe.matches(equipmentItem, newModule)) {
+                recipe.applyToItem(equipmentItem, newModule, slot);
+            }
         }
     }
 

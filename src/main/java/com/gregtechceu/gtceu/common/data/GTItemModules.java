@@ -50,7 +50,7 @@ public class GTItemModules {
 
     public static <T extends ItemModule> ItemModuleType<T> register(ResourceLocation id, Codec<T> codec,
                                                                     Function<ItemStack, T> defaultInstance) {
-        ItemModuleType<T> type = new ItemModuleType<>(id, codec, defaultInstance);
+        ItemModuleType<T> type = new ItemModuleType<>(id, -1, codec, defaultInstance);
         GTRegistries.ITEM_MODULES.register(id, type);
         return type;
     }
@@ -65,7 +65,7 @@ public class GTItemModules {
             int finalI = i;
 
             ResourceLocation resourceLocation = id.withSuffix("_" + (i + minTier));
-            result[i] = new ItemModuleType<>(id, codec, s -> constructor.apply(s, finalI));
+            result[i] = new ItemModuleType<>(id, i, codec, s -> constructor.apply(s, finalI));
             GTRegistries.ITEM_MODULES.register(resourceLocation, result[i]);
         }
         return result;

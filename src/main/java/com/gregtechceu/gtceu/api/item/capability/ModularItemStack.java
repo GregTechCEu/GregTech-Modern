@@ -32,7 +32,7 @@ public class ModularItemStack implements IModularItem {
         this.moduleSlots = slots;
 
         modules = new ArrayList<>();
-        if (!stack.getOrCreateTagElement(MODULES_TAG).isEmpty()) {
+        if (stack.getOrCreateTag().contains(MODULES_TAG)) {
             ModularItemData data = ModularItemData.CODEC
                     .decode(NbtOps.INSTANCE, stack.getOrCreateTagElement(MODULES_TAG))
                     .getOrThrow(false, GTCEu.LOGGER::error).getFirst();
@@ -46,12 +46,16 @@ public class ModularItemStack implements IModularItem {
         }
     }
 
-    public void saveModuleData() {}
+    public void saveModuleData() {
+        stack.getOrCreateTag().put(MODULES_TAG, ModularItemData.CODEC
+                .encodeStart(NbtOps.INSTANCE, new ModularItemData(modules))
+                .getOrThrow(false, GTCEu.LOGGER::error));
+    }
 
     @Override
     public @Nullable <T extends ItemModule> T attach(ItemModuleType<T> moduleType, ItemStack attachItem, int slot,
                                                      boolean simulate) {
-        ItemModule module = moduleType.defaultInstance().apply(attachItem);
+        T module = moduleType.defaultInstance().apply(attachItem);
 
         ItemModuleSlot moduleSlot = getSlots().get(slot);
         if (moduleSlot == null || !moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
@@ -61,8 +65,9 @@ public class ModularItemStack implements IModularItem {
             module.setAppliedTo(stack);
             module.onAttach();
             modules.add(module);
+            saveModuleData();
         }
-        return null;
+        return module;
     }
 
     @Override
@@ -89,6 +94,7 @@ public class ModularItemStack implements IModularItem {
         module.setModularItemStack(null);
         module.setAppliedTo(null);
         modules.remove(module);
+        saveModuleData();
         return true;
     }
 
@@ -121,12 +127,11 @@ public class ModularItemStack implements IModularItem {
         return Collections.unmodifiableList(moduleSlots);
     }
 
-    private record ModularItemData(List<ItemModule> modules, List<ItemStack> moduleItems) {
+    private record ModularItemData(List<ItemModule> modules) {
 
         // spotless:off
         public static final Codec<ModularItemData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ItemModule.CODEC.listOf().fieldOf("modules").forGetter(ModularItemData::modules),
-                ItemStack.CODEC.listOf().fieldOf("module_items").forGetter(ModularItemData::moduleItems)
+                ItemModule.CODEC.listOf().optionalFieldOf("modules", new ArrayList<>()).forGetter(ModularItemData::modules)
         ).apply(instance, ModularItemData::new));
         //spotless:on
     }
