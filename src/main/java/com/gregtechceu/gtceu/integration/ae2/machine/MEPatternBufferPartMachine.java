@@ -874,13 +874,13 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         } else {
             if (!customName.isEmpty()) {
                 return new PatternContainerGroup(
-                        AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER.getItem()),
+                        AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER),
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
                 return new PatternContainerGroup(
-                        AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER.getItem()),
-                        GTAEMachines.ME_PATTERN_BUFFER.getItem().getDescription(),
+                        AEItemKey.of(GTAEMachines.ME_PATTERN_BUFFER),
+                        GTAEMachines.ME_PATTERN_BUFFER.asItem().getDescription(),
                         Collections.emptyList());
             }
         }

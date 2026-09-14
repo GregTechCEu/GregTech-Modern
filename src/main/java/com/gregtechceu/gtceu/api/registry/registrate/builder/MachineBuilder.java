@@ -22,11 +22,10 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.ItemWithBERModelRenderer;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
@@ -35,6 +34,7 @@ import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -44,36 +44,33 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
-import brachy.modularui.theme.ThemeAPI;
+import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.*;
@@ -83,81 +80,39 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 @SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extends MetaMachine,
-        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>> {
-
-    protected final GTRegistrate registrate;
-    protected final String name;
+        SELF extends MachineBuilder<DEFINITION, MACHINE, SELF>>
+                           extends AbstractBuilder<MachineDefinition, DEFINITION, GTRegistrate, SELF> {
 
     protected MachineInstanceFactory<MACHINE> instanceFactory;
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    public Function<ResourceLocation, DEFINITION> definitionFactory;
 
-    private @Nullable BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> blockBuilder;
-    private @Nullable BlockEntry<? extends MetaMachineBlock> blockEntry;
-
-    private @Nullable ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> itemBuilder;
-
-    private @Nullable BlockEntityEntry<MACHINE> blockEntityEntry;
-
-    @Nullable
     @Getter
-    private MachineBuilder.ModelInitializer model = null;
-    @Getter
-    private @Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel = null;
-    @Getter
-    protected final Map<Property<?>, @Nullable Comparable<?>> modelProperties = new IdentityHashMap<>();
-    private VoxelShape shape = Shapes.block();
-    private RotationState rotationState = RotationState.NON_Y_AXIS;
+    private final MachineDefinition.Properties properties;
 
-    /**
-     * Whether this machine can be rotated or face upwards.
-     */
-    private boolean allowExtendedFacing = false;
-    private boolean hasBER = ConfigHolder.INSTANCE.client.machinesHaveBERsByDefault;
-    private boolean renderMultiblockWorldPreview = true;
-    private boolean renderMultiblockXEIPreview = true;
+    private boolean defaultBlock = true;
+    private boolean defaultItem = true;
+
     private NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister = NonNullConsumer.noop();
-    @Getter // getter for KJS
-    private GTRecipeType[] recipeTypes = new GTRecipeType[0];
-    @Getter // getter for KJS
-    private int tier = -1;
-    private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
-    private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
-    private PartAbility[] abilities = new PartAbility[0];
-    private final List<Component> tooltips = new ArrayList<>();
-    private @Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
-    private boolean alwaysTryModifyRecipe;
-    @Getter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
-    @Getter
-    private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
-    @Getter
-    private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
-    @Getter
-    private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
-    @Getter
-    private boolean regressWhenWaiting = true;
-    private boolean allowCoverOnFront = false;
-    @Getter
-    @Nullable
-    private PanelFactory ui = null;
-    @Getter
-    private String themeId = ThemeAPI.DEFAULT_ID;
-    private @Nullable Supplier<BlockState> appearance;
-    @Getter // getter for KJS
-    @Nullable
-    private String langValue = null;
 
     public MachineBuilder(GTRegistrate registrate, String name,
-                          Function<ResourceLocation, DEFINITION> definitionFactory,
+                          BuilderCallback callback,
                           MachineInstanceFactory<MACHINE> instanceFactory) {
-        this.registrate = registrate;
-        this.name = name;
+        super(registrate, registrate, name, callback, GTRegistries.Keys.MACHINE);
         this.instanceFactory = instanceFactory;
-        this.definitionFactory = definitionFactory;
-
+        this.properties = createProperties();
         this.defaultLang();
+    }
+
+    protected MachineDefinition.Properties createProperties() {
+        return new MachineDefinition.Properties();
+    }
+
+    protected MachineDefinition.Properties getProperties() {
+        return properties;
+    }
+
+    @Override
+    public GTRegistrate getOwner() {
+        return (GTRegistrate) super.getOwner();
     }
 
     @SuppressWarnings("unchecked")
@@ -175,56 +130,38 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
-        this.blockModel = blockModel;
+        properties.blockModel(blockModel);
         return getThis();
     }
 
     public SELF shape(VoxelShape shape) {
-        this.shape = shape;
+        properties.shape(shape);
         return getThis();
     }
 
     public SELF rotationState(RotationState rotationState) {
-        this.rotationState = rotationState;
+        properties.rotationState(rotationState);
         return getThis();
     }
 
     public SELF allowExtendedFacing(boolean allowExtendedFacing) {
-        this.allowExtendedFacing = allowExtendedFacing;
+        properties.allowExtendedFacing(allowExtendedFacing);
         return getThis();
     }
 
     public SELF hasBER(boolean hasBER) {
-        this.hasBER = hasBER;
-        return getThis();
-    }
-
-    public SELF renderMultiblockWorldPreview(boolean renderMultiblockWorldPreview) {
-        this.renderMultiblockWorldPreview = renderMultiblockWorldPreview;
-        return getThis();
-    }
-
-    public SELF renderMultiblockXEIPreview(boolean renderMultiblockXEIPreview) {
-        this.renderMultiblockXEIPreview = renderMultiblockXEIPreview;
+        properties.hasBER(hasBER);
         return getThis();
     }
 
     /**
-     * Gets the {@link MetaMachineBlock} builder for this machine so that further customization can be done.<br>
+     * Creates a {@link MetaMachineBlock} builder for this machine so that further customization can be done.<br>
      * If the {@link BlockBuilder} has not been created yet, then the default one is created.
      *
      * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
      */
     public BlockBuilder<? extends MetaMachineBlock, MachineBuilder<DEFINITION, MACHINE, SELF>> block() {
-        if (blockBuilder != null) return blockBuilder;
         return block(MetaMachineBlock::new);
-    }
-
-    @SuppressWarnings("unchecked")
-    public NonNullSupplier<DEFINITION> asSupplier() {
-        // TODO replace with better method once this is converted to an actual registrate builder
-        return () -> (DEFINITION) Objects
-                .requireNonNull(GTRegistries.MACHINES.get(registrate.makeResourceLocation(name)));
     }
 
     /**
@@ -238,12 +175,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
      */
     public <B extends MetaMachineBlock> BlockBuilder<B, MachineBuilder<DEFINITION, MACHINE, SELF>> block(BiFunction<BlockBehaviour.Properties, DEFINITION, B> factory) {
-        if (blockBuilder != null) throw new IllegalStateException(
-                "Block builder for machine %s has already been initialized.".formatted(name));
+        if (!defaultBlock) throw new IllegalStateException(
+                "Block builder for machine %s has already been initialized.".formatted(getName()));
 
-        var newBlockBuilder = this.registrate.block(this, name, properties -> {
+        defaultBlock = false;
+
+        return this.getOwner().block(this, getName(), properties1 -> {
             MachineDefinition.setBuilt(this.asSupplier().get());
-            var b = factory.apply(properties, this.asSupplier().get());
+            var b = factory.apply(properties1, this.asSupplier().get());
             MachineDefinition.clearBuilt();
             return b;
         })
@@ -251,21 +190,18 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                 .initialProperties(() -> Blocks.DISPENSER)
                 .properties(BlockBehaviour.Properties::noLootTable)
                 .addLayer(() -> RenderType::cutout)
-                .exBlockstate(this.blockModel != null ? this.blockModel : createMachineModel(this.model))
-                .onRegister(b -> Arrays.stream(this.abilities).forEach(a -> a.register(this.tier, b)));
-
-        blockBuilder = newBlockBuilder;
-        return newBlockBuilder;
+                .exBlockstate(properties.blockModel() != null ? properties.blockModel() :
+                        createMachineModel(properties.model()))
+                .onRegister(b -> Arrays.stream(properties.abilities()).forEach(a -> a.register(properties.tier(), b)));
     }
 
     /**
-     * Gets the {@link MetaMachineItem} builder for this machine so that further customization can be done.<br>
+     * Creates {@link MetaMachineItem} builder for this machine so that further customization can be done.<br>
      * If the {@link ItemBuilder} has not been created yet, then the default one is created.
      *
      * @return The {@link ItemBuilder} for the {@link MetaMachineItem}
      */
     public ItemBuilder<? extends MetaMachineItem, MachineBuilder<DEFINITION, MACHINE, SELF>> item() {
-        if (itemBuilder != null) return itemBuilder;
         return item(MetaMachineItem::new);
     }
 
@@ -279,22 +215,26 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * @return the {@link ItemBuilder} for the {@link MetaMachineItem}
      */
     public <I extends MetaMachineItem> ItemBuilder<I, MachineBuilder<DEFINITION, MACHINE, SELF>> item(BiFunction<MetaMachineBlock, Item.Properties, I> factory) {
-        if (itemBuilder != null) throw new IllegalStateException(
-                "Item builder for machine %s has already been initialized.".formatted(name));
+        if (!defaultItem) throw new IllegalStateException(
+                "Item builder for machine %s has already been initialized.".formatted(getName()));
 
-        var newItemBuilder = this.registrate
-                .item(this, name,
-                        properties -> factory.apply(
-                                Objects.requireNonNull(blockEntry, "Item factory called before block resolved.").get(),
-                                properties))
+        defaultItem = false;
+
+        return getOwner()
+                .item(this, getName(),
+                        properties1 -> factory.apply(
+                                (MetaMachineBlock) Objects
+                                        .requireNonNull(BlockEntry.cast(getOwner().get(getName(), Registries.BLOCK)),
+                                                "Item factory called before block resolved.")
+                                        .get(),
+                                properties1))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 // copied from BlockBuilder#item
-                .model((ctx, prov) -> {
-                    prov.withExistingParent(ctx.getName(),
-                            registrate.makeResourceLocation("block/machine/" + ctx.getName()));
-                })
+                .model((ctx, prov) -> prov.withExistingParent(ctx.getName(),
+                        getOwner().makeResourceLocation("block/machine/" + ctx.getName())))
                 .color(() -> () -> ((itemStack, tintIndex) -> tintIndex == 2 ?
-                        GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1))
+                        GTValues.VC[properties.tier() == -1 ? 0 : properties.tier()] :
+                        tintIndex == 1 ? properties.paintingColor() : -1))
                 .clientExtension(() -> () -> new IClientItemExtensions() {
 
                     @Override
@@ -302,9 +242,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                         return ItemWithBERModelRenderer.INSTANCE;
                     }
                 });
-
-        itemBuilder = newItemBuilder;
-        return newItemBuilder;
     }
 
     public SELF onBlockEntityRegister(NonNullConsumer<BlockEntityType<MACHINE>> onBlockEntityRegister) {
@@ -313,92 +250,95 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF tier(int tier) {
-        this.tier = tier;
+        properties.tier(tier);
         return getThis();
     }
 
     public SELF recipeOutputLimits(Reference2IntMap<RecipeCapability<?>> recipeOutputLimits) {
-        this.recipeOutputLimits = recipeOutputLimits;
+        properties.recipeOutputLimits(recipeOutputLimits);
         return getThis();
     }
 
     public SELF paintingColor(int paintingColor) {
-        this.paintingColor = paintingColor;
+        properties.paintingColor(paintingColor);
         return getThis();
     }
 
     public SELF tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
-        this.tooltipBuilder = tooltipBuilder;
+        properties.tooltipBuilder(tooltipBuilder);
         return getThis();
     }
 
     public SELF alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
-        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        properties.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
         return getThis();
     }
 
     public SELF beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
-        this.beforeWorking = beforeWorking;
+        properties.beforeWorking(beforeWorking);
         return getThis();
     }
 
     public SELF onWorking(Predicate<IRecipeLogicMachine> onWorking) {
-        this.onWorking = onWorking;
+        properties.onWorking(onWorking);
         return getThis();
     }
 
     public SELF onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
-        this.onWaiting = onWaiting;
+        properties.onWaiting(onWaiting);
         return getThis();
     }
 
     public SELF afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
-        this.afterWorking = afterWorking;
+        properties.afterWorking(afterWorking);
         return getThis();
     }
 
     public SELF regressWhenWaiting(boolean regressWhenWaiting) {
-        this.regressWhenWaiting = regressWhenWaiting;
+        properties.regressWhenWaiting(regressWhenWaiting);
         return getThis();
     }
 
     public SELF allowCoverOnFront(boolean allowCoverOnFront) {
-        this.allowCoverOnFront = allowCoverOnFront;
+        properties.allowCoverOnFront(allowCoverOnFront);
         return getThis();
     }
 
     public SELF appearance(Supplier<BlockState> appearance) {
-        this.appearance = appearance;
+        properties.appearance(appearance);
         return getThis();
     }
 
     public SELF ui(PanelFactory ui) {
-        this.ui = ui;
+        properties.ui(ui);
         return getThis();
     }
 
     public SELF defaultLang() {
-        return lang(RegistrateLangProvider.toEnglishName(name));
+        return lang(RegistrateLangProvider.toEnglishName(getName()));
     }
 
     public SELF lang(String name) {
         return langValue(name);
     }
 
-    public SELF langValue(String langValue) {
-        this.langValue = langValue;
+    public SELF langValue(@Nullable String langValue) {
+        if (langValue != null) {
+            this.lang(MachineDefinition::getDescriptionId, langValue);
+        } else {
+            this.setData(ProviderType.LANG, NonNullBiConsumer.noop());
+        }
+        properties.langValue(langValue);
         return getThis();
     }
 
     public SELF recipeType(GTRecipeType type) {
-        // noinspection ConstantValue
-        if (type == null) {
-            GTCEu.LOGGER.error(
-                    "Tried to set null recipe type on machine {}. Did you create the recipe type before this machine?",
-                    this.registrate.makeResourceLocation(this.name));
-            return getThis();
-        }
-        this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
+        Objects.requireNonNull(type,
+                "Tried to set null recipe type on machine %s. Did you create the recipe type before this machine?"
+                        .formatted(
+                                getOwner().makeResourceLocation(getName())));
+
+        properties.recipeTypes(ArrayUtils.add(properties.recipeTypes(), type));
         initRecipeMachineModelProperties(type);
         return getThis();
     }
@@ -408,13 +348,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         Validate.noNullElements(types, "Cannot add null recipe type to machine.");
 
         List<GTRecipeType> typeList = new ArrayList<>();
-        Collections.addAll(typeList, this.recipeTypes);
+        Collections.addAll(typeList, properties.recipeTypes());
 
         for (GTRecipeType type : types) {
             initRecipeMachineModelProperties(type);
             typeList.add(type);
         }
-        this.recipeTypes = typeList.toArray(GTRecipeType[]::new);
+        properties.recipeTypes(typeList.toArray(GTRecipeType[]::new));
         return getThis();
     }
 
@@ -422,13 +362,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         if (type == GTRecipeTypes.DUMMY_RECIPES) {
             return;
         }
-        if (!modelProperties.containsKey(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
+        if (!properties.modelProperties().containsKey(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
             modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
         }
     }
 
     public SELF model(@Nullable MachineBuilder.ModelInitializer model) {
-        this.model = model;
+        properties.model(model);
         return getThis();
     }
 
@@ -437,7 +377,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF defaultModel() {
-        return simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
+        return simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
     }
 
     public SELF tieredHullModel(ResourceLocation model) {
@@ -447,7 +387,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public SELF overlayTieredHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlayTieredHullModel(
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name));
+                getOwner().makeResourceLocation("block/machine/part/" + name));
     }
 
     public SELF overlayTieredHullModel(ResourceLocation overlayModel) {
@@ -462,12 +402,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                             @Nullable String pipeOverlay,
                                             @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
-                "block/overlay/machine/" + overlay);
+        ResourceLocation overlayTex = getOwner().makeResourceLocation("block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
         return colorOverlayTieredHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -486,7 +425,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public SELF overlaySteamHullModel(String name) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
         return overlaySteamHullModel(
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/machine/part/" + name));
+                getOwner().makeResourceLocation("block/machine/part/" + name));
     }
 
     public SELF overlaySteamHullModel(ResourceLocation overlayModel) {
@@ -502,13 +441,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                            @Nullable String pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
-                "block/overlay/machine/" + overlay);
+        ResourceLocation overlayTex = getOwner().makeResourceLocation("block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(), "block/overlay/machine/" + pipeOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + pipeOverlay);
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
-                        "block/overlay/machine/" + emissiveOverlay);
+                getOwner().makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -516,12 +453,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                                            @Nullable ResourceLocation pipeOverlay,
                                            @Nullable String emissiveOverlay) {
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
-        ResourceLocation overlayTex = ResourceLocation.fromNamespaceAndPath(registrate.getModid(),
+        ResourceLocation overlayTex = getOwner().makeResourceLocation(
                 "block/overlay/machine/" + overlay);
         ResourceLocation pipeOverlayTex = pipeOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + pipeOverlay);
+                getOwner().makeResourceLocation(("block/overlay/machine/" + pipeOverlay));
         ResourceLocation emissiveOverlayTex = emissiveOverlay == null ? null :
-                registrate.makeResourceLocation("block/overlay/machine/" + emissiveOverlay);
+                getOwner().makeResourceLocation(("block/overlay/machine/" + emissiveOverlay));
         return colorOverlaySteamHullModel(overlayTex, pipeOverlayTex, emissiveOverlayTex);
     }
 
@@ -568,7 +505,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF appearanceBlock(Supplier<? extends Block> block) {
-        appearance = () -> block.get().defaultBlockState();
+        properties.appearance(() -> block.get().defaultBlockState());
         return getThis();
     }
 
@@ -576,8 +513,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return tooltips(Arrays.asList(components));
     }
 
+    @SuppressWarnings("NullableProblems")
     public SELF tooltips(List<? extends @Nullable Component> components) {
-        tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
+        properties.tooltips().addAll(components.stream().filter(Objects::nonNull).toList());
         return getThis();
     }
 
@@ -587,22 +525,22 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public SELF conditionalTooltip(Component component, boolean condition) {
         if (condition)
-            tooltips.add(component);
+            properties.tooltips().add(component);
         return getThis();
     }
 
     public SELF abilities(PartAbility... abilities) {
-        this.abilities = abilities;
+        properties.abilities(abilities);
         return getThis();
     }
 
     public SELF themeId(String themeId) {
-        this.themeId = themeId;
+        properties.themeId(themeId);
         return getThis();
     }
 
     public SELF themeId(Function<Integer, String> themeId) {
-        this.themeId = themeId.apply(tier);
+        properties.themeId(themeId.apply(properties.tier()));
         return getThis();
     }
 
@@ -612,7 +550,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     public <T extends Comparable<T>> SELF modelProperty(Property<T> property,
                                                         @Nullable T defaultValue) {
-        this.modelProperties.put(property, defaultValue);
+        properties.modelProperties().put(property, defaultValue);
         return getThis();
     }
 
@@ -622,51 +560,51 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     @Tolerate
-    public SELF modelProperties(Collection<Property<?>> properties) {
-        for (Property<?> prop : properties) {
-            this.modelProperties.put(prop, null);
+    public SELF modelProperties(Collection<Property<?>> modelProperties) {
+        for (Property<?> prop : modelProperties) {
+            properties.modelProperties().put(prop, null);
         }
         return getThis();
     }
 
     @Tolerate
-    public SELF modelProperties(Map<Property<?>, ? extends Comparable<?>> properties) {
-        this.modelProperties.putAll(properties);
+    public SELF modelProperties(Map<Property<?>, ? extends Comparable<?>> modelProperties) {
+        properties.modelProperties().putAll(modelProperties);
         return getThis();
     }
 
     public SELF removeModelProperty(Property<?> property) {
-        this.modelProperties.remove(property);
+        properties.modelProperties().remove(property);
         return getThis();
     }
 
     public SELF clearModelProperties() {
-        this.modelProperties.clear();
+        properties.modelProperties().clear();
         return getThis();
     }
 
     public SELF recipeModifier(RecipeModifier recipeModifier) {
-        this.recipeModifier = recipeModifier instanceof RecipeModifierList list ? list :
-                new RecipeModifierList(recipeModifier);
+        properties.recipeModifier(recipeModifier instanceof RecipeModifierList list ? list :
+                new RecipeModifierList(recipeModifier));
         return getThis();
     }
 
     public SELF addRecipeModifier(RecipeModifier recipeModifier) {
-        if (this.recipeModifier instanceof RecipeModifierList list) {
-            this.recipeModifier = new RecipeModifierList(ArrayUtils.add(list.getModifiers(), recipeModifier));
+        if (properties.recipeModifier() instanceof RecipeModifierList list) {
+            properties.recipeModifier(new RecipeModifierList(ArrayUtils.add(list.getModifiers(), recipeModifier)));
         } else {
-            this.recipeModifier = new RecipeModifierList(this.recipeModifier, recipeModifier);
+            properties.recipeModifier(new RecipeModifierList(properties.recipeModifier(), recipeModifier));
         }
         return getThis();
     }
 
     public SELF recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
-        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        properties.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
         return this.recipeModifier(recipeModifier);
     }
 
     public SELF recipeModifiers(RecipeModifier... recipeModifiers) {
-        this.recipeModifier = new RecipeModifierList(recipeModifiers);
+        properties.recipeModifier(new RecipeModifierList(recipeModifiers));
         return getThis();
     }
 
@@ -676,91 +614,57 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF noRecipeModifier() {
-        this.recipeModifier = new RecipeModifierList(RecipeModifier.NO_MODIFIER);
-        this.alwaysTryModifyRecipe = false;
+        properties.recipeModifier(new RecipeModifierList(RecipeModifier.NO_MODIFIER));
+        properties.alwaysTryModifyRecipe(false);
         return getThis();
     }
 
     public SELF addOutputLimit(RecipeCapability<?> capability, int limit) {
-        this.recipeOutputLimits.put(capability, limit);
+        properties.recipeOutputLimits().put(capability, limit);
         return getThis();
     }
 
-    public SELF multiblockPreviewRenderer(boolean multiBlockWorldPreview,
-                                          boolean multiBlockXEIPreview) {
-        this.renderMultiblockWorldPreview = multiBlockWorldPreview;
-        this.renderMultiblockXEIPreview = multiBlockXEIPreview;
-        return getThis();
+    protected void createAdditionalObjects() {
+        if (properties.model() == null && properties.blockModel() == null) {
+            simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
+        }
+
+        final BlockEntry<? extends MetaMachineBlock> block;
+        if (defaultBlock) {
+            block = this.block().register();
+        } else {
+            block = BlockEntry.cast(getOwner().get(getName(), Registries.BLOCK));
+        }
+
+        final ItemEntry<? extends MetaMachineItem> item;
+        if (defaultItem) {
+            item = this.item().register();
+        } else {
+            item = ItemEntry.cast(getOwner().get(getName(), Registries.ITEM));
+        }
+
+        var blockEntityBuilder = getOwner()
+                .<MACHINE, MachineBuilder<DEFINITION, MACHINE, SELF>>blockEntity(this, getName(),
+                        (type, pos, state) -> instanceFactory
+                                .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
+                .onRegister(onBlockEntityRegister)
+                .validBlock(block);
+
+        if (properties.hasBER()) {
+            blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
+        }
+
+        var blockEntityEntry = blockEntityBuilder.register();
+
+        properties.blockHolder(block);
+        properties.itemHolder(item);
+        properties.blockEntityTypeSupplier(blockEntityEntry::get);
     }
 
-    protected DEFINITION createDefinition() {
-        return definitionFactory.apply(registrate.makeResourceLocation(name));
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected void setupStateDefinition(MachineDefinition definition) {
-        StateDefinition.Builder<MachineDefinition, MachineRenderState> builder = new StateDefinition.Builder<>(
-                definition);
-        this.modelProperties.keySet().forEach(builder::add);
-        definition.setStateDefinition(builder.create(MachineDefinition::defaultRenderState, MachineRenderState::new));
-
-        MachineRenderState defaultState = definition.getStateDefinition().any();
-        for (var entry : this.modelProperties.entrySet()) {
-            if (entry.getValue() == null) continue;
-            defaultState = defaultState.setValue((Property) entry.getKey(), (Comparable) entry.getValue());
-        }
-
-        definition.registerDefaultState(defaultState);
-    }
-
-    protected DEFINITION createEntry() {
-        DEFINITION definition = createDefinition();
-        definition.setRotationState(rotationState);
-        setupStateDefinition(definition);
-        if (this.langValue != null) {
-            definition.setLangValue(langValue);
-        }
-
-        if (this.ui != null) {
-            definition.setUI(ui);
-        }
-        definition.setThemeId(themeId);
-        definition.setRecipeTypes(recipeTypes);
-
-        definition.setBlockHolder(Objects.requireNonNull(blockEntry));
-        definition.setItemHolder(item().register());
-        definition.setTier(tier);
-        definition.setRecipeOutputLimits(recipeOutputLimits);
-        definition.setBlockEntityTypeSupplier(Objects.requireNonNull(blockEntityEntry)::get);
-        definition.setTooltipBuilder((itemStack, components) -> {
-            components.addAll(tooltips);
-            if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
-        });
-        definition.setRecipeModifier(recipeModifier);
-        definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
-        definition.setBeforeWorking(this.beforeWorking);
-        definition.setOnWorking(this.onWorking);
-        definition.setOnWaiting(this.onWaiting);
-        definition.setAfterWorking(this.afterWorking);
-        definition.setRegressWhenWaiting(this.regressWhenWaiting);
-        definition.setAllowCoverOnFront(this.allowCoverOnFront);
-
-        for (GTRecipeType type : recipeTypes) {
-            if (type.getIconSupplier() == null) {
-                type.setIconSupplier(definition::asStack);
-            }
-        }
-        if (appearance == null) {
-            appearance = blockEntry::getDefaultState;
-        }
-        definition.setAppearance(appearance);
-        definition.setAllowExtendedFacing(allowExtendedFacing);
-        definition.setShape(shape);
-        definition.setDefaultPaintingColor(paintingColor);
-        definition.setRenderXEIPreview(renderMultiblockXEIPreview);
-        definition.setRenderWorldPreview(renderMultiblockWorldPreview);
-
-        return definition;
+    @SuppressWarnings({ "NullableProblems", "unchecked" })
+    protected @NonNull DEFINITION createEntry() {
+        createAdditionalObjects();
+        return (DEFINITION) new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }
 
     /**
@@ -768,37 +672,19 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
      * the register event in {@link #createEntry()}
      */
     @HideFromJS
-    public DEFINITION register() {
+    public MachineEntry<DEFINITION> register() {
         ModifyMachineEvent event = new ModifyMachineEvent(this);
         ModLoader.postEvent(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent(event);
         }
 
-        if (model == null && blockModel == null) {
-            simpleModel(registrate.makeResourceLocation("block/machine/template/" + name));
-        }
-        if (this.langValue != null) {
-            block().lang(langValue);
-        }
+        return (MachineEntry<DEFINITION>) super.register();
+    }
 
-        blockEntry = block().register();
-
-        var blockEntityBuilder = registrate
-                .<MACHINE, MachineBuilder<DEFINITION, MACHINE, SELF>>blockEntity(this, name,
-                        (type, pos, state) -> instanceFactory
-                                .buildMachine(new BlockEntityCreationInfo(type, pos, state)))
-                .onRegister(onBlockEntityRegister)
-                .validBlock(blockEntry);
-        if (hasBER) {
-            blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
-        }
-        blockEntityEntry = blockEntityBuilder.register();
-
-        // TODO remove once this is a registrate builder
-        var definition = createEntry();
-        GTRegistries.register(GTRegistries.MACHINES, definition.getId(), definition);
-        return definition;
+    @Override
+    protected MachineEntry<DEFINITION> createEntryWrapper(DeferredHolder<MachineDefinition, DEFINITION> delegate) {
+        return new MachineEntry<>(getOwner(), delegate);
     }
 
     @FunctionalInterface
