@@ -124,12 +124,14 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
     }
 
     public MultiblockMachineBuilderWrapper recipeTypes(GTRecipeType... recipeTypes) {
-        internal.recipeTypes(recipeTypes);
+        for (var type : recipeTypes) {
+            recipeType(type);
+        }
         return this;
     }
 
     public MultiblockMachineBuilderWrapper recipeType(GTRecipeType recipeTypes) {
-        internal.recipeType(recipeTypes);
+        internal.recipeType(() -> recipeTypes);
         return this;
     }
 

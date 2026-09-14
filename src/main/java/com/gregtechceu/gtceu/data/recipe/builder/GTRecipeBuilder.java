@@ -70,7 +70,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-@SuppressWarnings({ "unchecked", "UnusedReturnValue" })
+@SuppressWarnings({ "unchecked", "UnusedReturnValue", "unused" })
 @ExtensionMethod(SizedIngredientExtensions.class)
 @Accessors(chain = true, fluent = true)
 public class GTRecipeBuilder {
@@ -105,7 +105,7 @@ public class GTRecipeBuilder {
     private boolean removePreviousMatInfo = false;
     @Setter
     public boolean keepSpoilingProgress = true;
-    public GTRecipeCategory recipeCategory;
+    public @Nullable GTRecipeCategory recipeCategory;
     @Setter
     public @Nullable BiConsumer<GTRecipeBuilder, RecipeOutput> onSave;
 
@@ -148,7 +148,7 @@ public class GTRecipeBuilder {
     }
 
     public static GTRecipeBuilder ofRaw() {
-        return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES);
+        return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES.value());
     }
 
     public GTRecipeBuilder copy(String id) {
@@ -177,7 +177,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copyFrom(GTRecipeBuilder builder) {
-        recipeType.setMinRecipeConditions(builder.conditions.size());
         return builder.copy(builder.id).onSave(null).recipeType(recipeType).category(recipeCategory);
     }
 
@@ -217,7 +216,6 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder addCondition(RecipeCondition<?> condition) {
         conditions.add(condition);
-        recipeType.setMinRecipeConditions(conditions.size());
         return this;
     }
 
@@ -1423,7 +1421,12 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder category(@NotNull GTRecipeCategory category) {
+    public GTRecipeBuilder category(Holder<GTRecipeCategory> category) {
+        this.recipeCategory = category.value();
+        return this;
+    }
+
+    public GTRecipeBuilder category(@Nullable GTRecipeCategory category) {
         this.recipeCategory = category;
         return this;
     }
@@ -1473,6 +1476,9 @@ public class GTRecipeBuilder {
         if (onSave != null) {
             onSave.accept(this, output);
         }
+
+        Objects.requireNonNull(recipeType, "Recipe cannot have null recipe type");
+
         ResearchCondition condition = this.conditions.stream()
                 .filter(ResearchCondition.class::isInstance)
                 .findAny()
@@ -1484,13 +1490,9 @@ public class GTRecipeBuilder {
             }
         }
 
-        if (recipeType != null) {
-            if (recipeCategory == null) {
-                GTCEu.LOGGER.error("Recipes must have a category", new IllegalArgumentException());
-            } else if (recipeCategory != GTRecipeCategory.DEFAULT && recipeCategory.getRecipeType() != recipeType) {
-                GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
-                        new IllegalArgumentException());
-            }
+        if (recipeCategory != null && recipeCategory.getRecipeType() != recipeType) {
+            GTCEu.LOGGER.error("Cannot apply Category with incompatible RecipeType",
+                    new IllegalArgumentException());
         }
 
         if (removePreviousMatInfo) {
@@ -1619,7 +1621,8 @@ public class GTRecipeBuilder {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
-                conditions, List.of(), data, duration, recipeCategory, -1,
+                conditions, List.of(), data, duration,
+                recipeCategory == null ? recipeType.getCategory() : recipeCategory, -1,
                 keepSpoilingProgress);
     }
 
