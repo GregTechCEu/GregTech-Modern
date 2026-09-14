@@ -156,5 +156,4 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
                         () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }
-
 }

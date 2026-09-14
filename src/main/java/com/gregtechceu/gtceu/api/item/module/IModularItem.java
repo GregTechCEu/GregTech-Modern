@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.module;
 
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

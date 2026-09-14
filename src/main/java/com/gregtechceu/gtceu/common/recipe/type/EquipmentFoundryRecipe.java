@@ -74,7 +74,8 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         ItemModuleType<?> module = getModule(foundIngredient);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(foundItem);
         if (module == null || modularItem == null) return false;
-        return (slot == -1 ? modularItem.attach(module, ItemStack.EMPTY, true) : modularItem.attach(module, ItemStack.EMPTY, slot, true)) != null;
+        return (slot == -1 ? modularItem.attach(module, ItemStack.EMPTY, true) :
+                modularItem.attach(module, ItemStack.EMPTY, slot, true)) != null;
     }
 
     @Override

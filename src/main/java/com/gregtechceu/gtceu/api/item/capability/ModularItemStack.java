@@ -49,7 +49,8 @@ public class ModularItemStack implements IModularItem {
     public void saveModuleData() {}
 
     @Override
-    public @Nullable <T extends ItemModule> T attach(ItemModuleType<T> moduleType, ItemStack attachItem, int slot, boolean simulate) {
+    public @Nullable <T extends ItemModule> T attach(ItemModuleType<T> moduleType, ItemStack attachItem, int slot,
+                                                     boolean simulate) {
         ItemModule module = moduleType.defaultInstance().apply(attachItem);
 
         ItemModuleSlot moduleSlot = getSlots().get(slot);
@@ -98,6 +99,7 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public @Nullable ItemModule getModuleInSlot(int slot) {
+        if (modules.isEmpty() || slot >= modules.size()) return null;
         return modules.get(slot);
     }
 

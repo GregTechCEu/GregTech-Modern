@@ -99,8 +99,9 @@ public class ModuleRecipeWidget extends Flow {
                                 .value(ItemStackList.of(allResults))
                                 .recipeSlotRole(RecipeSlotRole.OUTPUT)))
                 .child(new TextWidget<>(defaultModule.getInfo()).horizontalCenter())
-                .childIf(getTier(defaultModule) != -1, () -> new TextWidget<>(Component.literal(GTValues.VNF[getTier(defaultModule)]))
-                        .right(3));
+                .childIf(getTier(defaultModule) != -1,
+                        () -> new TextWidget<>(Component.literal(GTValues.VNF[getTier(defaultModule)]))
+                                .right(3));
     }
 
     private static int getTier(ItemModule module) {

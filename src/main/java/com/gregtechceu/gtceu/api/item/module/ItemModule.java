@@ -80,7 +80,7 @@ public abstract class ItemModule {
         this.moduleItem = moduleItem;
     }
 
-    public abstract ItemModuleType type();
+    public abstract ItemModuleType<?> type();
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
