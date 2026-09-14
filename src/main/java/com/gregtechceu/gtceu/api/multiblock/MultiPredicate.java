@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateBuilder;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
 import com.gregtechceu.gtceu.api.multiblock.predicates.SettingsHolder;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -9,9 +10,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.network.chat.Component;
 
 import dev.latvian.mods.rhino.util.RemapForJS;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.CheckReturnValue;
@@ -26,28 +25,12 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     private static final MultiPredicate EMPTY = of(Logic.OR, List.of()).markImmutable();
 
-    /// use {@link Predicates#air()} instead
-    @ApiStatus.Internal
-    public static final MultiPredicate AIR = of(BasePredicate.AIR)
-            .isAir(true).markImmutable();
-
-    /// use {@link Predicates#any()} instead
-    @ApiStatus.Internal
-    public static final MultiPredicate ANY = of(BasePredicate.ANY)
-            .isAny(true).markImmutable();
-
     private final List<BasePredicate> predicates;
     private final List<MultiPredicate> children;
     private final boolean hasAir;
 
-    @Accessors(fluent = true)
-    @Setter(AccessLevel.PRIVATE)
-    @Getter
     private boolean isAir = false;
 
-    @Accessors(fluent = true)
-    @Setter(AccessLevel.PRIVATE)
-    @Getter
     private boolean isAny = false;
 
     @Getter
@@ -171,6 +154,24 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
     public boolean hasAir() {
         return this.hasAir;
+    }
+
+    public boolean isAir() {
+        return this.isAir;
+    }
+
+    public boolean isAny() {
+        return this.isAny;
+    }
+
+    private MultiPredicate isAir(boolean b) {
+        this.isAir = b;
+        return this;
+    }
+
+    private MultiPredicate isAny(boolean b) {
+        this.isAny = b;
+        return this;
     }
 
     /// @return {@code true} if this multi predicate has only one predicate and has no children
@@ -506,27 +507,36 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
                     .toList();
         }
 
-        MultiPredicate combined = type.makePredicate(children, predicates, a.hasAir || b.hasAir);
-        combined.setSettings(PredicateSettings.create());
-        return combined;
+        return type.makePredicate(children, predicates, a.hasAir || b.hasAir);
     }
 
     public static MultiPredicate empty() {
         return EMPTY;
     }
 
-    public static MultiPredicate of(BasePredicate predicate) {
-        MultiPredicate multiPredicate = Logic.OR.makePredicate(predicate, predicate == BasePredicate.AIR);
-        multiPredicate.setSettings(PredicateSettings.create());
-        return multiPredicate;
+    public static MultiPredicate air() {
+        BasePredicate predicate = new PredicateBuilder("Air")
+                .predicate(ctx -> ctx.state().isAir())
+                .build().markImmutable();
+        return Logic.OR.makePredicate(List.of(), List.of(predicate), true)
+                .isAir(true).markImmutable();
+    }
+
+    public static MultiPredicate any() {
+        BasePredicate predicate = new PredicateBuilder("Any")
+                .predicate(ctx -> true)
+                .build().markImmutable();
+        return Logic.OR.makePredicate(List.of(), List.of(predicate), false)
+                .isAny(true).markImmutable();
+    }
+
+    public static MultiPredicate ofSingle(BasePredicate predicate) {
+        return of(Logic.OR, List.of(predicate));
     }
 
     /// @return A multi predicate with default settings
     private static MultiPredicate of(Logic type, List<BasePredicate> predicates) {
-        MultiPredicate predicate = type.makePredicate(List.of(), predicates, predicates.stream()
-                .anyMatch(BasePredicate::isAir));
-        predicate.setSettings(PredicateSettings.create());
-        return predicate;
+        return type.makePredicate(List.of(), predicates, false);
     }
 
     protected enum Logic {
@@ -537,15 +547,13 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
 
         public MultiPredicate makePredicate(List<MultiPredicate> children, List<BasePredicate> predicates,
                                             boolean hasAir) {
-            return switch (this) {
+            MultiPredicate multiPredicate = switch (this) {
                 case OR -> new OrPredicate(children, predicates, hasAir);
                 case AND -> new AndPredicate(children, predicates, hasAir);
                 case XOR -> new XorPredicate(children, predicates, hasAir);
             };
-        }
-
-        public MultiPredicate makePredicate(BasePredicate predicate, boolean hasAir) {
-            return makePredicate(List.of(), List.of(predicate), hasAir);
+            multiPredicate.setSettings(PredicateSettings.create());
+            return multiPredicate;
         }
     }
 }

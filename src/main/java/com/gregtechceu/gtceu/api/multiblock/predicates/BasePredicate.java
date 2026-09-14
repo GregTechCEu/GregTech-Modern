@@ -8,32 +8,14 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import lombok.AccessLevel;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
 
 public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
-
-    /// use {@link com.gregtechceu.gtceu.api.multiblock.Predicates#air() Predicates.air()} instead
-    @ApiStatus.Internal
-    public static final BasePredicate AIR = new PredicateBuilder("Air")
-            .predicate(ctx -> ctx.state().isAir())
-            .build()
-            .isAir(true)
-            .markImmutable();
-
-    /// use {@link com.gregtechceu.gtceu.api.multiblock.Predicates#any() Predicates.any()} instead
-    @ApiStatus.Internal
-    public static final BasePredicate ANY = new PredicateBuilder("Any")
-            .predicate(ctx -> true)
-            .build()
-            .isAny(true)
-            .markImmutable();
 
     private boolean mutable = true;
 
@@ -45,16 +27,6 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
 
     @Getter
     private final List<Component> additionalTooltips = new ArrayList<>();
-
-    @Accessors(fluent = true)
-    @Setter(AccessLevel.PRIVATE)
-    @Getter
-    private boolean isAir = false;
-
-    @Accessors(fluent = true)
-    @Setter(AccessLevel.PRIVATE)
-    @Getter
-    private boolean isAny = false;
 
     /// the main testing method
     public abstract boolean test(PredicateContext ctx);
@@ -144,7 +116,9 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
         return true;
     }
 
-    private BasePredicate markImmutable() {
+    @HideFromJS
+    @ApiStatus.Internal
+    public BasePredicate markImmutable() {
         this.mutable = false;
         return this;
     }
@@ -159,8 +133,6 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
     protected void copyTo(BasePredicate other) {
         other.setSettings(this.settings.copy());
         other.additionalTooltips.addAll(this.additionalTooltips);
-        other.isAir = this.isAir;
-        other.isAny = this.isAny;
     }
 
     // COPY AND MUTATE
