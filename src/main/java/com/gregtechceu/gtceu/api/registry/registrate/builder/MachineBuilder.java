@@ -671,7 +671,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     @SuppressWarnings({ "NullableProblems", "unchecked" })
     protected @NonNull DEFINITION createEntry() {
-        properties.recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull).toArray(GTRecipeType[]::new));
+        properties.recipeTypes(unresolvedRecipeTypes.stream().map(Supplier::get).map(Objects::requireNonNull)
+                .toArray(GTRecipeType[]::new));
         createAdditionalObjects();
         return (DEFINITION) new MachineDefinition(getOwner().makeResourceLocation(getName()), properties);
     }
