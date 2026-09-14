@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import brachy.modularui.theme.ThemeAPI;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -36,12 +38,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.*;
 
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<MetaMachineBlock> {
+public class MachineDefinition {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -52,10 +55,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Setter
     @Nullable
     private String langValue;
-    @Setter
-    private Supplier<? extends Block> blockSupplier;
-    @Setter
-    private Supplier<? extends MetaMachineItem> itemSupplier;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private DeferredHolder<Block, ? extends MetaMachineBlock> blockHolder;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private DeferredHolder<Item, ? extends MetaMachineItem> itemHolder;
     @Setter
     private Supplier<BlockEntityType<? extends MetaMachine>> blockEntityTypeSupplier;
     @Getter
@@ -144,12 +147,12 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         this.defaultRenderState = state;
     }
 
-    public Block getBlock() {
-        return blockSupplier.get();
+    public MetaMachineBlock getBlock() {
+        return blockHolder.get();
     }
 
     public MetaMachineItem getItem() {
-        return itemSupplier.get();
+        return itemHolder.get();
     }
 
     public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
@@ -167,11 +170,6 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     public VoxelShape getShape(Direction direction) {
         if (shape.isEmpty() || shape == Shapes.block() || direction == Direction.NORTH) return shape;
         return this.cache.computeIfAbsent(direction, dir -> GTUtil.rotateVoxelShape(shape, dir));
-    }
-
-    @Override
-    public MetaMachineBlock get() {
-        return (MetaMachineBlock) blockSupplier.get();
     }
 
     public String getName() {
@@ -206,16 +204,19 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return id.hashCode();
     }
 
-    static final ThreadLocal<MachineDefinition> STATE = new ThreadLocal<>();
+    static final ThreadLocal<@Nullable MachineDefinition> STATE = new ThreadLocal<>();
 
+    @ApiStatus.Internal
     public static MachineDefinition getBuilt() {
-        return STATE.get();
+        return Objects.requireNonNull(STATE.get());
     }
 
+    @ApiStatus.Internal
     public static void setBuilt(MachineDefinition state) {
         STATE.set(state);
     }
 
+    @ApiStatus.Internal
     public static void clearBuilt() {
         STATE.remove();
     }

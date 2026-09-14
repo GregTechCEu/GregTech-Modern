@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data.machines;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -67,6 +66,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
@@ -264,12 +264,12 @@ public class GTMachineUtils {
                 (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .itemColor((itemStack, index) -> switch (index) {
+                        .item().color(() -> () -> (itemStack, index) -> switch (index) {
                             case 1 -> ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
                             case 2 -> VC[tier + 1];
                             case 3 -> VC[tier];
                             default -> -1;
-                        })
+                        }).build()
                         .modelProperty(GTMachineModelProperties.IS_TRANSFORM_UP, false)
                         .model(createTransformerModel(baseAmp))
                         .langValue("%s %sTransformer".formatted(VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
@@ -444,7 +444,7 @@ public class GTMachineUtils {
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
                 .model(GTMachineModels.createCrateModel(wooden))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .item().color(() -> () -> (s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .register();
     }
 
@@ -452,10 +452,8 @@ public class GTMachineUtils {
                                                  String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate
-                .machine(material.getName() + "_drum", MachineDefinition::new,
-                        MetaMachineBlock::new,
-                        (holder, prop) -> DrumMachineItem.create(holder, prop, material),
-                        info -> new DrumMachine(info, material, capacity))
+                .machine(material.getName() + "_drum", info -> new DrumMachine(info, material, capacity))
+                .item((holder, prop) -> DrumMachineItem.create(holder, prop, material)).build()
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
@@ -470,7 +468,7 @@ public class GTMachineUtils {
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
                 .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .item().color(() -> () -> (s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB()).build()
                 .register();
         DRUM_CAPACITY.put(definition, capacity);
         return definition;
@@ -482,11 +480,10 @@ public class GTMachineUtils {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = registrate.machine(
                     GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
-                    MachineDefinition::new,
-                    MetaMachineBlock::new, QuantumTankMachineItem::new,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount))
                     .langValue(toEnglishName(name) + " " + LVT[tier])
-                    .blockProp(Block.Properties::dynamicShape)
+                    .item(QuantumTankMachineItem::new).build()
+                    .block().properties(Block.Properties::dynamicShape).build()
                     .rotationState(RotationState.ALL)
                     .allowExtendedFacing(true)
                     .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_tank"))
@@ -509,7 +506,7 @@ public class GTMachineUtils {
                 (holder, tier) -> new QuantumChestMachine(holder, tier,
                         tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
                 (tier, builder) -> builder.langValue(toEnglishName(name) + " " + LVT[tier])
-                        .blockProp(Block.Properties::dynamicShape)
+                        .block().properties(BlockBehaviour.Properties::dynamicShape).build()
                         .rotationState(RotationState.ALL)
                         .allowExtendedFacing(true)
                         .model(createTieredHullMachineModel(GTCEu.id("block/machine/template/quantum/quantum_chest"))
@@ -533,10 +530,10 @@ public class GTMachineUtils {
     public static MultiblockMachineDefinition registerMultiblockTank(GTRegistrate registrate, String name,
                                                                      String displayName, int capacity,
                                                                      Supplier<Block> casing,
-                                                                     Supplier<MetaMachineBlock> valve,
+                                                                     MachineDefinition valve,
                                                                      @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
-        MultiblockMachineBuilder<?, ?, ?> builder = registrate
+                                                                     BiConsumer<MultiblockMachineBuilder<?, ?>, ResourceLocation> rendererSetup) {
+        MultiblockMachineBuilder<?, ?> builder = registrate
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
                 .tooltips(
@@ -550,9 +547,9 @@ public class GTMachineUtils {
                         .slice("CCC", "CCC", "CCC")
                         .slice("CCC", "C#C", "CCC")
                         .slice("CCC", "CSC", "CCC")
-                        .where('S', controller(blocks(definition.get())))
+                        .where('S', controller(definition))
                         .where('C', blocks(casing.get())
-                                .and(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
+                                .and(machines(valve).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
                         .build())
                 .appearanceBlock(casing);
@@ -577,7 +574,7 @@ public class GTMachineUtils {
             MACHINE extends MultiblockControllerMachine> MultiblockMachineDefinition[] registerTieredMultis(GTRegistrate registrate,
                                                                                                             String name,
                                                                                                             MachineInstanceFactory.Tiered<MACHINE> factory,
-                                                                                                            BiFunction<Integer, MultiblockMachineBuilder<?, MACHINE, ?>, MultiblockMachineDefinition> builder,
+                                                                                                            BiFunction<Integer, MultiblockMachineBuilder<MACHINE, ?>, MultiblockMachineDefinition> builder,
                                                                                                             int... tiers) {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
