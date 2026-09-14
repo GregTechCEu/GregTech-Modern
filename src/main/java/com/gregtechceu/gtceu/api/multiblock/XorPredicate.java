@@ -34,21 +34,19 @@ public class XorPredicate extends MultiPredicate {
     protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
         if (result.match() == null) return result;
         if (result.isTop(this)) {
-            if (this.passedPredicate != null && !this.passedPredicate.is(result.match())) {
-                xorError(context, result.match(), this.passedPredicate);
-                return result.setFailed();
-            }
             if (this.passedPredicate == null) {
                 this.passedPredicate = ofPredicate(result.match());
+            } else if (!this.passedPredicate.is(result.match())) {
+                xorError(context, result.match(), this.passedPredicate);
+                return PredicateResult.failed();
             }
         } else {
             MultiPredicate bottom = Objects.requireNonNull(result.getBottom());
-            if (this.passedPredicate != null && !this.passedPredicate.is(bottom)) {
-                xorError(context, result.match(), this.passedPredicate);
-                return result.setFailed();
-            }
             if (this.passedPredicate == null) {
                 this.passedPredicate = ofChild(bottom);
+            } else if (!this.passedPredicate.is(bottom)) {
+                xorError(context, result.match(), this.passedPredicate);
+                return PredicateResult.failed();
             }
         }
         return result;

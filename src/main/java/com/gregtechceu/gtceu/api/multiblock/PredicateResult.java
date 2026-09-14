@@ -12,27 +12,33 @@ import java.util.List;
 import java.util.Objects;
 
 // if failed, return early with no match
-public record PredicateResult(@Nullable BasePredicate match, List<MultiPredicate> parents, boolean failed) {
+public record PredicateResult(@Nullable BasePredicate match, List<MultiPredicate> parents) {
 
-    private static final PredicateResult NO_MATCH = new PredicateResult(null, List.of(), true);
+    private static final PredicateResult NO_MATCH = new PredicateResult(null, List.of());
+
+    private static final PredicateResult FAILED = new PredicateResult(null, List.of());
 
     public static PredicateResult noMatch() {
         return NO_MATCH;
     }
 
+    public static PredicateResult failed() {
+        return FAILED;
+    }
+
     public static PredicateResult of(BasePredicate match, MultiPredicate parent) {
-        return new PredicateResult(Objects.requireNonNull(match), List.of(Objects.requireNonNull(parent)), false);
+        return new PredicateResult(Objects.requireNonNull(match), List.of(Objects.requireNonNull(parent)));
     }
 
     public PredicateResult appendParent(MultiPredicate parent) {
-        if (failed) return this;
+        if (hasFailed()) return this;
         ArrayList<MultiPredicate> parents = new ArrayList<>(this.parents);
         parents.add(parent);
-        return new PredicateResult(this.match, parents, false);
+        return new PredicateResult(this.match, parents);
     }
 
-    public PredicateResult setFailed() {
-        return new PredicateResult(this.match, this.parents, true);
+    public boolean hasFailed() {
+        return this == FAILED;
     }
 
     public boolean hasMatched() {

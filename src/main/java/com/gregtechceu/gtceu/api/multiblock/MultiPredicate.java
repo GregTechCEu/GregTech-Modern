@@ -63,7 +63,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
         for (BasePredicate predicate : predicates()) {
             if (predicate.test(context)) {
                 PredicateResult result = onPredicateMatched(PredicateResult.of(predicate, this), context);
-                if (result.failed()) return PredicateResult.noMatch();
+                if (result.hasFailed()) return PredicateResult.noMatch();
                 if (result.hasMatched()) return result;
             }
         }
@@ -71,7 +71,7 @@ public abstract class MultiPredicate implements SettingsHolder<MultiPredicate> {
             var result = predicates.getPredicateAtPos(context);
             if (result.hasMatched()) {
                 result = onPredicateMatched(result, context);
-                return result.failed() ? PredicateResult.noMatch() : result.appendParent(this);
+                return result.hasFailed() ? PredicateResult.noMatch() : result.appendParent(this);
             }
         }
 
