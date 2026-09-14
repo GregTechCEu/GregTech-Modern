@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import brachy.modularui.widgets.dynamic.DynamicHandler;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -24,6 +26,7 @@ import brachy.modularui.widgets.layout.Flow;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ModuleRecipeWidget extends Flow {
 
@@ -106,15 +109,15 @@ public class ModuleRecipeWidget extends Flow {
         return -1;
     }
 
-    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe) {
-        ItemStack[] stacks = recipe.getIngredient().getItems();
+    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, int tier) {
+        ItemStack[] stacks = Objects.requireNonNull(recipe.getIngredients()[tier]).getItems();
         return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
     }
 
-    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, ItemModuleType<?> module) {
-        ItemStack[] stacks = recipe.getIngredient().getItems();
+    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, ItemModuleType<?> module, int tier) {
+        ItemStack[] stacks = Objects.requireNonNull(recipe.getIngredients()[tier]).getItems();
         stacks = Arrays.stream(stacks)
-                .filter(stack -> recipe.getModule(stack) == module)
+                .filter(stack -> recipe.getModules()[tier] == module)
                 .toArray(ItemStack[]::new);
         return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
     }
@@ -128,9 +131,6 @@ public class ModuleRecipeWidget extends Flow {
 
     private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem) {
         ItemStack copy = equipment.copy();
-        if (moduleItem == NO_ITEM) {
-            return copy;
-        }
         recipe.applyToItem(copy, moduleItem, 0);
         return copy;
     }

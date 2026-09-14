@@ -21,14 +21,13 @@ public interface IModularItem {
     @Nullable
     ItemModule getModuleInSlot(int slot);
 
-    @NotNull
     List<ItemModule> getModules();
 
     void setSlots(List<ItemModuleSlot> slots);
 
-    <T extends ItemModule> T attach(ItemModuleType<T> module, ItemStack attachItem, int slot, boolean simulate);
+    <T extends ItemModule> @Nullable T attach(ItemModuleType<T> module, ItemStack attachItem, int slot, boolean simulate);
 
-    <T extends ItemModule> T attach(ItemModuleType<T> module, ItemStack attachItem, boolean simulate);
+    <T extends ItemModule> @Nullable T attach(ItemModuleType<T> module, ItemStack attachItem, boolean simulate);
 
     boolean detachModule(ItemModule module);
 

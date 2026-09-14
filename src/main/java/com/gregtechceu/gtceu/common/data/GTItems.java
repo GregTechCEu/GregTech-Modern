@@ -726,31 +726,43 @@ public class GTItems {
             .onRegister(attach(new TieredBehaviour(GTValues.UV)))
             .tag(CustomTags.ELECTRIC_MOTORS)
             .register();
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UHV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uhv_electric_motor", Item::new).lang("UHV Electric Motor")
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UHV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uhv_electric_motor", ComponentItem::create).lang("UHV Electric Motor")
                     .tag(CustomTags.ELECTRIC_MOTORS)
+                    .onRegister(attach(new TieredBehaviour(GTValues.UHV)))
                     .register() :
             null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UEV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uev_electric_motor", Item::new).lang("UEV Electric Motor")
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UEV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uev_electric_motor", ComponentItem::create).lang("UEV Electric Motor")
                     .tag(CustomTags.ELECTRIC_MOTORS)
+                    .onRegister(attach(new TieredBehaviour(GTValues.UEV)))
                     .register() :
             null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UIV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uiv_electric_motor", Item::new).lang("UIV Electric Motor")
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UIV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uiv_electric_motor", ComponentItem::create).lang("UIV Electric Motor")
                     .tag(CustomTags.ELECTRIC_MOTORS)
+                    .onRegister(attach(new TieredBehaviour(GTValues.UIV)))
                     .register() :
             null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_UXV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("uxv_electric_motor", Item::new).lang("UXV Electric Motor")
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_UXV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uxv_electric_motor", ComponentItem::create).lang("UXV Electric Motor")
                     .tag(CustomTags.ELECTRIC_MOTORS)
+                    .onRegister(attach(new TieredBehaviour(GTValues.UXV)))
+
                     .register() :
             null;
-    public static ItemEntry<Item> ELECTRIC_MOTOR_OpV = GTCEuAPI.isHighTier() ?
-            REGISTRATE.item("opv_electric_motor", Item::new).lang("OpV Electric Motor")
+    public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_OpV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("opv_electric_motor", ComponentItem::create).lang("OpV Electric Motor")
                     .tag(CustomTags.ELECTRIC_MOTORS)
+                    .onRegister(attach(new TieredBehaviour(GTValues.OpV)))
                     .register() :
             null;
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ELECTRIC_MOTORS = (ItemEntry<ComponentItem>[])new ItemEntry[] {
+            ELECTRIC_MOTOR_LV, ELECTRIC_MOTOR_MV, ELECTRIC_MOTOR_HV, ELECTRIC_MOTOR_EV, ELECTRIC_MOTOR_IV, ELECTRIC_MOTOR_LuV,
+            ELECTRIC_MOTOR_ZPM, ELECTRIC_MOTOR_UV, ELECTRIC_MOTOR_UHV, ELECTRIC_MOTOR_UEV, ELECTRIC_MOTOR_UIV, ELECTRIC_MOTOR_UXV, ELECTRIC_MOTOR_OpV
+    };
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::create)
             .lang("LV Electric Pump")
@@ -900,6 +912,13 @@ public class GTItems {
                     .tag(CustomTags.ELECTRIC_PUMPS)
                     .register() :
             null;
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ELECTRIC_PUMPS = (ItemEntry<ComponentItem>[])new ItemEntry[] {
+            ELECTRIC_PUMP_LV, ELECTRIC_PUMP_MV, ELECTRIC_PUMP_HV, ELECTRIC_PUMP_EV, ELECTRIC_PUMP_IV, ELECTRIC_PUMP_LuV,
+            ELECTRIC_PUMP_ZPM, ELECTRIC_PUMP_UV, ELECTRIC_PUMP_UHV, ELECTRIC_PUMP_UEV, ELECTRIC_PUMP_UIV, ELECTRIC_PUMP_UXV, ELECTRIC_PUMP_OpV
+    };
+
 
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE
             .item("lv_fluid_regulator", ComponentItem::create)
@@ -1182,6 +1201,12 @@ public class GTItems {
                     .register() :
             null;
 
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] CONVEYOR_MODULES = (ItemEntry<ComponentItem>[])new ItemEntry[] {
+            CONVEYOR_MODULE_LV, CONVEYOR_MODULE_MV, CONVEYOR_MODULE_HV, CONVEYOR_MODULE_EV, CONVEYOR_MODULE_IV, CONVEYOR_MODULE_LuV,
+            CONVEYOR_MODULE_ZPM, CONVEYOR_MODULE_UV, CONVEYOR_MODULE_UHV, CONVEYOR_MODULE_UEV, CONVEYOR_MODULE_UIV, CONVEYOR_MODULE_UXV, CONVEYOR_MODULE_OpV
+    };
+
     public static ItemEntry<ComponentItem> ELECTRIC_PISTON_LV = REGISTRATE
             .item("lv_electric_piston", ComponentItem::create)
             .lang("LV Electric Piston")
@@ -1250,6 +1275,12 @@ public class GTItems {
             REGISTRATE.item("opv_electric_piston", Item::new).lang("OpV Electric Piston")
                     .register() :
             null;
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ELECTRIC_PISTONS = (ItemEntry<ComponentItem>[])new ItemEntry[] {
+            ELECTRIC_PISTON_LV, ELECTRIC_PISTON_MV, ELECTRIC_PISTON_HV, ELECTRIC_PISTON_EV, ELECTRIC_PISTON_IV, ELECTRIC_PISTON_LuV,
+            ELECTRIC_PISTON_ZPM, ELECTRIC_PISTON_UV, ELECTRIC_PISTON_UHV, ELECTRIC_PISTON_UEV, ELECTRIC_PISTON_UIV, ELECTRIC_PISTON_UXV, ELECTRIC_PISTON_OpV
+    };
 
     public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("lv_robot_arm", ComponentItem::create)
             .lang("LV Robot Arm")
@@ -1379,6 +1410,12 @@ public class GTItems {
                     .register() :
             null;
 
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] ROBOT_ARMS = (ItemEntry<ComponentItem>[])new ItemEntry[] {
+            ROBOT_ARM_LV, ROBOT_ARM_MV, ROBOT_ARM_HV, ROBOT_ARM_EV, ROBOT_ARM_IV, ROBOT_ARM_LuV,
+            ROBOT_ARM_ZPM, ROBOT_ARM_UV, ROBOT_ARM_UHV, ROBOT_ARM_UEV, ROBOT_ARM_UIV, ROBOT_ARM_UXV, ROBOT_ARM_OpV
+    };
+
     public static ItemEntry<ComponentItem> FIELD_GENERATOR_LV = REGISTRATE
             .item("lv_field_generator", ComponentItem::create)
             .lang("LV Field Generator")
@@ -1448,6 +1485,13 @@ public class GTItems {
                     .register() :
             null;
 
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] FIELD_GENERATORS = (ItemEntry<ComponentItem>[])new ItemEntry[] {
+            FIELD_GENERATOR_LV, FIELD_GENERATOR_MV, FIELD_GENERATOR_HV, FIELD_GENERATOR_EV, FIELD_GENERATOR_IV, FIELD_GENERATOR_LuV,
+            FIELD_GENERATOR_ZPM, FIELD_GENERATOR_UV, FIELD_GENERATOR_UHV, FIELD_GENERATOR_UEV, FIELD_GENERATOR_UIV, FIELD_GENERATOR_UXV, FIELD_GENERATOR_OpV
+    };
+
+
     public static ItemEntry<ComponentItem> EMITTER_LV = REGISTRATE.item("lv_emitter", ComponentItem::create)
             .lang("LV Emitter")
             .onRegister(attach(new TieredBehaviour(GTValues.LV)))
@@ -1506,44 +1550,45 @@ public class GTItems {
 
     public static ItemEntry<ComponentItem> SENSOR_LV = REGISTRATE.item("lv_sensor", ComponentItem::create)
             .lang("LV Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.LV), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.LV)))
             .tag(CustomTags.SENSORS)
             .register();
     public static ItemEntry<ComponentItem> SENSOR_MV = REGISTRATE.item("mv_sensor", ComponentItem::create)
             .lang("MV Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.MV), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.MV)))
             .tag(CustomTags.SENSORS)
             .register();
     public static ItemEntry<ComponentItem> SENSOR_HV = REGISTRATE.item("hv_sensor", ComponentItem::create)
             .lang("HV Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.HV), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.HV)))
             .tag(CustomTags.SENSORS)
             .register();
     public static ItemEntry<ComponentItem> SENSOR_EV = REGISTRATE.item("ev_sensor", ComponentItem::create)
             .lang("EV Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.EV), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.EV)))
             .tag(CustomTags.SENSORS)
             .register();
     public static ItemEntry<ComponentItem> SENSOR_IV = REGISTRATE.item("iv_sensor", ComponentItem::create)
             .lang("IV Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.IV), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.IV)))
             .tag(CustomTags.SENSORS)
             .register();
     public static ItemEntry<ComponentItem> SENSOR_LuV = REGISTRATE.item("luv_sensor", ComponentItem::create)
             .lang("LuV Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.LuV), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.LuV)))
             .tag(CustomTags.SENSORS)
             .register();
     public static ItemEntry<ComponentItem> SENSOR_ZPM = REGISTRATE.item("zpm_sensor", ComponentItem::create)
             .lang("ZPM Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.ZPM), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.ZPM)))
             .tag(CustomTags.SENSORS)
             .register();
     public static ItemEntry<ComponentItem> SENSOR_UV = REGISTRATE.item("uv_sensor", ComponentItem::create)
             .lang("UV Sensor")
-            .onRegister(attach(new TieredBehaviour(GTValues.UV), new ChargingLinkingBehaviour()))
+            .onRegister(attach(new TieredBehaviour(GTValues.UV)))
             .tag(CustomTags.SENSORS)
             .register();
+
     public static ItemEntry<Item> SENSOR_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_sensor", Item::new)
             .lang("UHV Sensor")
             .register() : null;
@@ -1559,6 +1604,13 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_sensor", Item::new)
             .lang("OpV Sensor")
             .register() : null;
+
+    @SuppressWarnings("unchecked")
+    public static final ItemEntry<ComponentItem>[] SENSORS = (ItemEntry<ComponentItem>[])new ItemEntry[] {
+            SENSOR_LV, SENSOR_MV, SENSOR_HV, SENSOR_EV, SENSOR_IV, SENSOR_LuV,
+            SENSOR_ZPM, SENSOR_UV, SENSOR_UHV, SENSOR_UEV, SENSOR_UIV, SENSOR_UXV, SENSOR_OpV
+    };
+
 
     public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::create)
             .lang("Data Stick").onRegister(attach(new DataItemBehavior(false, 8)))

@@ -58,7 +58,7 @@ public class ModularItemStack implements IModularItem {
         T module = moduleType.defaultInstance().apply(attachItem);
 
         ItemModuleSlot moduleSlot = getSlots().get(slot);
-        if (moduleSlot == null || !moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
+        if (!moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
 
         if (!simulate) {
             module.setModularItemStack(this);

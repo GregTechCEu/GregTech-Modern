@@ -70,6 +70,7 @@ public abstract class ItemModule {
     @Setter
     private IModularItem modularItemStack;
 
+
     public ItemModule(boolean isEnabled, ItemStack moduleItem) {
         this.enabled = isEnabled;
         this.moduleItem = moduleItem;

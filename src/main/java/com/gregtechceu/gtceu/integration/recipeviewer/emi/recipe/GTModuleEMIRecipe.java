@@ -14,6 +14,8 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
@@ -36,9 +38,12 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
 
     @Override
     public List<EmiIngredient> getInputs() {
-        return List.of(
-                EmiIngredient.of(recipe.getEquipment()),
-                EmiIngredient.of(recipe.getIngredient()));
+        List<EmiIngredient> ingredientList = new ArrayList<>();
+        ingredientList.add(EmiIngredient.of(recipe.getEquipment()));
+        for (var ingredient: recipe.getIngredients()) {
+            if (ingredient != null) ingredientList.add(EmiIngredient.of(ingredient));
+        }
+        return ingredientList;
     }
 
     @Override

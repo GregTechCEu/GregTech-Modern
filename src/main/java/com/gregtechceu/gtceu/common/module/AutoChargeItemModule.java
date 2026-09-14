@@ -1,20 +1,27 @@
 package com.gregtechceu.gtceu.common.module;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 
+import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
@@ -50,6 +57,21 @@ public class AutoChargeItemModule extends TieredItemModule {
 
     public AutoChargeItemModule(ItemStack attachItem, int tier) {
         super(attachItem, tier);
+    }
+
+    @Override
+    public InteractionResult onItemUseFirst(UseOnContext context) {
+        BlockPos pos = context.getClickedPos();
+        MetaMachine machine = MetaMachine.getMachine(context.getLevel(), pos);
+        if (machine instanceof PowerSubstationMachine || machine instanceof BatteryBufferMachine) {
+            PlayerOwner owner = machine.getPlayerOwner();
+            Player player = context.getPlayer();
+            if (owner == null || player != null && owner.isPlayerFriendly(player.getUUID())) {
+                linkedMachine = GlobalPos.of(context.getLevel().dimension(), pos);
+                if (player != null) player.sendSystemMessage(Component.translatable("behaviour.charger_linked"));
+            }
+        }
+        return super.onItemUseFirst(context);
     }
 
     @Override
