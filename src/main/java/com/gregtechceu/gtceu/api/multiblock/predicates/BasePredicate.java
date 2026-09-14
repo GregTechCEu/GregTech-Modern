@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
@@ -39,37 +38,22 @@ public abstract class BasePredicate implements SettingsHolder<BasePredicate> {
 
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
-        int count = ctx.incrementGlobalCount(this);
-        if (testGlobalMax(count)) return true;
-        ctx.appendError(SinglePredicateError.maxCount(this, getCandidates(), count));
-        return false;
+        return TestType.GLOBAL_MAX.testWithError(this, ctx);
     }
 
     /// test against slice max count
     public boolean testSliceMax(PredicateContext ctx) {
-        if (!ctx.isCheckLayer()) return true;
-        int count = ctx.incrementSliceCount(this);
-        if (testSliceMax(count)) return true;
-        ctx.appendError(SinglePredicateError.maxLayerCount(this, getCandidates(), count));
-        return false;
+        return TestType.SLICE_MAX.testWithError(this, ctx);
     }
 
     /// test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
-        if (getMinCount() == -1) return true;
-        int count = ctx.getGlobalCount(this);
-        if (testGlobalMin(count)) return true;
-        ctx.appendError(SinglePredicateError.minCount(this, getCandidates(), count));
-        return false;
+        return TestType.GLOBAL_MIN.testWithError(this, ctx);
     }
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
-        if (!ctx.isCheckLayer()) return true;
-        int count = ctx.getSliceCount(this);
-        if (testSliceMin(count)) return true;
-        ctx.appendError(SinglePredicateError.minLayerCount(this, getCandidates(), count));
-        return false;
+        return TestType.SLICE_MIN.testWithError(this, ctx);
     }
 
     /// computes the candidates for this predicate

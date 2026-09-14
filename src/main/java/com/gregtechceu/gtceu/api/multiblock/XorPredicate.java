@@ -114,7 +114,7 @@ public class XorPredicate extends MultiPredicate {
 
         public boolean testGlobalMin(PredicateContext ctx) {
             if (this.predicate != null) {
-                return this.predicate.testGlobalMin(ctx);
+                return TestType.GLOBAL_MIN.testWithError(this.predicate, ctx);
             } else if (this.multiPredicate != null) {
                 return this.multiPredicate.testGlobalMin(ctx);
             }
@@ -123,7 +123,7 @@ public class XorPredicate extends MultiPredicate {
 
         public boolean testSliceMin(PredicateContext ctx) {
             if (predicate != null) {
-                return predicate.testSliceMin(ctx);
+                return TestType.SLICE_MIN.testWithError(this.predicate, ctx);
             } else if (multiPredicate != null) {
                 return multiPredicate.testSliceMin(ctx);
             }

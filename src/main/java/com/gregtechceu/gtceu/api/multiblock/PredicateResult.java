@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.TestType;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,19 +79,11 @@ public record PredicateResult(@Nullable BasePredicate match, List<MultiPredicate
     // if any return false, fail
     private boolean testParents(TestType type, PredicateContext context) {
         Objects.requireNonNull(this.match, "matched base predicate must not be null");
-        if (type == TestType.GLOBAL_MAX ? !this.match.testGlobalMax(context) : !this.match.testSliceMax(context)) {
+        if (!type.testWithError(this.match, context)) {
             return false;
         }
         for (MultiPredicate parent : this.parents) {
-            if (!type.testAndIncrement(parent, context)) {
-                var error = type == TestType.GLOBAL_MAX ?
-                        SinglePredicateError.maxCount(parent,
-                                parent.getCandidates().stream().flatMap(Collection::stream).toList(),
-                                context.getGlobalCount(parent)) :
-                        SinglePredicateError.maxLayerCount(parent,
-                                parent.getCandidates().stream().flatMap(Collection::stream).toList(),
-                                context.getSliceCount(this.match));
-                context.appendError(error);
+            if (!type.testWithError(parent, context)) {
                 return false;
             }
         }
