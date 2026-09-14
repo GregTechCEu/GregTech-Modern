@@ -146,7 +146,10 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             Ingredient ingredient = Ingredient.fromNetwork(buffer);
             int length = buffer.readInt();
             ItemModuleType<?>[] modifier = new ItemModuleType<?>[length];
-            for (int i = 0; i < length; i++) modifier[i] = GTRegistries.ITEM_MODULES.get(buffer.readResourceLocation());
+            for (int i = 0; i < length; i++) {
+                if (buffer.readBoolean()) continue;
+                modifier[i] = GTRegistries.ITEM_MODULES.get(buffer.readResourceLocation());
+            }
             return new EquipmentFoundryRecipe(recipeId, equipment, ingredient, modifier);
         }
 
@@ -154,7 +157,11 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             recipe.equipment.toNetwork(buffer);
             recipe.ingredient.toNetwork(buffer);
             buffer.writeInt(recipe.modules.length);
-            for (ItemModuleType<?> module : recipe.modules) buffer.writeResourceLocation(module.id());
+            for (ItemModuleType<?> module : recipe.modules) {
+                buffer.writeBoolean(module == null);
+                if (module == null) continue;
+                buffer.writeResourceLocation(module.id());
+            }
         }
     }
 }

@@ -65,7 +65,7 @@ public class GTItemModules {
             int finalI = i;
 
             ResourceLocation resourceLocation = id.withSuffix("_" + (i + minTier));
-            result[i] = new ItemModuleType<>(id, i, codec, s -> constructor.apply(s, finalI));
+            result[i] = new ItemModuleType<>(resourceLocation, i, codec, s -> constructor.apply(s, finalI));
             GTRegistries.ITEM_MODULES.register(resourceLocation, result[i]);
         }
         return result;
