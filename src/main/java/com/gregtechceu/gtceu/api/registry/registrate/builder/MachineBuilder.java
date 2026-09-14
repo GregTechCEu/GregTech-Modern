@@ -85,8 +85,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
                            extends AbstractBuilder<MachineDefinition, DEFINITION, GTRegistrate, SELF> {
 
     protected MachineInstanceFactory<MACHINE> instanceFactory;
-    @Setter(onMethod_ = @ApiStatus.Internal)
-    public Function<ResourceLocation, DEFINITION> definitionFactory;
 
     @Getter
     private final MachineDefinition.Properties properties;
