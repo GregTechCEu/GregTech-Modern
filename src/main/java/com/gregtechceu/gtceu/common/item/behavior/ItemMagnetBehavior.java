@@ -44,7 +44,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.factory.UIFactories;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
@@ -193,17 +192,17 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level world, @NotNull Player player,
-                                                  InteractionHand hand) {
-        if (!player.level().isClientSide) {
-            if (player.isShiftKeyDown()) {
-                player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, @NotNull Player player,
+                                                  InteractionHand usedHand) {
+        ItemStack heldItem = player.getItemInHand(usedHand);
+        if (player.isShiftKeyDown()) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable(toggleActive(heldItem) ?
                         "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
-            } else {
-                UIFactories.playerInventory().openFromHand(player, hand);
             }
+            return InteractionResultHolder.sidedSuccess(heldItem, level.isClientSide);
         }
-        return InteractionResultHolder.pass(player.getItemInHand(hand));
+        return IItemUIHolder.super.use(item, level, player, usedHand);
     }
 
     private static boolean isActive(ItemStack stack) {
