@@ -186,6 +186,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             if (ing instanceof IRangedIngredient ranged) amount = ranged.getMaxRoll();
             else amount = ing.getAmount();
 
+            // An ingredient that needs nothing can never limit the parallel count, and letting it
+            // through would put a zero into `consumables`, which is used as a divisor below.
+            if (amount <= 0) continue;
+
             if (content.chance() == 0) {
                 nonConsumables.addTo(ing, amount);
             } else {
