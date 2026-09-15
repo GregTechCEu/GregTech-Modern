@@ -60,8 +60,8 @@ public class ModuleRecipeWidget extends Flow {
 
     private IWidget getUIForTier(int tier) {
         ItemModuleType<?> module = recipe.getModules()[tier];
-        ItemStack[] allModuleItems = getModuleItems(recipe);
-        ItemStack[] moduleItems = getModuleItems(recipe, module);
+        ItemStack[] allModuleItems = getModuleItems(recipe, tier);
+        ItemStack[] moduleItems = getModuleItems(recipe, module, tier);
         ItemStack[] allEquipment = getEquipment(recipe, module);
         List<ItemStack> allResults = Arrays.stream(allEquipment)
                 .map(equipment -> getResult(recipe, equipment, moduleItems[0]))
