@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.IMergeableNBTSerializable;
-import com.gregtechceu.gtceu.api.item.ISpoilableItemStackExtension;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -25,11 +24,11 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -72,7 +71,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     private long creationTick = 0;
     @Getter
     @Setter
-    private SpoilContext spoilContext = new SpoilContext();
+    private SpoilContext spoilContext = SpoilContext.EMPTY;
 
     public SpoilableItemStack(ItemStack stack) {
         this.stack = stack;
@@ -115,16 +114,19 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
             long spoilTicks = this.getSpoilTicks();
             long timeDifference = level.getGameTime() - creationTick - spoilTicks;
             if (timeDifference >= 0) {
-                ItemStack newStack = this.spoilResult(getSpoilContext(), GTCEu.isClientThread());
-                ((ISpoilableItemStackExtension) (Object) stack).gtceu$setStack(newStack);
-                onItemChanged();
-                ISpoilableItem newSpoilable = GTCapabilityHelper.getSpoilable(stack);
-                if (newSpoilable != null) {
-                    newSpoilable.setCreationTick(level.getGameTime() - timeDifference);
-                    try {
-                        newSpoilable.updateFreshness(spoilContext, false);
-                    } catch (StackOverflowError ignored) {
-                        // if items spoil in a giant chain or a loop
+                int slot = getSpoilContext().slot();
+                if (getSpoilContext().itemHandler() instanceof IItemHandlerModifiable handler &&
+                        handler.getStackInSlot(slot) == stack) {
+                    ItemStack newStack = this.spoilResult(getSpoilContext(), GTCEu.isClientThread());
+                    handler.setStackInSlot(slot, newStack);
+                    ISpoilableItem newSpoilable = GTCapabilityHelper.getSpoilable(newStack);
+                    if (newSpoilable != null) {
+                        newSpoilable.setCreationTick(level.getGameTime() - timeDifference);
+                        try {
+                            newSpoilable.updateFreshness(spoilContext, false);
+                        } catch (StackOverflowError ignored) {
+                            // if items spoil in a giant chain or a loop
+                        }
                     }
                 }
             }
@@ -132,8 +134,13 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     @Override
+    public boolean shouldHaveSpoiled() {
+        return getTicksUntilSpoiled() <= 0;
+    }
+
+    @Override
     public long getTicksUntilSpoiled() {
-        updateFreshness(new SpoilContext(), false);
+        updateFreshness(SpoilContext.EMPTY, false);
         if (!initialized) return this.getSpoilTicks();
         if (frozen) return frozenTicks;
         Level level = SpoilContext.getDefaultLevel();
@@ -146,7 +153,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public void setTicksUntilSpoiled(long value) {
-        updateFreshness(new SpoilContext(), false);
+        updateFreshness(SpoilContext.EMPTY, false);
         Level level = SpoilContext.getDefaultLevel();
         if (level != null && initialized)
             setCreationTick(level.getGameTime() - this.getSpoilTicks() + value);
@@ -154,7 +161,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     private void setFreezeSpoiling(boolean freeze) {
         if (freeze) {
-            updateFreshness(new SpoilContext(), true);
+            updateFreshness(SpoilContext.EMPTY, true);
             frozenTicks = getTicksUntilSpoiled();
             frozen = true;
         } else {
@@ -183,10 +190,17 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable(
-                "gtceu.tooltip.spoil_time_remaining",
-                Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
-                        .withStyle(ChatFormatting.DARK_AQUA)));
+        if (shouldHaveSpoiled()) {
+            tooltipComponents.add(Component.translatable(
+                    "gtceu.tooltip.spoiled_time_ago",
+                    Component.literal(FormattingUtil.formatTime(-getTicksUntilSpoiled()))
+                            .withStyle(ChatFormatting.RED)));
+        } else {
+            tooltipComponents.add(Component.translatable(
+                    "gtceu.tooltip.spoil_time_remaining",
+                    Component.literal(FormattingUtil.formatTime(getTicksUntilSpoiled()))
+                            .withStyle(ChatFormatting.DARK_AQUA)));
+        }
         tooltipComponents.add(Component.translatable(
                 "gtceu.tooltip.spoils_into", getSpoilResultTooltip()));
         if (isAdvanced.isAdvanced()) {
@@ -214,11 +228,13 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
     }
 
     protected Component getSpoilResultTooltip() {
-        return spoilResult(new SpoilContext(), false).getDisplayName();
+        return spoilResult(SpoilContext.EMPTY, false).getDisplayName();
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
+        if (shouldHaveSpoiled())
+            return FastColor.ARGB32.color(255, 255, 0, 0);
         return FastColor.ARGB32.color(255, 255, 255, 255);
     }
 
@@ -234,6 +250,8 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public float getDurabilityForDisplay(ItemStack stack) {
+        if (shouldHaveSpoiled())
+            return 1;
         return (float) getTicksUntilSpoiled() / getSpoilTicks();
     }
 
@@ -287,16 +305,12 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
                 this.setCreationTick(average);
                 spoilable.setCreationTick(average);
             }
+            spoilable.setSpoilContext(spoilContext);
         }
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         return GTCapability.CAPABILITY_SPOILABLE_ITEM.orEmpty(cap, LazyOptional.of(() -> this));
     }
-
-    /**
-     * Called when the stack has spoiled and transformed into a different item.
-     */
-    protected void onItemChanged() {}
 }
