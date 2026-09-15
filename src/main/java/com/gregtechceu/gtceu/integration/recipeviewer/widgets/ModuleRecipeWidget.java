@@ -22,21 +22,18 @@ import brachy.modularui.widgets.CycleButtonWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class ModuleRecipeWidget extends Flow {
 
-    private static final ItemStack NO_ITEM = Items.BARRIER.getDefaultInstance()
-            .setHoverName(Component.translatable("gtceu.equipment_foundry.gui.tier_too_high"));
-
     private final EquipmentFoundryRecipe recipe;
     private IntValue tier;
 
     public ModuleRecipeWidget(EquipmentFoundryRecipe recipe) {
         super(GuiAxis.Y);
-        ItemModuleType<?>[] modules = recipe.getModules();
         this.recipe = recipe;
         this.tier = new IntValue(0);
         this.width(150)
@@ -44,22 +41,25 @@ public class ModuleRecipeWidget extends Flow {
                 .horizontalCenter()
                 .padding(3);
         var cycleWidget = new CycleButtonWidget()
-                .length(modules.length)
+                .length(recipe.getEntries().size())
                 .background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
                 .value(tier)
                 .coverChildrenHeight()
                 .fullWidth();
-        for (int i = 0; i < modules.length; i++) {
+        for (int i = 0; i < recipe.getEntries().size(); i++) {
             cycleWidget.stateChild(i, getUIForTier(i));
         }
         this.child(cycleWidget);
     }
 
     private IWidget getUIForTier(int tier) {
-        ItemModuleType<?> module = recipe.getModules()[tier];
-        ItemStack[] allModuleItems = getModuleItems(recipe, tier);
-        ItemStack[] moduleItems = getModuleItems(recipe, module, tier);
+        var entry = recipe.getEntries().get(tier);
+
+        ItemModuleType<?> module = entry.moduleForTier();
+        List<ItemStack> allModuleItems = new ArrayList<>();
+        recipe.getEntries().forEach(v -> allModuleItems.addAll(Arrays.asList(v.ingredient().getItems())));
+        ItemStack[] moduleItems = entry.ingredient().getItems();
         ItemStack[] allEquipment = getEquipment(recipe, module);
         List<ItemStack> allResults = Arrays.stream(allEquipment)
                 .map(equipment -> getResult(recipe, equipment, moduleItems[0]))
@@ -79,7 +79,7 @@ public class ModuleRecipeWidget extends Flow {
                         .childPadding(4)
                         .horizontalCenter()
                         .child(RecipeViewerSlotWidget.create(ItemStack.class)
-                                .value(ItemStackList.of(List.of(allModuleItems))))
+                                .value(ItemStackList.of(allModuleItems)))
                         .child(new TextWidget<>(defaultModule.getDisplayName())
                                 .scale(0.75f)
                                 .width(100)))
@@ -97,27 +97,9 @@ public class ModuleRecipeWidget extends Flow {
                                 .value(ItemStackList.of(allResults))
                                 .recipeSlotRole(RecipeSlotRole.OUTPUT)))
                 .child(new TextWidget<>(defaultModule.getInfo()).horizontalCenter())
-                .childIf(getTier(defaultModule) != -1,
-                        () -> new TextWidget<>(Component.literal(GTValues.VNF[getTier(defaultModule)]))
+                .childIf(entry.moduleForTier().tier() != -1,
+                        () -> new TextWidget<>(Component.literal(GTValues.VNF[entry.moduleForTier().tier()]))
                                 .right(3));
-    }
-
-    private static int getTier(ItemModule module) {
-        if (module instanceof ITieredItemModule tiered) return tiered.getTier();
-        return -1;
-    }
-
-    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, int tier) {
-        ItemStack[] stacks = Objects.requireNonNull(recipe.getModuleIngredients()[tier]).getItems();
-        return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
-    }
-
-    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, ItemModuleType<?> module, int tier) {
-        ItemStack[] stacks = Objects.requireNonNull(recipe.getModuleIngredients()[tier]).getItems();
-        stacks = Arrays.stream(stacks)
-                .filter(stack -> recipe.getModules()[tier] == module)
-                .toArray(ItemStack[]::new);
-        return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
     }
 
     private static ItemStack[] getEquipment(EquipmentFoundryRecipe recipe, ItemModuleType<?> module) {

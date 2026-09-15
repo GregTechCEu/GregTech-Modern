@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
+import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 import lombok.Getter;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -25,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -36,9 +38,9 @@ public class EquipmentFoundryRecipeBuilder {
     @Setter
     private Ingredient equipment;
     @Getter
-    private Ingredient[] ingredients = new Ingredient[0];
+    private Ingredient[] ingredients = new Ingredient[GTValues.TIER_COUNT];
     @Getter
-    private ItemModuleType<?>[] modules = new ItemModuleType[0];
+    private ItemModuleType<?>[] modules = new ItemModuleType[GTValues.TIER_COUNT];
 
     public EquipmentFoundryRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -52,14 +54,12 @@ public class EquipmentFoundryRecipeBuilder {
     }
 
     public EquipmentFoundryRecipeBuilder ingredient(int tier, Ingredient ingredient) {
-        if (ingredients.length >= tier) ingredients = Arrays.copyOf(ingredients, tier+1);
         Preconditions.checkArgument(tier >= 0 && tier <= GTValues.TIER_COUNT, "Invalid tier: %s", tier);
         ingredients[tier] = ingredient;
         return this;
     }
 
     public EquipmentFoundryRecipeBuilder module(int tier, ItemModuleType<?> moduleType) {
-        if (modules.length >= tier) modules = Arrays.copyOf(modules, tier+1);
         Preconditions.checkArgument(tier >= 0 && tier <= GTValues.TIER_COUNT, "Invalid tier: %s", tier);
         modules[tier] = moduleType;
         return this;
@@ -102,39 +102,22 @@ public class EquipmentFoundryRecipeBuilder {
         return Objects.requireNonNull(modules[0]).id();
     }
 
-    public void toJson(JsonObject json) {
-        json.add("equipment", equipment.toJson());
-        JsonArray jsonIngArr = new JsonArray();
-
-        for (var ingredient: ingredients) {
-            jsonIngArr.add( ingredient.toJson());
-        }
-
-        json.add("ingredients", jsonIngArr);
-
-        JsonArray jsonModuleArr = new JsonArray();
-        for (var module: modules) {
-            jsonModuleArr.add(module.id().toString());
-        }
-        json.add("modules", jsonModuleArr);
-    }
-
     public void save(Consumer<FinishedRecipe> consumer) {
+        var finalId = (id == null ? defaultId() : id).withPrefix("equipment_foundry/");
         consumer.accept(new FinishedRecipe() {
 
             @Override
-            public void serializeRecipeData(@NotNull JsonObject pJson) {
-                toJson(pJson);
+            public void serializeRecipeData(JsonObject pJson) {
+                EquipmentFoundryRecipe.Serializer.toJson(pJson, new EquipmentFoundryRecipe(finalId, equipment, ingredients, modules));
             }
 
             @Override
-            public @NotNull ResourceLocation getId() {
-                var _id = id == null ? defaultId() : id;
-                return _id.withPrefix("equipment_foundry/");
+            public ResourceLocation getId() {
+                return finalId;
             }
 
             @Override
-            public @NotNull RecipeSerializer<?> getType() {
+            public RecipeSerializer<?> getType() {
                 return GTRecipeTypes.EQUIPMENT_FOUNDRY_SERIALIZER.get();
             }
 

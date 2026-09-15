@@ -39,9 +39,8 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
     public List<EmiIngredient> getInputs() {
         List<EmiIngredient> ingredientList = new ArrayList<>();
         ingredientList.add(EmiIngredient.of(recipe.getEquipment()));
-        for (var ingredient: recipe.getModuleIngredients()) {
-            if (ingredient != null) ingredientList.add(EmiIngredient.of(ingredient));
-        }
+        recipe.getEntries().stream().map(EquipmentFoundryRecipe.TierEntry::ingredient)
+                .forEach(v -> ingredientList.add(EmiIngredient.of(v)));
         return ingredientList;
     }
 

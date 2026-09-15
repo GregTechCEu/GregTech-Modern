@@ -42,8 +42,7 @@ public class EquipmentFoundryRecipeHelper {
             modules = Arrays.copyOf(modules, Math.min(ingredients.length, modules.length));
         }
         for (int i=0; i<ingredients.length; i++) {
-            builder.ingredient(i, objectToIngredient(ingredients[i]));
-            builder.module(i, modules[i]);
+            builder.tier(i, objectToIngredient(ingredients[i]), modules[i]);
         }
         builder.save(provider);
     }
