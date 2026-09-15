@@ -136,20 +136,24 @@ public class GTCovers {
                                                     CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                     Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
                                                     int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> {
+        CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
+        for (int tier: tiers) {
             var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
-            return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
+            definitions[tier] = register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));
-        }).toArray(CoverDefinition[]::new);
+        }
+        return definitions;
     }
 
     private static CoverDefinition[] registerTiered(String id,
                                                     CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                     int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> {
+        CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
+        for (int tier: tiers) {
             var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
-            return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
-        }).toArray(CoverDefinition[]::new);
+            definitions[tier] = register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
+        }
+        return definitions;
     }
 
     public static void init() {

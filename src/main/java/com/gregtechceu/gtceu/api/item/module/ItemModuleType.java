@@ -7,5 +7,5 @@ import com.mojang.serialization.Codec;
 
 import java.util.function.Function;
 
-public record ItemModuleType<T extends ItemModule>(ResourceLocation id, int tier, Codec<T> codec,
+public record ItemModuleType<T extends ItemModule>(ResourceLocation id, Codec<T> codec,
                                                    Function<ItemStack, T> defaultInstance) {}

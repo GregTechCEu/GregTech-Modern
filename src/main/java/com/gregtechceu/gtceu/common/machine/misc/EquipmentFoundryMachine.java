@@ -146,7 +146,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         IModularItem modularItem = GTCapabilityHelper.getModularItem(equipment);
         if (modularItem == null) return true;
         ItemModule module = modularItem.getModuleInSlot(slot);
-        if (module != null) return !(module.canRemove() && module.getModuleItem() != null);
+        if (module != null) return !module.canRemove();
         return modularItem.getSlots().size() <= slot;
     }
 
@@ -173,7 +173,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             List<ItemModule> modules = modularItem.getModules();
             for (int i = 0; i < modules.size(); i++) {
                 ItemModule module = modules.get(i);
-                if (i < MAX_MODIFIER_SLOTS && module.getModuleItem() != null) {
+                if (i < MAX_MODIFIER_SLOTS) {
                     moduleSlots.setStackInSlot(i, module.getModuleItem());
                 }
             }

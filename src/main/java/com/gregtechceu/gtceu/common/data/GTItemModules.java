@@ -50,23 +50,20 @@ public class GTItemModules {
 
     public static <T extends ItemModule> ItemModuleType<T> register(ResourceLocation id, Codec<T> codec,
                                                                     Function<ItemStack, T> defaultInstance) {
-        ItemModuleType<T> type = new ItemModuleType<>(id, -1, codec, defaultInstance);
+        ItemModuleType<T> type = new ItemModuleType<>(id, codec, defaultInstance);
         GTRegistries.ITEM_MODULES.register(id, type);
         return type;
     }
 
     @SuppressWarnings("unchecked")
     public static <
-            T extends TieredItemModule> ItemModuleType<T>[] registerTiered(ResourceLocation id, int minTier,
-                                                                           int maxTier, Codec<T> codec,
-                                                                           BiFunction<ItemStack, Integer, T> constructor) {
-        ItemModuleType<T>[] result = new ItemModuleType[maxTier - minTier + 1];
-        for (int i = 0; i <= maxTier - minTier; i++) {
-            int finalI = i;
-
-            ResourceLocation resourceLocation = id.withSuffix("_" + GTValues.VN[i + minTier].toLowerCase());
-            result[i] = new ItemModuleType<>(resourceLocation, i, codec, s -> constructor.apply(s, finalI + minTier));
-            GTRegistries.ITEM_MODULES.register(resourceLocation, result[i]);
+            T extends TieredItemModule> ItemModuleType<T>[] registerTiered(ResourceLocation id, Codec<T> codec,
+                                                                           BiFunction<ItemStack, Integer, T> constructor, int... tiers) {
+        ItemModuleType<T>[] result = new ItemModuleType[GTValues.TIER_COUNT];
+        for (int tier: tiers) {
+            ResourceLocation resourceLocation = id.withSuffix("_" + GTValues.VN[tier].toLowerCase());
+            result[tier] = new ItemModuleType<>(resourceLocation, codec, s -> constructor.apply(s, tier));
+            GTRegistries.ITEM_MODULES.register(resourceLocation, result[tier]);
         }
         return result;
     }
@@ -74,7 +71,7 @@ public class GTItemModules {
     public static <
             T extends TieredItemModule> ItemModuleType<T>[] registerTiered(ResourceLocation id, Codec<T> codec,
                                                                            BiFunction<ItemStack, Integer, T> constructor) {
-        return registerTiered(id, GTValues.LV, GTValues.OpV, codec, constructor);
+        return registerTiered(id, codec, constructor, GTValues.tiersBetween(GTValues.LV, GTValues.OpV));
     }
 
     public static void init() {}
