@@ -38,6 +38,22 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
         this(null, null);
     }
 
+    @Override
+    public boolean setStockSilent(@Nullable GenericStack stack) {
+        if (this.stock == null && stack == null) {
+            return false;
+        }
+        if (stack == null) {
+            this.stock = null;
+            return true;
+        }
+        if (stack.equals(this.stock)) {
+            return false;
+        }
+        this.stock = stack;
+        return true;
+    }
+
     @Nullable
     public GenericStack requestStack() {
         if (this.stock != null && this.stock.amount() <= 0) {
