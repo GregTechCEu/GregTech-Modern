@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.item.datacomponents.ResolvableItemEnchantments;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -33,7 +34,6 @@ import net.minecraft.core.component.*;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -63,9 +63,6 @@ import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -93,7 +90,6 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
 
     boolean playSoundOnBlockDestroy();
 
-    @NotNull
     default Item asItem() {
         return (Item) this;
     }
@@ -102,19 +98,16 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         ItemStack stack = new ItemStack(asItem());
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
         stack.set(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+        stack.set(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY);
+        stack.set(GTDataComponents.AOE, AoESymmetrical.ZERO);
+        stack.set(GTDataComponents.GT_TOOL, GTTool.EMPTY);
+
         stack.remove(DataComponents.MAX_DAMAGE);
         stack.remove(DataComponents.DAMAGE);
         stack.remove(DataComponents.UNBREAKABLE);
-        stack.remove(GTDataComponents.GT_TOOL);
-        stack.remove(GTDataComponents.AOE);
         stack.remove(GTDataComponents.RELOCATE_MINED_BLOCKS);
         stack.remove(GTDataComponents.RELOCATE_MOB_DROPS);
-        stack.remove(GTDataComponents.INNATE_ENCHANTMENTS);
         return stack;
-    }
-
-    private <T> void seTypedComponent(TypedDataComponent<T> component, PatchedDataComponentMap map) {
-        component.applyTo(map);
     }
 
     default ItemStack get() {
@@ -341,39 +334,22 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         return false;
     }
 
-    default ItemEnchantments definition$getAllEnchantments(ItemStack stack,
-                                                           HolderLookup.RegistryLookup<Enchantment> lookup) {
-        ItemEnchantments existing = stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS, ItemEnchantments.EMPTY);
-        if (!existing.isEmpty()) {
-            return IGTTool.joinEnchants(stack, existing);
-        }
-
-        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
-        ToolProperty toolProperty = this.getMaterial().getProperty(PropertyKey.TOOL);
-
-        // Set tool and material enchantments
-        Object2IntMap<ResourceKey<Enchantment>> innateEnchantments = new Object2IntOpenHashMap<>();
-        innateEnchantments.putAll(getToolStats().getDefaultEnchantments());
-        innateEnchantments.putAll(toolProperty.getEnchantments());
-
-        if (innateEnchantments.isEmpty()) {
-            return stack.getTagEnchantments();
-        }
-        innateEnchantments.forEach((enchantKey, level) -> {
-            lookup.get(enchantKey).ifPresent(enchant -> enchantments.upgrade(enchant, level));
-        });
-        existing = enchantments.toImmutable();
-        stack.set(GTDataComponents.INNATE_ENCHANTMENTS, existing);
-        return IGTTool.joinEnchants(stack, existing);
+    default boolean definition$isFoil(ItemStack stack) {
+        return stack.isEnchanted() ||
+                !stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS, ResolvableItemEnchantments.EMPTY).isEmpty();
     }
 
-    private static ItemEnchantments joinEnchants(ItemStack stackWithEnchants, ItemEnchantments additional) {
-        ItemEnchantments original = stackWithEnchants.getTagEnchantments();
-        if (additional.isEmpty()) {
+    default ItemEnchantments definition$getAllEnchantments(ItemStack stack,
+                                                           HolderLookup.RegistryLookup<Enchantment> registry) {
+        ResolvableItemEnchantments innate = stack.getOrDefault(GTDataComponents.INNATE_ENCHANTMENTS,
+                ResolvableItemEnchantments.EMPTY);
+
+        ItemEnchantments original = stack.getTagEnchantments();
+        if (innate.isEmpty()) {
             return original;
         }
         ItemEnchantments.Mutable joined = new ItemEnchantments.Mutable(original);
-        for (var entry : additional.entrySet()) {
+        for (var entry : innate.resolve(registry).entrySet()) {
             joined.upgrade(entry.getKey(), entry.getIntValue());
         }
         return joined.toImmutable();
@@ -483,7 +459,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike 
         getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
     }
 
-    default boolean definition$canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility action) {
+    default boolean definition$canPerformAction(ItemStack stack, ItemAbility action) {
         if (getToolType().defaultAbilities.contains(action)) {
             return true;
         }
