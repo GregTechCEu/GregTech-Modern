@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.data.GTAttachmentTypes;
 
@@ -109,4 +110,10 @@ public class GTCapabilityHelper {
     public static ISpoilableItem getSpoilable(ItemStack stack) {
         return stack.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
     }
+
+    @Nullable
+    public static IModularItem getModularItem(ItemStack stack) {
+        return stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM).resolve().orElse(null);
+    }
+
 }

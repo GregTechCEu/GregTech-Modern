@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.misc.forge.QuantumFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.modular_item.ModularItemUIFactory;
 import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -178,6 +179,7 @@ public class CommonProxy {
         GTToolBehaviors.init();
         GTDataComponents.init(modBus);
         GTArmorMaterials.init(modBus);
+        GTItemModules.init();
         GTItems.init();
 
         GTMachineUtils.init();
@@ -216,6 +218,7 @@ public class CommonProxy {
         // MUI stuff
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+        GuiManager.registerFactory(ModularItemUIFactory.INSTANCE);
 
         GTGuiTheme.registerThemes();
         SpoilableBehavior.init();

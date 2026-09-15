@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
+import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternErrorType;
 import com.gregtechceu.gtceu.api.placeholder.Placeholder;
@@ -95,6 +96,7 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
         public static final ResourceKey<Registry<PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
+        public static final ResourceKey<Registry<ItemModuleType<?>>> ITEM_MODULE = makeRegistryKey(GTCEu.id("item_module"));
 
         private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
             return ResourceKey.createRegistryKey(registryId);
@@ -132,6 +134,7 @@ public final class GTRegistries {
     public static final Registry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
     public static final Registry<PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
     public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
+    public static final Registry<ItemModuleType<?>> ITEM_MODULES = makeRegistry(Keys.ITEM_MODULE);
 
     // spotless:on
 

@@ -3,8 +3,11 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.common.item.TieredBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
 import com.gregtechceu.gtceu.core.mixins.jei.RecipesGuiAccessor;
@@ -33,6 +36,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -724,6 +728,16 @@ public class GTUtil {
         var modelLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
                 "models/%s.json".formatted(location.getPath()));
         return resourceExists(modelLocation);
+    }
+
+    public static int getTier(ItemLike itemLike) {
+        Item item = itemLike.asItem();
+        if (item instanceof IComponentItem componentItem) {
+            for (IItemComponent component : componentItem.getComponents()) {
+                if (component instanceof TieredBehaviour tieredBehaviour) return tieredBehaviour.tier();
+            }
+        }
+        return -1;
     }
 
     public static void openRecipeViewerCategory(GTRecipeCategory category) {

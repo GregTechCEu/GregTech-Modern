@@ -25,6 +25,9 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -67,6 +70,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -354,7 +358,7 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void stepAssistHandler(EntityTickEvent.Pre event) {
+    public static void onLivingTick(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) {
             return;
         }
@@ -366,6 +370,20 @@ public class CommonEventListener {
             stepHeightAttribute.addOrUpdateTransientModifier(IStepAssist.STEP_ASSIST_MODIFIER);
         } else {
             stepHeightAttribute.removeModifier(IStepAssist.STEP_ASSIST_MODIFIER);
+        }
+
+        for (ItemStack stack : entity.getArmorSlots()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onArmorTick(entity));
+        }
+
+        if (entity instanceof Player player) {
+            for (ItemStack stack : entity.getAllSlots()) {
+                IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                if (modularItem == null) continue;
+                modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onInventoryTick(player));
+            }
         }
     }
 
@@ -383,7 +401,46 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onEntityDie(LivingDeathEvent event) {
+    public static void onLivingEquipmentChange(LivingEquipmentChangeEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final ItemStack old = event.getFrom();
+        final ItemStack current = event.getTo();
+
+        if (ItemStack.matches(old, current)) {
+            return;
+        }
+
+        if (!old.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
+            if (modularItem != null)
+                modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onUnequip(entity));
+        }
+
+        if (!current.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
+            if (modularItem != null)
+                modularItem.getModules().forEach(appliedItemModule -> appliedItemModule.onEquip(entity));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingDamageEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final DamageSource source = event.getSource();
+
+        for (final ItemStack stack : entity.getArmorSlots()) {
+            float amount = event.getAmount();
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            for (ItemModule appliedItemModule : modularItem.getModules()) {
+                amount = appliedItemModule.changeDamage(entity, amount, source);
+            }
+            event.setAmount(amount);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDie(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player) {
             MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
             for (MedicalCondition condition : tracker.getMedicalConditions().keySet()) {
