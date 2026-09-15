@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.recipe.type;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
@@ -22,7 +21,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
-import org.jetbrains.annotations.Nullable;
+import org.apache.commons.lang3.Validate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -37,31 +36,20 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final boolean isTiered;
     @Getter
-    private final @Nullable Ingredient[] ingredients;
+    private final Ingredient[] ingredients;
     @Getter
-    private final @Nullable ItemModuleType<?>[] modules;
+    private final ItemModuleType<?>[] modules;
 
-    public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, @Nullable Ingredient[] ingredients, @Nullable ItemModuleType<?>[] modules) {
-        if (ingredients.length != GTValues.TIER_COUNT) throw new IllegalArgumentException("Ingredient array length must equal tier count");
-        if (modules.length != GTValues.TIER_COUNT) throw new IllegalArgumentException("Module array length must equal tier count");
+    public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, Ingredient[] ingredients, ItemModuleType<?>[] modules) {
+        if (ingredients.length != modules.length) throw new IllegalArgumentException("Ingredient and module array length must match");
+        Validate.noNullElements(ingredients, "Ingredients array cannot have null elements");
+        Validate.noNullElements(modules, "Modules array cannot have null elements");
+
         this.id = id;
         this.equipment = equipment;
         this.ingredients = ingredients;
         this.modules = modules;
-
-        int foundIngredients = 0;
-        for (int i=0; i<GTValues.TIER_COUNT; i++) {
-            Ingredient ingredient = ingredients[i];
-            ItemModuleType<?> moduleType = modules[i];
-            if (ingredient == null && moduleType == null) {
-            }
-            else if (ingredient != null && moduleType != null) foundIngredients++;
-            else {
-                throw new IllegalArgumentException("Ingredient and module must both be either null or not null: {ingredient=%s, module=%s, tier=%s}".formatted(ingredient, moduleType, i));
-            }
-        }
-        if (foundIngredients == 0) throw new IllegalArgumentException("Recipe must have at least one set of ingredients");
-        this.isTiered = foundIngredients == 1;
+        this.isTiered = ingredients.length == 1;
     }
 
     @Override
@@ -72,7 +60,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     public boolean matches(ItemStack equipmentItem, ItemStack itemToApply) {
         if (!equipment.test(equipmentItem)) return false;
 
-        for (int i=0; i<GTValues.TIER_COUNT; i++) {
+        for (int i=0; i<ingredients.length; i++) {
             Ingredient ingredient = ingredients[i];
             if (ingredient == null) continue;
             if (ingredient.test(itemToApply)) {
@@ -98,7 +86,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     public void applyToItem(ItemStack equipmentItem, ItemStack itemToApply, int slot) {
         if (!equipment.test(equipmentItem)) return;
 
-        for (int i=0; i<GTValues.TIER_COUNT; i++) {
+        for (int i=0; i<ingredients.length; i++) {
             Ingredient ingredient = ingredients[i];
             if (ingredient == null) continue;
             if (ingredient.test(itemToApply)) {
@@ -137,19 +125,19 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         public EquipmentFoundryRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             Ingredient equipment = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "equipment"), false);
 
-            Ingredient[] ingredients = new Ingredient[GTValues.TIER_COUNT];
-            ItemModuleType<?>[] modules = new ItemModuleType<?>[GTValues.TIER_COUNT];
-
             JsonArray ingredientArr = json.getAsJsonArray("ingredients");
+            JsonArray arr = json.getAsJsonArray("modules");
+
+            Ingredient[] ingredients = new Ingredient[ingredientArr.size()];
+            ItemModuleType<?>[] modules = new ItemModuleType<?>[arr.size()];
+
             for (int i = 0; i < ingredientArr.size(); i++) {
-                if (ingredientArr.get(i).isJsonNull()) ingredients[i] = null;
-                else ingredients[i] = Ingredient.fromJson(ingredientArr.get(i).getAsJsonObject());
+                ingredients[i] = Ingredient.fromJson(ingredientArr.get(i).getAsJsonObject());
             }
 
-            JsonArray arr = json.getAsJsonArray("modules");
-            for (int i = 0; i < arr.size(); i++)
-                if (arr.get(i).isJsonNull()) modules[i] = null;
-                else modules[i] = GTRegistries.ITEM_MODULES.get(ResourceLocation.parse(arr.get(i).getAsString()));
+            for (int i = 0; i < arr.size(); i++) {
+                modules[i] = GTRegistries.ITEM_MODULES.get(ResourceLocation.parse(arr.get(i).getAsString()));
+            }
 
             return new EquipmentFoundryRecipe(recipeId, equipment, ingredients, modules);
         }
@@ -157,16 +145,11 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         public EquipmentFoundryRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
             Ingredient equipment = Ingredient.fromNetwork(buffer);
 
-            Ingredient[] ingredients = new Ingredient[GTValues.TIER_COUNT];
-            ItemModuleType<?>[] modules = new ItemModuleType<?>[GTValues.TIER_COUNT];
-
-            for (int i = 0; i < GTValues.TIER_COUNT; i++) {
-                if (buffer.readBoolean()) continue;
+            var arrSize = buffer.readVarInt();
+            Ingredient[] ingredients = new Ingredient[arrSize];
+            ItemModuleType<?>[] modules = new ItemModuleType<?>[arrSize];
+            for (int i = 0; i < arrSize; i++) {
                 ingredients[i] = Ingredient.fromNetwork(buffer);
-            }
-
-            for (int i = 0; i < GTValues.TIER_COUNT; i++) {
-                if (buffer.readBoolean()) continue;
                 modules[i] = GTRegistries.ITEM_MODULES.get(buffer.readResourceLocation());
             }
             return new EquipmentFoundryRecipe(recipeId, equipment, ingredients, modules);
@@ -175,16 +158,10 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         public void toNetwork(FriendlyByteBuf buffer, EquipmentFoundryRecipe recipe) {
             recipe.equipment.toNetwork(buffer);
 
-            for (var ingredient : recipe.ingredients) {
-                buffer.writeBoolean(ingredient == null);
-                if (ingredient == null) continue;
-                ingredient.toNetwork(buffer);
-            }
-
-            for (ItemModuleType<?> module : recipe.modules) {
-                buffer.writeBoolean(module == null);
-                if (module == null) continue;
-                buffer.writeResourceLocation(module.id());
+            buffer.writeVarInt(recipe.ingredients.length);
+            for (int i=0; i<recipe.ingredients.length; i++) {
+                recipe.ingredients[i].toNetwork(buffer);
+                buffer.writeResourceLocation(recipe.modules[i].id());
             }
         }
     }

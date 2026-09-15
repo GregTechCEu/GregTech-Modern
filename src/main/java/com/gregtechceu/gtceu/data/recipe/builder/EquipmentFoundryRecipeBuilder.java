@@ -24,6 +24,7 @@ import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -35,9 +36,9 @@ public class EquipmentFoundryRecipeBuilder {
     @Setter
     private Ingredient equipment;
     @Getter
-    private final @Nullable Ingredient[] ingredients = new Ingredient[GTValues.TIER_COUNT];
+    private Ingredient[] ingredients = new Ingredient[0];
     @Getter
-    private final @Nullable ItemModuleType<?>[] modules = new ItemModuleType[GTValues.TIER_COUNT];
+    private ItemModuleType<?>[] modules = new ItemModuleType[0];
 
     public EquipmentFoundryRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -45,13 +46,22 @@ public class EquipmentFoundryRecipeBuilder {
 
     public EquipmentFoundryRecipeBuilder tier(int tier, Ingredient ingredient, ItemModuleType<?> module) {
         Preconditions.checkArgument(tier >= 0 && tier <= GTValues.TIER_COUNT, "Invalid tier: %s", tier);
-        ingredients[tier] = ingredient;
-        modules[tier] = module;
+        ingredient(tier, ingredient);
+        module(tier, module);
         return this;
     }
 
     public EquipmentFoundryRecipeBuilder ingredient(int tier, Ingredient ingredient) {
+        if (ingredients.length >= tier) ingredients = Arrays.copyOf(ingredients, tier+1);
+        Preconditions.checkArgument(tier >= 0 && tier <= GTValues.TIER_COUNT, "Invalid tier: %s", tier);
         ingredients[tier] = ingredient;
+        return this;
+    }
+
+    public EquipmentFoundryRecipeBuilder module(int tier, ItemModuleType<?> moduleType) {
+        if (modules.length >= tier) modules = Arrays.copyOf(modules, tier+1);
+        Preconditions.checkArgument(tier >= 0 && tier <= GTValues.TIER_COUNT, "Invalid tier: %s", tier);
+        modules[tier] = moduleType;
         return this;
     }
 
@@ -84,12 +94,6 @@ public class EquipmentFoundryRecipeBuilder {
         return ingredient(Ingredient.of(itemLike));
     }
 
-    public EquipmentFoundryRecipeBuilder module(int tier, ItemModuleType<?> moduleType) {
-        Preconditions.checkArgument(tier >= 0 && tier <= GTValues.TIER_COUNT, "Invalid tier: %s", tier);
-        modules[tier] = moduleType;
-        return this;
-    }
-
     public EquipmentFoundryRecipeBuilder module(ItemModuleType<?> moduleType) {
         return module(0, moduleType);
     }
@@ -100,19 +104,19 @@ public class EquipmentFoundryRecipeBuilder {
 
     public void toJson(JsonObject json) {
         json.add("equipment", equipment.toJson());
-        JsonArray ingredientArr = new JsonArray();
+        JsonArray jsonIngArr = new JsonArray();
+
         for (var ingredient: ingredients) {
-            ingredientArr.add(ingredient == null ? JsonNull.INSTANCE : ingredient.toJson());
+            jsonIngArr.add( ingredient.toJson());
         }
 
-        json.add("ingredients", ingredientArr);
+        json.add("ingredients", jsonIngArr);
 
-        JsonArray moduleArr = new JsonArray();
+        JsonArray jsonModuleArr = new JsonArray();
         for (var module: modules) {
-            if (module == null) moduleArr.add(JsonNull.INSTANCE);
-            else moduleArr.add(module.id().toString());
+            jsonModuleArr.add(module.id().toString());
         }
-        json.add("modules", moduleArr);
+        json.add("modules", jsonModuleArr);
     }
 
     public void save(Consumer<FinishedRecipe> consumer) {

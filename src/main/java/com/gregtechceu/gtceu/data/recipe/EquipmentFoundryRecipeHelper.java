@@ -1,29 +1,21 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleType;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.EquipmentFoundryRecipeBuilder;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 
 public class EquipmentFoundryRecipeHelper {
 
@@ -43,21 +35,15 @@ public class EquipmentFoundryRecipeHelper {
 
     public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                                  @NotNull Ingredient equipment,
-                                                 Consumer<EquipmentFoundryRecipeBuilder> builderConsumer) {
+                                                 Object[] ingredients, ItemModuleType<?>[] modules) {
         var builder = new EquipmentFoundryRecipeBuilder(regName).equipment(equipment);
-        builderConsumer.accept(builder);
-        builder.save(provider);
-    }
-
-    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                                 @NotNull Ingredient equipment,
-                                                 @Nullable Object[] ingredients, @Nullable ItemModuleType<?>[] modules) {
-        var ingArr = Arrays.copyOf(ingredients, GTValues.TIER_COUNT);
-        ItemModuleType<?>[] moduleArr = Arrays.copyOf(modules, GTValues.TIER_COUNT);
-        var builder = new EquipmentFoundryRecipeBuilder(regName).equipment(equipment);
-        for (int i=0; i<GTValues.TIER_COUNT; i++) {
-            builder.ingredient(i, objectToIngredient(ingArr[i]));
-            builder.module(i, moduleArr[i]);
+        if (ingredients.length != modules.length) {
+            ingredients = Arrays.copyOf(ingredients, Math.min(ingredients.length, modules.length));
+            modules = Arrays.copyOf(modules, Math.min(ingredients.length, modules.length));
+        }
+        for (int i=0; i<ingredients.length; i++) {
+            builder.ingredient(i, objectToIngredient(ingredients[i]));
+            builder.module(i, modules[i]);
         }
         builder.save(provider);
     }
