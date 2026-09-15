@@ -1,7 +1,13 @@
 {
   "values": [
     "gtceu:rubber_planks",
-    "gtceu:treated_wood_plate",
-    "gtceu:wood_plate"
+    {
+      "id": "gtceu:treated_wood_plate",
+      "required": false
+    },
+    {
+      "id": "gtceu:wood_plate",
+      "required": false
+    }
   ]
 }
