@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -20,7 +19,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -31,7 +29,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.fml.ModLoader;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.progress.CircularProgressDrawable;
@@ -50,11 +47,6 @@ public class GTRecipeTypes {
     public static final String GENERATOR = "generator";
     public static final String MULTIBLOCK = "multiblock";
     public static final String DUMMY = "dummy";
-
-    static {
-        GTRegistries.RECIPE_TYPES.unfreeze();
-        GTRegistries.RECIPE_CATEGORIES.unfreeze();
-    }
 
     //////////////////////////////////////
     // ********* Steam **********//
@@ -704,7 +696,7 @@ public class GTRecipeTypes {
         var recipeType = new GTRecipeType(id, group, proxyRecipes);
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
-        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
+        GTRegistries.register(GTRegistries.RECIPE_TYPES, recipeType.registryName, recipeType);
         return recipeType;
     }
 
@@ -716,17 +708,12 @@ public class GTRecipeTypes {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
         GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
-        GTRegistries.RECIPE_TYPES.register(recipeType.registryName, recipeType);
+        GTRegistries.register(GTRegistries.RECIPE_TYPES, recipeType.registryName, recipeType);
         return recipeType;
     }
 
     public static void init() {
         GCYMRecipeTypes.init();
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
-        }
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
-        GTRegistries.RECIPE_TYPES.freeze();
 
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("machine"),
                 GTRecipeSerializer.SERIALIZER);

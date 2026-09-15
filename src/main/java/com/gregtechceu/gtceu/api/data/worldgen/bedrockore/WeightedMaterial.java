@@ -11,7 +11,7 @@ public record WeightedMaterial(Material material, int weight) implements Weighte
 
     public static final Codec<WeightedMaterial> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    GTRegistries.MATERIALS.codec().fieldOf("material").forGetter(WeightedMaterial::material),
+                    GTRegistries.MATERIALS.byNameCodec().fieldOf("material").forGetter(WeightedMaterial::material),
                     Codec.INT.fieldOf("weight").forGetter(WeightedMaterial::weight))
                     .apply(instance, WeightedMaterial::new));
 }

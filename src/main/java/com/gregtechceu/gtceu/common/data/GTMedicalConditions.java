@@ -1,22 +1,16 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class GTMedicalConditions {
-
-    static {
-        GTRegistries.MEDICAL_CONDITIONS.unfreeze();
-    }
 
     // General Conditions
     public static final MedicalCondition NONE = register("none", 0xffffff, 0,
@@ -132,7 +126,7 @@ public class GTMedicalConditions {
                                             Symptom.ConfiguredSymptom... symptoms) {
         var condition = new MedicalCondition(id, color, maxProgression,
                 progressionType, progressionRate, canBePermanent, symptoms);
-        GTRegistries.MEDICAL_CONDITIONS.register(id, condition);
+        GTRegistries.register(GTRegistries.MEDICAL_CONDITIONS, id, condition);
         return condition;
     }
 
@@ -145,9 +139,5 @@ public class GTMedicalConditions {
                 symptoms);
     }
 
-    public static void init() {
-        ModLoader.get()
-                .postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MEDICAL_CONDITIONS, MedicalCondition.class));
-        GTRegistries.MEDICAL_CONDITIONS.freeze();
-    }
+    public static void init() {}
 }

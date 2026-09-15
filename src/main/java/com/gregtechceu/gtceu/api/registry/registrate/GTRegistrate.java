@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -251,6 +250,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public @Nullable RegistryEntry<CreativeModeTab> creativeModeTab() {
         return this.currentTab;
+    }
+
+    public void resetCreativeModeTab() {
+        this.currentTab = null;
     }
 
     public void creativeModeTab(Supplier<@Nullable RegistryEntry<CreativeModeTab>> currentTab) {

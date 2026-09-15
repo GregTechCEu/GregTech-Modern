@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -22,6 +23,7 @@ import java.util.UUID;
 public final class PlaceholderContext {
 
     private Level level;
+    private HolderLookup.Provider holderLookup;
     private BlockPos pos;
     private Direction side;
     private final @Nullable ItemStackHandler itemStackHandler;
@@ -39,6 +41,6 @@ public final class PlaceholderContext {
                               @Nullable MonitorGroup monitorGroup,
                               @Nullable MultiLineComponent previousText,
                               UUID uuid) {
-        this(level, pos, side, itemStackHandler, cover, monitorGroup, previousText, uuid, 0);
+        this(level, level.registryAccess(), pos, side, itemStackHandler, cover, monitorGroup, previousText, uuid, 0);
     }
 }

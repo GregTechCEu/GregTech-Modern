@@ -1,100 +1,122 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.GTValues.TIER_COUNT;
+import static com.gregtechceu.gtceu.api.GTValues.VN;
 
 @Accessors(fluent = true, chain = true)
-public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition[]> {
+public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
+                                        implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<?, ?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
-
+    private final @Nullable MultiblockMachineBuilder<?, ?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
+    private final @Nullable MultiblockMachineDefinition[] machines = new MultiblockMachineDefinition[TIER_COUNT];
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
-    public transient TieredCreationFunction machine;
+    public transient MachineInstanceFactory.Tiered<? extends MultiblockControllerMachine> machine;
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
 
     public KJSTieredMultiblockBuilder(ResourceLocation id) {
         super(id);
+        this.dummyBuilder = true;
     }
 
-    public KJSTieredMultiblockBuilder(ResourceLocation id, TieredCreationFunction machine) {
+    public KJSTieredMultiblockBuilder(ResourceLocation id,
+                                      MachineInstanceFactory.Tiered<? extends MultiblockControllerMachine> machine) {
         super(id);
         this.machine = machine;
+        this.dummyBuilder = true;
     }
 
     @Override
-    public void generateAssetJsons(@Nullable AssetJsonGenerator generator) {
-        super.generateAssetJsons(generator);
+    public RegistryInfo<MachineDefinition> getRegistryType() {
+        return GTRegistryInfo.MACHINE;
+    }
+
+    @Override
+    public void generateMachineModels() {
         for (int tier : this.tiers) {
-            MultiblockMachineBuilder<?, ?, ?> builder = this.builders[tier];
-            if (builder != null) {
-                builder.generateAssetJsons(generator);
-            }
+            generateMachineModel(this.builders[tier], this.machines[tier]);
         }
+    }
+
+    @Override
+    public void generateAssetJsons(AssetJsonGenerator generator) {
+        generateMachineModels();
+        for (int tier : this.tiers) {
+            MachineDefinition definition = this.machines[tier];
+            if (definition == null) continue;
+
+            final ResourceLocation id = definition.getId();
+            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
+        }
+    }
+
+    @Override
+    public String getTranslationKeyGroup() {
+        return "block";
     }
 
     @Override
     public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
         for (int tier : tiers) {
-            MultiblockMachineBuilder<?, ?, ?> builder = this.builders[tier];
-            if (builder != null) {
-                builder.generateLang(lang);
+            MachineDefinition def = machines[tier];
+            if (def != null) {
+                lang.add(def.getId().getNamespace(), def.getDescriptionId(), def.getLangValue());
             }
         }
     }
 
     @Override
-    public @Nullable MultiblockMachineDefinition @NotNull [] register() {
+    public void createAdditionalObjects() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
                 "example: `builder.machine((holder, tier) => new SimpleTieredMachine(holder, tier, t => t * 3200)`");
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
-        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[TIER_COUNT];
+
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MultiblockMachineBuilder<?, ?, ?> builder = GTRegistrate
-                    .createIgnoringListenerErrors(this.id.getNamespace()).multiblock(
-                            String.format("%s_%s", tierName, this.id.getPath()),
-                            holder -> machine.create(holder, tier));
+            MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> builder = GTRegistrate
+                    .createIgnoringListenerErrors(this.id.getNamespace())
+                    .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
+                            holder -> machine.buildMachine(holder, tier));
 
             builder.workableTieredHullModel(id.withPrefix("block/machines/"))
                     .tier(tier);
             this.definition.apply(tier, builder);
             this.builders[tier] = builder;
-            definitions[tier] = builder.register();
+            this.machines[tier] = builder.register();
         }
-        return value = definitions;
     }
 
-    @FunctionalInterface
-    public interface TieredCreationFunction {
-
-        MultiblockControllerMachine create(BlockEntityCreationInfo info, int tier);
+    @Override
+    public @Nullable MultiblockMachineDefinition createObject() {
+        return null;
     }
 
     @FunctionalInterface

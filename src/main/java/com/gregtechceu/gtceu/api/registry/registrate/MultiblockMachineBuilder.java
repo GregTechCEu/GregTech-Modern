@@ -30,6 +30,7 @@ import org.apache.commons.lang3.function.TriFunction;
 import java.util.*;
 import java.util.function.*;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -41,11 +42,11 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
                                      extends MachineBuilder<DEFINITION, MACHINE, SELF> {
 
     private boolean generator;
-    private Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
+    private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
-    private TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
+    private @Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
 
     @Getter
     private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay = (m,
@@ -141,6 +142,6 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         }
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
-        return value = definition;
+        return definition;
     }
 }

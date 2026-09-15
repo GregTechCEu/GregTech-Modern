@@ -169,6 +169,6 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
 
     public interface ITokenFormatter<T> {
 
-        Component apply(String s, @Nullable T context);
+        Component apply(String s, T context);
     }
 }

@@ -1,10 +1,9 @@
-package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
-import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -15,7 +14,7 @@ import lombok.experimental.Accessors;
 
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.integration.kjs.Validator.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
 @Accessors(fluent = true, chain = true)
 public class OreTagPrefixBuilder extends TagPrefixBuilder {
@@ -40,22 +39,20 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     }
 
     @Override
-    public KJSTagPrefix create(String id) {
-        return KJSTagPrefix.oreTagPrefix(id);
+    public TagPrefix create(ResourceLocation id) {
+        return new TagPrefix(id, false, false)
+                .defaultTagPath("ores/%s")
+                .prefixOnlyTagPath("ores_in_ground/%s")
+                .unformattedTagPath("ores")
+                .materialIconType(MaterialIconType.ore)
+                .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
+                .generationCondition(hasOreProperty);
     }
 
     @Override
-    public TagPrefix register() {
-        validate(this.id,
-                errorIfNull(stateSupplier, "stateSupplier"),
-                onlySetDefault(templateProperties, () -> {
-                    templateProperties = () -> GTBlocks.copy(
-                            ((BlockBehaviourAccessor) stateSupplier.get().getBlock()).getBlockProperties(),
-                            BlockBehaviour.Properties.of());
-                }),
-                errorIfNull(baseModelLocation, "baseModelLocation"));
-
-        return value = base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation,
+    public TagPrefix createObject() {
+        return base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation,
                 doubleDrops, isSand, shouldDropAsItem);
     }
 }

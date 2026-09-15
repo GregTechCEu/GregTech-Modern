@@ -36,7 +36,7 @@ public class GTCreateIntegration {
     }
 
     public static void initPlaceholders() {
-        PlaceholderHandler.addOrOverridePlaceholder(new Placeholder("redstone") {
+        PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
