@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -752,8 +751,7 @@ public class GTMachineUtils {
                     return false;
                 })
                 .errorFunction(ctx -> new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER))
-                .candidates(PartAbility.ROTOR_HOLDER.getAllBlocks()
-                        .stream().map(BlockInfo::fromBlock))
+                .blocks(PartAbility.ROTOR_HOLDER.getAllBlocks())
                 .contents(builder -> builder.append(PartAbility.ROTOR_HOLDER.getName()))
                 .toMultiPredicate()
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
