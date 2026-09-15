@@ -52,7 +52,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
         if (accessor.getTarget() instanceof QuantumTankMachine qtm) {
             FluidStack stored = qtm.getStored();
             if (stored.isEmpty() && qtm instanceof CreativeTankMachine) return Collections.emptyList();
-
+            if (stored.isEmpty() && qtm.isLocked()) stored = qtm.getLockedFluid();
             JadeFluidObject fluidObject = JadeFluidObject.of(stored.getFluid(), qtm.getStoredAmount(),
                     stored.getComponentsPatch());
             CompoundTag tag = FluidView.writeDefault(fluidObject, qtm.getMaxAmount());
