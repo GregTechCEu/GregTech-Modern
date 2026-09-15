@@ -68,6 +68,7 @@ public class AutoChargeItemModule extends TieredItemModule {
             Player player = context.getPlayer();
             if (owner == null || player != null && owner.isPlayerFriendly(player.getUUID())) {
                 linkedMachine = GlobalPos.of(context.getLevel().dimension(), pos);
+                getModularItemStack().saveModuleData();
                 if (player != null) player.sendSystemMessage(Component.translatable("behaviour.charger_linked"));
             }
         }
@@ -111,12 +112,11 @@ public class AutoChargeItemModule extends TieredItemModule {
         MetaMachine machine = getLinkedMachine(Objects.requireNonNull(player.getServer()));
         if (machine == null) return 0;
         int interdimensionalTier = -1;
-        // ItemModule[] damageBlock = GTItemModules.DAMAGE_BLOCK;
-        // for (int i = 0; i < damageBlock.length; i++) {
-        // ItemModule shieldModule = damageBlock[i];
-        // if (getModularItemStack().getModule(shieldModule) != null)
-        // interdimensionalTier = i + 1;
-        // }
+        ItemModuleType<?>[] damageBlock = GTItemModules.DAMAGE_BLOCK;
+        for (int i = 0; i < damageBlock.length; i++) {
+            ItemModuleType<?> shieldModule = damageBlock[i];
+            if (getModularItemStack().getModuleByType(shieldModule) != null) interdimensionalTier = i + 1;
+        }
         interdimensionalTier = Math.min(interdimensionalTier, getTier());
         if (machine.getLevel() != player.level() && interdimensionalTier < GTValues.IV) return 0;
         if (interdimensionalTier < GTValues.IV && machine.getBlockPos().distSqr(player.blockPosition()) > getRange())

@@ -211,10 +211,9 @@ public class ModularItemTest {
         IElectricItem bufferBatteryElectricItem = GTCapabilityHelper.getElectricItem(bufferBattery);
         assert bufferBatteryElectricItem != null;
 
-        ItemStack sensor = GTItems.SENSOR_LuV.asStack();
-        sensor.onItemUseFirst(new UseOnContext(helper.getLevel(), player, InteractionHand.MAIN_HAND, sensor,
+        modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], GTItems.SENSOR_LuV.asStack(), false);
+        armor.onItemUseFirst(new UseOnContext(helper.getLevel(), player, InteractionHand.MAIN_HAND, armor,
                 new BlockHitResult(Vec3.ZERO, Direction.UP, buffer.getBlockPos(), false)));
-        modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], sensor, false);
         modular.attach(GTItemModules.BATTERY, GTItems.BATTERY_MV_LITHIUM.asStack(), false);
 
         player.setItemSlot(EquipmentSlot.CHEST, armor);

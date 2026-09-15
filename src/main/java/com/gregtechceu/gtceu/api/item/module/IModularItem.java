@@ -21,6 +21,10 @@ public interface IModularItem {
     @Nullable
     ItemModule getModuleInSlot(int slot);
 
+    default @Nullable ItemModule getModuleByType(ItemModuleType<?> type) {
+        return getModules().stream().filter(v -> v.type() == type).findFirst().orElse(null);
+    }
+
     List<ItemModule> getModules();
 
     void setSlots(List<ItemModuleSlot> slots);

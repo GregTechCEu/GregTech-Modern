@@ -77,6 +77,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
         }
         // the battery's inventoryTick method does not use inventorySlot or isCurrentItem
         getModuleItem().inventoryTick(player.level(), player, 0, false);
+        getModularItemStack().saveModuleData();
     }
 
     @Override
