@@ -36,20 +36,20 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final boolean isTiered;
     @Getter
-    private final Ingredient[] ingredients;
+    private final Ingredient[] moduleIngredients;
     @Getter
     private final ItemModuleType<?>[] modules;
 
-    public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, Ingredient[] ingredients, ItemModuleType<?>[] modules) {
-        if (ingredients.length != modules.length) throw new IllegalArgumentException("Ingredient and module array length must match");
-        Validate.noNullElements(ingredients, "Ingredients array cannot have null elements");
+    public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, Ingredient[] moduleIngredients, ItemModuleType<?>[] modules) {
+        if (moduleIngredients.length != modules.length) throw new IllegalArgumentException("Ingredient and module array length must match");
+        Validate.noNullElements(moduleIngredients, "Ingredients array cannot have null elements");
         Validate.noNullElements(modules, "Modules array cannot have null elements");
 
         this.id = id;
         this.equipment = equipment;
-        this.ingredients = ingredients;
+        this.moduleIngredients = moduleIngredients;
         this.modules = modules;
-        this.isTiered = ingredients.length == 1;
+        this.isTiered = moduleIngredients.length == 1;
     }
 
     @Override
@@ -60,8 +60,8 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     public boolean matches(ItemStack equipmentItem, ItemStack itemToApply) {
         if (!equipment.test(equipmentItem)) return false;
 
-        for (int i=0; i<ingredients.length; i++) {
-            Ingredient ingredient = ingredients[i];
+        for (int i = 0; i< moduleIngredients.length; i++) {
+            Ingredient ingredient = moduleIngredients[i];
             if (ingredient == null) continue;
             if (ingredient.test(itemToApply)) {
                 var moduleToApply = modules[i];
@@ -86,8 +86,8 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     public void applyToItem(ItemStack equipmentItem, ItemStack itemToApply, int slot) {
         if (!equipment.test(equipmentItem)) return;
 
-        for (int i=0; i<ingredients.length; i++) {
-            Ingredient ingredient = ingredients[i];
+        for (int i = 0; i< moduleIngredients.length; i++) {
+            Ingredient ingredient = moduleIngredients[i];
             if (ingredient == null) continue;
             if (ingredient.test(itemToApply)) {
                 var moduleToApply = modules[i];
@@ -158,9 +158,9 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         public void toNetwork(FriendlyByteBuf buffer, EquipmentFoundryRecipe recipe) {
             recipe.equipment.toNetwork(buffer);
 
-            buffer.writeVarInt(recipe.ingredients.length);
-            for (int i=0; i<recipe.ingredients.length; i++) {
-                recipe.ingredients[i].toNetwork(buffer);
+            buffer.writeVarInt(recipe.moduleIngredients.length);
+            for (int i = 0; i<recipe.moduleIngredients.length; i++) {
+                recipe.moduleIngredients[i].toNetwork(buffer);
                 buffer.writeResourceLocation(recipe.modules[i].id());
             }
         }

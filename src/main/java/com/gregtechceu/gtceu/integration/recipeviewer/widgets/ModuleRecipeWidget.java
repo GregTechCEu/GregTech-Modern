@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
-import brachy.modularui.widgets.dynamic.DynamicHandler;
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -110,12 +108,12 @@ public class ModuleRecipeWidget extends Flow {
     }
 
     private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, int tier) {
-        ItemStack[] stacks = Objects.requireNonNull(recipe.getIngredients()[tier]).getItems();
+        ItemStack[] stacks = Objects.requireNonNull(recipe.getModuleIngredients()[tier]).getItems();
         return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
     }
 
     private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, ItemModuleType<?> module, int tier) {
-        ItemStack[] stacks = Objects.requireNonNull(recipe.getIngredients()[tier]).getItems();
+        ItemStack[] stacks = Objects.requireNonNull(recipe.getModuleIngredients()[tier]).getItems();
         stacks = Arrays.stream(stacks)
                 .filter(stack -> recipe.getModules()[tier] == module)
                 .toArray(ItemStack[]::new);
