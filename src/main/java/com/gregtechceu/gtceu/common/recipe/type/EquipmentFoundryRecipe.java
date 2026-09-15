@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import lombok.Getter;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -22,11 +21,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
     @Getter
@@ -36,9 +33,9 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final boolean isTiered;
     @Getter
-    private final Ingredient[] moduleIngredients;
+    private final @Nullable Ingredient [] moduleIngredients;
     @Getter
-    private final ItemModuleType<?>[] modules;
+    private final @Nullable ItemModuleType<?>[] modules;
 
     public EquipmentFoundryRecipe(ResourceLocation id, Ingredient equipment, Ingredient[] moduleIngredients, ItemModuleType<?>[] modules) {
         if (moduleIngredients.length != modules.length) throw new IllegalArgumentException("Ingredient and module array length must match");

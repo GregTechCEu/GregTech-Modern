@@ -693,11 +693,11 @@ public class GTItems {
     public static ItemEntry<ComponentItem> ELECTRIC_MOTOR_OpV = GTCEuAPI.isHighTier() ? registerElectricMotor(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerElectricMotor(int tier) {
-        return REGISTRATE.item("%s_electric_motor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_electric_motor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Electric Motor".formatted(GTValues.VN[tier]))
-                .tag(CustomTags.ELECTRIC_MOTORS)
-                .onRegister(attach(new TieredBehaviour(tier)))
-                .register();
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_MOTORS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -721,16 +721,16 @@ public class GTItems {
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_OpV = GTCEuAPI.isHighTier() ? registerElectricPump(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerElectricPump(int tier) {
-        return REGISTRATE.item("%s_electric_pump".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_electric_pump".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Electric Pump".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[tier])))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
                     lines.add(fluidRateTooltip(tier));
-                })))
-                .tag(CustomTags.ELECTRIC_PUMPS)
-                .register();
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PUMPS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -754,15 +754,15 @@ public class GTItems {
     public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEuAPI.isHighTier() ? registerFluidRegulator(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerFluidRegulator(int tier) {
-        return REGISTRATE.item("%s_fluid_regulator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_fluid_regulator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Fluid Regulator".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[tier])))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
                     lines.add(fluidRateTooltip(tier));
-                })))
-                .tag(CustomTags.FLUID_REGULATORS)
-                .register();
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.FLUID_REGULATORS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -786,16 +786,16 @@ public class GTItems {
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = GTCEuAPI.isHighTier() ? registerConveyorModule(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerConveyorModule(int tier) {
-        return REGISTRATE.item("%s_conveyor_module".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_conveyor_module".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Conveyor Module".formatted(GTValues.VN[tier]))
                 .onRegister(attach(new TieredBehaviour(tier)))
                 .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[tier])))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
                     lines.add(itemRateTooltip(tier));
-                })))
-                .tag(CustomTags.CONVEYOR_MODULES)
-                .register();
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.CONVEYOR_MODULES);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -819,11 +819,11 @@ public class GTItems {
     public static ItemEntry<ComponentItem> ELECTRIC_PISTON_OpV = GTCEuAPI.isHighTier() ? registerFieldGenerator(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerElectricPiston(int tier) {
-        return REGISTRATE.item("%s_field_generator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
-                .lang("%s Field Generator".formatted(GTValues.VN[tier]))
-                .onRegister(attach(new TieredBehaviour(tier)))
-                .tag(CustomTags.ELECTRIC_PISTONS)
-                .register();
+        var builder = REGISTRATE.item("%s_electric_piston".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+                .lang("%s Electric Piston".formatted(GTValues.VN[tier]))
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ELECTRIC_PISTONS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -847,16 +847,16 @@ public class GTItems {
     public static ItemEntry<ComponentItem> ROBOT_ARM_OpV = GTCEuAPI.isHighTier() ? registerRobotArm(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerRobotArm(int tier) {
-        return REGISTRATE.item("%s_robot_arm".formatted(GTValues.VN[tier]), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_robot_arm".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Robot Arm".formatted(tier))
                 .onRegister(
                         attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[tier]), new TieredBehaviour(tier)))
                 .onRegister(attach(new TooltipBehavior(lines -> {
                     lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
                     lines.add(itemRateTooltip(tier));
-                })))
-                .tag(CustomTags.ROBOT_ARMS)
-                .register();
+                })));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.ROBOT_ARMS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -880,11 +880,11 @@ public class GTItems {
     public static ItemEntry<ComponentItem> FIELD_GENERATOR_OpV = GTCEuAPI.isHighTier() ? registerElectricPiston(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerFieldGenerator(int tier) {
-        return REGISTRATE.item("%s_field_generator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_field_generator".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Field Generator".formatted(GTValues.VN[tier]))
-                .onRegister(attach(new TieredBehaviour(tier)))
-                .tag(CustomTags.FIELD_GENERATORS)
-                .register();
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.FIELD_GENERATORS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -909,11 +909,11 @@ public class GTItems {
     public static ItemEntry<ComponentItem> EMITTER_OpV = GTCEuAPI.isHighTier() ? registerEmitter(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerEmitter(int tier) {
-        return REGISTRATE.item("%s_emitter".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_emitter".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Emitter".formatted(GTValues.VN[tier]))
-                .onRegister(attach(new TieredBehaviour(tier)))
-                .tag(CustomTags.EMITTERS)
-                .register();
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.EMITTERS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
@@ -937,11 +937,11 @@ public class GTItems {
     public static ItemEntry<ComponentItem> SENSOR_OpV = GTCEuAPI.isHighTier() ? registerSensor(GTValues.OpV) : null;
 
     private static ItemEntry<ComponentItem> registerSensor(int tier) {
-        return REGISTRATE.item("%s_sensor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
+        var builder = REGISTRATE.item("%s_sensor".formatted(GTValues.VN[tier].toLowerCase()), ComponentItem::create)
                 .lang("%s Sensor".formatted(GTValues.VN[tier]))
-                .onRegister(attach(new TieredBehaviour(tier)))
-                .tag(CustomTags.SENSORS)
-                .register();
+                .onRegister(attach(new TieredBehaviour(tier)));
+        if (tier <= GTValues.UV) builder.tag(CustomTags.SENSORS);
+        return builder.register();
     }
 
     @SuppressWarnings("unchecked")
