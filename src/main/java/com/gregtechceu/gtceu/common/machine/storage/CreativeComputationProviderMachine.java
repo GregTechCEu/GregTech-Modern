@@ -24,7 +24,8 @@ import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -73,7 +74,8 @@ public class CreativeComputationProviderMachine extends MetaMachine
 
     @Override
     public int requestCWUt(
-                           int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
+                           int cwut, boolean simulate, Set<IOpticalComputationProvider> seen,
+                           Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         int requestedCWUt = workingEnabled ? Math.min(cwut, maxCWUt) : 0;
         if (!simulate) {
@@ -83,13 +85,15 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Set<IOpticalComputationProvider> seen,
+                          Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         return workingEnabled ? maxCWUt : 0;
     }
 
     @Override
-    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Set<IOpticalComputationProvider> seen,
+                             Map<IOpticalComputationProvider, Object> simulationState) {
         seen.add(this);
         return true;
     }
