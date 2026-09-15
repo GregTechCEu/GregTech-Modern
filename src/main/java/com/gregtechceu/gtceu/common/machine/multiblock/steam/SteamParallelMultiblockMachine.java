@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -81,7 +82,10 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                     if (!(fluidHandler instanceof NotifiableFluidTank nft)) continue;
                     if (nft.isFluidValid(0, GTMaterials.Steam.getFluid(1))) {
                         steamEnergy = new SteamEnergyRecipeHandler(nft, getConversionRate());
-                        addHandlerList(RecipeHandlerList.of(IO.IN, steamEnergy));
+                        ISubscription versionSubscription = addHandlerList(RecipeHandlerList.of(IO.IN, steamEnergy));
+                        if (versionSubscription != null) {
+                            traitSubscriptions.add(versionSubscription);
+                        }
                         return;
                     }
                 }

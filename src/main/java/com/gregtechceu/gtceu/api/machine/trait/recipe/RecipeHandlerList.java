@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.trait.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapabilityVersions;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -42,8 +44,15 @@ public class RecipeHandlerList {
     @NotNull
     private RecipeHandlerGroup group = RecipeHandlerGroupColor.UNDYED;
 
+    @Nullable
+    private RecipeCapabilityVersions versions;
+
     protected RecipeHandlerList(IO handlerIO) {
         this.handlerIO = handlerIO;
+    }
+
+    public void attachVersions(RecipeCapabilityVersions versions) {
+        this.versions = versions;
     }
 
     public static RecipeHandlerList of(IO io, int color, IRecipeHandler<?>... handlers) {
@@ -108,6 +117,7 @@ public class RecipeHandlerList {
         if (currentDistinct != distinct) {
             this.group = currentDistinct ? new RecipeHandlerGroupColor(color) :
                     RecipeHandlerGroupDistinctness.BUS_DISTINCT;
+            if (versions != null) versions.topologyVersion++;
             for (var rht : allHandlerTraits) {
                 rht.setDistinct(distinct);
                 if (notify) rht.notifyListeners();
@@ -128,6 +138,7 @@ public class RecipeHandlerList {
         if (this.group != RecipeHandlerGroupDistinctness.BUS_DISTINCT) {
             this.group = new RecipeHandlerGroupColor(color);
         }
+        if (versions != null) versions.topologyVersion++;
         if (notify) {
             for (var rht : allHandlerTraits) {
                 rht.notifyListeners();
