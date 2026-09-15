@@ -64,8 +64,8 @@ public class GTItemModules {
         for (int i = 0; i <= maxTier - minTier; i++) {
             int finalI = i;
 
-            ResourceLocation resourceLocation = id.withSuffix("_" + (i + minTier));
-            result[i] = new ItemModuleType<>(resourceLocation, i, codec, s -> constructor.apply(s, finalI));
+            ResourceLocation resourceLocation = id.withSuffix("_" + GTValues.VN[i + minTier].toLowerCase());
+            result[i] = new ItemModuleType<>(resourceLocation, i, codec, s -> constructor.apply(s, finalI + minTier));
             GTRegistries.ITEM_MODULES.register(resourceLocation, result[i]);
         }
         return result;
@@ -74,7 +74,7 @@ public class GTItemModules {
     public static <
             T extends TieredItemModule> ItemModuleType<T>[] registerTiered(ResourceLocation id, Codec<T> codec,
                                                                            BiFunction<ItemStack, Integer, T> constructor) {
-        return registerTiered(id, GTValues.ULV, GTValues.MAX, codec, constructor);
+        return registerTiered(id, GTValues.LV, GTValues.OpV, codec, constructor);
     }
 
     public static void init() {}

@@ -94,7 +94,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
                 if (moduleToApply == null) continue;
                 IModularItem modularItem = GTCapabilityHelper.getModularItem(equipmentItem);
                 if (modularItem == null) continue;
-                modularItem.attach(moduleToApply, itemToApply, slot, true);
+                modularItem.attach(moduleToApply, itemToApply, slot, false);
                 return;
             }
         }
