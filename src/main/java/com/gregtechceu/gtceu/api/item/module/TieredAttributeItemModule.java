@@ -46,7 +46,6 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     public TieredAttributeItemModule(ItemStack moduleItem, int tier) {
         super(moduleItem, tier);
         modifierAmount = getMaxModifier();
-        attributeUUID = getAttributeModifier().getId();
     }
 
     private void attachAttribute() {
@@ -100,8 +99,8 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
 
     public void setModifier(double modifier) {
         this.modifierAmount = modifier;
-        detachAttribute();
-        attachAttribute();
+        if (isEnabled()) detachAttribute();
+        if (isEnabled()) attachAttribute();
     }
 
     protected String getSliderString(double value) {

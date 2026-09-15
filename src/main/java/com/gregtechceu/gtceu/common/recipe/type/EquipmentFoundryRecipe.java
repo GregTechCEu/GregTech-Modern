@@ -103,7 +103,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             if (ingredient.test(itemToApply)) {
                 IModularItem modularItem = GTCapabilityHelper.getModularItem(equipmentItem);
                 if (modularItem == null) continue;
-                if (modularItem.attach(moduleToApply, itemToApply, true) != null) return;
+                if (modularItem.attach(moduleToApply, itemToApply, false) != null) return;
 
             }
         }
@@ -141,6 +141,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
                 var obj = new JsonObject();
                 obj.add("ingredient", entry.ingredient.toJson());
                 obj.add("module", new JsonPrimitive(entry.moduleForTier.id().toString()));
+                entryArr.add(obj);
             }
             json.add("entries", entryArr);
         }
