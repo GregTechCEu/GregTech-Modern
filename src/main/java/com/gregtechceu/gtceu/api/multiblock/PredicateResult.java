@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-// if failed, return early with no match
 public record PredicateResult(@Nullable BasePredicate match, List<MultiPredicate> parents) {
 
     private static final PredicateResult NO_MATCH = new PredicateResult(null, List.of());
 
+    // if failed, return early with no match
     private static final PredicateResult FAILED = new PredicateResult(null, List.of());
 
     public static PredicateResult noMatch() {

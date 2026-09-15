@@ -32,12 +32,13 @@ public class XorPredicate extends MultiPredicate {
 
     @Override
     protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
-        if (result.match() == null) return result;
+        BasePredicate matchedPredicate = result.match();
+        if (matchedPredicate == null) return result;
         if (result.isTop(this)) {
             if (this.passedPredicate == null) {
-                this.passedPredicate = ofPredicate(result.match());
-            } else if (!this.passedPredicate.is(result.match())) {
-                xorError(context, result.match(), this.passedPredicate);
+                this.passedPredicate = ofPredicate(matchedPredicate);
+            } else if (!this.passedPredicate.is(matchedPredicate)) {
+                xorError(context, matchedPredicate, this.passedPredicate);
                 return PredicateResult.failed();
             }
         } else {
@@ -45,7 +46,7 @@ public class XorPredicate extends MultiPredicate {
             if (this.passedPredicate == null) {
                 this.passedPredicate = ofChild(bottom);
             } else if (!this.passedPredicate.is(bottom)) {
-                xorError(context, result.match(), this.passedPredicate);
+                xorError(context, matchedPredicate, this.passedPredicate);
                 return PredicateResult.failed();
             }
         }
