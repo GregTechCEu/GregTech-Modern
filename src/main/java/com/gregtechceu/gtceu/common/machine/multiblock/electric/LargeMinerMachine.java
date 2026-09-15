@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionResult;
@@ -84,7 +85,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         return (LargeMinerLogic) super.getRecipeLogic();
     }
 
-    public static Material getMaterial(int tier) {
+    public static Holder<Material> getMaterial(int tier) {
         if (tier == GTValues.EV) return GTMaterials.Steel;
         if (tier == GTValues.IV) return GTMaterials.Titanium;
         if (tier == GTValues.LuV) return GTMaterials.TungstenSteel;

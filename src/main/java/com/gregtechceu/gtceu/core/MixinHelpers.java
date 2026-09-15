@@ -94,7 +94,7 @@ public class MixinHelpers {
                     tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
                 }
 
-                if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
+                if (entry.tagPrefix() == TagPrefix.crushed.value() && material.hasProperty(PropertyKey.ORE)) {
                     OreProperty ore = material.getPropertyOrThrow(PropertyKey.ORE);
                     Material washedIn = ore.getWashedIn().first();
                     if (washedIn == null) return;
@@ -195,12 +195,12 @@ public class MixinHelpers {
                     }
                 }
 
-                if (entry.tagPrefix() == TagPrefix.oreEndstone) {
+                if (entry.tagPrefix() == TagPrefix.oreEndstone.value()) {
                     // Make endstone-based ores dragon-immune
                     tagMap.computeIfAbsent(BlockTags.DRAGON_IMMUNE.location(), $ -> new ArrayList<>()).addAll(entries);
                 }
 
-                if (entry.tagPrefix() == TagPrefix.frameGt) {
+                if (entry.tagPrefix() == TagPrefix.frameGt.value()) {
                     tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
                             .addAll(entries);
                 }

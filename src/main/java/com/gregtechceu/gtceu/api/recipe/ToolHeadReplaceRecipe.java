@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeSerializers;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -28,9 +29,10 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
 
     private static final Map<TagPrefix, GTToolType[]> TOOL_HEAD_TO_TOOL_MAP = new HashMap<>();
 
-    public static void setToolHeadForTool(TagPrefix toolHead, GTToolType tool) {
+    public static void setToolHeadForTool(Holder<TagPrefix> toolHead, GTToolType tool) {
         if (!(tool.electricTier > -1)) return;
-        TOOL_HEAD_TO_TOOL_MAP.computeIfAbsent(toolHead, p -> new GTToolType[GTValues.MAX])[tool.electricTier] = tool;
+        TOOL_HEAD_TO_TOOL_MAP.computeIfAbsent(toolHead.value(),
+                p -> new GTToolType[GTValues.MAX])[tool.electricTier] = tool;
     }
 
     public ToolHeadReplaceRecipe(CraftingBookCategory category) {

@@ -29,15 +29,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.registries.IdMappingEvent;
-import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -153,43 +146,7 @@ public final class GTRegistries {
         return registry;
     }
 
-    private static final Table<Registry<?>, ResourceLocation, Object> TO_REGISTER = HashBasedTable.create();
-    private static boolean isFrozen = true;
-
-    public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
-        if (!isFrozen) {
-            Registry.register(registry, name, value);
-        } else {
-            TO_REGISTER.put(registry, name, value);
-        }
-        return value;
-    }
-
-    // ignore the generics and hope the registered objects are still correctly typed :3
-    @SuppressWarnings("unchecked")
-    private static void actuallyRegister(RegisterEvent event) {
-        if (!TO_REGISTER.containsRow(event.getRegistry())) return;
-
-        for (var entry : TO_REGISTER.row(event.getRegistry()).entrySet()) {
-            event.register((ResourceKey<? extends Registry<Object>>) event.getRegistryKey(), entry.getKey(),
-                    entry::getValue);
-        }
-        TO_REGISTER.row(event.getRegistry()).clear();
-    }
-
-    private static void onUnfreeze(RegisterEvent event) {
-        isFrozen = false;
-    }
-
-    private static void onFreeze(IdMappingEvent event) {
-        isFrozen = event.isFrozen();
-    }
-
-    public static void init(IEventBus eventBus) {
-        eventBus.addListener(EventPriority.HIGHEST, GTRegistries::onUnfreeze);
-        eventBus.addListener(EventPriority.LOW, GTRegistries::actuallyRegister);
-        NeoForge.EVENT_BUS.addListener(GTRegistries::onFreeze);
-    }
+    public static void init() {}
 
     @SuppressWarnings("unchecked")
     private static void addRegistryToLoadOrder(ResourceKey<? extends Registry<?>> key, @Nullable Registry<?> registry) {

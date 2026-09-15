@@ -41,7 +41,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -70,7 +70,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -98,7 +98,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -126,7 +126,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -178,7 +178,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -210,7 +210,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -235,7 +235,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
@@ -258,7 +258,7 @@ public class LargeSteamTurbineTest {
         {
             final var rotor = GTItems.TURBINE_ROTOR.asStack();
             final var behavior = TurbineRotorBehaviour.getBehaviour(rotor);
-            behavior.setPartMaterial(rotor, GTMaterials.RoseGold);
+            behavior.setPartMaterial(rotor, GTMaterials.RoseGold.value());
             rotorPart.inventory.storage.setStackInSlot(0, rotor);
         }
         final var machine = (LargeTurbineMachine) helper.getBlockEntity(new BlockPos(1, 3, 2));
