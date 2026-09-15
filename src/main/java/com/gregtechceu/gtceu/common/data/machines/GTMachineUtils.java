@@ -53,6 +53,7 @@ import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -450,6 +451,7 @@ public class GTMachineUtils {
                         MetaMachineBlock::new,
                         (holder, prop) -> DrumMachineItem.create(holder, prop, material),
                         info -> new DrumMachine(info, material, capacity))
+                .itemBuilder(builder -> builder.tag(CustomTags.FLUID_CONTAINERS))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
@@ -479,6 +481,7 @@ public class GTMachineUtils {
                     MachineDefinition::new,
                     MetaMachineBlock::new, QuantumTankMachineItem::new,
                     (holder) -> new QuantumTankMachine(holder, tier, maxAmount))
+                    .itemBuilder(builder -> builder.tag(CustomTags.FLUID_CONTAINERS))
                     .langValue(toEnglishName(name) + " " + LVT[tier])
                     .blockProp(BlockBehaviour.Properties::dynamicShape)
                     .rotationState(RotationState.ALL)

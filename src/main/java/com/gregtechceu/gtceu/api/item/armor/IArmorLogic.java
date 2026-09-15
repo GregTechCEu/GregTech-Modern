@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
+
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.ResourceLocation;
@@ -50,7 +54,13 @@ public interface IArmorLogic {
         return false;
     }
 
-    default boolean isPPE() {
+    default boolean isPPE(ItemStack stack) {
+        IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+        if (modularItem != null) {
+            for (ItemModule module : modularItem.getModules()) {
+                if (module.isPPE()) return true;
+            }
+        }
         return false;
     }
 
