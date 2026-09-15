@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateSettings;
+import com.gregtechceu.gtceu.api.multiblock.predicates.TestType;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,56 +23,50 @@ public class XorPredicate extends MultiPredicate {
 
     public XorPredicate(List<MultiPredicate> children, List<BasePredicate> predicates, boolean hasAir) {
         super(Logic.XOR, children, predicates, hasAir);
-        this.noneValid = expand().stream()
-                .anyMatch(p -> p.getMinCount() <= 0 && p.getMinSliceCount() <= 0);
     }
 
     @Override
-    public @Nullable BasePredicate getPredicateAtPos(PredicateContext context) {
-        context.setStage(PredicateContext.PredicateStage.INTERNAL);
-        for (BasePredicate predicate : predicates()) {
-            if (predicate.test(context)) {
-                if (this.passedPredicate != null && !this.passedPredicate.is(predicate)) {
-                    xorError(context, predicate, this.passedPredicate);
-                    // error
-                    return null;
-                }
-                if (this.passedPredicate == null) {
-                    this.passedPredicate = ofPredicate(predicate);
-                }
-                return predicate;
+    protected void onSettingsChanged() {
+        this.noneValid = isNoneValid(this);
+    }
+
+    @Override
+    protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
+        BasePredicate matchedPredicate = result.match();
+        if (matchedPredicate == null) return result;
+        if (result.isTop(this)) {
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofPredicate(matchedPredicate);
+            } else if (!this.passedPredicate.is(matchedPredicate)) {
+                xorError(context, matchedPredicate, this.passedPredicate);
+                return PredicateResult.failed();
+            }
+        } else {
+            MultiPredicate bottom = Objects.requireNonNull(result.getBottom());
+            if (this.passedPredicate == null) {
+                this.passedPredicate = ofChild(bottom);
+            } else if (!this.passedPredicate.is(bottom)) {
+                xorError(context, matchedPredicate, this.passedPredicate);
+                return PredicateResult.failed();
             }
         }
-        for (MultiPredicate child : children()) {
-            BasePredicate p = child.getPredicateAtPos(context);
-            if (p != null) {
-                if (this.passedPredicate != null && !this.passedPredicate.is(child)) {
-                    xorError(context, p, this.passedPredicate);
-                    // error
-                    return null;
-                }
-                if (this.passedPredicate == null) {
-                    this.passedPredicate = ofChild(child);
-                }
-                return p;
-            }
-        }
-        if (isRoot()) {
-            onError(context);
-        }
-        return null;
+        return result;
     }
 
     @Override
     protected boolean testGlobalMin(PredicateContext ctx) {
-        if (passedPredicate == null && noneValid) return true;
-        return passedPredicate != null && passedPredicate.testGlobalMin(ctx);
+        boolean result = TestType.GLOBAL_MIN.testCounts(this, ctx);
+        result &= (noneValid && passedPredicate == null) ||
+                (passedPredicate != null && passedPredicate.testGlobalMin(ctx));
+        return result;
     }
 
     @Override
     protected boolean testSliceMin(PredicateContext ctx) {
-        if (passedPredicate == null && noneValid) return true;
-        return passedPredicate != null && passedPredicate.testSliceMin(ctx);
+        boolean result = TestType.SLICE_MIN.testCounts(this, ctx);
+        result &= (noneValid && passedPredicate == null) ||
+                (passedPredicate != null && passedPredicate.testSliceMin(ctx));
+        return result;
     }
 
     @Override
@@ -89,6 +85,23 @@ public class XorPredicate extends MultiPredicate {
         context.skipFlipCheck();
     }
 
+    private static boolean isNoneValid(MultiPredicate multiPredicate) {
+        PredicateSettings settings = multiPredicate.getSettings();
+        if (settings != null && !settings.isNoneValid()) return false;
+
+        for (BasePredicate predicate : multiPredicate.predicates()) {
+            if (predicate.getSettings().isNoneValid()) {
+                return true;
+            }
+        }
+        for (MultiPredicate child : multiPredicate.children()) {
+            if (isNoneValid(child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static PassedPredicate ofPredicate(BasePredicate predicate) {
         return new PassedPredicate(predicate, null);
     }
@@ -102,7 +115,7 @@ public class XorPredicate extends MultiPredicate {
 
         public boolean testGlobalMin(PredicateContext ctx) {
             if (this.predicate != null) {
-                return this.predicate.testGlobalMin(ctx);
+                return TestType.GLOBAL_MIN.testWithError(this.predicate, ctx);
             } else if (this.multiPredicate != null) {
                 return this.multiPredicate.testGlobalMin(ctx);
             }
@@ -111,7 +124,7 @@ public class XorPredicate extends MultiPredicate {
 
         public boolean testSliceMin(PredicateContext ctx) {
             if (predicate != null) {
-                return predicate.testSliceMin(ctx);
+                return TestType.SLICE_MIN.testWithError(this.predicate, ctx);
             } else if (multiPredicate != null) {
                 return multiPredicate.testSliceMin(ctx);
             }

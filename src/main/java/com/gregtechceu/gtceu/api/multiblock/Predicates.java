@@ -202,11 +202,11 @@ public class Predicates {
     }
 
     public static MultiPredicate any() {
-        return MultiPredicate.ANY;
+        return MultiPredicate.any();
     }
 
     public static MultiPredicate air() {
-        return MultiPredicate.AIR;
+        return MultiPredicate.air();
     }
 
     public static MultiPredicate abilities(PartAbility ability) {
@@ -259,7 +259,7 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.INPUT_ENERGY)
-                            .setMinCount(1).setMaxCount(2)
+                            .setGlobalMinMax(1, 2)
                             .setPreviewCount(1).setPriority(1));
                     break;
                 }
@@ -269,8 +269,9 @@ public class Predicates {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
                     predicate = predicate.and(abilities(PartAbility.OUTPUT_ENERGY)
-                            .setMinCount(1).setMaxCount(2)
-                            .setPreviewCount(1).setPriority(1));
+                            .setGlobalMinMax(1, 2)
+                            .setPreviewCount(1)
+                            .setPriority(1));
                     break;
                 }
             }
@@ -330,8 +331,7 @@ public class Predicates {
         }
         if (checkParallel) {
             predicate = predicate.and(abilities(PartAbility.PARALLEL_HATCH)
-                    .setMaxCount(1)
-                    .setPreviewCount(1)
+                    .setMaxGlobalLimited(1, 1)
                     .setPriority(3));
         }
         return predicate;

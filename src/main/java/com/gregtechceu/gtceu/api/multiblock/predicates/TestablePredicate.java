@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -55,9 +56,13 @@ class TestablePredicate extends BasePredicate {
         this.onError = onError;
     }
 
+    /// @param root the top-most multi predicate for this multi predicate
+    /// @return a list of components to be displayed while hovering over a block in the Multiblock Preview
     @Override
     public List<Component> getRecipeViewerTooltips(MultiPredicate root) {
         List<Component> tooltips = new ArrayList<>(this.getAdditionalTooltips());
+        int minCount = getMinCount();
+        int maxCount = getMaxCount();
         if (minCount == maxCount && maxCount != -1) {
             tooltips.add(Component.translatable("gtceu.multiblock.pattern.exact_count", minCount));
         } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
@@ -87,6 +92,20 @@ class TestablePredicate extends BasePredicate {
     @Override
     public boolean test(PredicateContext ctx) {
         return this.predicate.test(ctx);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof TestablePredicate that)) return false;
+        if (!super.equals(o)) return false;
+        return Objects.equals(contents, that.contents) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(predicate, that.predicate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(contents, name, predicate);
     }
 
     @Override
