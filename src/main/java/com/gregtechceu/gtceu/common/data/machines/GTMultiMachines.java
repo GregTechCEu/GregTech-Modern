@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -21,7 +22,6 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -168,7 +168,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                            ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"))
             .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
@@ -301,7 +301,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                            ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/multi_furnace"))
             .additionalDisplay((controller, syncManager) -> {
@@ -468,7 +468,7 @@ public class GTMultiMachines {
                     .slice("SXXX", "##F#", "##F#")
                     .where('S', Predicates.controller(definition))
                     .where('X', blocks(CASING_PUMP_DECK.get()))
-                    .where('F', Predicates.frames(GTMaterials.TreatedWood))
+                    .where('F', Predicates.frames(GTMaterials.TreatedWood.value()))
                     .where('H',
                             Predicates.abilities(PartAbility.PUMP_FLUID_HATCH)
                                     .xor(machines(FLUID_EXPORT_HATCH[ULV], FLUID_EXPORT_HATCH[LV])))
@@ -652,7 +652,7 @@ public class GTMultiMachines {
                                     .and(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
                                             .setMaxGlobalLimited(2).setPreviewCount(1)))
                             .where('C', blocks(LargeMinerMachine.getCasingState(tier)))
-                            .where('F', frames(LargeMinerMachine.getMaterial(tier)))
+                            .where('F', frames(LargeMinerMachine.getMaterial(tier).value()))
                             .where('#', any())
                             .build())
                     .allowExtendedFacing(true)
@@ -684,7 +684,7 @@ public class GTMultiMachines {
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
                         tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
-                                DrillingFluid.getLocalizedName()));
+                                DrillingFluid.value().getLocalizedName()));
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
                                 workingAreaChunks, workingAreaChunks));
                         tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range",

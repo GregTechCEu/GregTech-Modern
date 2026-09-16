@@ -3,13 +3,13 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
 import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -1161,8 +1161,8 @@ public class MachineRecipeLoader {
                 .save(provider);
     }
 
-    private static void createSulfurDioxideRecipe(RecipeOutput provider, Material inputMaterial,
-                                                  Material outputMaterial, int sulfurDioxideAmount) {
+    private static void createSulfurDioxideRecipe(RecipeOutput provider, MaterialRegistryEntry inputMaterial,
+                                                  MaterialRegistryEntry outputMaterial, int sulfurDioxideAmount) {
         BLAST_RECIPES.recipeBuilder(inputMaterial.getName() + "_metallurgy").duration(120).EUt(VA[MV])
                 .blastFurnaceTemp(1200)
                 .inputItems(dust, inputMaterial)

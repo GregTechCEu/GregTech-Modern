@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -20,7 +21,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
-import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.Holder;
@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluid;
 
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapForJS;
 import org.apache.commons.lang3.ArrayUtils;
@@ -406,12 +405,16 @@ public class Predicates {
      */
     public static MultiPredicate frames(Material... frameMaterials) {
         var frameBlocks = Arrays.stream(frameMaterials)
-                .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
-                .filter(obj -> Objects.nonNull(obj) && obj.isBound())
-                .map(RegistryEntry::get)
+                .map(m -> ChemicalHelper.getBlock(TagPrefix.frameGt, m))
+                .filter(Objects::nonNull)
                 .toArray(Block[]::new);
         return blocks("Frames", frameBlocks)
                 .or(framedPipes(frameMaterials, frameBlocks));
+    }
+
+    @SafeVarargs
+    public static MultiPredicate frames(Holder<Material>... frameMaterials) {
+        return frames(Arrays.stream(frameMaterials).map(Holder::value).toArray(Material[]::new));
     }
 
     public static MultiPredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {

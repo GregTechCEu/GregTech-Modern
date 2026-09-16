@@ -1007,7 +1007,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Override
     public int getDefaultPaintingColor() {
-        return getDefinition().getDefaultPaintingColor();
+        return getDefinition().getDefaultPaintingColor().getAsInt();
     }
 
     //////////////////////////////////////
