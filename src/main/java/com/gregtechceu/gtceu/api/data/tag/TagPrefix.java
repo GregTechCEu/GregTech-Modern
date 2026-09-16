@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.client.renderer.RenderType;
@@ -74,7 +73,7 @@ public class TagPrefix {
     public static void init() {}
 
     public static final TagPrefixEntry ore = REGISTRATE.oreTagPrefix("stone", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("%s Ore")
+            .lang("%s Ore")
             .registerOre(
                     Blocks.STONE::defaultBlockState, GTMaterials.Stone, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
@@ -82,7 +81,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreGranite = REGISTRATE.oreTagPrefix("granite", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Granite %s Ore")
+            .lang("Granite %s Ore")
             .registerOre(
                     Blocks.GRANITE::defaultBlockState, GTMaterials.Granite, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
@@ -90,7 +89,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreDiorite = REGISTRATE.oreTagPrefix("diorite", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Diorite %s Ore")
+            .lang("Diorite %s Ore")
             .registerOre(
                     Blocks.DIORITE::defaultBlockState, GTMaterials.Diorite, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
@@ -99,7 +98,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry oreAndesite = REGISTRATE
             .oreTagPrefix("andesite", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Andesite %s Ore")
+            .lang("Andesite %s Ore")
             .registerOre(
                     Blocks.ANDESITE::defaultBlockState, GTMaterials.Andesite, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
@@ -108,7 +107,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry oreRedGranite = REGISTRATE
             .oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Red Granite %s Ore")
+            .lang("Red Granite %s Ore")
             .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), GTMaterials.RedGranite,
                     BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),
@@ -116,7 +115,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreMarble = REGISTRATE.oreTagPrefix("marble", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Marble %s Ore")
+            .lang("Marble %s Ore")
             .registerOre(
                     () -> GTBlocks.MARBLE.getDefaultState(), GTMaterials.Marble, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
@@ -125,7 +124,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry oreDeepslate = REGISTRATE
             .oreTagPrefix("deepslate", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Deepslate %s Ore")
+            .lang("Deepslate %s Ore")
             .registerOre(
                     Blocks.DEEPSLATE::defaultBlockState, GTMaterials.Deepslate, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F)
@@ -134,7 +133,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreTuff = REGISTRATE.oreTagPrefix("tuff", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Tuff %s Ore")
+            .lang("Tuff %s Ore")
             .registerOre(
                     Blocks.TUFF::defaultBlockState, GTMaterials.Tuff, BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
@@ -143,7 +142,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreSand = REGISTRATE.oreTagPrefix("sand", BlockTags.MINEABLE_WITH_SHOVEL)
-            .langValue("Sand %s Ore")
+            .lang("Sand %s Ore")
             .registerOre(Blocks.SAND::defaultBlockState, GTMaterials.SiliconDioxide,
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.5F).sound(SoundType.SAND),
@@ -151,7 +150,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreRedSand = REGISTRATE.oreTagPrefix("red_sand", BlockTags.MINEABLE_WITH_SHOVEL)
-            .langValue("Red Sand %s Ore")
+            .lang("Red Sand %s Ore")
             .registerOre(Blocks.RED_SAND::defaultBlockState, GTMaterials.SiliconDioxide,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.5F).sound(SoundType.SAND),
@@ -159,7 +158,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreGravel = REGISTRATE.oreTagPrefix("gravel", BlockTags.MINEABLE_WITH_SHOVEL)
-            .langValue("Gravel %s Ore")
+            .lang("Gravel %s Ore")
             .registerOre(Blocks.GRAVEL::defaultBlockState, GTMaterials.Flint,
                     BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.6F).sound(SoundType.GRAVEL),
@@ -167,7 +166,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry oreBasalt = REGISTRATE.oreTagPrefix("basalt", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Basalt %s Ore")
+            .lang("Basalt %s Ore")
             .registerOre(Blocks.BASALT::defaultBlockState, GTMaterials.Basalt,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.5F, 4.2F)
@@ -177,7 +176,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry oreNetherrack = REGISTRATE
             .oreTagPrefix("netherrack", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Nether %s Ore")
+            .lang("Nether %s Ore")
             .registerOre(Blocks.NETHERRACK::defaultBlockState, GTMaterials.Netherrack,
                     BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE),
@@ -186,7 +185,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry oreBlackstone = REGISTRATE
             .oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("Blackstone %s Ore")
+            .lang("Blackstone %s Ore")
             .registerOre(Blocks.BLACKSTONE::defaultBlockState, GTMaterials.Blackstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
@@ -196,7 +195,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry oreEndstone = REGISTRATE
             .oreTagPrefix("endstone", BlockTags.MINEABLE_WITH_PICKAXE)
-            .langValue("End %s Ore")
+            .lang("End %s Ore")
             .registerOre(Blocks.END_STONE::defaultBlockState, GTMaterials.Endstone,
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
@@ -207,7 +206,7 @@ public class TagPrefix {
             .idPattern("raw_%s")
             .defaultTagPath("raw_materials/%s")
             .unformattedTagPath("raw_materials")
-            .langValue("Raw %s")
+            .lang("Raw %s")
             .materialIconType(MaterialIconType.rawOre)
             .unificationEnabled(true)
             .generateItem(true)
@@ -218,7 +217,7 @@ public class TagPrefix {
             .idPattern("raw_%s_block")
             .defaultTagPath("storage_blocks/raw_%s")
             .unformattedTagPath("storage_blocks")
-            .langValue("Block of Raw %s")
+            .lang("Block of Raw %s")
             .materialIconType(MaterialIconType.rawOreBlock)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
@@ -230,7 +229,7 @@ public class TagPrefix {
             .idPattern("refined_%s_ore")
             .defaultTagPath("refined_ores/%s")
             .defaultTagPath("refined_ores")
-            .langValue("Refined %s Ore")
+            .lang("Refined %s Ore")
             .materialIconType(MaterialIconType.crushedRefined)
             .unificationEnabled(true)
             .generateItem(true)
@@ -242,7 +241,7 @@ public class TagPrefix {
             .defaultTagPath("purified_ores/%s")
             .defaultTagPath("purified_ores")
             .customTagPredicate("siftables", false, m -> m.hasProperty(PropertyKey.GEM))
-            .langValue("Purified %s Ore")
+            .lang("Purified %s Ore")
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
             .generateItem(true)
@@ -253,7 +252,7 @@ public class TagPrefix {
             .idPattern("crushed_%s_ore")
             .defaultTagPath("crushed_ores/%s")
             .unformattedTagPath("crushed_ores")
-            .langValue("Crushed %s Ore")
+            .lang("Crushed %s Ore")
             .materialIconType(MaterialIconType.crushed)
             .unificationEnabled(true)
             .generateItem(true)
@@ -266,7 +265,7 @@ public class TagPrefix {
             .idPattern("hot_%s_ingot")
             .defaultTagPath("hot_ingots/%s")
             .unformattedTagPath("hot_ingots")
-            .langValue("Hot %s Ingot")
+            .lang("Hot %s Ingot")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.ingotHot)
             .unificationEnabled(true)
@@ -291,7 +290,7 @@ public class TagPrefix {
     public static final TagPrefixEntry gem = REGISTRATE.tagPrefix("gem")
             .defaultTagPath("gems/%s")
             .unformattedTagPath("gems")
-            .langValue("%s")
+            .lang("%s")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.gem)
             .unificationEnabled(true)
@@ -305,7 +304,7 @@ public class TagPrefix {
             .idPattern("chipped_%s_gem")
             .defaultTagPath("chipped_gems/%s")
             .unformattedTagPath("chipped_gems")
-            .langValue("Chipped %s")
+            .lang("Chipped %s")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.gemChipped)
             .unificationEnabled(true)
@@ -319,7 +318,7 @@ public class TagPrefix {
             .idPattern("flawed_%s_gem")
             .defaultTagPath("flawed_gems/%s")
             .unformattedTagPath("flawed_gems")
-            .langValue("Flawed %s")
+            .lang("Flawed %s")
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.gemFlawed)
             .unificationEnabled(true)
@@ -333,7 +332,7 @@ public class TagPrefix {
             .idPattern("flawless_%s_gem")
             .defaultTagPath("flawless_gems/%s")
             .unformattedTagPath("flawless_gems")
-            .langValue("Flawless %s")
+            .lang("Flawless %s")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(32)
             .materialIconType(MaterialIconType.gemFlawless)
@@ -348,7 +347,7 @@ public class TagPrefix {
             .idPattern("exquisite_%s_gem")
             .defaultTagPath("exquisite_gems/%s")
             .unformattedTagPath("exquisite_gems")
-            .langValue("Exquisite %s")
+            .lang("Exquisite %s")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.gemExquisite)
@@ -363,7 +362,7 @@ public class TagPrefix {
             .idPattern("small_%s_dust")
             .defaultTagPath("small_dusts/%s")
             .unformattedTagPath("small_dusts")
-            .langValue("Small Pile of %s Dust")
+            .lang("Small Pile of %s Dust")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.dustSmall)
             .unificationEnabled(true)
@@ -376,7 +375,7 @@ public class TagPrefix {
             .idPattern("tiny_%s_dust")
             .defaultTagPath("tiny_dusts/%s")
             .unformattedTagPath("tiny_dusts")
-            .langValue("Tiny Pile of %s Dust")
+            .lang("Tiny Pile of %s Dust")
             .materialAmount(GTValues.M / 9)
             .materialIconType(MaterialIconType.dustTiny)
             .unificationEnabled(true)
@@ -389,7 +388,7 @@ public class TagPrefix {
             .idPattern("impure_%s_dust")
             .defaultTagPath("impure_dusts/%s")
             .unformattedTagPath("impure_dusts")
-            .langValue("Impure Pile of %s Dust")
+            .lang("Impure Pile of %s Dust")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dustImpure)
             .unificationEnabled(true)
@@ -403,7 +402,7 @@ public class TagPrefix {
             .idPattern("pure_%s_dust")
             .defaultTagPath("pure_dusts/%s")
             .unformattedTagPath("pure_dusts")
-            .langValue("Purified Pile of %s Dust")
+            .lang("Purified Pile of %s Dust")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.dustPure)
             .unificationEnabled(true)
@@ -440,7 +439,7 @@ public class TagPrefix {
             .idPattern("dense_%s_plate")
             .defaultTagPath("dense_plates/%s")
             .unformattedTagPath("dense_plates")
-            .langValue("Dense %s Plate")
+            .lang("Dense %s Plate")
             .materialAmount(GTValues.M * 9)
             .maxStackSize(7)
             .materialIconType(MaterialIconType.plateDense)
@@ -455,7 +454,7 @@ public class TagPrefix {
             .idPattern("double_%s_plate")
             .defaultTagPath("double_plates/%s")
             .unformattedTagPath("double_plates")
-            .langValue("Double %s Plate")
+            .lang("Double %s Plate")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(32)
             .materialIconType(MaterialIconType.plateDouble)
@@ -507,7 +506,7 @@ public class TagPrefix {
             .idPattern("long_%s_rod")
             .defaultTagPath("rods/long/%s")
             .unformattedTagPath("rods/long")
-            .langValue("Long %s Rod")
+            .lang("Long %s Rod")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.rodLong)
             .unificationEnabled(true)
@@ -520,7 +519,7 @@ public class TagPrefix {
     public static final TagPrefixEntry rod = REGISTRATE.tagPrefix("rod")
             .defaultTagPath("rods/%s")
             .unformattedTagPath("rods")
-            .langValue("%s Rod")
+            .lang("%s Rod")
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.rod)
             .unificationEnabled(true)
@@ -570,7 +569,7 @@ public class TagPrefix {
             .idPattern("small_%s_spring")
             .defaultTagPath("small_springs/%s")
             .unformattedTagPath("small_springs")
-            .langValue("Small %s Spring")
+            .lang("Small %s Spring")
             .materialAmount(GTValues.M / 4)
             .materialIconType(MaterialIconType.springSmall)
             .unificationEnabled(true)
@@ -598,7 +597,7 @@ public class TagPrefix {
             .idPattern("fine_%s_wire")
             .defaultTagPath("fine_wires/%s")
             .unformattedTagPath("fine_wires")
-            .langValue("Fine %s Wire")
+            .lang("Fine %s Wire")
             .materialAmount(GTValues.M / 8)
             .materialIconType(MaterialIconType.wireFine)
             .unificationEnabled(true)
@@ -625,7 +624,7 @@ public class TagPrefix {
             .idPattern("small_%s_gear")
             .defaultTagPath("small_gears/%s")
             .unformattedTagPath("small_gears")
-            .langValue("Small %s Gear")
+            .lang("Small %s Gear")
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.gearSmall)
             .unificationEnabled(true)
@@ -668,7 +667,7 @@ public class TagPrefix {
     // made of 4 Ingots.
     public static final TagPrefixEntry toolHeadBuzzSaw = REGISTRATE.tagPrefix("buzzsaw_blade")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
-            .langValue("%s Buzzsaw Blade")
+            .lang("%s Buzzsaw Blade")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadBuzzSaw)
@@ -682,7 +681,7 @@ public class TagPrefix {
     // made of 1 Ingots.
     public static final TagPrefixEntry toolHeadScrewdriver = REGISTRATE.tagPrefix("screwdriver_tip")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
-            .langValue("%s Screwdriver Tip")
+            .lang("%s Screwdriver Tip")
             .materialAmount(GTValues.M)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadScrewdriver)
@@ -696,7 +695,7 @@ public class TagPrefix {
     // made of 4 Ingots.
     public static final TagPrefixEntry toolHeadDrill = REGISTRATE.tagPrefix("drill_head")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
-            .langValue("%s Drill Head")
+            .lang("%s Drill Head")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadDrill)
@@ -710,7 +709,7 @@ public class TagPrefix {
     // made of 2 Ingots.
     public static final TagPrefixEntry toolHeadChainsaw = REGISTRATE.tagPrefix("chainsaw_head")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
-            .langValue("%s Chainsaw Head")
+            .lang("%s Chainsaw Head")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadChainsaw)
@@ -724,7 +723,7 @@ public class TagPrefix {
     // made of 4 Ingots.
     public static final TagPrefixEntry toolHeadWrench = REGISTRATE.tagPrefix("wrench_tip")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
-            .langValue("%s Wrench Tip")
+            .lang("%s Wrench Tip")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadWrench)
@@ -737,7 +736,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry toolHeadWireCutter = REGISTRATE.tagPrefix("wire_cutter_head")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
-            .langValue("%s Wire Cutter Head")
+            .lang("%s Wire Cutter Head")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
             .materialIconType(MaterialIconType.toolHeadWireCutter)
@@ -751,7 +750,7 @@ public class TagPrefix {
     // made of 5 Ingots.
     public static final TagPrefixEntry turbineBlade = REGISTRATE.tagPrefix("turbine_blade")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
-            .langValue("%s Turbine Blade")
+            .lang("%s Turbine Blade")
             .materialAmount(GTValues.M * 10)
             .materialIconType(MaterialIconType.turbineBlade)
             .unificationEnabled(true)
@@ -766,7 +765,7 @@ public class TagPrefix {
     public static final TagPrefixEntry block = REGISTRATE.tagPrefix("block")
             .defaultTagPath("storage_blocks/%s")
             .unformattedTagPath("storage_blocks")
-            .langValue("Block of %s")
+            .lang("Block of %s")
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
@@ -803,7 +802,7 @@ public class TagPrefix {
     // Also has a base tag path of only the material, for things like obsidian etc.
     public static final TagPrefixEntry rock = REGISTRATE.tagPrefix("rock")
             .defaultTagPath("%s")
-            .langValue("%s")
+            .lang("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(false)
             .generateBlock(true) // generate a block but not really, for TagPrefix#setIgnoredBlock
@@ -813,7 +812,7 @@ public class TagPrefix {
     public static final TagPrefixEntry frameGt = REGISTRATE.tagPrefix("frame")
             .defaultTagPath("frames/%s")
             .unformattedTagPath("frames")
-            .langValue("%s Frame")
+            .lang("%s Frame")
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.frameGt)
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
@@ -828,7 +827,7 @@ public class TagPrefix {
     // Pipes
     public static final TagPrefixEntry pipeTinyFluid = REGISTRATE.tagPrefix("pipe_tiny_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
-            .langValue("Tiny %s Fluid Pipe")
+            .lang("Tiny %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M / 2)
             .unificationEnabled(true)
@@ -836,7 +835,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeSmallFluid = REGISTRATE.tagPrefix("pipe_small_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
-            .langValue("Small %s Fluid Pipe")
+            .lang("Small %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
@@ -844,7 +843,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeNormalFluid = REGISTRATE.tagPrefix("pipe_normal_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
-            .langValue("Normal %s Fluid Pipe")
+            .lang("Normal %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
@@ -852,7 +851,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeLargeFluid = REGISTRATE.tagPrefix("pipe_large_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
-            .langValue("Large %s Fluid Pipe")
+            .lang("Large %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
@@ -860,7 +859,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeHugeFluid = REGISTRATE.tagPrefix("pipe_huge_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
-            .langValue("Huge %s Fluid Pipe")
+            .lang("Huge %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
@@ -869,7 +868,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry pipeQuadrupleFluid = REGISTRATE.tagPrefix("pipe_quadruple_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
-            .langValue("Quadruple %s Fluid Pipe")
+            .lang("Quadruple %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
@@ -877,7 +876,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeNonupleFluid = REGISTRATE.tagPrefix("pipe_nonuple_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
-            .langValue("Nonuple %s Fluid Pipe")
+            .lang("Nonuple %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 9)
             .unificationEnabled(true)
@@ -886,7 +885,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry pipeSmallItem = REGISTRATE.tagPrefix("pipe_small_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
-            .langValue("Small %s Item Pipe")
+            .lang("Small %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
@@ -894,7 +893,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeNormalItem = REGISTRATE.tagPrefix("pipe_normal_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
-            .langValue("Normal %s Item Pipe")
+            .lang("Normal %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
@@ -902,7 +901,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeLargeItem = REGISTRATE.tagPrefix("pipe_large_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
-            .langValue("Large %s Item Pipe")
+            .lang("Large %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
@@ -910,7 +909,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry pipeHugeItem = REGISTRATE.tagPrefix("pipe_huge_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
-            .langValue("Huge %s Item Pipe")
+            .lang("Huge %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
@@ -919,26 +918,26 @@ public class TagPrefix {
 
     public static final TagPrefixEntry pipeSmallRestrictive = REGISTRATE.tagPrefix("pipe_small_restrictive")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
-            .langValue("Small Restrictive %s Item Pipe")
+            .lang("Small Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling()
             .register();
     public static final TagPrefixEntry pipeNormalRestrictive = REGISTRATE.tagPrefix("pipe_normal_restrictive")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe")
+            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).lang("Normal Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
             .enableRecycling()
             .register();
     public static final TagPrefixEntry pipeLargeRestrictive = REGISTRATE.tagPrefix("pipe_large_restrictive")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Large Restrictive %s Item Pipe")
+            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).lang("Large Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
             .enableRecycling()
             .register();
     public static final TagPrefixEntry pipeHugeRestrictive = REGISTRATE.tagPrefix("pipe_huge_restrictive")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Huge Restrictive %s Item Pipe")
+            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).lang("Huge Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
             .enableRecycling()
@@ -947,7 +946,7 @@ public class TagPrefix {
     // Wires and cables
     public static final TagPrefixEntry wireGtHex = REGISTRATE.tagPrefix("wire_gt_hex")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("16x %s Wire")
+            .lang("16x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
             .materialIconType(MaterialIconType.wire)
@@ -956,7 +955,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry wireGtOctal = REGISTRATE.tagPrefix("wire_gt_octal")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("8x %s Wire")
+            .lang("8x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
             .materialIconType(MaterialIconType.wire)
@@ -965,7 +964,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry wireGtQuadruple = REGISTRATE.tagPrefix("wire_gt_quadruple")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("4x %s Wire")
+            .lang("4x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.wire)
@@ -974,7 +973,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry wireGtDouble = REGISTRATE.tagPrefix("wire_gt_double")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("2x %s Wire")
+            .lang("2x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.wire)
@@ -983,7 +982,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry wireGtSingle = REGISTRATE.tagPrefix("wire_gt_single")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("1x %s Wire")
+            .lang("1x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.wire)
@@ -993,7 +992,7 @@ public class TagPrefix {
 
     public static final TagPrefixEntry cableGtHex = REGISTRATE.tagPrefix("cable_gt_hex")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("16x %s Cable")
+            .lang("16x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
             .unificationEnabled(true)
@@ -1001,14 +1000,14 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry cableGtOctal = REGISTRATE.tagPrefix("cable_gt_octal")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("8x %s Cable")
+            .lang("8x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
             .enableRecycling()
             .register();
     public static final TagPrefixEntry cableGtQuadruple = REGISTRATE.tagPrefix("cable_gt_quadruple")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Cable")
+            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).lang("4x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
             .unificationEnabled(true)
@@ -1016,7 +1015,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry cableGtDouble = REGISTRATE.tagPrefix("cable_gt_double")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("2x %s Cable")
+            .lang("2x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
@@ -1024,7 +1023,7 @@ public class TagPrefix {
             .register();
     public static final TagPrefixEntry cableGtSingle = REGISTRATE.tagPrefix("cable_gt_single")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
-            .langValue("1x %s Cable")
+            .lang("1x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M / 2)
             .unificationEnabled(true)
@@ -1032,7 +1031,7 @@ public class TagPrefix {
             .register();
 
     public static final TagPrefixEntry surfaceRock = REGISTRATE.tagPrefix("surface_rock")
-            .langValue("%s Surface Rock")
+            .lang("%s Surface Rock")
             .defaultTagPath("surface_rocks/%s")
             .unformattedTagPath("surface_rocks")
             .materialAmount(GTValues.M / 3)
@@ -1068,10 +1067,6 @@ public class TagPrefix {
     private String idPattern;
 
     protected final List<TagType> tags = new ArrayList<>();
-
-    @Setter
-    @Getter
-    public String langValue;
 
     @Getter
     @Setter
@@ -1134,7 +1129,6 @@ public class TagPrefix {
         this.id = id;
         this.name = id.getPath();
         this.idPattern = "%s_" + name;
-        this.langValue = "%s " + FormattingUtil.toEnglishName(name);
     }
 
     public ResourceKey<TagPrefix> getKey() {
@@ -1249,7 +1243,7 @@ public class TagPrefix {
     }
 
     public String getUnlocalizedName() {
-        return "tagprefix." + name;
+        return id.toLanguageKey("tag_prefix");
     }
 
     public MutableComponent getLocalizedName(Material material) {
@@ -1263,7 +1257,7 @@ public class TagPrefix {
             return matSpecificKey;
         }
         if (material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = String.format("tagprefix.polymer.%s", name);
+            String localizationKey = id.toLanguageKey("tag_prefix", "polymer");
             // Not every polymer tag prefix gets a special name
             if (Language.getInstance().has(localizationKey)) {
                 return localizationKey;
