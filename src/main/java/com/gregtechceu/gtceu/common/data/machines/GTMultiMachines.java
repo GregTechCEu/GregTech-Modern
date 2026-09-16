@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -158,7 +159,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
+                            ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"))
             .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
@@ -291,7 +292,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
+                            ChemicalHelper.getItemOrThrow(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/multi_furnace"))
             .additionalDisplay((controller, syncManager) -> {
