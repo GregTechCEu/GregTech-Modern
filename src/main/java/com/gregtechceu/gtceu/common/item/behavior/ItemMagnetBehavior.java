@@ -97,7 +97,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         }
 
         EnumSyncValue<FilterMode> filterSync = new EnumSyncValue<>(FilterMode.class,
-                magnetData::filterType,
+                () -> held.getOrDefault(GTDataComponents.MAGNET, MagnetComponent.EMPTY).filterType(),
                 filter -> held.set(GTDataComponents.MAGNET, new MagnetComponent(magnetData.active, filter)))
                 .allowC2S();
 
