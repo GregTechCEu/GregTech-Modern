@@ -165,24 +165,6 @@ public class LangHandler {
 
         provider.add("tooltip.gtceu.medical_condition.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("tooltip.gtceu.medical_condition.description_shift", "§l§cHAZARDOUS:");
-        provider.add("medical_condition.gtceu.chemical_burns", "§5Chemical burns");
-        provider.add("medical_condition.gtceu.poison", "§2Poisonous");
-        provider.add("medical_condition.gtceu.poison.affected", "§2Poisoning");
-        provider.add("medical_condition.gtceu.weak_poison", "§aWeakly poisonous");
-        provider.add("medical_condition.gtceu.weak_poison.affected", "§aMinor poisoning");
-        provider.add("medical_condition.gtceu.irritant", "§6Irritant");
-        provider.add("medical_condition.gtceu.irritant.affected", "§6Irritation");
-        provider.add("medical_condition.gtceu.nausea", "§3Nauseating");
-        provider.add("medical_condition.gtceu.nausea.affected", "§3Nausea");
-        provider.add("medical_condition.gtceu.carcinogen", "§eCarcinogenic");
-        provider.add("medical_condition.gtceu.carcinogen.affected", "§eCancer");
-        provider.add("medical_condition.gtceu.asbestosis", "§dAsbestosis");
-        provider.add("medical_condition.gtceu.arsenicosis", "§bArsenicosis");
-        provider.add("medical_condition.gtceu.methanol_poisoning", "§6Methanol Poisoning");
-        provider.add("medical_condition.gtceu.carbon_monoxide_poisoning", "§7Carbon Monoxide Poisoning");
-        provider.add("medical_condition.gtceu.none", "§2Not Dangerous");
-        provider.add("medical_condition.gtceu.none.affected", "§2Nothing?");
-
         provider.add("symptom.gtceu.death", "Death");
         provider.add("symptom.gtceu.random_damage", "Occasional damage");
         provider.add("symptom.gtceu.health_debuff", "Lowered maximum health");

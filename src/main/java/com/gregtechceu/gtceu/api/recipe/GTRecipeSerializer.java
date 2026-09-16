@@ -227,7 +227,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeVarInt(recipe.subtickParallels);
         buf.writeVarInt(recipe.batchParallels);
         buf.writeInt(recipe.groupColor);
-        buf.writeResourceLocation(recipe.recipeCategory.registryKey);
+        buf.writeResourceLocation(recipe.recipeCategory.id);
         buf.writeBoolean(recipe.keepSpoilingProgress);
     }
 
