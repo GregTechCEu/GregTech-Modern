@@ -43,10 +43,6 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.widget.container.gtm_phantom_fluid_slot", "GTM Phantom Fluid Slot");
 
         provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
-        // capabilities
-        provider.add("recipe.capability.eu.name", "GTCEu Energy");
-        provider.add("recipe.capability.fluid.name", "Fluid");
-        provider.add("recipe.capability.item.name", "Item");
         multiLang(provider, "gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
                 "Right click to decrease the OC", "Middle click to reset the OC",
                 "Hold Shift to change by Perfect OC");

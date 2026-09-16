@@ -25,7 +25,7 @@ public class ItemLang {
         // RecipeTypes
         for (var recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                provider.add(gtRecipeType.getTranslationKey(), toEnglishName(gtRecipeType.registryName.getPath()));
+                provider.add(gtRecipeType.getTranslationKey(), toEnglishName(gtRecipeType.id.getPath()));
             }
         }
 

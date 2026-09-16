@@ -42,7 +42,7 @@ public class GTRecipeCategory {
     }
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
-        GTRecipeCategory category = new GTRecipeCategory(recipeType.registryName, recipeType);
+        GTRecipeCategory category = new GTRecipeCategory(recipeType.id, recipeType);
         Registry.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
         return category;
     }
