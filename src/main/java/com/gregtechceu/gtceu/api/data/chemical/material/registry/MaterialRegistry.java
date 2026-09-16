@@ -19,17 +19,11 @@ import java.util.stream.Stream;
 
 public final class MaterialRegistry extends MappedRegistry<Material> {
 
-    private final Set<String> usedNamespaces = new HashSet<>();
-
     @Getter
     private boolean registryClosed = false;
 
     public MaterialRegistry(ResourceKey<Registry<Material>> key) {
         super(key, Lifecycle.stable());
-    }
-
-    public @NotNull Set<String> getUsedNamespaces() {
-        return Collections.unmodifiableSet(usedNamespaces);
     }
 
     @Override
@@ -67,7 +61,6 @@ public final class MaterialRegistry extends MappedRegistry<Material> {
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the RegisterEvent. Skipping material %s..."
                             .formatted(key.location()));
         }
-        usedNamespaces.add(key.location().getNamespace());
         return super.register(id, key, value, registrationInfo);
     }
 

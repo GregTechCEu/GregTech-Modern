@@ -1257,7 +1257,7 @@ public class TagPrefix {
             return matSpecificKey;
         }
         if (material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = id.toLanguageKey("tag_prefix","polymer");
+            String localizationKey = id.toLanguageKey("tag_prefix", "polymer");
             // Not every polymer tag prefix gets a special name
             if (Language.getInstance().has(localizationKey)) {
                 return localizationKey;
