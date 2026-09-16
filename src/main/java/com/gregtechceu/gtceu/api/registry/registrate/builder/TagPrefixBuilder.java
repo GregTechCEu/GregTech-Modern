@@ -40,17 +40,9 @@ import java.util.function.*;
 @SuppressWarnings("unused")
 public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRegistrate, TagPrefixBuilder> {
 
-    public TagPrefixBuilder(GTRegistrate owner, String name, BuilderCallback callback) {
-        super(owner, owner, name, callback, GTRegistries.Keys.TAG_PREFIX);
-    }
-
     @Getter
     @Setter
     private String idPattern = "%s_" + getName();
-
-    @Setter
-    @Getter
-    public String langValue = "%s " + FormattingUtil.toEnglishName(getName());
 
     @Getter
     @Setter
@@ -106,6 +98,19 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
 
     protected @Nullable TagPrefix.OreType oreType = null;
     protected boolean shouldDropAsItem = false;
+
+    public TagPrefixBuilder(GTRegistrate owner, String name, BuilderCallback callback) {
+        super(owner, owner, name, callback, GTRegistries.Keys.TAG_PREFIX);
+        this.defaultLang();
+    }
+
+    public TagPrefixBuilder defaultLang() {
+        return lang("%s " + FormattingUtil.toEnglishName(getName()));
+    }
+
+    public TagPrefixBuilder lang(String name) {
+        return lang(TagPrefix::getUnlocalizedName, name);
+    }
 
     public TagPrefixBuilder enableRecycling() {
         this.generateRecycling = true;
@@ -203,7 +208,6 @@ public class TagPrefixBuilder extends AbstractBuilder<TagPrefix, TagPrefix, GTRe
     protected TagPrefix createEntry() {
         TagPrefix newPrefix = new TagPrefix(getOwner().makeResourceLocation(getName()))
                 .idPattern(idPattern)
-                .langValue(langValue)
                 .materialAmount(materialAmount)
                 .unificationEnabled(unificationEnabled)
                 .generateRecycling(generateRecycling)
