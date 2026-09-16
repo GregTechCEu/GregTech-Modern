@@ -34,6 +34,16 @@ public class GTRecipeTypeBuilder extends
                                RecipeType<?>... proxyRecipes) {
         super(owner, owner, name, callback, Registries.RECIPE_TYPE);
         this.properties = new GTRecipeType.Properties(group, proxyRecipes);
+
+        this.defaultLang();
+    }
+
+    public GTRecipeTypeBuilder defaultLang() {
+        return super.lang(v -> v.getId().toLanguageKey("recipe_type"));
+    }
+
+    public GTRecipeTypeBuilder lang(String name) {
+        return super.lang(v -> v.getId().toLanguageKey("recipe_type"), name);
     }
 
     @Override

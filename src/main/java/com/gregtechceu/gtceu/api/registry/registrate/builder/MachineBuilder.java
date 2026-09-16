@@ -159,7 +159,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     /**
      * Creates a {@link MetaMachineBlock} builder for this machine so that further customization can be done.<br>
-     * If the {@link BlockBuilder} has not been created yet, then the default one is created.
      *
      * @return the {@link BlockBuilder} for the {@link MetaMachineBlock}
      */
@@ -189,12 +188,15 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
             MachineDefinition.clearBuilt();
             return b;
         })
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .color(() -> () -> MetaMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
                 .properties(BlockBehaviour.Properties::noLootTable)
                 .addLayer(() -> RenderType::cutout)
-                .exBlockstate(properties.blockModel() != null ? properties.blockModel() :
-                        createMachineModel(properties.model()))
+                .exBlockstate((ctx, prov) -> {
+                    if (properties.blockModel() != null) properties.blockModel().accept(ctx, prov);
+                    else createMachineModel(properties.model()).accept(ctx, prov);
+                })
                 .onRegister(b -> Arrays.stream(properties.abilities()).forEach(a -> a.register(properties.tier(), b)));
     }
 

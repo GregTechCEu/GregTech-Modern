@@ -42,7 +42,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeSerializer serializer;
 
     @Getter
-    public final ResourceLocation registryName;
+    public final ResourceLocation id;
     public final String group;
 
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
@@ -82,10 +82,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final GTRecipeTypeUILayout uiLayout;
 
     public GTRecipeType(ResourceLocation id, Properties properties) {
-        this.registryName = id;
+        this.id = id;
         this.group = properties.group();
         this.category = GTRecipeCategory.registerDefault(this);
-        this.serializer = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, registryName,
+        this.serializer = Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, this.id,
                 new GTRecipeSerializer());
 
         this.maxInputs.putAll(properties.maxInputs());
@@ -113,7 +113,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     @Override
     public String toString() {
-        return registryName.toString();
+        return id.toString();
     }
 
     public Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
@@ -246,7 +246,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public String getTranslationKey() {
-        return this.registryName.toLanguageKey(LANGUAGE_KEY_PATH);
+        return this.id.toLanguageKey(LANGUAGE_KEY_PATH);
     }
 
     public Component getName() {

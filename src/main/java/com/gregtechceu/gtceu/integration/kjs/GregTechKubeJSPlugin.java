@@ -83,7 +83,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilderJS;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.*;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
@@ -134,9 +134,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         });
 
         registry.of(Registries.RECIPE_TYPE, reg -> {
-            reg.add(GTCEu.id("machine"), GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+            reg.add(GTCEu.id("machine"), GTRecipeTypeBuilderJS.class, GTRecipeTypeBuilderJS::new);
         });
-        registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+        registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilderJS.class, GTRecipeTypeBuilderJS::new);
         registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
                 GTRecipeCategoryBuilder::new);
 

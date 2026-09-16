@@ -1592,7 +1592,7 @@ public class GTRecipeBuilder {
         tempItemMaterialStacks = null;
         tempFluidStacks = null;
 
-        output.accept(id.withPrefix(recipeType.registryName.getPath() + "/"), build(), null);
+        output.accept(id.withPrefix(recipeType.id.getPath() + "/"), build(), null);
     }
 
     private void gatherMaterialInfoFromStack(ItemStack input) {
@@ -1703,7 +1703,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe build() {
-        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
+        return new GTRecipe(recipeType, id.withPrefix(recipeType.id.getPath() + "/"),
                 input, output, tickInput, tickOutput,
                 inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
                 conditions, List.of(), data, duration,

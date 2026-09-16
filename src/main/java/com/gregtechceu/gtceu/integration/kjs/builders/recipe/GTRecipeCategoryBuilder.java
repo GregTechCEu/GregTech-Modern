@@ -51,8 +51,8 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     @Override
     public void generateLang(LangKubeEvent lang) {
         super.generateLang(lang);
-        if (langValue != null) lang.add(get().getLanguageKey(), langValue);
-        else lang.add(id.getNamespace(), get().getLanguageKey(), FormattingUtil.toEnglishName(get().name));
+        if (langValue != null) lang.add(get().id.toLanguageKey(), langValue);
+        else lang.add(id.getNamespace(), get().getLanguageKey(), FormattingUtil.toEnglishName(get().id.getPath()));
     }
 
     @Override
