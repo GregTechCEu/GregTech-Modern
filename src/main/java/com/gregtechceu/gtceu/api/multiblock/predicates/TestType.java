@@ -46,8 +46,7 @@ public enum TestType {
     /// Errors will be logged to the predicate context on failure
     public boolean testWithError(SettingsHolder<?> holder, PredicateContext ctx) {
         if (testAndIncrement(holder, ctx)) return true;
-        if (holder instanceof MultiPredicate mp) appendError(mp, ctx);
-        else appendError((BasePredicate) holder, ctx);
+        appendError(holder, ctx);
         return false;
     }
 
@@ -55,17 +54,19 @@ public enum TestType {
         return this == SLICE_MAX || this == SLICE_MIN;
     }
 
-    public void appendError(MultiPredicate predicate, PredicateContext ctx) {
-        List<BlockInfo> candidates = predicate.getCandidates().stream().flatMap(Collection::stream).toList();
-        appendError(predicate, candidates, ctx);
+    private List<BlockInfo> extractCandidates(SettingsHolder<?> holder) {
+        if (holder instanceof MultiPredicate mp) {
+            return mp.getCandidates().stream().flatMap(Collection::stream).toList();
+        } else if (holder instanceof BasePredicate bp) {
+            return bp.getCandidates();
+        } else {
+            return List.of(BlockInfo.EMPTY);
+        }
     }
 
-    public void appendError(BasePredicate predicate, PredicateContext ctx) {
-        appendError(predicate, predicate.getCandidates(), ctx);
-    }
-
-    private void appendError(SettingsHolder<?> holder, List<BlockInfo> candidates, PredicateContext ctx) {
+    private void appendError(SettingsHolder<?> holder, PredicateContext ctx) {
         int count = getCount(holder, ctx);
+        List<BlockInfo> candidates = extractCandidates(holder);
         ctx.appendError(switch (this) {
             case GLOBAL_MAX -> SinglePredicateError.maxCount(holder, candidates, count);
             case SLICE_MAX -> SinglePredicateError.maxLayerCount(holder, candidates, count);

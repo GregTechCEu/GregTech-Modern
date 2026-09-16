@@ -32,9 +32,9 @@ public class XorPredicate extends MultiPredicate {
 
     @Override
     protected PredicateResult onPredicateMatched(PredicateResult result, PredicateContext context) {
-        BasePredicate matchedPredicate = result.match();
-        if (matchedPredicate == null) return result;
-        if (result.isTop(this)) {
+        BasePredicate matchedPredicate = Objects.requireNonNull(result.match());
+        MultiPredicate bottom = Objects.requireNonNull(result.getBottom());
+        if (bottom == this) {
             if (this.passedPredicate == null) {
                 this.passedPredicate = ofPredicate(matchedPredicate);
             } else if (!this.passedPredicate.is(matchedPredicate)) {
@@ -42,7 +42,6 @@ public class XorPredicate extends MultiPredicate {
                 return PredicateResult.failed();
             }
         } else {
-            MultiPredicate bottom = Objects.requireNonNull(result.getBottom());
             if (this.passedPredicate == null) {
                 this.passedPredicate = ofChild(bottom);
             } else if (!this.passedPredicate.is(bottom)) {

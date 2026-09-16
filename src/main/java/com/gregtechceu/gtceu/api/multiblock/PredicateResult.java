@@ -43,7 +43,7 @@ public record PredicateResult(@Nullable BasePredicate match, List<MultiPredicate
         return this.match != null;
     }
 
-    // return true if passed, else false
+    /// @return {@code true} if the passed predicate and their parents pass their max global/slice counts
     public boolean testMaxCount(PredicateContext context) {
         Objects.requireNonNull(this.match, "matched base predicate must not be null");
 
@@ -60,16 +60,13 @@ public record PredicateResult(@Nullable BasePredicate match, List<MultiPredicate
         return parents.contains(predicate);
     }
 
-    public boolean isTop(MultiPredicate predicate) {
-        if (parents.isEmpty()) return false;
-        return Objects.equals(getTop(), predicate);
-    }
-
+    /// @return the first (deepest) MultiPredicate whose predicate matched the given blockpos
     public @Nullable MultiPredicate getTop() {
         if (parents.isEmpty()) return null;
         return parents.get(0);
     }
 
+    /// @return the last (shallowest) MultiPredicate in the call chain whose children matched the given blockpos
     public @Nullable MultiPredicate getBottom() {
         if (parents.isEmpty()) return null;
         return parents.get(parents.size() - 1);
