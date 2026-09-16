@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialRegistryEntry;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -24,6 +25,7 @@ public class RegistrateMaterialBuilderWrapper extends
                                             UnaryOperator<MaterialBuilder> materialBuilderCallback) {
         super(owner, owner, name, callback, GTRegistries.Keys.MATERIAL);
         this.materialBuilderCallback = materialBuilderCallback;
+        lang(Material::getUnlocalizedName, FormattingUtil.toEnglishName(name));
     }
 
     @Override
@@ -42,7 +44,7 @@ public class RegistrateMaterialBuilderWrapper extends
 
     @Override
     protected Material createEntry() {
-        return materialBuilderCallback.apply(new MaterialBuilder(getOwner().makeResourceLocation(getName())))
+        return materialBuilderCallback.apply(new MaterialBuilder(getOwner().makeResourceLocation(getName()), this))
                 .createMaterial();
     }
 }

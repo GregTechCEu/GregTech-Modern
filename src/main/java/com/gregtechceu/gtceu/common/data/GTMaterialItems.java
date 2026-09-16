@@ -72,10 +72,11 @@ public class GTMaterialItems {
     // Reference Tables
 
     /**
-     * Use {@link ChemicalHelper#getItem(TagPrefix, Material)} instead.
+     * Use {@link ChemicalHelper#getItem(TagPrefix, Material)} instead of querying this table directly.
      */
     @ApiStatus.Internal
     public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
+
     public static final Table<Material, GTToolType, ItemProviderEntry<Item, ? extends IGTTool>> TOOL_ITEMS = ArrayTable.create(
             GTRegistries.MATERIALS.stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.TOOL))
