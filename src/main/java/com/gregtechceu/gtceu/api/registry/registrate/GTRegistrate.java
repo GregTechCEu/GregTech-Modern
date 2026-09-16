@@ -275,7 +275,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
-                                                                            Supplier<GTRecipeType> recipeType, String lang) {
+                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            String lang) {
         return recipeCategory(name, recipeType, null, true);
     }
 

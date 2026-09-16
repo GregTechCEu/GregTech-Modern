@@ -3,8 +3,9 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.neoforged.neoforge.registries.DeferredHolder;
+
+import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;

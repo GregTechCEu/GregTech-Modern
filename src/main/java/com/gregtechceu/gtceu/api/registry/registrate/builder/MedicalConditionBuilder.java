@@ -4,6 +4,9 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
+import net.minecraft.resources.ResourceLocation;
+
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.AbstractBuilder;
 import com.tterrag.registrate.builders.BuilderCallback;
@@ -12,7 +15,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +22,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Accessors(fluent = true)
-public class MedicalConditionBuilder<P> extends AbstractBuilder<MedicalCondition, MedicalCondition, P, MedicalConditionBuilder<P>> {
+public class MedicalConditionBuilder<P> extends
+                                    AbstractBuilder<MedicalCondition, MedicalCondition, P, MedicalConditionBuilder<P>> {
 
     @Getter
     @Setter
@@ -48,7 +51,6 @@ public class MedicalConditionBuilder<P> extends AbstractBuilder<MedicalCondition
 
     @Getter
     private List<Symptom.ConfiguredSymptom> symptoms = new ArrayList<>();
-
 
     public MedicalConditionBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback) {
         super(owner, parent, name, callback, GTRegistries.Keys.MEDICAL_CONDITION);
@@ -100,6 +102,7 @@ public class MedicalConditionBuilder<P> extends AbstractBuilder<MedicalCondition
     @Override
     protected MedicalCondition createEntry() {
         return new MedicalCondition(ResourceLocation.fromNamespaceAndPath(getOwner().getModid(), getName()),
-                color, maxProgression, progressionType, progressionRate, canBePermenant, recipeModifier, symptoms.toArray(Symptom.ConfiguredSymptom[]::new));
+                color, maxProgression, progressionType, progressionRate, canBePermenant, recipeModifier,
+                symptoms.toArray(Symptom.ConfiguredSymptom[]::new));
     }
 }
