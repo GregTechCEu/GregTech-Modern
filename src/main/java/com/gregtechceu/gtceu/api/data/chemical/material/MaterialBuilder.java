@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.RegistrateMaterialBuilderWrapper;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 
 import net.minecraft.core.Holder;
@@ -40,6 +42,8 @@ public class MaterialBuilder {
     private final MaterialProperties properties;
     private final MaterialFlags flags;
 
+    private final @Nullable RegistrateMaterialBuilderWrapper registrateBuilder;
+
     private @Nullable HolderSet<TagPrefix> ignoredTagPrefixes = null;
     private final List<TagKey<Item>> itemTags = new ArrayList<>();
 
@@ -62,8 +66,9 @@ public class MaterialBuilder {
      *
      * @since GTCEu 2.0.0
      */
-    public MaterialBuilder(ResourceLocation id) {
+    public MaterialBuilder(ResourceLocation id, @Nullable RegistrateMaterialBuilderWrapper registrateBuilder) {
         this.resourceLocation = id;
+        this.registrateBuilder = registrateBuilder;
         var name = id.getPath();
         if (name.charAt(name.length() - 1) == '_')
             throw new IllegalArgumentException("Material name cannot end with a '_'!");
@@ -72,11 +77,19 @@ public class MaterialBuilder {
         flags = new MaterialFlags();
     }
 
+    public MaterialBuilder(ResourceLocation id) {
+        this(id, null);
+    }
+
     /**
      * @param name Set the material's (US english) localized name to this value
      */
-    public MaterialBuilder langValue(String name) {
-        materialInfo.setOverriddenName(name);
+    public MaterialBuilder lang(String name) {
+        if (registrateBuilder == null) {
+            GTCEu.LOGGER.warn("Cannot set lang value for material if builder is not attached to registrate builder");
+            return this;
+        }
+        registrateBuilder.lang(Material::getUnlocalizedName, name);
         return this;
     }
 
