@@ -630,7 +630,6 @@ public class TagPrefix {
 
     // made of 4 Ingots.
     public static final TagPrefix toolHeadBuzzSaw = new TagPrefix(GTCEu.id("buzzSawBlade"))
-            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Buzzsaw Blade")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
@@ -643,7 +642,6 @@ public class TagPrefix {
 
     // made of 1 Ingots.
     public static final TagPrefix toolHeadScrewdriver = new TagPrefix(GTCEu.id("screwdriverTip"))
-            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Screwdriver Tip")
             .materialAmount(GTValues.M)
             .maxStackSize(16)
@@ -656,7 +654,6 @@ public class TagPrefix {
 
     // made of 4 Ingots.
     public static final TagPrefix toolHeadDrill = new TagPrefix(GTCEu.id("drillHead"))
-            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Drill Head")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
@@ -669,7 +666,6 @@ public class TagPrefix {
 
     // made of 2 Ingots.
     public static final TagPrefix toolHeadChainsaw = new TagPrefix(GTCEu.id("chainsawHead"))
-            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Chainsaw Head")
             .materialAmount(GTValues.M * 2)
             .maxStackSize(16)
@@ -682,7 +678,6 @@ public class TagPrefix {
 
     // made of 4 Ingots.
     public static final TagPrefix toolHeadWrench = new TagPrefix(GTCEu.id("wrenchTip"))
-            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Wrench Tip")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
@@ -694,7 +689,6 @@ public class TagPrefix {
                     .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)));
 
     public static final TagPrefix toolHeadWireCutter = new TagPrefix(GTCEu.id("wireCutterHead"))
-            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Wire Cutter Head")
             .materialAmount(GTValues.M * 4)
             .maxStackSize(16)
@@ -707,7 +701,6 @@ public class TagPrefix {
 
     // made of 5 Ingots.
     public static final TagPrefix turbineBlade = new TagPrefix(GTCEu.id("turbineBlade"))
-            .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
             .langValue("%s Turbine Blade")
             .materialAmount(GTValues.M * 10)
             .materialIconType(MaterialIconType.turbineBlade)
@@ -1031,7 +1024,7 @@ public class TagPrefix {
     private MaterialIconType materialIconType;
 
     @Setter
-    private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends ItemLike>>> itemTable;
+    private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends ItemLike>>> itemTable = () -> GTMaterialItems.MATERIAL_ITEMS;
 
     @Nullable
     @Getter
@@ -1254,10 +1247,6 @@ public class TagPrefix {
                 .toList();
     }
 
-    public boolean hasItemTable() {
-        return itemTable != null;
-    }
-
     public Supplier<? extends ItemLike> getItemFromTable(Material material) {
         return itemTable.get().get(this, material);
     }
@@ -1269,7 +1258,7 @@ public class TagPrefix {
     public boolean doGenerateItem(Material material) {
         return generateItem && !isIgnored(material) &&
                 (generationCondition == null || generationCondition.test(material)) ||
-                (hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null);
+                (this.itemTable.get() != null && getItemFromTable(material) != null);
     }
 
     public boolean doGenerateBlock() {
@@ -1279,7 +1268,7 @@ public class TagPrefix {
     public boolean doGenerateBlock(Material material) {
         return generateBlock && !isIgnored(material) &&
                 (generationCondition == null || generationCondition.test(material)) ||
-                hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null;
+                this.itemTable.get() != null && getItemFromTable(material) != null;
     }
 
     public MaterialIconType getMaterialIconType(Material material) {

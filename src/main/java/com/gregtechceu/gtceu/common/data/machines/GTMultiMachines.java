@@ -158,7 +158,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                            ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"))
             .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.0"),
@@ -291,7 +291,7 @@ public class GTMultiMachines {
                     .build())
             .recoveryItems(
                     () -> new ItemLike[] {
-                            GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
+                            ChemicalHelper.getItem(TagPrefix.dustTiny, GTMaterials.Ash) })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/multi_furnace"))
             .additionalDisplay((controller, syncManager) -> {
