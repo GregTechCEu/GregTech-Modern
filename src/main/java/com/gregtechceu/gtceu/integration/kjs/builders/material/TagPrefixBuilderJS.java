@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import com.google.common.collect.Table;
+import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +46,7 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
 
     @Setter
     @Getter
-    public String langValue;
+    public @Nullable String langValue;
 
     @Getter
     @Setter
@@ -165,7 +166,6 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
     public TagPrefix create(ResourceLocation id) {
         return new TagPrefix(id)
                 .idPattern(idPattern)
-                .langValue(langValue)
                 .materialAmount(materialAmount)
                 .unificationEnabled(unificationEnabled)
                 .generateRecycling(generateRecycling)
@@ -180,6 +180,11 @@ public class TagPrefixBuilderJS extends BuilderBase<TagPrefix> {
                 .itemTable(itemTable)
                 .tooltip(tooltip)
                 .maxStackSize(maxStackSize);
+    }
+
+    @Override
+    public void generateLang(LangKubeEvent lang) {
+        if (langValue != null) lang.add(id.toLanguageKey("tag_prefix"), langValue);
     }
 
     @Override
