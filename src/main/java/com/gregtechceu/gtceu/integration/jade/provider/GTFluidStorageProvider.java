@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -77,6 +79,17 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
             return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, proxy, b);
+        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEInputHatchPartMachine buffer) {
+            var tanks = ((ExportOnlyAEFluidList) buffer.tank).getInventory();
+            List<CompoundTag> list = new ArrayList<>(tanks.length);
+            for (var storage : tanks) {
+                var stack = storage.getFluid();
+                if (stack.isEmpty()) continue;
+                int capacity = storage.getFluidConfig().getAmount();
+                capacity = (capacity == 1 ? stack.getAmount() : capacity);
+                list.add(JadeForgeUtils.fromFluidStack(stack, capacity));
+            }
+            return list.isEmpty() ? List.of() : List.of(new ViewGroup<>(list));
         }
 
         return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);
