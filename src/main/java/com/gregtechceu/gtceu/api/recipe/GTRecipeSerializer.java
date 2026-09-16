@@ -201,7 +201,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static void toNetwork(RegistryFriendlyByteBuf buf, @Nullable GTRecipe recipe) {
-        buf.writeResourceLocation(recipe.recipeType.registryName);
+        buf.writeResourceLocation(recipe.recipeType.id);
         buf.writeResourceLocation(recipe.id);
         writeCollection(recipe.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
         writeCollection(recipe.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
@@ -227,7 +227,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeVarInt(recipe.subtickParallels);
         buf.writeVarInt(recipe.batchParallels);
         buf.writeInt(recipe.groupColor);
-        buf.writeResourceLocation(recipe.recipeCategory.registryKey);
+        buf.writeResourceLocation(recipe.recipeCategory.id);
         buf.writeBoolean(recipe.keepSpoilingProgress);
     }
 

@@ -253,7 +253,7 @@ public class TestUtils {
         properties.maxOutputs().put(ItemRecipeCapability.CAP, maxOutputs);
         properties.maxOutputs().put(FluidRecipeCapability.CAP, maxFluidInputs);
         GTRecipeType type = new GTRecipeType(GTCEu.id(name), properties);
-        Registry.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
+        Registry.register(BuiltInRegistries.RECIPE_TYPE, type.id, type);
         GTRegistries.RECIPE_CATEGORIES.freeze();
         BuiltInRegistries.RECIPE_TYPE.freeze();
         BuiltInRegistries.RECIPE_SERIALIZER.freeze();

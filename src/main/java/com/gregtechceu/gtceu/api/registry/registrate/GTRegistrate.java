@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -15,7 +13,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
 import net.minecraft.core.Registry;
@@ -57,6 +54,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     private static final Map<String, GTRegistrate> EXISTING_REGISTRATES = new Object2ObjectOpenHashMap<>();
@@ -240,6 +238,18 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
                                                                             Supplier<GTRecipeType> recipeType,
                                                                             @Nullable CategoryIcon icon,
+                                                                            boolean isXEIVisible, String lang) {
+        return generic(name, GTRegistries.Keys.RECIPE_CATEGORY,
+                () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
+                        .setIcon(icon)
+                        .setXEIVisible(isXEIVisible))
+                .lang(GTRecipeCategory::getLanguageKey, lang)
+                .register();
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            @Nullable CategoryIcon icon,
                                                                             boolean isXEIVisible) {
         return simple(name, GTRegistries.Keys.RECIPE_CATEGORY,
                 () -> new GTRecipeCategory(makeResourceLocation(name), recipeType.get())
@@ -254,31 +264,38 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            @Nullable CategoryIcon icon, String lang) {
+        return recipeCategory(name, recipeType, icon, true);
+    }
+
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
                                                                             Supplier<GTRecipeType> recipeType) {
         return recipeCategory(name, recipeType, null, true);
     }
 
-    /// Medical Conditions
-
-    public RegistryEntry<MedicalCondition, MedicalCondition> medicalCondition(String name, int color,
-                                                                              int maxProgression,
-                                                                              MedicalCondition.IdleProgressionType progressionType,
-                                                                              float progressionRate,
-                                                                              boolean canBePermanent,
-                                                                              Consumer<GTRecipeBuilder> recipeModifier,
-                                                                              Symptom.ConfiguredSymptom... symptoms) {
-        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name),
-                color, maxProgression, progressionType, progressionRate, canBePermanent, recipeModifier, symptoms));
+    public RegistryEntry<GTRecipeCategory, GTRecipeCategory> recipeCategory(String name,
+                                                                            Supplier<GTRecipeType> recipeType,
+                                                                            String lang) {
+        return recipeCategory(name, recipeType, null, true);
     }
 
-    public RegistryEntry<MedicalCondition, MedicalCondition> medicalCondition(String name, int color,
-                                                                              int maxProgression,
-                                                                              MedicalCondition.IdleProgressionType progressionType,
-                                                                              float progressionRate,
-                                                                              boolean canBePermanent,
-                                                                              Symptom.ConfiguredSymptom... symptoms) {
-        return simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name),
-                color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms));
+    // Medical Conditions
+
+    public MedicalConditionBuilder<GTRegistrate> medicalCondition() {
+        return medicalCondition(this, currentName());
+    }
+
+    public MedicalConditionBuilder<GTRegistrate> medicalCondition(String name) {
+        return medicalCondition(this, name);
+    }
+
+    public <P> MedicalConditionBuilder<P> medicalCondition(P parent) {
+        return medicalCondition(parent, currentName());
+    }
+
+    public <P> MedicalConditionBuilder<P> medicalCondition(P parent, String name) {
+        return entry(name, callback -> new MedicalConditionBuilder<>(this, parent, name, callback));
     }
 
     /// Creative Mode Tabs

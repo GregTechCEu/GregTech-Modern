@@ -26,6 +26,7 @@ import com.mojang.serialization.DataResult;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -47,6 +48,7 @@ public abstract class RecipeCapability<T> {
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
     // spotless:on
 
+    @Getter
     public final ResourceLocation id;
     public final int color;
     public final boolean doRenderSlot;
@@ -121,7 +123,7 @@ public abstract class RecipeCapability<T> {
     }
 
     public MutableComponent getName() {
-        return Component.translatable("recipe.capability.%s.name".formatted(id.getPath()));
+        return Component.translatable(id.toLanguageKey("recipe_capability"));
     }
 
     public MutableComponent getColoredName() {
