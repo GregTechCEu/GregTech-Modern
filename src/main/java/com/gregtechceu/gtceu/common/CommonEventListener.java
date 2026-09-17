@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -97,6 +96,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
 import com.mojang.datafixers.util.Either;
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
@@ -669,17 +670,17 @@ public class CommonEventListener {
             }
         });
 
-        for (TagPrefix prefix : TagPrefix.values()) {
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
             String first = prefix.invertedName ? toLowerCaseUnderscore(prefix.name) : "(.+?)";
             String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnderscore(prefix.name);
             Pattern idPattern = Pattern.compile(first + "_" + last);
             event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    Block block = ChemicalHelper.getBlock(prefix,
+                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
                             GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1))));
-                    if (block != null) {
-                        mapping.remap(block);
+                    if (block != null && block.isPresent()) {
+                        mapping.remap(block.get());
                     }
                 }
             });
@@ -688,12 +689,12 @@ public class CommonEventListener {
                 if (matcher.matches()) {
                     Material material = GTRegistries.MATERIALS.get(GTCEu.id(matcher.group(1)));
                     if (material == null) return;
-                    Block block = ChemicalHelper.getBlock(prefix, material);
-                    if (block != null) {
+                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix, material);
+                    if (block != null && block.isPresent()) {
                         mapping.remap(block.asItem());
                     } else {
-                        Item item = ChemicalHelper.getItem(prefix, material);
-                        if (item != null) mapping.remap(item.asItem());
+                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix, material);
+                        if (item != null && item.isPresent()) mapping.remap(item.asItem());
                     }
                 }
             });
