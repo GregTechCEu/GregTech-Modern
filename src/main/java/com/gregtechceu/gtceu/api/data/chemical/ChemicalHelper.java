@@ -236,6 +236,10 @@ public class ChemicalHelper {
                     items.add(itemHolder::value);
                 }
             }
+            if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
+                return Collections
+                        .singletonList(Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material()))::asItem);
+            }
             if (items.isEmpty() && prefix.doGenerateItem(entry.material())) {
                 return List.of(() -> prefix.getItemFromTable(entry.material()).get().asItem());
             }
