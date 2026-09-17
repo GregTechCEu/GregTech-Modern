@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
@@ -229,7 +229,6 @@ public class ChemicalHelper {
     }
 
     public static List<ItemLike> getItems(MaterialEntry materialEntry) {
-
         return MATERIAL_ENTRY_ITEM_MAP.computeIfAbsent(materialEntry, entry -> {
             TagPrefix prefix = entry.tagPrefix();
             var items = new ArrayList<Supplier<? extends Item>>();
@@ -241,10 +240,12 @@ public class ChemicalHelper {
             if (!items.isEmpty()) return items;
 
             if (GTMaterialItems.MATERIAL_ITEMS.contains(entry.tagPrefix(), entry.material())) {
-                return Collections.singletonList(Objects.requireNonNull(GTMaterialItems.MATERIAL_ITEMS.get(entry.tagPrefix(), entry.material())));
+                return Collections.singletonList(Objects
+                        .requireNonNull(GTMaterialItems.MATERIAL_ITEMS.get(entry.tagPrefix(), entry.material())));
             }
             if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
-                return Collections.singletonList(Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material()))::asItem);
+                return Collections.singletonList(Objects.requireNonNull(
+                        GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material()))::asItem);
             }
 
             Supplier<? extends ItemLike> fromTable = prefix.getItemFromTable(entry.material());
@@ -297,7 +298,8 @@ public class ChemicalHelper {
             if (!blocks.isEmpty()) return blocks;
 
             if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
-                return Collections.singletonList(Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material())));
+                return Collections.singletonList(Objects
+                        .requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material())));
             }
             var fromTable = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
             if (fromTable != null) return Collections.singletonList(fromTable);
