@@ -7,18 +7,14 @@ import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.addon.universal.FluidStorageProvider;
 import snownee.jade.api.Accessor;
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.fluid.JadeFluidObject;
-import snownee.jade.api.ui.IElementHelper;
 import snownee.jade.api.view.ClientViewGroup;
 import snownee.jade.api.view.FluidView;
 import snownee.jade.api.view.IClientExtensionProvider;
@@ -58,16 +54,16 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
             FluidStack stored = qtm.getStored();
             if (stored.isEmpty() && qtm instanceof CreativeTankMachine) return Collections.emptyList();
             if (stored.isEmpty() && qtm.isLocked()) stored = qtm.getLockedFluid();
-            CompoundTag tag = JadeForgeUtils.fromFluidStack(stored, qtm.getMaxAmount());
+            CompoundTag tag = FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
+                    qtm.getMaxAmount());
             tag.putBoolean("special", true);
-            tag.putLong("amount", qtm.getStoredAmount());
             return List.of(new ViewGroup<>(List.of(tag)));
         } else if (accessor.getTarget() instanceof FluidHatchPartMachine hatch) {
             if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() && hatch.tank.isLocked()) {
                 FluidStack stored = hatch.tank.getLockedFluid().getFluid();
-                CompoundTag tag = JadeForgeUtils.fromFluidStack(stored, hatch.tank.getTankCapacity(0));
+                CompoundTag tag = FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
+                        hatch.tank.getTankCapacity(0));
                 tag.putBoolean("special", true);
-                tag.putLong("amount", 0L);
                 return List.of(new ViewGroup<>(List.of(tag)));
             }
         } else if (GTCEu.Mods.isAE2Loaded() && accessor.getTarget() instanceof MEPatternBufferPartMachine buffer) {
@@ -93,21 +89,18 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
         return FluidStorageProvider.Extension.INSTANCE.getGroups(accessor);
     }
 
-    // FluidView#readDefault can't handle amount > INT_MAX
+    // FluidView#readDefault can't handle amount = 0
     private static FluidView readFluid(CompoundTag tag) {
         if (!tag.contains("special")) return FluidView.readDefault(tag);
+
         long capacity = tag.getLong("capacity");
         if (capacity <= 0) return null;
 
-        Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluid")));
-        CompoundTag nbt = tag.contains("tag") ? tag.getCompound("tag") : null;
-        long amount = tag.getLong("amount");
-        JadeFluidObject fluidObject = JadeFluidObject.of(fluid, 1000, nbt);
-        FluidView fluidView = new FluidView(IElementHelper.get().fluid(fluidObject));
-        fluidView.fluidName = fluid.getFluidType().getDescription();
-        fluidView.current = FluidTextHelper.getUnicodeMillibuckets(amount, true);
-        fluidView.max = FluidTextHelper.getUnicodeMillibuckets(capacity, true);
-        fluidView.ratio = Math.min(1f, (float) ((double) amount / capacity));
+        FluidView fluidView = FluidView.readDefault(tag);
+        if (fluidView == null) return null;
+
+        fluidView.current = FluidTextHelper.getUnicodeMillibuckets(0, true);
+        fluidView.ratio = (float) (0d / (double) capacity);
 
         return fluidView;
     }
