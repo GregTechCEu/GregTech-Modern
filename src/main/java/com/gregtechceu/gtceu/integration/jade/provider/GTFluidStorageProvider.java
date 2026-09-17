@@ -60,14 +60,6 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
                     qtm.getMaxAmount());
             tag.putBoolean("special", true);
             return List.of(new ViewGroup<>(List.of(tag)));
-        } else if (accessor.getTarget() instanceof FluidHatchPartMachine hatch) {
-            if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() && hatch.tank.isLocked()) {
-                FluidStack stored = hatch.tank.getLockedFluid().getFluid();
-                CompoundTag tag = FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
-                        hatch.tank.getTankCapacity(0));
-                tag.putBoolean("special", true);
-                return List.of(new ViewGroup<>(List.of(tag)));
-            }
         } else if (GTCEu.Mods.isAE2Loaded() && accessor.getTarget() instanceof MEPatternBufferPartMachine buffer) {
             var tank = buffer.getShareTank();
             List<CompoundTag> list = new ArrayList<>(tank.getTanks());
@@ -98,6 +90,14 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
                 list.add(FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stack), capacity));
             }
             return list.isEmpty() ? List.of() : List.of(new ViewGroup<>(list));
+        } else if (accessor.getTarget() instanceof FluidHatchPartMachine hatch) {
+            if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() && hatch.tank.isLocked()) {
+                FluidStack stored = hatch.tank.getLockedFluid().getFluid();
+                CompoundTag tag = FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stored.copyWithAmount(1000)),
+                        hatch.tank.getTankCapacity(0));
+                tag.putBoolean("special", true);
+                return List.of(new ViewGroup<>(List.of(tag)));
+            }
         }
 
         return FluidStorageProvider.Extension.INSTANCE.getGroups(accessor);
