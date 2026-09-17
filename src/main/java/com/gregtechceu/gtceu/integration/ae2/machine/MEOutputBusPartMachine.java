@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -28,12 +29,14 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.scroll.VerticalScrollData;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.layout.Flow;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -142,6 +145,12 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                 .size(167, 80));
 
         mainWidget.child(flow);
+    }
+
+    // for Jade Provider
+
+    public Iterator<Object2LongMap.Entry<AEKey>> storageIterator() {
+        return internalBuffer.iterator();
     }
 
     private static class InaccessibleInfiniteHandler extends NotifiableItemStackHandler {

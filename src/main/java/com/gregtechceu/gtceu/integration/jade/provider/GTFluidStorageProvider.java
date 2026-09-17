@@ -5,14 +5,17 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachin
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import appeng.api.stacks.AEFluidKey;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.addon.universal.FluidStorageProvider;
 import snownee.jade.api.Accessor;
@@ -89,7 +92,18 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<CompoundT
                 capacity = (capacity == 1 ? stack.getAmount() : capacity);
                 list.add(FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stack), capacity));
             }
-            return list.isEmpty() ? List.of() : List.of(new ViewGroup<>(list));
+            return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
+        } else if (GTCEu.Mods.isAE2Loaded() && accessor.getTarget() instanceof MEOutputHatchPartMachine hatch) {
+            List<CompoundTag> list = new ArrayList<>();
+            var iterator = hatch.storageIterator();
+            while (iterator.hasNext()) {
+                var entry = iterator.next();
+                if (entry.getKey() instanceof AEFluidKey fluidKey) {
+                    FluidStack stack = fluidKey.toStack(GTMath.saturatedCast(entry.getLongValue()));
+                    list.add(FluidView.writeDefault(JadeForgeUtils.fromFluidStack(stack), entry.getLongValue()));
+                }
+            }
+            return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
         } else if (accessor.getTarget() instanceof FluidHatchPartMachine hatch) {
             if (hatch.tank.getTanks() == 1 && hatch.tank.getFluidInTank(0).isEmpty() && hatch.tank.isLocked()) {
                 FluidStack stored = hatch.tank.getLockedFluid().getFluid();

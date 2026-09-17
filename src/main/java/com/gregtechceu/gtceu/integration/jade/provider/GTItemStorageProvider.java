@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.stacks.AEItemKey;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.addon.universal.ItemStorageProvider;
 import snownee.jade.api.Accessor;
@@ -64,6 +66,17 @@ public enum GTItemStorageProvider implements IServerExtensionProvider<ItemStack>
                     .blockEntity(buffer.self())
                     .build();
             return ItemStorageProvider.Extension.INSTANCE.getGroups(accessor1);
+        } else if (GTCEu.Mods.isAE2Loaded() && accessor.getTarget() instanceof MEOutputBusPartMachine bus) {
+            List<ItemStack> list = new ArrayList<>();
+            var iterator = bus.storageIterator();
+            while (iterator.hasNext()) {
+                var entry = iterator.next();
+                if (entry.getKey() instanceof AEItemKey itemKey) {
+                    ItemStack stack = itemKey.toStack(GTMath.saturatedCast(entry.getLongValue()));
+                    list.add(stack.copy());
+                }
+            }
+            return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
         }
 
         return ItemStorageProvider.Extension.INSTANCE.getGroups(accessor);
