@@ -11,10 +11,12 @@ import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
+import com.gregtechceu.gtceu.common.module.AutoChargeItemModule;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -215,11 +217,12 @@ public class ModularItemTest {
         IElectricItem bufferBatteryElectricItem = GTCapabilityHelper.getElectricItem(bufferBattery);
         assert bufferBatteryElectricItem != null;
 
-        modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], GTItems.SENSOR_LuV.asStack(), false);
+        var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], GTItems.SENSOR_LuV.asStack(), false);
         modular.attach(GTItemModules.BATTERY, GTItems.BATTERY_MV_LITHIUM.asStack(), false);
 
-        armor.onItemUseFirst(new UseOnContext(helper.getLevel(), player, InteractionHand.MAIN_HAND, GTItems.SENSOR_LuV.asStack(),
-                new BlockHitResult(Vec3.ZERO, Direction.UP, buffer.getBlockPos(), false)));
+        assert wirelessModule != null;
+        wirelessModule.setData(wirelessModule.getData(AutoChargeItemModule.AutoChargeModuleData.class).withLinkedPos(
+                GlobalPos.of(helper.getLevel().dimension(), buffer.getBlockPos())));
 
         player.setItemSlot(EquipmentSlot.CHEST, armor);
 
