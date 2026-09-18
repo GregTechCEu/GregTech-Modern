@@ -66,11 +66,6 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static RecipeLogic getRecipeLogic(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, pos, side);
-    }
-
-    @Nullable
     public static IEnergyStorage getForgeEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         return level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
     }
