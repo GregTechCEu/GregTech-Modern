@@ -8,22 +8,22 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapForJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Accessors(fluent = true)
@@ -32,7 +32,7 @@ public class PredicateBuilder {
     private final String name;
     @Setter
     private Predicate<PredicateContext> predicate;
-    private Supplier<List<BlockInfo>> candidates = List::of;
+    private final List<BlockInfo> candidates = new ArrayList<>();
     @Setter
     private @Nullable Consumer<StringBuilder> contents;
     private final List<ErrorHandler> errorHandlers = new ArrayList<>();
@@ -55,35 +55,109 @@ public class PredicateBuilder {
         return this;
     }
 
-    public PredicateBuilder candidates(Stream<BlockInfo> candidates) {
-        List<BlockInfo> snapshot = candidates.toList();
-        this.candidates = () -> snapshot;
+    @RemapForJS("candidate")
+    public PredicateBuilder candidates(BlockInfo candidate) {
+        this.candidates.add(candidate);
         return this;
     }
 
-    public PredicateBuilder candidates(List<BlockInfo> candidates) {
-        this.candidates = () -> candidates;
+    @HideFromJS
+    public PredicateBuilder candidates(Stream<BlockInfo> candidateStream) {
+        return candidates(candidateStream.toList());
+    }
+
+    public PredicateBuilder candidates(Collection<BlockInfo> candidates) {
+        this.candidates.addAll(candidates);
         return this;
     }
 
-    public PredicateBuilder candidatesSupplier(Supplier<List<BlockInfo>> candidates) {
-        this.candidates = candidates;
+    @RemapForJS("block")
+    public PredicateBuilder blocks(Block candidate) {
+        this.candidates.add(BlockInfo.fromBlock(candidate));
         return this;
     }
 
-    /// fills candidates and sets string contents with this block tag
+    @HideFromJS
+    public PredicateBuilder blocks(Collection<Block> candidates) {
+        candidates.forEach(this::blocks);
+        return this;
+    }
+
+    public PredicateBuilder blocks(Block... candidates) {
+        if (candidates.length == 0) return this;
+        if (candidates.length == 1) return this.blocks(candidates[0]);
+        Arrays.stream(candidates).forEach(this::blocks);
+        return this;
+    }
+
+    @RemapForJS("state")
+    public PredicateBuilder states(BlockState candidate) {
+        this.candidates.add(BlockInfo.fromBlockState(candidate));
+        return this;
+    }
+
+    @HideFromJS
+    public PredicateBuilder states(Collection<BlockState> candidates) {
+        candidates.forEach(this::states);
+        return this;
+    }
+
+    public PredicateBuilder states(BlockState... candidates) {
+        if (candidates.length == 0) return this;
+        if (candidates.length == 1) return this.states(candidates[0]);
+        Arrays.stream(candidates).forEach(this::states);
+        return this;
+    }
+
+    @RemapForJS("fluidState")
+    public PredicateBuilder fluidStates(FluidState candidate) {
+        this.candidates.add(BlockInfo.fromFluidState(candidate));
+        return this;
+    }
+
+    @HideFromJS
+    public PredicateBuilder fluidStates(Collection<FluidState> candidates) {
+        candidates.forEach(this::fluidStates);
+        return this;
+    }
+
+    public PredicateBuilder fluidStates(FluidState... candidates) {
+        if (candidates.length == 0) return this;
+        if (candidates.length == 1) return this.fluidStates(candidates[0]);
+        Arrays.stream(candidates).forEach(this::fluidStates);
+        return this;
+    }
+
+    @RemapForJS("fluid")
+    public PredicateBuilder fluids(Fluid candidate) {
+        this.candidates.add(BlockInfo.fromFluid(candidate));
+        return this;
+    }
+
+    @HideFromJS
+    public PredicateBuilder fluids(Collection<Fluid> candidates) {
+        candidates.forEach(this::fluids);
+        return this;
+    }
+
+    public PredicateBuilder fluids(Fluid... candidates) {
+        if (candidates.length == 0) return this;
+        if (candidates.length == 1) return this.fluids(candidates[0]);
+        Arrays.stream(candidates).forEach(this::fluids);
+        return this;
+    }
+
+    /// fills candidates with this block tag
     public PredicateBuilder blockTag(TagKey<Block> tag) {
-        this.candidates = () -> Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
-                .getTag(tag).stream().map(BlockInfo::fromBlock).toList();
-        this.contents = builder -> builder.append(tag.location());
+        Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
+                .getTag(tag).forEach(this::blocks);
         return this;
     }
 
-    /// fills candidates and sets string contents with this fluid tag
+    /// fills candidates with this fluid tag
     public PredicateBuilder fluidTag(TagKey<Fluid> tag) {
-        this.candidates = () -> Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
-                .getTag(tag).stream().map(BlockInfo::fromFluid).toList();
-        this.contents = builder -> builder.append(tag.location());
+        Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
+                .getTag(tag).forEach(this::fluids);
         return this;
     }
 
@@ -92,10 +166,11 @@ public class PredicateBuilder {
     }
 
     public BasePredicate build() {
+        if (this.candidates.isEmpty()) this.candidates.add(BlockInfo.EMPTY);
         return new TestablePredicate(name,
                 Objects.requireNonNull(predicate, "predicate == null"),
-                candidates,
-                contents,
+                Collections.unmodifiableList(candidates),
+                this.contents,
                 composeErrorHandlers());
     }
 

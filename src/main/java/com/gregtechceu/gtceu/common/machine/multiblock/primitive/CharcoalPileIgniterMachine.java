@@ -158,6 +158,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                             "gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ());
                 })
                 .blockTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
+                .contents(builder -> builder.append(CustomTags.CHARCOAL_PILE_IGNITER_WALLS.location()))
                 .toMultiPredicate();
     }
 
@@ -167,6 +168,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                 .errorFunction(ctx -> PatternStringError.translatable(
                         "gtceu.predicate_error.charcoal.logs"))
                 .blockTag(BlockTags.LOGS_THAT_BURN)
+                .contents(builder -> builder.append(BlockTags.LOGS_THAT_BURN.location()))
                 .toMultiPredicate();
     }
 
