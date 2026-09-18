@@ -184,7 +184,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         MultiPredicate root = Objects.requireNonNull(this.multiblockSchemaInfo.getStructureHelper())
                                 .getPredicateFromPos(value, hit.getBlockPos(), frontFacing, upFacing, isFlipped);
                         root.resetLogic();
-                        BasePredicate predicate = root.getPredicateAtPos(context);
+                        BasePredicate predicate = root.getPredicateAtPos(context).match();
                         if (predicate != null) {
                             predicate.getRecipeViewerTooltips(root).forEach(t -> text.add(t).newLine());
                         }
