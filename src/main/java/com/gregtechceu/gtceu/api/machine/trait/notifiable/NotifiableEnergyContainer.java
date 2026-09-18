@@ -336,7 +336,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
 
     @Override
     public double getTotalContentAmount() {
-        return energyStored;
+        return getEnergyStored();
     }
 
     @Override
