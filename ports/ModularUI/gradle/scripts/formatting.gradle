@@ -1,0 +1,6 @@
+// EditorConfig auto-formatter
+// See https://github.com/ec4j/editorconfig-gradle-plugin
+// Can be locally toggled via @formatter:off/@formatter:on comments
+editorconfig {
+    includes = ['*']
+}

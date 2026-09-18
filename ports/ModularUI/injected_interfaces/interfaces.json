@@ -1,0 +1,8 @@
+{
+    "net/minecraft/network/chat/Component": [
+        "brachy/modularui/drawable/text/ToModularComponent"
+    ],
+    "net/minecraft/network/RegistryFriendlyByteBuf": [
+        "brachy/modularui/core/extensions/IRegistryFriendlyByteBufExtension"
+    ]
+}

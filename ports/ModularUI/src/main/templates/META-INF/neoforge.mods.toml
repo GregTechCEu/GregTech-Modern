@@ -1,0 +1,48 @@
+issueTrackerURL = "${mod_issue_tracker}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+authors = "brachy"
+description = "${mod_description}"
+logoFile = "assets/modularui/textures/modular_ui_logo.png"
+displayURL = "${mod_url}"
+credits = "People"
+
+
+[[mixins]]
+config = "${mod_id}.mixins.json"
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
+[[dependencies.${ mod_id }]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${forge_version},)"
+
+[[dependencies.${ mod_id }]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version}]"
+
+[[dependencies.${ mod_id }]]
+modId = "jei"
+type = "optional"
+versionRange = "[${jei_version},)"
+
+[[dependencies.${ mod_id }]]
+modId = "emi"
+type = "optional"
+versionRange = "[${emi_version},)"
+
+[[dependencies.${mod_id}]]
+modId = "roughlyenoughitems"
+type = "optional"
+versionRange = "[${rei_version},)"
+
+[[dependencies.${mod_id}]]
+modId = "curios"
+type = "optional"
+versionRange = "[${curios_version},)"

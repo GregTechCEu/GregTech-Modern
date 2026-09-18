@@ -1,0 +1,9 @@
+{
+  "color": "0x444444",
+  "textColor": "0xEEEEEE",
+  "textShadow": false,
+  "scrollbar": {
+    "color": "0x666666",
+    "textColor": "0xCCCCCC"
+  }
+}

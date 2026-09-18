@@ -1,0 +1,54 @@
+package brachy.modularui.drawable;
+
+import brachy.modularui.theme.WidgetTheme;
+
+import net.minecraft.util.ExtraCodecs;
+import com.mojang.serialization.Codec;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.ToIntFunction;
+
+public class ColorType {
+
+    public static final Codec<ColorType> CODEC = Codec.stringResolver(ColorType::getName, ColorType::get);
+
+    private static final Map<String, ColorType> COLOR_TYPES = new Object2ObjectOpenHashMap<>();
+
+    public static ColorType get(String name) {
+        return COLOR_TYPES.getOrDefault(name, DEFAULT);
+    }
+
+    public static final ColorType DEFAULT = new ColorType("default", WidgetTheme::getColor);
+    public static final ColorType TEXT = new ColorType("text", WidgetTheme::getTextColor);
+    public static final ColorType ICON = new ColorType("default", WidgetTheme::getIconColor);
+
+    @Getter
+    private final String name;
+    private final ToIntFunction<WidgetTheme> colorGetter;
+
+    public ColorType(String name, ToIntFunction<WidgetTheme> colorGetter) {
+        this.name = name;
+        this.colorGetter = colorGetter;
+        COLOR_TYPES.put(name, this);
+    }
+
+    public int getColor(WidgetTheme theme) {
+        return colorGetter.applyAsInt(theme);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ColorType colorType = (ColorType) o;
+        return Objects.equals(name, colorType.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
+    }
+}

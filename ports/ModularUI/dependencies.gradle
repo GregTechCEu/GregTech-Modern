@@ -1,0 +1,40 @@
+dependencies {
+    compileOnly(libs.jetbrains.annotations)
+
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Math Parser
+    jarJar(implementation(libs.evalEx.get()))
+
+    // Recipe Viewers
+    compileOnly(forge.bundles.jei)
+    compileOnly(forge.bundles.rei)
+    compileOnly(forge.emi)
+
+    // Optional dependencies
+    compileOnly(variantOf(forge.curios) { classifier("api") })
+    compileOnly(forge.sodium)
+    compileOnly(forge.mousetweaks)
+
+    // Standard runtime mods //
+    localRuntime(forge.curios)
+    localRuntime(forge.jade)
+    localRuntime(forge.spark)
+    localRuntime(forge.modernFix)
+    localRuntime(forge.mousetweaks)
+
+    // Runtime Recipe Viewers - uncomment whichever one you want to use //
+    localRuntime(forge.emi)
+//    localRuntime(forge.jei.forge.impl)
+//    localRuntime(forge.bundles.rei.runtime)
+
+    // Client-only runtime mods //
+    clientLocalRuntime(forge.sodium)
+    clientLocalRuntime(forge.iris)
+    renderNurseCfg(libs.renderNurse)
+
+    // Runtime mods for the testing environment //
+    testRuntimeOnly(forge.curios)
+}

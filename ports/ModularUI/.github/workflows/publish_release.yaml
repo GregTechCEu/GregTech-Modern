@@ -1,0 +1,193 @@
+# This workflow must be manually triggered. It accepts a version and a release type.
+# First it sets the version in gradle.properties to the new version and pushes it.
+# Then it generates a log, based on commits.
+# After that builds a jar and uploads it to curseforge/modrinth/GitHub releases
+
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Mod version'
+        required: true
+      release-type:
+        description: 'Release type'
+        type: choice
+        default: 'release'
+        options:
+          - 'release'
+          - 'beta'
+          - 'alpha'
+      publish-cf:
+        description: Publish to CF
+        default: true
+        type: boolean
+      publish-mr:
+        description: Publish to MR
+        default: true
+        type: boolean
+      publish-gh:
+        description: Publish to Github
+        default: true
+        type: boolean
+      publish-maven:
+        description: Publish to maven
+        default: true
+        type: boolean
+      overwrite:
+        description: 'Overwrite current tag (if exists)'
+        default: false
+        required: true
+        type: boolean
+
+env:
+  CHANGELOG_LOCATION: "build/gh_changelog.md"
+  MODRINTH_ID: Ecvd12QC
+  CURSEFORGE_ID: 624243
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Read current mod version
+        id: read_version
+        run: |
+          mod_version=$(grep -E '^[[:space:]]*mod_version[[:space:]]*=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          echo "Current mod version: -$mod_version-"
+          if [ "$mod_version" == "${{inputs.version}}" ]; then
+            echo "UPDATED=true" >> $GITHUB_ENV
+          else
+            echo "UPDATED=false" >> $GITHUB_ENV
+          fi
+
+      # Abort if a tag already exists and the mod is updated to that version and overwriting is not allowed
+      # If the tag does not exist force publish to gh if publishing to cf/mr (for changelog)
+      - name: Check if tag already exists
+        run: |
+          if git rev-parse --verify --quiet "v${{ github.event.inputs.version }}"; then
+            if [ "${{ inputs.publish-gh }}" == "true" ] && [ "$UPDATED" == "true" ] && [ "${{ inputs.overwrite }}" == "false" ]; then
+              echo "Version tag ${{ github.event.inputs.version }} already exists and the mod is updated to that version and overwriting is forbidden."
+              echo "Aborting workflow!"
+              exit 1
+            fi
+            echo "publish-gh=${{ inputs.publish-gh }}" >> $GITHUB_ENV
+          else
+            if [ "${{ inputs.publish-cf }}" == "true" ] || [ "${{ inputs.publish-mr }}" == "true" ]; then
+              echo "publish-gh=true" >> $GITHUB_ENV
+            else
+              echo "publish-gh=${{ inputs.publish-gh }}" >> $GITHUB_ENV
+            fi
+          fi
+
+      - name: Set version
+        if: env.UPDATED == 'false' # only change new version if it's not already updated
+        run: sed -i -E "s/^[[:space:]]*mod_version[[:space:]]*=.*/mod_version = ${{ github.event.inputs.version }}/" gradle.properties
+
+      - name: Commit and push gradle.properties
+        if: env.UPDATED == 'false' # only push new version if it's not already updated
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Bump version to ${{ github.event.inputs.version }}"
+          commit_options: "--no-verify"
+          file_pattern: gradle.properties
+          tagging_message: "v${{ github.event.inputs.version }}"
+
+      - name: Check for publishing
+        run: |
+          if [ "$publish-gh" == "false" ] && [ "${{ inputs.publish-cf-mr }}" == "false" ] && [ "${{ inputs.publish-maven }}" == "false" ]; then
+            echo "Not publishing to Github, Curse, Modrinth or Maven."
+            exit 0
+          fi
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Read CI info
+        id: ci
+        run: |
+          while IFS='=' read -r key value; do
+            echo "$key=$value" >> "$GITHUB_OUTPUT"
+          done < <(./gradlew -q printCiInfo)
+
+      - name: Build Project
+        run: ./gradlew build
+
+      - name: Publish to GitHub
+        if: env.publish-gh == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ inputs.version }}"
+          token: ${{ secrets.PAT }}
+          files: "build/libs/*.jar"
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+
+      - name: Get Changelog
+        run: |
+          mkdir -p build
+          RELEASE_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/v${{ inputs.version }}"
+          RELEASE_JSON=$(curl -sSL $RELEASE_URL)
+          CHANGELOG="$(echo $RELEASE_JSON | jq -r '.body')"
+          if [ "$CHANGELOG" == "null" ]; then
+            echo "No changelog found" > $CHANGELOG_LOCATION
+          else
+            echo "$CHANGELOG" > $CHANGELOG_LOCATION
+          fi
+
+      - name: Publish to Curseforge
+        if: ${{ inputs.publish-cf }}
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          curseforge-id: ${{ env.CURSEFORGE_ID }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          files: |
+            build/libs/*[0-9].jar
+            build/libs/*-@(dev|sources|javadoc).jar
+          name: 'ModularUI ${{ inputs.version }} - mc${{ steps.ci.outputs.mc_version }}'
+          version: '${{ inputs.version }}-mc${{ steps.ci.outputs.mc_version }}'
+          version-type: ${{ inputs.release-type }}
+          changelog-file: ${{ env.CHANGELOG_LOCATION }}
+          loaders: forge
+          java: ${{ steps.ci.outputs.java_version }}
+          fail-mode: fail
+
+      - name: Publish to Modrinth
+        if: ${{ inputs.publish-mr }}
+        uses: Kir-Antipov/mc-publish@v3.3.0
+        with:
+          modrinth-id: ${{ env.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          files: |
+            build/libs/*[0-9].jar
+            build/libs/*-@(dev|sources).jar
+          name: 'ModularUI ${{ inputs.version }} - mc${{ steps.ci.outputs.mc_version }}'
+          version: '${{ inputs.version }}-mc${{ steps.ci.outputs.mc_version }}'
+          version-type: ${{ inputs.release-type }}
+          changelog-file: ${{ env.CHANGELOG_LOCATION }}
+          loaders: forge
+          java: ${{ steps.ci.outputs.java_version }}
+          fail-mode: fail
+
+      - name: Publish to maven
+        if: ${{ inputs.publish-maven }}
+        run: ./gradlew publish
+        env:
+          MAVEN_USER: ${{ secrets.GTCEU_MAVEN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.GTCEU_MAVEN_PASSWORD }}

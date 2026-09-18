@@ -1,0 +1,27 @@
+{
+  "parent": "DEFAULT",
+  "panel": {
+    "background": {
+      "type": "texture",
+      "name": "menu"
+    }
+  },
+  "button": {
+    "background": "empty",
+    "textColor": "#404040",
+    "iconColor": "#404040",
+    "textShadow": false
+  },
+  "toggleButton": {
+    "background": "empty",
+    "color": "#FFFFFF",
+    "textColor": "#404040",
+    "iconColor": "#404040",
+    "textShadow": false,
+    "selectedBackground": "empty",
+    "selectedColor": "#BBBBBB",
+    "selectedIconColor": "#404040",
+    "selectedTextColor": "#404040",
+    "selectedTextShadow": false
+  }
+}

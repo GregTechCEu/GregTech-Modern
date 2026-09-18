@@ -1,0 +1,41 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+tasks.register('mkdocsSetup', Exec) {
+    description = "Installs requirements for the MkDocs server."
+    group = "documentation"
+
+    workingDir 'docs'
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd.exe', '/c',
+                'python -m venv .venv && .venv\\Scripts\\pip.exe install -r requirements.txt'
+    } else {
+        commandLine '/usr/bin/env', 'bash', '-c',
+                'python3 -m venv .venv && ./.venv/bin/pip3 install -r requirements.txt'
+    }
+}
+
+tasks.register('mkdocsServe', Exec) {
+    description = "Runs the MkDocs server."
+    group = "documentation"
+    dependsOn tasks.named('mkdocsSetup')
+
+    workingDir 'docs'
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine '.\\docs\\.venv\\Scripts\\mkdocs.exe', 'serve'
+    } else {
+        commandLine './docs/.venv/bin/mkdocs', 'serve'
+    }
+}
+
+tasks.register('mkdocsBuild', Exec) {
+    description = "Builds the MkDocs documentation in docs/site."
+    group = "documentation"
+    dependsOn tasks.named('mkdocsSetup')
+
+    workingDir 'docs'
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine '.\\docs\\.venv\\Scripts\\mkdocs.exe', 'build'
+    } else {
+        commandLine './docs/.venv/bin/mkdocs', 'build'
+    }
+}

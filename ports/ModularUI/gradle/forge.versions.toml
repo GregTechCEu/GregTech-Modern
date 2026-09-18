@@ -1,0 +1,56 @@
+[versions]
+# Recipe viewers
+emi = "1.1.24+1.21.1"
+
+jei = "19.25.1.328"
+
+rei = "16.0.799"
+architectury = "13.0.8"
+clothConfig = "15.0.140"
+
+# Curios
+curios = "9.4.2+1.21.1"
+
+# Rendering & Optimizations
+sodium = "mc1.21.1-0.6.13-neoforge" # modrinth maven
+iris = "1.8.8+1.21.1-neoforge" # modrinth maven
+modernFix = "4SPHwiDB" # 5.24.3+mc1.21.1; modrinth maven
+
+# Performance metrics & testing
+spark = "6225208" # cursemaven
+jade = "15.10.0+neoforge" # modrinth maven
+mousetweaks = "5637846" # cursemaven
+
+[libraries]
+# Recipe viewers
+emi = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
+
+jei-common-api = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
+jei-forge-api = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
+jei-forge-impl = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
+
+rei-plugin = { module = "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge", version.ref = "rei" }
+rei-api = { module = "me.shedaniel:RoughlyEnoughItems-api-neoforge", version.ref = "rei" }
+rei-forge = { module = "me.shedaniel:RoughlyEnoughItems-neoforge", version.ref = "rei" }
+
+architectury = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
+clothConfig = { module = "me.shedaniel.cloth:cloth-config-neoforge", version.ref = "clothConfig" }
+
+# Curios, Mouse Tweaks
+curios = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
+mousetweaks = { module = "curse.maven:mouse_tweaks-60089", version.ref = "mousetweaks" }
+
+# Rendering & Optimizations
+sodium = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+iris = { module = "maven.modrinth:iris", version.ref = "iris" }
+modernFix = { module = "maven.modrinth:modernfix", version.ref = "modernFix" }
+
+# Performance metrics & testing
+spark = { module = "curse.maven:spark-361579", version.ref = "spark" }
+jade = { module = "maven.modrinth:jade", version.ref = "jade" }
+
+[bundles]
+jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]
+rei = ["rei-plugin", "rei-forge", "architectury"]
+rei-runtime = ["rei-forge", "architectury", "clothConfig"]
+

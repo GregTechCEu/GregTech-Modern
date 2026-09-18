@@ -1,0 +1,29 @@
+tasks.register('slimJar', Jar) {
+    dependsOn("classes")
+    archiveClassifier = "slim"
+    from sourceSets.main.output
+}
+
+java {
+    withSourcesJar()
+}
+
+jar.archiveClassifier = ""
+
+base {
+    archivesName = "${project.name}-mc${libs.versions.minecraft.get()}"
+}
+
+afterEvaluate {
+    tasks.withType(org.gradle.jvm.tasks.Jar).configureEach {
+        destinationDirectory = file('build/libs/')
+        manifest.attributes([
+                'Specification-Title'   : project.name,
+                'Specification-Version' : mod_version,
+                'Specification-Vendor'  : 'brachy',
+                'Implementation-Title'  : base.archivesName,
+                'Implementation-Version': version,
+                'Implementation-Vendor' : 'brachy',
+        ])
+    }
+}

@@ -1,0 +1,91 @@
+# This workflow must be manually triggered. It accepts a version and a release type.
+# First it sets the version in gradle.properties to the new version and pushes it.
+# Then it generates a log, based on commits.
+# After that builds a jar and uploads it to curseforge/modrinth/GitHub releases
+
+name: Publish Snapshot
+
+on:
+  workflow_dispatch:
+
+# Cancel previous jobs if PR gets another push
+concurrency:
+  group: SNAPSHOT-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Set snapshot version
+        id: version
+        run: |
+          mod_version=$(grep -E '^[[:space:]]*mod_version[[:space:]]*=' gradle.properties | cut -d'=' -f2 | tr -d '[:space:]')
+          commit=$(git rev-parse --short HEAD)
+          echo "Current mod version: -$mod_version-, Last commit: -$commit-"
+          echo "mod_ver=$mod_version" >> $GITHUB_OUTPUT
+          echo "last_commit=$commit" >> $GITHUB_OUTPUT
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Read CI info
+        id: ci
+        run: |
+          while IFS='=' read -r key value; do
+            echo "$key=$value" >> "$GITHUB_OUTPUT"
+          done < <(./gradlew -q printCiInfo)
+
+      - name: Build Project
+        run: ./gradlew build
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: ModularUI-mc${{ steps.ci.outputs.mc_version }}-${{ steps.version.outputs.snapshot_ver }}
+          path: build/libs
+
+      - name: Publish to maven
+        run: ./gradlew publish
+        env:
+          SNAPSHOT: "true"
+          MAVEN_USER: ${{ secrets.GTCEU_MAVEN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.GTCEU_MAVEN_PASSWORD }}
+
+      - name: Parse snapshot version
+        id: maven_version
+        run: |
+          MAVEN_METADATA_URL="https://maven.gtceu.com/brachy/modularui/modularui-mc${{ steps.ci.outputs.mc_version }}/${{ steps.version.outputs.mod_ver }}-SNAPSHOT/maven-metadata.xml"
+          METADATA=$(curl -s "$MAVEN_METADATA_URL")
+          TIMESTAMP=$(echo "$METADATA" | grep -oP '(?<=<timestamp>).*?(?=</timestamp>)')
+          BUILD_NUMBER=$(echo "$METADATA" | grep -oP '(?<=<buildNumber>).*?(?=</buildNumber>)')
+          SNAPSHOT_VERSION="${TIMESTAMP}-${BUILD_NUMBER}"
+          echo "snapshot_ver=$SNAPSHOT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Notify Discord
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: "New snapshot for ${{ steps.ci.outputs.mc_version }} - ${{ steps.version.outputs.mod_ver }}"
+          description: |
+            Maven version: `${{ steps.version.outputs.mod_ver }}-${{ steps.maven_version.outputs.snapshot_ver }}`
+            Last commit: `${{ steps.version.outputs.last_commit }}`
+          color: 0x12EFD7
+          username: "Bot that notifies dis gourd for a new snapshot on Maven"
+          avatar_url: https://image.freepik.com/free-photo/calabash-bottle-gourd-isolated-white_116067-484.jpg
