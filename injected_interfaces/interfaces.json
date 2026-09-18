@@ -11,5 +11,11 @@
     "net/minecraft/world/entity/Entity": [
         "com/gregtechceu/gtceu/core/IFireImmuneEntity",
         "com/gregtechceu/gtceu/core/IBreathingEntity"
+    ],
+    "net/minecraft/data/tags/TagsProvider$TagAppender": [
+        "com/gregtechceu/gtceu/core/util/extensions/TagAppenderExt<T>"
+    ],
+    "net/minecraft/data/tags/IntrinsicHolderTagsProvider$IntrinsicTagAppender": [
+        "com/gregtechceu/gtceu/core/util/extensions/IntrinsicTagAppenderExt<T>"
     ]
 }
