@@ -86,26 +86,29 @@ public class RobotArmCover extends ConveyorCover {
             }
         }
 
-        int itemsTransferred = 0;
-        int maxTotalTransferAmount = maxTransferAmount + itemsTransferBuffered;
-        boolean notEnoughTransferRate = false;
+        int itemsLeftToTransfer = maxTransferAmount;
         for (TypeItemInfo itemInfo : sourceItemAmount.values()) {
-            if (maxTotalTransferAmount >= itemInfo.totalCount) {
-                boolean result = moveInventoryItemsExact(sourceInventory, targetInventory, itemInfo);
-                itemsTransferred += result ? itemInfo.totalCount : 0;
-                maxTotalTransferAmount -= result ? itemInfo.totalCount : 0;
-            } else {
-                notEnoughTransferRate = true;
+            if (itemsLeftToTransfer <= 0) break;
+
+            int batchSize = itemInfo.totalCount;
+            if (batchSize <= 0) continue;
+
+            // can't afford a full batch yet, bank the leftover budget and stop
+            if (itemsLeftToTransfer + itemsTransferBuffered < batchSize) {
+                itemsTransferBuffered += itemsLeftToTransfer;
+                itemsLeftToTransfer = 0;
+                break;
             }
-        }
-        // if we didn't transfer anything because of too small transfer rate, buffer it
-        if (itemsTransferred == 0 && notEnoughTransferRate) {
-            itemsTransferBuffered += maxTransferAmount;
-        } else {
-            // otherwise, if transfer succeed, empty transfer buffer value
+
+            // all-or-nothing move; if the target can't take the full batch, keep the buffer and try the next type
+            if (!moveInventoryItemsExact(sourceInventory, targetInventory, itemInfo)) {
+                continue;
+            }
+
+            itemsLeftToTransfer -= (batchSize - itemsTransferBuffered);
             itemsTransferBuffered = 0;
         }
-        return Math.min(itemsTransferred, maxTransferAmount);
+        return maxTransferAmount - itemsLeftToTransfer;
     }
 
     protected int doKeepExact(IItemHandler sourceInventory, IItemHandler targetInventory, int maxTransferAmount) {
