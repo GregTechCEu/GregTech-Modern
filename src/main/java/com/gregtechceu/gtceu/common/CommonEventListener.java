@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.component.SpoilContext;
+import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -53,11 +55,13 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -67,6 +71,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -93,6 +100,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
 import com.mojang.datafixers.util.Either;
@@ -700,6 +708,26 @@ public class CommonEventListener {
                     }
                 }
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void whileContainerOpen(TickEvent.PlayerTickEvent event) {
+        AbstractContainerMenu menu = event.player.containerMenu;
+        if (GTCEu.isClientThread() && menu instanceof CreativeModeInventoryScreen.ItemPickerMenu) return;
+        if (menu instanceof InventoryMenu) return;
+
+        for (Slot slot : menu.slots) {
+            int index = slot.getSlotIndex();
+            Container container = slot.container;
+            SpoilContext ctx = SpoilContext.EMPTY
+                    .withSlot(index)
+                    .withItemHandlerSource(SpoilContext.ItemHandlerSource.temp(new InvWrapper(container)));
+            if (container instanceof BlockEntity blockEntity) {
+                ctx = ctx.withPos(blockEntity.getBlockPos())
+                        .withLevel(blockEntity.getLevel());
+            }
+            SpoilUtils.update(slot.getItem(), ctx);
         }
     }
 }

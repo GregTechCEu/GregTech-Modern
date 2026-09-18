@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.EntitySlotInvWrapper;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -43,15 +45,26 @@ public record SpoilContext(@Nullable Level level,
                            @Nullable CompoundTag itemHandlerData,
                            int slot) {
 
+    public static final SpoilContext EMPTY = new SpoilContext();
+
     /**
      * @return the {@link Level} used to determine time to calculate spoilage progress (using
      *         {@link Level#getGameTime()}).
      *         This is usually the Overworld. If it is {@code null}, all spoilage updates are ignored.
      */
     public static @Nullable Level getDefaultLevel() {
+        if (GTCEu.isClientThread())
+            return ClientLevelGetterWrapper.getLevel();
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null) return null;
         return server.overworld();
+    }
+
+    private static final class ClientLevelGetterWrapper {
+
+        public static @Nullable Level getLevel() {
+            return Minecraft.getInstance().level;
+        }
     }
 
     public SpoilContext() {
@@ -105,17 +118,27 @@ public record SpoilContext(@Nullable Level level,
         if (pos != null) tag.putLong("pos", pos.asLong());
         if (entity != null) tag.putInt("entity", entity.getId());
         if (slot != -1) tag.putInt("slot", slot);
-        if (itemHandlerSource != null) tag.putString("handlerSource", itemHandlerSource.getId().toString());
+        if (itemHandlerSource != null && itemHandlerSource.getId() != null)
+            tag.putString("handlerSource", itemHandlerSource.getId().toString());
         if (itemHandlerData != null) tag.put("handlerData", itemHandlerData);
         return tag;
     }
 
     public static SpoilContext deserializeNBT(CompoundTag tag) {
-        SpoilContext ctx = new SpoilContext();
+        SpoilContext ctx = SpoilContext.EMPTY;
         if (tag.contains("level")) {
-            ctx = ctx.withLevel(ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(
-                    Registries.DIMENSION,
-                    new ResourceLocation(tag.getString("level")))));
+            if (GTCEu.isClientThread()) {
+                Level level = ClientLevelGetterWrapper.getLevel();
+                if (level != null) {
+                    String dimension = level.dimensionTypeId().location().toString();
+                    if (dimension.equals(tag.getString("level")))
+                        ctx = ctx.withLevel(level);
+                }
+            } else {
+                ctx = ctx.withLevel(ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(
+                        Registries.DIMENSION,
+                        ResourceLocation.parse(tag.getString("level")))));
+            }
         }
         if (tag.contains("pos")) {
             ctx = ctx.withPos(BlockPos.of(tag.getLong("pos")));
@@ -128,7 +151,7 @@ public record SpoilContext(@Nullable Level level,
         }
         if (tag.contains("handlerSource")) {
             ctx = ctx.withItemHandlerSource(
-                    ItemHandlerSource.getById(new ResourceLocation(tag.getString("handlerSource"))));
+                    ItemHandlerSource.getById(ResourceLocation.parse(tag.getString("handlerSource"))));
         }
         if (tag.contains("handlerData")) {
             ctx = ctx.withItemHandlerData(tag.getCompound("handlerData"));
@@ -155,11 +178,11 @@ public record SpoilContext(@Nullable Level level,
 
             @Override
             protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
-                if (ctx.level() == null || ctx.pos() == null || ctx.itemHandlerData() == null) return null;
+                if (ctx.level() == null || ctx.pos() == null) return null;
                 CompoundTag tag = ctx.itemHandlerData();
                 BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
                 if (blockEntity == null) return null;
-                if (!tag.contains("side"))
+                if (tag == null || !tag.contains("side"))
                     return blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElse(null);
                 return blockEntity
                         .getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.byName(tag.getString("side")))
@@ -181,6 +204,16 @@ public record SpoilContext(@Nullable Level level,
             }
         };
 
+        public static final ItemHandlerSource ENTITY_INVENTORY = new ItemHandlerSource(GTCEu.id("entity_inventory")) {
+
+            @Override
+            protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
+                if (ctx.entity != null)
+                    return new EntitySlotInvWrapper(ctx.entity);
+                return null;
+            }
+        };
+
         private static ItemHandlerSource getById(ResourceLocation id) {
             return HANDLER_SOURCES.get(id);
         }
@@ -189,7 +222,8 @@ public record SpoilContext(@Nullable Level level,
 
         public ItemHandlerSource(ResourceLocation id) {
             this.id = id;
-            HANDLER_SOURCES.put(id, this);
+            if (id != null)
+                HANDLER_SOURCES.put(id, this);
         }
 
         private ResourceLocation getId() {
@@ -202,5 +236,15 @@ public record SpoilContext(@Nullable Level level,
         }
 
         abstract protected @Nullable IItemHandler getHandler(SpoilContext ctx);
+
+        public static ItemHandlerSource temp(IItemHandler handler) {
+            return new ItemHandlerSource(null) {
+
+                @Override
+                protected @Nullable IItemHandler getHandler(SpoilContext ctx) {
+                    return handler;
+                }
+            };
+        }
     }
 }

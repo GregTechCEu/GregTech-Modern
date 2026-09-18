@@ -1904,6 +1904,8 @@ public class LangHandler {
         provider.add("gtceu.tooltip.player_bind", "Bound to player: %s");
         provider.add("gtceu.gui.item_collector.range", "Range: ");
         provider.add("gtceu.tooltip.spoil_time_remaining", "Time until spoils: %s");
+        provider.add("gtceu.tooltip.spoiled_time_ago",
+                "§bThis item will transform upon entering a supported inventory!§r\nSpoiled %s ago");
         provider.add("gtceu.tooltip.spoil_time_total", "Total spoil time: %s");
         provider.add("gtceu.tooltip.spoils_into", "Spoils into: %s");
         provider.add("gtceu.tooltip.creation_tick", "Created on overworld tick %d");
