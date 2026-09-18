@@ -1,0 +1,73 @@
+issueTrackerURL = "${mod_issue_tracker}"
+license = "${mod_license}"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+authors = "KilaBash, screret, serenibyss, Tech22, YoungOnion, Mikerooni, Ghostipedia"
+description = "${mod_description}"
+logoFile = "icon.png"
+displayURL = "${mod_url}"
+credits = "GregoriusT, Mr_Touchyou, Zerrens for making GregTech and textures, the GT5u authors and maintainers for providing the original code, and the community."
+
+[mods."modernfix:integration"]
+client_entrypoint = "com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration"
+
+[[dependencies.${mod_id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version}]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "configuration"
+type = "required"
+embedded = true
+versionRange = "[${configuration_version},)"
+ordering = "AFTER"
+side = "BOTH"
+[dependencies.${mod_id}.mc-publish]
+    ignore = false
+    modrinth = "configuration"
+    curseforge = "configuration"
+
+
+[[dependencies.${mod_id}]]
+modId = "kubejs"
+type = "optional"
+versionRange = "[${kjs_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jei"
+type = "optional"
+versionRange = "[${jei_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "emi"
+type = "optional"
+versionRange = "[${emi_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jade"
+type = "optional"
+versionRange = "[${jade_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "gtceu.mixins.json"

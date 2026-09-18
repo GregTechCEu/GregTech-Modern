@@ -1,0 +1,7 @@
+// Optional full compiler diagnostics for the in-progress Minecraft 26.2 migration.
+// Usage: gradlew compileJava -PportDiagnostics
+if (providers.gradleProperty('portDiagnostics').isPresent()) {
+    tasks.withType(JavaCompile).configureEach {
+        options.compilerArgs.addAll(['-Xmaxerrs', '10000', '-Xmaxwarns', '20'])
+    }
+}
