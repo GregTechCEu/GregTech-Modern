@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.modular_item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -44,7 +41,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                         .child(new TextWidget<>(Text.dynamic(stack::getHoverName))))
                 .child(new Grid()
                         .gridOfSizeWidth(slots.size(), 2, (x, y, index) -> {
-                            ModuleData appliedModule = modularItem.getModuleDataForSlot(index);
+                            ModuleContext appliedModule = modularItem.getModuleContextForSlot(index);
                             if (appliedModule == null) {
                                 ButtonWidget<?> button = new ButtonWidget<>()
                                         .height(20)
@@ -81,7 +78,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
     }
 
     private ModularPanel<?> createPanelForModule(PanelSyncManager psm, IModularItem modularItem, int index) {
-        ModuleData appliedModule = Objects.requireNonNull(modularItem.getModuleDataForSlot(index));
+        ModuleContext appliedModule = Objects.requireNonNull(modularItem.getModuleContextForSlot(index));
         ItemModule module = appliedModule.getModule();
         ItemStack moduleItem = appliedModule.getModuleItem();
 

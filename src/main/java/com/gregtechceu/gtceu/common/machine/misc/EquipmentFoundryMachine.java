@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
@@ -146,7 +147,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         ItemStack equipment = equipmentSlot.getStackInSlot(0);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(equipment);
         if (modularItem == null) return true;
-        ModuleData module = modularItem.getModuleDataForSlot(slot);
+        ModuleContext module = modularItem.getModuleContextForSlot(slot);
         if (module != null) return !module.getModule().canRemove(module);
         return modularItem.getSlots().size() <= slot;
     }
@@ -172,7 +173,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
             for (int i=0; i<MAX_MODIFIER_SLOTS; i++) {
-                var data = modularItem.getModuleDataForSlot(i);
+                var data = modularItem.getModuleContextForSlot(i);
                 moduleSlots.setStackInSlot(i, data == null ? ItemStack.EMPTY : data.getModuleItem());
             }
             List<ItemModuleSlot> slots = modularItem.getSlots();
@@ -193,7 +194,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             return;
         }
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-        ModuleData prevModule = modularItem == null ? null : modularItem.getModuleDataForSlot(slot);
+        ModuleContext prevModule = modularItem == null ? null : modularItem.getModuleContextForSlot(slot);
         if (prevModule != null) modularItem.detach(slot);
 
         ItemStack newModule = moduleSlots.getStackInSlot(slot);

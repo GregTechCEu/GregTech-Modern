@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 
 import net.minecraft.network.chat.Component;
@@ -13,6 +13,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class LiquidFuelJetpackModule extends ArmorLogicItemModule implements ITi
     }
 
     @Override
-    protected @Nullable IArmorLogic getArmorLogic(ModuleData module) {
+    protected @Nullable IArmorLogic getArmorLogic(ModuleContext moduleContext) {
         return JETPACK;
     }
 
@@ -40,10 +41,9 @@ public class LiquidFuelJetpackModule extends ArmorLogicItemModule implements ITi
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.jetpack", module.getModuleItem().getHoverName()));
+                Component.translatable("metaarmor.tooltip.modifier.jetpack", moduleContext.getModuleItem().getHoverName()));
     }
 }

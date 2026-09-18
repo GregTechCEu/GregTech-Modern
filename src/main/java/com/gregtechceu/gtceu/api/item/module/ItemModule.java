@@ -44,29 +44,29 @@ public abstract class ItemModule {
 
     public abstract Component getInfo();
 
-    public void onAttach(ModuleData moduleData) {}
+    public void onAttach(ModuleContext moduleContext) {}
 
-    public void onRemove(ModuleData moduleData) {}
+    public void onRemove(ModuleContext moduleContext) {}
 
-    public void onEquip(LivingEntity entity, ModuleData module) {}
+    public void onEquip(ModuleContext moduleContext, LivingEntity entity) {}
 
-    public void onArmorTick(LivingEntity entity, ModuleData module) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
-        long energy = energyUsagePerTick(entity, module);
+    public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
+        long energy = energyUsagePerTick(moduleContext, entity);
         if (electricItem != null) {
             electricItem.discharge(energy, electricItem.getTier(), true, false, false);
         }
     }
 
-    public void onUnequip(LivingEntity entity, ModuleData module) {}
+    public void onUnequip(ModuleContext moduleContext, LivingEntity entity) {}
 
     /**
      * Called each tick this item is in a player's inventory or equipment slots
      */
-    public void onInventoryTick(Player player, ModuleData module) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
-        long energy = energyUsagePerTick(player, module);
-        if (electricItem != null && useEnergyInInventory(player, module)) {
+    public void onInventoryTick(ModuleContext moduleContext, Player player) {
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
+        long energy = energyUsagePerTick(moduleContext, player);
+        if (electricItem != null && useEnergyInInventory(moduleContext, player)) {
             electricItem.discharge(energy, electricItem.getTier(), true, false, false);
         }
     }
@@ -74,85 +74,84 @@ public abstract class ItemModule {
     /**
      * @return name displayed in the modules UI
      */
-    public Component getDisplayName(ModuleData module) {
+    public Component getDisplayName(ModuleContext moduleContext) {
         List<Component> list = new ArrayList<>();
-        appendHoverText(null, TooltipFlag.NORMAL, list, module);
+        appendHoverText(moduleContext, null, TooltipFlag.NORMAL, list);
         return list.isEmpty() ? Component.empty() : list.get(0);
     }
 
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {}
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {}
 
-    public boolean useEnergyInInventory(LivingEntity entity, ModuleData module) {
+    public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return true;
     }
 
-    public long energyUsagePerTick(LivingEntity entity, ModuleData module) {
+    public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
         return 0;
     }
 
-    public float changeDamage(LivingEntity entity, ModuleData modifier, float damage, DamageSource source) {
+    public float changeDamage(ModuleContext moduleContext, LivingEntity entity, float damage, DamageSource source) {
         return damage;
     }
 
-    public boolean canRemove(ModuleData module) {
+    public boolean canRemove(ModuleContext moduleContext) {
         return true;
     }
 
-    public boolean isPPE(ModuleData module) {
+    public boolean isPPE(ModuleContext moduleContext) {
         return false;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canApplyTo(ItemStack stack) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-        return modularItem != null && modularItem.getModuleData(this) == null;
+        return modularItem != null && modularItem.getModuleContext(this) == null;
     }
 
-    public boolean isEnabled(ModuleData module) {
-        if (!module.getTag().contains("enabled")) {
-            setEnabled(module, true);
+    public boolean isEnabled(ModuleContext moduleContext) {
+        if (!moduleContext.getData().getTag().contains("enabled")) {
+            setEnabled(moduleContext, true);
         }
-        return module.getTag().getBoolean("enabled");
+        return moduleContext.getData().getTag().getBoolean("enabled");
     }
 
-    public void setEnabled(ModuleData module, boolean enabled) {
-        module.getTag().putBoolean("enabled", enabled);
+    public void setEnabled(ModuleContext moduleContext, boolean enabled) {
+        moduleContext.getData().getTag().putBoolean("enabled", enabled);
     }
 
     /**
      * Called when the item this module is attached to is ticked,
-     * ignores {@link #isEnabled(ModuleData)}.
+     * ignores {@link #isEnabled(ModuleContext)}.
      *
      * @param entity the entity in which the item is, {@code null} if the item is not in one
      * @param pos    the position of the block in which the item is, {@code null} if the item is not in one
      */
-    public void onTickRaw(ModuleData module, @Nullable Entity entity, Level level,
+    public void onTickRaw(ModuleContext moduleContext, @Nullable Entity entity, Level level,
                           @Nullable BlockPos pos) {}
 
-    public InteractionResultHolder<ItemStack> use(ModuleData module, Level level, Player player,
+    public InteractionResultHolder<ItemStack> use(ModuleContext moduleContext, Level level, Player player,
                                                   InteractionHand hand) {
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
 
-    public InteractionResult useOn(ModuleData module, UseOnContext context) {
+    public InteractionResult useOn(ModuleContext moduleContext, UseOnContext context) {
         return InteractionResult.PASS;
     }
 
-    public InteractionResult onItemUseFirst(ModuleData module, UseOnContext context) {
+    public InteractionResult onItemUseFirst(ModuleContext moduleContext, UseOnContext context) {
         return InteractionResult.PASS;
     }
 
-    public InteractionResult interactLivingEntity(ModuleData module, Player player,
+    public InteractionResult interactLivingEntity(ModuleContext moduleContext, Player player,
                                                   LivingEntity interactionTarget, InteractionHand usedHand) {
         return InteractionResult.PASS;
     }
 
-    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         psm.syncValue("module_enabled", id,
-                SyncHandlers.intNumber(() -> isEnabled(module) ? 0 : 1, x -> setEnabled(module, x == 0)));
+                SyncHandlers.intNumber(() -> isEnabled(moduleContext) ? 0 : 1, x -> setEnabled(moduleContext, x == 0)));
         ItemModuleSettingsBuilder settings = new ItemModuleSettingsBuilder(psm, id);
         return settings
-                .bool(Text.lang("gtceu.module.gui.enabled"), () -> isEnabled(module), b -> setEnabled(module, b));
+                .bool(Text.lang("gtceu.module.gui.enabled"), () -> isEnabled(moduleContext), b -> setEnabled(moduleContext, b));
     }
 }

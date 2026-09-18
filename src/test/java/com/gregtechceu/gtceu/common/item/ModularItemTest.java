@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -61,10 +62,10 @@ public class ModularItemTest {
     }
 
     private void checkModule(GameTestHelper helper, IModularItem modular, int slot, ItemModule module, ItemLike item) {
-        ModuleData appliedModule = modular.getModuleDataForSlot(slot);
+        ModuleContext appliedModule = modular.getModuleContextForSlot(slot);
         TestUtils.assertNotNull(helper, appliedModule, "module in slot %d was null".formatted(slot));
         TestUtils.assertEqual(helper, appliedModule.getModule(), module, "incorrect module in slot %d".formatted(slot));
-        TestUtils.assertEqual(helper, appliedModule.getModuleItem(), new ItemStack(item),
+        TestUtils.assertEqual(helper, appliedModule.getData().getModuleItem(), new ItemStack(item),
                 "incorrect module item in slot %d".formatted(slot));
     }
 
@@ -131,7 +132,11 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        ModuleData moduleData = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], ItemStack.EMPTY, false);
+        ModuleContext moduleData = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], ItemStack.EMPTY, false);
+        if (moduleData == null) {
+            helper.fail("Module was null after attaching");
+            return;
+        }
         var module = moduleData.getModule();
         helper.assertTrue(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute");
@@ -147,7 +152,7 @@ public class ModularItemTest {
         modular.detach(moduleData);
         helper.assertFalse(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
                 "modular item had damage attribute with detached module");
-        TestUtils.assertEqual(helper, modular.getModuleDataForSlot(0), null,
+        TestUtils.assertEqual(helper, modular.getModuleContextForSlot(0), null,
                 "modular item retained module even though it was detached");
 
         helper.succeed();

@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
-import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
+import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
@@ -22,6 +19,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -40,11 +39,11 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onInventoryTick(Player player, ModuleData module) {
-        super.onInventoryTick(player, module);
-        long energy = getEnergyToTransfer(player, module);
-        MetaMachine machine = getLinkedMachine(player.getServer(), module);
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
+    public void onInventoryTick(ModuleContext moduleContext, Player player) {
+        super.onInventoryTick(moduleContext, player);
+        long energy = getEnergyToTransfer(player, moduleContext);
+        MetaMachine machine = getLinkedMachine(player.getServer(), moduleContext);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return;
         if (energy > 0) {
             if (machine instanceof PowerSubstationMachine substation) {
@@ -55,19 +54,19 @@ public class AutoChargeItemModule extends TieredItemModule {
         }
     }
 
-    private long getEnergyToTransfer(Player player, ModuleData module) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
+    private long getEnergyToTransfer(Player player, ModuleContext moduleContext) {
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return 0;
         long energy = Math.min(electricItem.getMaxCharge() - electricItem.getCharge(), electricItem.getTransferLimit());
         if (energy <= 0) return 0;
-        MetaMachine machine = getLinkedMachine(player.getServer(), module);
+        MetaMachine machine = getLinkedMachine(player.getServer(), moduleContext);
         if (machine == null) return 0;
         int interdimensionalTier = -1;
         ItemModule[] damageBlock = GTItemModules.DAMAGE_BLOCK;
         for (int i = 0; i < damageBlock.length; i++) {
             ItemModule shieldModule = damageBlock[i];
-            IModularItem modularItem = GTCapabilityHelper.getModularItem(module.getAppliedTo());
-            if (modularItem != null && modularItem.getModuleData(shieldModule) != null)
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(moduleContext.getAppliedTo());
+            if (modularItem != null && modularItem.getModuleContext(shieldModule) != null)
                 interdimensionalTier = i + 1;
         }
         interdimensionalTier = Math.min(interdimensionalTier, getTier());
@@ -77,9 +76,9 @@ public class AutoChargeItemModule extends TieredItemModule {
         return Math.min(energy, GTValues.V[machine.getLevel() == player.level() ? getTier() : interdimensionalTier]);
     }
 
-    private MetaMachine getLinkedMachine(MinecraftServer server, ModuleData module) {
-        if (!module.getModuleItem().getOrCreateTag().contains("LinkedCharger")) return null;
-        CompoundTag tag = module.getModuleItem().getOrCreateTagElement("LinkedCharger");
+    private @Nullable MetaMachine getLinkedMachine(MinecraftServer server, ModuleContext moduleContext) {
+        if (!moduleContext.getData().getModuleItem().getOrCreateTag().contains("LinkedCharger")) return null;
+        CompoundTag tag = moduleContext.getData().getModuleItem().getOrCreateTagElement("LinkedCharger");
         int x = tag.getInt("x");
         int y = tag.getInt("y");
         int z = tag.getInt("z");
@@ -95,9 +94,8 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.wireless_charging", GTValues.VNF[getTier()]));
     }
 }

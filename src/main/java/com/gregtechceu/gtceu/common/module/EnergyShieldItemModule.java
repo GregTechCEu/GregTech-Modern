@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -33,9 +34,9 @@ public class EnergyShieldItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onAttach(ModuleData moduleData) {
-        super.onAttach(moduleData);
-        moduleData.getTag().putDouble(PERCENTAGE_KEY, 0.75f);
+    public void onAttach(ModuleContext moduleContext) {
+        super.onAttach(moduleContext);
+        moduleContext.getData().getTag().putDouble(PERCENTAGE_KEY, 0.75f);
     }
 
     @Override
@@ -48,30 +49,30 @@ public class EnergyShieldItemModule extends TieredItemModule {
         return (long) (8192 / div);
     }
 
-    private int getMaxDamageReduction(ModuleData module) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
+    private int getMaxDamageReduction(ModuleContext moduleContext) {
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return 0;
-        return (int) (electricItem.getMaxCharge() * module.getTag().getDouble(PERCENTAGE_KEY) / getEnergyPerHP());
+        return (int) (electricItem.getMaxCharge() * moduleContext.getData().getTag().getDouble(PERCENTAGE_KEY) / getEnergyPerHP());
     }
 
-    private int getDamageReduction(ModuleData module) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
+    private int getDamageReduction(ModuleContext moduleContext) {
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) return 0;
-        return (int) (electricItem.getCharge() * module.getTag().getDouble(PERCENTAGE_KEY) / getEnergyPerHP());
+        return (int) (electricItem.getCharge() * moduleContext.getData().getTag().getDouble(PERCENTAGE_KEY) / getEnergyPerHP());
     }
 
     @Override
-    public float changeDamage(LivingEntity entity, ModuleData module, float amount, DamageSource source) {
+    public float changeDamage(ModuleContext moduleContext, LivingEntity entity, float amount, DamageSource source) {
         long energyPerHP = getEnergyPerHP();
         if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) ||
                 source.is(DamageTypeTags.IS_DROWNING) || source.is(DamageTypes.STARVE)) {
             return amount;
         }
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (electricItem == null) {
             return amount;
         }
-        float damageReduction = Math.min(getDamageReduction(module), amount);
+        float damageReduction = Math.min(getDamageReduction(moduleContext), amount);
         damageReduction = Math.toIntExact(electricItem.discharge(
                 Math.round(damageReduction) * energyPerHP,
                 electricItem.getTier(),
@@ -80,24 +81,23 @@ public class EnergyShieldItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.damage_block",
                 GTValues.VNF[getTier()]));
     }
 
     @Override
-    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
-        return super.getSettings(module, psm, id)
+    public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
+        return super.getSettings(moduleContext, psm, id)
                 .num(Text.lang("gtceu.module.gui.energy_limit"),
-                        () -> module.getTag().getDouble(PERCENTAGE_KEY),
-                        d -> module.getTag().putDouble(PERCENTAGE_KEY, d),
+                        () -> moduleContext.getData().getTag().getDouble(PERCENTAGE_KEY),
+                        d -> moduleContext.getData().getTag().putDouble(PERCENTAGE_KEY, d),
                         0, 1,
                         d -> "%.0f%%".formatted(d * 100))
                 .progress(Text.lang("gtceu.module.gui.hp"),
-                        () -> getDamageReduction(module) * 1d / getMaxDamageReduction(module),
-                        d -> "%d/%d HP".formatted((int) (d * getMaxDamageReduction(module)),
-                                getMaxDamageReduction(module)));
+                        () -> getDamageReduction(moduleContext) * 1d / getMaxDamageReduction(moduleContext),
+                        d -> "%d/%d HP".formatted((int) (d * getMaxDamageReduction(moduleContext)),
+                                getMaxDamageReduction(moduleContext)));
     }
 }

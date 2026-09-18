@@ -26,7 +26,7 @@ public abstract class TieredItemModule extends ItemModule implements ITieredItem
     public boolean canApplyTo(ItemStack stack) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem == null) return false;
-        for (TieredItemModule module : otherTierModules) if (modularItem.getModuleData(module) != null) return false;
+        for (TieredItemModule module : otherTierModules) if (modularItem.getModuleContext(module) != null) return false;
         return super.canApplyTo(stack);
     }
 }

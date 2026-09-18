@@ -4,10 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
 import net.minecraft.network.chat.Component;
@@ -68,7 +65,7 @@ public class ModuleRecipeWidget extends Flow {
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
         assert defaultModularItem != null;
         defaultModularItem.attach(module, moduleItems[0], false);
-        ModuleData defaultAppliedModule = defaultModularItem.getModuleData(module);
+        ModuleContext defaultAppliedModule = defaultModularItem.getModuleContext(module);
         if (defaultAppliedModule == null) {
             GTCEu.LOGGER.error("Failed to attach default module to modular item preview in EMI for module {}. " +
                     "This means that the module's attachment predicate doesn't allow it to be attached to a completely empty modular item.", module.getId());

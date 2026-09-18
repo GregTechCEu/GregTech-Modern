@@ -17,28 +17,30 @@ public interface IModularItem {
     void clearModules();
 
     @Nullable
-    ModuleData getModuleDataForSlot(int slot);
+    ModuleContext getModuleContextForSlot(int slot);
 
-    List<ModuleData> getAllModuleData();
+    List<ModuleContext> getAllModuleInstances();
 
     List<ItemModule> getModules();
 
     @Nullable
-    ModuleData getModuleData(ItemModule module);
+    ModuleContext getModuleContext(ItemModule module);
 
     void setSlots(List<ItemModuleSlot> slots);
 
     @Nullable
-    ModuleData attach(ItemModule module, ItemStack itemToApply, int slot, boolean simulate);
+    ModuleContext attach(ItemModule module, ItemStack itemToApply, int slot, boolean simulate);
 
     @Nullable
-    ModuleData attach(ItemModule module, ItemStack itemToApply, boolean simulate);
+    ModuleContext attach(ItemModule module, ItemStack itemToApply, boolean simulate);
 
-    void detach(ModuleData data);
+    void detach(ModuleContext data);
 
     void detach(int slot);
 
-    default void runForEachModule(BiConsumer<ItemModule, ModuleData> consumer) {
-        getAllModuleData().forEach(v -> consumer.accept(v.getModule(), v));
+    void saveModuleData();
+
+    default void runForEachModule(BiConsumer<ItemModule, ModuleContext> consumer) {
+        getAllModuleInstances().forEach(v -> consumer.accept(v.getModule(), v));
     }
 }

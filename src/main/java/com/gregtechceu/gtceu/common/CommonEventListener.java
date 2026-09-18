@@ -394,7 +394,7 @@ public class CommonEventListener {
         for (ItemStack stack : entity.getArmorSlots()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            modularItem.runForEachModule((m, a) -> m.onArmorTick(entity, a));
+            modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
         }
 
         if (entity instanceof Player player) {
@@ -402,7 +402,7 @@ public class CommonEventListener {
                 IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
                 if (modularItem == null) continue;
                 modularItem.runForEachModule((m, a) -> {
-                    if (m.isEnabled(a)) m.onInventoryTick(player, a);
+                    if (m.isEnabled(a)) m.onInventoryTick(a, player);
                     m.onTickRaw(a, player, player.level(), player.getOnPos());
                 });
             }
@@ -473,12 +473,12 @@ public class CommonEventListener {
 
         if (!old.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
-            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(entity, a));
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(a, entity));
         }
 
         if (!current.isEmpty()) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
-            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(entity, a));
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(a, entity));
         }
     }
 
@@ -492,10 +492,10 @@ public class CommonEventListener {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
             for (ItemModule module : modularItem.getModules()) {
-                var data = modularItem.getModuleData(module);
+                var data = modularItem.getModuleContext(module);
                 if (data == null) continue;
                 if (!module.isEnabled(data)) continue;
-                amount = module.changeDamage(entity, data, amount, source);
+                amount = module.changeDamage(data, entity, amount, source);
             }
             event.setAmount(amount);
         }

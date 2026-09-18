@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
 import net.minecraft.network.chat.Component;
@@ -15,6 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -30,19 +32,18 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ModuleData module, @NotNull Capability<T> cap) {
+    public @NotNull <T> LazyOptional<T> getCapability(ModuleContext moduleContext, @NotNull Capability<T> cap) {
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM)
-            return module.getModuleItem().getCapability(cap);
+            return moduleContext.getData().getModuleItem().getCapability(cap);
         return LazyOptional.empty();
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
-                module.getModuleItem().getHoverName()));
-        IFluidHandlerItem fluidHandler = getCapability(module, ForgeCapabilities.FLUID_HANDLER_ITEM).resolve()
+                moduleContext.getData().getModuleItem().getHoverName()));
+        IFluidHandlerItem fluidHandler = getCapability(moduleContext, ForgeCapabilities.FLUID_HANDLER_ITEM).resolve()
                 .orElse(null);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);

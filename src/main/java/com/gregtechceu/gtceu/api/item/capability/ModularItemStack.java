@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.item.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.*;
 
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -27,7 +24,7 @@ public class ModularItemStack implements IModularItem {
 
     private final ItemStack stack;
     private final List<ItemModuleSlot> slots;
-    private final Int2ObjectMap<ModuleData> currentModules;
+    private final Int2ObjectMap<ModuleContext> currentModules;
 
     private static final Codec<List<ModuleData>> DATA_CODEC = Codec.list(ModuleData.CODEC);
 
@@ -43,19 +40,20 @@ public class ModularItemStack implements IModularItem {
                     .getFirst();
 
             for (ModuleData entry : data) {
-                entry.setModularItemStack(this);
-                entry.setAppliedTo(stack);
-                currentModules.put(entry.getSlot(), entry);
+                currentModules.put(entry.getSlot(), new ModuleContext(stack, this, entry));
             }
         }
     }
 
-    public void saveData() {
-        stack.getOrCreateTagElement(MODULES_TAG).put(MODULES_TAG, DATA_CODEC.encodeStart(NbtOps.INSTANCE, currentModules.values().stream().toList()).getOrThrow(false, GTCEu.LOGGER::error));
+    @Override
+    public void saveModuleData() {
+        var data = DATA_CODEC.encodeStart(NbtOps.INSTANCE, currentModules.values().stream().map(ModuleContext::getData).toList())
+                .getOrThrow(false, GTCEu.LOGGER::error);
+        stack.getOrCreateTagElement(MODULES_TAG).put(MODULES_TAG, data);
     }
 
     @Override
-    public @Nullable ModuleData attach(ItemModule module, ItemStack itemToApply, int slot, boolean simulate) {
+    public @Nullable ModuleContext attach(ItemModule module, ItemStack itemToApply, int slot, boolean simulate) {
         if (slot >= getSlots().size()) return null;
 
         ItemModuleSlot moduleSlot = getSlots().get(slot);
@@ -73,25 +71,27 @@ public class ModularItemStack implements IModularItem {
                 new CompoundTag(),
                 itemToApply);
 
+        ModuleContext context = new ModuleContext(stack, this, moduleData);
+
         if (!simulate) {
             moduleData.setAppliedTo(stack);
-            module.onAttach(moduleData);
-            currentModules.put(slot, moduleData);
-            saveData();
+            module.onAttach(context);
+            currentModules.put(slot, context);
+            saveModuleData();
         }
-        return moduleData;
+        return context;
     }
 
     @Override
-    public @Nullable ModuleData attach(ItemModule module, ItemStack itemToApply, boolean simulate) {
+    public @Nullable ModuleContext attach(ItemModule module, ItemStack itemToApply, boolean simulate) {
         for (int i = 0; i < getSlots().size(); i++) {
-            if (getModuleDataForSlot(i) == null) return attach(module, itemToApply, i, simulate);
+            if (getModuleContextForSlot(i) == null) return attach(module, itemToApply, i, simulate);
         }
         return null;
     }
 
     @Override
-    public void detach(ModuleData data) {
+    public void detach(ModuleContext data) {
         for (var entry: currentModules.int2ObjectEntrySet()) {
             if (entry.getValue() == data) detach(entry.getIntKey());
         }
@@ -105,7 +105,7 @@ public class ModularItemStack implements IModularItem {
             current.getModule().onRemove(current);
             currentModules.remove(slot);
         }
-        saveData();
+        saveModuleData();
     }
 
     @Override
@@ -114,24 +114,24 @@ public class ModularItemStack implements IModularItem {
     }
 
     @Override
-    public @Nullable ModuleData getModuleDataForSlot(int slot) {
+    public @Nullable ModuleContext getModuleContextForSlot(int slot) {
         if (slot >= currentModules.size()) return null;
         return currentModules.get(slot);
     }
 
     @Override
-    public List<ModuleData> getAllModuleData() {
-        return currentModules.values().stream().sorted(Comparator.comparingInt(ModuleData::getSlot)).toList();
+    public List<ModuleContext> getAllModuleInstances() {
+        return currentModules.values().stream().sorted(Comparator.comparingInt(v -> v.getData().getSlot())).toList();
     }
 
     @Override
     public List<ItemModule> getModules() {
-        return getAllModuleData().stream().sorted(Comparator.comparingInt(ModuleData::getSlot)).map(ModuleData::getModule).toList();
+        return getAllModuleInstances().stream().sorted(Comparator.comparingInt(v -> v.getData().getSlot())).map(ModuleContext::getModule).toList();
     }
 
     @Override
-    public @Nullable ModuleData getModuleData(ItemModule module) {
-        return getAllModuleData().stream().filter(appliedModule -> appliedModule.getModule() == module).findAny()
+    public @Nullable ModuleContext getModuleContext(ItemModule module) {
+        return getAllModuleInstances().stream().filter(appliedModule -> appliedModule.getModule() == module).findAny()
                 .orElse(null);
     }
 

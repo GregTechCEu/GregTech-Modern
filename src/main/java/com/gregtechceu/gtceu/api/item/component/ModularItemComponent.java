@@ -4,10 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.capability.ModularItemStack;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
-import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -55,7 +52,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
         else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem != null) {
-                for (ModuleData module : modularItem.getAllModuleData()) {
+                for (ModuleContext module : modularItem.getAllModuleInstances()) {
                     if (module.getModule() instanceof ICapabilityModule capabilityModule) {
                         LazyOptional<T> optional = capabilityModule.getCapability(module, cap);
                         if (optional.isPresent()) return optional;
@@ -70,7 +67,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(player.getItemInHand(usedHand));
         if (modularItem != null) {
-            for (ModuleData module : modularItem.getAllModuleData()) {
+            for (ModuleContext module : modularItem.getAllModuleInstances()) {
                 InteractionResultHolder<ItemStack> result = module.getModule().use(module, level, player, usedHand);
                 if (result.getResult() != InteractionResult.PASS) return result;
             }
@@ -82,7 +79,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public InteractionResult useOn(UseOnContext context) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(context.getItemInHand());
         if (modularItem != null) {
-            for (ModuleData module : modularItem.getAllModuleData()) {
+            for (ModuleContext module : modularItem.getAllModuleInstances()) {
                 InteractionResult result = module.getModule().useOn(module, context);
                 if (result != InteractionResult.PASS) return result;
             }
@@ -94,7 +91,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(itemStack);
         if (modularItem != null) {
-            for (ModuleData module : modularItem.getAllModuleData()) {
+            for (ModuleContext module : modularItem.getAllModuleInstances()) {
                 InteractionResult result = module.getModule().onItemUseFirst(module, context);
                 if (result != InteractionResult.PASS) return result;
             }
@@ -107,7 +104,7 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
                                                   InteractionHand usedHand) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem != null) {
-            for (ModuleData module : modularItem.getAllModuleData()) {
+            for (ModuleContext module : modularItem.getAllModuleInstances()) {
                 InteractionResult result = module.getModule().interactLivingEntity(module, player, interactionTarget,
                         usedHand);
                 if (result != InteractionResult.PASS) return result;
@@ -130,10 +127,10 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
             for (int slotI = 0; slotI < slots.size(); slotI++) {
                 ItemModuleSlot slot = slots.get(slotI);
                 if (slot == null) continue;
-                ModuleData moduleData = modularItem.getModuleDataForSlot(slotI);
+                ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
                 if (moduleData != null) {
                     int prevIndex = tooltipComponents.size();
-                    moduleData.getModule().appendHoverText(level, isAdvanced, tooltipComponents, moduleData);
+                    moduleData.getModule().appendHoverText(moduleData, level, isAdvanced, tooltipComponents);
                     if (tooltipComponents.size() > prevIndex) {
                         tooltipComponents.set(prevIndex, Component.translatable(
                                 "metaarmor.tooltip.modifier",

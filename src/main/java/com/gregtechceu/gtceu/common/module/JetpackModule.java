@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.common.item.armor.Jetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    protected @Nullable IArmorLogic getArmorLogic(ModuleData module) {
+    protected @Nullable IArmorLogic getArmorLogic(ModuleContext moduleContext) {
         return JETPACK;
     }
 
@@ -47,18 +48,17 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.jetpack", module.getModuleItem().getHoverName()));
+                Component.translatable("metaarmor.tooltip.modifier.jetpack", moduleContext.getModuleItem().getHoverName()));
     }
 
     @Override
-    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
-        return super.getSettings(module, psm, id)
+    public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
+        return super.getSettings(moduleContext, psm, id)
                 .bool(Text.lang("metaarmor.hud.hover_mode"),
-                        () -> module.getAppliedTo().getOrCreateTag().getBoolean("hover"),
-                        b -> module.getAppliedTo().getOrCreateTag().putBoolean("hover", b));
+                        () -> moduleContext.getAppliedTo().getOrCreateTag().getBoolean("hover"),
+                        b -> moduleContext.getAppliedTo().getOrCreateTag().putBoolean("hover", b));
     }
 }

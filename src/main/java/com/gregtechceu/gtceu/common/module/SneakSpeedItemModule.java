@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -27,8 +28,8 @@ public class SneakSpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, ModuleData module) {
-        super.onArmorTick(entity, module);
+    public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        super.onArmorTick(moduleContext, entity);
         if (entity instanceof Player player) {
             float mul = getTier() / 8f + 1;
             boolean jumping = SyncedKeyMappings.VANILLA_JUMP.isKeyDown(player);
@@ -48,12 +49,12 @@ public class SneakSpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public boolean useEnergyInInventory(LivingEntity entity, ModuleData module) {
+    public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return false;
     }
 
     @Override
-    public long energyUsagePerTick(LivingEntity entity, ModuleData module) {
+    public long energyUsagePerTick(ModuleContext moduleContext, LivingEntity entity) {
         if (entity instanceof Player player) {
             return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isShiftKeyDown() ? 819 : 0;
         }
@@ -61,9 +62,8 @@ public class SneakSpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.sneak_speed",
                 GTValues.VNF[getTier()]));
     }

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -31,21 +32,20 @@ public class NightVisionModule extends ItemModule {
     }
 
     @Override
-    public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                ModuleData module) {
-        super.appendHoverText(level, isAdvanced, tooltips, module);
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.message.nightvision.enabled"));
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, ModuleData module) {
-        super.onArmorTick(entity, module);
+    public void onArmorTick(ModuleContext moduleContext, LivingEntity entity) {
+        super.onArmorTick(moduleContext, entity);
         if (!(entity instanceof Player player)) return;
-        IElectricItem item = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
+        IElectricItem item = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
         if (item == null) {
             return;
         }
-        CompoundTag data = module.getTag();
+        CompoundTag data = moduleContext.getData().getTag();
         byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
         int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
                 ArmorUtils.NIGHTVISION_DURATION;
