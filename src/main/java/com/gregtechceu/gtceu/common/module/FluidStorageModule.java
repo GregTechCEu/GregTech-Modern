@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +15,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -39,7 +37,8 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
                 moduleContext.getModuleItem().getHoverName()));

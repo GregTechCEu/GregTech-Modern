@@ -11,7 +11,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,14 +34,19 @@ public class StepHeightModule extends TieredAttributeItemModule {
     }
 
     @Override
+    public double getMaxAttributeAmount() {
+        return getTier() / 8d;
+    }
+
+    @Override
     public AttributeModifier getAttributeModifier(ModuleContext moduleContext) {
-        double add = getTier() / 8d;
-        return new AttributeModifier(ADD_STEP_HEIGHT_UUID, "Step Height Modifier", add,
+        return new AttributeModifier(ADD_STEP_HEIGHT_UUID, "Step Height Modifier", getMaxAttributeAmount(),
                 AttributeModifier.Operation.ADDITION);
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.step_height",
                 GTValues.VN[getTier()]));

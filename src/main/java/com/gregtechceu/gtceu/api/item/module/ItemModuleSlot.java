@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.module;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.api.drawable.IDrawable;
-import lombok.Getter;
 
 public abstract class ItemModuleSlot {
 

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.module;
 import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.api.drawable.IDrawable;
 

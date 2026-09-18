@@ -19,8 +19,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -94,7 +94,8 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.wireless_charging", GTValues.VNF[getTier()]));
     }

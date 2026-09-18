@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.item.module;
 
-import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
 
 public class ModuleContext {
 
@@ -20,9 +21,8 @@ public class ModuleContext {
 
     /**
      * The persistent data for this module.<br>
-     * The data object must be immutable
+     * The data object must be immutable.
      */
-    @Getter
     private ModuleData data;
 
     public ModuleContext(ItemStack appliedTo, IModularItem modularItem, ModuleData data) {
@@ -39,7 +39,19 @@ public class ModuleContext {
         return getData().getModuleItem();
     }
 
+    public ModuleData getData() {
+        return data;
+    }
+
+    public <T extends ModuleData> T getData(Class<T> dataClass) {
+        return dataClass.cast(data);
+    }
+
     public void setData(ModuleData data) {
+        if (!data.getClass().equals(getModule().moduleDataClass())) {
+            throw new IllegalArgumentException("Cannot set module data: expected data class %s, got %s"
+                    .formatted(getModule().moduleDataClass(), data.getClass()));
+        }
         this.data = data;
         modularItemStack.saveModuleData();
     }

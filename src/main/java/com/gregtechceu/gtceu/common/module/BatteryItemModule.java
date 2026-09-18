@@ -26,7 +26,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -69,11 +68,14 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.battery", moduleContext.getModuleItem().getHoverName()));
-        moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), level, tooltips, isAdvanced);
+                Component.translatable("metaarmor.tooltip.modifier.battery",
+                        moduleContext.getModuleItem().getHoverName()));
+        moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), level, tooltips,
+                isAdvanced);
     }
 
     @Override
@@ -143,5 +145,4 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
                         () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }
-
 }

@@ -11,7 +11,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,14 +34,19 @@ public class AttackDamageItemModule extends TieredAttributeItemModule {
     }
 
     @Override
+    public double getMaxAttributeAmount() {
+        return 1 + getTier() / 16d;
+    }
+
+    @Override
     public AttributeModifier getAttributeModifier(ModuleContext moduleContext) {
-        double mul = 1 + getTier() / 16d;
-        return new AttributeModifier(MUL_DAMAGE_UUID, "Attack Damage Modifier", mul,
+        return new AttributeModifier(MUL_DAMAGE_UUID, "Attack Damage Modifier", getMaxAttributeAmount(),
                 AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.attack_damage",
                 GTValues.VNF[getTier()]));

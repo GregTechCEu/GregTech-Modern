@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.Tags;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -29,7 +28,8 @@ public class PPEModule extends ItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         if (moduleContext.getAppliedTo().is(Tags.Items.ARMORS_BOOTS))
             tooltips.add(Component.translatable("item.gtceu.hazmat_boots"));

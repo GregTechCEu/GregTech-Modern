@@ -11,7 +11,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,14 +34,19 @@ public class BlockReachItemModule extends TieredAttributeItemModule {
     }
 
     @Override
+    public double getMaxAttributeAmount() {
+        return getTier() / 2d;
+    }
+
+    @Override
     public AttributeModifier getAttributeModifier(ModuleContext moduleContext) {
-        double add = getTier() / 2d;
-        return new AttributeModifier(ADD_BLOCK_REACH_UUID, "Block Reach Modifier", add,
+        return new AttributeModifier(ADD_BLOCK_REACH_UUID, "Block Reach Modifier", getMaxAttributeAmount(),
                 AttributeModifier.Operation.ADDITION);
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.block_reach",
                 GTValues.VNF[getTier()]));

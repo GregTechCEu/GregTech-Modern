@@ -9,7 +9,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 public abstract class ArmorLogicItemModule extends ItemModule implements IHUDProviderItemModule {
 
@@ -24,7 +23,8 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
         super.onArmorTick(moduleContext, entity);
         IArmorLogic armorLogic = getArmorLogic(moduleContext);
         if (armorLogic == null) return;
-        if (entity instanceof Player player) armorLogic.onArmorTick(player.level(), player, moduleContext.getAppliedTo());
+        if (entity instanceof Player player)
+            armorLogic.onArmorTick(player.level(), player, moduleContext.getAppliedTo());
     }
 
     @Override

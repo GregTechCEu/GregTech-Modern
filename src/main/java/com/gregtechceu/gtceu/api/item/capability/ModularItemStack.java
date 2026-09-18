@@ -3,13 +3,12 @@ package com.gregtechceu.gtceu.api.item.capability;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.module.*;
 
-import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -26,7 +25,7 @@ public class ModularItemStack implements IModularItem {
     private final List<ItemModuleSlot> slots;
     private final Int2ObjectMap<ModuleContext> currentModules;
 
-    private static final Codec<List<ModuleData>> DATA_CODEC = Codec.list(ModuleData.CODEC);
+    private static final Codec<List<ModuleData>> DATA_CODEC = Codec.list(ModuleData.DISPATCH_CODEC);
 
     public ModularItemStack(ItemStack stack, Function<ItemStack, List<ItemModuleSlot>> slotsGetter) {
         this.stack = stack;
@@ -47,7 +46,8 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public void saveModuleData() {
-        var data = DATA_CODEC.encodeStart(NbtOps.INSTANCE, currentModules.values().stream().map(ModuleContext::getData).toList())
+        var data = DATA_CODEC
+                .encodeStart(NbtOps.INSTANCE, currentModules.values().stream().map(ModuleContext::getData).toList())
                 .getOrThrow(false, GTCEu.LOGGER::error);
         stack.getOrCreateTagElement(MODULES_TAG).put(MODULES_TAG, data);
     }
@@ -59,22 +59,16 @@ public class ModularItemStack implements IModularItem {
         ItemModuleSlot moduleSlot = getSlots().get(slot);
         if (!moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
 
-        for (int i=0; i<currentModules.size(); i++) {
+        for (int i = 0; i < currentModules.size(); i++) {
             if (i == slot) continue;
             var existingModule = currentModules.get(i);
             if (existingModule.getModule() == module) return null;
         }
 
-        ModuleData moduleData = new ModuleData(
-                slot,
-                module,
-                new CompoundTag(),
-                itemToApply);
-
+        var moduleData = module.defaultModuleData(slot, module, itemToApply);
         ModuleContext context = new ModuleContext(stack, this, moduleData);
 
         if (!simulate) {
-            moduleData.setAppliedTo(stack);
             module.onAttach(context);
             currentModules.put(slot, context);
             saveModuleData();
@@ -92,7 +86,7 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public void detach(ModuleContext data) {
-        for (var entry: currentModules.int2ObjectEntrySet()) {
+        for (var entry : currentModules.int2ObjectEntrySet()) {
             if (entry.getValue() == data) detach(entry.getIntKey());
         }
     }
@@ -126,7 +120,8 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public List<ItemModule> getModules() {
-        return getAllModuleInstances().stream().sorted(Comparator.comparingInt(v -> v.getData().getSlot())).map(ModuleContext::getModule).toList();
+        return getAllModuleInstances().stream().sorted(Comparator.comparingInt(v -> v.getData().getSlot()))
+                .map(ModuleContext::getModule).toList();
     }
 
     @Override

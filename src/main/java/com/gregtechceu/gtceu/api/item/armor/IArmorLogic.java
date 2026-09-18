@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.armor;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
 import net.minecraft.Util;
 import net.minecraft.client.model.HumanoidModel;

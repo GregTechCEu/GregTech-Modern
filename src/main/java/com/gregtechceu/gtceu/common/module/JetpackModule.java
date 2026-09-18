@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 
@@ -48,10 +47,12 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.jetpack", moduleContext.getModuleItem().getHoverName()));
+                Component.translatable("metaarmor.tooltip.modifier.jetpack",
+                        moduleContext.getModuleItem().getHoverName()));
     }
 
     @Override

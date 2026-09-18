@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -10,34 +11,60 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
-import org.jetbrains.annotations.UnknownNullability;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class TieredAttributeItemModule extends TieredItemModule {
-
-    private static final String MODIFIER_UUID_KEY = "modifier_id";
-    private static final String MODIFIER_AMOUNT_KEY = "modifier_amount";
 
     public TieredAttributeItemModule(ResourceLocation id, int tier) {
         super(id, tier);
     }
 
+    @Override
+    public Codec<? extends ModuleData> moduleDataCodec() {
+        return TieredAttributeModuleData.CODEC;
+    }
+
+    @Override
+    public Class<? extends ModuleData> moduleDataClass() {
+        return TieredAttributeModuleData.class;
+    }
+
+    @Override
+    public ModuleData defaultModuleData(int slot, ItemModule module, ItemStack moduleStack) {
+        return new TieredAttributeModuleData(slot, module, moduleStack, getMaxAttributeAmount());
+    }
+
     private void attachAttribute(ModuleContext moduleContext) {
-        if (moduleContext.getData().getTag().contains(MODIFIER_UUID_KEY)) return;
+        var data = moduleContext.getData(TieredAttributeModuleData.class);
+
+        if (data.getModifierUUID() == null) return;
+
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleContext.getAppliedTo());
+
         AttributeModifier attributeModifier = applySettingsToModifier(moduleContext,
                 getAttributeModifier(moduleContext));
+
         moduleContext.getAppliedTo().addAttributeModifier(getAttribute(moduleContext), attributeModifier, slot);
-        moduleContext.getData().getTag().putUUID(MODIFIER_UUID_KEY, attributeModifier.getId());
+
+        moduleContext.setData(moduleContext.getData(TieredAttributeModuleData.class));
+        moduleContext.setData(data.withModifierUUID(attributeModifier.getId()));
     }
 
     private void detachAttribute(ModuleContext moduleContext) {
-        UUID uuid = moduleContext.getData().getTag().getUUID(MODIFIER_UUID_KEY);
+        var data = moduleContext.getData(TieredAttributeModuleData.class);
+
+        UUID uuid = data.getModifierUUID();
         ListTag listTag = moduleContext.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
                 Tag.TAG_COMPOUND);
         Iterator<Tag> it = listTag.iterator();
@@ -48,7 +75,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
                 if (attributeModifier != null && attributeModifier.getId().equals(uuid)) it.remove();
             }
         }
-        moduleContext.getData().getTag().remove(MODIFIER_UUID_KEY);
+        moduleContext.setData(data.withModifierUUID(null));
     }
 
     protected double getNeutralModifier(ModuleContext moduleContext) {
@@ -63,8 +90,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     }
 
     public double getMaxModifier(ModuleContext moduleContext) {
-        AttributeModifier attributeModifier = getAttributeModifier(moduleContext);
-        double original = attributeModifier.getAmount();
+        double original = getMaxAttributeAmount();
         double neutral = getNeutralModifier(moduleContext);
         return Math.max(neutral, original);
     }
@@ -75,13 +101,11 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     }
 
     public double getModifier(ModuleContext moduleContext) {
-        if (moduleContext.getData().getTag().contains(MODIFIER_AMOUNT_KEY))
-            return moduleContext.getData().getTag().getDouble(MODIFIER_AMOUNT_KEY);
-        return getAttributeModifier(moduleContext).getAmount();
+        return moduleContext.getData(TieredAttributeModuleData.class).getModifierAmount();
     }
 
     public void setModifier(ModuleContext moduleContext, double modifier) {
-        moduleContext.getData().getTag().putDouble(MODIFIER_AMOUNT_KEY, modifier);
+        moduleContext.setData(moduleContext.getData(TieredAttributeModuleData.class).withModifierAmount(modifier));
         detachAttribute(moduleContext);
         attachAttribute(moduleContext);
     }
@@ -125,5 +149,61 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
 
     public abstract Attribute getAttribute(ModuleContext moduleContext);
 
+    public abstract double getMaxAttributeAmount();
+
     public abstract AttributeModifier getAttributeModifier(ModuleContext moduleContext);
+
+    public static class TieredAttributeModuleData extends ModuleData {
+
+        // spotless:off
+        public static final Codec<TieredAttributeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(instance.group(
+                UUIDUtil.CODEC.optionalFieldOf("modifier_uuid").forGetter(TieredAttributeModuleData::getModifierUUIDOptional),
+                Codec.DOUBLE.fieldOf("modifier_amount").forGetter(TieredAttributeModuleData::getModifierAmount)
+        )).apply(instance, TieredAttributeModuleData::new));
+        //spotless:on
+
+        @Getter
+        private final @Nullable UUID modifierUUID;
+
+        @Getter
+        private final double modifierAmount;
+
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
+                                         Optional<UUID> modifierUUID, double modifierAmount) {
+            super(slot, module, moduleItem, enabled);
+            this.modifierUUID = modifierUUID.orElse(null);
+            this.modifierAmount = modifierAmount;
+        }
+
+        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
+                                         @Nullable UUID modifierUUID, double modifierAmount) {
+            super(slot, module, moduleItem, enabled);
+            this.modifierUUID = modifierUUID;
+            this.modifierAmount = modifierAmount;
+        }
+
+        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, double modifierAmount) {
+            super(slot, module, moduleItem, true);
+            this.modifierUUID = null;
+            this.modifierAmount = modifierAmount;
+        }
+
+        public Optional<UUID> getModifierUUIDOptional() {
+            return Optional.ofNullable(modifierUUID);
+        }
+
+        public TieredAttributeModuleData withModifierUUID(@Nullable UUID modifierUUID) {
+            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
+        }
+
+        public TieredAttributeModuleData withModifierAmount(double modifierAmount) {
+            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
+        }
+
+        @Override
+        public ModuleData withEnabled(boolean enabled) {
+            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
+        }
+    }
 }

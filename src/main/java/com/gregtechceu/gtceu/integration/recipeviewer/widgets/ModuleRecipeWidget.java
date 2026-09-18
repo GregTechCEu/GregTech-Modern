@@ -68,9 +68,10 @@ public class ModuleRecipeWidget extends Flow {
         ModuleContext defaultAppliedModule = defaultModularItem.getModuleContext(module);
         if (defaultAppliedModule == null) {
             GTCEu.LOGGER.error("Failed to attach default module to modular item preview in EMI for module {}. " +
-                    "This means that the module's attachment predicate doesn't allow it to be attached to a completely empty modular item.", module.getId());
+                    "This means that the module's attachment predicate doesn't allow it to be attached to a completely empty modular item.",
+                    module.getId());
             return Flow.col();
-        };
+        } ;
         // noinspection UnstableApiUsage
         return Flow.col()
                 .coverChildrenHeight()

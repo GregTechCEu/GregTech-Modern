@@ -161,7 +161,8 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
             for (JsonElement entry : entryArr) {
                 var obj = entry.getAsJsonObject();
                 Ingredient ing = Ingredient.fromJson(obj.get("ingredient"));
-                ItemModule module = Objects.requireNonNull(GTRegistries.ITEM_MODULES.get(ResourceLocation.parse(obj.getAsJsonPrimitive("module").getAsString())));
+                ItemModule module = Objects.requireNonNull(GTRegistries.ITEM_MODULES
+                        .get(ResourceLocation.parse(obj.getAsJsonPrimitive("module").getAsString())));
                 entries.add(new TierEntry(ing, module));
             }
 

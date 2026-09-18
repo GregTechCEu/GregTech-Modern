@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
-import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
@@ -172,7 +171,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         } else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
-            for (int i=0; i<MAX_MODIFIER_SLOTS; i++) {
+            for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
                 var data = modularItem.getModuleContextForSlot(i);
                 moduleSlots.setStackInSlot(i, data == null ? ItemStack.EMPTY : data.getModuleItem());
             }

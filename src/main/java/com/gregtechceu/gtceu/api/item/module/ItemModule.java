@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
+import com.mojang.serialization.Codec;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +36,35 @@ public abstract class ItemModule {
 
     public ItemModule(ResourceLocation id) {
         this.id = id;
+    }
+
+    /**
+     * A codec used to serialise/deserialise persistent data for this module.<br>
+     */
+    public Codec<? extends ModuleData> moduleDataCodec() {
+        return ModuleData.BASE_CODEC;
+    }
+
+    /**
+     * The class for the data object which this module uses.<br>
+     */
+    public Class<? extends ModuleData> moduleDataClass() {
+        return ModuleData.BaseData.class;
+    }
+
+    /**
+     * Creates the default module data for this module.
+     */
+    public ModuleData defaultModuleData(int slot, ItemModule module, ItemStack moduleStack) {
+        return new ModuleData.BaseData(slot, module, moduleStack, true);
+    }
+
+    public boolean isEnabled(ModuleContext moduleContext) {
+        return moduleContext.getData().isEnabled();
+    }
+
+    public void setEnabled(ModuleContext moduleContext, boolean enabled) {
+        moduleContext.setData(moduleContext.getData().withEnabled(enabled));
     }
 
     @Override
@@ -80,7 +110,8 @@ public abstract class ItemModule {
         return list.isEmpty() ? Component.empty() : list.get(0);
     }
 
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {}
+    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+                                List<Component> tooltips) {}
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
         return true;
@@ -106,17 +137,6 @@ public abstract class ItemModule {
     public boolean canApplyTo(ItemStack stack) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         return modularItem != null && modularItem.getModuleContext(this) == null;
-    }
-
-    public boolean isEnabled(ModuleContext moduleContext) {
-        if (!moduleContext.getData().getTag().contains("enabled")) {
-            setEnabled(moduleContext, true);
-        }
-        return moduleContext.getData().getTag().getBoolean("enabled");
-    }
-
-    public void setEnabled(ModuleContext moduleContext, boolean enabled) {
-        moduleContext.getData().getTag().putBoolean("enabled", enabled);
     }
 
     /**
@@ -152,6 +172,7 @@ public abstract class ItemModule {
                 SyncHandlers.intNumber(() -> isEnabled(moduleContext) ? 0 : 1, x -> setEnabled(moduleContext, x == 0)));
         ItemModuleSettingsBuilder settings = new ItemModuleSettingsBuilder(psm, id);
         return settings
-                .bool(Text.lang("gtceu.module.gui.enabled"), () -> isEnabled(moduleContext), b -> setEnabled(moduleContext, b));
+                .bool(Text.lang("gtceu.module.gui.enabled"), () -> isEnabled(moduleContext),
+                        b -> setEnabled(moduleContext, b));
     }
 }

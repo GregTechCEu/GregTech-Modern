@@ -1,59 +1,66 @@
 package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
- * The data for an item module attached to a specific item.
+ * The data for an item module attached to a specific item.<br>
+ * This class and its inheritors must be immutable.
  */
-public final class ModuleData {
+public abstract class ModuleData {
 
-    //spotless:off
-    public static final Codec<ModuleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("slot").forGetter(ModuleData::getSlot),
-            GTRegistries.ITEM_MODULES.codec().fieldOf("module").forGetter(ModuleData::getModule),
-            CompoundTag.CODEC.fieldOf("tag").forGetter(ModuleData::getTag),
-            ItemStack.CODEC.fieldOf("moduleItem").forGetter(ModuleData::getModuleItem)
-    ).apply(instance, ModuleData::new));
+    // spotless:off
+    public static final Codec<ModuleData> DISPATCH_CODEC = GTRegistries.ITEM_MODULES.codec()
+            .dispatch("module", ModuleData::getModule, ItemModule::moduleDataCodec);
+
+    public static final Codec<ModuleData.BaseData> BASE_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).apply(instance, ModuleData.BaseData::new));
+
+    public static <T extends ModuleData> Products.P4<RecordCodecBuilder.Mu<T>, Integer, ItemModule, ItemStack, Boolean> baseCodec(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(
+                Codec.INT.fieldOf("slot").forGetter(ModuleData::getSlot),
+                GTRegistries.ITEM_MODULES.codec().fieldOf("module").forGetter(ModuleData::getModule),
+                ItemStack.CODEC.fieldOf("moduleItem").forGetter(ModuleData::getModuleItem),
+                Codec.BOOL.fieldOf("enabled").forGetter(ModuleData::isEnabled)
+        );
+    }
     //spotless:on
 
     @Getter
-    private int slot;
+    protected final int slot;
 
     @Getter
-    private ItemModule module;
+    protected final ItemModule module;
 
     @Getter
-    private CompoundTag tag;
+    protected final ItemStack moduleItem;
 
     @Getter
-    private ItemStack moduleItem;
+    protected final boolean enabled;
 
-    /**
-     * The stack that this module is applied to.
-     * If this module is not applied to anything, this field is {@code null}.
-     */
-    @Getter
-    @Setter
-    private ItemStack appliedTo;
+    public abstract ModuleData withEnabled(boolean enabled);
 
-    /**
-     * The {@link IModularItem} capability of the item this module is attached to.
-     */
-    @Getter
-    @Setter
-    private IModularItem modularItemStack;
-
-    public ModuleData(int slot, ItemModule module, CompoundTag tag, ItemStack moduleItem) {
+    public ModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
         this.slot = slot;
         this.module = module;
         this.moduleItem = moduleItem;
-        this.tag = tag;
+        this.enabled = enabled;
+    }
+
+    public static class BaseData extends ModuleData {
+
+        public BaseData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
+            super(slot, module, moduleItem, enabled);
+        }
+
+        @Override
+        public ModuleData withEnabled(boolean enabled) {
+            return new BaseData(getSlot(), getModule(), getModuleItem(), enabled);
+        }
     }
 }
