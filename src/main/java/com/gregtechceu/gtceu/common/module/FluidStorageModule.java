@@ -34,7 +34,7 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ModuleContext moduleContext, @NotNull Capability<T> cap) {
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM)
-            return moduleContext.getData().getModuleItem().getCapability(cap);
+            return moduleContext.getModuleItem().getCapability(cap);
         return LazyOptional.empty();
     }
 
@@ -42,7 +42,7 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
-                moduleContext.getData().getModuleItem().getHoverName()));
+                moduleContext.getModuleItem().getHoverName()));
         IFluidHandlerItem fluidHandler = getCapability(moduleContext, ForgeCapabilities.FLUID_HANDLER_ITEM).resolve()
                 .orElse(null);
         if (fluidHandler != null) {

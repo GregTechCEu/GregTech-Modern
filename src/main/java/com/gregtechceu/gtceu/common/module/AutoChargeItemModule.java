@@ -77,8 +77,8 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     private @Nullable MetaMachine getLinkedMachine(MinecraftServer server, ModuleContext moduleContext) {
-        if (!moduleContext.getData().getModuleItem().getOrCreateTag().contains("LinkedCharger")) return null;
-        CompoundTag tag = moduleContext.getData().getModuleItem().getOrCreateTagElement("LinkedCharger");
+        if (!moduleContext.getModuleItem().getOrCreateTag().contains("LinkedCharger")) return null;
+        CompoundTag tag = moduleContext.getModuleItem().getOrCreateTagElement("LinkedCharger");
         int x = tag.getInt("x");
         int y = tag.getInt("y");
         int z = tag.getInt("z");

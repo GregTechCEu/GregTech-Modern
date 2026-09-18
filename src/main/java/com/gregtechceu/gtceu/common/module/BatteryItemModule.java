@@ -40,7 +40,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
 
     @Override
     public Component getDisplayName(ModuleContext moduleContext) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getData().getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
         if (electricItem != null)
             return Component.translatable("metaarmor.tooltip.modifier.battery", GTValues.VNF[electricItem.getTier()]);
         else return super.getDisplayName(moduleContext);
@@ -55,7 +55,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     public void onInventoryTick(ModuleContext moduleContext, Player player) {
         super.onInventoryTick(moduleContext, player);
         IElectricItem item = GTCapabilityHelper.getElectricItem(moduleContext.getAppliedTo());
-        IElectricItem battery = GTCapabilityHelper.getElectricItem(moduleContext.getData().getModuleItem());
+        IElectricItem battery = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
         if (item == null || battery == null || item == battery) return;
         if (item.getCharge() > item.getMaxCharge() * PERCENTAGE / 100) {
             long amount = (long) (item.getCharge() - item.getMaxCharge() * PERCENTAGE / 100);
@@ -65,15 +65,15 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
             battery.charge(item.discharge(amount, item.getTier(), true, false, false), battery.getTier(), true, false);
         }
         // the battery's inventoryTick method does not use inventorySlot or isCurrentItem
-        moduleContext.getData().getModuleItem().inventoryTick(player.level(), player, 0, false);
+        moduleContext.getModuleItem().inventoryTick(player.level(), player, 0, false);
     }
 
     @Override
     public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced, List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(
-                Component.translatable("metaarmor.tooltip.modifier.battery", moduleContext.getData().getModuleItem().getHoverName()));
-        moduleContext.getData().getModuleItem().getItem().appendHoverText(moduleContext.getData().getModuleItem(), level, tooltips, isAdvanced);
+                Component.translatable("metaarmor.tooltip.modifier.battery", moduleContext.getModuleItem().getHoverName()));
+        moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), level, tooltips, isAdvanced);
     }
 
     @Override
@@ -85,10 +85,10 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
 
     @Override
     public void drawHUD(ModuleContext moduleContext, GuiGraphics graphics) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getData().getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
         if (electricItem == null) return;
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleContext.getAppliedTo());
-        Component displayName = moduleContext.getData().getModuleItem().getHoverName();
+        Component displayName = moduleContext.getModuleItem().getHoverName();
         int x = 10, y;
         switch (slot) {
             case HEAD -> {
@@ -131,12 +131,12 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     @Override
     public InteractionResultHolder<ItemStack> use(ModuleContext moduleContext, Level level, Player player,
                                                   InteractionHand hand) {
-        return moduleContext.getData().getModuleItem().use(level, player, hand);
+        return moduleContext.getModuleItem().use(level, player, hand);
     }
 
     @Override
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getData().getModuleItem());
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
         if (electricItem == null) return super.getSettings(moduleContext, psm, id);
         return super.getSettings(moduleContext, psm, id)
                 .progress(Text.lang("gtceu.module.gui.charge"),
