@@ -124,7 +124,7 @@ public final class ValueTransformers {
         registerTransformer(type, new CodecTransformer<>(codec, writePacket, readPacket));
     }
 
-    private static <T> void registerRegistryTransformer(Class<T> type, Registry<T> registry) {
+    public static <T> void registerRegistryTransformer(Class<T> type, Registry<T> registry) {
         registerCodecTransformer(type, registry.byNameCodec(),
                 (buf, value) -> buf.writeId(registry, value), buf -> buf.readById(registry));
     }
