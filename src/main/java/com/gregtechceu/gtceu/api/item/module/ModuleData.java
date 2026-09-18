@@ -23,9 +23,6 @@ public final class ModuleData {
     //spotless:on
 
     @Getter
-    private int slot;
-
-    @Getter
     private ItemModule module;
 
     @Getter

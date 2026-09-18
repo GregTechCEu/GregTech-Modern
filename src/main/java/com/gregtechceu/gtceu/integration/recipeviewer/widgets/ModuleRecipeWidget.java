@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -66,8 +67,13 @@ public class ModuleRecipeWidget extends Flow {
 
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
         assert defaultModularItem != null;
+        defaultModularItem.attach(module, moduleItems[0], false);
         ModuleData defaultAppliedModule = defaultModularItem.getModuleData(module);
-
+        if (defaultAppliedModule == null) {
+            GTCEu.LOGGER.error("Failed to attach default module to modular item preview in EMI for module {}. " +
+                    "This means that the module's attachment predicate doesn't allow it to be attached to a completely empty modular item.", module.getId());
+            return Flow.col();
+        };
         // noinspection UnstableApiUsage
         return Flow.col()
                 .coverChildrenHeight()
