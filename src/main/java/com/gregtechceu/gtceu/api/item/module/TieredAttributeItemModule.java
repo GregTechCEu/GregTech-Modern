@@ -48,7 +48,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     private void attachAttribute(ModuleContext moduleContext) {
         var data = moduleContext.getData(TieredAttributeModuleData.class);
 
-        if (data.getModifierUUID() == null) return;
+        if (data.getModifierUUID() != null) return;
 
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleContext.getAppliedTo());
 

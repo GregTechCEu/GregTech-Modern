@@ -9,25 +9,46 @@ import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 
+import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AutoChargeItemModule extends TieredItemModule {
 
     public AutoChargeItemModule(ResourceLocation id, int tier) {
         super(id, tier);
+    }
+
+    @Override
+    public Codec<? extends ModuleData> moduleDataCodec() {
+        return AutoChargeModuleData.CODEC;
+    }
+
+    @Override
+    public Class<? extends ModuleData> moduleDataClass() {
+        return AutoChargeModuleData.class;
+    }
+
+    @Override
+    public ModuleData defaultModuleData(int slot, ItemModule module, ItemStack moduleStack) {
+        return new AutoChargeModuleData(slot, module, moduleStack);
     }
 
     @Override
@@ -77,17 +98,28 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     private @Nullable MetaMachine getLinkedMachine(MinecraftServer server, ModuleContext moduleContext) {
-        if (!moduleContext.getModuleItem().getOrCreateTag().contains("LinkedCharger")) return null;
-        CompoundTag tag = moduleContext.getModuleItem().getOrCreateTagElement("LinkedCharger");
-        int x = tag.getInt("x");
-        int y = tag.getInt("y");
-        int z = tag.getInt("z");
-        if (server == null) return null;
-        Level level = server
-                .getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("dim"))));
+        var linkedPos = moduleContext.getData(AutoChargeModuleData.class).getLinkedPos();
+        if (linkedPos == null) return null;
+        Level level = server.getLevel(linkedPos.dimension());
         if (level == null) return null;
-        return MetaMachine.getMachine(level, new BlockPos(x, y, z));
+        return MetaMachine.getMachine(level, linkedPos.pos());
     }
+
+    @Override
+    public InteractionResult onItemUseFirst(ModuleContext moduleContext, UseOnContext context) {
+        BlockPos pos = context.getClickedPos();
+        MetaMachine machine = MetaMachine.getMachine(context.getLevel(), pos);
+        if (machine instanceof PowerSubstationMachine || machine instanceof BatteryBufferMachine) {
+            PlayerOwner owner = machine.getPlayerOwner();
+            Player player = context.getPlayer();
+            if (owner == null || player != null && owner.isPlayerFriendly(player.getUUID())) {
+                moduleContext.setData(moduleContext.getData(AutoChargeModuleData.class).withLinkedPos(GlobalPos.of(context.getLevel().dimension(), pos)));
+                if (player != null) player.sendSystemMessage(Component.translatable("behaviour.charger_linked"));
+            }
+        }
+        return super.onItemUseFirst(moduleContext, context);
+    }
+
 
     private double getRange() {
         return (8 << getTier());
@@ -98,5 +130,46 @@ public class AutoChargeItemModule extends TieredItemModule {
                                 List<Component> tooltips) {
         super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.wireless_charging", GTValues.VNF[getTier()]));
+    }
+
+    public static class AutoChargeModuleData extends ModuleData {
+
+        // spotless:off
+        public static final Codec<AutoChargeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
+                GlobalPos.CODEC.optionalFieldOf("linked_pos").forGetter(AutoChargeModuleData::getLinkedPosOptional)
+        ).apply(instance, AutoChargeModuleData::new));
+        //spotless:on
+
+        @Getter
+        private @Nullable GlobalPos linkedPos;
+
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, Optional<GlobalPos> globalPos) {
+            super(slot, module, moduleItem, enabled);
+            this.linkedPos = globalPos.orElse(null);
+        }
+
+        public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, @Nullable GlobalPos globalPos) {
+            super(slot, module, moduleItem, enabled);
+            this.linkedPos = globalPos;
+        }
+
+        public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem) {
+            super(slot, module, moduleItem, true);
+            this.linkedPos = null;
+        }
+
+        public Optional<GlobalPos> getLinkedPosOptional() {
+            return Optional.ofNullable(linkedPos);
+        }
+
+        @Override
+        public ModuleData withEnabled(boolean enabled) {
+            return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos);
+        }
+
+        public ModuleData withLinkedPos(GlobalPos linkedPos) {
+            return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos);
+        }
     }
 }
