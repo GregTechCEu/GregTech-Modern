@@ -150,8 +150,4 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }
 
-    @Override
-    public boolean forceModuleItemNBT() {
-        return true;
-    }
 }

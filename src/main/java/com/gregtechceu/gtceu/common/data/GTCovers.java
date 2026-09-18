@@ -141,8 +141,7 @@ public class GTCovers {
                                                    int... tiers) {
         CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            id = id.withSuffix("." + GTValues.VN[tier].toLowerCase());
-            definitions[tier] = register(id,
+            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase()),
                     (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));
         }
@@ -154,8 +153,7 @@ public class GTCovers {
                                                    int... tiers) {
         CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            id = id.withSuffix("." + GTValues.VN[tier].toLowerCase());
-            definitions[tier] = register(id,
+            definitions[tier] = register(id.withSuffix("." + GTValues.VN[tier].toLowerCase()),
                     (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
         }
         return definitions;
