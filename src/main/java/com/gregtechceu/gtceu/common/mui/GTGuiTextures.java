@@ -96,6 +96,12 @@ public interface GTGuiTextures {
             .name(IDs.STEEL_BACKGROUND)
             .build();
 
+    UITexture BACKGROUND_EQUIPMENT_FOUNDRY = UITexture.builder()
+            .location(GTCEu.MOD_ID, "textures/gui/widget/equipment_foundry_background.png")
+            .imageSize(168, 75)
+            .adaptable(4)
+            .build();
+
     UITexture BLANK_TRANSPARENT = fullImage("textures/gui/base/blank_transparent.png");
 
     // todo move to textures/gui/base
