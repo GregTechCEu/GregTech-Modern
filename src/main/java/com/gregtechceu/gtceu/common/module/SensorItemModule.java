@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 
 import net.minecraft.network.chat.Component;
@@ -24,7 +24,7 @@ public class SensorItemModule extends TieredItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.sensor", GTValues.VNF[getTier()]));
     }

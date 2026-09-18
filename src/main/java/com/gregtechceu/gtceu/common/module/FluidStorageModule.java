@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +30,7 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(AppliedItemModule module, @NotNull Capability<T> cap) {
+    public @NotNull <T> LazyOptional<T> getCapability(ModuleData module, @NotNull Capability<T> cap) {
         if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM)
             return module.getModuleItem().getCapability(cap);
         return LazyOptional.empty();
@@ -38,7 +38,7 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
                 module.getModuleItem().getHoverName()));

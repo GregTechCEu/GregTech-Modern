@@ -4,10 +4,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
 import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.client.Minecraft;
@@ -40,7 +41,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public Component getDisplayName(AppliedItemModule module) {
+    public Component getDisplayName(ModuleData module) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
         if (electricItem != null)
             return Component.translatable("metaarmor.tooltip.modifier.battery", GTValues.VNF[electricItem.getTier()]);
@@ -53,7 +54,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public void onInventoryTick(Player player, AppliedItemModule module) {
+    public void onInventoryTick(Player player, ModuleData module) {
         super.onInventoryTick(player, module);
         if (module.getAppliedTo() == null || module.getModuleItem() == null) return;
         IElectricItem item = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
@@ -72,7 +73,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.battery", module.getModuleItem().getHoverName()));
@@ -82,14 +83,14 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(AppliedItemModule module, @NotNull Capability<T> cap) {
+    public @NotNull <T> LazyOptional<T> getCapability(ModuleData module, @NotNull Capability<T> cap) {
         if (cap == GTCapability.CAPABILITY_ELECTRIC_ITEM && module.getModuleItem() != null) {
             return module.getModuleItem().getCapability(cap);
         } else return LazyOptional.empty();
     }
 
     @Override
-    public void drawHUD(AppliedItemModule module, GuiGraphics graphics) {
+    public void drawHUD(ModuleData module, GuiGraphics graphics) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
         if (electricItem == null) return;
         EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(module.getAppliedTo());
@@ -134,13 +135,13 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(AppliedItemModule module, Level level, Player player,
+    public InteractionResultHolder<ItemStack> use(ModuleData module, Level level, Player player,
                                                   InteractionHand hand) {
         return module.getModuleItem().use(level, player, hand);
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
         if (electricItem == null) return super.getSettings(module, psm, id);
         return super.getSettings(module, psm, id)

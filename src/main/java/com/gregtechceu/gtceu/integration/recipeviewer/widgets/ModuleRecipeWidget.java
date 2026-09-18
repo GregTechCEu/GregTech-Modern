@@ -3,18 +3,14 @@ package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.drawable.IDrawable;
@@ -33,46 +29,44 @@ import java.util.List;
 
 public class ModuleRecipeWidget extends Flow {
 
-    private static final ItemStack NO_ITEM = Items.BARRIER.getDefaultInstance()
-            .setHoverName(Component.translatable("gtceu.equipment_foundry.gui.tier_too_high"));
-
     private final EquipmentFoundryRecipe recipe;
-    private IntValue tier;
 
     public ModuleRecipeWidget(EquipmentFoundryRecipe recipe) {
         super(GuiAxis.Y);
-        ItemModule[] modules = recipe.getModules();
         this.recipe = recipe;
-        this.tier = new IntValue(0);
         this.width(150)
                 .coverChildrenHeight()
                 .horizontalCenter()
                 .padding(3);
+
+        IntValue tier = new IntValue(0);
+
         var cycleWidget = new CycleButtonWidget()
-                .length(modules.length)
+                .length(recipe.getEntries().size())
                 .background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
                 .value(tier)
                 .coverChildrenHeight()
                 .fullWidth();
-        for (int i = 0; i < modules.length; i++) {
-            cycleWidget.stateChild(i, getUIForTier(i));
+        for (int i = 0; i < recipe.getEntries().size(); i++) {
+            cycleWidget.stateChild(i, getUIForTier(recipe.getEntries().get(i)));
         }
         this.child(cycleWidget);
     }
 
-    private IWidget getUIForTier(int tier) {
-        ItemModule module = recipe.getModules()[tier];
-        ItemStack[] allModuleItems = getModuleItems(recipe);
-        ItemStack[] moduleItems = getModuleItems(recipe, module);
+    private IWidget getUIForTier(EquipmentFoundryRecipe.TierEntry entry) {
+        ItemModule module = entry.moduleForTier();
+
+        ItemStack[] moduleItems = entry.ingredient().getItems();
         ItemStack[] allEquipment = getEquipment(recipe, module);
+
         List<ItemStack> allResults = Arrays.stream(allEquipment)
-                .map(equipment -> getResult(recipe, equipment, moduleItems[0], module))
+                .map(equipment -> getResult(recipe, equipment, moduleItems[0]))
                 .toList();
 
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
         assert defaultModularItem != null;
-        AppliedItemModule defaultAppliedModule = defaultModularItem.getModule(module);
+        ModuleData defaultAppliedModule = defaultModularItem.getModuleData(module);
 
         // noinspection UnstableApiUsage
         return Flow.col()
@@ -84,7 +78,7 @@ public class ModuleRecipeWidget extends Flow {
                         .childPadding(4)
                         .horizontalCenter()
                         .child(RecipeViewerSlotWidget.create(ItemStack.class)
-                                .value(ItemStackList.of(List.of(allModuleItems))))
+                                .value(ItemStackList.of(List.of(moduleItems))))
                         .child(new TextWidget<>(module.getDisplayName(defaultAppliedModule))
                                 .scale(0.75f)
                                 .width(100)))
@@ -111,37 +105,16 @@ public class ModuleRecipeWidget extends Flow {
         return -1;
     }
 
-    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe) {
-        ItemStack[] stacks = recipe.getIngredient().getItems();
-        return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
-    }
-
-    private static ItemStack[] getModuleItems(EquipmentFoundryRecipe recipe, ItemModule module) {
-        ItemStack[] stacks = recipe.getIngredient().getItems();
-        stacks = Arrays.stream(stacks)
-                .filter(stack -> recipe.getModule(stack) == module)
-                .toArray(ItemStack[]::new);
-        return stacks.length == 0 ? new ItemStack[] { NO_ITEM } : stacks;
-    }
-
     private static ItemStack[] getEquipment(EquipmentFoundryRecipe recipe, ItemModule module) {
         return Arrays.stream(recipe.getEquipment().getItems())
                 .filter(stack -> stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM).map(
-                        modularItem -> modularItem.attach(module, true) != null).orElse(false))
+                        modularItem -> modularItem.attach(module, ItemStack.EMPTY, true) != null).orElse(false))
                 .toArray(ItemStack[]::new);
     }
 
-    private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem,
-                                       ItemModule module) {
+    private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem) {
         ItemStack copy = equipment.copy();
-        if (moduleItem == NO_ITEM) {
-            IModularItem modularItem = GTCapabilityHelper.getModularItem(copy);
-            if (modularItem != null) modularItem.attach(module, false);
-            return copy;
-        }
-        RecipeWrapper wrapper = new RecipeWrapper(new CombinedInvWrapper(
-                new CustomItemStackHandler(copy),
-                new CustomItemStackHandler(moduleItem)));
-        return recipe.assemble(wrapper, 0);
+        recipe.applyToItem(copy, moduleItem, 0);
+        return copy;
     }
 }

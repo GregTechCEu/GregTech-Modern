@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,13 +23,13 @@ public class PPEModule extends ItemModule {
     }
 
     @Override
-    public boolean isPPE(AppliedItemModule module) {
-        return true;
+    public boolean isPPE(ModuleData module) {
+        return super.isEnabled(module);
     }
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         if (module.getAppliedTo().is(Tags.Items.ARMORS_BOOTS))
             tooltips.add(Component.translatable("item.gtceu.hazmat_boots"));

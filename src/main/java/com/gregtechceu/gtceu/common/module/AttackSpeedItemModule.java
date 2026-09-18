@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 
 import net.minecraft.network.chat.Component;
@@ -29,12 +29,12 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
     }
 
     @Override
-    public Attribute getAttribute(AppliedItemModule module) {
+    public Attribute getAttribute(ModuleData module) {
         return Attributes.ATTACK_SPEED;
     }
 
     @Override
-    public AttributeModifier getAttributeModifier(AppliedItemModule module) {
+    public AttributeModifier getAttributeModifier(ModuleData module) {
         double mul = 1 + getTier() / 16d;
         return new AttributeModifier(MUL_ATTACK_SPEED_UUID, "Attack Speed Modifier", mul,
                 AttributeModifier.Operation.MULTIPLY_TOTAL);
@@ -42,7 +42,7 @@ public class AttackSpeedItemModule extends TieredAttributeItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.attack_speed",
                 GTValues.VNF[getTier()]));

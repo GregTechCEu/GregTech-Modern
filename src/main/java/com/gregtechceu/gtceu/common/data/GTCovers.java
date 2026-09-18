@@ -23,8 +23,6 @@ import net.minecraftforge.fml.ModLoader;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 public class GTCovers {
@@ -116,7 +114,15 @@ public class GTCovers {
     // *********** UTIL METHODS ***********//
     ///////////////////////////////////////////////
 
-    private static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator) {
+    public static CoverDefinition register(ResourceLocation id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
+                                           Supplier<Supplier<ICoverRenderer>> coverRenderer) {
+        var definition = new CoverDefinition(id, behaviorCreator, coverRenderer);
+        GTRegistries.COVERS.register(definition.getId(), definition);
+        return definition;
+    }
+
+    public static CoverDefinition register(ResourceLocation id,
+                                           CoverDefinition.CoverBehaviourProvider behaviorCreator) {
         return register(id, behaviorCreator, () -> () -> new SimpleCoverRenderer(GTCEu.id("block/cover/" + id)));
     }
 
@@ -125,31 +131,47 @@ public class GTCovers {
         return register(GTCEu.id(id), behaviorCreator, coverRenderer);
     }
 
-    public static CoverDefinition register(ResourceLocation id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
-                                           Supplier<Supplier<ICoverRenderer>> coverRenderer) {
-        var definition = new CoverDefinition(id, behaviorCreator, coverRenderer);
-        GTRegistries.COVERS.register(definition.getId(), definition);
-        return definition;
+    private static CoverDefinition register(String id, CoverDefinition.CoverBehaviourProvider behaviorCreator) {
+        return register(id, behaviorCreator, () -> () -> new SimpleCoverRenderer(GTCEu.id("block/cover/" + id)));
+    }
+
+    public static CoverDefinition[] registerTiered(ResourceLocation id,
+                                                   CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
+                                                   Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
+                                                   int... tiers) {
+        CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            id = id.withSuffix("." + GTValues.VN[tier].toLowerCase());
+            definitions[tier] = register(id,
+                    (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
+                    () -> () -> coverRenderer.get().apply(tier));
+        }
+        return definitions;
+    }
+
+    public static CoverDefinition[] registerTiered(ResourceLocation id,
+                                                   CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
+                                                   int... tiers) {
+        CoverDefinition[] definitions = new CoverDefinition[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            id = id.withSuffix("." + GTValues.VN[tier].toLowerCase());
+            definitions[tier] = register(id,
+                    (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
+        }
+        return definitions;
     }
 
     private static CoverDefinition[] registerTiered(String id,
                                                     CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                     Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
                                                     int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
-            return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
-                    () -> () -> coverRenderer.get().apply(tier));
-        }).toArray(CoverDefinition[]::new);
+        return registerTiered(GTCEu.id(id), behaviorCreator, coverRenderer, tiers);
     }
 
     private static CoverDefinition[] registerTiered(String id,
                                                     CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                     int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
-            return register(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier));
-        }).toArray(CoverDefinition[]::new);
+        return registerTiered(GTCEu.id(id), behaviorCreator, tiers);
     }
 
     public static void init() {

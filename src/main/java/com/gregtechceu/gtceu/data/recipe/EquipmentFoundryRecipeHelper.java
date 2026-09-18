@@ -1,66 +1,57 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.EquipmentFoundryRecipeBuilder;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class EquipmentFoundryRecipeHelper {
 
-    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
-                                                 @NotNull Ingredient equipment,
-                                                 @NotNull Object ingredient, @NotNull ItemModule[] modifiers) {
-        var builder = new EquipmentFoundryRecipeBuilder(regName).equipment(equipment).modifier(modifiers);
+    private static Ingredient objectToIngredient(Object ingredient) {
         if (ingredient instanceof Ingredient ing) {
-            builder.ingredient(ing);
+            return ing;
         } else if (ingredient instanceof ItemStack itemStack) {
-            builder.ingredient(itemStack);
+            return Ingredient.of(itemStack);
         } else if (ingredient instanceof TagKey<?> key) {
-            builder.ingredient(key.cast(Registries.ITEM).orElseThrow(
+            return Ingredient.of(key.cast(Registries.ITEM).orElseThrow(
                     () -> new ClassCastException("Cannot add %s tag as ingredient".formatted(key.registry()))));
         } else if (ingredient instanceof ItemLike itemLike) {
-            builder.ingredient(itemLike);
-        } else if (ingredient instanceof MaterialEntry entry) {
-            TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
-            if (tag != null) {
-                builder.ingredient(tag);
-            } else builder.ingredient(ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-        } else if (ingredient instanceof Character c) {
-            builder.ingredient(ToolHelper.getToolFromSymbol(c).itemTags.get(0));
+            return Ingredient.of(itemLike);
+        }
+        return Ingredient.EMPTY;
+    }
+
+    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
+                                                 @NotNull Ingredient equipment,
+                                                 Object[] ingredients, ItemModule[] modules) {
+        var builder = new EquipmentFoundryRecipeBuilder(regName).equipment(equipment);
+        if (ingredients.length != modules.length) {
+            ingredients = Arrays.copyOf(ingredients, Math.min(ingredients.length, modules.length));
+            modules = Arrays.copyOf(modules, Math.min(ingredients.length, modules.length));
+        }
+        for (int i = 0; i < ingredients.length; i++) {
+            builder.tier(i, objectToIngredient(ingredients[i]), modules[i]);
         }
         builder.save(provider);
     }
 
-    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
-                                                 @NotNull Ingredient equipment,
-                                                 @NotNull Object ingredient, @NotNull ItemModule[] modifiers) {
-        addEquipmentFoundryRecipe(provider, GTCEu.id(regName), equipment, ingredient, modifiers);
-    }
-
-    public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName,
-                                                 @NotNull Ingredient equipment,
-                                                 @NotNull Object ingredient, @NotNull ItemModule modifier) {
-        addEquipmentFoundryRecipe(provider, GTCEu.id(regName), equipment, ingredient, modifier);
-    }
-
     public static void addEquipmentFoundryRecipe(Consumer<FinishedRecipe> provider, @NotNull ResourceLocation regName,
                                                  @NotNull Ingredient equipment,
                                                  @NotNull Object ingredient, @NotNull ItemModule modifier) {
-        addEquipmentFoundryRecipe(provider, regName, equipment, ingredient, new ItemModule[] { modifier });
+        var builder = new EquipmentFoundryRecipeBuilder(regName);
+        builder.equipment(equipment);
+        builder.tier(0, objectToIngredient(ingredient), modifier);
+        builder.save(provider);
     }
 }

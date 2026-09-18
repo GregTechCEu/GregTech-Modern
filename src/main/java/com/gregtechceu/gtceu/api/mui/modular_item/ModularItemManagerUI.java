@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.mui.modular_item;
 
-import brachy.modularui.factory.PlayerInventoryGuiData;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
 import brachy.modularui.screen.UISettings;
@@ -39,12 +39,12 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                 .coverChildren()
                 .childPadding(2)
                 .child(Flow.row().coverChildren()
-                            .childPadding(5)
-                            .child(new ItemDisplayWidget().item(stack))
-                            .child(new TextWidget<>(Text.dynamic(stack::getHoverName))))
+                        .childPadding(5)
+                        .child(new ItemDisplayWidget().item(stack))
+                        .child(new TextWidget<>(Text.dynamic(stack::getHoverName))))
                 .child(new Grid()
                         .gridOfSizeWidth(slots.size(), 2, (x, y, index) -> {
-                            AppliedItemModule appliedModule = modularItem.getModuleInSlot(index);
+                            ModuleData appliedModule = modularItem.getModuleDataForSlot(index);
                             if (appliedModule == null) {
                                 ButtonWidget<?> button = new ButtonWidget<>()
                                         .height(20)
@@ -68,7 +68,8 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
                                         .overlay(Text.of(module.getDisplayName(appliedModule)))
                                         .backgroundOverlay(slots.get(index).getSlotTexture())
                                         .tooltipDynamic(tooltip -> tooltip.add(module.getInfo()));
-                            }}));
+                            }
+                        }));
 
         return new ModularPanel<>("modularItem")
                 .horizontalCenter()
@@ -80,7 +81,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
     }
 
     private ModularPanel<?> createPanelForModule(PanelSyncManager psm, IModularItem modularItem, int index) {
-        AppliedItemModule appliedModule = Objects.requireNonNull(modularItem.getModuleInSlot(index));
+        ModuleData appliedModule = Objects.requireNonNull(modularItem.getModuleDataForSlot(index));
         ItemModule module = appliedModule.getModule();
         ItemStack moduleItem = appliedModule.getModuleItem();
 

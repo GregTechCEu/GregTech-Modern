@@ -16,10 +16,10 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
         super(id);
     }
 
-    protected abstract @Nullable IArmorLogic getArmorLogic(AppliedItemModule module);
+    protected abstract @Nullable IArmorLogic getArmorLogic(ModuleData module);
 
     @Override
-    public void onArmorTick(LivingEntity entity, AppliedItemModule module) {
+    public void onArmorTick(LivingEntity entity, ModuleData module) {
         super.onArmorTick(entity, module);
         IArmorLogic armorLogic = getArmorLogic(module);
         if (armorLogic == null) return;
@@ -27,7 +27,7 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
     }
 
     @Override
-    public void onEquip(LivingEntity entity, AppliedItemModule module) {
+    public void onEquip(LivingEntity entity, ModuleData module) {
         super.onEquip(entity, module);
         IArmorLogic armorLogic = getArmorLogic(module);
         if (armorLogic == null) return;
@@ -35,7 +35,7 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
     }
 
     @Override
-    public void onUnequip(LivingEntity entity, AppliedItemModule module) {
+    public void onUnequip(LivingEntity entity, ModuleData module) {
         super.onUnequip(entity, module);
         IArmorLogic armorLogic = getArmorLogic(module);
         if (armorLogic == null) return;
@@ -43,19 +43,19 @@ public abstract class ArmorLogicItemModule extends ItemModule implements IHUDPro
     }
 
     @Override
-    public boolean isPPE(AppliedItemModule module) {
+    public boolean isPPE(ModuleData module) {
         IArmorLogic armorLogic = getArmorLogic(module);
         if (armorLogic == null) return super.isPPE(module);
-        return armorLogic.isPPE(module.getAppliedTo());
+        return armorLogic.isPPE(module.getAppliedTo()) && super.isEnabled(module);
     }
 
     @Override
-    public boolean shouldDrawHUD(AppliedItemModule module) {
+    public boolean shouldDrawHUD(ModuleData module) {
         return getArmorLogic(module) instanceof IItemHUDProvider;
     }
 
     @Override
-    public void drawHUD(AppliedItemModule module, GuiGraphics graphics) {
+    public void drawHUD(ModuleData module, GuiGraphics graphics) {
         if (getArmorLogic(module) instanceof IItemHUDProvider provider) {
             IItemHUDProvider.tryDrawHud(provider, module.getAppliedTo(), graphics);
         }

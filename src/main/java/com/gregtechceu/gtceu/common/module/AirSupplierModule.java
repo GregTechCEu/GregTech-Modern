@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.common.item.armor.AdvancedQuarkTechSuite;
 
 import net.minecraft.network.chat.Component;
@@ -27,7 +27,7 @@ public class AirSupplierModule extends ItemModule {
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, AppliedItemModule module) {
+    public void onArmorTick(LivingEntity entity, ModuleData module) {
         super.onArmorTick(entity, module);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
         if (electricItem == null) return;
@@ -36,7 +36,7 @@ public class AirSupplierModule extends ItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.breath"));
     }

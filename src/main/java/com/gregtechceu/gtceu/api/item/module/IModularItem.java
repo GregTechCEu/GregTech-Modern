@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.item.module;
 
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public interface IModularItem {
 
@@ -15,17 +17,26 @@ public interface IModularItem {
     void clearModules();
 
     @Nullable
-    AppliedItemModule getModuleInSlot(int slot);
+    ModuleData getModuleDataForSlot(int slot);
 
-    @NotNull
-    List<AppliedItemModule> getAppliedModules();
+    List<ModuleData> getAllModuleData();
+
+    List<ItemModule> getModules();
 
     @Nullable
-    AppliedItemModule getModule(ItemModule module);
+    ModuleData getModuleData(ItemModule module);
 
     void setSlots(List<ItemModuleSlot> slots);
 
-    AppliedItemModule attach(ItemModule module, int slot, boolean simulate);
+    @Nullable
+    ModuleData attach(ItemModule module, ItemStack itemToApply, int slot, boolean simulate);
 
-    AppliedItemModule attach(ItemModule module, boolean simulate);
+    @Nullable
+    ModuleData attach(ItemModule module, ItemStack itemToApply, boolean simulate);
+
+    void detach(ModuleData appliedModule);
+
+    default void runForEachModule(BiConsumer<ItemModule, ModuleData> consumer) {
+        getAllModuleData().forEach(v -> consumer.accept(v.getModule(), v));
+    }
 }

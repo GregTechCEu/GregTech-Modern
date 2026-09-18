@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -42,19 +42,19 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
     }
 
     @Override
-    public void onEquip(LivingEntity entity, AppliedItemModule module) {
+    public void onEquip(LivingEntity entity, ModuleData module) {
         super.onEquip(entity, module);
         setMayFly(entity, true);
     }
 
     @Override
-    public void onUnequip(LivingEntity entity, AppliedItemModule module) {
+    public void onUnequip(LivingEntity entity, ModuleData module) {
         super.onUnequip(entity, module);
         setMayFly(entity, false);
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, AppliedItemModule module) {
+    public void onArmorTick(LivingEntity entity, ModuleData module) {
         super.onArmorTick(entity, module);
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
         if (electricItem == null || !isFlying(entity)) return;
@@ -67,7 +67,7 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.creative_flight")
                 .withStyle(ChatFormatting.LIGHT_PURPLE));

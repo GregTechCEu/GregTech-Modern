@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IJumpBoostItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
+import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +30,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     }
 
     @Override
-    public float getJumpBoost(AppliedItemModule module) {
+    public float getJumpBoost(ModuleData module) {
         if (module.getTag().contains(JUMP_BOOST_KEY))
             return module.getTag().getFloat(JUMP_BOOST_KEY);
         return getMaxJumpBoost();
@@ -37,7 +38,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.jump", GTValues.VNF[getTier()]));
     }
@@ -46,12 +47,12 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
         return getTier() / 4f;
     }
 
-    public void setJumpBoost(AppliedItemModule module, float jumpBoost) {
+    public void setJumpBoost(ModuleData module, float jumpBoost) {
         module.getTag().putFloat(JUMP_BOOST_KEY, jumpBoost);
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
                 .num(Text.lang("gtceu.module.gui.jump_boost"),
                         () -> getJumpBoost(module),

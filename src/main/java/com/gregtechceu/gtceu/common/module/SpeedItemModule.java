@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -29,7 +29,7 @@ public class SpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, AppliedItemModule modifier) {
+    public void onArmorTick(LivingEntity entity, ModuleData modifier) {
         super.onArmorTick(entity, modifier);
         if (entity instanceof Player player) {
             float mul = getTier() / 4f + 1;
@@ -57,13 +57,13 @@ public class SpeedItemModule extends TieredItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.speed", GTValues.VNF[getTier()]));
     }
 
     @Override
-    public long energyUsagePerTick(LivingEntity entity, AppliedItemModule module) {
+    public long energyUsagePerTick(LivingEntity entity, ModuleData module) {
         if (entity instanceof Player player) {
             return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting() ? 819 : 0;
         }
@@ -71,7 +71,7 @@ public class SpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public boolean useEnergyInInventory(LivingEntity entity, AppliedItemModule module) {
+    public boolean useEnergyInInventory(LivingEntity entity, ModuleData module) {
         return false;
     }
 }

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -27,7 +27,7 @@ public class SneakSpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, AppliedItemModule module) {
+    public void onArmorTick(LivingEntity entity, ModuleData module) {
         super.onArmorTick(entity, module);
         if (entity instanceof Player player) {
             float mul = getTier() / 8f + 1;
@@ -48,12 +48,12 @@ public class SneakSpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public boolean useEnergyInInventory(LivingEntity entity, AppliedItemModule module) {
+    public boolean useEnergyInInventory(LivingEntity entity, ModuleData module) {
         return false;
     }
 
     @Override
-    public long energyUsagePerTick(LivingEntity entity, AppliedItemModule module) {
+    public long energyUsagePerTick(LivingEntity entity, ModuleData module) {
         if (entity instanceof Player player) {
             return SyncedKeyMappings.VANILLA_FORWARD.isKeyDown(player) && player.isShiftKeyDown() ? 819 : 0;
         }
@@ -62,7 +62,7 @@ public class SneakSpeedItemModule extends TieredItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.sneak_speed",
                 GTValues.VNF[getTier()]));

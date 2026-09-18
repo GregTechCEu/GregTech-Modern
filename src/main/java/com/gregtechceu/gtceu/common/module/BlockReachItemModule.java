@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredAttributeItemModule;
 
 import net.minecraft.network.chat.Component;
@@ -29,12 +29,12 @@ public class BlockReachItemModule extends TieredAttributeItemModule {
     }
 
     @Override
-    public Attribute getAttribute(AppliedItemModule module) {
+    public Attribute getAttribute(ModuleData module) {
         return ForgeMod.BLOCK_REACH.get();
     }
 
     @Override
-    public AttributeModifier getAttributeModifier(AppliedItemModule module) {
+    public AttributeModifier getAttributeModifier(ModuleData module) {
         double add = getTier() / 2d;
         return new AttributeModifier(ADD_BLOCK_REACH_UUID, "Block Reach Modifier", add,
                 AttributeModifier.Operation.ADDITION);
@@ -42,7 +42,7 @@ public class BlockReachItemModule extends TieredAttributeItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.block_reach",
                 GTValues.VNF[getTier()]));

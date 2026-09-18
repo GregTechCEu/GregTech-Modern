@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.nbt.CompoundTag;
@@ -32,13 +32,13 @@ public class NightVisionModule extends ItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.message.nightvision.enabled"));
     }
 
     @Override
-    public void onArmorTick(LivingEntity entity, AppliedItemModule module) {
+    public void onArmorTick(LivingEntity entity, ModuleData module) {
         super.onArmorTick(entity, module);
         if (!(entity instanceof Player player)) return;
         IElectricItem item = GTCapabilityHelper.getElectricItem(module.getAppliedTo());

@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item.module;
 
+import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -24,19 +26,19 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
         super(id, tier);
     }
 
-    private void attachAttribute(AppliedItemModule appliedItemModule) {
-        if (appliedItemModule.getTag().contains(MODIFIER_UUID_KEY)) return;
-        if (appliedItemModule.getAppliedTo() == null) return;
-        EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(appliedItemModule.getAppliedTo());
-        AttributeModifier attributeModifier = applySettingsToModifier(appliedItemModule,
-                getAttributeModifier(appliedItemModule));
-        appliedItemModule.getAppliedTo().addAttributeModifier(getAttribute(appliedItemModule), attributeModifier, slot);
-        appliedItemModule.getTag().putUUID(MODIFIER_UUID_KEY, attributeModifier.getId());
+    private void attachAttribute(ModuleData moduleData) {
+        if (moduleData.getTag().contains(MODIFIER_UUID_KEY)) return;
+        if (moduleData.getAppliedTo() == null) return;
+        EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleData.getAppliedTo());
+        AttributeModifier attributeModifier = applySettingsToModifier(moduleData,
+                getAttributeModifier(moduleData));
+        moduleData.getAppliedTo().addAttributeModifier(getAttribute(moduleData), attributeModifier, slot);
+        moduleData.getTag().putUUID(MODIFIER_UUID_KEY, attributeModifier.getId());
     }
 
-    private void detachAttribute(AppliedItemModule appliedItemModule) {
-        UUID uuid = appliedItemModule.getTag().getUUID(MODIFIER_UUID_KEY);
-        ListTag listTag = appliedItemModule.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
+    private void detachAttribute(ModuleData moduleData) {
+        UUID uuid = moduleData.getTag().getUUID(MODIFIER_UUID_KEY);
+        ListTag listTag = moduleData.getAppliedTo().getOrCreateTag().getList("AttributeModifiers",
                 Tag.TAG_COMPOUND);
         Iterator<Tag> it = listTag.iterator();
         while (it.hasNext()) {
@@ -46,45 +48,45 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
                 if (attributeModifier != null && attributeModifier.getId().equals(uuid)) it.remove();
             }
         }
-        appliedItemModule.getTag().remove(MODIFIER_UUID_KEY);
+        moduleData.getTag().remove(MODIFIER_UUID_KEY);
     }
 
-    protected double getNeutralModifier(AppliedItemModule module) {
+    protected double getNeutralModifier(ModuleData module) {
         return 0;
     }
 
-    public double getMinModifier(AppliedItemModule module) {
+    public double getMinModifier(ModuleData module) {
         AttributeModifier attributeModifier = getAttributeModifier(module);
         double original = attributeModifier.getAmount();
         double neutral = getNeutralModifier(module);
         return Math.min(neutral, original);
     }
 
-    public double getMaxModifier(AppliedItemModule module) {
+    public double getMaxModifier(ModuleData module) {
         AttributeModifier attributeModifier = getAttributeModifier(module);
         double original = attributeModifier.getAmount();
         double neutral = getNeutralModifier(module);
         return Math.max(neutral, original);
     }
 
-    protected AttributeModifier applySettingsToModifier(AppliedItemModule module, AttributeModifier modifier) {
+    protected AttributeModifier applySettingsToModifier(ModuleData module, AttributeModifier modifier) {
         double modifiedAmount = getModifier(module);
         return new AttributeModifier(modifier.getId(), modifier.getName(), modifiedAmount, modifier.getOperation());
     }
 
-    public double getModifier(AppliedItemModule module) {
+    public double getModifier(ModuleData module) {
         if (module.getTag().contains(MODIFIER_AMOUNT_KEY))
             return module.getTag().getDouble(MODIFIER_AMOUNT_KEY);
         return getAttributeModifier(module).getAmount();
     }
 
-    public void setModifier(AppliedItemModule module, double modifier) {
+    public void setModifier(ModuleData module, double modifier) {
         module.getTag().putDouble(MODIFIER_AMOUNT_KEY, modifier);
         detachAttribute(module);
         attachAttribute(module);
     }
 
-    protected String getSliderString(AppliedItemModule module, double value) {
+    protected String getSliderString(ModuleData module, double value) {
         return switch (getAttributeModifier(module).getOperation()) {
             case ADDITION -> "+%.2f".formatted(value);
             case MULTIPLY_BASE, MULTIPLY_TOTAL -> "+%.2f%%".formatted(value * 100);
@@ -92,7 +94,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
                 .num(Text.lang("gtceu.module.gui.power"),
                         () -> getModifier(module),
@@ -102,26 +104,26 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onAttach(AppliedItemModule appliedItemModule) {
-        super.onAttach(appliedItemModule);
-        attachAttribute(appliedItemModule);
+    public void onAttach(ModuleData moduleData) {
+        super.onAttach(moduleData);
+        attachAttribute(moduleData);
     }
 
     @Override
-    public void onRemove(AppliedItemModule appliedItemModule) {
-        super.onRemove(appliedItemModule);
-        detachAttribute(appliedItemModule);
+    public void onRemove(ModuleData moduleData) {
+        super.onRemove(moduleData);
+        detachAttribute(moduleData);
     }
 
     @Override
-    public void setEnabled(AppliedItemModule module, boolean enabled) {
+    public void setEnabled(ModuleData module, boolean enabled) {
         super.setEnabled(module, enabled);
         if (this.isEnabled(module)) {
             this.attachAttribute(module);
         } else this.detachAttribute(module);
     }
 
-    public abstract Attribute getAttribute(AppliedItemModule module);
+    public abstract Attribute getAttribute(ModuleData module);
 
-    public abstract AttributeModifier getAttributeModifier(AppliedItemModule module);
+    public abstract AttributeModifier getAttributeModifier(ModuleData module);
 }

@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
+import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 import com.gregtechceu.gtceu.common.item.armor.Jetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -36,7 +37,7 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     }
 
     @Override
-    protected @Nullable IArmorLogic getArmorLogic(AppliedItemModule module) {
+    protected @Nullable IArmorLogic getArmorLogic(ModuleData module) {
         return JETPACK;
     }
 
@@ -47,14 +48,14 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.jetpack", module.getModuleItem().getHoverName()));
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
                 .bool(Text.lang("metaarmor.hud.hover_mode"),
                         () -> module.getAppliedTo().getOrCreateTag().getBoolean("hover"),

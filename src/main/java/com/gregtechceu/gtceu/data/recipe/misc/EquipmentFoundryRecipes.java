@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -18,107 +19,107 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class EquipmentFoundryRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "speed",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("speed"),
                 Ingredient.of(Tags.Items.ARMORS_LEGGINGS),
-                CustomTags.ELECTRIC_MOTORS, GTItemModules.SPEED);
+                GTItems.ELECTRIC_MOTORS, GTItemModules.SPEED);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "energy_shield",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("energy_shield"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
-                CustomTags.FIELD_GENERATORS, GTItemModules.DAMAGE_BLOCK);
+                GTItems.FIELD_GENERATORS, GTItemModules.DAMAGE_BLOCK);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "attack_speed",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("attack_speed"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
-                CustomTags.ELECTRIC_MOTORS, GTItemModules.ATTACK_SPEED);
+                GTItems.ELECTRIC_MOTORS, GTItemModules.ATTACK_SPEED);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "attack_damage",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("attack_damage"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
-                CustomTags.ELECTRIC_PISTONS, GTItemModules.ATTACK_DAMAGE);
+                GTItems.ELECTRIC_PISTONS, GTItemModules.ATTACK_DAMAGE);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "block_reach",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("block_reach"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
-                CustomTags.ROBOT_ARMS, GTItemModules.BLOCK_REACH);
+                GTItems.ROBOT_ARMS, GTItemModules.BLOCK_REACH);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "sneak_speed",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("sneak_speed"),
                 Ingredient.of(Tags.Items.ARMORS_LEGGINGS),
-                CustomTags.CONVEYOR_MODULES, GTItemModules.SNEAK_SPEED);
+                GTItems.CONVEYOR_MODULES, GTItemModules.SNEAK_SPEED);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "speed_attribute",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("speed_attribute"),
                 Ingredient.of(Tags.Items.ARMORS_BOOTS),
-                CustomTags.ELECTRIC_MOTORS, GTItemModules.MOVEMENT_SPEED_ATTR);
+                GTItems.ELECTRIC_MOTORS, GTItemModules.MOVEMENT_SPEED_ATTR);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "respiration",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("respiration"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
                 CustomTags.ELECTRIC_PUMPS, GTItemModules.AIR_SUPPLIER);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "autoeat",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("autoeat"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
                 CustomTags.ROBOT_ARMS, GTItemModules.AUTO_EAT);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "swim_speed",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("swim_speed"),
                 Ingredient.of(Tags.Items.ARMORS_BOOTS),
-                CustomTags.ELECTRIC_PUMPS, GTItemModules.SWIM_SPEED);
+                GTItems.ELECTRIC_PUMPS, GTItemModules.SWIM_SPEED);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "step_height",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("step_height"),
                 Ingredient.of(Tags.Items.ARMORS_BOOTS),
-                CustomTags.ELECTRIC_PISTONS, GTItemModules.STEP_HEIGHT);
+                GTItems.ELECTRIC_PISTONS, GTItemModules.STEP_HEIGHT);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "jump_boost",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("jump_boost"),
                 Ingredient.of(Tags.Items.ARMORS_LEGGINGS),
-                CustomTags.ELECTRIC_PISTONS, GTItemModules.JUMP_BOOST);
+                GTItems.ELECTRIC_PISTONS, GTItemModules.JUMP_BOOST);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "battery_modifier",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("battery_modifier"),
                 Ingredient.of(Tags.Items.ARMORS),
                 CustomTags.BATTERIES, GTItemModules.BATTERY);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "night_vision",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("night_vision"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
                 GTItems.NIGHTVISION_GOGGLES, GTItemModules.NIGHT_VISION);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "ppe_helmet",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("ppe_helmet"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
                 GTItems.MASK_FILTER,
                 GTItemModules.PPE);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "ppe_chestplate",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("ppe_chestplate"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
                 ChemicalHelper.get(plate, PolyvinylChloride),
                 GTItemModules.PPE);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "ppe_leggings",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("ppe_leggings"),
                 Ingredient.of(Tags.Items.ARMORS_LEGGINGS),
                 ChemicalHelper.get(plate, PolyvinylChloride),
                 GTItemModules.PPE);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "ppe_boots",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("ppe_boots"),
                 Ingredient.of(Tags.Items.ARMORS_BOOTS),
                 ChemicalHelper.get(plate, PolyvinylChloride),
                 GTItemModules.PPE);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "sensor",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("sensor"),
                 Ingredient.of(Tags.Items.ARMORS_HELMETS),
-                CustomTags.SENSORS, GTItemModules.SENSOR);
+                GTItems.SENSORS, GTItemModules.SENSOR);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "wireless_charger",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("wireless_charger"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
-                CustomTags.SENSORS, GTItemModules.WIRELESS_CHARGER);
+                GTItems.SENSORS, GTItemModules.WIRELESS_CHARGER);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "jetpack",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("jetpack"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
                 GTItems.ELECTRIC_JETPACK, GTItemModules.JETPACK);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "advanced_jetpack",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("advanced_jetpack"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
                 GTItems.ELECTRIC_JETPACK_ADVANCED, GTItemModules.ADVANCED_JETPACK);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "liquid_fuel_jetpack",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("liquid_fuel_jetpack"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
                 GTItems.LIQUID_FUEL_JETPACK, GTItemModules.LIQUID_FUEL_JETPACK);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "creative_flight",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("creative_flight"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
                 GTItems.CREATIVE_FLIGHT_MODULE, GTItemModules.CREATIVE_FLIGHT);
 
-        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, "fluid_storage",
+        EquipmentFoundryRecipeHelper.addEquipmentFoundryRecipe(provider, GTCEu.id("fluid_storage"),
                 Ingredient.of(Tags.Items.ARMORS_CHESTPLATES),
                 Ingredient.of(CustomTags.FLUID_CONTAINERS), GTItemModules.FLUID_STORAGE);
     }

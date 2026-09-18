@@ -3,8 +3,9 @@ package com.gregtechceu.gtceu.common.module;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
+import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,9 +33,9 @@ public class EnergyShieldItemModule extends TieredItemModule {
     }
 
     @Override
-    public void onAttach(AppliedItemModule module) {
-        super.onAttach(module);
-        module.getTag().putDouble(PERCENTAGE_KEY, 0.75f);
+    public void onAttach(ModuleData moduleData) {
+        super.onAttach(moduleData);
+        moduleData.getTag().putDouble(PERCENTAGE_KEY, 0.75f);
     }
 
     @Override
@@ -47,20 +48,20 @@ public class EnergyShieldItemModule extends TieredItemModule {
         return (long) (8192 / div);
     }
 
-    private int getMaxDamageReduction(AppliedItemModule module) {
+    private int getMaxDamageReduction(ModuleData module) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
         if (electricItem == null) return 0;
         return (int) (electricItem.getMaxCharge() * module.getTag().getDouble(PERCENTAGE_KEY) / getEnergyPerHP());
     }
 
-    private int getDamageReduction(AppliedItemModule module) {
+    private int getDamageReduction(ModuleData module) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getAppliedTo());
         if (electricItem == null) return 0;
         return (int) (electricItem.getCharge() * module.getTag().getDouble(PERCENTAGE_KEY) / getEnergyPerHP());
     }
 
     @Override
-    public float changeDamage(LivingEntity entity, AppliedItemModule module, float amount, DamageSource source) {
+    public float changeDamage(LivingEntity entity, ModuleData module, float amount, DamageSource source) {
         long energyPerHP = getEnergyPerHP();
         if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) ||
                 source.is(DamageTypeTags.IS_DROWNING) || source.is(DamageTypes.STARVE)) {
@@ -80,14 +81,14 @@ public class EnergyShieldItemModule extends TieredItemModule {
 
     @Override
     public void appendHoverText(Level level, TooltipFlag isAdvanced, List<Component> tooltips,
-                                AppliedItemModule module) {
+                                ModuleData module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.damage_block",
                 GTValues.VNF[getTier()]));
     }
 
     @Override
-    public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
+    public ItemModuleSettingsBuilder getSettings(ModuleData module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
                 .num(Text.lang("gtceu.module.gui.energy_limit"),
                         () -> module.getTag().getDouble(PERCENTAGE_KEY),

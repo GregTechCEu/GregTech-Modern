@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.machine.misc;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
@@ -13,10 +13,8 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
-import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -25,8 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RecipeWrapper;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
@@ -42,7 +38,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine {
 
@@ -105,14 +100,10 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         if (this.getLevel() == null) {
             return false;
         }
-        NonNullList<ItemStack> stacks = NonNullList.create();
-        stacks.add(this.equipmentSlot.getStackInSlot(0));
-        stacks.add(stack);
-        RecipeWrapper newWrapper = new RecipeWrapper(new CustomItemStackHandler(stacks));
 
         return getLevel().getRecipeManager()
-                .getRecipeFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get(), newWrapper, this.getLevel())
-                .map(recipe -> recipe.matches(newWrapper, slot)).orElse(false);
+                .getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())
+                .stream().anyMatch(recipe -> recipe.matches(equipmentSlot.getStackInSlot(0), stack));
     }
 
     @Override
@@ -154,8 +145,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         ItemStack equipment = equipmentSlot.getStackInSlot(0);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(equipment);
         if (modularItem == null) return true;
-        AppliedItemModule module = modularItem.getModuleInSlot(slot);
-        if (module != null) return !(module.canRemove() && module.getModuleItem() != null);
+        ModuleData module = modularItem.getModuleDataForSlot(slot);
+        if (module != null) return !(module.getModule().canRemove(module) && module.getModuleItem() != null);
         return modularItem.getSlots().size() <= slot;
     }
 
@@ -179,10 +170,9 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         } else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
-            for (AppliedItemModule module : modularItem.getAppliedModules()) {
-                if (module.getSlot() < MAX_MODIFIER_SLOTS && module.getModuleItem() != null) {
-                    moduleSlots.setStackInSlot(module.getSlot(), module.getModuleItem());
-                }
+            for (int i=0; i<MAX_MODIFIER_SLOTS; i++) {
+                var data = modularItem.getModuleDataForSlot(i);
+                moduleSlots.setStackInSlot(i, data == null ? ItemStack.EMPTY : data.getModuleItem());
             }
             List<ItemModuleSlot> slots = modularItem.getSlots();
             for (int i = 0; i < slots.size() && i < slotWidgets.size(); i++) {
@@ -202,21 +192,17 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             return;
         }
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-        AppliedItemModule prevModule = modularItem == null ? null : modularItem.getModuleInSlot(slot);
-        if (prevModule != null) prevModule.detach();
+        ModuleData prevModule = modularItem == null ? null : modularItem.getModuleDataForSlot(slot);
+        if (prevModule != null) modularItem.detach(prevModule);
         ItemStack newModule = moduleSlots.getStackInSlot(slot);
         if (newModule.isEmpty()) return;
-        RecipeWrapper recipeWrapper = new RecipeWrapper(new CombinedInvWrapper(
-                this.equipmentSlot,
-                new CustomItemStackHandler(newModule)));
-        Optional<EquipmentFoundryRecipe> recipe = getLevel().getRecipeManager().getRecipeFor(
-                GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get(),
-                recipeWrapper,
-                this.getLevel());
-        if (recipe.isPresent()) {
-            ItemStack newStack = recipe.get().assemble(recipeWrapper, slot);
-            if (newStack.isEmpty()) return;
-            equipmentSlot.setStackInSlot(0, newStack);
+
+        var equipmentItem = equipmentSlot.getStackInSlot(0);
+        for (var recipe : getLevel().getRecipeManager()
+                .getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())) {
+            if (recipe.matches(equipmentItem, newModule)) {
+                recipe.applyToItem(equipmentItem, newModule, slot);
+            }
         }
     }
 

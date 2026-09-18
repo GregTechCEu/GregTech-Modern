@@ -1,59 +1,93 @@
 package com.gregtechceu.gtceu.api.item.capability;
 
-import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
+import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 public class ModularItemStack implements IModularItem {
 
-    public static final String MODULE_SLOTS_KEY = "ModuleSlots";
     public static final String MODULES_TAG = "Modules";
 
     private final ItemStack stack;
-    private final Function<ItemStack, List<ItemModuleSlot>> defaultSlotGetter;
+    private final List<ItemModuleSlot> slots;
+    private final List<ModuleData> currentModules;
 
-    public ModularItemStack(ItemStack stack, Function<ItemStack, List<ItemModuleSlot>> defaultSlotGetter) {
+    public ModularItemStack(ItemStack stack, Function<ItemStack, List<ItemModuleSlot>> slotsGetter) {
         this.stack = stack;
-        this.defaultSlotGetter = defaultSlotGetter;
-    }
+        slots = slotsGetter.apply(stack);
+        currentModules = new ArrayList<>();
 
-    @Override
-    public AppliedItemModule attach(ItemModule module, int slot, boolean simulate) {
-        CompoundTag modulesTag = stack.getOrCreateTagElement(MODULES_TAG);
-        ItemModuleSlot moduleSlot = getSlots().get(slot);
-        if (moduleSlot == null || !moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
-        if (!modulesTag.contains(String.valueOf(slot)) && !simulate)
-            modulesTag.put(String.valueOf(slot), new CompoundTag());
-        AppliedItemModule appliedModule = new AppliedItemModule(
-                simulate ? new CompoundTag() : modulesTag.getCompound(String.valueOf(slot)),
-                module,
-                slot);
-        appliedModule.setAppliedTo(stack);
-        if (!simulate) {
-            module.onAttach(appliedModule);
+        if (stack.getOrCreateTag().contains(MODULES_TAG)) {
+            List<ModuleData> data = ModuleData.CODEC.listOf()
+                    .decode(NbtOps.INSTANCE, stack.getOrCreateTagElement(MODULES_TAG))
+                    .getOrThrow(false, GTCEu.LOGGER::error)
+                    .getFirst();
+
+            for (ModuleData module : data) {
+                module.setModularItemStack(this);
+                module.setAppliedTo(stack);
+                currentModules.add(module);
+            }
         }
-        return appliedModule;
+    }
+
+    public void saveData() {
+        stack.getOrCreateTag().put(MODULES_TAG, ModuleData.CODEC.listOf().encodeStart(NbtOps.INSTANCE, currentModules).getOrThrow(false, GTCEu.LOGGER::error));
     }
 
     @Override
-    public @Nullable AppliedItemModule attach(ItemModule module, boolean simulate) {
+    public @Nullable ModuleData attach(ItemModule module, ItemStack itemToApply, int slot, boolean simulate) {
+        if (slot >= getSlots().size()) return null;
+
+        ItemModuleSlot moduleSlot = getSlots().get(slot);
+        if (!moduleSlot.acceptsModule(module) || !module.canApplyTo(stack)) return null;
+
+        for (int i=0; i<currentModules.size(); i++) {
+            if (i == slot) continue;
+            var existingModule = currentModules.get(i);
+            if (existingModule.getModule() == module) return null;
+        }
+
+        ModuleData moduleData = new ModuleData(
+                module,
+                new CompoundTag(),
+                itemToApply);
+
+        moduleData.setAppliedTo(stack);
+        currentModules.add(moduleData);
+        if (!simulate) {
+            module.onAttach(moduleData);
+        }
+        return moduleData;
+    }
+
+    @Override
+    public @Nullable ModuleData attach(ItemModule module, ItemStack itemToApply, boolean simulate) {
         for (int i = 0; i < getSlots().size(); i++) {
-            if (getModuleInSlot(i) == null) return attach(module, i, simulate);
+            if (getModuleDataForSlot(i) == null) return attach(module, itemToApply, i, simulate);
         }
         return null;
+    }
+
+    @Override
+    public void detach(ModuleData appliedModule) {
+        if (!appliedModule.getModule().canRemove(appliedModule)) return;
+        appliedModule.getModule().onRemove(appliedModule);
+        saveData();
     }
 
     @Override
@@ -62,58 +96,36 @@ public class ModularItemStack implements IModularItem {
     }
 
     @Override
-    public @Nullable AppliedItemModule getModuleInSlot(int slot) {
-        CompoundTag modulesTag = stack.getOrCreateTagElement(MODULES_TAG);
-        if (!modulesTag.contains(String.valueOf(slot))) return null;
-        return new AppliedItemModule(modulesTag.getCompound(String.valueOf(slot)), stack, slot);
+    public @Nullable ModuleData getModuleDataForSlot(int slot) {
+        if (slot >= currentModules.size()) return null;
+        return currentModules.get(slot);
     }
 
     @Override
-    public @NotNull List<AppliedItemModule> getAppliedModules() {
-        CompoundTag modulesTag = stack.getOrCreateTagElement(MODULES_TAG);
-        List<AppliedItemModule> modules = new ArrayList<>();
-        for (String key : modulesTag.getAllKeys()) {
-            modules.add(new AppliedItemModule(modulesTag.getCompound(key), stack, Integer.parseInt(key)));
-        }
-        return modules;
+    public List<ModuleData> getAllModuleData() {
+        return currentModules;
     }
 
     @Override
-    public @Nullable AppliedItemModule getModule(ItemModule module) {
-        return getAppliedModules().stream().filter(appliedModule -> appliedModule.getModule() == module).findAny()
+    public List<ItemModule> getModules() {
+        return getAllModuleData().stream().map(ModuleData::getModule).toList();
+    }
+
+    @Override
+    public @Nullable ModuleData getModuleData(ItemModule module) {
+        return getAllModuleData().stream().filter(appliedModule -> appliedModule.getModule() == module).findAny()
                 .orElse(null);
-    }
-
-    public List<ItemModuleSlot> getDefaultSlots() {
-        return this.defaultSlotGetter.apply(stack);
     }
 
     @Override
     public void setSlots(List<ItemModuleSlot> slots) {
-        CompoundTag tag = new CompoundTag();
-        for (int i = 0; i < slots.size(); i++) {
-            ItemModuleSlot slot = slots.get(i);
-            if (slot != null) tag.put(String.valueOf(i), slot.serializeNBT());
-        }
-        stack.getOrCreateTag().put(MODULE_SLOTS_KEY, tag);
+        this.slots.clear();
+        this.slots.addAll(slots);
     }
 
     @Unmodifiable
     @Override
     public List<ItemModuleSlot> getSlots() {
-        if (!stack.getOrCreateTag().contains(MODULE_SLOTS_KEY, Tag.TAG_COMPOUND)) {
-            List<ItemModuleSlot> slots = getDefaultSlots();
-            setSlots(slots);
-            return slots;
-        } else {
-            List<ItemModuleSlot> slots = new ArrayList<>();
-            CompoundTag tag = stack.getOrCreateTagElement(MODULE_SLOTS_KEY);
-            for (String key : tag.getAllKeys()) {
-                int i = Integer.parseInt(key);
-                while (slots.size() <= i) slots.add(null);
-                slots.set(i, ItemModuleSlot.fromNBT(tag.getCompound(key)));
-            }
-            return slots;
-        }
+        return Collections.unmodifiableList(slots);
     }
 }
