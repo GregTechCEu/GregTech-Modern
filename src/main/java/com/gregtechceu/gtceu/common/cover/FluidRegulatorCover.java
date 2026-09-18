@@ -179,7 +179,7 @@ public class FluidRegulatorCover extends PumpCover {
         GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
         column.child(
-                GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode, () -> maxFluidTransferRate)
+                GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode, () -> Integer.MAX_VALUE)
                         .setEnabledIf($ -> shouldShowTransferSize()));
     }
 
