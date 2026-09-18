@@ -15,15 +15,19 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -120,6 +124,11 @@ public final class ValueTransformers {
         registerTransformer(type, new CodecTransformer<>(codec, writePacket, readPacket));
     }
 
+    private static <T> void registerRegistryTransformer(Class<T> type, Registry<T> registry) {
+        registerCodecTransformer(type, registry.byNameCodec(),
+                (buf, value) -> buf.writeId(registry, value), buf -> buf.readById(registry));
+    }
+
     /**
      * Registers a supplier that supplies instances of a specific transformer type.
      * The supplier will be called to create new instances of the transformer for each unique set of generic type
@@ -159,8 +168,11 @@ public final class ValueTransformers {
         registerCodecTransformer(String.class, Codec.STRING, FriendlyByteBuf::writeUtf, FriendlyByteBuf::readUtf);
         registerCodecTransformer(UUID.class, UUIDUtil.CODEC, FriendlyByteBuf::writeUUID, FriendlyByteBuf::readUUID);
         registerCodecTransformer(CompoundTag.class, CompoundTag.CODEC, FriendlyByteBuf::writeNbt, FriendlyByteBuf::readNbt);
+        registerCodecTransformer(ResourceLocation.class, ResourceLocation.CODEC, FriendlyByteBuf::writeResourceLocation, FriendlyByteBuf::readResourceLocation);
 
+        registerRegistryTransformer(Item.class, BuiltInRegistries.ITEM);
         registerCodecTransformer(ItemStack.class, ItemStack.CODEC, FriendlyByteBuf::writeItem, FriendlyByteBuf::readItem);
+        registerRegistryTransformer(Fluid.class, BuiltInRegistries.FLUID);
         registerCodecTransformer(FluidStack.class, FluidStack.CODEC, (buf, v) -> v.writeToPacket(buf), FluidStack::readFromPacket);
         registerCodecTransformer(Component.class, ExtraCodecs.COMPONENT, FriendlyByteBuf::writeComponent, FriendlyByteBuf::readComponent);
 
