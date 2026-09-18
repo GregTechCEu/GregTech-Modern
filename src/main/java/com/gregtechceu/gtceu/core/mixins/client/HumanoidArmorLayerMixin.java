@@ -28,7 +28,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
     @ModifyArg(method = "renderArmorPiece",
                at = @At(value = "INVOKE",
                         target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel" +
-                                "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/ResourceLocation;)V",
+                                "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/Identifier;)V",
                         remap = false),
                index = 6)
     private float gtceu$modifyArmorTintR(float oldR, @Local ArmorItem armorItem) {
@@ -48,7 +48,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
     @ModifyArg(method = "renderArmorPiece",
                at = @At(value = "INVOKE",
                         target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel" +
-                                "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/ResourceLocation;)V",
+                                "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/Identifier;)V",
                         remap = false),
                index = 7)
     private float gtceu$modifyArmorTintsG(float oldG, @Local ArmorItem armorItem) {
@@ -68,7 +68,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
     @ModifyArg(method = "renderArmorPiece",
                at = @At(value = "INVOKE",
                         target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel" +
-                                "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/ResourceLocation;)V",
+                                "(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ArmorItem;Lnet/minecraft/client/model/Model;ZFFFLnet/minecraft/resources/Identifier;)V",
                         remap = false),
                index = 8)
     private float gtceu$modifyArmorTintsB(float oldB, @Local ArmorItem armorItem) {

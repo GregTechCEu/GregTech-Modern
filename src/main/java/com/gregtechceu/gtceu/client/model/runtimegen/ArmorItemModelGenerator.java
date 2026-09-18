@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -24,7 +24,7 @@ public class ArmorItemModelGenerator {
     public static void reinitModels() {
         for (ArmorItemModelGenerator model : MODELS) {
             // read the base armor model JSON
-            ResourceLocation modelLocation = GTCEu.id("models/item/armor/%s.json".formatted(model.armorType.getName()));
+            Identifier modelLocation = GTCEu.id("models/item/armor/%s.json".formatted(model.armorType.getName()));
             JsonObject original;
             try (BufferedReader reader = Minecraft.getInstance().getResourceManager().openAsReader(modelLocation)) {
                 original = GsonHelper.parse(reader, true);

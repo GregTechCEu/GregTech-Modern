@@ -11,7 +11,7 @@ import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.DelegatedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -28,8 +28,8 @@ public class SurfaceRockModelGenerator {
 
     public static void reinitModels() {
         for (SurfaceRockModelGenerator model : MODELS) {
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = blockId.withPrefix("block/");
+            Identifier blockId = BuiltInRegistries.BLOCK.getKey(model.block);
+            Identifier modelId = blockId.withPrefix("block/");
 
             GTDynamicResourcePack.addBlockModel(blockId, new DelegatedModel(GTCEu.id("block/surface_rock")));
             GTDynamicResourcePack.addBlockState(blockId, MultiVariantGenerator

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 @Accessors(chain = true, fluent = true)
 public class FluidVeinBuilderJS {
 
-    private final ResourceLocation id;
+    private final Identifier id;
     @Setter
     private int weight; // weight value for determining which vein will appear
     @Setter
@@ -43,7 +43,7 @@ public class FluidVeinBuilderJS {
 
     private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
 
-    public FluidVeinBuilderJS(ResourceLocation id) {
+    public FluidVeinBuilderJS(Identifier id) {
         this.id = id;
     }
 
@@ -51,8 +51,8 @@ public class FluidVeinBuilderJS {
         return minimumYield(min).maximumYield(max);
     }
 
-    public FluidVeinBuilderJS addSpawnDimension(ResourceLocation... dimensions) {
-        for (ResourceLocation dimension : dimensions) {
+    public FluidVeinBuilderJS addSpawnDimension(Identifier... dimensions) {
+        for (Identifier dimension : dimensions) {
             this.dimensions.add(ResourceKey.create(Registries.DIMENSION, dimension));
         }
         return this;
@@ -63,10 +63,10 @@ public class FluidVeinBuilderJS {
         this.biomes.add(
                 new BiomeWeightModifier(() -> biomes.startsWith("#") ?
                         registry.getOrCreateTag(
-                                TagKey.create(Registries.BIOME, ResourceLocation.parse(biomes.substring(1)))) :
+                                TagKey.create(Registries.BIOME, Identifier.parse(biomes.substring(1)))) :
                         (HolderSet.direct(registry
                                 .getHolderOrThrow(
-                                        ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomes))))),
+                                        ResourceKey.create(Registries.BIOME, Identifier.parse(biomes))))),
                         weight));
         return this;
     }
@@ -77,9 +77,9 @@ public class FluidVeinBuilderJS {
         for (String biome : biomes) {
             biomeKeys.add(biome.startsWith("#") ?
                     registry.getOrCreateTag(
-                            TagKey.create(Registries.BIOME, ResourceLocation.parse(biome.substring(1)))) :
+                            TagKey.create(Registries.BIOME, Identifier.parse(biome.substring(1)))) :
                     HolderSet.direct(registry
-                            .getHolderOrThrow(ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biome)))));
+                            .getHolderOrThrow(ResourceKey.create(Registries.BIOME, Identifier.parse(biome)))));
         }
         this.biomes.add(new BiomeWeightModifier(
                 () -> HolderSet.direct(biomeKeys.stream().flatMap(HolderSet::stream).toList()), weight));

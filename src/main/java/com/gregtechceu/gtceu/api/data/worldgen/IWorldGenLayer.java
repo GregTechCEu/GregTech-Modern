@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
@@ -9,9 +9,9 @@ import java.util.Set;
 
 public interface IWorldGenLayer extends StringRepresentable {
 
-    boolean isApplicableForLevel(ResourceLocation level);
+    boolean isApplicableForLevel(Identifier level);
 
-    Set<ResourceLocation> getLevels();
+    Set<Identifier> getLevels();
 
     RuleTest getTarget();
 
@@ -24,12 +24,12 @@ public interface IWorldGenLayer extends StringRepresentable {
     IWorldGenLayer NOWHERE = new IWorldGenLayer() {
 
         @Override
-        public boolean isApplicableForLevel(ResourceLocation level) {
+        public boolean isApplicableForLevel(Identifier level) {
             return false;
         }
 
         @Override
-        public Set<ResourceLocation> getLevels() {
+        public Set<Identifier> getLevels() {
             return Set.of();
         }
 

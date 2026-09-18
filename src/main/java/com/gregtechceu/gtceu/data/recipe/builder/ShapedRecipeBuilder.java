@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.utils.data.NBTToJsonConverter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 public class ShapedRecipeBuilder {
 
     protected ItemStack output = ItemStack.EMPTY;
-    protected @Nullable ResourceLocation id;
+    protected @Nullable Identifier id;
     protected @Nullable String group;
     protected boolean isStrict;
     protected boolean matchSize;
@@ -34,7 +34,7 @@ public class ShapedRecipeBuilder {
     protected List<String[]> shape = new ArrayList<>();
     protected Map<Character, Ingredient> ingredientMap = new LinkedHashMap<>();
 
-    public ShapedRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapedRecipeBuilder(@Nullable Identifier id) {
         this.id = id;
     }
 
@@ -90,13 +90,13 @@ public class ShapedRecipeBuilder {
         return this;
     }
 
-    public ShapedRecipeBuilder id(ResourceLocation id) {
+    public ShapedRecipeBuilder id(Identifier id) {
         this.id = id;
         return this;
     }
 
     public ShapedRecipeBuilder id(String id) {
-        this.id = ResourceLocation.parse(id);
+        this.id = Identifier.parse(id);
         return this;
     }
 
@@ -163,7 +163,7 @@ public class ShapedRecipeBuilder {
         }
     }
 
-    protected ResourceLocation defaultId() {
+    protected Identifier defaultId() {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
@@ -176,7 +176,7 @@ public class ShapedRecipeBuilder {
             }
 
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 var ID = id == null ? defaultId() : id;
                 return ID.withPath("shaped/" + ID.getPath());
             }
@@ -194,7 +194,7 @@ public class ShapedRecipeBuilder {
 
             @Nullable
             @Override
-            public ResourceLocation getAdvancementId() {
+            public Identifier getAdvancementId() {
                 return null;
             }
         });

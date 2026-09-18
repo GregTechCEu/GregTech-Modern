@@ -11,7 +11,7 @@ import net.minecraft.Util;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
@@ -71,7 +71,7 @@ public class GTDynamicDataPack implements PackResources {
         CONTENTS.clearData();
     }
 
-    private static void addToData(ResourceLocation location, byte[] bytes) {
+    private static void addToData(Identifier location, byte[] bytes) {
         CONTENTS.addToData(location, bytes);
     }
 
@@ -79,7 +79,7 @@ public class GTDynamicDataPack implements PackResources {
         JsonObject recipeJson = recipe.serializeRecipe();
         byte[] recipeBytes = recipeJson.toString().getBytes(StandardCharsets.UTF_8);
         Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
-        ResourceLocation recipeId = recipe.getId();
+        Identifier recipeId = recipe.getId();
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             writeJson(recipeId, "recipes", parent, recipeBytes);
         }
@@ -105,7 +105,7 @@ public class GTDynamicDataPack implements PackResources {
      * @param json   the json to write.
      */
     @ApiStatus.Internal
-    public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, byte[] json) {
+    public static void writeJson(Identifier id, @Nullable String subdir, Path parent, byte[] json) {
         try {
             Path file;
             if (subdir != null) {
@@ -124,8 +124,8 @@ public class GTDynamicDataPack implements PackResources {
         }
     }
 
-    public static void addAdvancement(ResourceLocation loc, JsonObject obj) {
-        ResourceLocation l = getAdvancementLocation(loc);
+    public static void addAdvancement(Identifier loc, JsonObject obj) {
+        Identifier l = getAdvancementLocation(loc);
         addToData(l, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
@@ -140,7 +140,7 @@ public class GTDynamicDataPack implements PackResources {
 
     @Nullable
     @Override
-    public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
+    public IoSupplier<InputStream> getResource(PackType type, Identifier location) {
         if (type == PackType.SERVER_DATA) {
             return CONTENTS.getResource(location);
         } else {
@@ -195,15 +195,15 @@ public class GTDynamicDataPack implements PackResources {
         // NOOP
     }
 
-    public static ResourceLocation getRecipeLocation(ResourceLocation recipeId) {
+    public static Identifier getRecipeLocation(Identifier recipeId) {
         return RECIPE_ID_CONVERTER.idToFile(recipeId);
     }
 
-    public static ResourceLocation getAdvancementLocation(ResourceLocation advancementId) {
+    public static Identifier getAdvancementLocation(Identifier advancementId) {
         return ADVANCEMENT_ID_CONVERTER.idToFile(advancementId);
     }
 
-    public static ResourceLocation getTagLocation(String identifier, ResourceLocation tagId) {
+    public static Identifier getTagLocation(String identifier, Identifier tagId) {
         return TAG_ID_CONVERTER.apply(identifier).idToFile(tagId);
     }
 }

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateItemTagsProvider;
 

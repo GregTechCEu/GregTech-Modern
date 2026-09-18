@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.common.cover.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import brachy.modularui.drawable.UITexture;
 import lombok.Getter;
 
 public enum BucketMode {
 
-    BUCKET("cover.bucket.mode.bucket", ResourceLocation.withDefaultNamespace("textures/item/water_bucket"), 1000),
+    BUCKET("cover.bucket.mode.bucket", Identifier.withDefaultNamespace("textures/item/water_bucket"), 1000),
     MILLI_BUCKET("cover.bucket.mode.milli_bucket", GTCEu.id("textures/gui/icon/bucket_mode/water_drop"), 1);
 
     @Getter
@@ -19,7 +19,7 @@ public enum BucketMode {
 
     public final int multiplier;
 
-    BucketMode(String tooltip, ResourceLocation texture, int multiplier) {
+    BucketMode(String tooltip, Identifier texture, int multiplier) {
         this.tooltip = tooltip;
         this.icon = UITexture.fullImage(texture);
         this.multiplier = multiplier;

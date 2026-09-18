@@ -16,10 +16,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -95,13 +95,13 @@ public interface IToolBehavior {
 
     /**
      * Queries if an item can perform the given action.
-     * See {@link ToolActions} for a description of each stock action and {@link GTToolActions} for GTCEu's ones
+     * See {@link ItemAbilities} for a description of each stock action and {@link GTToolActions} for GTCEu's ones
      *
      * @param stack  The stack being used
      * @param action The action being queried
      * @return {@code true} if the stack can perform the action
      */
-    default boolean canPerformAction(ItemStack stack, ToolAction action) {
+    default boolean canPerformAction(ItemStack stack, ItemAbility action) {
         return false;
     }
 

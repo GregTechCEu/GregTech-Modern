@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.fml.ModLoader;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import org.jetbrains.annotations.Nullable;
@@ -40,14 +40,14 @@ public class GTDimensionMarkers {
     public static final DimensionMarker END = createAndRegister(Level.END.location(), 0,
             () -> END_MARKER, null);
 
-    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, ResourceLocation itemKey,
+    public static DimensionMarker createAndRegister(Identifier dim, int tier, Identifier itemKey,
                                                     @Nullable String overrideName) {
         DimensionMarker marker = new DimensionMarker(tier, itemKey, overrideName);
         marker.register(dim);
         return marker;
     }
 
-    public static DimensionMarker createAndRegister(ResourceLocation dim, int tier, Supplier<ItemLike> supplier,
+    public static DimensionMarker createAndRegister(Identifier dim, int tier, Supplier<ItemLike> supplier,
                                                     @Nullable String overrideName) {
         DimensionMarker marker = new DimensionMarker(tier, supplier, overrideName);
         marker.register(dim);

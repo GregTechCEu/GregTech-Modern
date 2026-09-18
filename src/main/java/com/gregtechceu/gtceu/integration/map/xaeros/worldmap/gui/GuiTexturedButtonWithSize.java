@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import xaero.lib.client.gui.widget.Tooltip;
@@ -15,7 +15,7 @@ public class GuiTexturedButtonWithSize extends GuiTexturedButton {
     protected int spriteH;
 
     public GuiTexturedButtonWithSize(int x, int y, int w, int h, int textureX, int textureY, int textureW, int textureH,
-                                     int spriteW, int spriteH, ResourceLocation texture, OnPress onPress,
+                                     int spriteW, int spriteH, Identifier texture, OnPress onPress,
                                      Supplier<Tooltip> tooltip) {
         super(x, y, w, h, textureX, textureY, textureW, textureH, texture, onPress, tooltip);
         this.spriteW = spriteW;

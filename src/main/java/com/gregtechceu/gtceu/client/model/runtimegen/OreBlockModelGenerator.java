@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
@@ -71,8 +71,8 @@ public class OreBlockModelGenerator {
             MaterialIconSet iconSet = material.getMaterialIconSet();
             MaterialIconType iconType = tagPrefix.getMaterialIconType(material);
 
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = iconSet.id.withPath(ORE_MODEL_NAME_FORMAT
+            Identifier blockId = BuiltInRegistries.BLOCK.getKey(model.block);
+            Identifier modelId = iconSet.id.withPath(ORE_MODEL_NAME_FORMAT
                     .formatted(iconSet.getName(), tagPrefix.name, iconType.name()));
 
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
@@ -114,7 +114,7 @@ public class OreBlockModelGenerator {
     }
 
     private static JsonObject loadTemplateOreModel(MaterialIconType iconType, MaterialIconSet iconSet) {
-        ResourceLocation baseModelPath = iconType.getBlockModelPath(iconSet, true);
+        Identifier baseModelPath = iconType.getBlockModelPath(iconSet, true);
         baseModelPath = GTDynamicResourcePack.MODEL_ID_CONVERTER.idToFile(baseModelPath);
 
         ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +34,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         return create(id, stack);
     }
 
-    public ComponentWrapper createTag(String id, ResourceLocation tag) {
+    public ComponentWrapper createTag(String id, Identifier tag) {
         return create(id, TagKey.create(Registries.ITEM, tag));
     }
 
@@ -51,7 +51,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         set(craftingComponent, tier, item);
     }
 
-    public void setTag(CraftingComponent craftingComponent, int tier, ResourceLocation tag) {
+    public void setTag(CraftingComponent craftingComponent, int tier, Identifier tag) {
         set(craftingComponent, tier, TagKey.create(Registries.ITEM, tag));
     }
 
@@ -114,7 +114,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
         craftingComponent.setFallback(stack);
     }
 
-    public void setFallbackTag(CraftingComponent craftingComponent, ResourceLocation tag) {
+    public void setFallbackTag(CraftingComponent craftingComponent, Identifier tag) {
         craftingComponent.setFallback(TagKey.create(Registries.ITEM, tag));
     }
 
@@ -141,7 +141,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
     @SuppressWarnings("unchecked")
     private static TagKey<Item> parseTag(Object o) {
         if (o instanceof TagKey<?> key && key.isFor(Registries.ITEM)) return (TagKey<Item>) key;
-        ResourceLocation rl = UtilsJS.getMCID(null, o);
+        Identifier rl = UtilsJS.getMCID(null, o);
         if (rl != null) return TagKey.create(Registries.ITEM, rl);
         return null;
     }
@@ -207,7 +207,7 @@ public class CraftingComponentsEventJS extends StartupEventJS {
             return add(tier, stack);
         }
 
-        public ComponentWrapper addTag(int tier, ResourceLocation tag) {
+        public ComponentWrapper addTag(int tier, Identifier tag) {
             return add(tier, TagKey.create(Registries.ITEM, tag));
         }
 

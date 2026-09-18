@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.RegisterCapesEventJS;
 
 import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.latvian.mods.kubejs.script.ScriptType;
@@ -30,15 +30,15 @@ public class CapeRegistry extends SavedData {
     /**
      * pseudo-registry lookup map of ID->texture.
      */
-    public static final Map<ResourceLocation, ResourceLocation> ALL_CAPES = new HashMap<>();
+    public static final Map<Identifier, Identifier> ALL_CAPES = new HashMap<>();
     /**
      * Set of all the free capes' IDs
      */
-    private static final Set<ResourceLocation> FREE_CAPES = new HashSet<>();
+    private static final Set<Identifier> FREE_CAPES = new HashSet<>();
 
     // This map should always have TreeSet values for iteration consistency.
-    private static final Map<UUID, Set<ResourceLocation>> UNLOCKED_CAPES = new HashMap<>();
-    private static final Map<UUID, ResourceLocation> CURRENT_CAPES = new HashMap<>();
+    private static final Map<UUID, Set<Identifier>> UNLOCKED_CAPES = new HashMap<>();
+    private static final Map<UUID, Identifier> CURRENT_CAPES = new HashMap<>();
 
     private static final CapeRegistry INSTANCE = new CapeRegistry();
 
@@ -46,7 +46,7 @@ public class CapeRegistry extends SavedData {
 
     private static void initCapes() {
         RegisterGTCapesEvent event = new RegisterGTCapesEvent();
-        MinecraftForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.fireKJSEvent(event);
         }
@@ -71,12 +71,12 @@ public class CapeRegistry extends SavedData {
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag tag) {
         ListTag unlockedCapesTag = new ListTag();
-        for (Map.Entry<UUID, Set<ResourceLocation>> entry : UNLOCKED_CAPES.entrySet()) {
+        for (Map.Entry<UUID, Set<Identifier>> entry : UNLOCKED_CAPES.entrySet()) {
             CompoundTag entryTag = new CompoundTag();
             entryTag.putUUID("owner", entry.getKey());
 
             ListTag capesTag = new ListTag();
-            for (ResourceLocation cape : entry.getValue()) {
+            for (Identifier cape : entry.getValue()) {
                 capesTag.add(StringTag.valueOf(cape.toString()));
             }
             entryTag.put("capes", capesTag);
@@ -86,7 +86,7 @@ public class CapeRegistry extends SavedData {
         tag.put("unlocked_capes", unlockedCapesTag);
 
         ListTag currentCapesTag = new ListTag();
-        for (Map.Entry<UUID, ResourceLocation> entry : CURRENT_CAPES.entrySet()) {
+        for (Map.Entry<UUID, Identifier> entry : CURRENT_CAPES.entrySet()) {
             if (entry.getValue() == null)
                 continue;
             String capeLocation = entry.getValue().toString();
@@ -111,14 +111,14 @@ public class CapeRegistry extends SavedData {
             CompoundTag entryTag = unlockedCapesTag.getCompound(i);
             UUID uuid = entryTag.getUUID("owner");
 
-            Set<ResourceLocation> capes = UNLOCKED_CAPES.computeIfAbsent(uuid, CapeRegistry::makeSet);
+            Set<Identifier> capes = UNLOCKED_CAPES.computeIfAbsent(uuid, CapeRegistry::makeSet);
 
             ListTag capesTag = entryTag.getList("capes", Tag.TAG_STRING);
             for (int j = 0; j < capesTag.size(); j++) {
                 String capeId = capesTag.getString(j);
                 if (capeId.isEmpty())
                     continue;
-                capes.add(ResourceLocation.parse(capeId));
+                capes.add(Identifier.parse(capeId));
             }
             UNLOCKED_CAPES.put(uuid, capes);
         }
@@ -130,19 +130,19 @@ public class CapeRegistry extends SavedData {
             if (capeId.isEmpty())
                 continue;
             UUID uuid = entryTag.getUUID("owner");
-            CURRENT_CAPES.put(uuid, ResourceLocation.parse(capeId));
+            CURRENT_CAPES.put(uuid, Identifier.parse(capeId));
         }
 
         return this;
     }
 
     @Nullable
-    public static ResourceLocation getPlayerCapeId(UUID uuid) {
+    public static Identifier getPlayerCapeId(UUID uuid) {
         return CURRENT_CAPES.get(uuid);
     }
 
     @Nullable
-    public static ResourceLocation getPlayerCapeTexture(UUID uuid) {
+    public static Identifier getPlayerCapeTexture(UUID uuid) {
         return ALL_CAPES.getOrDefault(getPlayerCapeId(uuid), null);
     }
 
@@ -152,37 +152,37 @@ public class CapeRegistry extends SavedData {
      * @param uuid The player data used to get what capes the player has through internal maps.
      * @return A list of ResourceLocations containing the cape textures that the player has unlocked.
      */
-    public static Set<ResourceLocation> getUnlockedCapes(UUID uuid) {
+    public static Set<Identifier> getUnlockedCapes(UUID uuid) {
         return UNLOCKED_CAPES.getOrDefault(uuid, Collections.emptySet());
     }
 
     /**
      * Registers a cape.<br>
-     * use {@link RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)} instead of calling this
+     * use {@link RegisterGTCapesEvent#registerCape(Identifier, Identifier)} instead of calling this
      * directly.
      *
      * @param id      An identifier for the cape
      * @param texture The full path to the cape's texture in a resource pack
      *
-     * @see RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)
+     * @see RegisterGTCapesEvent#registerCape(Identifier, Identifier)
      */
     @ApiStatus.Internal
-    public static void registerCape(ResourceLocation id, ResourceLocation texture) {
+    public static void registerCape(Identifier id, Identifier texture) {
         ALL_CAPES.put(id, texture);
     }
 
     /**
      * Registers a cape that will always be unlocked for all players.<br>
-     * use {@link RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)} instead of calling this
+     * use {@link RegisterGTCapesEvent#registerCape(Identifier, Identifier)} instead of calling this
      * directly.
      *
      * @param id      An identifier for the cape
      * @param texture The full path to the cape's texture in a resource pack
      *
-     * @see RegisterGTCapesEvent#registerFreeCape(ResourceLocation, ResourceLocation)
+     * @see RegisterGTCapesEvent#registerFreeCape(Identifier, Identifier)
      */
     @ApiStatus.Internal
-    public static void registerFreeCape(ResourceLocation id, ResourceLocation texture) {
+    public static void registerFreeCape(Identifier id, Identifier texture) {
         registerCape(id, texture);
         FREE_CAPES.add(id);
     }
@@ -194,14 +194,14 @@ public class CapeRegistry extends SavedData {
      *
      * @param owner The UUID of the player to give the cape to
      * @param cape  The cape to give
-     * @see #removeCape(UUID, ResourceLocation)
+     * @see #removeCape(UUID, Identifier)
      */
     @SneakyThrows(CommandSyntaxException.class)
-    public static boolean unlockCape(UUID owner, @NotNull ResourceLocation cape) {
+    public static boolean unlockCape(UUID owner, @NotNull Identifier cape) {
         if (!CapeRegistry.ALL_CAPES.containsKey(cape)) {
             throw ERROR_NO_SUCH_CAPE.create(cape.toString());
         }
-        Set<ResourceLocation> capes = UNLOCKED_CAPES.computeIfAbsent(owner, CapeRegistry::makeSet);
+        Set<Identifier> capes = UNLOCKED_CAPES.computeIfAbsent(owner, CapeRegistry::makeSet);
         if (capes.contains(cape)) {
             return false;
         }
@@ -217,17 +217,17 @@ public class CapeRegistry extends SavedData {
      *
      * @param owner The UUID of the player to take the cape from
      * @param cape  The cape to take
-     * @see #unlockCape(UUID, ResourceLocation)
+     * @see #unlockCape(UUID, Identifier)
      */
     @SneakyThrows(CommandSyntaxException.class)
-    public static boolean removeCape(UUID owner, @NotNull ResourceLocation cape) {
+    public static boolean removeCape(UUID owner, @NotNull Identifier cape) {
         if (!CapeRegistry.ALL_CAPES.containsKey(cape)) {
             throw ERROR_NO_SUCH_CAPE.create(cape.toString());
         }
         if (FREE_CAPES.contains(cape)) {
             return false;
         }
-        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(owner);
+        Set<Identifier> capes = UNLOCKED_CAPES.get(owner);
         if (capes == null || !capes.contains(cape)) {
             return false;
         }
@@ -245,7 +245,7 @@ public class CapeRegistry extends SavedData {
     }
 
     @SneakyThrows(CommandSyntaxException.class)
-    public static void giveRawCape(UUID uuid, @NotNull ResourceLocation cape) {
+    public static void giveRawCape(UUID uuid, @NotNull Identifier cape) {
         if (!CapeRegistry.ALL_CAPES.containsKey(cape)) {
             throw ERROR_NO_SUCH_CAPE.create(cape.toString());
         }
@@ -259,11 +259,11 @@ public class CapeRegistry extends SavedData {
      * @param cape   The cape to set, or {@code null} to remove the current cape.
      */
     @SneakyThrows(CommandSyntaxException.class)
-    public static boolean setActiveCape(UUID player, @Nullable ResourceLocation cape) {
+    public static boolean setActiveCape(UUID player, @Nullable Identifier cape) {
         if (cape != null && !CapeRegistry.ALL_CAPES.containsKey(cape)) {
             throw ERROR_NO_SUCH_CAPE.create(cape.toString());
         }
-        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(player);
+        Set<Identifier> capes = UNLOCKED_CAPES.get(player);
         if (capes == null || cape != null && !capes.contains(cape)) {
             return false;
         }
@@ -289,14 +289,14 @@ public class CapeRegistry extends SavedData {
     public static void detectNewCapes(ServerPlayer serverPlayer) {
         var playerCapes = UNLOCKED_CAPES.get(serverPlayer.getUUID());
         if (playerCapes == null || !new HashSet<>(playerCapes).containsAll(FREE_CAPES)) {
-            for (ResourceLocation cape : FREE_CAPES) {
+            for (Identifier cape : FREE_CAPES) {
                 unlockCape(serverPlayer.getUUID(), cape);
             }
             save();
         }
     }
 
-    private static final Comparator<ResourceLocation> SET_COMPARATOR = (o1, o2) -> {
+    private static final Comparator<Identifier> SET_COMPARATOR = (o1, o2) -> {
         int result = o1.compareTo(o2);
         boolean isFirstFree = FREE_CAPES.contains(o1);
         if (isFirstFree ^ FREE_CAPES.contains(o2)) {
@@ -310,7 +310,7 @@ public class CapeRegistry extends SavedData {
         }
     };
 
-    private static Set<ResourceLocation> makeSet(UUID ignored) {
+    private static Set<Identifier> makeSet(UUID ignored) {
         return new TreeSet<>(SET_COMPARATOR);
     }
 

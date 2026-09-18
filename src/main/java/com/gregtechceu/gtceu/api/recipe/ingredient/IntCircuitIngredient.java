@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.core.mixins.forge.StrictNBTIngredientAccessor;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class IntCircuitIngredient extends StrictNBTIngredient {
 
-    public static final ResourceLocation TYPE = GTCEu.id("circuit");
+    public static final Identifier TYPE = GTCEu.id("circuit");
 
     public static final int CIRCUIT_MIN = 0;
     public static final int CIRCUIT_MAX = 32;

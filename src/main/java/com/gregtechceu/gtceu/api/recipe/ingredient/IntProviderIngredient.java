@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  */
 public class IntProviderIngredient extends Ingredient implements IRangedIngredient<SizedIngredient> {
 
-    public static final ResourceLocation TYPE = GTCEu.id("int_provider");
+    public static final Identifier TYPE = GTCEu.id("int_provider");
     public static final ItemStack[] EMPTY_STACK_ARRAY = new ItemStack[0];
 
     @Getter

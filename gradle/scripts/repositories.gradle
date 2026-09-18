@@ -83,7 +83,7 @@ repositories {
         }
     }
     exclusiveContent { // tterrag - registrate
-        forRepository { maven { url = "https://maven.tterrag.com/" } }
+        forRepository { maven { url = "https://maven.gegy.dev/releases" } }
         filter { includeGroup("com.tterrag.registrate") }
     }
     exclusiveContent { // Curios

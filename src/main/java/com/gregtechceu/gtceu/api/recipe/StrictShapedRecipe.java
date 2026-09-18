@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
     @Getter
     private final boolean matchSize;
 
-    public StrictShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height,
+    public StrictShapedRecipe(Identifier id, String group, CraftingBookCategory category, int width, int height,
                               NonNullList<Ingredient> recipeItems, ItemStack result, boolean matchSize) {
         super(id, group, category, width, height, recipeItems, result);
         this.matchSize = matchSize;
@@ -78,7 +78,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
     public static class Serializer implements RecipeSerializer<StrictShapedRecipe> {
 
         @Override
-        public StrictShapedRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public StrictShapedRecipe fromJson(Identifier recipeId, JsonObject json) {
             String string = GsonHelper.getAsString(json, "group", "");
             CraftingBookCategory craftingBookCategory = CraftingBookCategory.CODEC
                     .byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
@@ -94,7 +94,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
         }
 
         @Override
-        public StrictShapedRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public StrictShapedRecipe fromNetwork(Identifier recipeId, FriendlyByteBuf buffer) {
             int i = buffer.readVarInt();
             int j = buffer.readVarInt();
             String string = buffer.readUtf();

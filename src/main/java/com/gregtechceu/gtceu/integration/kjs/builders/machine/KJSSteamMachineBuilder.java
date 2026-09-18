@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
@@ -32,7 +32,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
     private transient MachineBuilder<?, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
 
-    public KJSSteamMachineBuilder(ResourceLocation id) {
+    public KJSSteamMachineBuilder(Identifier id) {
         super(id);
     }
 

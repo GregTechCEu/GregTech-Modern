@@ -11,7 +11,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -34,12 +34,12 @@ public class FacadeCoverRecipe implements CraftingRecipe {
     public static final RecipeSerializer<FacadeCoverRecipe> SERIALIZER = new RecipeSerializer<>() {
 
         @Override
-        public FacadeCoverRecipe fromJson(ResourceLocation recipeId, JsonObject serializedRecipe) {
+        public FacadeCoverRecipe fromJson(Identifier recipeId, JsonObject serializedRecipe) {
             return INSTANCE;
         }
 
         @Override
-        public FacadeCoverRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public FacadeCoverRecipe fromNetwork(Identifier recipeId, FriendlyByteBuf buffer) {
             return INSTANCE;
         }
 
@@ -47,7 +47,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
         public void toNetwork(FriendlyByteBuf buffer, FacadeCoverRecipe recipe) {}
     };
 
-    public static ResourceLocation ID = GTCEu.id("crafting/facade_cover");
+    public static Identifier ID = GTCEu.id("crafting/facade_cover");
 
     @Override
     public boolean matches(CraftingContainer container, Level level) {
@@ -114,7 +114,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return ID;
     }
 

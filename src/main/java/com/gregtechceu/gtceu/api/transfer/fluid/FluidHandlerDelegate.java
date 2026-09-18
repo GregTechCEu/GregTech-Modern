@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;

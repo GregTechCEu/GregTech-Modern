@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
@@ -31,7 +31,7 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+                           ItemOverrides overrides, Identifier modelLocation) {
         Map<Direction, BakedModel> bakedParts = new IdentityHashMap<>();
         this.parts.forEach((direction, unbaked) -> {
             bakedParts.put(direction, unbaked.bake(baker, spriteGetter, modelState, modelLocation));
@@ -44,7 +44,7 @@ public class UnbakedPipeModel implements IUnbakedGeometry<UnbakedPipeModel> {
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver, IGeometryBakingContext context) {
+    public void resolveParents(Function<Identifier, UnbakedModel> resolver, IGeometryBakingContext context) {
         UnbakedModel missingModel = resolver.apply(ModelBakery.MISSING_MODEL_LOCATION);
 
         Map<Direction, UnbakedModel> copy = new IdentityHashMap<>(this.parts);

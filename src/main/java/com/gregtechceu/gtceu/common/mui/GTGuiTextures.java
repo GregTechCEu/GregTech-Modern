@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.mui.SteamTextureSet;
 import com.gregtechceu.gtceu.api.recipe.gui.ProgressBarTextureSet;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.drawable.ColorType;
@@ -39,7 +39,7 @@ public interface GTGuiTextures {
         String STANDARD_BUTTON = "gtceu:standard_button";
     }
 
-    ResourceLocation MONOCRAFT_FONT = GTCEu.id("monocraft");
+    Identifier MONOCRAFT_FONT = GTCEu.id("monocraft");
 
     // ICONS
 

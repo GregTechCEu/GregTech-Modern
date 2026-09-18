@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.common.data.GTFluids;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -17,9 +17,9 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import java.util.Collection;
@@ -55,7 +55,7 @@ public class PotionFluid extends ForgeFlowingFluid {
     }
 
     public static FluidStack addPotionToFluidStack(FluidStack fluidStack, Potion potion) {
-        ResourceLocation resourcelocation = BuiltInRegistries.POTION.getKey(potion);
+        Identifier resourcelocation = BuiltInRegistries.POTION.getKey(potion);
         if (potion == Potions.EMPTY) {
             fluidStack.removeChildTag("Potion");
             return fluidStack;
@@ -88,14 +88,14 @@ public class PotionFluid extends ForgeFlowingFluid {
 
     public static class PotionFluidType extends FluidType {
 
-        private static final ResourceLocation texture = GTCEu.id("block/fluids/fluid.potion");
+        private static final Identifier texture = GTCEu.id("block/fluids/fluid.potion");
 
         /**
          * Default constructor.
          *
          * @param properties the general properties of the fluid type
          */
-        public PotionFluidType(Properties properties, ResourceLocation still, ResourceLocation flow) {
+        public PotionFluidType(Properties properties, Identifier still, Identifier flow) {
             super(properties);
         }
 
@@ -104,12 +104,12 @@ public class PotionFluid extends ForgeFlowingFluid {
             consumer.accept(new IClientFluidTypeExtensions() {
 
                 @Override
-                public ResourceLocation getStillTexture() {
+                public Identifier getStillTexture() {
                     return texture;
                 }
 
                 @Override
-                public ResourceLocation getFlowingTexture() {
+                public Identifier getFlowingTexture() {
                     return texture;
                 }
 

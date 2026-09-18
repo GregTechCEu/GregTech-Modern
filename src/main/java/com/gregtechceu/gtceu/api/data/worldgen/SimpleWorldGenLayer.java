@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.mojang.serialization.JsonOps;
@@ -13,13 +13,13 @@ import java.util.Set;
 
 public class SimpleWorldGenLayer implements IWorldGenLayer {
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final IWorldGenLayer.RuleTestSupplier target;
     @Getter
-    private final Set<ResourceLocation> levels;
+    private final Set<Identifier> levels;
 
-    public SimpleWorldGenLayer(ResourceLocation id, IWorldGenLayer.RuleTestSupplier target,
-                               Set<ResourceLocation> levels) {
+    public SimpleWorldGenLayer(Identifier id, IWorldGenLayer.RuleTestSupplier target,
+                               Set<Identifier> levels) {
         this.id = id;
         this.target = target;
         this.levels = levels;
@@ -57,7 +57,7 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
     }
 
     @Override
-    public boolean isApplicableForLevel(ResourceLocation level) {
+    public boolean isApplicableForLevel(Identifier level) {
         return levels.contains(level);
     }
 }

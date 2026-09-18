@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class SPacketNotifyCapeChange implements GTNetwork.INetPacket {
 
     public UUID uuid;
-    public ResourceLocation cape;
+    public Identifier cape;
 
     public SPacketNotifyCapeChange(FriendlyByteBuf buf) {
         uuid = buf.readUUID();

@@ -9,12 +9,12 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,11 +29,11 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     @OnlyIn(Dist.CLIENT)
     protected TextureAtlasSprite emissiveSprite = null;
 
-    public SimpleCoverRenderer(ResourceLocation texture) {
+    public SimpleCoverRenderer(Identifier texture) {
         this(texture, null);
     }
 
-    public SimpleCoverRenderer(ResourceLocation texture, ResourceLocation emissiveTexture) {
+    public SimpleCoverRenderer(Identifier texture, Identifier emissiveTexture) {
         ModelEventHelper.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             var atlas = event.getAtlas();
 
@@ -41,7 +41,7 @@ public class SimpleCoverRenderer implements ICoverRenderer {
             if (emissiveTexture != null) {
                 emissiveSprite = atlas.getSprite(emissiveTexture);
             } else {
-                ResourceLocation emissiveTex = texture.withSuffix("_emissive");
+                Identifier emissiveTex = texture.withSuffix("_emissive");
                 if (atlas.getTextureLocations().contains(emissiveTex)) {
                     emissiveSprite = atlas.getSprite(emissiveTex);
                 }

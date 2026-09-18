@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 import org.embeddedt.modernfix.ModernFixClient;
@@ -40,7 +40,7 @@ public class GTModernFixIntegration implements ModernFixClientIntegration {
     }
 
     @Override
-    public BakedModel onBakedModelLoad(ResourceLocation modelLocation, UnbakedModel baseModel,
+    public BakedModel onBakedModelLoad(Identifier modelLocation, UnbakedModel baseModel,
                                        BakedModel model, ModelState state, ModelBakery bakery,
                                        Function<Material, TextureAtlasSprite> textureGetter) {
         // process all model replacers

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class FluidVeinWorldEntry {
     public FluidVeinWorldEntry(@Nullable BedrockFluidDefinition vein, int fluidYield, int operationsRemaining) {
         this(GTMemoizer.memoize(() -> vein));
         if (vein != null) {
-            ResourceLocation key = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(vein);
+            Identifier key = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(vein);
             if (key != null) {
                 this.veinId = key.toString();
             }
@@ -77,7 +77,7 @@ public class FluidVeinWorldEntry {
         if (tag.contains("vein")) {
             veinId = tag.getString("vein");
             vein = GTMemoizer.memoize(() -> {
-                ResourceLocation key = ResourceLocation.parse(veinId);
+                Identifier key = Identifier.parse(veinId);
                 return GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(key);
             });
         } else {

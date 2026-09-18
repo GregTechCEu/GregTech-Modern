@@ -21,12 +21,12 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.fml.ModLoader;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -72,7 +72,7 @@ public class GTRecipeComponents {
             return NBTUtils.toTagCompound(from);
         }
     };
-    public static final RecipeComponent<ResourceLocation> RESOURCE_LOCATION = new RecipeComponent<>() {
+    public static final RecipeComponent<Identifier> RESOURCE_LOCATION = new RecipeComponent<>() {
 
         @Override
         public String componentType() {
@@ -81,7 +81,7 @@ public class GTRecipeComponents {
 
         @Override
         public Class<?> componentClass() {
-            return ResourceLocation.class;
+            return Identifier.class;
         }
 
         @Override
@@ -90,14 +90,14 @@ public class GTRecipeComponents {
         }
 
         @Override
-        public JsonElement write(RecipeJS recipe, ResourceLocation value) {
+        public JsonElement write(RecipeJS recipe, Identifier value) {
             return new JsonPrimitive(value.toString());
         }
 
         @Override
-        public ResourceLocation read(RecipeJS recipe, Object from) {
-            return from instanceof CharSequence c ? ResourceLocation.tryParse(c.toString()) :
-                    ResourceLocation.tryParse(String.valueOf(from));
+        public Identifier read(RecipeJS recipe, Object from) {
+            return from instanceof CharSequence c ? Identifier.tryParse(c.toString()) :
+                    Identifier.tryParse(String.valueOf(from));
         }
 
         @Override
@@ -439,7 +439,7 @@ public class GTRecipeComponents {
                 return new FluidIngredientJS(stack);
             } else if (o instanceof FluidStackJS stackJS) {
                 return new FluidIngredientJS(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt());
-            } else if (o instanceof CharSequence || o instanceof ResourceLocation) {
+            } else if (o instanceof CharSequence || o instanceof Identifier) {
                 var s = o.toString();
 
                 if (s.isEmpty() || s.equals("-") || s.equals("empty") || s.equals("minecraft:empty")) {
@@ -452,7 +452,7 @@ public class GTRecipeComponents {
                     isTag = true;
                 }
                 var split = s.split(" ", 3);
-                ResourceLocation id = ResourceLocation.parse(split[0]);
+                Identifier id = Identifier.parse(split[0]);
                 int amount = UtilsJS.parseInt(split.length >= 2 ? split[1] : "", FluidType.BUCKET_VOLUME);
                 CompoundTag nbt = null;
                 if (split.length == 3) {

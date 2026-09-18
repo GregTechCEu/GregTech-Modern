@@ -57,13 +57,13 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -529,7 +529,7 @@ public class GTMachineUtils {
                                                                      Supplier<? extends Block> casing,
                                                                      Supplier<? extends Block> valve,
                                                                      @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
+                                                                     BiConsumer<MultiblockMachineBuilder<?, ?, ?>, Identifier> rendererSetup) {
         MultiblockMachineBuilder<?, ?, ?> builder = registrate
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
@@ -556,7 +556,7 @@ public class GTMachineUtils {
 
     public static MachineDefinition registerTankValve(GTRegistrate registrate, String name, String displayName,
                                                       boolean isMetal,
-                                                      BiConsumer<MachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
+                                                      BiConsumer<MachineBuilder<?, ?, ?>, Identifier> rendererSetup) {
         MachineBuilder<MachineDefinition, ?, ?> builder = registrate
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
@@ -588,7 +588,7 @@ public class GTMachineUtils {
                                                                   Supplier<? extends Block> casing,
                                                                   Supplier<? extends Block> pipe,
                                                                   Supplier<? extends Block> fireBox,
-                                                                  ResourceLocation texture, BoilerFireboxType firebox,
+                                                                  Identifier texture, BoilerFireboxType firebox,
                                                                   int maxTemperature, int heatSpeed) {
         // spotless:off
         return registrate
@@ -650,8 +650,8 @@ public class GTMachineUtils {
                                                                             Supplier<? extends Block> casing,
                                                                             Supplier<? extends Block> gear,
                                                                             Supplier<? extends Block> intake,
-                                                                            ResourceLocation casingTexture,
-                                                                            ResourceLocation overlayModel) {
+                                                                            Identifier casingTexture,
+                                                                            Identifier overlayModel) {
         return registrate.multiblock(name, holder -> new LargeCombustionEngineMachine(holder, tier))
                 .rotationState(RotationState.ALL)
                 .recipeType(GTRecipeTypes.COMBUSTION_GENERATOR_FUELS)
@@ -701,8 +701,8 @@ public class GTMachineUtils {
                                                                    String name, int tier, GTRecipeType recipeType,
                                                                    Supplier<? extends Block> casing,
                                                                    Supplier<? extends Block> gear,
-                                                                   ResourceLocation casingTexture,
-                                                                   ResourceLocation overlayModel) {
+                                                                   Identifier casingTexture,
+                                                                   Identifier overlayModel) {
         return registerLargeTurbine(registrate, name, tier, recipeType, casing, gear, casingTexture, overlayModel,
                 true);
     }
@@ -711,8 +711,8 @@ public class GTMachineUtils {
                                                                    String name, int tier, GTRecipeType recipeType,
                                                                    Supplier<? extends Block> casing,
                                                                    Supplier<? extends Block> gear,
-                                                                   ResourceLocation casingTexture,
-                                                                   ResourceLocation overlayModel,
+                                                                   Identifier casingTexture,
+                                                                   Identifier overlayModel,
                                                                    boolean needsMuffler) {
         return registrate.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
                 .rotationState(RotationState.ALL)

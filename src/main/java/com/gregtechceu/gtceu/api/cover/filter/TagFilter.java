@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
@@ -81,7 +81,7 @@ public class TagFilter<T, S> extends Filter<T> {
     private boolean testTagExpr(T t) {
         Set<String> tags = tagsSupplier.apply(t)
                 .map(TagKey::location)
-                .map(ResourceLocation::toString)
+                .map(Identifier::toString)
                 .collect(Collectors.toSet());
 
         return matchExpr != null && matchExpr.matches(tags);

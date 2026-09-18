@@ -17,9 +17,9 @@ import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
@@ -100,7 +100,7 @@ public class PlaceholderHandler {
                         packedLight, packedOverlay, tag);
     }
 
-    public static @Nullable ResourceLocation toId(String placeholder) {
+    public static @Nullable Identifier toId(String placeholder) {
         try {
             return GTCEu.id(placeholder);
         } catch (ResourceLocationException e) {
@@ -501,7 +501,7 @@ public class PlaceholderHandler {
             }
             if (prevOpenBracket) {
                 prevOpenBracket = false;
-                ResourceLocation id = toId(s);
+                Identifier id = toId(s);
                 if (id != null && GTRegistries.PLACEHOLDERS.containsKey(id)) {
                     if (GTRegistries.PLACEHOLDERS.get(id).isPure()) {
                         pureStarts.push(everything.length() - 1);

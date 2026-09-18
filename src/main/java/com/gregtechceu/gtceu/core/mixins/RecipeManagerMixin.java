@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.crafting.Recipe;
@@ -29,11 +29,11 @@ import java.util.Map;
 public abstract class RecipeManagerMixin {
 
     @Shadow
-    private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes;
+    private Map<RecipeType<?>, Map<Identifier, Recipe<?>>> recipes;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
-    private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager,
+    private void gtceu$cloneVanillaRecipes(Map<Identifier, JsonElement> map, ResourceManager resourceManager,
                                            ProfilerFiller profiler, CallbackInfo ci) {
         PowerlessJetpack.FUELS.clear();
         for (RecipeType<?> recipeType : ForgeRegistries.RECIPE_TYPES) {

@@ -27,8 +27,8 @@ import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.IForgeShearable;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,9 +43,9 @@ public class ShearBehavior implements IToolBehavior {
     protected ShearBehavior() {/**/}
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == ToolActions.SHEARS_DISARM || action == ToolActions.SHEARS_HARVEST ||
-                action == ToolActions.SHEARS_CARVE;
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+        return action == ItemAbilities.SHEARS_DISARM || action == ItemAbilities.SHEARS_HARVEST ||
+                action == ItemAbilities.SHEARS_CARVE;
     }
 
     @Override

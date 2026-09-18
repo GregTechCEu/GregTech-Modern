@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("unused")
 public class GTBedrockFluids {
 
-    public static final Map<ResourceLocation, BedrockFluidDefinition> toReRegister = new HashMap<>();
+    public static final Map<Identifier, BedrockFluidDefinition> toReRegister = new HashMap<>();
 
     //////////////////////////////////////
     // ******** OVERWORLD ********//
@@ -109,7 +109,7 @@ public class GTBedrockFluids {
         toReRegister.forEach(GTRegistries.BEDROCK_FLUID_DEFINITIONS::registerOrOverride);
     }
 
-    public static BedrockFluidDefinition create(ResourceLocation id,
+    public static BedrockFluidDefinition create(Identifier id,
                                                 Consumer<BedrockFluidDefinition.Builder> consumer) {
         BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(id);
         consumer.accept(builder);

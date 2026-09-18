@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -35,7 +35,7 @@ public class DimensionMarker {
 
     private final MemoizedSupplier<ItemStack> iconSupplier;
 
-    public DimensionMarker(int tier, ResourceLocation itemKey, @Nullable String overrideName) {
+    public DimensionMarker(int tier, Identifier itemKey, @Nullable String overrideName) {
         this.tier = tier;
         this.overrideName = overrideName;
         this.iconSupplier = GTMemoizer.memoize(() -> ForgeRegistries.ITEMS.getDelegate(itemKey)
@@ -54,7 +54,7 @@ public class DimensionMarker {
         return iconSupplier.get();
     }
 
-    public void register(ResourceLocation dimKey) {
+    public void register(Identifier dimKey) {
         if (tier < 0 || tier >= MAX_TIER) {
             throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
         }
@@ -78,11 +78,11 @@ public class DimensionMarker {
         @Nullable
         private String overrideName;
 
-        public Builder(ResourceLocation dimKey) {
+        public Builder(Identifier dimKey) {
             super(dimKey);
         }
 
-        public Builder(ResourceLocation dimKey, Object... args) {
+        public Builder(Identifier dimKey, Object... args) {
             this(dimKey);
         }
 

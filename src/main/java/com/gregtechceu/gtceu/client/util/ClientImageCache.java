@@ -9,9 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -50,11 +50,11 @@ public class ClientImageCache {
                 return LOADING_TEXTURE_MARKER;
             }));
 
-    private static @NotNull ResourceLocation getUrlTextureId(String url) {
+    private static @NotNull Identifier getUrlTextureId(String url) {
         return GTCEu.id("textures/central_monitor/image_" + url.hashCode());
     }
 
-    public static @Nullable ResourceLocation getOrLoadTexture(String url) {
+    public static @Nullable Identifier getOrLoadTexture(String url) {
         AbstractTexture texture = null;
 
         try {

@@ -17,8 +17,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +32,8 @@ public class GrassPathBehavior implements IToolBehavior {
     protected GrassPathBehavior() {/**/}
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == ToolActions.SHOVEL_FLATTEN;
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+        return action == ItemAbilities.SHOVEL_FLATTEN;
     }
 
     @NotNull
@@ -87,14 +87,14 @@ public class GrassPathBehavior implements IToolBehavior {
         BlockPos pos = context.getClickedPos();
         if (level.isEmptyBlock(pos.above())) {
             BlockState state = level.getBlockState(pos);
-            BlockState newState = state.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, true);
+            BlockState newState = state.getToolModifiedState(context, ItemAbilities.SHOVEL_FLATTEN, true);
             return newState != null && newState != state;
         }
         return false;
     }
 
     protected static BlockState getFlattened(BlockState state, UseOnContext context) {
-        return state.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
+        return state.getToolModifiedState(context, ItemAbilities.SHOVEL_FLATTEN, false);
     }
 
     @Override

@@ -7,7 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.*;
 import net.minecraft.world.damagesource.DamageSources;
@@ -34,7 +34,7 @@ public class DamageTypeData {
     private static final List<DamageTypeData> ALL = new ArrayList<>();
 
     public final ResourceKey<DamageType> key;
-    public final ResourceLocation id;
+    public final Identifier id;
     public final DamageType type;
     public final Collection<TagKey<DamageType>> tags;
 
@@ -91,7 +91,7 @@ public class DamageTypeData {
 
         // required
         private String msgId;
-        private ResourceLocation location;
+        private Identifier location;
         // defaulted
         private float exhaustion = 0;
         private DamageScaling scaling = DamageScaling.WHEN_CAUSED_BY_LIVING_NON_PLAYER;
@@ -100,9 +100,9 @@ public class DamageTypeData {
         private final List<TagKey<DamageType>> tags = new ArrayList<>();
 
         /**
-         * Set the ResourceLocation or ID of this type. This is a required field.
+         * Set the Identifier or ID of this type. This is a required field.
          */
-        public DamageTypeData.Builder location(ResourceLocation location) {
+        public DamageTypeData.Builder location(Identifier location) {
             this.location = location;
             return this;
         }
@@ -112,10 +112,10 @@ public class DamageTypeData {
         }
 
         /**
-         * Set both the location and msgId of this type from one ResourceLocation.
+         * Set both the location and msgId of this type from one Identifier.
          * The msgId is set to "namespace.path".
          */
-        public DamageTypeData.Builder simpleId(ResourceLocation location) {
+        public DamageTypeData.Builder simpleId(Identifier location) {
             location(location);
             return msgId(location.toLanguageKey());
         }

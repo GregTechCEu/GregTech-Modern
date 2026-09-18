@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.utils.data.NBTToJsonConverter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,9 +38,9 @@ public class ShapelessRecipeBuilder {
     @Setter
     private int cookingTime;
     @Setter
-    protected ResourceLocation id;
+    protected Identifier id;
 
-    public ShapelessRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapelessRecipeBuilder(@Nullable Identifier id) {
         this.id = id;
     }
 
@@ -80,7 +80,7 @@ public class ShapelessRecipeBuilder {
         return this;
     }
 
-    protected ResourceLocation defaultId() {
+    protected Identifier defaultId() {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
@@ -120,7 +120,7 @@ public class ShapelessRecipeBuilder {
             }
 
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 var ID = id == null ? defaultId() : id;
                 return ID.withPath("shapeless/" + ID.getPath());
             }
@@ -138,7 +138,7 @@ public class ShapelessRecipeBuilder {
 
             @Nullable
             @Override
-            public ResourceLocation getAdvancementId() {
+            public Identifier getAdvancementId() {
                 return null;
             }
         });

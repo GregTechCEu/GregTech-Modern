@@ -41,7 +41,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
@@ -64,12 +64,12 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.fml.ModLoader;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
@@ -465,7 +465,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/hpca/high_power_casing"));
 
     @SuppressWarnings("SameParameterValue")
-    private static BlockEntry<Block> createSidedCasingBlock(String name, ResourceLocation texture) {
+    private static BlockEntry<Block> createSidedCasingBlock(String name, Identifier texture) {
         return REGISTRATE.block(name, Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
@@ -476,7 +476,7 @@ public class GTBlocks {
                 .register();
     }
 
-    private static BlockEntry<Block> createBrickCasingBlock(String name, ResourceLocation texture) {
+    private static BlockEntry<Block> createBrickCasingBlock(String name, Identifier texture) {
         // return createCasingBlock(name, GlassBlock::new, texture, () -> Blocks.GLASS, type);
         return REGISTRATE.block(name, Block::new)
                 .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -488,7 +488,7 @@ public class GTBlocks {
                 .register();
     }
 
-    private static BlockEntry<GlassBlock> createGlassCasingBlock(String name, ResourceLocation texture,
+    private static BlockEntry<GlassBlock> createGlassCasingBlock(String name, Identifier texture,
                                                                  Supplier<Supplier<RenderType>> type) {
         return REGISTRATE.block(name, GlassBlock::new)
                 .initialProperties(() -> Blocks.GLASS)
@@ -501,14 +501,14 @@ public class GTBlocks {
                 .register();
     }
 
-    public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
+    public static BlockEntry<Block> createCasingBlock(String name, Identifier texture) {
         return createCasingBlock(name, Block::new, texture, () -> Blocks.IRON_BLOCK,
                 () -> RenderType::solid);
     }
 
     public static BlockEntry<Block> createCasingBlock(String name,
                                                       NonNullFunction<BlockBehaviour.Properties, Block> blockSupplier,
-                                                      ResourceLocation texture,
+                                                      Identifier texture,
                                                       NonNullSupplier<? extends Block> properties,
                                                       Supplier<Supplier<RenderType>> type) {
         return REGISTRATE.block(name, blockSupplier)
@@ -676,8 +676,8 @@ public class GTBlocks {
             .tag(BlockTags.MINEABLE_WITH_AXE)
             .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
                     GTCEu.id("block/misc/industrial_tnt_side"),
-                    ResourceLocation.withDefaultNamespace("block/tnt_bottom"),
-                    ResourceLocation.withDefaultNamespace("block/tnt_top"))))
+                    Identifier.withDefaultNamespace("block/tnt_bottom"),
+                    Identifier.withDefaultNamespace("block/tnt_top"))))
             .simpleItem()
             .register();
 
@@ -1206,7 +1206,7 @@ public class GTBlocks {
             if (!strata.generateBlocks) continue;
             for (StoneBlockType type : StoneBlockType.values()) {
                 String blockId = type.blockId.formatted(strata.getSerializedName());
-                if (BuiltInRegistries.BLOCK.containsKey(ResourceLocation.parse(blockId))) continue;
+                if (BuiltInRegistries.BLOCK.containsKey(Identifier.parse(blockId))) continue;
                 var entry = REGISTRATE.block(blockId, Block::new)
                         .initialProperties(() -> Blocks.STONE)
                         .properties(p -> p.strength(type.hardness, type.resistance).mapColor(strata.mapColor))

@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
@@ -31,7 +31,7 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Getter
     private final List<DynamicRender<?, ?>> dynamicRenders;
     private final Set<String> replaceableTextures;
-    private final Map<String, ResourceLocation> textureOverrides;
+    private final Map<String, Identifier> textureOverrides;
 
     public UnbakedMachineModel(MachineDefinition definition,
                                Map<MachineRenderState, UnbakedModel> models,
@@ -39,7 +39,7 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
                                List<DynamicRender<?, ?>> dynamicRenders,
 
                                Set<String> replaceableTextures,
-                               Map<String, ResourceLocation> textureOverrides) {
+                               Map<String, Identifier> textureOverrides) {
         this.definition = definition;
         this.models = models;
         this.multiPart = multiPart;
@@ -51,7 +51,7 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+                           ItemOverrides overrides, Identifier modelLocation) {
         Map<String, TextureAtlasSprite> textureOverrides = new HashMap<>();
         for (var entry : this.textureOverrides.entrySet()) {
             Material material = new Material(TextureAtlas.LOCATION_BLOCKS, entry.getValue());
@@ -78,7 +78,7 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver, IGeometryBakingContext context) {
+    public void resolveParents(Function<Identifier, UnbakedModel> resolver, IGeometryBakingContext context) {
         MachineModelLoader.resolveStateModels(this, resolver);
     }
 }

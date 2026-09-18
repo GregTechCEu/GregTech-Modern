@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageSource;
@@ -41,7 +41,7 @@ public class MedicalCondition {
      * the command will display "Player &lt;player&gt; has cancer" instead of "... has Carcinogenic"
      * </p>
      */
-    public final ResourceLocation id;
+    public final Identifier id;
     public final int color;
     public final float maxProgression; // amount of seconds until maximum progression is reached
     public final Set<Symptom.ConfiguredSymptom> symptoms = new HashSet<>();
@@ -58,7 +58,7 @@ public class MedicalCondition {
     @NotNull
     public Consumer<GTRecipeBuilder> recipeModifier = builder -> {};
 
-    public MedicalCondition(ResourceLocation id, int color,
+    public MedicalCondition(Identifier id, int color,
                             int maxProgression, IdleProgressionType progressionType, float progressionRate,
                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
         this.id = id;

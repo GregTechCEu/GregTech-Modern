@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.event.EventJS;
 
@@ -17,13 +17,13 @@ public class GTOreVeinEventJS extends EventJS {
 
     public GTOreVeinEventJS() {}
 
-    public void add(ResourceLocation id, Consumer<GTOreDefinition> consumer) {
+    public void add(Identifier id, Consumer<GTOreDefinition> consumer) {
         var vein = GTOres.blankOreDefinition();
         consumer.accept(vein);
         vein.register(id);
     }
 
-    public void modify(ResourceLocation id, Consumer<GTOreDefinition> consumer) {
+    public void modify(Identifier id, Consumer<GTOreDefinition> consumer) {
         GTOreDefinition vein = GTRegistries.ORE_VEINS.get(id);
 
         if (vein == null)
@@ -33,22 +33,22 @@ public class GTOreVeinEventJS extends EventJS {
         vein.register(id);
     }
 
-    public void modifyAll(BiConsumer<ResourceLocation, GTOreDefinition> consumer) {
-        Set<ResourceLocation> keys = Set.copyOf(GTRegistries.ORE_VEINS.keys());
+    public void modifyAll(BiConsumer<Identifier, GTOreDefinition> consumer) {
+        Set<Identifier> keys = Set.copyOf(GTRegistries.ORE_VEINS.keys());
         keys.forEach(key -> modify(key, vein -> consumer.accept(key, vein)));
     }
 
-    public void remove(ResourceLocation id) {
+    public void remove(Identifier id) {
         GTRegistries.ORE_VEINS.remove(id);
     }
 
     public void removeAll() {
-        Set<ResourceLocation> keys = Set.copyOf(GTRegistries.ORE_VEINS.keys());
+        Set<Identifier> keys = Set.copyOf(GTRegistries.ORE_VEINS.keys());
         keys.forEach(this::remove);
     }
 
-    public void removeAll(BiPredicate<ResourceLocation, GTOreDefinition> predicate) {
-        Set<ResourceLocation> keys = Set.copyOf(GTRegistries.ORE_VEINS.keys());
+    public void removeAll(BiPredicate<Identifier, GTOreDefinition> predicate) {
+        Set<Identifier> keys = Set.copyOf(GTRegistries.ORE_VEINS.keys());
         keys.stream()
                 .filter(key -> predicate.test(key, GTRegistries.ORE_VEINS.get(key)))
                 .forEach(this::remove);

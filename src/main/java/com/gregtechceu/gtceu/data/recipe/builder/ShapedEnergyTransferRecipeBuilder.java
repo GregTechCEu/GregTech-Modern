@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.utils.data.NBTToJsonConverter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +27,7 @@ public class ShapedEnergyTransferRecipeBuilder {
 
     protected ItemStack output = ItemStack.EMPTY;
     protected Ingredient chargeIngredient = Ingredient.EMPTY;
-    protected @Nullable ResourceLocation id;
+    protected @Nullable Identifier id;
     protected @Nullable String group;
     protected boolean transferMaxCharge;
     protected boolean overrideCharge;
@@ -35,7 +35,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     protected List<String[]> shape = new ArrayList<>();
     protected Map<Character, Ingredient> ingredientMap = new LinkedHashMap<>();
 
-    public ShapedEnergyTransferRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapedEnergyTransferRecipeBuilder(@Nullable Identifier id) {
         this.id = id;
     }
 
@@ -106,13 +106,13 @@ public class ShapedEnergyTransferRecipeBuilder {
         return this;
     }
 
-    public ShapedEnergyTransferRecipeBuilder id(ResourceLocation id) {
+    public ShapedEnergyTransferRecipeBuilder id(Identifier id) {
         this.id = id;
         return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder id(String id) {
-        this.id = ResourceLocation.parse(id);
+        this.id = Identifier.parse(id);
         return this;
     }
 
@@ -174,7 +174,7 @@ public class ShapedEnergyTransferRecipeBuilder {
         }
     }
 
-    protected ResourceLocation defaultId() {
+    protected Identifier defaultId() {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
@@ -187,7 +187,7 @@ public class ShapedEnergyTransferRecipeBuilder {
             }
 
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 var ID = id == null ? defaultId() : id;
                 return ID.withPath("shaped/" + ID.getPath());
             }
@@ -205,7 +205,7 @@ public class ShapedEnergyTransferRecipeBuilder {
 
             @Nullable
             @Override
-            public ResourceLocation getAdvancementId() {
+            public Identifier getAdvancementId() {
                 return null;
             }
         });

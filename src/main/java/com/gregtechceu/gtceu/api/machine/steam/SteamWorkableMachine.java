@@ -26,7 +26,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import brachy.modularui.drawable.UITexture;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

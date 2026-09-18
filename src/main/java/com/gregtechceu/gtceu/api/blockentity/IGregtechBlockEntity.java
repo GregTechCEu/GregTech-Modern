@@ -8,11 +8,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.extensions.IForgeBlockEntity;
+import net.neoforged.neoforge.common.extensions.IBlockEntityExtension;
 
 import org.jetbrains.annotations.Nullable;
 
-public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IForgeBlockEntity {
+public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IBlockEntityExtension {
 
     default BlockEntity self() {
         return (BlockEntity) this;

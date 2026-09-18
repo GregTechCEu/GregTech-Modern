@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.block;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import dev.latvian.mods.kubejs.block.BlockBuilder;
@@ -22,7 +22,7 @@ public class ActiveBlockBuilder extends BlockBuilder {
 
     private transient Type type = Type.CUSTOM;
 
-    public ActiveBlockBuilder(ResourceLocation id) {
+    public ActiveBlockBuilder(Identifier id) {
         super(id);
         property(GTBlockStateProperties.ACTIVE);
         renderType("cutout_mipped");

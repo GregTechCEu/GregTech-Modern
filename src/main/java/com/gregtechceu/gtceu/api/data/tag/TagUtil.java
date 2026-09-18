@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -13,11 +13,11 @@ import net.minecraft.world.level.material.Fluid;
 
 public class TagUtil {
 
-    public static <T> TagKey<T> optionalTag(Registry<T> registry, ResourceLocation id) {
+    public static <T> TagKey<T> optionalTag(Registry<T> registry, Identifier id) {
         return TagKey.create(registry.key(), id);
     }
 
-    public static <T> TagKey<T> optionalTag(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation id) {
+    public static <T> TagKey<T> optionalTag(ResourceKey<? extends Registry<T>> registryKey, Identifier id) {
         return TagKey.create(registryKey, id);
     }
 
@@ -28,8 +28,8 @@ public class TagUtil {
      * @return optional tag #forge:path or #minecraft:path
      */
     public static <T> TagKey<T> createTag(Registry<T> registry, String path, boolean vanilla) {
-        if (vanilla) return optionalTag(registry, ResourceLocation.withDefaultNamespace(path));
-        return optionalTag(registry, ResourceLocation.fromNamespaceAndPath("forge", path));
+        if (vanilla) return optionalTag(registry, Identifier.withDefaultNamespace(path));
+        return optionalTag(registry, Identifier.fromNamespaceAndPath("forge", path));
     }
 
     /**
@@ -40,8 +40,8 @@ public class TagUtil {
      */
     public static <T> TagKey<T> createTag(ResourceKey<? extends Registry<T>> registryKey, String path,
                                           boolean vanilla) {
-        if (vanilla) return optionalTag(registryKey, ResourceLocation.withDefaultNamespace(path));
-        return optionalTag(registryKey, ResourceLocation.fromNamespaceAndPath("forge", path));
+        if (vanilla) return optionalTag(registryKey, Identifier.withDefaultNamespace(path));
+        return optionalTag(registryKey, Identifier.fromNamespaceAndPath("forge", path));
     }
 
     /**

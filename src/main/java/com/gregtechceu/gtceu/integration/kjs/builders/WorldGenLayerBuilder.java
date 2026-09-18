@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.level.gen.ruletest.AnyMatchRuleTest;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -19,9 +19,9 @@ import java.util.Set;
 public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
 
     public transient List<IWorldGenLayer.RuleTestSupplier> targets = new ObjectArrayList<>();
-    public transient List<ResourceLocation> dimensions = new ObjectArrayList<>();
+    public transient List<Identifier> dimensions = new ObjectArrayList<>();
 
-    public WorldGenLayerBuilder(ResourceLocation id) {
+    public WorldGenLayerBuilder(Identifier id) {
         super(id);
     }
 
@@ -39,7 +39,7 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
         return this;
     }
 
-    public WorldGenLayerBuilder dimensions(ResourceLocation... dimension) {
+    public WorldGenLayerBuilder dimensions(Identifier... dimension) {
         this.dimensions.addAll(Arrays.asList(dimension));
         return this;
     }

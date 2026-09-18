@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.core.mixins.jei;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.forge.platform.FluidHelper;

@@ -44,7 +44,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
@@ -55,14 +55,14 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 import com.google.common.base.Preconditions;
 import com.tterrag.registrate.builders.ItemBuilder;
@@ -2634,7 +2634,7 @@ public class GTItems {
         return item -> item.attachComponents(components);
     }
 
-    public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
+    public static <T extends Item> NonNullConsumer<T> modelPredicate(Identifier predicate,
                                                                      StackProperty property) {
         return item -> {
             if (GTCEu.isClientSide()) {
@@ -2644,7 +2644,7 @@ public class GTItems {
     }
 
     @SuppressWarnings("deprecation")
-    public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate,
+    public static <T extends Item> NonNullConsumer<T> modelPredicate(Identifier predicate,
                                                                      Supplier<Supplier<ItemPropertyFunction>> property) {
         return item -> {
             if (GTCEu.isClientSide()) {
@@ -2654,10 +2654,10 @@ public class GTItems {
     }
 
     @SuppressWarnings("RedundantCast")
-    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before,
-                                        Collection<ResourceLocation> after) {
-        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)),
-                Arrays.asList((Object[]) after.toArray(ResourceLocation[]::new)));
+    public static void registerToolTier(MaterialToolTier tier, Identifier id, Collection<Identifier> before,
+                                        Collection<Identifier> after) {
+        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(Identifier[]::new)),
+                Arrays.asList((Object[]) after.toArray(Identifier[]::new)));
     }
 
     private static Component itemRateTooltip(int tier) {
@@ -2673,7 +2673,7 @@ public class GTItems {
                 FormattingUtil.formatNumbers(mbPerTick));
     }
 
-    public static ResourceLocation getTierName(Tier tier) {
+    public static Identifier getTierName(Tier tier) {
         return TierSortingRegistry.getName(tier);
     }
 

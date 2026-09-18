@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.dev.datagen;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.settings.KeyMappingLookup;
+import net.neoforged.neoforge.client.settings.KeyMappingLookup;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

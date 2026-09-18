@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
 
-    public static final ResourceLocation TYPE = GTCEu.id("sized");
+    public static final Identifier TYPE = GTCEu.id("sized");
 
     @Getter
     protected int amount;

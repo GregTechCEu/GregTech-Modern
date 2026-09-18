@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -25,7 +25,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient Supplier<Material> materialSupplier;
     @Setter
-    public transient ResourceLocation baseModelLocation;
+    public transient Identifier baseModelLocation;
     @Setter
     public transient Supplier<BlockBehaviour.Properties> templateProperties;
     @Setter
@@ -35,7 +35,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient boolean shouldDropAsItem = false;
 
-    public OreTagPrefixBuilder(ResourceLocation id) {
+    public OreTagPrefixBuilder(Identifier id) {
         super(id);
     }
 

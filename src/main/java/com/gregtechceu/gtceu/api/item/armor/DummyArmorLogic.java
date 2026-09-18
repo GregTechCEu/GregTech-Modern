@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +27,7 @@ public class DummyArmorLogic implements IArmorLogic {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return ResourceLocation.withDefaultNamespace("textures/armor/diamond_layer_0.png");
+    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        return Identifier.withDefaultNamespace("textures/armor/diamond_layer_0.png");
     }
 }

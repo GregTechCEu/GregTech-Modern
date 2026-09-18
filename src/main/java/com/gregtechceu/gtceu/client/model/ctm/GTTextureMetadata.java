@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.model.ctm;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.TriState;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.resources.Resource;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
-public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, TriState bloom) {
+public record GTTextureMetadata(@Nullable Identifier connectionTexture, TriState bloom) {
 
     public static final String SECTION_NAME = GTCEu.MOD_ID;
     public static final MetadataSectionSerializer<GTTextureMetadata> SERIALIZER = new Serializer();
@@ -36,18 +36,18 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, Tr
 
     public GTTextureMetadata {
         // Optional codec fields can't have null as the default value, so we do this instead.
-        // It's impossible to define an entirely empty ResourceLocation in a resource file,
+        // It's impossible to define an entirely empty Identifier in a resource file,
         // as even ":" is converted to "minecraft:". Thus, this should be entirely safe.
         if (connectionTexture == Serializer.EMPTY_CONNECTION) connectionTexture = null;
     }
 
     public static class Serializer implements MetadataSectionSerializer<GTTextureMetadata> {
 
-        protected static final ResourceLocation EMPTY_CONNECTION = ResourceLocation.fromNamespaceAndPath("", "");
+        protected static final Identifier EMPTY_CONNECTION = Identifier.fromNamespaceAndPath("", "");
 
         // spotless:off
         public static final Codec<GTTextureMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("connection_texture", EMPTY_CONNECTION).forGetter(GTTextureMetadata::connectionTexture),
+                Identifier.CODEC.optionalFieldOf("connection_texture", EMPTY_CONNECTION).forGetter(GTTextureMetadata::connectionTexture),
                 TriState.CODEC.optionalFieldOf("bloom", TriState.DEFAULT).forGetter(GTTextureMetadata::bloom)
         ).apply(instance, GTTextureMetadata::new));
         // spotless:on

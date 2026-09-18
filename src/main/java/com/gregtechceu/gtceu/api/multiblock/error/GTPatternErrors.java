@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.fml.ModLoader;
 
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.PATTERN_ERRORS;
 

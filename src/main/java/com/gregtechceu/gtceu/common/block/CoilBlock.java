@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -83,10 +83,10 @@ public class CoilBlock extends ActiveBlock {
         private final Material material;
         @NotNull
         @Getter
-        private final ResourceLocation texture;
+        private final Identifier texture;
 
         CoilType(String name, int coilTemperature, int level, int energyDiscount, Material material,
-                 ResourceLocation texture) {
+                 Identifier texture) {
             this.name = name;
             this.coilTemperature = coilTemperature;
             this.level = level;

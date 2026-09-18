@@ -15,7 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -334,7 +334,7 @@ public class LocalizedHazardSavedData extends SavedData {
             HazardProperty.HazardTrigger trigger = HazardProperty.HazardTrigger.ALL_TRIGGERS
                     .get(zoneTag.getString("trigger"));
 
-            ResourceLocation id = GTCEu.id(zoneTag.getString("condition"));
+            Identifier id = GTCEu.id(zoneTag.getString("condition"));
             if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 return null;
             }

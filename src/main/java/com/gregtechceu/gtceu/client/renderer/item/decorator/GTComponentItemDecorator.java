@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemDecoratorComponent;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IItemDecorator;
+import net.neoforged.neoforge.client.IItemDecorator;
 
 public final class GTComponentItemDecorator implements IItemDecorator {
 

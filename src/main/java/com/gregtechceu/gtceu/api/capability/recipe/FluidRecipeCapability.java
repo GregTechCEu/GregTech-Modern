@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.common.valueprovider.*;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.integration.recipeviewer.entry.fluid.FluidEntryList;
 import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;

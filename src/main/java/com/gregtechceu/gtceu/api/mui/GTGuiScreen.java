@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.mui;
 
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
@@ -10,7 +11,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.IDrawable;
@@ -39,7 +40,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     private Supplier<ItemStack> iconSupplier;
     private Consumer<GTRecipeTypeUILayout.Builder> layout;
 
-    public GTRecipeTypeBuilder(ResourceLocation i) {
+    public GTRecipeTypeBuilder(Identifier i) {
         super(i);
         maxInputs = new Object2IntOpenHashMap<>();
         maxOutputs = new Object2IntOpenHashMap<>();

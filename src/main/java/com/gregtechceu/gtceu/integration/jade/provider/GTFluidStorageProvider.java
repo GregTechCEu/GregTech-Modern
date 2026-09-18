@@ -9,11 +9,11 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMac
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.addon.universal.FluidStorageProvider;
@@ -43,7 +43,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
     INSTANCE;
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return GTCEu.id("custom_fluid_storage");
     }
 
@@ -88,7 +88,7 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
         long capacity = tag.getLong("capacity");
         if (capacity <= 0) return null;
 
-        Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluid")));
+        Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(tag.getString("fluid")));
         CompoundTag nbt = tag.contains("tag") ? tag.getCompound("tag") : null;
         long amount = tag.getLong("amount");
         JadeFluidObject fluidObject = JadeFluidObject.of(fluid, 1000, nbt);

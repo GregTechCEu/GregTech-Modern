@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -210,7 +210,7 @@ public class ArmorProperty implements IMaterialProperty {
     @FunctionalInterface
     public interface CustomTextureGetter {
 
-        ResourceLocation getCustomTexture(ItemStack stack, Entity entity, EquipmentSlot slot, boolean overlay);
+        Identifier getCustomTexture(ItemStack stack, Entity entity, EquipmentSlot slot, boolean overlay);
     }
 
     public class ArmorMaterial implements net.minecraft.world.item.ArmorMaterial {

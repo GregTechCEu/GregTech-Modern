@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.client.model.machine.variant.MultiVariantModel;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.StateDefinition;
 
 import com.google.gson.*;
@@ -30,20 +30,20 @@ public record MultiPartUnbakedModel(StateDefinition<MachineDefinition, MachineRe
     }
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
+    public Collection<Identifier> getDependencies() {
         return this.selectors().stream()
                 .flatMap((selector) -> selector.getVariant().getDependencies().stream())
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> resolver) {
+    public void resolveParents(Function<Identifier, UnbakedModel> resolver) {
         this.selectors().forEach((selector) -> selector.getVariant().resolveParents(resolver));
     }
 
     @Override
     public MultiPartBakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
-                                    ModelState state, ResourceLocation location) {
+                                    ModelState state, Identifier location) {
         MultiPartBakedModel.Builder builder = new MultiPartBakedModel.Builder();
 
         for (MultiPartSelector selector : this.selectors()) {

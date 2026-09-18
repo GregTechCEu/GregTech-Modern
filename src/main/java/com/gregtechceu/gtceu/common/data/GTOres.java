@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -47,7 +47,7 @@ public class GTOres {
     @Getter
     private static int largestIndicatorOffset = 0;
 
-    private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
+    private static final Map<Identifier, GTOreDefinition> toReRegister = new HashMap<>();
 
     //////////////////////////////////////
     // ******** End Vein *********//
@@ -703,7 +703,7 @@ public class GTOres {
         return create(GTCEu.id(name), config);
     }
 
-    public static GTOreDefinition create(ResourceLocation name, Consumer<GTOreDefinition> config) {
+    public static GTOreDefinition create(Identifier name, Consumer<GTOreDefinition> config) {
         GTOreDefinition def = blankOreDefinition();
         config.accept(def);
 
@@ -716,13 +716,13 @@ public class GTOres {
     private static Supplier<? extends Block> ore(TagPrefix oreTag, Material material) {
         var block = GTMaterialBlocks.MATERIAL_BLOCKS.get(oreTag, material);
         if (block == null) {
-            ResourceLocation oreKey;
+            Identifier oreKey;
             if (oreTag == ore) {
-                oreKey = ResourceLocation.tryParse("%s_ore".formatted(material.getName()));
+                oreKey = Identifier.tryParse("%s_ore".formatted(material.getName()));
             } else if (oreTag == oreNetherrack) {
-                oreKey = ResourceLocation.tryParse("nether_%s_ore".formatted(material.getName()));
+                oreKey = Identifier.tryParse("nether_%s_ore".formatted(material.getName()));
             } else {
-                oreKey = ResourceLocation.tryParse("%s_%s_ore".formatted(oreTag.name, material.getName()));
+                oreKey = Identifier.tryParse("%s_%s_ore".formatted(oreTag.name, material.getName()));
             }
             return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) :
                     () -> Blocks.AIR;

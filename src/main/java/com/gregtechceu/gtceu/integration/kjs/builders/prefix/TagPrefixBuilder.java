@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -33,7 +33,7 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     @Getter
     private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
-    public TagPrefixBuilder(ResourceLocation id) {
+    public TagPrefixBuilder(Identifier id) {
         super(id);
         this.base = create(id.getPath());
     }
@@ -121,7 +121,7 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     }
 
     public TagPrefixBuilder miningToolTag(String path) {
-        this.miningToolTag(TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(path)));
+        this.miningToolTag(TagKey.create(Registries.BLOCK, Identifier.tryParse(path)));
         return this;
     }
 

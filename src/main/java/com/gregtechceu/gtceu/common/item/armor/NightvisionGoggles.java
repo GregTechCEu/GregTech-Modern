@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -85,7 +85,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+    public Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return GTCEu.id("textures/armor/nightvision_goggles.png");
     }
 

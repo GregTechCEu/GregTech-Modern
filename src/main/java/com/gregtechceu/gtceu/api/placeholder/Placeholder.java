@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.common.capability.PlaceholderSavedData;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class Placeholder {
 
     @Getter
-    private final ResourceLocation id;
+    private final Identifier id;
 
     @Getter
     private final String name;
@@ -28,7 +28,7 @@ public abstract class Placeholder {
         this.name = str;
     }
 
-    public Placeholder(ResourceLocation id) {
+    public Placeholder(Identifier id) {
         this.id = id;
         this.name = id.getPath();
     }

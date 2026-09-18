@@ -18,8 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,8 +38,8 @@ public class HoeGroundBehavior implements IToolBehavior {
     protected HoeGroundBehavior() {/**/}
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == ToolActions.HOE_TILL;
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+        return action == ItemAbilities.HOE_TILL;
     }
 
     @NotNull
@@ -88,7 +88,7 @@ public class HoeGroundBehavior implements IToolBehavior {
 
     protected static boolean isBlockTillable(UseOnContext context) {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, true);
+        BlockState newState = state.getToolModifiedState(context, ItemAbilities.HOE_TILL, true);
         return newState != null && newState != state;
     }
 
@@ -97,7 +97,7 @@ public class HoeGroundBehavior implements IToolBehavior {
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
 
-        BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
+        BlockState newState = state.getToolModifiedState(context, ItemAbilities.HOE_TILL, false);
         if (newState != null && newState != state) {
             level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(context.getPlayer(), newState));
             return level.setBlock(pos, newState, Block.UPDATE_ALL_IMMEDIATE);

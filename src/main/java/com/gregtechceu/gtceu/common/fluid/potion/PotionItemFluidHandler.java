@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.fluid.potion;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 
 import org.jetbrains.annotations.NotNull;
 

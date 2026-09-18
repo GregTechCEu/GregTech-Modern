@@ -15,7 +15,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
@@ -41,13 +41,13 @@ public abstract class RecipeCapability<T> {
             RecipeCapability::ingredientCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
-    public final ResourceLocation id;
+    public final Identifier id;
     public final int color;
     public final boolean doRenderSlot;
     public final int sortIndex;
     public final IContentSerializer<T> serializer;
 
-    protected RecipeCapability(ResourceLocation id, int color, boolean doRenderSlot, int sortIndex,
+    protected RecipeCapability(Identifier id, int color, boolean doRenderSlot, int sortIndex,
                                IContentSerializer<T> serializer) {
         this.id = id;
         this.color = color;
@@ -57,7 +57,7 @@ public abstract class RecipeCapability<T> {
     }
 
     /**
-     * @deprecated Use {@link #RecipeCapability(ResourceLocation, int, boolean, int, IContentSerializer)}
+     * @deprecated Use {@link #RecipeCapability(Identifier, int, boolean, int, IContentSerializer)}
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,

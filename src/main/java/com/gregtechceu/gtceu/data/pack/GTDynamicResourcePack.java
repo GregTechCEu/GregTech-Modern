@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
@@ -79,11 +79,11 @@ public class GTDynamicResourcePack implements PackResources {
         CONTENTS.clearData();
     }
 
-    public static void addResource(ResourceLocation location, JsonElement obj) {
+    public static void addResource(Identifier location, JsonElement obj) {
         addResource(location, obj.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    public static void addResource(ResourceLocation location, byte[] data) {
+    public static void addResource(Identifier location, byte[] data) {
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeJson(location, null, parent, data);
@@ -91,14 +91,14 @@ public class GTDynamicResourcePack implements PackResources {
         CONTENTS.addToData(location, data);
     }
 
-    public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
+    public static void addBlockModel(Identifier loc, JsonElement obj) {
         if (!loc.getPath().startsWith("block/")) {
             loc = loc.withPrefix("block/");
         }
         addModel(loc, obj);
     }
 
-    public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
+    public static void addBlockModel(Identifier loc, Supplier<JsonElement> obj) {
         addBlockModel(loc, obj.get());
     }
 
@@ -106,7 +106,7 @@ public class GTDynamicResourcePack implements PackResources {
         addBlockModel(builder.getLocation(), builder.toJson());
     }
 
-    public static void addItemModel(ResourceLocation loc, JsonElement obj) {
+    public static void addItemModel(Identifier loc, JsonElement obj) {
         if (!loc.getPath().startsWith("item/")) {
             loc = loc.withPrefix("item/");
         }
@@ -117,16 +117,16 @@ public class GTDynamicResourcePack implements PackResources {
         addItemModel(builder.getLocation(), builder.toJson());
     }
 
-    public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
+    public static void addItemModel(Identifier loc, Supplier<JsonElement> obj) {
         addItemModel(loc, obj.get());
     }
 
-    public static void addModel(ResourceLocation loc, JsonElement obj) {
+    public static void addModel(Identifier loc, JsonElement obj) {
         loc = MODEL_ID_CONVERTER.idToFile(loc);
         addResource(loc, obj);
     }
 
-    public static void addModel(ResourceLocation loc, Supplier<JsonElement> obj) {
+    public static void addModel(Identifier loc, Supplier<JsonElement> obj) {
         addModel(loc, obj.get());
     }
 
@@ -134,12 +134,12 @@ public class GTDynamicResourcePack implements PackResources {
         addModel(builder.getLocation(), builder.toJson());
     }
 
-    public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
+    public static void addBlockState(Identifier loc, JsonElement stateJson) {
         loc = BLOCKSTATE_ID_CONVERTER.idToFile(loc);
         addResource(loc, stateJson);
     }
 
-    public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
+    public static void addBlockState(Identifier loc, Supplier<JsonElement> generator) {
         addBlockState(loc, generator.get());
     }
 
@@ -147,19 +147,19 @@ public class GTDynamicResourcePack implements PackResources {
         addBlockState(BuiltInRegistries.BLOCK.getKey(generator.getBlock()), generator.get());
     }
 
-    public static void addAtlasSpriteSource(ResourceLocation atlasLoc, SpriteSource source) {
+    public static void addAtlasSpriteSource(Identifier atlasLoc, SpriteSource source) {
         addAtlasSpriteSourceList(atlasLoc, Collections.singletonList(source));
     }
 
-    public static void addAtlasSpriteSourceList(ResourceLocation loc, List<SpriteSource> sources) {
+    public static void addAtlasSpriteSourceList(Identifier loc, List<SpriteSource> sources) {
         loc = ATLAS_ID_CONVERTER.idToFile(loc);
         JsonElement sourceJson = SpriteSources.FILE_CODEC.encodeStart(JsonOps.INSTANCE, sources)
                 .getOrThrow(false, error -> GTCEu.LOGGER.error("Failed to encode atlas sprite source. {}", error));
         addResource(loc, sourceJson);
     }
 
-    public static void addBlockTexture(ResourceLocation loc, byte[] data) {
-        ResourceLocation l = getTextureLocation("block", loc);
+    public static void addBlockTexture(Identifier loc, byte[] data) {
+        Identifier l = getTextureLocation("block", loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeByteArray(l, null, parent, data);
@@ -167,8 +167,8 @@ public class GTDynamicResourcePack implements PackResources {
         CONTENTS.addToData(l, data);
     }
 
-    public static void addItemTexture(ResourceLocation loc, byte[] data) {
-        ResourceLocation l = getTextureLocation("item", loc);
+    public static void addItemTexture(Identifier loc, byte[] data) {
+        Identifier l = getTextureLocation("item", loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/assets");
             writeByteArray(l, null, parent, data);
@@ -177,7 +177,7 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     @ApiStatus.Internal
-    public static void writeByteArray(ResourceLocation id, @Nullable String subdir, Path parent, byte[] data) {
+    public static void writeByteArray(Identifier id, @Nullable String subdir, Path parent, byte[] data) {
         try {
             Path file;
             if (subdir != null) {
@@ -206,7 +206,7 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     @Override
-    public @Nullable IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
+    public @Nullable IoSupplier<InputStream> getResource(PackType type, Identifier location) {
         if (type == PackType.CLIENT_RESOURCES) {
             return CONTENTS.getResource(location);
         }
@@ -250,7 +250,7 @@ public class GTDynamicResourcePack implements PackResources {
         // NOOP
     }
 
-    public static ResourceLocation getTextureLocation(@Nullable String path, ResourceLocation textureId) {
+    public static Identifier getTextureLocation(@Nullable String path, Identifier textureId) {
         if (path == null) {
             return TEXTURE_ID_CONVERTER.idToFile(textureId);
         }

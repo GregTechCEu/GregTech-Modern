@@ -11,7 +11,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.network.NetworkEvent;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class SPacketSyncBedrockOreVeins implements GTNetwork.INetPacket {
 
-    private final Map<ResourceLocation, BedrockOreDefinition> veins;
+    private final Map<Identifier, BedrockOreDefinition> veins;
 
     @SuppressWarnings("unused")
     public SPacketSyncBedrockOreVeins() {
@@ -34,7 +34,7 @@ public class SPacketSyncBedrockOreVeins implements GTNetwork.INetPacket {
         this();
         RegistryOps<Tag> ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         Stream.generate(() -> {
-            ResourceLocation id = buf.readResourceLocation();
+            Identifier id = buf.readResourceLocation();
             CompoundTag tag = buf.readAnySizeNbt();
             BedrockOreDefinition def = BedrockOreDefinition.FULL_CODEC.parse(ops, tag).getOrThrow(false,
                     GTCEu.LOGGER::error);

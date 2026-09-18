@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +55,7 @@ public class OreVeinWorldEntry {
         info.operationsRemaining = tag.getInt("operationsRemaining");
 
         if (tag.contains("vein")) {
-            ResourceLocation id = ResourceLocation.parse(tag.getString("vein"));
+            Identifier id = Identifier.parse(tag.getString("vein"));
             if (GTRegistries.BEDROCK_ORE_DEFINITIONS.containsKey(id)) {
                 info.definition = GTRegistries.BEDROCK_ORE_DEFINITIONS.get(id);
             }

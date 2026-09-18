@@ -8,11 +8,11 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -49,15 +49,15 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
         if (tag instanceof CompoundTag compoundTag) {
             result = GTRecipeSerializer.CODEC.parse(context.nbtOps(), compoundTag.get("recipe")).result().orElse(null);
             if (result != null) {
-                result.id = ResourceLocation.parse(compoundTag.getString("id"));
+                result.id = Identifier.parse(compoundTag.getString("id"));
                 result.ocLevel = compoundTag.getInt("ocLevel");
             }
         } else if (tag instanceof StringTag stringTag) { // Backwards Compatibility
-            var recipe = recipeManager.byKey(ResourceLocation.parse(stringTag.getAsString())).orElse(null);
+            var recipe = recipeManager.byKey(Identifier.parse(stringTag.getAsString())).orElse(null);
             if (recipe instanceof GTRecipe gtRecipe) {
                 result = gtRecipe;
             } else if (recipe instanceof SmeltingRecipe smeltingRecipe) {
-                result = GTRecipeTypes.FURNACE_RECIPES.toGTrecipe(ResourceLocation.parse(stringTag.getAsString()),
+                result = GTRecipeTypes.FURNACE_RECIPES.toGTrecipe(Identifier.parse(stringTag.getAsString()),
                         smeltingRecipe);
             }
         } else if (tag instanceof ByteArrayTag byteArray) { // Backwards Compatibility

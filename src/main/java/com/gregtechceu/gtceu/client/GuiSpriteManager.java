@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.TextureAtlasHolder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
 // TODO delete, handled in MUI
 public class GuiSpriteManager extends TextureAtlasHolder {
 
-    public static final ResourceLocation LOCATION_GUI = GTCEu.id("textures/atlas/gui.png");
+    public static final Identifier LOCATION_GUI = GTCEu.id("textures/atlas/gui.png");
 
-    private static final ResourceLocation atlasInfoLocation = GTCEu.id("gui");
+    private static final Identifier atlasInfoLocation = GTCEu.id("gui");
     private static GuiSpriteManager instance = null;
 
     GuiSpriteManager(TextureManager textureManager) {
@@ -44,7 +44,7 @@ public class GuiSpriteManager extends TextureAtlasHolder {
      * Gets a sprite associated with the passed resource location.
      */
     @Override
-    public @NotNull TextureAtlasSprite getSprite(@NotNull ResourceLocation location) {
+    public @NotNull TextureAtlasSprite getSprite(@NotNull Identifier location) {
         return super.getSprite(location);
     }
 }

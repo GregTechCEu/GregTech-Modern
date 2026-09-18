@@ -24,12 +24,12 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -144,7 +144,7 @@ public final class Material implements Comparable<Material> {
         GTRegistries.MATERIALS.register(getResourceLocation(), this);
     }
 
-    public ResourceLocation getID() {
+    public Identifier getID() {
         return materialInfo.resourceLocation;
     }
 
@@ -501,7 +501,7 @@ public final class Material implements Comparable<Material> {
     }
 
     @NotNull
-    public ResourceLocation getResourceLocation() {
+    public Identifier getResourceLocation() {
         return materialInfo.resourceLocation;
     }
 
@@ -603,7 +603,7 @@ public final class Material implements Comparable<Material> {
          *                         "material.<name>" for the Translation Key.
          * @since GTCEu 2.0.0
          */
-        public Builder(ResourceLocation resourceLocation) {
+        public Builder(Identifier resourceLocation) {
             super(resourceLocation);
             String name = resourceLocation.getPath();
             if (name.charAt(name.length() - 1) == '_')
@@ -1885,7 +1885,7 @@ public final class Material implements Comparable<Material> {
          * <p>
          * Required.
          */
-        private final ResourceLocation resourceLocation;
+        private final Identifier resourceLocation;
 
         @Setter
         @Getter
@@ -1938,7 +1938,7 @@ public final class Material implements Comparable<Material> {
         @Setter
         private Element element;
 
-        private MaterialInfo(ResourceLocation resourceLocation) {
+        private MaterialInfo(Identifier resourceLocation) {
             this.resourceLocation = resourceLocation;
         }
 

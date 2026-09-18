@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -29,7 +29,7 @@ public final class RecipeManagerHandler {
      * @param gtRecipeType the recipe type to add the recipes to, which owns the proxy recipes
      * @param proxyRecipes the list of proxy recipes to populate
      */
-    public static void addProxyRecipesToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
+    public static void addProxyRecipesToLookup(@NotNull Map<Identifier, Recipe<?>> recipesByID,
                                                @NotNull GTRecipeType gtRecipeType, @NotNull RecipeType<?> proxyType,
                                                @NotNull List<GTRecipe> proxyRecipes) {
         var lookup = gtRecipeType.getAdditionHandler();
@@ -51,7 +51,7 @@ public final class RecipeManagerHandler {
      * @param recipesByID  the recipes stored by their ID
      * @param gtRecipeType the recipe type to add recipes to
      */
-    public static void addRecipesToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
+    public static void addRecipesToLookup(@NotNull Map<Identifier, Recipe<?>> recipesByID,
                                           @NotNull GTRecipeType gtRecipeType) {
         var lookup = gtRecipeType.getAdditionHandler();
         for (var r : recipesByID.values()) {

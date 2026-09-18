@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -27,10 +27,10 @@ public abstract class MachineInfoProvider<T extends MetaMachine, TagType extends
                                          implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Getter
-    private final ResourceLocation uid;
+    private final Identifier uid;
     public final Class<T> machineType;
 
-    public MachineInfoProvider(ResourceLocation uid, Class<T> type) {
+    public MachineInfoProvider(Identifier uid, Class<T> type) {
         this.uid = uid;
         machineType = type;
     }

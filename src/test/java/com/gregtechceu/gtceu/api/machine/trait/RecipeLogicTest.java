@@ -15,7 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -83,7 +83,7 @@ public class RecipeLogicTest {
         CR_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
-    private static ResourceLocation lcrRecipeId(String name) {
+    private static Identifier lcrRecipeId(String name) {
         return GTCEu.id(LCR_RECIPE_TYPE.registryName.getPath() + "/" + name);
     }
 
@@ -216,7 +216,7 @@ public class RecipeLogicTest {
         helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s)".formatted(stackCount));
 
         // Save a reference to the old recipe so we can make sure it's getting reused
-        ResourceLocation prev = recipeLogic.getLastRecipe().getId();
+        Identifier prev = recipeLogic.getLastRecipe().getId();
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         recipeLogic.serverTick();

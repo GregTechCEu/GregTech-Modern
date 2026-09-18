@@ -16,21 +16,21 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import com.tterrag.registrate.AbstractRegistrate;
@@ -70,8 +70,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         super(modId);
     }
 
-    public ResourceLocation makeResourceLocation(String path) {
-        return ResourceLocation.fromNamespaceAndPath(this.getModid(), path);
+    public Identifier makeResourceLocation(String path) {
+        return Identifier.fromNamespaceAndPath(this.getModid(), path);
     }
 
     /**
@@ -175,8 +175,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         });
     }
 
-    public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture,
-                                       ResourceLocation flowingTexture) {
+    public IGTFluidBuilder createFluid(String name, String langKey, Material material, Identifier stillTexture,
+                                       Identifier flowingTexture) {
         return entry(name,
                 callback -> new GTFluidBuilder<>(this, this, material, name, langKey, callback, stillTexture,
                         flowingTexture, GTFluidBuilder::defaultFluidType).defaultLang().defaultSource()
@@ -185,7 +185,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public <DEFINITION extends MachineDefinition,
             MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
-                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
+                                                                                        Function<Identifier, DEFINITION> definitionFactory,
                                                                                         BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                                                                                         BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                                                         MachineInstanceFactory<MACHINE> blockEntityFactory) {
@@ -217,7 +217,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return new SoundEntryBuilder(GTCEu.id(name));
     }
 
-    public SoundEntryBuilder sound(ResourceLocation name) {
+    public SoundEntryBuilder sound(Identifier name) {
         return new SoundEntryBuilder(name);
     }
 

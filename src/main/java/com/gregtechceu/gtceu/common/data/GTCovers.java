@@ -18,8 +18,8 @@ import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
+import net.minecraft.resources.Identifier;
+import net.neoforged.fml.ModLoader;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
@@ -125,7 +125,7 @@ public class GTCovers {
         return register(GTCEu.id(id), behaviorCreator, coverRenderer);
     }
 
-    public static CoverDefinition register(ResourceLocation id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
+    public static CoverDefinition register(Identifier id, CoverDefinition.CoverBehaviourProvider behaviorCreator,
                                            Supplier<Supplier<ICoverRenderer>> coverRenderer) {
         var definition = new CoverDefinition(id, behaviorCreator, coverRenderer);
         GTRegistries.COVERS.register(definition.getId(), definition);

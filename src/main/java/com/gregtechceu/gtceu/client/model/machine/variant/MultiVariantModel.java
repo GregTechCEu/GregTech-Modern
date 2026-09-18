@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.client.model.machine.variant;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.SimpleModelState;
 
 import com.google.gson.*;
@@ -31,14 +31,14 @@ public record MultiVariantModel(List<VariantState> variants) implements UnbakedM
         }
     }
 
-    public @NotNull Collection<ResourceLocation> getDependencies() {
+    public @NotNull Collection<Identifier> getDependencies() {
         return this.variants.stream()
                 .map(VariantState::getModel)
                 .flatMap(either -> either.map(Stream::of, model -> model.getDependencies().stream()))
                 .collect(Collectors.toSet());
     }
 
-    public void resolveParents(@NotNull Function<ResourceLocation, UnbakedModel> resolver) {
+    public void resolveParents(@NotNull Function<Identifier, UnbakedModel> resolver) {
         this.variants.forEach((variant) -> {
             UnbakedModel model = variant.getModel().map(resolver, Function.identity());
             variant.setResolvedModel(model);
@@ -48,7 +48,7 @@ public record MultiVariantModel(List<VariantState> variants) implements UnbakedM
 
     public @Nullable BakedModel bake(@NotNull ModelBaker baker,
                                      @NotNull Function<Material, TextureAtlasSprite> spriteGetter,
-                                     @NotNull ModelState state, @NotNull ResourceLocation location) {
+                                     @NotNull ModelState state, @NotNull Identifier location) {
         if (this.variants.isEmpty()) {
             return null;
         } else {

@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
+import net.minecraft.resources.Identifier;
+import net.neoforged.fml.ModLoader;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -126,7 +126,7 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputFluids(CarbonMonoxide.getFluid(1000)));
 
-    public static MedicalCondition register(ResourceLocation id, int color,
+    public static MedicalCondition register(Identifier id, int color,
                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType,
                                             float progressionRate, boolean canBePermanent,
                                             Symptom.ConfiguredSymptom... symptoms) {

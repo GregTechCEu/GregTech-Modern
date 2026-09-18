@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.client.util.SpriteFunctionWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,11 +20,11 @@ public abstract class ModelBakerImplMixin {
     @SuppressWarnings("NameDoesntMatchTargetClass")
     // Note: We don't remap this method as it's added by forge
     @ModifyVariable(at = @At("HEAD"),
-                    method = "bake(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/resources/model/ModelState;Ljava/util/function/Function;)Lnet/minecraft/client/resources/model/BakedModel;",
+                    method = "bake(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/resources/model/ModelState;Ljava/util/function/Function;)Lnet/minecraft/client/resources/model/BakedModel;",
                     argsOnly = true,
                     remap = false)
     private Function<Material, TextureAtlasSprite> gtceu$injectTextureScraper(Function<Material, TextureAtlasSprite> spriteGetter,
-                                                                              ResourceLocation modelLocation,
+                                                                              Identifier modelLocation,
                                                                               ModelState transform) {
         return new SpriteFunctionWrapper(spriteGetter, modelLocation);
     }

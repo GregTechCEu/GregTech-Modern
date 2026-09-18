@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.IFusionCasingType;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class FusionCasingBlock extends ActiveBlock {
         }
 
         @Override
-        public ResourceLocation getTexture() {
+        public Identifier getTexture() {
             return GTCEu.id("block/casings/fusion/%s".formatted(this.name));
         }
     }

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.UISettings;

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,9 +27,9 @@ public abstract class CapabilityBlockProvider<C>
                                              implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Getter
-    public final ResourceLocation uid;
+    public final Identifier uid;
 
-    protected CapabilityBlockProvider(ResourceLocation uid) {
+    protected CapabilityBlockProvider(Identifier uid) {
         this.uid = uid;
     }
 

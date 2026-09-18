@@ -11,15 +11,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import lombok.With;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +101,7 @@ public record SpoilContext(@Nullable Level level,
 
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        if (level != null) tag.putString("level", level.dimensionTypeId().location().toString());
+        if (level != null) tag.putString("level", level.dimension().identifier().toString());
         if (pos != null) tag.putLong("pos", pos.asLong());
         if (entity != null) tag.putInt("entity", entity.getId());
         if (slot != -1) tag.putInt("slot", slot);
@@ -115,23 +115,23 @@ public record SpoilContext(@Nullable Level level,
         if (tag.contains("level")) {
             ctx = ctx.withLevel(ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(
                     Registries.DIMENSION,
-                    new ResourceLocation(tag.getString("level")))));
+                    Identifier.parse(tag.getStringOr("level", "minecraft:overworld")))));
         }
         if (tag.contains("pos")) {
-            ctx = ctx.withPos(BlockPos.of(tag.getLong("pos")));
+            ctx = ctx.withPos(BlockPos.of(tag.getLongOr("pos", 0L)));
         }
         if (tag.contains("entity") && ctx.level != null) {
-            ctx = ctx.withEntity(ctx.level.getEntity(tag.getInt("entity")));
+            ctx = ctx.withEntity(ctx.level.getEntity(tag.getIntOr("entity", 0)));
         }
         if (tag.contains("slot")) {
-            ctx = ctx.withSlot(tag.getInt("slot"));
+            ctx = ctx.withSlot(tag.getIntOr("slot", -1));
         }
         if (tag.contains("handlerSource")) {
             ctx = ctx.withItemHandlerSource(
-                    ItemHandlerSource.getById(new ResourceLocation(tag.getString("handlerSource"))));
+                    ItemHandlerSource.getById(Identifier.parse(tag.getStringOr("handlerSource", "minecraft:unknown"))));
         }
         if (tag.contains("handlerData")) {
-            ctx = ctx.withItemHandlerData(tag.getCompound("handlerData"));
+            ctx = ctx.withItemHandlerData(tag.getCompoundOrEmpty("handlerData"));
         }
         return ctx;
     }
@@ -145,7 +145,7 @@ public record SpoilContext(@Nullable Level level,
      */
     public static abstract class ItemHandlerSource {
 
-        private static final Map<ResourceLocation, ItemHandlerSource> HANDLER_SOURCES = new HashMap<>();
+        private static final Map<Identifier, ItemHandlerSource> HANDLER_SOURCES = new HashMap<>();
 
         /**
          * Represents getting an item handler as a capability of a block, with an optional "side" key in
@@ -181,18 +181,18 @@ public record SpoilContext(@Nullable Level level,
             }
         };
 
-        private static ItemHandlerSource getById(ResourceLocation id) {
+        private static ItemHandlerSource getById(Identifier id) {
             return HANDLER_SOURCES.get(id);
         }
 
-        private final ResourceLocation id;
+        private final Identifier id;
 
-        public ItemHandlerSource(ResourceLocation id) {
+        public ItemHandlerSource(Identifier id) {
             this.id = id;
             HANDLER_SOURCES.put(id, this);
         }
 
-        private ResourceLocation getId() {
+        private Identifier getId() {
             return id;
         }
 

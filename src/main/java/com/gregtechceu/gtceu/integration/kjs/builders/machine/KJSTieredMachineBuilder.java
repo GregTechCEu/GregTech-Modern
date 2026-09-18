@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.google.common.base.Preconditions;
 import dev.latvian.mods.kubejs.client.LangEventJS;
@@ -47,13 +47,13 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition[]> {
     @Setter
     public transient boolean isGenerator = false;
 
-    public KJSTieredMachineBuilder(ResourceLocation id) {
+    public KJSTieredMachineBuilder(Identifier id) {
         super(id);
         this.addDefaultTooltips = false;
         this.addDefaultModel = false;
     }
 
-    public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
+    public KJSTieredMachineBuilder(Identifier id, TieredCreationFunction machine,
                                    boolean isGenerator) {
         super(id);
         this.machine = machine;

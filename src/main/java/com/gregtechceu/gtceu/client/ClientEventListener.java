@@ -22,7 +22,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -32,16 +32,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -78,7 +78,7 @@ public class ClientEventListener {
         FacadeCoverRenderer.clearItemModelCache();
     }
 
-    private static final Map<UUID, ResourceLocation> DEFAULT_CAPES = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, Identifier> DEFAULT_CAPES = new Object2ObjectOpenHashMap<>();
 
     @SubscribeEvent
     public static void onPlayerRender(RenderPlayerEvent.Pre event) {
@@ -86,10 +86,10 @@ public class ClientEventListener {
         AbstractClientPlayerAccessor clientPlayer = (AbstractClientPlayerAccessor) player;
         if (clientPlayer.gtceu$getPlayerInfo() != null) {
             PlayerInfoAccessor playerInfo = ((PlayerInfoAccessor) clientPlayer.gtceu$getPlayerInfo());
-            Map<MinecraftProfileTexture.Type, ResourceLocation> playerTextures = playerInfo.getTextureLocations();
+            Map<MinecraftProfileTexture.Type, Identifier> playerTextures = playerInfo.getTextureLocations();
 
             UUID uuid = player.getUUID();
-            ResourceLocation defaultPlayerCape;
+            Identifier defaultPlayerCape;
             if (!DEFAULT_CAPES.containsKey(uuid)) {
                 defaultPlayerCape = playerTextures.get(MinecraftProfileTexture.Type.CAPE);
                 DEFAULT_CAPES.put(uuid, defaultPlayerCape);
@@ -97,7 +97,7 @@ public class ClientEventListener {
                 defaultPlayerCape = DEFAULT_CAPES.get(uuid);
             }
 
-            ResourceLocation cape = CapeRegistry.getPlayerCapeTexture(uuid);
+            Identifier cape = CapeRegistry.getPlayerCapeTexture(uuid);
             playerTextures.put(MinecraftProfileTexture.Type.CAPE, cape == null ? defaultPlayerCape : cape);
         }
     }

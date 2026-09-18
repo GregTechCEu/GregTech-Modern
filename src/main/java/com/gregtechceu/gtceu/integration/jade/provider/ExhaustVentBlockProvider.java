@@ -8,7 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -46,7 +46,7 @@ public class ExhaustVentBlockProvider extends MachineTraitProvider<ExhaustVentMa
             if (!compoundTag.getBoolean("ventBlocked")) return;
 
             if (blockAccessor.showDetails()) {
-                var block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(compoundTag.getString("ventBlock")))
+                var block = BuiltInRegistries.BLOCK.get(Identifier.parse(compoundTag.getString("ventBlock")))
                         .asItem().getDefaultInstance();
                 iTooltip.append(iTooltip.getElementHelper().smallItem(block));
             }

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -20,10 +20,10 @@ public abstract class LootDataManagerMixin {
 
     @Inject(method = "apply",
             at = @At(value = "HEAD"))
-    public void gtceu$injectLootTables(Map<LootDataType<?>, Map<ResourceLocation, ?>> allElements, CallbackInfo ci) {
+    public void gtceu$injectLootTables(Map<LootDataType<?>, Map<Identifier, ?>> allElements, CallbackInfo ci) {
         if (GTCEu.isDataGen()) return;
 
-        Map<ResourceLocation, LootTable> lootTables = (Map<ResourceLocation, LootTable>) allElements
+        Map<Identifier, LootTable> lootTables = (Map<Identifier, LootTable>) allElements
                 .get(LootDataType.TABLE);
         MixinHelpers.generateGTDynamicLoot(lootTables);
     }

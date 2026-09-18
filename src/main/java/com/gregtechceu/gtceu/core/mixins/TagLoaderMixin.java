@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.core.IGTTagLoader;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagLoader;
 
@@ -27,7 +27,7 @@ public class TagLoaderMixin implements IGTTagLoader {
 
     @Inject(method = "load", at = @At(value = "RETURN"))
     public void gtceu$load(ResourceManager resourceManager,
-                           CallbackInfoReturnable<Map<ResourceLocation, List<TagLoader.EntryWithSource>>> cir) {
+                           CallbackInfoReturnable<Map<Identifier, List<TagLoader.EntryWithSource>>> cir) {
         if (gtceu$storedRegistry == null) return;
         MixinHelpers.generateGTDynamicTags(cir.getReturnValue(), gtceu$storedRegistry);
     }

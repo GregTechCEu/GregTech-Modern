@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -50,7 +50,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     private BiFunction<MultiblockControllerMachine, PanelSyncManager, List<IWidget>> additionalDisplay;
 
-    public MultiblockMachineDefinition(ResourceLocation id) {
+    public MultiblockMachineDefinition(Identifier id) {
         super(id);
     }
 

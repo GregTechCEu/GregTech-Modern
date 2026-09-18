@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
@@ -126,7 +126,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
         };
     }
 
-    public static ResourceLocation getBaseTexture(int tier) {
+    public static Identifier getBaseTexture(int tier) {
         if (tier == GTValues.MV)
             return GTCEu.id("block/casings/solid/machine_casing_solid_steel");
         if (tier == GTValues.HV)

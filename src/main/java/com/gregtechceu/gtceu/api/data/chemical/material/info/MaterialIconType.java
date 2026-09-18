@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
@@ -107,17 +107,17 @@ public record MaterialIconType(String name) {
     public static final MaterialIconType crop = new MaterialIconType("crop");
     public static final MaterialIconType essence = new MaterialIconType("essence");
 
-    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> ITEM_MODEL_CACHE = HashBasedTable
+    private static final Table<MaterialIconType, MaterialIconSet, Identifier> ITEM_MODEL_CACHE = HashBasedTable
             .create();
-    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> ITEM_TEXTURE_CACHE = HashBasedTable
+    private static final Table<MaterialIconType, MaterialIconSet, Identifier> ITEM_TEXTURE_CACHE = HashBasedTable
             .create();
-    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> ITEM_TEXTURE_CACHE_SECONDARY = HashBasedTable
+    private static final Table<MaterialIconType, MaterialIconSet, Identifier> ITEM_TEXTURE_CACHE_SECONDARY = HashBasedTable
             .create();
-    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_MODEL_CACHE = HashBasedTable
+    private static final Table<MaterialIconType, MaterialIconSet, Identifier> BLOCK_MODEL_CACHE = HashBasedTable
             .create();
-    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_TEXTURE_CACHE = HashBasedTable
+    private static final Table<MaterialIconType, MaterialIconSet, Identifier> BLOCK_TEXTURE_CACHE = HashBasedTable
             .create();
-    private static final Table<MaterialIconType, MaterialIconSet, ResourceLocation> BLOCK_TEXTURE_CACHE_SECONDARY = HashBasedTable
+    private static final Table<MaterialIconType, MaterialIconSet, Identifier> BLOCK_TEXTURE_CACHE_SECONDARY = HashBasedTable
             .create();
 
     public MaterialIconType(String name) {
@@ -137,11 +137,11 @@ public record MaterialIconType(String name) {
         return ICON_TYPES.get(name);
     }
 
-    public ResourceLocation getBlockTexturePath(MaterialIconSet materialIconSet, boolean doReadCache) {
+    public Identifier getBlockTexturePath(MaterialIconSet materialIconSet, boolean doReadCache) {
         return getBlockTexturePath(materialIconSet, null, doReadCache);
     }
 
-    public ResourceLocation getBlockTexturePath(MaterialIconSet materialIconSet, @Nullable String suffix,
+    public Identifier getBlockTexturePath(MaterialIconSet materialIconSet, @Nullable String suffix,
                                                 boolean doReadCache) {
         if (doReadCache) {
             if (suffix == null || suffix.isBlank()) {
@@ -164,7 +164,7 @@ public record MaterialIconType(String name) {
             return GTModels.BLANK_TEXTURE; // check minecraft for null for CI environments
         if (!iconSet.isRootIconset) {
             while (iconSet != null && !iconSet.isRootIconset) {
-                ResourceLocation location = iconSet.id.withPath(String
+                Identifier location = iconSet.id.withPath(String
                         .format("textures/block/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
                 if (GTUtil.resourceExists(location))
                     break;
@@ -174,7 +174,7 @@ public record MaterialIconType(String name) {
 
         Objects.requireNonNull(iconSet);
 
-        ResourceLocation location = iconSet.id.withPath(
+        Identifier location = iconSet.id.withPath(
                 String.format("textures/block/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
 
         if (!suffix.isEmpty() && !GTUtil.resourceExists(location)) {
@@ -192,7 +192,7 @@ public record MaterialIconType(String name) {
         return location;
     }
 
-    public ResourceLocation getBlockModelPath(MaterialIconSet materialIconSet, boolean doReadCache) {
+    public Identifier getBlockModelPath(MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (BLOCK_MODEL_CACHE.contains(this, materialIconSet)) {
                 return Objects.requireNonNull(BLOCK_MODEL_CACHE.get(this, materialIconSet));
@@ -204,7 +204,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (iconSet != null && !iconSet.isRootIconset) {
-                ResourceLocation location = iconSet.id
+                Identifier location = iconSet.id
                         .withPath(String.format("models/block/material_sets/%s/%s.json", iconSet.getName(), this.name));
                 if (GTUtil.resourceExists(location))
                     break;
@@ -214,14 +214,14 @@ public record MaterialIconType(String name) {
 
         Objects.requireNonNull(iconSet);
 
-        ResourceLocation location = iconSet.id
+        Identifier location = iconSet.id
                 .withPath(String.format("block/material_sets/%s/%s", iconSet.getName(), this.name));
         ITEM_MODEL_CACHE.put(this, materialIconSet, location);
 
         return location;
     }
 
-    public ResourceLocation getItemModelPath(MaterialIconSet materialIconSet, boolean doReadCache) {
+    public Identifier getItemModelPath(MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
                 return Objects.requireNonNull(ITEM_MODEL_CACHE.get(this, materialIconSet));
@@ -233,7 +233,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (iconSet != null && !iconSet.isRootIconset) {
-                ResourceLocation location = iconSet.id
+                Identifier location = iconSet.id
                         .withPath(String.format("models/item/material_sets/%s/%s.json", iconSet.getName(), this.name));
 
                 if (GTUtil.resourceExists(location))
@@ -244,7 +244,7 @@ public record MaterialIconType(String name) {
 
         Objects.requireNonNull(iconSet);
 
-        ResourceLocation location = iconSet.id
+        Identifier location = iconSet.id
                 .withPath(String.format("item/material_sets/%s/%s", iconSet.getName(), this.name));
 
         ITEM_MODEL_CACHE.put(this, materialIconSet, location);
@@ -253,12 +253,12 @@ public record MaterialIconType(String name) {
     }
 
     @Nullable
-    public ResourceLocation getItemTexturePath(MaterialIconSet materialIconSet, boolean doReadCache) {
+    public Identifier getItemTexturePath(MaterialIconSet materialIconSet, boolean doReadCache) {
         return getItemTexturePath(materialIconSet, null, doReadCache);
     }
 
     @Nullable
-    public ResourceLocation getItemTexturePath(MaterialIconSet materialIconSet, @Nullable String suffix,
+    public Identifier getItemTexturePath(MaterialIconSet materialIconSet, @Nullable String suffix,
                                                boolean doReadCache) {
         if (doReadCache) {
             if (suffix == null || suffix.isBlank()) {
@@ -277,7 +277,7 @@ public record MaterialIconType(String name) {
         if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
             while (iconSet != null && !iconSet.isRootIconset) {
-                ResourceLocation location = iconSet.id.withPath(
+                Identifier location = iconSet.id.withPath(
                         String.format("textures/item/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
 
                 if (GTUtil.resourceExists(location))
@@ -288,7 +288,7 @@ public record MaterialIconType(String name) {
 
         Objects.requireNonNull(iconSet);
 
-        ResourceLocation location = iconSet.id.withPath(
+        Identifier location = iconSet.id.withPath(
                 String.format("textures/item/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
 
         if (!suffix.isEmpty() && !GTUtil.resourceExists(location)) {

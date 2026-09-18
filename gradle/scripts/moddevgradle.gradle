@@ -2,32 +2,8 @@ import org.gradle.internal.os.OperatingSystem
 
 ext.isJetbrainsRuntime = System.getProperty('java.vm.vendor').contains('JetBrains')
 
-mixin {
-    var refmap = add sourceSets.main, "gtceu.refmap.json"
-    slimJar.from refmap
-    config 'gtceu.mixins.json'
-}
-
-// we have to force LWJGL version 3.3.2, because RenderNurse requires Java 21, and LWJGL 3.3.1 cannot run on Java 21.
-configurations.configureEach {
-    resolutionStrategy {
-        eachDependency {
-            if (it.requested.group == "org.lwjgl") {
-                it.useVersion("3.3.2")
-                it.because("We need a version of LWJGL that supports java 21 for RenderDoc support")
-            }
-        }
-    }
-}
-
-legacyForge {
-    // Specify Forge version
-    version = libs.versions.minecraftForge.get()
-
-    parchment {
-        minecraftVersion = libs.versions.minecraft.get()
-        mappingsVersion = libs.versions.parchment.get()
-    }
+neoForge {
+    version = libs.versions.neoForge.get()
 
     // This line is optional. Access Transformers are automatically detected
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
@@ -54,7 +30,7 @@ legacyForge {
             sourceSet = sourceSets.clientExtra
             ideName = "Client 1"
 
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
         client2 {
@@ -63,7 +39,7 @@ legacyForge {
             ideName = "Client 2"
 
             programArguments.addAll('--username', 'YoungOnion', '--uuid', '3a27782d-6864-4814-a9fe-7c6931f29a8a')
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
         server {
@@ -73,7 +49,7 @@ legacyForge {
 
             gameDirectory.set(file('run/server'))
             programArguments.addAll('--nogui', '--world', 'world-extra')
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
         // Client with GTM + Jade, EMI, AE2
@@ -82,7 +58,7 @@ legacyForge {
             sourceSet = sourceSets.client
             ideName = "Clean Client"
 
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
         cleanServer {
@@ -92,7 +68,7 @@ legacyForge {
 
             gameDirectory.set(file('run/server'))
             programArgument '--nogui'
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -104,12 +80,12 @@ legacyForge {
             ideName = "Game Tests"
 
             gameDirectory.set(file('run/gametest'))
-            systemProperty('forge.enabledGameTestNamespaces', project.mod_id)
+            systemProperty('neoforge.enabledGameTestNamespaces', project.mod_id)
             environment('TEST', 'true')
         }
 
         data {
-            data()
+            clientData()
             sourceSet = sourceSets.main
             ideName = "Data Generation"
 

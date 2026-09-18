@@ -13,12 +13,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,10 +42,10 @@ public class IOCoverRenderer implements ICoverRenderer {
     @OnlyIn(Dist.CLIENT)
     protected TextureAtlasSprite invertedEmissiveOverlaySprite = null;
 
-    public IOCoverRenderer(@Nullable ResourceLocation overlay,
-                           @Nullable ResourceLocation invertedOverlay,
-                           @Nullable ResourceLocation emissiveOverlay,
-                           @Nullable ResourceLocation invertedEmissiveOverlay) {
+    public IOCoverRenderer(@Nullable Identifier overlay,
+                           @Nullable Identifier invertedOverlay,
+                           @Nullable Identifier emissiveOverlay,
+                           @Nullable Identifier invertedEmissiveOverlay) {
         ModelEventHelper.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             var atlas = event.getAtlas();
 

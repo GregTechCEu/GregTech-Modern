@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -46,7 +46,7 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return GTCEu.id("fluid_storage");
     }
 }

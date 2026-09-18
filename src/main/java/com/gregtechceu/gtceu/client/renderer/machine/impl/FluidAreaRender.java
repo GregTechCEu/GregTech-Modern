@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -52,7 +52,7 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
     private final List<RelativeDirection> drawFaces;
 
     private @Nullable Fluid cachedFluid;
-    private @Nullable ResourceLocation cachedRecipe;
+    private @Nullable Identifier cachedRecipe;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public FluidAreaRender(FluidBlockRenderer fluidBlockRenderer,

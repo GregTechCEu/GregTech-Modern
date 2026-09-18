@@ -18,11 +18,11 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -46,7 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 public class JourneymapRenderer extends GenericMapRenderer {
 
-    protected static final ResourceLocation STONE = ResourceLocation.withDefaultNamespace("block/stone");
+    protected static final Identifier STONE = Identifier.withDefaultNamespace("block/stone");
     protected static final Map<Material, NativeImage> MATERIAL_ICONS = new HashMap<>();
 
     @Getter
@@ -181,7 +181,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
         int materialABGR = GradientUtil.argbToAbgr(material.getMaterialARGB());
 
-        ResourceLocation layer1 = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(), true);
+        Identifier layer1 = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(), true);
         TextureAtlasSprite baseTexture = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(layer1);
         if (baseTexture == null) {
@@ -202,7 +202,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
         }
         if (material.getMaterialSecondaryARGB() != -1) {
             int materialSecondaryABGR = GradientUtil.argbToAbgr(material.getMaterialSecondaryARGB());
-            ResourceLocation layer2 = MaterialIconType.rawOre
+            Identifier layer2 = MaterialIconType.rawOre
                     .getItemTexturePath(material.getMaterialIconSet(), "secondary", true);
             if (layer2 == null) {
                 return result;
@@ -233,7 +233,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
     private PolygonOverlay createMarker(Component name, String id, ResourceKey<Level> dim, ChunkPos pos,
                                         final ProspectorMode.FluidInfo vein) {
         final BlockPos center = pos.getMiddleBlockPosition(0);
-        ResourceLocation texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
+        Identifier texture = IClientFluidTypeExtensions.of(vein.fluid()).getStillTexture();
 
         final int color;
         Material material = ChemicalHelper.getMaterial(vein.fluid());

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RepairItemRecipe.class)
 public abstract class RepairItemRecipeMixin extends CustomRecipe {
 
-    public RepairItemRecipeMixin(ResourceLocation id, CraftingBookCategory category) {
+    public RepairItemRecipeMixin(Identifier id, CraftingBookCategory category) {
         super(id, category);
     }
 

@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.api.loot.modifier;
 
 import com.gregtechceu.gtceu.common.data.loot.GTGlobalLootModifiers;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.common.loot.LootModifier;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.common.loot.LootModifier;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -49,14 +49,14 @@ public class AddTableLootModifier extends LootModifier {
     // spotless:off
     @ApiStatus.Internal
     public static final Codec<AddTableLootModifier> CODEC = RecordCodecBuilder.create(instance -> LootModifier.codecStart(instance).and(
-            ResourceLocation.CODEC.fieldOf("table").forGetter(AddTableLootModifier::table)
+            Identifier.CODEC.fieldOf("table").forGetter(AddTableLootModifier::table)
     ).apply(instance, AddTableLootModifier::new));
     // spotless:on
 
     @Getter
-    private final ResourceLocation table;
+    private final Identifier table;
 
-    public AddTableLootModifier(LootItemCondition[] conditionsIn, ResourceLocation table) {
+    public AddTableLootModifier(LootItemCondition[] conditionsIn, Identifier table) {
         super(conditionsIn);
         this.table = table;
     }

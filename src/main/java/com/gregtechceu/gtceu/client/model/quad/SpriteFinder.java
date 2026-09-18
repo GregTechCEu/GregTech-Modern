@@ -18,7 +18,7 @@ package com.gregtechceu.gtceu.client.model.quad;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +51,7 @@ public class SpriteFinder {
     private final Node root;
     private final TextureAtlas textureAtlas;
 
-    public SpriteFinder(Map<ResourceLocation, TextureAtlasSprite> sprites, TextureAtlas textureAtlas) {
+    public SpriteFinder(Map<Identifier, TextureAtlasSprite> sprites, TextureAtlas textureAtlas) {
         root = new Node(0.5f, 0.5f, 0.25f);
         this.textureAtlas = textureAtlas;
         sprites.values().forEach(root::add);

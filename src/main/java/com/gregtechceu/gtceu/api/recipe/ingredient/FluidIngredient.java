@@ -8,13 +8,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
@@ -291,11 +291,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
         } else if (GsonHelper.isStringValue(jsonObject, "value")) {
             String value = GsonHelper.getAsString(jsonObject, "value");
             if (value.startsWith("#")) {
-                ResourceLocation resourceLocation = ResourceLocation.parse(value.substring(1));
+                Identifier resourceLocation = Identifier.parse(value.substring(1));
                 TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, resourceLocation);
                 return FluidIngredient.fromValue(new TagValue(tagKey), amount, nbt);
             } else {
-                Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(value));
+                Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(value));
                 return FluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
             }
         } else {
@@ -308,11 +308,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");
         }
         if (json.has("fluid")) {
-            Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(GsonHelper.getAsString(json, "fluid")));
+            Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(GsonHelper.getAsString(json, "fluid")));
             return new FluidValue(fluid);
         }
         if (json.has("tag")) {
-            ResourceLocation resourceLocation = ResourceLocation.parse(GsonHelper.getAsString(json, "tag"));
+            Identifier resourceLocation = Identifier.parse(GsonHelper.getAsString(json, "tag"));
             TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, resourceLocation);
             return new TagValue(tagKey);
         }

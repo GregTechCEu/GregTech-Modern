@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
@@ -64,7 +64,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
         }
 
         @Override
-        public @Nullable ResourceLocation getId() {
+        public @Nullable Identifier getId() {
             return definition.getId().withPrefix("/multi_info/");
         }
 

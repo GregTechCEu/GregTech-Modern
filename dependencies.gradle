@@ -2,126 +2,121 @@ dependencies {
     compileOnly(libs.jetbrains.annotations)
 
     // Registrate
-    jarJar(modApi(forge.registrate.get()))
+    jarJar(api(forge.registrate.get()))
 
     // Configuration
-    jarJar(modApi(forge.configuration.get()))
+    jarJar(api(forge.configuration.get()))
 
     // Math Parser
     compileOnly(libs.evalEx.get())
 
     // MUI
-    jarJar(modImplementation(forge.mui.get()))
+    jarJar(implementation(forge.mui.get()))
 
-    // Mixin (& Extras)
-    annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
-    compileOnly(annotationProcessor(forge.mixinExtras.common.get()))
-    jarJar(api(forge.mixinExtras.forge.get())).version {
-        require("[${forge.versions.mixinExtras.get()},)")
-    }
+    // NeoForge provides Mixin and MixinExtras. Minecraft 26.2 uses unobfuscated names.
 
     // Recipe Viewers
-    modCompileOnly(forge.bundles.jei)
-    modCompileOnly(forge.emi)
+    compileOnly(forge.bundles.jei)
+    compileOnly(forge.emi)
 
     // Jade (WAILA)
-    modCompileOnly(forge.jade)
+    compileOnly(forge.jade)
 
     // Curios
-    modCompileOnly(variantOf(forge.curios) { classifier("api") })
+    compileOnly(variantOf(forge.curios) { classifier("api") })
 
     // AE2
-    modCompileOnly(forge.ae2)
+    compileOnly(forge.ae2)
 
     // Create
-    modCompileOnly(forge.ponder)
-    modCompileOnly(variantOf(forge.create) { classifier("slim") })
-    modCompileOnly(forge.flywheel.forge.api)
+    compileOnly(forge.ponder)
+    compileOnly(variantOf(forge.create) { classifier("slim") })
+    compileOnly(forge.flywheel.forge.api)
 
     // KJS
-    modCompileOnly(forge.kubejs)
-    modCompileOnly(forge.architectury)
-    modCompileOnly(forge.rhino)
+    compileOnly(forge.kubejs)
+    compileOnly(forge.architectury)
+    compileOnly(forge.rhino)
 
     // Performance
-    modCompileOnly(forge.embeddium)
-    modCompileOnly(forge.oculus)
-    modCompileOnly(forge.modernfix)
+    compileOnly(forge.embeddium)
+    compileOnly(forge.oculus)
+    compileOnly(forge.modernfix)
 
     // Teams
-    modCompileOnly(forge.ftblibrary)
-    modCompileOnly(forge.ftbteams)
-    modCompileOnly(forge.ftbquests)
-    modCompileOnly(forge.resourcefullib)
-    modCompileOnly(forge.argonauts)
-    modCompileOnly(forge.heracles)
+    compileOnly(forge.ftblibrary)
+    compileOnly(forge.ftbteams)
+    compileOnly(forge.ftbquests)
+    compileOnly(forge.resourcefullib)
+    compileOnly(forge.argonauts)
+    compileOnly(forge.heracles)
 
     // Maps
-    modCompileOnly(forge.ftbchunks)
-    modCompileOnly(forge.xaeroslib)
-    modCompileOnly(forge.xaerosminimap)
-    modCompileOnly(forge.xaerosworldmap)
-    modCompileOnly(forge.journeymap.api)
-    modCompileOnly(forge.journeymap.forge)
+    compileOnly(forge.ftbchunks)
+    compileOnly(forge.xaeroslib)
+    compileOnly(forge.xaerosminimap)
+    compileOnly(forge.xaerosworldmap)
+    compileOnly(forge.journeymap.api)
+    compileOnly(forge.journeymap.forge)
 
     // GameStages
-    modCompileOnly(forge.gamestages)
+    compileOnly(forge.gamestages)
 
     // CC: Tweaked
-    modCompileOnly(forge.cc.tweaked.core.api)
-    modCompileOnly(forge.cc.tweaked.forge.api)
+    compileOnly(forge.cc.tweaked.core.api)
+    compileOnly(forge.cc.tweaked.forge.api)
 
     // Standard runtime mods //
-    modLocalRuntime(forge.jade)
-    modLocalRuntime(forge.ae2)
-    modLocalRuntime(forge.guideme)
-    modLocalRuntime(forge.spark)
-    modLocalRuntime(forge.modernfix)
+    localRuntime(forge.jade)
+    localRuntime(forge.ae2)
+    localRuntime(forge.guideme)
+    localRuntime(forge.spark)
+    localRuntime(forge.modernfix)
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
-    modLocalRuntime(forge.emi)
-    //modLocalRuntime(forge.jei.forge.impl)
+    localRuntime(forge.emi)
+    //localRuntime(forge.jei.forge.impl)
 
     // Client-only runtime mods //
-    modClientLocalRuntime(forge.embeddium)
-    modClientLocalRuntime(forge.oculus)
+    clientLocalRuntime(forge.embeddium)
+    clientLocalRuntime(forge.oculus)
     renderNurseCfg(libs.renderNurse)
 
     //////////////////////////////////////////////////////
     // Runtime mods for dev testing with unclean client //
     //////////////////////////////////////////////////////
-    modExtraLocalRuntime(forge.javd)
-    modExtraLocalRuntime(forge.trenzalore)
-    modExtraLocalRuntime(forge.curios)
-//    modExtraLocalRuntime(forge.worldstripper)
-//    modExtraLocalRuntime(forge.cc.tweaked.forge.impl) for some reason this breaks create
+    extraLocalRuntime(forge.javd)
+    extraLocalRuntime(forge.trenzalore)
+    extraLocalRuntime(forge.curios)
+//    extraLocalRuntime(forge.worldstripper)
+//    extraLocalRuntime(forge.cc.tweaked.forge.impl) for some reason this breaks create
 
-    modExtraLocalRuntime(forge.bundles.kjs)
+    extraLocalRuntime(forge.bundles.kjs)
 
-    modExtraLocalRuntime(forge.ftblibrary)
-    modExtraLocalRuntime(forge.ftbteams)
-    modExtraLocalRuntime(forge.ftbquests)
+    extraLocalRuntime(forge.ftblibrary)
+    extraLocalRuntime(forge.ftbteams)
+    extraLocalRuntime(forge.ftbquests)
 
-    modExtraLocalRuntime(forge.heracles)
-    modExtraLocalRuntime(forge.resourcefullib)
+    extraLocalRuntime(forge.heracles)
+    extraLocalRuntime(forge.resourcefullib)
 
-    modExtraLocalRuntime(forge.xaeroslib)
-    modExtraLocalRuntime(forge.xaerosworldmap)
-    modExtraLocalRuntime(forge.xaerosminimap)
-    modExtraLocalRuntime(forge.journeymap.forge)
-//    modExtraLocalRuntime(forge.ftbchunks)
+    extraLocalRuntime(forge.xaeroslib)
+    extraLocalRuntime(forge.xaerosworldmap)
+    extraLocalRuntime(forge.xaerosminimap)
+    extraLocalRuntime(forge.journeymap.forge)
+//    extraLocalRuntime(forge.ftbchunks)
 
-    modExtraLocalRuntime(forge.gamestages)
-    modExtraLocalRuntime(forge.bookshelf)
+    extraLocalRuntime(forge.gamestages)
+    extraLocalRuntime(forge.bookshelf)
 
-    modExtraLocalRuntime(forge.kotlinforforge)
-    modExtraLocalRuntime(forge.observable)
+    extraLocalRuntime(forge.kotlinforforge)
+    extraLocalRuntime(forge.observable)
 
-    modExtraLocalRuntime(forge.ponder)
-    modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
-    modExtraLocalRuntime(forge.flywheel.forge)
+    extraLocalRuntime(forge.ponder)
+    extraLocalRuntime(variantOf(forge.create) { classifier("slim") })
+    extraLocalRuntime(forge.flywheel.forge)
 
-    modLocalRuntime(forge.curios)
+    localRuntime(forge.curios)
 
 
 }

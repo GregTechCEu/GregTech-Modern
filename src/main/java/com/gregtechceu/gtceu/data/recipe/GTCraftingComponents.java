@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.data.recipe.event.CraftingComponentModificationEven
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -759,7 +759,7 @@ public class GTCraftingComponents {
                 .add(UV, spring, Europium)
                 .add(UHV, spring, Europium);
 
-        MinecraftForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
+        NeoForge.EVENT_BUS.post(new CraftingComponentModificationEvent());
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSCallWrapper.craftingComponentModification();
         }

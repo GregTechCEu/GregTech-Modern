@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.experimental.UtilityClass;
 
@@ -22,9 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @UtilityClass
 public class TextureMetadataHelper {
 
-    private static final Map<ResourceLocation, Optional<GTTextureMetadata>> metadataCache = new ConcurrentHashMap<>();
+    private static final Map<Identifier, Optional<GTTextureMetadata>> metadataCache = new ConcurrentHashMap<>();
 
-    public static Optional<GTTextureMetadata> getMetadata(ResourceLocation res) {
+    public static Optional<GTTextureMetadata> getMetadata(Identifier res) {
         return metadataCache.computeIfAbsent(res, loc -> {
             try {
                 return Minecraft.getInstance().getResourceManager().getResource(res)
@@ -47,11 +47,11 @@ public class TextureMetadataHelper {
         return getMetadata(spriteToAbsolute(material.texture()));
     }
 
-    public static Optional<GTTextureMetadata> getMetadataFromRelativeLocation(ResourceLocation relativeLocation) {
+    public static Optional<GTTextureMetadata> getMetadataFromRelativeLocation(Identifier relativeLocation) {
         return getMetadata(spriteToAbsolute(relativeLocation));
     }
 
-    public static ResourceLocation spriteToAbsolute(ResourceLocation sprite) {
+    public static Identifier spriteToAbsolute(Identifier sprite) {
         if (!sprite.getPath().startsWith("textures/")) {
             sprite = sprite.withPrefix("textures/");
         }

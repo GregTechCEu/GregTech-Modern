@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.model.DelegatedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import java.util.HashSet;
@@ -18,7 +18,7 @@ public class TagPrefixItemModelGenerator {
 
     public static void reinitModels() {
         for (TagPrefixItemModelGenerator model : MODELS) {
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(model.item);
+            Identifier itemId = BuiltInRegistries.ITEM.getKey(model.item);
             GTDynamicResourcePack.addItemModel(itemId,
                     new DelegatedModel(model.type.getItemModelPath(model.iconSet, true)));
         }

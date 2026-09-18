@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import dev.latvian.mods.kubejs.block.BlockBuilder;
@@ -29,7 +29,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     @Setter
     public transient String texture = "minecraft:missingno";
 
-    public CoilBlockBuilder(ResourceLocation i) {
+    public CoilBlockBuilder(Identifier i) {
         super(i);
         property(GTBlockStateProperties.ACTIVE);
         renderType("cutout_mipped");
@@ -63,7 +63,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     @Override
     public Block createObject() {
         SimpleCoilType coilType = new SimpleCoilType(this.id.getPath(), temperature, level, energyDiscount, tier,
-                material, ResourceLocation.parse(texture));
+                material, Identifier.parse(texture));
         CoilBlock result = new CoilBlock(this.createProperties(), coilType);
         GTCEuAPI.HEATING_COILS.put(coilType, () -> result);
         return result;

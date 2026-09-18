@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 
@@ -61,10 +61,10 @@ public class FluidBuilder {
 
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
-    private ResourceLocation still = null;
+    private Identifier still = null;
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
-    private ResourceLocation flowing = null;
+    private Identifier flowing = null;
     private boolean hasCustomStill = false;
     private boolean hasCustomFlowing = false;
 
@@ -298,16 +298,16 @@ public class FluidBuilder {
     private void determineTextures(@NotNull Material material, @Nullable FluidStorageKey key, @NotNull String modid) {
         if (key != null) {
             if (hasCustomStill) {
-                still = ResourceLocation.fromNamespaceAndPath(modid, "block/fluids/fluid." + name);
+                still = Identifier.fromNamespaceAndPath(modid, "block/fluids/fluid." + name);
             } else {
                 still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
             }
         } else {
-            still = ResourceLocation.fromNamespaceAndPath(modid, "block/fluids/fluid." + name);
+            still = Identifier.fromNamespaceAndPath(modid, "block/fluids/fluid." + name);
         }
 
         if (hasCustomFlowing) {
-            flowing = ResourceLocation.fromNamespaceAndPath(modid, "block/fluids/fluid." + name + "_flow");
+            flowing = Identifier.fromNamespaceAndPath(modid, "block/fluids/fluid." + name + "_flow");
         } else {
             flowing = still;
         }

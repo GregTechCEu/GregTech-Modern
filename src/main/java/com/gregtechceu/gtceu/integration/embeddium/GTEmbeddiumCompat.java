@@ -8,8 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import lombok.Getter;
 import me.jellysquid.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
@@ -28,7 +28,7 @@ public class GTEmbeddiumCompat {
     private static final Material bloomMaterial = new Material(getBloomRenderPass(), AlphaCutoffParameter.ZERO, true);
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.register(GTEmbeddiumCompat.class);
+        NeoForge.EVENT_BUS.register(GTEmbeddiumCompat.class);
     }
 
     @SubscribeEvent

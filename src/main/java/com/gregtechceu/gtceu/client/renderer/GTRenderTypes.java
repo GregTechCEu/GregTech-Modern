@@ -7,9 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -53,7 +53,7 @@ public class GTRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true));
-    private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
+    private static final Function<Identifier, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
         return create("gtceu:entity_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, true, false,
                 RenderType.CompositeState.builder()
@@ -108,7 +108,7 @@ public class GTRenderTypes extends RenderType {
                     }))
                     .createCompositeState(false));
 
-    private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
+    private static final Function<Identifier, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
         return create("gui_texture", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, false, true,
                 RenderType.CompositeState.builder()
@@ -153,7 +153,7 @@ public class GTRenderTypes extends RenderType {
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false));
 
-    private static final Function<ResourceLocation, RenderType> GUI_TEXTURE_TRIANGLE_STRIP = Util.memoize((texture) -> {
+    private static final Function<Identifier, RenderType> GUI_TEXTURE_TRIANGLE_STRIP = Util.memoize((texture) -> {
         return create("gui_texture_triangle_strip", DefaultVertexFormat.POSITION_COLOR_TEX,
                 VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
                 RenderType.CompositeState.builder()
@@ -177,7 +177,7 @@ public class GTRenderTypes extends RenderType {
         return BLOOM;
     }
 
-    public static RenderType entityBloom(ResourceLocation location) {
+    public static RenderType entityBloom(Identifier location) {
         return ENTITY_BLOOM.apply(location);
     }
 
@@ -198,7 +198,7 @@ public class GTRenderTypes extends RenderType {
         return MONITOR;
     }
 
-    public static RenderType guiTexture(ResourceLocation texture) {
+    public static RenderType guiTexture(Identifier texture) {
         return GUI_TEXTURE.apply(texture);
     }
 
@@ -210,7 +210,7 @@ public class GTRenderTypes extends RenderType {
         return GUI_TRIANGLE_STRIP;
     }
 
-    public static RenderType guiTriangleStrip(ResourceLocation texture) {
+    public static RenderType guiTriangleStrip(Identifier texture) {
         return GUI_TEXTURE_TRIANGLE_STRIP.apply(texture);
     }
 

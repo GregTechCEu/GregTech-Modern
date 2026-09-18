@@ -11,7 +11,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.BoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.vehicle.Boat;
 
 import com.google.common.collect.ImmutableMap;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 public class GTBoatRenderer extends BoatRenderer {
 
-    private final Map<GTBoat.BoatType, Pair<ResourceLocation, ListModel<Boat>>> boats;
+    private final Map<GTBoat.BoatType, Pair<Identifier, ListModel<Boat>>> boats;
 
     public GTBoatRenderer(EntityRendererProvider.Context context, boolean chestBoat) {
         super(context, chestBoat);
@@ -32,7 +32,7 @@ public class GTBoatRenderer extends BoatRenderer {
     }
 
     @Override
-    public Pair<ResourceLocation, ListModel<Boat>> getModelWithLocation(Boat boat) {
+    public Pair<Identifier, ListModel<Boat>> getModelWithLocation(Boat boat) {
         if (boat instanceof GTChestBoat gtcb) {
             return this.boats.get(gtcb.getBoatType());
         } else

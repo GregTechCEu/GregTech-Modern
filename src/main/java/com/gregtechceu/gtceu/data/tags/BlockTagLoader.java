@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 
@@ -54,10 +54,10 @@ public class BlockTagLoader {
                 .add(Blocks.PITCHER_CROP)
                 .addTag(BlockTags.CAVE_VINES)
                 .addTag(BlockTags.TALL_FLOWERS)
-                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "cacti"))
-                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "crops/cactus"))
-                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "crops/sugar_cane"))
-                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("forge", "reeds"));
+                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "cacti"))
+                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "crops/cactus"))
+                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "crops/sugar_cane"))
+                .addOptionalTag(Identifier.fromNamespaceAndPath("forge", "reeds"));
 
         provider.addTag(BlockTags.REPLACEABLE)
                 .add(GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock())
@@ -90,12 +90,12 @@ public class BlockTagLoader {
                         Blocks.WEEPING_VINES);
 
         provider.addTag(CustomTags.CLEANROOM_FLOORS)
-                .addOptionalTag(ResourceLocation.fromNamespaceAndPath("elevatorid", "elevators"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("enderio", "travel_anchor"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("rftoolsutility", "matter_transmitter"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("rftoolsutility", "matter_receiver"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("rftoolsutility", "dialing_device"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("travelanchors", "travel_anchor"));
+                .addOptionalTag(Identifier.fromNamespaceAndPath("elevatorid", "elevators"))
+                .addOptional(Identifier.fromNamespaceAndPath("enderio", "travel_anchor"))
+                .addOptional(Identifier.fromNamespaceAndPath("rftoolsutility", "matter_transmitter"))
+                .addOptional(Identifier.fromNamespaceAndPath("rftoolsutility", "matter_receiver"))
+                .addOptional(Identifier.fromNamespaceAndPath("rftoolsutility", "dialing_device"))
+                .addOptional(Identifier.fromNamespaceAndPath("travelanchors", "travel_anchor"));
 
         provider.addTag(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)
                 .addTag(BlockTags.DIRT) // any dirt blocks

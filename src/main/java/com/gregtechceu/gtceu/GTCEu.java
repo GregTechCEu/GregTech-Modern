@@ -7,15 +7,15 @@ import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import dev.emi.emi.config.EmiConfig;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +27,7 @@ import java.nio.file.Path;
 public class GTCEu {
 
     public static final String MOD_ID = "gtceu";
-    private static final ResourceLocation TEMPLATE_LOCATION = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
+    private static final Identifier TEMPLATE_LOCATION = Identifier.fromNamespaceAndPath(MOD_ID, "");
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
@@ -43,14 +43,14 @@ public class GTCEu {
         LOGGER.info("{} is initializing...", NAME);
     }
 
-    public static ResourceLocation id(String path) {
+    public static Identifier id(String path) {
         if (path.isBlank()) {
             return TEMPLATE_LOCATION;
         }
 
         int i = path.indexOf(':');
         if (i > 0) {
-            return ResourceLocation.parse(path);
+            return Identifier.parse(path);
         } else if (i == 0) {
             path = path.substring(i + 1);
         }

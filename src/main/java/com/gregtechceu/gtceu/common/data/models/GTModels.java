@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -37,13 +37,13 @@ import java.io.IOException;
 
 public class GTModels {
 
-    public static final ResourceLocation BLANK_TEXTURE = GTCEu.id("block/void");
+    public static final Identifier BLANK_TEXTURE = GTCEu.id("block/void");
 
     public static final String ACTIVE_SUFFIX = "_active";
 
     // region BLOCK MODELS
 
-    public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> createModelBlockState(ResourceLocation modelLocation) {
+    public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> createModelBlockState(Identifier modelLocation) {
         return (ctx, prov) -> {
             prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(modelLocation));
         };
@@ -55,7 +55,7 @@ public class GTModels {
     }
 
     public static <
-            T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateItemModelProvider> overrideModel(ResourceLocation predicate,
+            T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateItemModelProvider> overrideModel(Identifier predicate,
                                                                                                                   int modelNumber) {
         if (modelNumber <= 0) return NonNullBiConsumer.noop();
         return (ctx, prov) -> {
@@ -73,7 +73,7 @@ public class GTModels {
     }
 
     public static void createTextureModel(DataGenContext<Item, ? extends Item> ctx, RegistrateItemModelProvider prov,
-                                          ResourceLocation texture) {
+                                          Identifier texture) {
         prov.generated(ctx, texture);
     }
 
@@ -82,7 +82,7 @@ public class GTModels {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
 
-    public static final ResourceLocation CUBE_ALL_EMISSIVE = GTCEu.id("block/cube/emissive/all");
+    public static final Identifier CUBE_ALL_EMISSIVE = GTCEu.id("block/cube/emissive/all");
 
     public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color,
                                                                                                               boolean border) {
@@ -136,7 +136,7 @@ public class GTModels {
         };
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(ResourceLocation texturePath) {
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(Identifier texturePath) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
             ModelFile cubeAll = prov.models().cubeAll(ctx.getName(), texturePath);
@@ -159,7 +159,7 @@ public class GTModels {
         };
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createSidedCasingModel(ResourceLocation texture) {
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> createSidedCasingModel(Identifier texture) {
         return (ctx, prov) -> {
             prov.simpleBlock(ctx.getEntry(), prov.models().cubeBottomTop(ctx.getName(),
                     texture.withSuffix("/side"),
@@ -168,7 +168,7 @@ public class GTModels {
         };
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> cubeAllModel(ResourceLocation texture) {
+    public static NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> cubeAllModel(Identifier texture) {
         return (ctx, prov) -> {
             prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll(ctx.getName(), texture));
         };
@@ -253,7 +253,7 @@ public class GTModels {
         };
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, ActiveBlock>, RegistrateBlockstateProvider> createActiveModel(ResourceLocation modelPath) {
+    public static NonNullBiConsumer<DataGenContext<Block, ActiveBlock>, RegistrateBlockstateProvider> createActiveModel(Identifier modelPath) {
         return (ctx, prov) -> {
             ActiveBlock block = ctx.getEntry();
             ModelFile inactive = prov.models().getExistingFile(modelPath);
@@ -308,7 +308,7 @@ public class GTModels {
                 FluidStorage.FluidEntry fluidEntry = storage.getEntry(key);
                 if (fluidEntry != null && fluidEntry.getBuilder() != null) {
                     if (fluidEntry.getBuilder().still() == null) {
-                        ResourceLocation foundTexture = key.getIconType().getBlockTexturePath(iconSet, false);
+                        Identifier foundTexture = key.getIconType().getBlockTexturePath(iconSet, false);
                         fluidEntry.getBuilder().still(foundTexture);
                     }
                     if (fluidEntry.getBuilder().flowing() == null) {

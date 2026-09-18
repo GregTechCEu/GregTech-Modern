@@ -18,8 +18,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,8 +33,8 @@ public class WaxOffBehavior implements IToolBehavior {
     protected WaxOffBehavior() {/**/}
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == ToolActions.AXE_WAX_OFF;
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+        return action == ItemAbilities.AXE_WAX_OFF;
     }
 
     @NotNull
@@ -84,12 +84,12 @@ public class WaxOffBehavior implements IToolBehavior {
 
     protected static boolean isBlockUnwaxable(UseOnContext context) {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, true);
+        BlockState newState = state.getToolModifiedState(context, ItemAbilities.AXE_WAX_OFF, true);
         return newState != null && newState != state;
     }
 
     protected BlockState getUnwaxed(BlockState state, UseOnContext context) {
-        return state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
+        return state.getToolModifiedState(context, ItemAbilities.AXE_WAX_OFF, false);
     }
 
     @Override

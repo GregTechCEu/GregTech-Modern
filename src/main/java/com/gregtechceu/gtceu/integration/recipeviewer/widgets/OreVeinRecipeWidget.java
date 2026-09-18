@@ -12,14 +12,14 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
@@ -184,17 +184,17 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
     }
 
     public static String getOreName(GTOreDefinition oreDefinition) {
-        ResourceLocation id = ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition);
+        Identifier id = ClientProxy.CLIENT_ORE_VEINS.inverse().get(oreDefinition);
         return "gtceu.jei.ore_vein." + id.getPath();
     }
 
     public static String getFluidName(BedrockFluidDefinition fluid) {
-        ResourceLocation id = ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid);
+        Identifier id = ClientProxy.CLIENT_FLUID_VEINS.inverse().get(fluid);
         return "gtceu.jei.bedrock_fluid." + id.getPath();
     }
 
     public static String getBedrockOreName(BedrockOreDefinition oreDefinition) {
-        ResourceLocation id = ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(oreDefinition);
+        Identifier id = ClientProxy.CLIENT_BEDROCK_ORE_VEINS.inverse().get(oreDefinition);
         return "gtceu.jei.bedrock_ore." + id.getPath();
     }
 

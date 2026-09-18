@@ -17,8 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,8 +32,8 @@ public class ScrapeBehavior implements IToolBehavior {
     protected ScrapeBehavior() {/**/}
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == ToolActions.AXE_SCRAPE;
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+        return action == ItemAbilities.AXE_SCRAPE;
     }
 
     @NotNull
@@ -82,12 +82,12 @@ public class ScrapeBehavior implements IToolBehavior {
 
     protected static boolean isBlockScrapable(UseOnContext context) {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, true);
+        BlockState newState = state.getToolModifiedState(context, ItemAbilities.AXE_SCRAPE, true);
         return newState != null && newState != state;
     }
 
     protected BlockState getScraped(BlockState state, UseOnContext context) {
-        return state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
+        return state.getToolModifiedState(context, ItemAbilities.AXE_SCRAPE, false);
     }
 
     @Override

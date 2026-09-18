@@ -18,9 +18,9 @@ import com.gregtechceu.gtceu.integration.recipeviewer.jei.subtype.PotionFluidSub
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Getter;
 import mezz.jei.api.IModPlugin;
@@ -46,7 +46,7 @@ public class GTJEIPlugin implements IModPlugin {
     private static IJeiRuntime runtime = null;
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return GTCEu.id("jei_plugin");
     }
 

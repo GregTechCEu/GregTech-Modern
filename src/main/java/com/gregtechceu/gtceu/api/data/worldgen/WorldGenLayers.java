@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.fml.ModLoader;
 
 import java.util.Set;
 

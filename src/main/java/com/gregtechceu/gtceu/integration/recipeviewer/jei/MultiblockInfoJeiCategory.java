@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewW
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.integration.jei.recipe.ModularUIJeiCategory;
@@ -53,7 +53,7 @@ public class MultiblockInfoJeiCategory extends ModularUIJeiCategory<MultiblockMa
     }
 
     @Override
-    public @Nullable ResourceLocation getRegistryName(MultiblockMachineDefinition recipe) {
+    public @Nullable Identifier getRegistryName(MultiblockMachineDefinition recipe) {
         return recipe.getId();
     }
 

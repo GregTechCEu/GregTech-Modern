@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
@@ -12,7 +12,7 @@ public enum LaserPipeType implements IPipeType<LaserPipeProperties>, StringRepre
 
     NORMAL;
 
-    public static final ResourceLocation TYPE_ID = GTCEu.id("laser");
+    public static final Identifier TYPE_ID = GTCEu.id("laser");
 
     @Override
     public float getThickness() {
@@ -30,7 +30,7 @@ public enum LaserPipeType implements IPipeType<LaserPipeProperties>, StringRepre
     }
 
     @Override
-    public ResourceLocation type() {
+    public Identifier type() {
         return TYPE_ID;
     }
 

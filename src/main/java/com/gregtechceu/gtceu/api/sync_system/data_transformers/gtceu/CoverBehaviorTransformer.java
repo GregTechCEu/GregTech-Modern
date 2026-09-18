@@ -10,7 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +72,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             holder.setCoverAtSide(null, side);
             return null;
         }
-        ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
+        Identifier coverType = Identifier.tryParse(tag.getString("coverType"));
         if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
             var coverReg = GTRegistries.COVERS.get(coverType);
             if (coverReg == null) {
@@ -119,7 +119,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         }
 
         Direction side = buf.readEnum(Direction.class);
-        ResourceLocation coverId = buf.readResourceLocation();
+        Identifier coverId = buf.readResourceLocation();
         CoverBehavior cover = context.currentValue();
 
         if (cover == null || !cover.coverDefinition.getId().equals(coverId)) {

@@ -58,13 +58,13 @@ import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -77,9 +77,9 @@ public class ClientProxy extends CommonProxy {
     @Getter
     private static final Timer timer60Fps = new Timer(60f, 0);
 
-    public static final BiMap<ResourceLocation, GTOreDefinition> CLIENT_ORE_VEINS = HashBiMap.create();
-    public static final BiMap<ResourceLocation, BedrockFluidDefinition> CLIENT_FLUID_VEINS = HashBiMap.create();
-    public static final BiMap<ResourceLocation, BedrockOreDefinition> CLIENT_BEDROCK_ORE_VEINS = HashBiMap.create();
+    public static final BiMap<Identifier, GTOreDefinition> CLIENT_ORE_VEINS = HashBiMap.create();
+    public static final BiMap<Identifier, BedrockFluidDefinition> CLIENT_FLUID_VEINS = HashBiMap.create();
+    public static final BiMap<Identifier, BedrockOreDefinition> CLIENT_BEDROCK_ORE_VEINS = HashBiMap.create();
 
     public ClientProxy() {
         super();
@@ -101,7 +101,7 @@ public class ClientProxy extends CommonProxy {
         initializeDynamicRenders();
         ModelEventHelper.initInternalAssetReloadListeners();
 
-        MinecraftForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
+        NeoForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
         GTGuiTextures.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(GTGuiTheme::onReloadThemes);
     }

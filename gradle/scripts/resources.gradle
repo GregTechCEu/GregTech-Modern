@@ -32,14 +32,13 @@ tasks.matching { it.name.startsWith('prepare') }.configureEach {
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
-    var forgeVers = libs.versions.forge.get().split("\\.")[0]
+    var neoForgeVersion = libs.versions.neoForge.get()
     var replaceProperties = [
             version             : version_toml,
             mod_id              : mod_id,
             minecraft_version   : libs.versions.minecraft.get(),
-            loader_version      : forgeVers,
-            forge_version       : forgeVers, // only specify major version of forge
-            configuration_version: forge.versions.configuration.get().split("-")[0],
+            neoforge_version    : neoForgeVersion,
+            configuration_version: forge.versions.configuration.get().split("[+]")[0],
             kjs_version         : forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
             jei_version         : forge.versions.jei.get(),
             emi_version         : forge.versions.emi.get(),
@@ -60,4 +59,4 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 // this works with both building through Gradle and the IDE.
 sourceSets.main.resources.srcDir generateModMetadata
 // To avoid having to run "generateModMetadata" manually, make it run on every project reload
-legacyForge.ideSyncTask generateModMetadata
+neoForge.ideSyncTask generateModMetadata

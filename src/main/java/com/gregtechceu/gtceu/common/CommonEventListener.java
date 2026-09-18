@@ -55,7 +55,7 @@ import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -79,20 +79,20 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.ChunkWatchEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ChunkWatchEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
 import com.mojang.datafixers.util.Either;
@@ -603,14 +603,14 @@ public class CommonEventListener {
                 case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getBlock());
             }
             if (path.contains("input_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
+                Identifier newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
                 if (mapping.getRegistry().containsKey(newName)) {
                     mapping.remap(mapping.getRegistry().getValue(newName));
                 } else {
                     mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getBlock());
                 }
             } else if (path.contains("output_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
+                Identifier newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
                 if (mapping.getRegistry().containsKey(newName)) {
                     mapping.remap(mapping.getRegistry().getValue(newName));
                 } else {
@@ -629,14 +629,14 @@ public class CommonEventListener {
                 case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getBlockEntityType());
             }
             if (path.contains("input_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
+                Identifier newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
                 if (mapping.getRegistry().containsKey(newName)) {
                     mapping.remap(mapping.getRegistry().getValue(newName));
                 } else {
                     mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getBlockEntityType());
                 }
             } else if (path.contains("output_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
+                Identifier newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
                 if (mapping.getRegistry().containsKey(newName)) {
                     mapping.remap(mapping.getRegistry().getValue(newName));
                 } else {
@@ -654,14 +654,14 @@ public class CommonEventListener {
                 case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getItem());
             }
             if (path.contains("input_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
+                Identifier newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
                 if (mapping.getRegistry().containsKey(newName)) {
                     mapping.remap(mapping.getRegistry().getValue(newName));
                 } else {
                     mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getItem());
                 }
             } else if (path.contains("output_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
+                Identifier newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
                 if (mapping.getRegistry().containsKey(newName)) {
                     mapping.remap(mapping.getRegistry().getValue(newName));
                 } else {

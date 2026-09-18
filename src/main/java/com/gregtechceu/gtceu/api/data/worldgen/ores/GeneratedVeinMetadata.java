@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.client.ClientProxy;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
 
 import com.mojang.serialization.Codec;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public final class GeneratedVeinMetadata {
 
     public static final Codec<ChunkPos> CHUNK_POS_CODEC = Codec.LONG.xmap(ChunkPos::new, ChunkPos::toLong);
-    public static final Codec<GTOreDefinition> CLIENT_DEFINITION_CODEC = ResourceLocation.CODEC
+    public static final Codec<GTOreDefinition> CLIENT_DEFINITION_CODEC = Identifier.CODEC
             .flatXmap(
                     rl -> Optional.ofNullable(ClientProxy.CLIENT_ORE_VEINS.get(rl)).map(DataResult::success)
                             .orElseGet(() -> DataResult
@@ -33,7 +33,7 @@ public final class GeneratedVeinMetadata {
                                     () -> "Unknown registry element in client ore veins: " + obj)));
 
     public static final Codec<GeneratedVeinMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(GeneratedVeinMetadata::id),
+            Identifier.CODEC.fieldOf("id").forGetter(GeneratedVeinMetadata::id),
             CHUNK_POS_CODEC.fieldOf("origin_chunk").forGetter(GeneratedVeinMetadata::originChunk),
             BlockPos.CODEC.fieldOf("center").forGetter(GeneratedVeinMetadata::center),
             GTRegistries.ORE_VEINS.codec().fieldOf("definition").forGetter(GeneratedVeinMetadata::definition),
@@ -41,7 +41,7 @@ public final class GeneratedVeinMetadata {
             .apply(instance, GeneratedVeinMetadata::new));
     public static final Codec<GeneratedVeinMetadata> CLIENT_CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    ResourceLocation.CODEC.fieldOf("id").forGetter(GeneratedVeinMetadata::id),
+                    Identifier.CODEC.fieldOf("id").forGetter(GeneratedVeinMetadata::id),
                     CHUNK_POS_CODEC.fieldOf("origin_chunk").forGetter(GeneratedVeinMetadata::originChunk),
                     BlockPos.CODEC.fieldOf("center").forGetter(GeneratedVeinMetadata::center),
                     CLIENT_DEFINITION_CODEC.fieldOf("definition").forGetter(GeneratedVeinMetadata::definition),
@@ -50,7 +50,7 @@ public final class GeneratedVeinMetadata {
 
     @Getter
     @NotNull
-    private final ResourceLocation id;
+    private final Identifier id;
     @Getter
     @NotNull
     private final ChunkPos originChunk;
@@ -65,14 +65,14 @@ public final class GeneratedVeinMetadata {
     @Setter
     private boolean depleted;
 
-    public GeneratedVeinMetadata(@NotNull ResourceLocation id,
+    public GeneratedVeinMetadata(@NotNull Identifier id,
                                  @NotNull ChunkPos originChunk,
                                  @NotNull BlockPos center,
                                  @NotNull GTOreDefinition definition) {
         this(id, originChunk, center, definition, false);
     }
 
-    public GeneratedVeinMetadata(@NotNull ResourceLocation id,
+    public GeneratedVeinMetadata(@NotNull Identifier id,
                                  @NotNull ChunkPos originChunk,
                                  @NotNull BlockPos center,
                                  @NotNull GTOreDefinition definition,
@@ -85,7 +85,7 @@ public final class GeneratedVeinMetadata {
     }
 
     public static GeneratedVeinMetadata readFromPacket(FriendlyByteBuf buf) {
-        ResourceLocation id = buf.readResourceLocation();
+        Identifier id = buf.readResourceLocation();
         ChunkPos origin = new ChunkPos(buf.readVarLong());
         BlockPos center = BlockPos.of(buf.readVarLong());
         GTOreDefinition def = ClientProxy.CLIENT_ORE_VEINS.get(buf.readResourceLocation());

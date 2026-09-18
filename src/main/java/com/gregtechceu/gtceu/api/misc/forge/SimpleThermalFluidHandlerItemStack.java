@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.misc.forge;
 import com.gregtechceu.gtceu.api.capability.IThermalFluidHandlerItemStack;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStackSimple;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

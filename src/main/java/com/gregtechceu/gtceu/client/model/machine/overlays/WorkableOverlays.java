@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.Identifier;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import lombok.Getter;
@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class WorkableOverlays {
 
-    public static WorkableOverlays get(ResourceLocation textureDir, ExistingFileHelper fileHelper) {
+    public static WorkableOverlays get(Identifier textureDir, ExistingFileHelper fileHelper) {
         if (fileHelper instanceof RuntimeExistingFileHelper runtimeFileHelper) {
             // if fileHelper is an instance of RuntimeExistingFileHelper, we have to enable its existence checking.
             // the AutoCloseable warning is suppressed here because there's no clean way to
@@ -45,20 +45,20 @@ public class WorkableOverlays {
                 model.textures.put(overlayFace, StatusTextures.EMPTY);
                 continue;
             }
-            ResourceLocation activeSprite = normalSprite.withSuffix("_active");
+            Identifier activeSprite = normalSprite.withSuffix("_active");
             if (!fileHelper.exists(activeSprite, GTBlockstateProvider.TEXTURE)) activeSprite = normalSprite;
 
-            ResourceLocation pausedSprite = normalSprite.withSuffix("_paused");
+            Identifier pausedSprite = normalSprite.withSuffix("_paused");
             if (!fileHelper.exists(pausedSprite, GTBlockstateProvider.TEXTURE)) pausedSprite = normalSprite;
 
             // emissive
-            ResourceLocation normalSpriteEmissive = normalSprite.withSuffix("_emissive");
+            Identifier normalSpriteEmissive = normalSprite.withSuffix("_emissive");
             if (!fileHelper.exists(normalSpriteEmissive, GTBlockstateProvider.TEXTURE)) normalSpriteEmissive = null;
 
-            ResourceLocation activeSpriteEmissive = activeSprite.withSuffix("_emissive");
+            Identifier activeSpriteEmissive = activeSprite.withSuffix("_emissive");
             if (!fileHelper.exists(activeSpriteEmissive, GTBlockstateProvider.TEXTURE)) activeSpriteEmissive = null;
 
-            ResourceLocation pausedSpriteEmissive = pausedSprite.withSuffix("_emissive");
+            Identifier pausedSpriteEmissive = pausedSprite.withSuffix("_emissive");
             if (!fileHelper.exists(pausedSpriteEmissive, GTBlockstateProvider.TEXTURE)) pausedSpriteEmissive = null;
 
             model.textures.put(overlayFace, new StatusTextures(normalSprite, activeSprite, pausedSprite,
@@ -75,12 +75,12 @@ public class WorkableOverlays {
     }
 
     @Getter
-    private final ResourceLocation location;
+    private final Identifier location;
 
     @Getter
     private final Map<OverlayFace, StatusTextures> textures = new EnumMap<>(OverlayFace.class);
 
-    public WorkableOverlays(ResourceLocation location) {
+    public WorkableOverlays(Identifier location) {
         this.location = location;
     }
 
@@ -114,15 +114,15 @@ public class WorkableOverlays {
 
         public static final StatusTextures EMPTY = new StatusTextures();
 
-        private final Map<Status, ResourceLocation> textures = new EnumMap<>(Status.class);
-        private final Map<Status, ResourceLocation> emissiveTextures = new EnumMap<>(Status.class);
+        private final Map<Status, Identifier> textures = new EnumMap<>(Status.class);
+        private final Map<Status, Identifier> emissiveTextures = new EnumMap<>(Status.class);
 
-        public StatusTextures(@Nullable ResourceLocation normalSprite,
-                              @Nullable ResourceLocation activeSprite,
-                              @Nullable ResourceLocation pausedSprite,
-                              @Nullable ResourceLocation normalSpriteEmissive,
-                              @Nullable ResourceLocation activeSpriteEmissive,
-                              @Nullable ResourceLocation pausedSpriteEmissive) {
+        public StatusTextures(@Nullable Identifier normalSprite,
+                              @Nullable Identifier activeSprite,
+                              @Nullable Identifier pausedSprite,
+                              @Nullable Identifier normalSpriteEmissive,
+                              @Nullable Identifier activeSpriteEmissive,
+                              @Nullable Identifier pausedSpriteEmissive) {
             textures.put(Status.IDLE, normalSprite);
             emissiveTextures.put(Status.IDLE, normalSpriteEmissive);
 
@@ -137,13 +137,13 @@ public class WorkableOverlays {
 
         private StatusTextures() {}
 
-        public @NotNull ResourceLocation getTexture(@NotNull Status status) {
-            ResourceLocation value = textures.get(status);
+        public @NotNull Identifier getTexture(@NotNull Status status) {
+            Identifier value = textures.get(status);
             return value != null ? value : GTModels.BLANK_TEXTURE;
         }
 
-        public @NotNull ResourceLocation getEmissiveTexture(@NotNull Status status) {
-            ResourceLocation value = emissiveTextures.get(status);
+        public @NotNull Identifier getEmissiveTexture(@NotNull Status status) {
+            Identifier value = emissiveTextures.get(status);
             return value != null ? value : GTModels.BLANK_TEXTURE;
         }
     }

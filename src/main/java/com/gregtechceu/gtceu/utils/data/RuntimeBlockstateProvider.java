@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.*;
 
@@ -29,10 +29,10 @@ public class RuntimeBlockstateProvider extends GTBlockstateProvider {
                 GTDynamicResourcePack.addResource(loc, json);
             });
 
-    protected final BiConsumer<ResourceLocation, JsonElement> consumer;
+    protected final BiConsumer<Identifier, JsonElement> consumer;
 
     public RuntimeBlockstateProvider(AbstractRegistrate<?> parent, PackOutput packOutput,
-                                     BiConsumer<ResourceLocation, JsonElement> consumer) {
+                                     BiConsumer<Identifier, JsonElement> consumer) {
         super(parent, packOutput, RuntimeExistingFileHelper.INSTANCE);
         this.consumer = consumer;
     }
@@ -46,7 +46,7 @@ public class RuntimeBlockstateProvider extends GTBlockstateProvider {
         processModelProvider(itemModels());
 
         for (Map.Entry<Block, IGeneratedBlockState> entry : registeredBlocks.entrySet()) {
-            ResourceLocation loc = GTDynamicResourcePack.BLOCKSTATE_ID_CONVERTER
+            Identifier loc = GTDynamicResourcePack.BLOCKSTATE_ID_CONVERTER
                     .idToFile(BuiltInRegistries.BLOCK.getKey(entry.getKey()));
             this.consumer.accept(loc, entry.getValue().toJson());
         }
@@ -58,7 +58,7 @@ public class RuntimeBlockstateProvider extends GTBlockstateProvider {
 
     public <T extends ModelBuilder<T>> void processModelProvider(ModelProvider<T> provider) {
         for (T model : provider.generatedModels.values()) {
-            ResourceLocation loc = model.getLocation().withPrefix("models/");
+            Identifier loc = model.getLocation().withPrefix("models/");
             this.consumer.accept(loc, model.toJson());
         }
     }

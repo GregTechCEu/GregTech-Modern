@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import brachy.modularui.api.MCHelper;
 import brachy.modularui.factory.GuiManager;
@@ -44,7 +44,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
     private final RenderTarget renderTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
 
     public MonitorGuiRenderer(Pair<Level, BlockPos> target) {
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
         this.targetLevel = target.getFirst();
         this.targetPos = target.getSecond();
         if (target.getSecond() == null) {

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -25,14 +25,14 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
 
     public static final RecipeSerializer<ShapedFluidContainerRecipe> SERIALIZER = new Serializer();
 
-    public ShapedFluidContainerRecipe(ResourceLocation id, String group, CraftingBookCategory category,
+    public ShapedFluidContainerRecipe(Identifier id, String group, CraftingBookCategory category,
                                       int width, int height,
                                       NonNullList<Ingredient> recipeItems, ItemStack result,
                                       boolean showNotification) {
         super(id, group, category, width, height, recipeItems, result, showNotification);
     }
 
-    public ShapedFluidContainerRecipe(ResourceLocation id, String group, CraftingBookCategory category,
+    public ShapedFluidContainerRecipe(Identifier id, String group, CraftingBookCategory category,
                                       int width, int height,
                                       NonNullList<Ingredient> recipeItems, ItemStack result) {
         this(id, group, category, width, height, recipeItems, result, true);
@@ -111,7 +111,7 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
     public static class Serializer implements RecipeSerializer<ShapedFluidContainerRecipe> {
 
         @Override
-        public ShapedFluidContainerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public ShapedFluidContainerRecipe fromJson(Identifier recipeId, JsonObject json) {
             String group = GsonHelper.getAsString(json, "group", "");
             CraftingBookCategory category = CraftingBookCategory.CODEC
                     .byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
@@ -130,7 +130,7 @@ public class ShapedFluidContainerRecipe extends ShapedRecipe {
         }
 
         @Override
-        public ShapedFluidContainerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public ShapedFluidContainerRecipe fromNetwork(Identifier recipeId, FriendlyByteBuf buffer) {
             int xSize = buffer.readVarInt();
             int ySize = buffer.readVarInt();
             CraftingBookCategory category = buffer.readEnum(CraftingBookCategory.class);

@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +42,7 @@ public class ToolModeSwitchBehavior implements IToolBehavior {
     protected ToolModeSwitchBehavior() {}
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction action) {
+    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
         var mode = WrenchModeType.values()[getBehaviorsTag(stack).getByte("Mode")];
         boolean canWrenchConfigureAll = action == GTToolActions.WRENCH_CONFIGURE_ALL;
         return action == GTToolActions.WRENCH_CONFIGURE || switch (mode) {

@@ -18,14 +18,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.util.LazyOptional;
 
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
@@ -252,7 +252,7 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            ResourceLocation id = GTCEu.id(compoundTag.getString("condition"));
+            Identifier id = GTCEu.id(compoundTag.getString("condition"));
             if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 continue;
             }
@@ -264,7 +264,7 @@ public class MedicalConditionTracker implements ICapabilitySerializable<Compound
 
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            ResourceLocation id = GTCEu.id(permanentConditionsTag.getString(i));
+            Identifier id = GTCEu.id(permanentConditionsTag.getString(i));
             if (!GTRegistries.MEDICAL_CONDITIONS.containsKey(id)) {
                 continue;
             }

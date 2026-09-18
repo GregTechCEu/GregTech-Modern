@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import lombok.Getter;

@@ -9,7 +9,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +36,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     @Getter
     private final boolean overrideCharge;
 
-    public ShapedEnergyTransferRecipe(ResourceLocation id, String group, int width, int height,
+    public ShapedEnergyTransferRecipe(Identifier id, String group, int width, int height,
                                       Ingredient chargeIngredient, boolean overrideCharge, boolean transferMaxCharge,
                                       NonNullList<Ingredient> recipeItems, ItemStack result) {
         super(id, group, CraftingBookCategory.MISC, width, height, recipeItems, result);
@@ -89,7 +89,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     public static class Serializer implements RecipeSerializer<ShapedEnergyTransferRecipe> {
 
         @Override
-        public ShapedEnergyTransferRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public ShapedEnergyTransferRecipe fromJson(Identifier recipeId, JsonObject json) {
             String group = GsonHelper.getAsString(json, "group", "");
             Map<String, Ingredient> key = ShapedRecipeAccessor.callKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
             String[] pattern = ShapedRecipeAccessor.callPatternFromJson(GsonHelper.getAsJsonArray(json, "pattern"));
@@ -105,7 +105,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
         }
 
         @Override
-        public ShapedEnergyTransferRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public ShapedEnergyTransferRecipe fromNetwork(Identifier recipeId, FriendlyByteBuf buffer) {
             int xSize = buffer.readVarInt();
             int ySize = buffer.readVarInt();
             boolean overrideCharge = buffer.readBoolean();

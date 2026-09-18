@@ -28,7 +28,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -77,7 +77,7 @@ public final class GTRegistries {
 
     // spotless:on
 
-    public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
+    public static <V, T extends V> T register(Registry<V> registry, Identifier name, T value) {
         ResourceKey<?> registryKey = registry.key();
 
         if (registryKey == Registries.RECIPE_TYPE) {

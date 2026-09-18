@@ -8,7 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -80,7 +80,7 @@ public class BedrockOreDefinition {
     @Setter
     public Set<ResourceKey<Level>> dimensionFilter; // filtering of dimensions
 
-    public BedrockOreDefinition(ResourceLocation name, int size, int weight, IntProvider yield, int depletionAmount,
+    public BedrockOreDefinition(Identifier name, int size, int weight, IntProvider yield, int depletionAmount,
                                 int depletionChance, int depletedYield, List<WeightedMaterial> materials,
                                 List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
         this(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, originalModifiers,
@@ -144,7 +144,7 @@ public class BedrockOreDefinition {
         return materials().stream().map(WeightedMaterial::material).toList();
     }
 
-    public static Builder builder(ResourceLocation name) {
+    public static Builder builder(Identifier name) {
         return new Builder(name);
     }
 
@@ -152,7 +152,7 @@ public class BedrockOreDefinition {
     @Accessors(chain = true, fluent = true)
     public static class Builder {
 
-        private final ResourceLocation name;
+        private final Identifier name;
         @Setter
         private int weight; // weight value for determining which vein will appear
         @Setter
@@ -170,11 +170,11 @@ public class BedrockOreDefinition {
         private Set<ResourceKey<Level>> dimensions;
         private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
-        private Builder(ResourceLocation name) {
+        private Builder(Identifier name) {
             this.name = name;
         }
 
-        public Builder copy(ResourceLocation name) {
+        public Builder copy(Identifier name) {
             var copied = new Builder(name);
             copied.weight = weight;
             copied.yield = yield;
@@ -227,14 +227,14 @@ public class BedrockOreDefinition {
         /// This method should <b>only</b> be used in KubeJS.
         @SuppressWarnings("unused")
         @ApiStatus.Internal
-        public Builder kjs$biomeTag(int weight, ResourceLocation biomeTag) {
+        public Builder kjs$biomeTag(int weight, Identifier biomeTag) {
             return this.biomes(weight, TagKey.create(Registries.BIOME, biomeTag));
         }
 
         /// This method should <b>only</b> be used in KubeJS.
         @SuppressWarnings({ "unused", "unchecked" })
         @ApiStatus.Internal
-        public Builder kjs$biomes(int weight, ResourceLocation... biomes) {
+        public Builder kjs$biomes(int weight, Identifier... biomes) {
             ResourceKey<Biome>[] resourceKeys = new ResourceKey[biomes.length];
             for (int i = 0; i < biomes.length; i++) {
                 resourceKeys[i] = ResourceKey.create(Registries.BIOME, biomes[i]);
@@ -245,7 +245,7 @@ public class BedrockOreDefinition {
         /// This method should <b>only</b> be used in KubeJS.
         @SuppressWarnings("unused")
         @ApiStatus.Internal
-        public Builder kjs$dimensions(ResourceLocation... dimensions) {
+        public Builder kjs$dimensions(Identifier... dimensions) {
             return this.dimensions(Arrays.stream(dimensions)
                     .map(id -> ResourceKey.create(Registries.DIMENSION, id))
                     .collect(Collectors.toSet()));

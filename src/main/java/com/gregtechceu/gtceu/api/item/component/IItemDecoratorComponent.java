@@ -1,5 +1,5 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import net.minecraftforge.client.IItemDecorator;
+import net.neoforged.neoforge.client.IItemDecorator;
 
 public interface IItemDecoratorComponent extends IItemComponent, IItemDecorator {}

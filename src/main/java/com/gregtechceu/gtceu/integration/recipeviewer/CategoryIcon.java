@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.recipeviewer;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.util.Either;
@@ -17,9 +17,9 @@ import org.jetbrains.annotations.Nullable;
 public class CategoryIcon {
 
     private @Nullable Object wrappedValue;
-    private Either<ResourceLocation, ItemStack> texture;
+    private Either<Identifier, ItemStack> texture;
 
-    public CategoryIcon(ResourceLocation texture) {
+    public CategoryIcon(Identifier texture) {
         if (!GTCEu.isClientSide()) return;
         this.texture = Either.left(texture);
     }
@@ -41,7 +41,7 @@ public class CategoryIcon {
 
     private static class EmiCallWrapper {
 
-        public static EmiRenderable getRenderable(ResourceLocation location) {
+        public static EmiRenderable getRenderable(Identifier location) {
             return new EmiTexture(location, 0, 0, 16, 16, 16, 16, 16, 16);
         }
 
@@ -52,7 +52,7 @@ public class CategoryIcon {
 
     private static class JeiCallWrapper {
 
-        public static IDrawable getRenderable(ResourceLocation location) {
+        public static IDrawable getRenderable(Identifier location) {
             return GTJEIPlugin.getRuntime().getJeiHelpers().getGuiHelper().drawableBuilder(location, 0, 0, 16, 16)
                     .setTextureSize(16, 16).build();
         }

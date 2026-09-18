@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import dev.latvian.mods.rhino.Context;
@@ -23,9 +23,9 @@ public interface Validator {
         ERROR
     }
 
-    ValidationResult run(ResourceLocation id);
+    ValidationResult run(Identifier id);
 
-    static void validate(ResourceLocation id, Validator... validators) {
+    static void validate(Identifier id, Validator... validators) {
         long errors = Arrays.stream(validators)
                 .map(validator -> validator.run(id))
                 .filter(result -> result == ValidationResult.ERROR)

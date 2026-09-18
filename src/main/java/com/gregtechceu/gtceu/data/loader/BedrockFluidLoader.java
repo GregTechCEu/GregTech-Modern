@@ -11,13 +11,13 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
 
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.Deserializers;
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.fml.ModLoader;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -41,7 +41,7 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager,
+    protected void apply(Map<Identifier, JsonElement> resourceList, ResourceManager resourceManager,
                          ProfilerFiller profiler) {
         if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
             GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
@@ -56,8 +56,8 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
             KJSCallWrapper.fireKJSEvent();
         }
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        for (Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
-            ResourceLocation location = entry.getKey();
+        for (Map.Entry<Identifier, JsonElement> entry : resourceList.entrySet()) {
+            Identifier location = entry.getKey();
 
             try {
                 BedrockFluidDefinition fluid = fromJson(location,
@@ -76,7 +76,7 @@ public class BedrockFluidLoader extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static BedrockFluidDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
+    public static BedrockFluidDefinition fromJson(Identifier id, JsonObject json, RegistryOps<JsonElement> ops) {
         return BedrockFluidDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
     }
 

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.google.common.base.Preconditions;
 import dev.latvian.mods.kubejs.client.LangEventJS;
@@ -35,11 +35,11 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
 
-    public KJSTieredMultiblockBuilder(ResourceLocation id) {
+    public KJSTieredMultiblockBuilder(Identifier id) {
         super(id);
     }
 
-    public KJSTieredMultiblockBuilder(ResourceLocation id, TieredCreationFunction machine) {
+    public KJSTieredMultiblockBuilder(Identifier id, TieredCreationFunction machine) {
         super(id);
         this.machine = machine;
     }

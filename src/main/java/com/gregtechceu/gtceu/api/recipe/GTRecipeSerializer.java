@@ -12,7 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -62,7 +62,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     @Override
-    public @NotNull GTRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json) {
+    public @NotNull GTRecipe fromJson(@NotNull Identifier id, @NotNull JsonObject json) {
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         GTRecipe recipe = CODEC.parse(ops, json).getOrThrow(false, GTCEu.LOGGER::error);
         recipe.setId(id);
@@ -97,8 +97,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static GTRecipe fromNetworkWithoutDatapackSync(@NotNull FriendlyByteBuf buf) {
-        ResourceLocation recipeType = buf.readResourceLocation();
-        ResourceLocation id = buf.readResourceLocation();
+        Identifier recipeType = buf.readResourceLocation();
+        Identifier id = buf.readResourceLocation();
         Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(
@@ -137,7 +137,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         int batchParallels = buf.readVarInt();
 
         int groupColor = buf.readInt();
-        ResourceLocation categoryLoc = buf.readResourceLocation();
+        Identifier categoryLoc = buf.readResourceLocation();
 
         GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
@@ -157,7 +157,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
      */
     @Override
     @NotNull
-    public GTRecipe fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
+    public GTRecipe fromNetwork(@NotNull Identifier id, @NotNull FriendlyByteBuf buf) {
         GTRecipe recipe = fromNetworkWithoutDatapackSync(buf);
 
         recipe.recipeCategory.addRecipe(recipe);

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.addon;
 
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
 import org.apache.logging.log4j.LogManager;

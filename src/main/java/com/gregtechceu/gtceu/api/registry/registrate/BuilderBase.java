@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
@@ -11,10 +11,10 @@ import java.util.function.Supplier;
 
 public abstract class BuilderBase<T> implements Supplier<T> {
 
-    public ResourceLocation id;
+    public Identifier id;
     protected T value = null;
 
-    public BuilderBase(ResourceLocation id) {
+    public BuilderBase(Identifier id) {
         this.id = id;
     }
 

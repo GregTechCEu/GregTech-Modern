@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
@@ -28,5 +28,5 @@ public abstract class PatternError {
 
     public abstract PatternErrorUI getPatternErrorUIModifier();
 
-    public record PatternErrorType(ResourceLocation id, Codec<? extends PatternError> codec) {}
+    public record PatternErrorType(Identifier id, Codec<? extends PatternError> codec) {}
 }

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
@@ -28,7 +28,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     @Setter
     private transient String langValue;
 
-    public GTRecipeCategoryBuilder(ResourceLocation id) {
+    public GTRecipeCategoryBuilder(Identifier id) {
         super(id);
         name = id.getPath();
         recipeType = null;
@@ -37,7 +37,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
         langValue = null;
     }
 
-    public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
+    public GTRecipeCategoryBuilder setCustomIcon(Identifier location) {
         this.icon = new CategoryIcon(location);
         return this;
     }

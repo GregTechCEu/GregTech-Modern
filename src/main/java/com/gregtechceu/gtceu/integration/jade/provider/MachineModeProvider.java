@@ -11,7 +11,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -56,7 +56,7 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
             if (block.showDetails()) {
                 tooltip.add(Component.translatable("gtceu.top.machine_mode"));
                 for (int i = 0; i < recipeTypesTagList.size(); i++) {
-                    ResourceLocation recipeType = ResourceLocation.parse(recipeTypesTagList.getString(i));
+                    Identifier recipeType = Identifier.parse(recipeTypesTagList.getString(i));
                     MutableComponent text;
                     if (currentRecipeTypeIndex == i) {
                         text = Component.literal(" > ").withStyle(ChatFormatting.BLUE);
@@ -68,7 +68,7 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
                     tooltip.add(text);
                 }
             } else {
-                ResourceLocation recipeType = ResourceLocation.parse(
+                Identifier recipeType = Identifier.parse(
                         recipeTypesTagList.getString(currentRecipeTypeIndex));
                 tooltip.add(Component.translatable("gtceu.top.machine_mode").append(
                         Component.translatable("%s.%s".formatted(recipeType.getNamespace(), recipeType.getPath()))));

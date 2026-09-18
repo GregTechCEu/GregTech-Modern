@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.NoopIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.serialization.Codec;
 
@@ -22,7 +22,7 @@ public class IndicatorGenerators {
     public static final Codec<SurfaceIndicatorGenerator> SURFACE = register(GTCEu.id("surface"),
             SurfaceIndicatorGenerator.CODEC, SurfaceIndicatorGenerator::new);
 
-    public static <T extends IndicatorGenerator> Codec<T> register(ResourceLocation id, Codec<T> codec,
+    public static <T extends IndicatorGenerator> Codec<T> register(Identifier id, Codec<T> codec,
                                                                    Function<GTOreDefinition, T> function) {
         WorldGeneratorUtils.INDICATOR_GENERATORS.put(id, codec);
         WorldGeneratorUtils.INDICATOR_GENERATOR_FUNCTIONS.put(id, function);

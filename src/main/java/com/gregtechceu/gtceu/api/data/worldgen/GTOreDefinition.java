@@ -13,7 +13,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
@@ -52,7 +52,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Accessors(chain = true, fluent = true)
 public class GTOreDefinition {
 
-    public static final Codec<GTOreDefinition> CODEC = ResourceLocation.CODEC
+    public static final Codec<GTOreDefinition> CODEC = Identifier.CODEC
             .flatXmap(rl -> Optional.ofNullable(GTRegistries.ORE_VEINS.get(rl))
                     .map(DataResult::success)
                     .orElseGet(() -> DataResult.error(() -> "No GTOreDefinition with id " + rl + " registered")),
@@ -155,7 +155,7 @@ public class GTOreDefinition {
     }
 
     @HideFromJS
-    public void register(ResourceLocation id) {
+    public void register(Identifier id) {
         GTRegistries.ORE_VEINS.registerOrOverride(id, this);
     }
 
@@ -205,7 +205,7 @@ public class GTOreDefinition {
     @ApiStatus.Internal
     @SuppressWarnings("unused")
     // TODO(8.0.0): rename to `kjs$dimensions`
-    public GTOreDefinition dimensions(ResourceLocation... dimensions) {
+    public GTOreDefinition dimensions(Identifier... dimensions) {
         return this.dimensions(Arrays.stream(dimensions)
                 .map(location -> ResourceKey.create(Registries.DIMENSION, location))
                 .collect(Collectors.toSet()));
@@ -329,7 +329,7 @@ public class GTOreDefinition {
 
     @Tolerate
     @RemapForJS("customVeinGenerator")
-    public @Nullable VeinGenerator veinGenerator(ResourceLocation id) {
+    public @Nullable VeinGenerator veinGenerator(Identifier id) {
         if (veinGenerator == null) {
             veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ?
                     WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;

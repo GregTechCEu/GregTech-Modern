@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -33,11 +33,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import brachy.modularui.drawable.GuiDraw;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -70,11 +70,11 @@ public class RenderUtil {
             else return fluidTypeExtensions.getOverlayTexture();
         });
 
-        private static final ResourceLocation WATER_STILL = ResourceLocation.withDefaultNamespace("block/water_still");
+        private static final Identifier WATER_STILL = Identifier.withDefaultNamespace("block/water_still");
 
-        private final BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper;
+        private final BiFunction<IClientFluidTypeExtensions, FluidStack, Identifier> mapper;
 
-        FluidTextureType(BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper) {
+        FluidTextureType(BiFunction<IClientFluidTypeExtensions, FluidStack, Identifier> mapper) {
             this.mapper = mapper;
         }
 
@@ -83,7 +83,7 @@ public class RenderUtil {
         }
 
         public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack fluidStack) {
-            ResourceLocation texture = mapper.apply(fluidTypeExtensions, fluidStack);
+            Identifier texture = mapper.apply(fluidTypeExtensions, fluidStack);
             if (texture == null) texture = STILL.mapper.apply(fluidTypeExtensions, fluidStack);
             if (texture == null) texture = WATER_STILL;
 

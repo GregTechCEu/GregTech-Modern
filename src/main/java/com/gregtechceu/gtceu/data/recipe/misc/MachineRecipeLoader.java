@@ -22,7 +22,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -30,7 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 import com.tterrag.registrate.util.entry.ItemEntry;
 
@@ -304,7 +304,7 @@ public class MachineRecipeLoader {
         registerBricksRecipe(provider, polisheds, smallBricks, CustomTags.PINK_LENS);
 
         for (int i = 0; i < stones.size(); i++) {
-            ResourceLocation bricksId = BuiltInRegistries.ITEM.getKey(bricks.get(i).getItem());
+            Identifier bricksId = BuiltInRegistries.ITEM.getKey(bricks.get(i).getItem());
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + bricksId.getPath())
                     .inputItems(stones.get(i))
                     .notConsumable(SHAPE_EXTRUDER_INGOT)
@@ -1416,7 +1416,7 @@ public class MachineRecipeLoader {
     private static void registerSmoothRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> roughStack,
                                              List<ItemStack> stoneStack) {
         for (int i = 0; i < roughStack.size(); i++) {
-            ResourceLocation stoneId = BuiltInRegistries.ITEM.getKey(stoneStack.get(i).getItem());
+            Identifier stoneId = BuiltInRegistries.ITEM.getKey(stoneStack.get(i).getItem());
             VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + stoneId.getPath(), roughStack.get(i),
                     stoneStack.get(i), 0.1f);
 
@@ -1431,7 +1431,7 @@ public class MachineRecipeLoader {
     private static void registerCobbleRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> stoneStack,
                                              List<ItemStack> cobbleStack) {
         for (int i = 0; i < stoneStack.size(); i++) {
-            ResourceLocation cobbleId = BuiltInRegistries.ITEM.getKey(cobbleStack.get(i).getItem());
+            Identifier cobbleId = BuiltInRegistries.ITEM.getKey(cobbleStack.get(i).getItem());
             FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + cobbleId.getPath())
                     .inputItems(stoneStack.get(i))
                     .outputItems(cobbleStack.get(i))
@@ -1442,7 +1442,7 @@ public class MachineRecipeLoader {
     private static void registerBricksRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> polishedStack,
                                              List<ItemStack> brickStack, TagKey<Item> lensTag) {
         for (int i = 0; i < polishedStack.size(); i++) {
-            ResourceLocation brickId = BuiltInRegistries.ITEM.getKey(brickStack.get(i).getItem());
+            Identifier brickId = BuiltInRegistries.ITEM.getKey(brickStack.get(i).getItem());
             LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_" + brickId.getPath())
                     .inputItems(polishedStack.get(i))
                     .notConsumable(lensTag)
@@ -1454,7 +1454,7 @@ public class MachineRecipeLoader {
     private static void registerMossRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> regularStack,
                                            List<ItemStack> mossStack) {
         for (int i = 0; i < regularStack.size(); i++) {
-            ResourceLocation mossId = BuiltInRegistries.ITEM.getKey(mossStack.get(i).getItem());
+            Identifier mossId = BuiltInRegistries.ITEM.getKey(mossStack.get(i).getItem());
             MIXER_RECIPES.recipeBuilder(mossId.getPath() + "_from_moss_block")
                     .inputItems(regularStack.get(i))
                     .inputItems(new ItemStack(Blocks.MOSS_BLOCK))

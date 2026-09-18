@@ -26,7 +26,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,8 +46,8 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.Tags;
 import net.minecraftforge.versions.forge.ForgeVersion;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("deprecation")
 public class MixinHelpers {
 
-    public static <T> void generateGTDynamicTags(Map<ResourceLocation, List<TagLoader.EntryWithSource>> tagMap,
+    public static <T> void generateGTDynamicTags(Map<Identifier, List<TagLoader.EntryWithSource>> tagMap,
                                                  Registry<T> registry) {
         if (registry == BuiltInRegistries.ITEM) {
             ItemMaterialData.MATERIAL_ENTRY_ITEM_MAP.forEach((entry, itemLikes) -> {
@@ -82,8 +82,8 @@ public class MixinHelpers {
                     OreProperty ore = material.getPropertyOrThrow(PropertyKey.ORE);
                     if (!ore.hasWashedInFluid()) return;
                     Material washedIn = ore.getWashedIn().first();
-                    ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
-                    ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
+                    Identifier generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
+                    Identifier specificTag = generalTag.withSuffix("/" + washedIn.getName());
 
                     tagMap.computeIfAbsent(generalTag, path -> new ArrayList<>()).addAll(entries);
                     tagMap.computeIfAbsent(specificTag, path -> new ArrayList<>()).addAll(entries);
@@ -121,7 +121,7 @@ public class MixinHelpers {
                 return;
             }
             // If AE2 is loaded, add the Fluid P2P attunement tag to all the buckets
-            var p2pFluidAttunements = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_APPENG,
+            var p2pFluidAttunements = Identifier.fromNamespaceAndPath(GTValues.MODID_APPENG,
                     "p2p_attunements/fluid_p2p_tunnel");
             for (Material material : GTRegistries.MATERIALS) {
                 FluidProperty property = material.getProperty(PropertyKey.FLUID);
@@ -214,8 +214,8 @@ public class MixinHelpers {
 
                     TagLoader.EntryWithSource entry = makeFluidEntry(fluid);
 
-                    ResourceLocation fluidIdTag = fluid.builtInRegistryHolder().key().location();
-                    fluidIdTag = ResourceLocation.fromNamespaceAndPath(ForgeVersion.MOD_ID, fluidIdTag.getPath());
+                    Identifier fluidIdTag = fluid.builtInRegistryHolder().key().location();
+                    fluidIdTag = Identifier.fromNamespaceAndPath(ForgeVersion.MOD_ID, fluidIdTag.getPath());
                     tagMap.computeIfAbsent(fluidIdTag, path -> new ArrayList<>()).add(entry);
                     FluidState state;
 
@@ -258,7 +258,7 @@ public class MixinHelpers {
         return makeElementEntry(fluid.builtInRegistryHolder().key().location());
     }
 
-    public static TagLoader.EntryWithSource makeElementEntry(ResourceLocation id) {
+    public static TagLoader.EntryWithSource makeElementEntry(Identifier id) {
         return new TagLoader.EntryWithSource(TagEntry.element(id), GTValues.CUSTOM_TAG_SOURCE);
     }
 
@@ -268,12 +268,12 @@ public class MixinHelpers {
 
     private static final VanillaBlockLoot BLOCK_LOOT = new VanillaBlockLoot();
 
-    public static void generateGTDynamicLoot(Map<ResourceLocation, LootTable> lootTables) {
+    public static void generateGTDynamicLoot(Map<Identifier, LootTable> lootTables) {
         GTMaterialBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
                 final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
-                    ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
+                    Identifier lootTableId = blockEntry.getId().withPrefix("blocks/");
                     Block block = blockEntry.get();
 
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
@@ -322,7 +322,7 @@ public class MixinHelpers {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
         GTMaterialBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
-            ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
+            Identifier lootTableId = blockEntry.getId().withPrefix("blocks/");
             LootTable.Builder builder = BLOCK_LOOT
                     .createSingleItemTable(ChemicalHelper.get(TagPrefix.dustTiny, material).getItem(),
                             UniformGenerator.between(3, 5))
@@ -332,18 +332,18 @@ public class MixinHelpers {
         });
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
-            ResourceLocation id = machine.getId();
-            ResourceLocation lootTableId = BuiltInRegistries.BLOCK.getKey(block).withPrefix("blocks/");
+            Identifier id = machine.getId();
+            Identifier lootTableId = BuiltInRegistries.BLOCK.getKey(block).withPrefix("blocks/");
             ((BlockBehaviourAccessor) block).setDrops(lootTableId);
             lootTables.put(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
         });
     }
 
-    public static void addMaterialBlockLootTables(Map<ResourceLocation, LootTable> lootTables, TagPrefix prefix,
+    public static void addMaterialBlockLootTables(Map<Identifier, LootTable> lootTables, TagPrefix prefix,
                                                   Map<Material, ? extends BlockEntry<? extends Block>> map) {
         map.forEach((material, blockEntry) -> {
-            ResourceLocation lootTableId = blockEntry.getId().withPrefix("blocks/");
+            Identifier lootTableId = blockEntry.getId().withPrefix("blocks/");
             ((BlockBehaviourAccessor) blockEntry.get()).setDrops(lootTableId);
             lootTables.put(lootTableId,
                     BLOCK_LOOT.createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build());

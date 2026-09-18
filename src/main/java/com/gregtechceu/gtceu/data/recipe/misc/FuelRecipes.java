@@ -6,12 +6,12 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -33,14 +33,14 @@ public class FuelRecipes {
 
         Optional<FluidStack> containedFluid = FluidUtil.getFluidContained(item.getDefaultInstance());
         if (containedFluid.isEmpty()) {
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+            Identifier id = BuiltInRegistries.ITEM.getKey(item);
             STEAM_BOILER_RECIPES.recipeBuilder(GTCEu.id(id.getNamespace() + "_" + id.getPath()))
                     .inputItems(item)
                     .duration(burnTime)
                     .save(provider);
         } else {
             FluidStack fluid = new FluidStack(containedFluid.get(), 250);
-            ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
+            Identifier id = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
 
             // the lava recipe's duration is 4/9 of the bucket's burn time
             // the creosote recipe's duration is 7/32 of the bucket's burn time

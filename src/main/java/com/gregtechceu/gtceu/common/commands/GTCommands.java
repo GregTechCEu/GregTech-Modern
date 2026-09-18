@@ -25,7 +25,7 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -92,7 +92,7 @@ public class GTCommands {
                                                 GTOreLoader.FOLDER))))
                         .then(literal("place_vein")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
-                                .then(argument("vein", GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
+                                .then(argument("vein", GTRegistryArgument.registry(GTRegistries.ORE_VEINS, Identifier.class))
                                         .executes(context -> {
                                             return GTCommands.placeVein(context, BlockPos.containing(context.getSource().getPosition()));
                                         })
@@ -108,7 +108,7 @@ public class GTCommands {
                                                         .suggests(NOT_OWNED_CAPES)
                                                         .executes(ctx -> {
                                                             Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
-                                                            Collection<ResourceLocation> cape = Collections.singleton(ResourceLocationArgument.getId(ctx, "cape"));
+                                                            Collection<Identifier> cape = Collections.singleton(ResourceLocationArgument.getId(ctx, "cape"));
                                                             return giveCapes(ctx.getSource(), players, cape);
                                                         }))
                                                 .then(literal("*")
@@ -123,7 +123,7 @@ public class GTCommands {
                                                         .suggests(OWNED_CAPES)
                                                         .executes(ctx -> {
                                                             Collection<ServerPlayer> players = EntityArgument.getPlayers(ctx, "targets");
-                                                            Collection<ResourceLocation> cape = Collections.singleton(ResourceLocationArgument.getId(ctx, "cape"));
+                                                            Collection<Identifier> cape = Collections.singleton(ResourceLocationArgument.getId(ctx, "cape"));
                                                             return takeCapes(ctx.getSource(), players, cape);
                                                         }))
                                                 .then(literal("*")
@@ -138,7 +138,7 @@ public class GTCommands {
                                                         .suggests(OWNED_CAPES)
                                                         .executes(ctx -> {
                                                             ServerPlayer player = EntityArgument.getPlayer(ctx, "target");
-                                                            ResourceLocation cape = ResourceLocationArgument.getId(ctx, "cape");
+                                                            Identifier cape = ResourceLocationArgument.getId(ctx, "cape");
                                                             return setActiveCape(ctx.getSource(), player, cape);
                                                         }))
                                                 .then(literal("none")
@@ -150,7 +150,7 @@ public class GTCommands {
                                                 .suggests(OWNED_CAPES)
                                                 .executes(ctx -> {
                                                     ServerPlayer player = ctx.getSource().getPlayerOrException();
-                                                    ResourceLocation cape = ResourceLocationArgument.getId(ctx, "cape");
+                                                    Identifier cape = ResourceLocationArgument.getId(ctx, "cape");
                                                     return setActiveCape(ctx.getSource(), player, cape);
                                                 }))
                                         .then(literal("none")
@@ -185,29 +185,29 @@ public class GTCommands {
         }
     }
 
-    public static Collection<ResourceLocation> findOwnedCapesFor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static Collection<Identifier> findOwnedCapesFor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Collection<ServerPlayer> players = findPlayersFrom(ctx);
         if (players.isEmpty()) {
             return CapeRegistry.ALL_CAPES.keySet();
         }
 
-        Set<ResourceLocation> validCapes = new HashSet<>();
+        Set<Identifier> validCapes = new HashSet<>();
         for (ServerPlayer player : players) {
             validCapes.addAll(CapeRegistry.getUnlockedCapes(player.getUUID()));
         }
         return validCapes;
     }
 
-    public static Collection<ResourceLocation> findNotOwnedCapesFor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+    public static Collection<Identifier> findNotOwnedCapesFor(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         Collection<ServerPlayer> players = findPlayersFrom(ctx);
         if (players.isEmpty()) {
             return CapeRegistry.ALL_CAPES.keySet();
         }
 
-        Set<ResourceLocation> allCapes = CapeRegistry.ALL_CAPES.keySet();
-        Set<ResourceLocation> validCapes = new HashSet<>();
+        Set<Identifier> allCapes = CapeRegistry.ALL_CAPES.keySet();
+        Set<Identifier> validCapes = new HashSet<>();
         for (ServerPlayer player : players) {
-            Set<ResourceLocation> unlockedCapes = new HashSet<>(CapeRegistry.getUnlockedCapes(player.getUUID()));
+            Set<Identifier> unlockedCapes = new HashSet<>(CapeRegistry.getUnlockedCapes(player.getUUID()));
             // find all capes this player *doesn't* have
             validCapes.addAll(Sets.difference(allCapes, unlockedCapes));
         }
@@ -215,7 +215,7 @@ public class GTCommands {
     }
 
     public static int giveCapes(CommandSourceStack source,
-                                Collection<ServerPlayer> targets, Collection<ResourceLocation> capes)
+                                Collection<ServerPlayer> targets, Collection<Identifier> capes)
                                                                                                       throws CommandSyntaxException {
         int successes = 0;
 
@@ -250,7 +250,7 @@ public class GTCommands {
     }
 
     private static int takeCapes(CommandSourceStack source,
-                                 Collection<ServerPlayer> targets, Collection<ResourceLocation> capes)
+                                 Collection<ServerPlayer> targets, Collection<Identifier> capes)
                                                                                                        throws CommandSyntaxException {
         int successes = 0;
 
@@ -279,7 +279,7 @@ public class GTCommands {
         return successes;
     }
 
-    private static int setActiveCape(CommandSourceStack source, ServerPlayer player, ResourceLocation cape)
+    private static int setActiveCape(CommandSourceStack source, ServerPlayer player, Identifier cape)
                                                                                                             throws CommandSyntaxException {
         if (CapeRegistry.setActiveCape(player.getUUID(), cape)) {
             if (cape != null) {
@@ -298,11 +298,11 @@ public class GTCommands {
     }
 
     private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,
-                                            GTRegistry<ResourceLocation, T> registry, Codec<T> codec, String folder) {
+                                            GTRegistry<Identifier, T> registry, Codec<T> codec, String folder) {
         Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
         var ops = RegistryOps.create(JsonOps.INSTANCE, context.getSource().registryAccess());
         int dumpedCount = 0;
-        for (ResourceLocation id : registry.keys()) {
+        for (Identifier id : registry.keys()) {
             T entry = registry.get(id);
             JsonElement json = codec.encodeStart(ops, entry).getOrThrow(false, GTCEu.LOGGER::error);
             GTDynamicDataPack.writeJson(id, folder, parent, json.toString().getBytes(StandardCharsets.UTF_8));
@@ -318,7 +318,7 @@ public class GTCommands {
 
     private static int placeVein(CommandContext<CommandSourceStack> context, BlockPos sourcePos) {
         GTOreDefinition vein = context.getArgument("vein", GTOreDefinition.class);
-        ResourceLocation id = GTRegistries.ORE_VEINS.getKey(vein);
+        Identifier id = GTRegistries.ORE_VEINS.getKey(vein);
 
         ChunkPos chunkPos = new ChunkPos(sourcePos);
         ServerLevel level = context.getSource().getLevel();

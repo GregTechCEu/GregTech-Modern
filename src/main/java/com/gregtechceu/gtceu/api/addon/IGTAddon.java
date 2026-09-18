@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTOres;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Consumer;
 
@@ -35,7 +35,7 @@ public interface IGTAddon {
     /**
      * Call init on your custom TagPrefix class(es) here
      * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, TagPrefix>} register event instead
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<Identifier, TagPrefix>} register event instead
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerTagPrefixes() {}
@@ -43,7 +43,7 @@ public interface IGTAddon {
     /**
      * Call init on your custom Element class(es) here
      * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, Element>} register event instead
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<Identifier, Element>} register event instead
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerElements() {}
@@ -51,7 +51,7 @@ public interface IGTAddon {
     /**
      * Call init on your custom Sound class(es) here
      * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, SoundEntry>} register event instead
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<Identifier, SoundEntry>} register event instead
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerSounds() {}
@@ -59,7 +59,7 @@ public interface IGTAddon {
     /**
      * Call init on your custom Cover class(es) here
      * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, CoverDefinition>} register event
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<Identifier, CoverDefinition>} register event
      *             instead
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
@@ -68,7 +68,7 @@ public interface IGTAddon {
     /**
      * Call init on your custom Recipe Capabilities here
      * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, RecipeCapability>} register event
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<Identifier, RecipeCapability>} register event
      *             instead
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
@@ -77,7 +77,7 @@ public interface IGTAddon {
     /**
      * Call init on your custom IWorldGenLayer class(es) here
      *
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, IWorldGenLayer>} register event
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<Identifier, IWorldGenLayer>} register event
      *             instead
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
@@ -95,20 +95,20 @@ public interface IGTAddon {
 
     default void addRecipes(Consumer<FinishedRecipe> provider) {}
 
-    default void removeRecipes(Consumer<ResourceLocation> consumer) {}
+    default void removeRecipes(Consumer<Identifier> consumer) {}
 
     /**
-     * Use {@link GTOres#create(ResourceLocation, Consumer)} to register the veins.
+     * Use {@link GTOres#create(Identifier, Consumer)} to register the veins.
      */
     default void registerOreVeins() {}
 
     /**
-     * Use {@link BedrockFluidDefinition#builder(ResourceLocation)} to register the veins.
+     * Use {@link BedrockFluidDefinition#builder(Identifier)} to register the veins.
      */
     default void registerFluidVeins() {}
 
     /**
-     * Use {@link com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition#builder(ResourceLocation)} to
+     * Use {@link com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition#builder(Identifier)} to
      * register the veins.
      */
     default void registerBedrockOreVeins() {}

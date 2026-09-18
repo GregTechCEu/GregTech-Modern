@@ -14,13 +14,13 @@ import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.Deserializers;
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.fml.ModLoader;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -45,7 +45,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager,
+    protected void apply(Map<Identifier, JsonElement> resourceList, ResourceManager resourceManager,
                          ProfilerFiller profiler) {
         // Check condition in cause of reload failing which makes the registry not freeze.
         if (GTRegistries.ORE_VEINS.isFrozen()) {
@@ -61,8 +61,8 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         }
 
         RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        for (Map.Entry<ResourceLocation, JsonElement> entry : resourceList.entrySet()) {
-            ResourceLocation location = entry.getKey();
+        for (Map.Entry<Identifier, JsonElement> entry : resourceList.entrySet()) {
+            Identifier location = entry.getKey();
 
             try {
                 GTOreDefinition ore = fromJson(location,
@@ -93,7 +93,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
     }
 
     public static void buildVeinGenerator() {
-        Iterator<Map.Entry<ResourceLocation, GTOreDefinition>> iterator = GTRegistries.ORE_VEINS.entries().iterator();
+        Iterator<Map.Entry<Identifier, GTOreDefinition>> iterator = GTRegistries.ORE_VEINS.entries().iterator();
         while (iterator.hasNext()) {
             var entry = iterator.next().getValue();
             if (entry.veinGenerator() != null) {
@@ -104,7 +104,7 @@ public class GTOreLoader extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
+    public static GTOreDefinition fromJson(Identifier id, JsonObject json, RegistryOps<JsonElement> ops) {
         return GTOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
     }
 

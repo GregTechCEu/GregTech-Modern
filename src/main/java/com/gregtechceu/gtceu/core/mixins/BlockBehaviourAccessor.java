@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,5 +13,5 @@ public interface BlockBehaviourAccessor {
     BlockBehaviour.Properties getBlockProperties();
 
     @Accessor
-    void setDrops(ResourceLocation location);
+    void setDrops(Identifier location);
 }

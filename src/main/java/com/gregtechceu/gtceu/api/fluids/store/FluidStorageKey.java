@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
@@ -20,10 +20,10 @@ import java.util.function.Function;
 
 public final class FluidStorageKey {
 
-    private static final Map<ResourceLocation, FluidStorageKey> keys = new Object2ObjectOpenHashMap<>();
+    private static final Map<Identifier, FluidStorageKey> keys = new Object2ObjectOpenHashMap<>();
 
     @Getter
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
     @Getter
     private final TagKey<Fluid> extraTag;
     @Getter
@@ -36,7 +36,7 @@ public final class FluidStorageKey {
     @Getter
     private final int registrationPriority;
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @Nullable TagKey<Fluid> extraTag,
+    public FluidStorageKey(@NotNull Identifier resourceLocation, @Nullable TagKey<Fluid> extraTag,
                            @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
@@ -55,7 +55,7 @@ public final class FluidStorageKey {
         keys.put(resourceLocation, this);
     }
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull String tagKey,
+    public FluidStorageKey(@NotNull Identifier resourceLocation, @NotNull String tagKey,
                            @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
@@ -65,7 +65,7 @@ public final class FluidStorageKey {
                 defaultFluidState, registrationPriority);
     }
 
-    public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull MaterialIconType iconType,
+    public FluidStorageKey(@NotNull Identifier resourceLocation, @NotNull MaterialIconType iconType,
                            @NotNull Function<@NotNull Material, @NotNull String> registryNameFunction,
                            @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
                            @Nullable FluidState defaultFluidState, int registrationPriority) {
@@ -74,7 +74,7 @@ public final class FluidStorageKey {
                 defaultFluidState, registrationPriority);
     }
 
-    public static @Nullable FluidStorageKey getByName(@NotNull ResourceLocation location) {
+    public static @Nullable FluidStorageKey getByName(@NotNull Identifier location) {
         return keys.get(location);
     }
 

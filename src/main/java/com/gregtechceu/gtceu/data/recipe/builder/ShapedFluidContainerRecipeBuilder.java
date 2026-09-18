@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 import com.gregtechceu.gtceu.api.recipe.ShapedFluidContainerRecipe;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import com.google.gson.JsonObject;
@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 
 public class ShapedFluidContainerRecipeBuilder extends ShapedRecipeBuilder {
 
-    public ShapedFluidContainerRecipeBuilder(@Nullable ResourceLocation id) {
+    public ShapedFluidContainerRecipeBuilder(@Nullable Identifier id) {
         super(id);
     }
 
@@ -26,7 +26,7 @@ public class ShapedFluidContainerRecipeBuilder extends ShapedRecipeBuilder {
             }
 
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 var ID = id == null ? defaultId() : id;
                 return ID.withPath("shaped_fluid_container/" + ID.getPath());
             }
@@ -44,7 +44,7 @@ public class ShapedFluidContainerRecipeBuilder extends ShapedRecipeBuilder {
 
             @Nullable
             @Override
-            public ResourceLocation getAdvancementId() {
+            public Identifier getAdvancementId() {
                 return null;
             }
         });

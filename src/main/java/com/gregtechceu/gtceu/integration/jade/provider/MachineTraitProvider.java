@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -29,10 +29,10 @@ public abstract class MachineTraitProvider<T extends MachineTrait, TagType exten
                                           implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Getter
-    private final ResourceLocation uid;
+    private final Identifier uid;
     public final Class<T> traitType;
 
-    protected MachineTraitProvider(ResourceLocation uid, Class<T> type) {
+    protected MachineTraitProvider(Identifier uid, Class<T> type) {
         this.uid = uid;
         this.traitType = type;
     }

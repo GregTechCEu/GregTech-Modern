@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
-import net.minecraftforge.fml.ModLoader;
+import net.neoforged.fml.ModLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;

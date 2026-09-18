@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 
@@ -167,7 +167,7 @@ public class OreVeinIcon implements MapIcon {
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         MaterialIconSet iconSet = material == null ? MaterialIconSet.METALLIC : material.getMaterialIconSet();
-        ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, true);
+        Identifier oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                     .apply(oreTexture);

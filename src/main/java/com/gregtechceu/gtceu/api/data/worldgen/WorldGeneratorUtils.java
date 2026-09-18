@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.utils.WeightedEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -37,14 +37,14 @@ public class WorldGeneratorUtils {
 
     private static final Map<ServerLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
 
-    public static final HashBiMap<ResourceLocation, Codec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap
+    public static final HashBiMap<Identifier, Codec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap
             .create();
-    public static final HashBiMap<ResourceLocation, Function<GTOreDefinition, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap
+    public static final HashBiMap<Identifier, Function<GTOreDefinition, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap
             .create();
 
-    public static final HashBiMap<ResourceLocation, Codec<? extends IndicatorGenerator>> INDICATOR_GENERATORS = HashBiMap
+    public static final HashBiMap<Identifier, Codec<? extends IndicatorGenerator>> INDICATOR_GENERATORS = HashBiMap
             .create();
-    public static final HashBiMap<ResourceLocation, Function<GTOreDefinition, ? extends IndicatorGenerator>> INDICATOR_GENERATOR_FUNCTIONS = HashBiMap
+    public static final HashBiMap<Identifier, Function<GTOreDefinition, ? extends IndicatorGenerator>> INDICATOR_GENERATOR_FUNCTIONS = HashBiMap
             .create();
 
     public record WeightedVein(GTOreDefinition vein, int weight) implements WeightedEntry {}

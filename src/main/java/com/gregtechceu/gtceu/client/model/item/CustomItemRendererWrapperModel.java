@@ -6,9 +6,9 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder;
@@ -37,7 +37,7 @@ import java.util.function.Function;
 // spotless:on
 public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomItemRendererWrapperModel> {
 
-    public static final ResourceLocation ID = GTCEu.id("custom_item_renderer_wrapper");
+    public static final Identifier ID = GTCEu.id("custom_item_renderer_wrapper");
 
     private final BlockModel baseModel;
 
@@ -48,7 +48,7 @@ public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomIt
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
                            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
-                           ItemOverrides overrides, ResourceLocation modelLocation) {
+                           ItemOverrides overrides, Identifier modelLocation) {
         BlockModel owner = baseModel;
         if (context instanceof BlockGeometryBakingContext blockContext) owner = blockContext.owner;
 
@@ -58,7 +58,7 @@ public class CustomItemRendererWrapperModel implements IUnbakedGeometry<CustomIt
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
+    public void resolveParents(Function<Identifier, UnbakedModel> modelGetter, IGeometryBakingContext context) {
         baseModel.resolveParents(modelGetter);
     }
 

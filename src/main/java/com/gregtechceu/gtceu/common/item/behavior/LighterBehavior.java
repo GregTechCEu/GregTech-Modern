@@ -32,8 +32,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
@@ -306,7 +306,7 @@ public class LighterBehavior implements IDurabilityBar, IInteractionItem, IAddIn
     private static void initCacheDefaults() {
         // self-test & default caching
         if (!classImplementsOnCaughtFire(TntBlock.class)) {
-            throw new AssertionError("TntBlock doesn't implement IForgeBlock#onCaughtFire!" +
+            throw new AssertionError("TntBlock doesn't implement IBlockExtension#onCaughtFire!" +
                     "Something is seriously wrong!" +
                     "Maybe check if the method name changed?");
         }

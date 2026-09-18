@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.ComposterBlock;
 
 import dev.latvian.mods.kubejs.bindings.event.ServerEvents;
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 
 public class GTRecipes {
 
-    public static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
+    public static final Set<Identifier> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
     /*
      * Called on resource reload in-game.

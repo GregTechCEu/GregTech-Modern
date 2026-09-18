@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -46,7 +46,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
     @Getter
-    private final ResourceLocation id;
+    private final Identifier id;
     // This is only stored here for KJS use.
     @Getter
     @Setter
@@ -131,7 +131,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     private MachineRenderState defaultRenderState;
 
-    public MachineDefinition(ResourceLocation id) {
+    public MachineDefinition(Identifier id) {
         this.id = id;
     }
 

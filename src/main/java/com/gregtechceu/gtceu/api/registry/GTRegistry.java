@@ -6,9 +6,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraft.resources.Identifier;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -21,16 +21,16 @@ import java.util.*;
 
 public abstract class GTRegistry<K, V> implements Iterable<V> {
 
-    public static final Map<ResourceLocation, GTRegistry<?, ?>> REGISTERED = new HashMap<>();
+    public static final Map<Identifier, GTRegistry<?, ?>> REGISTERED = new HashMap<>();
 
     protected final Map<K, V> keyToValue;
     protected final Map<V, K> valueToKey;
     @Getter
-    protected final ResourceLocation registryName;
+    protected final Identifier registryName;
     @Getter
     protected boolean frozen = true;
 
-    public GTRegistry(ResourceLocation registryName) {
+    public GTRegistry(Identifier registryName) {
         this.keyToValue = new HashMap<>();
         this.valueToKey = new HashMap<>();
         this.registryName = registryName;
@@ -209,9 +209,9 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     // ************************ Built-in Registry ************************//
 
-    public static class RL<V> extends GTRegistry<ResourceLocation, V> {
+    public static class RL<V> extends GTRegistry<Identifier, V> {
 
-        public RL(ResourceLocation registryName) {
+        public RL(Identifier registryName) {
             super(registryName);
         }
 
@@ -241,12 +241,12 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public V loadFromNBT(Tag tag) {
-            return get(ResourceLocation.parse(tag.getAsString()));
+            return get(Identifier.parse(tag.getAsString()));
         }
 
         @Override
         public Codec<V> codec() {
-            return ResourceLocation.CODEC.flatXmap(
+            return Identifier.CODEC.flatXmap(
                     key -> Optional.ofNullable(this.get(key)).map(DataResult::success)
                             .orElseGet(() -> DataResult.error(
                                     () -> "Unknown registry key in %s: %s".formatted(this.registryName, key))),

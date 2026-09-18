@@ -3,15 +3,15 @@ package com.gregtechceu.gtceu.api.sound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import com.google.gson.JsonObject;
 
@@ -20,12 +20,12 @@ import java.util.function.Consumer;
 
 public abstract class SoundEntry {
 
-    protected ResourceLocation id;
+    protected Identifier id;
     protected String subtitle;
     protected SoundSource category;
     protected int attenuationDistance;
 
-    public SoundEntry(ResourceLocation id, String subtitle, SoundSource category, int attenuationDistance) {
+    public SoundEntry(Identifier id, String subtitle, SoundSource category, int attenuationDistance) {
         this.id = id;
         this.subtitle = subtitle;
         this.category = category;
@@ -44,7 +44,7 @@ public abstract class SoundEntry {
         return id.getNamespace() + ".subtitle." + id.getPath();
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

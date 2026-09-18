@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.serialization.Codec;
 
@@ -35,7 +35,7 @@ public class VeinGenerators {
             CuboidVeinGenerator::new);
 
     public static <
-            T extends VeinGenerator> Codec<T> register(ResourceLocation id, Codec<T> codec,
+            T extends VeinGenerator> Codec<T> register(Identifier id, Codec<T> codec,
                                                        Function<GTOreDefinition, ? extends VeinGenerator> function) {
         WorldGeneratorUtils.VEIN_GENERATORS.put(id, codec);
         WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.put(id, function);

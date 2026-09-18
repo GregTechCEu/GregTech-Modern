@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTElements;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -15,7 +15,7 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     public transient final String name;
 
-    public transient final ResourceLocation id;
+    public transient final Identifier id;
 
     @Setter
     public transient Component translatableName;
@@ -28,7 +28,7 @@ public class ElementBuilder extends BuilderBase<Element> {
     @Setter
     public transient boolean isIsotope;
 
-    public ElementBuilder(ResourceLocation id) {
+    public ElementBuilder(Identifier id) {
         super(id);
         this.id = id;
         name = id.getPath();

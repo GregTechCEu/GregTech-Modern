@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -26,13 +26,13 @@ public class MaterialRegistry extends GTRegistry.RL<Material> {
     }
 
     public @Nullable Material get(java.lang.String name) {
-        ResourceLocation location = ResourceLocation.tryParse(GTCEu.appendIdString(name));
+        Identifier location = Identifier.tryParse(GTCEu.appendIdString(name));
         if (location != null) return get(location);
         return null;
     }
 
     @Override
-    public <T extends Material> T register(@NotNull ResourceLocation key, @NotNull T value) {
+    public <T extends Material> T register(@NotNull Identifier key, @NotNull T value) {
         if (registrationPhase == Phase.CLOSED || registrationPhase == Phase.FROZEN) {
             GTCEu.LOGGER.error(
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material {}...",

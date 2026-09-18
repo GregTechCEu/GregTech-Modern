@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -25,12 +25,12 @@ public final class CoverDefinition {
     }
 
     @Getter
-    private final ResourceLocation id;
+    private final Identifier id;
     private final CoverBehaviourProvider behaviorCreator;
     @Getter
     private final @Nullable Supplier<ICoverRenderer> coverRenderer;
 
-    public CoverDefinition(ResourceLocation id, CoverBehaviourProvider behaviorCreator,
+    public CoverDefinition(Identifier id, CoverBehaviourProvider behaviorCreator,
                            Supplier<Supplier<ICoverRenderer>> coverRenderer) {
         this.behaviorCreator = behaviorCreator;
         this.id = id;

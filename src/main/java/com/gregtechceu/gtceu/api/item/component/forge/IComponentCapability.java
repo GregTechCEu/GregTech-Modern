@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.item.component.forge;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.util.LazyOptional;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 
 import java.util.HashSet;
@@ -19,8 +19,8 @@ public class MaterialBlockModelGenerator {
 
     public static void reinitModels() {
         for (MaterialBlockModelGenerator model : MODELS) {
-            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = model.type.getBlockModelPath(model.iconSet, true);
+            Identifier blockId = BuiltInRegistries.BLOCK.getKey(model.block);
+            Identifier modelId = model.type.getBlockModelPath(model.iconSet, true);
 
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),

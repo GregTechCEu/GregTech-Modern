@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -13,10 +13,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
-import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.templates.VoidFluidHandler;
+import net.neoforged.neoforge.fluids.FluidActionResult;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.templates.VoidFluidHandler;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 
 public class FluidContainerIngredient extends Ingredient {
 
-    public static final ResourceLocation TYPE = GTCEu.id("fluid_container");
+    public static final Identifier TYPE = GTCEu.id("fluid_container");
 
     public static final Codec<FluidContainerIngredient> CODEC = FluidIngredient.CODEC.xmap(
             FluidContainerIngredient::new, FluidContainerIngredient::getFluid);

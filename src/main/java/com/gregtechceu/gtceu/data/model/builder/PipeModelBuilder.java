@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.utils.memoization.function.MemoizedBiFunction;
 
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.BlockStateProvider.ConfiguredModelList;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -69,7 +69,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param connectionModels The models to use for all the connection elements
      * @return {@code this}
      * @see #allModels(ModelFile, ModelFile...)
-     * @see #allModels(ResourceLocation, ResourceLocation...)
+     * @see #allModels(Identifier, Identifier...)
      */
     public PipeModelBuilder<T> allModels(ConfiguredModel centerModel, ConfiguredModel... connectionModels) {
         centerModels(centerModel);
@@ -84,7 +84,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param connectionModels The models to use for all the connection elements
      * @return {@code this}
      * @see #allModels(ModelFile, ModelFile...)
-     * @see #allModels(ResourceLocation, ResourceLocation...)
+     * @see #allModels(Identifier, Identifier...)
      */
     public PipeModelBuilder<T> allModels(ModelFile centerModel, ModelFile... connectionModels) {
         centerModels(centerModel);
@@ -101,7 +101,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @see #allModels(ConfiguredModel, ConfiguredModel...)
      * @see #allModels(ModelFile, ModelFile...)
      */
-    public PipeModelBuilder<T> allModels(ResourceLocation centerModel, ResourceLocation... connectionModels) {
+    public PipeModelBuilder<T> allModels(Identifier centerModel, Identifier... connectionModels) {
         centerModels(centerModel);
         connectionModels(connectionModels);
         return this;
@@ -113,7 +113,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param connectionModels The models to use for all the connection elements
      * @return {@code this}
      * @see #connectionModels(ModelFile...)
-     * @see #connectionModels(ResourceLocation...)
+     * @see #connectionModels(Identifier...)
      */
     public PipeModelBuilder<T> connectionModels(ConfiguredModel... connectionModels) {
         for (Direction dir : GTUtil.DIRECTIONS) {
@@ -135,7 +135,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param connectionModels The models to use for all the connection elements
      * @return {@code this}
      * @see #connectionModels(ConfiguredModel...)
-     * @see #connectionModels(ResourceLocation...)
+     * @see #connectionModels(Identifier...)
      */
     public PipeModelBuilder<T> connectionModels(ModelFile... connectionModels) {
         for (Direction dir : GTUtil.DIRECTIONS) {
@@ -159,7 +159,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @see #connectionModels(ConfiguredModel...)
      * @see #connectionModels(ModelFile...)
      */
-    public PipeModelBuilder<T> connectionModels(ResourceLocation... connectionModels) {
+    public PipeModelBuilder<T> connectionModels(Identifier... connectionModels) {
         return connectionModels(Arrays.stream(connectionModels)
                 .map(loc -> new ModelFile.ExistingModelFile(loc, this.existingFileHelper))
                 .toArray(ModelFile[]::new));
@@ -171,7 +171,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @return A model builder
      * @see #connectionModels(ConfiguredModel...)
      * @see #connectionModels(ModelFile...)
-     * @see #connectionModels(ResourceLocation...)
+     * @see #connectionModels(Identifier...)
      */
     public ConfiguredModel.Builder<PipeModelBuilder<T>> connectionModels() {
         return ConfiguredModelBuilderAccessor.builder(this::connectionModels, ImmutableList.of());
@@ -183,7 +183,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param centerModels The model to use for the center part of the pipe
      * @return {@code this}
      * @see #centerModels(ModelFile...)
-     * @see #centerModels(ResourceLocation...)
+     * @see #centerModels(Identifier...)
      */
     public PipeModelBuilder<T> centerModels(ConfiguredModel... centerModels) {
         return modelsForDirection(null, centerModels);
@@ -195,7 +195,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param centerModels The model to use for the center part of the pipe
      * @return {@code this}
      * @see #centerModels(ConfiguredModel...)
-     * @see #centerModels(ResourceLocation...)
+     * @see #centerModels(Identifier...)
      */
     public PipeModelBuilder<T> centerModels(ModelFile... centerModels) {
         return modelsForDirection(null, centerModels);
@@ -209,7 +209,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @see #centerModels(ConfiguredModel...)
      * @see #centerModels(ModelFile...)
      */
-    public PipeModelBuilder<T> centerModels(ResourceLocation... centerModels) {
+    public PipeModelBuilder<T> centerModels(Identifier... centerModels) {
         return modelsForDirection(null, centerModels);
     }
 
@@ -219,7 +219,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @return A model builder
      * @see #centerModels(ConfiguredModel...)
      * @see #centerModels(ModelFile...)
-     * @see #centerModels(ResourceLocation...)
+     * @see #centerModels(Identifier...)
      */
     public ConfiguredModel.Builder<PipeModelBuilder<T>> centerModel() {
         return ConfiguredModelBuilderAccessor.builder(this::centerModels, ImmutableList.of());
@@ -232,7 +232,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param models    The models to set for the direction.
      * @return {@code this}
      * @see #modelsForDirection(Direction, ModelFile...)
-     * @see #modelsForDirection(Direction, ResourceLocation...)
+     * @see #modelsForDirection(Direction, Identifier...)
      */
     public PipeModelBuilder<T> modelsForDirection(@Nullable Direction direction, ConfiguredModel... models) {
         parts.put(direction, new ConfiguredModelList(models));
@@ -246,7 +246,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @param models    The models to set for the direction.
      * @return {@code this}
      * @see #modelsForDirection(Direction, ConfiguredModel...)
-     * @see #modelsForDirection(Direction, ResourceLocation...)
+     * @see #modelsForDirection(Direction, Identifier...)
      */
     public PipeModelBuilder<T> modelsForDirection(@Nullable Direction direction, ModelFile... models) {
         return modelsForDirection(direction, Arrays.stream(models)
@@ -263,7 +263,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @see #modelsForDirection(Direction, ConfiguredModel...)
      * @see #modelsForDirection(Direction, ModelFile...)
      */
-    public PipeModelBuilder<T> modelsForDirection(@Nullable Direction direction, ResourceLocation... models) {
+    public PipeModelBuilder<T> modelsForDirection(@Nullable Direction direction, Identifier... models) {
         return modelsForDirection(direction, Arrays.stream(models)
                 .map(model -> ConfiguredModel.builder()
                         .modelFile(new ModelFile.ExistingModelFile(model, this.existingFileHelper))
@@ -277,7 +277,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
      * @return A model builder
      * @see #modelsForDirection(Direction, ConfiguredModel...)
      * @see #modelsForDirection(Direction, ModelFile...)
-     * @see #modelsForDirection(Direction, ResourceLocation...)
+     * @see #modelsForDirection(Direction, Identifier...)
      */
     public ConfiguredModel.Builder<PipeModelBuilder<T>> modelsForDirection(@Nullable Direction direction) {
         return ConfiguredModelBuilderAccessor.builder(models -> this.modelsForDirection(direction, models),
@@ -322,7 +322,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         return json;
     }
 
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY = GTCEu.id("block/pipe/blocked/pipe_blocked");
+    private static final Identifier PIPE_BLOCKED_OVERLAY = GTCEu.id("block/pipe/blocked/pipe_blocked");
 
     private static BlockModelBuilder[] getOrCreateRestrictorModels(BlockModelProvider provider, float thickness) {
         return RESTRICTOR_MODEL_CACHE.apply(provider, thickness);
@@ -340,7 +340,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         float max = min + thickness + RESTRICTOR_OFFSET * 2.0f; // offset by 0.003 * 2
         for (Direction dir : GTUtil.DIRECTIONS) {
             String modelPath = "block/pipe/restrictor/" + dir.getName() + "/thickness_" + thickness;
-            ResourceLocation modelName = GTCEu.id(modelPath);
+            Identifier modelName = GTCEu.id(modelPath);
             if (provider.generatedModels.containsKey(modelName)) {
                 models[dir.ordinal()] = provider.generatedModels.get(modelName);
                 continue;
@@ -393,7 +393,7 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
         return sideMap;
     }
 
-    private static void addRestrictor(Int2ObjectMap<ResourceLocation> map, ResourceLocation texture,
+    private static void addRestrictor(Int2ObjectMap<Identifier> map, Identifier texture,
                                       Border... borders) {
         int mask = 0;
         for (Border border : borders) {

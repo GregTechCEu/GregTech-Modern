@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.misc;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModLoader;
+import net.minecraft.resources.Identifier;
+import net.neoforged.fml.ModLoader;
 
 public class GTElements {
 
@@ -214,7 +214,7 @@ public class GTElements {
 
     /**
      * @deprecated Use
-     *             {@link GTElements#createAndRegister(ResourceLocation, long, long, double, String, String, String, boolean)}
+     *             {@link GTElements#createAndRegister(Identifier, long, long, double, String, String, String, boolean)}
      */
     @Deprecated
     public static Element createAndRegister(long protons, long neutrons, double halfLifeSeconds, String decayTo,
@@ -222,7 +222,7 @@ public class GTElements {
         return createAndRegister(GTCEu.id(name), protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
     }
 
-    public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, double halfLifeSeconds,
+    public static Element createAndRegister(Identifier id, long protons, long neutrons, double halfLifeSeconds,
                                             String decayTo,
                                             String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);

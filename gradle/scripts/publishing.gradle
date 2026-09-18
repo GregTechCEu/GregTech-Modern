@@ -2,7 +2,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = base.archivesName.get()
-            artifact(reobfSlimJar)
+            artifact(tasks.named('slimJar'))
             from components.java
         }
     }

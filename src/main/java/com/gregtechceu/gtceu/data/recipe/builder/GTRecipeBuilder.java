@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -38,7 +39,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.item.Item;
@@ -52,7 +53,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -91,7 +92,7 @@ public class GTRecipeBuilder {
     @NotNull
     public CompoundTag data = new CompoundTag();
     @Setter
-    public ResourceLocation id;
+    public Identifier id;
     @Setter
     public GTRecipeType recipeType;
     public int duration = 100;
@@ -120,7 +121,7 @@ public class GTRecipeBuilder {
     // temporary buffer for unresolved item stacks where decomp is found post recipe addition
     private List<MaterialStack> tempFluidStacks = new ArrayList<>();
 
-    public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
+    public GTRecipeBuilder(Identifier id, GTRecipeType recipeType) {
         this.id = id;
         this.recipeType = recipeType;
         this.recipeCategory = recipeType.getCategory();
@@ -144,7 +145,7 @@ public class GTRecipeBuilder {
         this.keepSpoilingProgress = toCopy.keepSpoilingProgress;
     }
 
-    public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
+    public static GTRecipeBuilder of(Identifier id, GTRecipeType recipeType) {
         return new GTRecipeBuilder(id, recipeType);
     }
 
@@ -156,7 +157,7 @@ public class GTRecipeBuilder {
         return copy(GTCEu.id(id));
     }
 
-    public GTRecipeBuilder copy(ResourceLocation id) {
+    public GTRecipeBuilder copy(Identifier id) {
         GTRecipeBuilder copy = new GTRecipeBuilder(id, this.recipeType);
         this.input.forEach((k, v) -> copy.input.put(k, new ArrayList<>(v)));
         this.output.forEach((k, v) -> copy.output.put(k, new ArrayList<>(v)));
@@ -1116,7 +1117,7 @@ public class GTRecipeBuilder {
      * @deprecated Use {@link #dimension(ResourceKey)} instead
      */
     @Deprecated
-    public GTRecipeBuilder dimension(ResourceLocation dimension, boolean reverse) {
+    public GTRecipeBuilder dimension(Identifier dimension, boolean reverse) {
         return dimension(ResourceKey.create(Registries.DIMENSION, dimension), reverse);
     }
 
@@ -1124,7 +1125,7 @@ public class GTRecipeBuilder {
      * @deprecated Use {@link #dimension(ResourceKey, boolean)} instead
      */
     @Deprecated
-    public GTRecipeBuilder dimension(ResourceLocation dimension) {
+    public GTRecipeBuilder dimension(Identifier dimension) {
         return dimension(dimension, false);
     }
 
@@ -1136,11 +1137,11 @@ public class GTRecipeBuilder {
         return dimension(dimension, false);
     }
 
-    public GTRecipeBuilder biome(ResourceLocation biome, boolean reverse) {
+    public GTRecipeBuilder biome(Identifier biome, boolean reverse) {
         return biome(ResourceKey.create(Registries.BIOME, biome), reverse);
     }
 
-    public GTRecipeBuilder biome(ResourceLocation biome) {
+    public GTRecipeBuilder biome(Identifier biome) {
         return biome(biome, false);
     }
 
@@ -1481,7 +1482,7 @@ public class GTRecipeBuilder {
             }
 
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 return id.withPath(recipeType.registryName.getPath() + "/" + id.getPath());
             }
 
@@ -1498,7 +1499,7 @@ public class GTRecipeBuilder {
 
             @Nullable
             @Override
-            public ResourceLocation getAdvancementId() {
+            public Identifier getAdvancementId() {
                 return null;
             }
         };

@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.client.model.quad.SpriteFinder;
 import net.minecraft.client.renderer.texture.SpriteLoader;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class TextureAtlasMixin implements SpriteFinder.SpriteFinderAccess {
 
     @Shadow
-    private Map<ResourceLocation, TextureAtlasSprite> texturesByName;
+    private Map<Identifier, TextureAtlasSprite> texturesByName;
 
     @Unique
     private SpriteFinder gtceu$spriteFinder = null;

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -34,15 +34,15 @@ import static net.minecraft.world.level.storage.loot.providers.number.UniformGen
 // spotless:off
 public class GTLootTables extends LootTableProvider {
 
-    public static final ResourceLocation SPAWN_BONUS_CHEST_EXTRA = GTCEu.id("chests/extra/spawn_bonus_chest");
-    public static final ResourceLocation SIMPLE_DUNGEON_EXTRA = GTCEu.id("chests/extra/simple_dungeon");
-    public static final ResourceLocation DESERT_PYRAMID_EXTRA = GTCEu.id("chests/extra/desert_pyramid");
-    public static final ResourceLocation JUNGLE_TEMPLE_EXTRA = GTCEu.id("chests/extra/jungle_temple");
-    public static final ResourceLocation JUNGLE_TEMPLE_DISPENSER_EXTRA = GTCEu.id("chests/extra/jungle_temple_dispenser");
-    public static final ResourceLocation ABANDONED_MINESHAFT_EXTRA = GTCEu.id("chests/extra/abandoned_mineshaft");
-    public static final ResourceLocation VILLAGE_WEAPONSMITH_EXTRA = GTCEu.id("chests/extra/village_weaponsmith");
-    public static final ResourceLocation STRONGHOLD_CROSSING_EXTRA = GTCEu.id("chests/extra/stronghold_crossing");
-    public static final ResourceLocation STRONGHOLD_CORRIDOR_EXTRA = GTCEu.id("chests/extra/stronghold_corridor");
+    public static final Identifier SPAWN_BONUS_CHEST_EXTRA = GTCEu.id("chests/extra/spawn_bonus_chest");
+    public static final Identifier SIMPLE_DUNGEON_EXTRA = GTCEu.id("chests/extra/simple_dungeon");
+    public static final Identifier DESERT_PYRAMID_EXTRA = GTCEu.id("chests/extra/desert_pyramid");
+    public static final Identifier JUNGLE_TEMPLE_EXTRA = GTCEu.id("chests/extra/jungle_temple");
+    public static final Identifier JUNGLE_TEMPLE_DISPENSER_EXTRA = GTCEu.id("chests/extra/jungle_temple_dispenser");
+    public static final Identifier ABANDONED_MINESHAFT_EXTRA = GTCEu.id("chests/extra/abandoned_mineshaft");
+    public static final Identifier VILLAGE_WEAPONSMITH_EXTRA = GTCEu.id("chests/extra/village_weaponsmith");
+    public static final Identifier STRONGHOLD_CROSSING_EXTRA = GTCEu.id("chests/extra/stronghold_crossing");
+    public static final Identifier STRONGHOLD_CORRIDOR_EXTRA = GTCEu.id("chests/extra/stronghold_corridor");
 
     public GTLootTables(PackOutput output) {
         super(output, Set.of(), List.of(
@@ -60,7 +60,7 @@ public class GTLootTables extends LootTableProvider {
         // aren't added into the loot tables' existing pools (they're new pools).
         // That means we must take some care to avoid overfilling loot chests.
         @Override
-        public void generate(BiConsumer<ResourceLocation, LootTable.Builder> provider) {
+        public void generate(BiConsumer<Identifier, LootTable.Builder> provider) {
             // Negative roll values are skipped, so most rolls' minimums are weighed toward 0. That's intentional and
             // is done to limit the amount of items added to chests.
 

@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class MaterialIconTypeBuilder extends BuilderBase<MaterialIconType> {
 
-    public MaterialIconTypeBuilder(ResourceLocation id) {
+    public MaterialIconTypeBuilder(Identifier id) {
         super(id);
     }
 

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -59,7 +59,7 @@ public class MedicalConditionParser {
 
     private void readMedicalCondition() throws CommandSyntaxException {
         int i = this.reader.getCursor();
-        ResourceLocation id = ResourceLocation.read(this.reader);
+        Identifier id = Identifier.read(this.reader);
 
         MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
         if (condition == null) {

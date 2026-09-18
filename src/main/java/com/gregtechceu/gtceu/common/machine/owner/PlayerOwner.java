@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.owner;
 
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.UsernameCache;
+import net.neoforged.neoforge.common.UsernameCache;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;

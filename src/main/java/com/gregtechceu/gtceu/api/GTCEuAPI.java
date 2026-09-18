@@ -11,10 +11,10 @@ import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.GenericEvent;
-import net.minecraftforge.fml.event.IModBusEvent;
+import net.neoforged.fml.event.IModBusEvent;
 
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
@@ -64,9 +64,9 @@ public class GTCEuAPI {
             if (registry != null) registry.register(key, value);
         }
 
-        public static class RL<V> extends RegisterEvent<ResourceLocation, V> {
+        public static class RL<V> extends RegisterEvent<Identifier, V> {
 
-            public RL(GTRegistry<ResourceLocation, V> registry, Class<V> clazz) {
+            public RL(GTRegistry<Identifier, V> registry, Class<V> clazz) {
                 super(registry, clazz);
             }
         }

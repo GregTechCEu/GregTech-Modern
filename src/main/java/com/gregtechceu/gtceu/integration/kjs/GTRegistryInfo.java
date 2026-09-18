@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.DevProperties;
 import dev.latvian.mods.kubejs.script.ScriptType;
@@ -32,42 +32,42 @@ public class GTRegistryInfo<K, V> {
     @FunctionalInterface
     public interface BuilderFactory<T> {
 
-        BuilderBase<? extends T> createBuilder(ResourceLocation id);
+        BuilderBase<? extends T> createBuilder(Identifier id);
     }
 
     public record BuilderType<T>(String type, Class<? extends BuilderBase<? extends T>> builderClass,
                                  BuilderFactory<T> factory) {}
 
-    public static final Map<ResourceLocation, GTRegistryInfo<?, ?>> MAP = new LinkedHashMap<>();
-    public static final Set<ResourceLocation> EXTRA_IDS = new HashSet<>();
+    public static final Map<Identifier, GTRegistryInfo<?, ?>> MAP = new LinkedHashMap<>();
+    public static final Set<Identifier> EXTRA_IDS = new HashSet<>();
 
-    public static final Map<ResourceLocation, List<GTRegistryInfo<?, ?>>> POST_AT = new HashMap<>();
+    public static final Map<Identifier, List<GTRegistryInfo<?, ?>>> POST_AT = new HashMap<>();
     public static final List<BuilderBase<?>> ALL_BUILDERS = new ArrayList<>();
 
     // spotless:off
 
-    public static final GTRegistryInfo<ResourceLocation, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
-    public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
-    public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
-    public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class);
-    public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
-    public static final GTRegistryInfo<ResourceLocation, MaterialIconSet> MATERIAL_ICON_SET = add(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class);
+    public static final GTRegistryInfo<Identifier, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
+    public static final GTRegistryInfo<Identifier, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
+    public static final GTRegistryInfo<Identifier, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
+    public static final GTRegistryInfo<Identifier, GTRecipeCategory> RECIPE_CATEGORY = add(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class);
+    public static final GTRegistryInfo<Identifier, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
+    public static final GTRegistryInfo<Identifier, MaterialIconSet> MATERIAL_ICON_SET = add(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class);
     public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
-    public static final GTRegistryInfo<ResourceLocation, IWorldGenLayer> WORLD_GEN_LAYER = add(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class);
-    public static final GTRegistryInfo<ResourceLocation, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
-    public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
+    public static final GTRegistryInfo<Identifier, IWorldGenLayer> WORLD_GEN_LAYER = add(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class);
+    public static final GTRegistryInfo<Identifier, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
+    public static final GTRegistryInfo<Identifier, DimensionMarker> DIMENSION_MARKER = add(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
 
     // spotless:on
 
-    public final ResourceLocation registryKey;
+    public final Identifier registryKey;
     public final Class<V> objectBaseClass;
     public final Map<String, BuilderType<V>> types;
-    public final Map<ResourceLocation, BuilderBase<? extends V>> objects;
+    public final Map<Identifier, BuilderBase<? extends V>> objects;
     public final Supplier<Map<K, V>> registryValues;
     private BuilderType<V> defaultType;
     public BuilderBase<? extends V> current;
 
-    private GTRegistryInfo(ResourceLocation key, Supplier<Map<K, V>> registryValues, Class<V> baseClass) {
+    private GTRegistryInfo(Identifier key, Supplier<Map<K, V>> registryValues, Class<V> baseClass) {
         registryKey = key;
         objectBaseClass = baseClass;
         types = new LinkedHashMap<>();
@@ -77,7 +77,7 @@ public class GTRegistryInfo<K, V> {
     }
 
     public static <K, V> GTRegistryInfo<K, V> add(GTRegistry<K, V> key, Class<?> baseClass) {
-        ResourceLocation id = key.getRegistryName();
+        Identifier id = key.getRegistryName();
         var types = new GTRegistryInfo<>(id, key::registry, UtilsJS.cast(baseClass));
 
         if (MAP.put(id, types) != null) {
@@ -89,7 +89,7 @@ public class GTRegistryInfo<K, V> {
         return types;
     }
 
-    public static <K, V> GTRegistryInfo<K, V> add(ResourceLocation id, Supplier<Map<K, V>> registryValues,
+    public static <K, V> GTRegistryInfo<K, V> add(Identifier id, Supplier<Map<K, V>> registryValues,
                                                   Class<?> baseClass) {
         var types = new GTRegistryInfo<>(id, registryValues, UtilsJS.cast(baseClass));
 
@@ -148,7 +148,7 @@ public class GTRegistryInfo<K, V> {
         GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, registryKey, new GTRegistryEventJS<>(this));
     }
 
-    public static void registerFor(ResourceLocation registry) {
+    public static void registerFor(Identifier registry) {
         for (var type : POST_AT.getOrDefault(registry, List.of())) {
             type.postEvent();
 

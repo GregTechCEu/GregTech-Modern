@@ -92,7 +92,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -100,7 +100,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.DataResult;
@@ -401,7 +401,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
         typeWrappers.registerSimple(RecipeCapability.class, o -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof ResourceLocation loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
+            if (o instanceof Identifier loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
             if (o instanceof CharSequence chars)
                 return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
             return null;
@@ -494,7 +494,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager,
-                                     Map<ResourceLocation, Recipe<?>> recipesByName) {
+                                     Map<Identifier, Recipe<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
         for (RecipeJS addedRecipe : event.addedRecipes) {
             if (addedRecipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
@@ -526,7 +526,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         MapIngredientPool.clear();
     }
 
-    private static void handleGTRecipe(Map<ResourceLocation, Recipe<?>> recipesByName,
+    private static void handleGTRecipe(Map<Identifier, Recipe<?>> recipesByName,
                                        GTRecipeSchema.GTRecipeJS gtRecipe) {
         GTRecipeType gtRecipeType = (GTRecipeType) ForgeRegistries.RECIPE_TYPES.getValue(gtRecipe.getType());
         if (gtRecipeType == null) {

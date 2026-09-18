@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 public class GTPlacementModifiers {

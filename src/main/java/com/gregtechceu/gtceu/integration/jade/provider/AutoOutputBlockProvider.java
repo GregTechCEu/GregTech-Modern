@@ -9,7 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -79,7 +79,7 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
         if (direction != null) {
             iTooltip.add(Component.translatable(text, StringUtils.capitalize(direction.getName())));
             if (blockAccessor.showDetails()) {
-                var block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(compoundTag.getString("block"))).asItem()
+                var block = BuiltInRegistries.BLOCK.get(Identifier.parse(compoundTag.getString("block"))).asItem()
                         .getDefaultInstance();
                 if (!block.isEmpty()) {
                     iTooltip.append(iTooltip.getElementHelper().smallItem(block));

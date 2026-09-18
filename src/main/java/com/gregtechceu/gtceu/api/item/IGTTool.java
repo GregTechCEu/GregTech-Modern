@@ -37,7 +37,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -58,14 +58,14 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.extensions.IForgeItem;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.util.LazyOptional;
 
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.factory.PlayerInventoryGuiData;
@@ -540,7 +540,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         damageItemWhenCrafting(stack, player);
         playCraftingSound(player, stack);
         // We cannot simply return the copied stack here because Forge's bug
-        // Introduced here: https://github.com/MinecraftForge/MinecraftForge/pull/3388
+        // Introduced here: https://github.com/NeoForge/NeoForge/pull/3388
         // Causing PlayerDestroyItemEvent to never be fired under correct circumstances.
         // While preliminarily fixing ItemStack being null in ForgeHooks#getContainerItem in the PR
         // The semantics was misunderstood, any stack that are "broken" (damaged beyond maxDamage)
@@ -596,7 +596,7 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
     }
 
-    default boolean definition$canPerformAction(@NotNull ItemStack stack, @NotNull ToolAction action) {
+    default boolean definition$canPerformAction(@NotNull ItemStack stack, @NotNull ItemAbility action) {
         if (getToolType().defaultAbilities.contains(action)) {
             return true;
         }
@@ -821,17 +821,17 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
         }
     }
 
-    ResourceLocation COFH_SMASHING_ENCHANT_ID = ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION,
+    Identifier COFH_SMASHING_ENCHANT_ID = Identifier.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION,
             "smashing");
-    Set<ResourceLocation> AUTOSMELT_ENCHANT_IDS = Util.make(new HashSet<>(), set -> {
-        set.add(ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENDERIO, "auto_smelt")); // EnderIO
-        set.add(ResourceLocation.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION, "smelting")); // CoFH
+    Set<Identifier> AUTOSMELT_ENCHANT_IDS = Util.make(new HashSet<>(), set -> {
+        set.add(Identifier.fromNamespaceAndPath(GTValues.MODID_ENDERIO, "auto_smelt")); // EnderIO
+        set.add(Identifier.fromNamespaceAndPath(GTValues.MODID_ENSORCELLATION, "smelting")); // CoFH
     });
 
     default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, Enchantment enchantment) {
         if (stack.isEmpty()) return false;
 
-        ResourceLocation enchantmentId = EnchantmentHelper.getEnchantmentId(enchantment);
+        Identifier enchantmentId = EnchantmentHelper.getEnchantmentId(enchantment);
         if (COFH_SMASHING_ENCHANT_ID.equals(enchantmentId)) {
             // block CoFH smashing enchant from all tools
             return false;

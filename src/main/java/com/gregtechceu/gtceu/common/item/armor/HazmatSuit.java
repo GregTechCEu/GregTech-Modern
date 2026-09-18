@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.item.armor;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +34,7 @@ public class HazmatSuit implements IArmorLogic {
     }
 
     @Override
-    public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+    public @Nullable Identifier getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return slot != EquipmentSlot.LEGS ?
                 GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
                 GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));

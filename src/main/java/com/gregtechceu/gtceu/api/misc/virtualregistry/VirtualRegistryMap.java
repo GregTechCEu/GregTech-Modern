@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.misc.virtualregistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -73,7 +73,7 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         for (String entryTypeString : nbt.getAllKeys()) {
-            ResourceLocation entryTypeLoc = ResourceLocation.tryParse(entryTypeString);
+            Identifier entryTypeLoc = Identifier.tryParse(entryTypeString);
             if (entryTypeLoc == null) continue;
             EntryTypes<?> type = EntryTypes.fromLocation(entryTypeLoc);
             if (type == null) continue;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,5 +13,5 @@ import java.util.Map;
 public interface PlayerInfoAccessor {
 
     @Accessor
-    Map<MinecraftProfileTexture.Type, ResourceLocation> getTextureLocations();
+    Map<MinecraftProfileTexture.Type, Identifier> getTextureLocations();
 }

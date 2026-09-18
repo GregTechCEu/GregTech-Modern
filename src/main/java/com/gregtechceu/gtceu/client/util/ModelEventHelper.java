@@ -11,15 +11,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -43,13 +43,13 @@ public class ModelEventHelper {
     @ApiStatus.Internal
     public static final List<EventListenerHolder<?>> EVENT_LISTENERS = new ArrayList<>();
     @ApiStatus.Internal
-    public static final Map<ResourceLocation, TextureAtlasSprite> CTM_SPRITE_CACHE = new ConcurrentHashMap<>();
+    public static final Map<Identifier, TextureAtlasSprite> CTM_SPRITE_CACHE = new ConcurrentHashMap<>();
 
-    private static final Multimap<ResourceLocation, Material> SCRAPED_TEXTURES = HashMultimap.create();
-    private static final Object2BooleanMap<ResourceLocation> WRAPPED_MODELS = new Object2BooleanOpenHashMap<>();
+    private static final Multimap<Identifier, Material> SCRAPED_TEXTURES = HashMultimap.create();
+    private static final Object2BooleanMap<Identifier> WRAPPED_MODELS = new Object2BooleanOpenHashMap<>();
 
     @ApiStatus.Internal
-    public static void markTextureUsedForModel(ResourceLocation modelLocation, Material material) {
+    public static void markTextureUsedForModel(Identifier modelLocation, Material material) {
         SCRAPED_TEXTURES.put(modelLocation, material);
     }
 
@@ -58,7 +58,7 @@ public class ModelEventHelper {
         EVENT_LISTENERS.add(new EventListenerHolder<>(listener, removeOnReload));
     }
 
-    public static void registerAtlasStitchedEventListener(boolean removeOnReload, final ResourceLocation atlasLocation,
+    public static void registerAtlasStitchedEventListener(boolean removeOnReload, final Identifier atlasLocation,
                                                           final AssetEventListener.AtlasStitched listener) {
         registerAtlasStitchedEventListener(removeOnReload, event -> {
             if (event.getAtlas().location().equals(atlasLocation)) {
@@ -146,7 +146,7 @@ public class ModelEventHelper {
             TextureAtlas atlas = event.getAtlas();
             // Cache all textures' CTM metadata
             // TODO lazy
-            for (ResourceLocation location : atlas.getTextureLocations()) {
+            for (Identifier location : atlas.getTextureLocations()) {
                 var sec = TextureMetadataHelper.getMetadataFromRelativeLocation(location);
                 sec.ifPresent(section -> {
                     if (section.connectionTexture() != null) {
@@ -174,8 +174,8 @@ public class ModelEventHelper {
             if (!(rl instanceof ModelResourceLocation) || rootModel == null || baked instanceof CTMBakedModel<?>) {
                 return baked;
             }
-            Deque<ResourceLocation> dependencies = new ArrayDeque<>();
-            Set<ResourceLocation> seenModels = new HashSet<>();
+            Deque<Identifier> dependencies = new ArrayDeque<>();
+            Set<Identifier> seenModels = new HashSet<>();
             dependencies.push(rl);
             seenModels.add(rl);
 
@@ -189,7 +189,7 @@ public class ModelEventHelper {
             // exiting as soon as a CTM texture is found, and skipping duplicates/cycles
             PARENT_LOOP:
             while (!shouldWrap && !dependencies.isEmpty()) {
-                ResourceLocation dependencyName = dependencies.pop();
+                Identifier dependencyName = dependencies.pop();
                 UnbakedModel unbaked;
                 try {
                     unbaked = dependencyName == rl ? rootModel : modelBakery.getModel(dependencyName);
@@ -208,7 +208,7 @@ public class ModelEventHelper {
                         }
                     }
                     // shouldWrap is always false here because of the `break` above
-                    for (ResourceLocation newDep : unbaked.getDependencies()) {
+                    for (Identifier newDep : unbaked.getDependencies()) {
                         if (seenModels.add(newDep)) {
                             dependencies.push(newDep);
                         }

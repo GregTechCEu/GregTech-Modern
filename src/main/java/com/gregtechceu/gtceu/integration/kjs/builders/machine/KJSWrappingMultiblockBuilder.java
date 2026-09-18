@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
@@ -26,7 +26,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     @Getter
     private final KJSTieredMultiblockBuilder tieredBuilder;
 
-    public KJSWrappingMultiblockBuilder(ResourceLocation id, KJSTieredMultiblockBuilder tieredBuilder) {
+    public KJSWrappingMultiblockBuilder(Identifier id, KJSTieredMultiblockBuilder tieredBuilder) {
         super(id);
         this.tieredBuilder = tieredBuilder;
     }
@@ -74,7 +74,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
                 " With id " + tieredBuilder.id);
     }
 
-    public static MultiblockMachineBuilder<?, WorkableElectricMultiblockMachine, ?> createKJSMulti(ResourceLocation id) {
+    public static MultiblockMachineBuilder<?, WorkableElectricMultiblockMachine, ?> createKJSMulti(Identifier id) {
         return new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
                 MetaMachineBlock::new,
@@ -82,7 +82,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
                 WorkableElectricMultiblockMachine::new);
     }
 
-    public static MultiblockMachineBuilder<?, MultiblockControllerMachine, ?> createKJSMulti(ResourceLocation id,
+    public static MultiblockMachineBuilder<?, MultiblockControllerMachine, ?> createKJSMulti(Identifier id,
                                                                                              KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
         return new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
                 id.getPath(),
