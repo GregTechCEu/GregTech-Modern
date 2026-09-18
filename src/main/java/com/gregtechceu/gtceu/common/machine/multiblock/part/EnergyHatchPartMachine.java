@@ -8,14 +8,14 @@ import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContai
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class EnergyHatchPartMachine extends TieredIOPartMachine {
 
     @SaveField

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachin
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.IGridConnectedMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHolder;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.Direction;
 
 import appeng.api.networking.*;
@@ -21,7 +21,7 @@ import java.util.EnumSet;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public abstract class MEHatchPartMachine extends FluidHatchPartMachine implements IGridConnectedMachine {
 
     protected final static int CONFIG_SIZE = 16;

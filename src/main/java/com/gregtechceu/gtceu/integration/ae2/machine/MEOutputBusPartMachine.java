@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +41,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * The Output Bus that can directly send its contents to ME storage network.
  */
-@MethodsReturnNonnullByDefault
+@NullMarked
 @ParametersAreNonnullByDefault
 public class MEOutputBusPartMachine extends MEBusPartMachine {
 

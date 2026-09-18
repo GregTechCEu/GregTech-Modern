@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -40,7 +40,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class PrimitivePumpMachine extends MultiblockControllerMachine implements IMuiMachine {
 
     private int biomeModifier = 0;

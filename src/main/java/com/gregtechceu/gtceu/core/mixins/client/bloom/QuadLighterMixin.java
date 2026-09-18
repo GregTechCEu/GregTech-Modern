@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.core.util.extensions.QuadLighterExt;
 
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraftforge.client.model.lighting.QuadLighter;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

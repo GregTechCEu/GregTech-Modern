@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data.item;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.extensions.IBlockExtension;

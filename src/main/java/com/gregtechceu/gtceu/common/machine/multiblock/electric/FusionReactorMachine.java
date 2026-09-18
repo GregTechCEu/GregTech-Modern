@@ -27,7 +27,7 @@ import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
@@ -52,7 +52,7 @@ import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.PERFECT_HALF_VO
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 
     // Standard OC used for Fusion

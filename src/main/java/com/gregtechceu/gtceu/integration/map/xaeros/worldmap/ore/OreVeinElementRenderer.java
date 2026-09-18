@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.Identifier;
@@ -40,7 +40,7 @@ public class OreVeinElementRenderer extends
     }
 
     @Override
-    public void beforeRender(int location, Minecraft mc, GuiGraphics guiGraphics,
+    public void beforeRender(int location, Minecraft mc, GuiGraphicsExtractor guiGraphics,
                              double cameraX, double cameraZ, double mouseX, double mouseZ,
                              float brightness, double scale, double screenSizeBasedScale, TextureManager textureManager,
                              Font fontRenderer,
@@ -49,7 +49,7 @@ public class OreVeinElementRenderer extends
                              boolean pre) {}
 
     @Override
-    public void afterRender(int location, Minecraft mc, GuiGraphics guiGraphics,
+    public void afterRender(int location, Minecraft mc, GuiGraphicsExtractor guiGraphics,
                             double cameraX, double cameraZ, double mouseX, double mouseZ,
                             float brightness, double scale, double screenSizeBasedScale,
                             TextureManager textureManager, Font fontRenderer,
@@ -59,7 +59,7 @@ public class OreVeinElementRenderer extends
 
     @Override
     public void renderElementPre(int location, OreVeinElement w, boolean hovered,
-                                 Minecraft mc, GuiGraphics guiGraphics,
+                                 Minecraft mc, GuiGraphicsExtractor guiGraphics,
                                  double cameraX, double cameraZ, double mouseX, double mouseZ,
                                  float brightness, double scale, double screenSizeBasedScale,
                                  TextureManager textureManager, Font fontRenderer,
@@ -72,7 +72,7 @@ public class OreVeinElementRenderer extends
     @Override
     public boolean renderElement(int location, OreVeinElement element,
                                  boolean hovered,
-                                 Minecraft mc, GuiGraphics graphics,
+                                 Minecraft mc, GuiGraphicsExtractor graphics,
                                  double cameraX, double cameraZ, double mouseX, double mouseZ,
                                  float brightness, double scale, double screenSizeBasedScale,
                                  TextureManager textureManager, Font fontRenderer,

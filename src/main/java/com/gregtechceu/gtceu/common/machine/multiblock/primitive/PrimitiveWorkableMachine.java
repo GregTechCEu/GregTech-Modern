@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import lombok.Getter;
@@ -21,7 +21,7 @@ import lombok.Getter;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
 
     @SaveField

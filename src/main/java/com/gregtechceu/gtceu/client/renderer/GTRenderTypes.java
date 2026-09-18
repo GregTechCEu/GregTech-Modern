@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;

@@ -30,7 +30,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -73,7 +73,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @SuppressWarnings({ "unchecked", "UnusedReturnValue" })
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 @Accessors(chain = true, fluent = true)
 public class GTRecipeBuilder {
 

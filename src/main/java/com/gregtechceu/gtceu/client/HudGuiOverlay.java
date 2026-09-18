@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class HudGuiOverlay implements IGuiOverlay {
 
     @Override
-    public void render(ForgeGui forgeGui, GuiGraphics guiGraphics, float partialTick, int screenWidth,
+    public void render(ForgeGui forgeGui, GuiGraphicsExtractor guiGraphics, float partialTick, int screenWidth,
                        int screenHeight) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.isWindowActive() && mc.level != null && !mc.options.renderDebug && !mc.options.hideGui) {
@@ -33,7 +33,7 @@ public class HudGuiOverlay implements IGuiOverlay {
         }
     }
 
-    private static void renderHUDMetaArmor(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
+    private static void renderHUDMetaArmor(@NotNull ItemStack stack, GuiGraphicsExtractor guiGraphics) {
         if (stack.getItem() instanceof ArmorComponentItem valueItem) {
             if (valueItem.getArmorLogic() instanceof IItemHUDProvider provider) {
                 IItemHUDProvider.tryDrawHud(provider, stack, guiGraphics);
@@ -41,7 +41,7 @@ public class HudGuiOverlay implements IGuiOverlay {
         }
     }
 
-    private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
+    private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphicsExtractor guiGraphics) {
         if (stack.getItem() instanceof ComponentItem valueItem) {
             for (IItemComponent behaviour : valueItem.getComponents()) {
                 if (behaviour instanceof IItemHUDProvider provider) {

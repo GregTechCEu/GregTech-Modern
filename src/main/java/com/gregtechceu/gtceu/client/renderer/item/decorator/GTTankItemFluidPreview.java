@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -32,7 +32,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
     public static final GTTankItemFluidPreview DRUM = new GTTankItemFluidPreview() {
 
         @Override
-        public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
+        public boolean render(GuiGraphicsExtractor guiGraphics, Font font, ItemStack itemStack, int x, int y) {
             if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.drum) return false;
             return super.render(guiGraphics, font, itemStack, x, y);
         }
@@ -41,7 +41,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
     public static final GTTankItemFluidPreview QUANTUM_TANK = new GTTankItemFluidPreview() {
 
         @Override
-        public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
+        public boolean render(GuiGraphicsExtractor guiGraphics, Font font, ItemStack itemStack, int x, int y) {
             if (!ConfigHolder.INSTANCE.client.tankItemFluidPreview.quantumTank) return false;
             return super.render(guiGraphics, font, itemStack, x, y);
         }
@@ -79,7 +79,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
     }
 
     @Override
-    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
+    public boolean render(GuiGraphicsExtractor guiGraphics, Font font, ItemStack itemStack, int x, int y) {
         if (isRequireShiftKeyDown() && !GTUtil.isShiftDown()) {
             return false;
         }

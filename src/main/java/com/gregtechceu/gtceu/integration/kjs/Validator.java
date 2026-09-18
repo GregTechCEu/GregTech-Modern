@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.resources.Identifier;
 
 import dev.latvian.mods.kubejs.util.ConsoleJS;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 @ParametersAreNonnullByDefault
 @FunctionalInterface
 public interface Validator {

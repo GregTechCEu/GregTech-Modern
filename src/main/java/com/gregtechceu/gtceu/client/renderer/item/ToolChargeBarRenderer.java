@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.FastColor;
@@ -31,7 +31,7 @@ public final class ToolChargeBarRenderer {
     private static final int colorBarLeftDepleted = FastColor.ARGB32.color(255, 122, 0, 0);
     private static final int colorBarRightDepleted = FastColor.ARGB32.color(255, 255, 27, 27);
 
-    public static void render(GuiGraphics graphics, int level, int xPosition, int yPosition, int offset, boolean shadow,
+    public static void render(GuiGraphicsExtractor graphics, int level, int xPosition, int yPosition, int offset, boolean shadow,
                               int left, int right, boolean doDepletedColor) {
         if (doDepletedColor && level <= BAR_W / 4) {
             left = colorBarLeftDepleted;
@@ -48,7 +48,7 @@ public final class ToolChargeBarRenderer {
         ((GuiGraphicsAccessor) graphics).callFlushIfUnmanaged();
     }
 
-    public static void renderBarsTool(GuiGraphics graphics, IGTTool tool, ItemStack stack, int xPosition,
+    public static void renderBarsTool(GuiGraphicsExtractor graphics, IGTTool tool, ItemStack stack, int xPosition,
                                       int yPosition) {
         boolean renderedDurability = false;
         CompoundTag tag = stack.getOrCreateTag();
@@ -61,7 +61,7 @@ public final class ToolChargeBarRenderer {
         }
     }
 
-    public static boolean renderElectricBar(GuiGraphics graphics, long charge, long maxCharge, int xPosition,
+    public static boolean renderElectricBar(GuiGraphicsExtractor graphics, long charge, long maxCharge, int xPosition,
                                             int yPosition, boolean renderedDurability) {
         if (charge > 0 && maxCharge > 0) {
             int level = Math.round(charge * 13.0F / maxCharge);
@@ -72,7 +72,7 @@ public final class ToolChargeBarRenderer {
         return false;
     }
 
-    public static boolean renderDurabilityBar(GuiGraphics graphics, ItemStack stack, IDurabilityBar manager,
+    public static boolean renderDurabilityBar(GuiGraphicsExtractor graphics, ItemStack stack, IDurabilityBar manager,
                                               int xPosition, int yPosition) {
         float level = manager.getDurabilityForDisplay(stack);
         if (level == 0.0 && !manager.showEmptyBar(stack)) return false;
@@ -85,7 +85,7 @@ public final class ToolChargeBarRenderer {
         return true;
     }
 
-    private static boolean renderDurabilityBar(GuiGraphics graphics, int level, int xPosition, int yPosition) {
+    private static boolean renderDurabilityBar(GuiGraphicsExtractor graphics, int level, int xPosition, int yPosition) {
         render(graphics, level, xPosition, yPosition, 0, true, colorBarLeftDurability, colorBarRightDurability, true);
         return true;
     }

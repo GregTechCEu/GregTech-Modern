@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.common.data.item.GTToolActions;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * {@link IGTTool#definition$onBlockStartBreak(ItemStack, BlockPos, Player)}
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class TreeFellingBehavior implements IToolBehavior {
 
     public static final TreeFellingBehavior INSTANCE = new TreeFellingBehavior();

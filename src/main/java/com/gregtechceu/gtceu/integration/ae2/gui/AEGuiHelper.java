@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.gui;
 import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.api.distmarker.Dist;
@@ -22,7 +22,7 @@ public final class AEGuiHelper {
 
     private AEGuiHelper() {}
 
-    public static void drawFluid(GuiGraphics graphics, FluidStack fluid, int x, int y, int width, int height) {
+    public static void drawFluid(GuiGraphicsExtractor graphics, FluidStack fluid, int x, int y, int width, int height) {
         if (fluid.isEmpty()) return;
         var renderProps = IClientFluidTypeExtensions.of(fluid.getFluid());
         var stillTexture = renderProps.getStillTexture(fluid);
@@ -41,13 +41,13 @@ public final class AEGuiHelper {
         graphics.setColor(1f, 1f, 1f, 1f);
     }
 
-    public static void drawFluid(GuiGraphics graphics, GenericStack stack, int x, int y) {
+    public static void drawFluid(GuiGraphicsExtractor graphics, GenericStack stack, int x, int y) {
         if (stack.what() instanceof AEFluidKey fluidKey) {
             drawFluid(graphics, AEUtil.toFluidStack(fluidKey, 1), x, y, 16, 16);
         }
     }
 
-    public static void drawAmountOverlay(GuiGraphics graphics, long amount, int x, int y) {
+    public static void drawAmountOverlay(GuiGraphicsExtractor graphics, long amount, int x, int y) {
         String text = formatAmount(amount);
         var font = Minecraft.getInstance().font;
         graphics.pose().pushPose();
@@ -59,7 +59,7 @@ public final class AEGuiHelper {
         graphics.pose().popPose();
     }
 
-    public static void drawSelectionOverlay(GuiGraphics graphics, int x, int y, int width, int height) {
+    public static void drawSelectionOverlay(GuiGraphicsExtractor graphics, int x, int y, int width, int height) {
         RenderSystem.disableDepthTest();
         RenderSystem.colorMask(true, true, true, false);
         graphics.fill(x, y, x + width, y + height, 0x80FFFFFF);

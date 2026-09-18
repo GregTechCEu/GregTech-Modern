@@ -117,7 +117,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
      * }
      * 
      * @SuppressWarnings("UnstableApiUsage")
-     * public void renderGuiToBuffer(GuiGraphics guiGraphics, float partialTick) {
+     * public void renderGuiToBuffer(GuiGraphicsExtractor guiGraphics, float partialTick) {
      * if (screen == null || MCHelper.getPlayer() == null) return;
      * screen.getContext().setGraphics(guiGraphics);
      * screen.onFrameUpdate();

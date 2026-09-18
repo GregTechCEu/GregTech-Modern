@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.core.mixins.client;
 import com.gregtechceu.gtceu.client.util.SpriteFunctionWrapper;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.resources.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;

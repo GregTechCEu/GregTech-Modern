@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 
@@ -25,7 +25,7 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class SteamSolarBoiler extends SteamBoilerMachine {
 
     public SteamSolarBoiler(BlockEntityCreationInfo info, boolean isHighPressure) {

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import net.minecraft.client.renderer.block.model.MultiVariant;
+import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;

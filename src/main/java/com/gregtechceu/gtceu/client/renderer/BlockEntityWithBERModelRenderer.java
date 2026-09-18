@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("unchecked")
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class BlockEntityWithBERModelRenderer<T extends BlockEntity> implements BlockEntityRenderer<T> {
 
     private final BlockRenderDispatcher blockRenderDispatcher;

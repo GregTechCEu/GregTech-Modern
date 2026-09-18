@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.utils;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -21,7 +21,7 @@ import java.util.Iterator;
  * Used to store {@link appeng.api.stacks.GenericStack } in a way that associates key and amount.
  * Provides methods for serialization and deserialization.
  */
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class KeyStorage implements INBTSerializable<ListTag>,
                         Iterable<Object2LongMap.Entry<AEKey>> {
 

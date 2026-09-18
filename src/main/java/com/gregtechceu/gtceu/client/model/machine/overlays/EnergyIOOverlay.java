@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.model.machine.overlays;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.resources.Identifier;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;

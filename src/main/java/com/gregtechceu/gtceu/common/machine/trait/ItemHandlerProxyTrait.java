@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerModifiable, ICapabilityTrait {
 
     @Getter

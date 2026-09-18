@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.Rectangle;
@@ -29,7 +29,7 @@ import java.util.Collection;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class CreativeComputationProviderMachine extends MetaMachine
                                                 implements IMuiMachine, IOpticalComputationProvider, IControllable {
 

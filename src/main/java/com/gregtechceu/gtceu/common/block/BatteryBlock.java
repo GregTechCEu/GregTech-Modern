@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public class BatteryBlock extends Block {
         }
     }
 
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public enum BatteryPartType implements StringRepresentable, IBatteryData {
 
         EMPTY_TIER_I,

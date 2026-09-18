@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.utils.math.ParseResult;
 import com.gregtechceu.gtceu.utils.math.PostfixPercentOperator;
 import com.gregtechceu.gtceu.utils.math.SIPrefix;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -34,7 +34,7 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 @ParametersAreNonnullByDefault
 public class GTMath {
 

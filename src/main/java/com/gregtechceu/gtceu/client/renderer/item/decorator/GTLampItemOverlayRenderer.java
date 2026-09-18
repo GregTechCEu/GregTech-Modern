@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.renderer.item.decorator;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -31,7 +31,7 @@ public class GTLampItemOverlayRenderer implements IItemDecorator {
     }
 
     @Override
-    public boolean render(GuiGraphics graphics, Font font, ItemStack stack, int xPosition, int yPosition) {
+    public boolean render(GuiGraphicsExtractor graphics, Font font, ItemStack stack, int xPosition, int yPosition) {
         if (!stack.hasTag()) {
             return false;
         }

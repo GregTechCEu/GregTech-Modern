@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 
 import net.caffeinemc.mods.sodium.api.util.NormI8;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.phys.Vec3;
 

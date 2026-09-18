@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 
@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * This is invoked for every block a vein needs to place, when the relevant chunk is being generated.<br>
  * The positions are computed in advance.
  */
-@MethodsReturnNonnullByDefault
+@NullMarked
 @ParametersAreNonnullByDefault
 @FunctionalInterface
 public interface OreBlockPlacer {

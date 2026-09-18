@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.resources.Identifier;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class HPCAOverlay {
 
     // spotless:off

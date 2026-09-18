@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.client.model.quad;
 import net.minecraft.client.renderer.FaceInfo;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -19,7 +19,7 @@ import org.joml.*;
 
 import java.lang.Math;
 
-import static net.minecraft.client.renderer.block.model.FaceBakery.calculateFacing;
+import static net.minecraft.client.resources.model.cuboid.FaceBakery.calculateFacing;
 
 public class StaticFaceBakery {
 

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.particle;
 
 import com.gregtechceu.gtceu.common.particle.HazardParticleOptions;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.FastColor;
@@ -14,7 +14,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 @OnlyIn(Dist.CLIENT)
 public class HazardParticle extends TextureSheetParticle {
 

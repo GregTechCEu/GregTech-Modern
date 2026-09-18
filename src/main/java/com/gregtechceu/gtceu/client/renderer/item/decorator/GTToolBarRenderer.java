@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.client.renderer.item.ToolChargeBarRenderer;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 
@@ -15,7 +15,7 @@ public class GTToolBarRenderer implements IItemDecorator {
     public static final GTToolBarRenderer INSTANCE = new GTToolBarRenderer();
 
     @Override
-    public boolean render(@NotNull GuiGraphics guiGraphics, @NotNull Font font, ItemStack stack, int x, int y) {
+    public boolean render(@NotNull GuiGraphicsExtractor guiGraphics, @NotNull Font font, ItemStack stack, int x, int y) {
         if (stack.getItem() instanceof IGTTool gtTool) {
             ToolChargeBarRenderer.renderBarsTool(guiGraphics, gtTool, stack, x, y);
             return true;

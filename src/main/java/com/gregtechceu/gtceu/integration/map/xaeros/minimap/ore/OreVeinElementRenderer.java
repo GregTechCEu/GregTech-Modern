@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -39,7 +39,7 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
                                  boolean outOfBounds,
                                  double optionalDepth, float optionalScale, double partialX, double partialY,
                                  MinimapElementRenderInfo renderInfo,
-                                 GuiGraphics graphics, MultiBufferSource.BufferSource renderTypeBuffers) {
+                                 GuiGraphicsExtractor graphics, MultiBufferSource.BufferSource renderTypeBuffers) {
         GeneratedVeinMetadata vein = element.getVein();
         int iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
 

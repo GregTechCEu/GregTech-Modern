@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;

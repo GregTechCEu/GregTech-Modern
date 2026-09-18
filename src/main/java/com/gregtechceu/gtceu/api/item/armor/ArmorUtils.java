@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -224,7 +224,7 @@ public class ArmorUtils {
             this.stringList.add(string);
         }
 
-        public void draw(GuiGraphics poseStack) {
+        public void draw(GuiGraphicsExtractor poseStack) {
             for (int i = 0; i < stringAmount; i++) {
                 IntIntPair coords = this.getStringCoord(i);
                 poseStack.drawString(mc.font, stringList.get(i), coords.firstInt(), coords.secondInt(), 0xFFFFFF,

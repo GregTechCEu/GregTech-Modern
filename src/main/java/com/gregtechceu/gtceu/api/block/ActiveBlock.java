@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.multiblock.pattern.IStructureChangeIgnored;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class ActiveBlock extends Block implements IStructureChangeIgnored {
 
     public ActiveBlock(Properties properties) {

@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
@@ -154,7 +154,7 @@ public class OreVeinIcon implements MapIcon {
     }
 
     @Override
-    public void draw(MapType mapType, GuiGraphics graphics, int x, int y, int w, int h,
+    public void draw(MapType mapType, GuiGraphicsExtractor graphics, int x, int y, int w, int h,
                      boolean outsideVisibleArea, int iconAlpha) {
         if (outsideVisibleArea || !isEnabled()) {
             return;

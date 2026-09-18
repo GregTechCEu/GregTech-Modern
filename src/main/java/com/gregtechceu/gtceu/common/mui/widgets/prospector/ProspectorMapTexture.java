@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.item.component.prospector.ProspectingUpdatePack
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
@@ -34,7 +34,7 @@ import java.lang.reflect.Array;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 @OnlyIn(Dist.CLIENT)
 public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawable {
 

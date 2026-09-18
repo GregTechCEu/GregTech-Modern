@@ -18,7 +18,7 @@ package com.gregtechceu.gtceu.client.util.quad;
 import com.gregtechceu.gtceu.client.model.quad.QuadView;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;

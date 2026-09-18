@@ -11,10 +11,10 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.function.MemoizedBiFunction;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class OreBlockModelGenerator {
 
     protected static final Set<OreBlockModelGenerator> MODELS = new HashSet<>();

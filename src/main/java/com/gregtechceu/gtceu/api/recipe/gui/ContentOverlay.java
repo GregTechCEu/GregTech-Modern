@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.utils.GradientUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
@@ -36,7 +36,7 @@ public record ContentOverlay(Content content, boolean perTick)
         }
     }
 
-    public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawRangeAmount(GuiGraphicsExtractor graphics, float x, float y, int width, int height) {
         if (content.content() instanceof IntProviderIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
@@ -57,7 +57,7 @@ public record ContentOverlay(Content content, boolean perTick)
         }
     }
 
-    public void drawFluidAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawFluidAmount(GuiGraphicsExtractor graphics, float x, float y, int width, int height) {
         if (content.content() instanceof FluidIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
@@ -84,7 +84,7 @@ public record ContentOverlay(Content content, boolean perTick)
         }
     }
 
-    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawChance(GuiGraphicsExtractor graphics, float x, float y, int width, int height) {
         if (content.chance() == ChanceLogic.getMaxChancedValue()) return;
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
@@ -102,7 +102,7 @@ public record ContentOverlay(Content content, boolean perTick)
         graphics.pose().popPose();
     }
 
-    public void drawTick(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawTick(GuiGraphicsExtractor graphics, float x, float y, int width, int height) {
         graphics.pose().pushPose();
         RenderSystem.disableDepthTest();
         graphics.pose().translate(0, 0, 400);

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.lighting.ForgeModelBlockRenderer;
 import net.minecraftforge.client.model.lighting.QuadLighter;

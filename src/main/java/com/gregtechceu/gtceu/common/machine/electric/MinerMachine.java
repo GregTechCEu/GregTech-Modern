@@ -44,7 +44,7 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class MinerMachine extends WorkableTieredMachine
                           implements IControllable, IMuiMachine, IDataInfoProvider, IMiner {
 

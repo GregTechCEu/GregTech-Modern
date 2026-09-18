@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.commands.arguments;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -122,7 +122,7 @@ public class GTRegistryArgument<K, V> implements ArgumentType<V> {
         return EXAMPLES;
     }
 
-    @MethodsReturnNonnullByDefault
+    @NullMarked
     public static class Info<K, V>
                             implements
                             ArgumentTypeInfo<GTRegistryArgument<K, V>, GTRegistryArgument.Info<K, V>.Template> {

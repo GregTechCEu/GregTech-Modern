@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
 import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.util.Mth;
 
 import com.google.common.base.Preconditions;

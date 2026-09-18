@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import dev.ftb.mods.ftbchunks.client.gui.RegionMapPanel;
 import dev.ftb.mods.ftblibrary.ui.Theme;
@@ -18,7 +18,7 @@ public class FluidVeinWidget extends Widget {
     }
 
     @Override
-    public void draw(GuiGraphics graphics, Theme theme, int x, int y, int w, int h) {
+    public void draw(GuiGraphicsExtractor graphics, Theme theme, int x, int y, int w, int h) {
         if (!shouldDraw()) {
             return;
         }

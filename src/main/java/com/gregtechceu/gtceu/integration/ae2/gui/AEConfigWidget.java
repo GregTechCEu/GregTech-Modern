@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -181,7 +181,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     @OnlyIn(Dist.CLIENT)
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        GuiGraphics graphics = context.getGraphics();
+        GuiGraphicsExtractor graphics = context.getGraphics();
         boolean autoPull = isAutoPull();
         boolean stocking = isStocking();
         lastMouseX = context.getMouseX();
@@ -220,7 +220,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     public void drawForeground(ModularGuiContext context) {
         float mouseX = context.getMouseX();
         float mouseY = context.getMouseY();
-        GuiGraphics graphics = context.getGraphics();
+        GuiGraphicsExtractor graphics = context.getGraphics();
 
         for (int i = 0; i < slotCount; i++) {
             int x = slotX(i);
@@ -397,7 +397,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void drawStack(GuiGraphics graphics, GenericStack stack, int x, int y) {
+    private void drawStack(GuiGraphicsExtractor graphics, GenericStack stack, int x, int y) {
         if (isFluid) {
             AEGuiHelper.drawFluid(graphics, stack, x, y);
         } else if (stack.what() instanceof AEItemKey key) {

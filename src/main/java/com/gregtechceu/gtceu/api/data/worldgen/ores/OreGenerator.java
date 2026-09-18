@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
@@ -37,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * This does not actually place any of the ore's blocks, and delegates to the applicable vein generator.
  */
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class OreGenerator {
 
     public record VeinConfiguration(GeneratedVeinMetadata data, RandomSource random) {

@@ -10,9 +10,9 @@ import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,7 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -232,7 +232,7 @@ public class RenderUtil {
      * @param colorTo    the ending color of the gradient.
      * @param colorFrom  the starting color of the gradient.
      */
-    public static void fillHorizontalGradient(GuiGraphics graphics, RenderType renderType, int x1, int y1, int x2,
+    public static void fillHorizontalGradient(GuiGraphicsExtractor graphics, RenderType renderType, int x1, int y1, int x2,
                                               int y2, int colorFrom, int colorTo, int z) {
         VertexConsumer vertexconsumer = graphics.bufferSource().getBuffer(renderType);
         fillHorizontalGradient(graphics, vertexconsumer, x1, y1, x2, y2, z, colorFrom, colorTo);
@@ -254,7 +254,7 @@ public class RenderUtil {
      * @param colorFrom the starting color of the gradient.
      * @param colorTo   the ending color of the gradient.
      */
-    private static void fillHorizontalGradient(GuiGraphics graphics, VertexConsumer consumer,
+    private static void fillHorizontalGradient(GuiGraphicsExtractor graphics, VertexConsumer consumer,
                                                float x1, float y1, float x2, float y2, float z,
                                                int colorFrom, int colorTo) {
         int a1 = alpha(colorFrom), r1 = red(colorFrom), g1 = green(colorFrom), b1 = blue(colorFrom);
@@ -358,7 +358,7 @@ public class RenderUtil {
         return GTMatrixUtils.upwardFacingAngle(spin);
     }
 
-    public static boolean renderResearchItemContent(GuiGraphics graphics, Operation<Void> originalMethod,
+    public static boolean renderResearchItemContent(GuiGraphicsExtractor graphics, Operation<Void> originalMethod,
                                                     @Nullable LivingEntity entity, @Nullable Level level,
                                                     ItemStack stack, int x, int y, int z, int seed) {
         if (!Screen.hasShiftDown()) return false;

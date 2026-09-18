@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
@@ -38,7 +38,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NullMarked
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                                                implements IMuiMachine, ITieredMachine, IOverclockMachine, IVoidable {
 

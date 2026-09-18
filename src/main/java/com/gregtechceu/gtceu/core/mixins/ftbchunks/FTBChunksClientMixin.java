@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.core.mixins.ftbchunks;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.veins.fluid.FluidVeinIcon;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.phys.Vec3;
 
 import com.llamalad7.mixinextras.sugar.Local;
@@ -48,8 +48,8 @@ public class FTBChunksClientMixin {
             slice = @Slice(from = @At(value = "INVOKE",
                                       target = "Ldev/ftb/mods/ftbchunks/api/client/icon/MapIcon;getPos(F)Lnet/minecraft/world/phys/Vec3;"),
                            to = @At(value = "INVOKE",
-                                    target = "Ldev/ftb/mods/ftbchunks/api/client/icon/MapIcon;draw(Ldev/ftb/mods/ftbchunks/api/client/icon/MapType;Lnet/minecraft/client/gui/GuiGraphics;IIIIZI)V")))
-    private void gtceu$injectRenderHud(GuiGraphics graphics, float tickDelta, CallbackInfo ci, @Local MapIcon icon) {
+                                    target = "Ldev/ftb/mods/ftbchunks/api/client/icon/MapIcon;draw(Ldev/ftb/mods/ftbchunks/api/client/icon/MapType;Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIZI)V")))
+    private void gtceu$injectRenderHud(GuiGraphicsExtractor graphics, float tickDelta, CallbackInfo ci, @Local MapIcon icon) {
         if (gtceu$iconCheck) {
             RenderSystem.enableDepthTest();
             RenderSystem.depthFunc(GL11.GL_GEQUAL);
@@ -65,7 +65,7 @@ public class FTBChunksClientMixin {
                      shift = At.Shift.AFTER),
             remap = false,
             locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void gtceu$saveLocals(GuiGraphics graphics, float tickDelta, CallbackInfo ci, Minecraft mc,
+    private void gtceu$saveLocals(GuiGraphicsExtractor graphics, float tickDelta, CallbackInfo ci, Minecraft mc,
                                   double playerX, double playerY, double playerZ, double guiScale,
                                   int scaledWidth, int scaledHeight, MapDimension dim, long now, float zoom0,
                                   float zoom, MinimapBlurMode blurMode, boolean minimapBlur, int filter, int cx,
@@ -98,10 +98,10 @@ public class FTBChunksClientMixin {
 
     @Inject(method = "renderHud",
             at = @At(value = "INVOKE",
-                     target = "Ldev/ftb/mods/ftbchunks/api/client/icon/MapIcon;draw(Ldev/ftb/mods/ftbchunks/api/client/icon/MapType;Lnet/minecraft/client/gui/GuiGraphics;IIIIZI)V",
+                     target = "Ldev/ftb/mods/ftbchunks/api/client/icon/MapIcon;draw(Ldev/ftb/mods/ftbchunks/api/client/icon/MapType;Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIZI)V",
                      shift = At.Shift.AFTER),
             remap = false)
-    private void gtceu$injectRenderHudPost(GuiGraphics graphics, float tickDelta, CallbackInfo ci,
+    private void gtceu$injectRenderHudPost(GuiGraphicsExtractor graphics, float tickDelta, CallbackInfo ci,
                                            @Local MapIcon icon) {
         if (gtceu$iconCheck) {
             RenderSystem.disableDepthTest();

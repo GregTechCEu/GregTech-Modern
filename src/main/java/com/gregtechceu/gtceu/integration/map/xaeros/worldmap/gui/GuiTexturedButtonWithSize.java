@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.gui;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -23,7 +23,7 @@ public class GuiTexturedButtonWithSize extends GuiTexturedButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int iconX = this.getX() + this.width / 2 - this.textureW / 2;
         int iconY = this.getY() + this.height / 2 - this.textureH / 2;
         if (this.active) {

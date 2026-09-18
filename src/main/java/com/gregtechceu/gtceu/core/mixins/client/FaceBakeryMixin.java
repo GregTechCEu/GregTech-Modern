@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins.client;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
-import net.minecraft.client.renderer.block.model.FaceBakery;
+import net.minecraft.client.resources.model.cuboid.FaceBakery;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.joml.Vector3f;

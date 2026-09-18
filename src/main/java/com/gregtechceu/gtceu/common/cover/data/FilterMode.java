@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.common.cover.data;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 @ParametersAreNonnullByDefault
 public enum FilterMode {
 

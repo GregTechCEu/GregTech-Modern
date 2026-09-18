@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -102,7 +102,7 @@ public class ArmorProperty implements IMaterialProperty {
          *                             Ordered as Helmet, Chestplate, Leggings, Boots.
          * @throws IllegalArgumentException If the protectionValues array parameter does not have exactly 4 entries.
          *
-         * @see net.minecraft.world.item.ArmorMaterials
+         * @see net.minecraft.world.item.equipment.ArmorMaterials
          */
         public static ArmorProperty.Builder of(int durabilityMultiplier, int[] protectionValues) {
             Preconditions.checkArgument(protectionValues != null && protectionValues.length == 4,
@@ -167,7 +167,7 @@ public class ArmorProperty implements IMaterialProperty {
          * Set the toughness granted for wearing armors made of this Material.
          * Diamond is 2, Netherite is 3, other armors are 0.
          *
-         * @see net.minecraft.world.item.ArmorMaterials
+         * @see net.minecraft.world.item.equipment.ArmorMaterials
          * @see <a href="https://minecraft.wiki/w/Armor#Armor_toughness">Armor Toughness - Minecraft Wiki</a>
          */
         public ArmorProperty.Builder toughness(float toughness) {
@@ -179,7 +179,7 @@ public class ArmorProperty implements IMaterialProperty {
          * Set the knockback resistance granted for wearing armor made of this Material.<br>
          * Netherite is 0.1 (10%), other armors are 0.
          *
-         * @see net.minecraft.world.item.ArmorMaterials
+         * @see net.minecraft.world.item.equipment.ArmorMaterials
          */
         public ArmorProperty.Builder knockbackResistance(float knockbackResistance) {
             armorProperty.knockbackResistance = knockbackResistance;
@@ -213,7 +213,7 @@ public class ArmorProperty implements IMaterialProperty {
         Identifier getCustomTexture(ItemStack stack, Entity entity, EquipmentSlot slot, boolean overlay);
     }
 
-    public class ArmorMaterial implements net.minecraft.world.item.ArmorMaterial {
+    public class ArmorMaterial implements net.minecraft.world.item.equipment.ArmorMaterial {
 
         private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util
                 .make(new EnumMap<>(ArmorItem.Type.class), (map) -> {

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 
 import net.minecraft.FieldsAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,7 +23,7 @@ import lombok.Getter;
 
 import java.util.Map;
 
-@MethodsReturnNonnullByDefault
+@NullMarked
 @FieldsAreNonnullByDefault
 public class ShapedEnergyTransferRecipe extends ShapedRecipe {
 

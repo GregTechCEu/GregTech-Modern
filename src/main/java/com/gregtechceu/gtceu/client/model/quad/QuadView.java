@@ -18,7 +18,7 @@ package com.gregtechceu.gtceu.client.model.quad;
 import com.gregtechceu.gtceu.client.util.quad.GeometryHelper;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;

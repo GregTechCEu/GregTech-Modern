@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.mui.widgets;
 
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 
 import brachy.modularui.api.drawable.IDrawable;
@@ -36,7 +36,7 @@ public class SteamDialWidget implements IDrawable {
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
-        GuiGraphics graphics = context.getGraphics();
+        GuiGraphicsExtractor graphics = context.getGraphics();
         // RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Matrix4f pose = graphics.pose().last().pose();
         if (texture == null) {

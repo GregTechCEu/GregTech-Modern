@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Mixin(GuiGraphics.class)
+@Mixin(GuiGraphicsExtractor.class)
 public abstract class GuiGraphicsMixin {
 
     @Shadow(remap = false)
@@ -41,7 +41,7 @@ public abstract class GuiGraphicsMixin {
     private void gtceu$renderResearchItemContent(@Nullable LivingEntity entity, @Nullable Level level,
                                                  ItemStack stack, int x, int y, int seed, int z,
                                                  Operation<Void> original) {
-        if (!RenderUtil.renderResearchItemContent((GuiGraphics) (Object) this, original,
+        if (!RenderUtil.renderResearchItemContent((GuiGraphicsExtractor) (Object) this, original,
                 entity, level, stack, x, y, z, seed)) {
             original.call(entity, level, stack, x, y, seed, z);
         }
@@ -115,10 +115,10 @@ public abstract class GuiGraphicsMixin {
         }
 
         GuiContext context = GuiContext.getDefault();
-        GuiGraphics lastGraphics = context.getGraphics();
+        GuiGraphicsExtractor lastGraphics = context.getGraphics();
 
         context.setOverrideFont(font);
-        context.setGraphics((GuiGraphics) (Object) this);
+        context.setGraphics((GuiGraphicsExtractor) (Object) this);
         tooltip.draw(context, this.tooltipStack);
 
         context.setGraphics(lastGraphics);
