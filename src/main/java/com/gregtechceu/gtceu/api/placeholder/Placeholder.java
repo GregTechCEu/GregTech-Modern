@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.placeholder;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.common.capability.PlaceholderSavedData;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +25,7 @@ public abstract class Placeholder {
                                              List<MultiLineComponent> args) throws PlaceholderException;
 
     public Placeholder(String str) {
-        this.id = GTCEu.id(str);
-        this.name = str;
+        this(GTCEu.id(FormattingUtil.toLowerCaseUnderscore(str)));
     }
 
     public Placeholder(ResourceLocation id) {

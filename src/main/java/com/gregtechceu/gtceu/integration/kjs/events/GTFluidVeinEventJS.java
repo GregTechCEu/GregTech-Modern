@@ -16,7 +16,7 @@ public class GTFluidVeinEventJS extends EventJS {
     public void add(ResourceLocation id, Consumer<BedrockFluidDefinition.Builder> consumer) {
         BedrockFluidDefinition.Builder builder = BedrockFluidDefinition.builder(id);
         consumer.accept(builder);
-        builder.register();
+        GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(id, builder.build());
     }
 
     public void remove(ResourceLocation id) {

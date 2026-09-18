@@ -13,25 +13,25 @@ To make or modify a dimension icon in `Java` you will need to add a listener to 
 Below is an example of making new and modifying existing dimension icons in a Java addon.
 
 ```java
-private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, DimensionMarker> event) {
+@SubscribeEvent
+public void registerDimensionMarkers(RegisterEvent event) {
+    if (event.getRegistryKey() != GTRegistries.Keys.DIMENSION_MARKER) return;
+
     // Making a new icon.
-    ResourceLocation sceneDimKey = ResourceLocation.fromNamespaceAndPath(Phantasia.MOD_ID, "scene");
     DimensionMarker sceneMarker = new DimensionMarker(
             3, // Tier
             () -> Items.DIAMOND_BLOCK, // Supplier for the actual Icon ItemStack.
             "mymod.dimension.example_dimension.name" // Lang key can also be a normal text block.
     );
-    event.register(sceneDimKey, sceneMarker);
-    
+    event.register(GTRegistries.Keys.DIMENSION_MARKER, ResourceLocation.fromNamespaceAndPath(Phantasia.MOD_ID, "scene"), () -> sceneMarker);
+
     // Editing an existing icon.
-    ResourceLocation netherKey = ResourceLocation.withDefaultNamespace("the_nether");
-    DimensionMarker upgradedNetherMarker = new DimensionMarker(
-            5, 
-            () -> Items.NETHERITE_BLOCK,
-            "text.mymod.super_nether"
-    );
-    GTRegistries.DIMENSION_MARKERS.registerOrOverride(netherKey, upgradedNetherMarker);
-}
+
+    DimensionMarker marker = GTRegistries.DIMENSION_MARKERS.get(ResourceLocation.withDefaultNamespace("the_nether"));
+    marker.setTier(5);
+    marker.setOverrideName("text.mymod.super_nether");
+    marker.setIcon(() -> Items.NETHERITE_BLOCK);
+} 
 ```
 
 `Dimension Icons` also can be made/edited using `KubeJS` scripts using similar syntax.
@@ -39,17 +39,10 @@ private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, D
 ```js
 GTCEuStartupEvents.registry("gtceu:dimension_marker", event => {
     // Edit existing dimension icon,
-    const DimensionMarker = Java.loadClass('com.gregtechceu.gtceu.api.data.DimensionMarker')
-    
-    let netherKey = ResourceLocation.withDefaultNamespace("the_nether")
-
-    let upgradedNetherMarker = new DimensionMarker(
-        5, 
-        Items.NETHERITE_BLOCK, 
-        "text.mymod.super_nether" 
-    )
-
-    GTRegistries.DIMENSION_MARKERS.registerOrOverride(netherKey, upgradedNetherMarker)
+    let marker = DimensionMarker.get(ResourceLocation.withDefaultNamespace("the_nether"));
+    marker.setTier(5);
+    marker.setOverrideName("text.mymod.super_nether");
+    marker.setIcon(() => Items.NETHERITE_BLOCK);
     
     // New icon
     event.create("ad_astra:glacio")

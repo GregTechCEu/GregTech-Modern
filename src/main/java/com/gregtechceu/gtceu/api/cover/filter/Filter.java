@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -20,7 +20,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -41,8 +40,8 @@ public abstract class Filter<T> implements Predicate<T> {
      */
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
                                     boolean showPlayerInventory) {
-        return new Dialog<>(Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
-                .getKey(filterItemStack.getItem())).toString())
+        return new Dialog<>(BuiltInRegistries.ITEM
+                .getKey(filterItemStack.getItem()).toString())
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .coverChildrenHeight()

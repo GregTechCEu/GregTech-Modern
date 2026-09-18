@@ -36,8 +36,9 @@ public class GTFluids {
         handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
         handleNonMaterialFluids(GTMaterials.Milk, ForgeMod.MILK);
         ForgeMod.enableMilkFluid();
+    }
 
-        // register fluids for materials
+    public static void registerMaterialFluids() {
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
         for (var material : GTRegistries.MATERIALS) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);

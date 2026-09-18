@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 @Accessors(chain = true)
 public class MedicalCondition {
 
-    public static final Codec<MedicalCondition> CODEC = GTRegistries.MEDICAL_CONDITIONS.codec();
+    public static final Codec<MedicalCondition> CODEC = GTRegistries.MEDICAL_CONDITIONS.byNameCodec();
     public static final String AFFECTED_SUFFIX = ".affected";
 
     /**

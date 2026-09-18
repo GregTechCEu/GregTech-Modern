@@ -1,14 +1,10 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
-
-import net.minecraftforge.fml.ModLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,17 +30,11 @@ public class GTRecipeCategories {
 
     public static GTRecipeCategory register(String categoryName, @NotNull GTRecipeType recipeType) {
         GTRecipeCategory category = new GTRecipeCategory(categoryName, recipeType);
-        GTRegistries.RECIPE_CATEGORIES.register(category.registryKey, category);
+        GTRegistries.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
         return category;
     }
 
-    public static void init() {
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.RECIPE_CATEGORIES.getRegistryName());
-        }
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class));
-        GTRegistries.RECIPE_CATEGORIES.freeze();
-    }
+    public static void init() {}
 
     public static GTRecipeCategory get(String name) {
         return GTRegistries.RECIPE_CATEGORIES.get(GTCEu.id(name));

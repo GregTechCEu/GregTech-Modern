@@ -20,11 +20,16 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
 
     public SimpleWorldGenLayer(ResourceLocation id, IWorldGenLayer.RuleTestSupplier target,
                                Set<ResourceLocation> levels) {
+        this(id, target, levels, true);
+    }
+
+    public SimpleWorldGenLayer(ResourceLocation id, IWorldGenLayer.RuleTestSupplier target,
+                               Set<ResourceLocation> levels, boolean register) {
         this.id = id;
         this.target = target;
         this.levels = levels;
 
-        GTRegistries.WORLD_GEN_LAYERS.register(id, this);
+        if (register) GTRegistries.register(GTRegistries.WORLD_GEN_LAYERS, id, this);
     }
 
     @Override
