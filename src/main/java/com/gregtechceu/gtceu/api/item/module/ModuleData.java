@@ -1,0 +1,66 @@
+package com.gregtechceu.gtceu.api.item.module;
+
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
+import net.minecraft.world.item.ItemStack;
+
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+
+/**
+ * The data for an item module attached to a specific item.<br>
+ * This class and its inheritors must be immutable.
+ */
+public abstract class ModuleData {
+
+    // spotless:off
+    public static final Codec<ModuleData> DISPATCH_CODEC = GTRegistries.ITEM_MODULES.codec()
+            .dispatch("module", ModuleData::getModule, ItemModule::moduleDataCodec);
+
+    public static final Codec<ModuleData.BaseData> BASE_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).apply(instance, ModuleData.BaseData::new));
+
+    public static <T extends ModuleData> Products.P4<RecordCodecBuilder.Mu<T>, Integer, ItemModule, ItemStack, Boolean> baseCodec(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(
+                Codec.INT.fieldOf("slot").forGetter(ModuleData::getSlot),
+                GTRegistries.ITEM_MODULES.codec().fieldOf("module").forGetter(ModuleData::getModule),
+                ItemStack.CODEC.fieldOf("moduleItem").forGetter(ModuleData::getModuleItem),
+                Codec.BOOL.fieldOf("enabled").forGetter(ModuleData::isEnabled)
+        );
+    }
+    //spotless:on
+
+    @Getter
+    protected final int slot;
+
+    @Getter
+    protected final ItemModule module;
+
+    @Getter
+    protected final ItemStack moduleItem;
+
+    @Getter
+    protected final boolean enabled;
+
+    public abstract ModuleData withEnabled(boolean enabled);
+
+    public ModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
+        this.slot = slot;
+        this.module = module;
+        this.moduleItem = moduleItem;
+        this.enabled = enabled;
+    }
+
+    public static class BaseData extends ModuleData {
+
+        public BaseData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
+            super(slot, module, moduleItem, enabled);
+        }
+
+        @Override
+        public ModuleData withEnabled(boolean enabled) {
+            return new BaseData(getSlot(), getModule(), getModuleItem(), enabled);
+        }
+    }
+}

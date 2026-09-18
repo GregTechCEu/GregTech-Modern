@@ -300,7 +300,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     }
 
     @Override
-    public boolean isPPE() {
+    public boolean isPPE(ItemStack stack) {
         return true;
     }
 }

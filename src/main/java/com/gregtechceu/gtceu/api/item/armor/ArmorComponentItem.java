@@ -23,12 +23,16 @@ import net.neoforged.neoforge.common.ItemAbility;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
+@Accessors(chain = true)
+@NotNullByDefault
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
 
     @Getter

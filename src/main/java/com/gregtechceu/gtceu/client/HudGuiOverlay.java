@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
+import com.gregtechceu.gtceu.api.item.module.IHUDProviderItemModule;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -40,6 +41,7 @@ public class HudGuiOverlay implements LayeredDraw.Layer {
                 IItemHUDProvider.tryDrawHud(provider, stack, guiGraphics);
             }
         }
+        IHUDProviderItemModule.tryDrawHUD(stack, guiGraphics);
     }
 
     private static void renderHUDMetaItem(@NotNull ItemStack stack, GuiGraphics guiGraphics) {
@@ -50,5 +52,6 @@ public class HudGuiOverlay implements LayeredDraw.Layer {
                 }
             }
         }
+        IHUDProviderItemModule.tryDrawHUD(stack, guiGraphics);
     }
 }

@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
-import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -34,4 +35,7 @@ public class GTCapability {
             .createSided(GTCEu.id("monitor_component"), IMonitorComponent.class);
     public static final ItemCapability<ISpoilableItem, Void> CAPABILITY_SPOILABLE_ITEM = ItemCapability
             .createVoid(GTCEu.id("spoilable_item"), ISpoilableItem.class);
+    public static final ItemCapability<IModularItem, Void> CAPABILITY_MODULAR_ITEM = ItemCapability
+            .createVoid(GTCEu.id("modular_item"), IModularItem.class);
+
 }

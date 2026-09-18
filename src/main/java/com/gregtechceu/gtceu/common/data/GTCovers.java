@@ -21,8 +21,6 @@ import net.minecraft.core.Holder;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -126,15 +124,17 @@ public class GTCovers {
     ///////////////////////////////////////////////
 
     @SuppressWarnings("unchecked")
-    public static Holder<CoverDefinition>[] registerTiered(GTRegistrate registrate, String id,
+    public static RegistryEntry<CoverDefinition, CoverDefinition>[] registerTiered(GTRegistrate registrate, String id,
                                                            CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
                                                            Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
                                                            int... tiers) {
-        return Arrays.stream(tiers).mapToObj(tier -> {
-            var name = id + "." + GTValues.VN[tier].toLowerCase(Locale.ROOT);
-            return registrate.cover(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
+        RegistryEntry<CoverDefinition, CoverDefinition>[] covers = new RegistryEntry[GTValues.TIER_COUNT];
+        for (int tier: tiers) {
+            var name = id + "." + GTValues.VN[tier].toLowerCase();
+            covers[tier] = registrate.cover(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));
-        }).toArray(RegistryEntry[]::new);
+        }
+        return covers;
     }
 
     public static void init() {}

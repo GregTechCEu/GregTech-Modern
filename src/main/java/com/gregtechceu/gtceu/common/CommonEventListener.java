@@ -25,6 +25,9 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.item.module.IModularItem;
+import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
@@ -67,6 +70,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -354,10 +358,28 @@ public class CommonEventListener {
     }
 
     @SubscribeEvent
-    public static void stepAssistHandler(EntityTickEvent.Pre event) {
+    public static void onEntityTick(EntityTickEvent.Pre event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) {
             return;
         }
+
+        for (ItemStack stack : entity.getArmorSlots()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            modularItem.runForEachModule((m, a) -> m.onArmorTick(a, entity));
+        }
+
+        if (entity instanceof Player player) {
+            for (ItemStack stack : entity.getAllSlots()) {
+                IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+                if (modularItem == null) continue;
+                modularItem.runForEachModule((m, a) -> {
+                    if (m.isEnabled(a)) m.onInventoryTick(a, player);
+                    m.onTickRaw(a, player, player.level(), player.getOnPos());
+                });
+            }
+        }
+
         AttributeInstance stepHeightAttribute = entity.getAttribute(Attributes.STEP_HEIGHT);
         if (stepHeightAttribute == null) {
             return;
@@ -379,6 +401,57 @@ public class CommonEventListener {
         }
         if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
             armor.getArmorLogic().onEquip(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!event.getSlot().isArmor()) return;
+
+        final LivingEntity entity = event.getEntity();
+        final ItemStack old = event.getFrom();
+        final ItemStack current = event.getTo();
+
+        if (entity instanceof Player player) {
+            if (!event.getFrom().isEmpty() && event.getFrom().getItem() instanceof ArmorComponentItem armor) {
+                armor.getArmorLogic().onUnequip(player);
+            }
+            if (!event.getTo().isEmpty() && event.getTo().getItem() instanceof ArmorComponentItem armor) {
+                armor.getArmorLogic().onEquip(player);
+            }
+        }
+
+        if (ItemStack.matches(old, current)) {
+            return;
+        }
+
+        if (!old.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(old);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onUnequip(a, entity));
+        }
+
+        if (!current.isEmpty()) {
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(current);
+            if (modularItem != null) modularItem.runForEachModule((m, a) -> m.onEquip(a, entity));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingHurt(LivingIncomingDamageEvent event) {
+        final LivingEntity entity = event.getEntity();
+        final DamageSource source = event.getSource();
+
+        for (final ItemStack stack : entity.getArmorSlots()) {
+            float amount = event.getAmount();
+            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
+            if (modularItem == null) continue;
+            for (ItemModule module : modularItem.getModules()) {
+                var data = modularItem.getModuleContext(module);
+                if (data == null) continue;
+                if (!module.isEnabled(data)) continue;
+                amount = module.changeDamage(data, entity, amount, source);
+            }
+            event.setAmount(amount);
         }
     }
 

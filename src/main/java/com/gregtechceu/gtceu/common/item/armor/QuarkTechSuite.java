@@ -91,7 +91,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         if (type == ArmorItem.Type.HELMET) {
 
             if (!level.isClientSide) {
-                ret = supplyAir(item, player) || supplyFood(item, player);
+                ret = supplyAir(item, player, energyPerUse) || supplyFood(item, player, energyPerUse);
                 removeNegativeEffects(item, player);
             }
 
@@ -228,7 +228,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         }
     }
 
-    public boolean supplyAir(@NotNull IElectricItem item, Player player) {
+    public static boolean supplyAir(@NotNull IElectricItem item, Player player, long energyPerUse) {
         int air = player.getAirSupply();
         if (item.canUse(energyPerUse / 100) && air < 100) {
             player.setAirSupply(air + 200);
@@ -238,7 +238,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         return false;
     }
 
-    public boolean supplyFood(@NotNull IElectricItem item, Player player) {
+    public static boolean supplyFood(@NotNull IElectricItem item, Player player, long energyPerUse) {
         if (item.canUse(energyPerUse / 10) && player.getFoodData().needsFood()) {
             int slotId = -1;
             IItemHandler playerInv = player.getCapability(Capabilities.ItemHandler.ENTITY);
@@ -385,7 +385,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     @Override
-    public boolean isPPE() {
+    public boolean isPPE(ItemStack stack) {
         return true;
     }
 }
