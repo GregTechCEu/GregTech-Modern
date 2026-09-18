@@ -127,7 +127,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                 .slot(equipmentSlot, 0)
                 .slot(new ModularSlot(equipmentSlot, 0)
                         .singletonSlotGroup()
-                        .changeListener((stack, onlyAmount, client, init) -> {
+                        .changeListener((oldStack, newStack, client, init) -> {
+                            if (ItemStack.isSameItem(oldStack, newStack)) return;
                             onEquipmentSlotChanged(guiData.getPlayer(), moduleSlots);
                         })))
                 .child(new Grid()
@@ -146,7 +147,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         IModularItem modularItem = GTCapabilityHelper.getModularItem(equipment);
         if (modularItem == null) return true;
         ModuleData module = modularItem.getModuleDataForSlot(slot);
-        if (module != null) return !(module.getModule().canRemove(module) && module.getModuleItem() != null);
+        if (module != null) return !module.getModule().canRemove(module);
         return modularItem.getSlots().size() <= slot;
     }
 
@@ -193,7 +194,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         }
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         ModuleData prevModule = modularItem == null ? null : modularItem.getModuleDataForSlot(slot);
-        if (prevModule != null) modularItem.detach(prevModule);
+        if (prevModule != null) modularItem.detach(slot);
+
         ItemStack newModule = moduleSlots.getStackInSlot(slot);
         if (newModule.isEmpty()) return;
 
@@ -204,6 +206,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                 recipe.applyToItem(equipmentItem, newModule, slot);
             }
         }
+
+        moduleSlots.getStackInSlot(slot);
     }
 
     @Override

@@ -16,11 +16,15 @@ public final class ModuleData {
 
     //spotless:off
     public static final Codec<ModuleData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("slot").forGetter(ModuleData::getSlot),
             GTRegistries.ITEM_MODULES.codec().fieldOf("module").forGetter(ModuleData::getModule),
             CompoundTag.CODEC.fieldOf("tag").forGetter(ModuleData::getTag),
             ItemStack.CODEC.fieldOf("moduleItem").forGetter(ModuleData::getModuleItem)
     ).apply(instance, ModuleData::new));
     //spotless:on
+
+    @Getter
+    private int slot;
 
     @Getter
     private ItemModule module;
@@ -46,7 +50,8 @@ public final class ModuleData {
     @Setter
     private IModularItem modularItemStack;
 
-    public ModuleData(ItemModule module, CompoundTag tag, ItemStack moduleItem) {
+    public ModuleData(int slot, ItemModule module, CompoundTag tag, ItemStack moduleItem) {
+        this.slot = slot;
         this.module = module;
         this.moduleItem = moduleItem;
         this.tag = tag;

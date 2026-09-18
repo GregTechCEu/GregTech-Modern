@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
@@ -13,8 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
@@ -24,29 +27,31 @@ public class ModularItemStack implements IModularItem {
 
     private final ItemStack stack;
     private final List<ItemModuleSlot> slots;
-    private final List<ModuleData> currentModules;
+    private final Int2ObjectMap<ModuleData> currentModules;
+
+    private static final Codec<List<ModuleData>> DATA_CODEC = Codec.list(ModuleData.CODEC);
 
     public ModularItemStack(ItemStack stack, Function<ItemStack, List<ItemModuleSlot>> slotsGetter) {
         this.stack = stack;
         slots = slotsGetter.apply(stack);
-        currentModules = new ArrayList<>();
+        currentModules = new Int2ObjectArrayMap<>();
 
-        if (stack.getOrCreateTag().contains(MODULES_TAG)) {
-            List<ModuleData> data = ModuleData.CODEC.listOf()
-                    .decode(NbtOps.INSTANCE, stack.getOrCreateTagElement(MODULES_TAG))
+        if (stack.getOrCreateTagElement(MODULES_TAG).contains(MODULES_TAG)) {
+            List<ModuleData> data = DATA_CODEC
+                    .decode(NbtOps.INSTANCE, stack.getOrCreateTagElement(MODULES_TAG).get(MODULES_TAG))
                     .getOrThrow(false, GTCEu.LOGGER::error)
                     .getFirst();
 
-            for (ModuleData module : data) {
-                module.setModularItemStack(this);
-                module.setAppliedTo(stack);
-                currentModules.add(module);
+            for (ModuleData entry : data) {
+                entry.setModularItemStack(this);
+                entry.setAppliedTo(stack);
+                currentModules.put(entry.getSlot(), entry);
             }
         }
     }
 
     public void saveData() {
-        stack.getOrCreateTag().put(MODULES_TAG, ModuleData.CODEC.listOf().encodeStart(NbtOps.INSTANCE, currentModules).getOrThrow(false, GTCEu.LOGGER::error));
+        stack.getOrCreateTagElement(MODULES_TAG).put(MODULES_TAG, DATA_CODEC.encodeStart(NbtOps.INSTANCE, currentModules.values().stream().toList()).getOrThrow(false, GTCEu.LOGGER::error));
     }
 
     @Override
@@ -63,14 +68,16 @@ public class ModularItemStack implements IModularItem {
         }
 
         ModuleData moduleData = new ModuleData(
+                slot,
                 module,
                 new CompoundTag(),
                 itemToApply);
 
-        moduleData.setAppliedTo(stack);
-        currentModules.add(moduleData);
         if (!simulate) {
+            moduleData.setAppliedTo(stack);
             module.onAttach(moduleData);
+            currentModules.put(slot, moduleData);
+            saveData();
         }
         return moduleData;
     }
@@ -84,9 +91,20 @@ public class ModularItemStack implements IModularItem {
     }
 
     @Override
-    public void detach(ModuleData appliedModule) {
-        if (!appliedModule.getModule().canRemove(appliedModule)) return;
-        appliedModule.getModule().onRemove(appliedModule);
+    public void detach(ModuleData data) {
+        for (var entry: currentModules.int2ObjectEntrySet()) {
+            if (entry.getValue() == data) detach(entry.getIntKey());
+        }
+    }
+
+    @Override
+    public void detach(int slot) {
+        if (currentModules.containsKey(slot)) {
+            var current = currentModules.get(slot);
+            if (!current.getModule().canRemove(current)) return;
+            current.getModule().onRemove(current);
+            currentModules.remove(slot);
+        }
         saveData();
     }
 
@@ -103,12 +121,12 @@ public class ModularItemStack implements IModularItem {
 
     @Override
     public List<ModuleData> getAllModuleData() {
-        return currentModules;
+        return currentModules.values().stream().sorted(Comparator.comparingInt(ModuleData::getSlot)).toList();
     }
 
     @Override
     public List<ItemModule> getModules() {
-        return getAllModuleData().stream().map(ModuleData::getModule).toList();
+        return getAllModuleData().stream().sorted(Comparator.comparingInt(ModuleData::getSlot)).map(ModuleData::getModule).toList();
     }
 
     @Override

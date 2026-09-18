@@ -34,7 +34,9 @@ public interface IModularItem {
     @Nullable
     ModuleData attach(ItemModule module, ItemStack itemToApply, boolean simulate);
 
-    void detach(ModuleData appliedModule);
+    void detach(ModuleData data);
+
+    void detach(int slot);
 
     default void runForEachModule(BiConsumer<ItemModule, ModuleData> consumer) {
         getAllModuleData().forEach(v -> consumer.accept(v.getModule(), v));
