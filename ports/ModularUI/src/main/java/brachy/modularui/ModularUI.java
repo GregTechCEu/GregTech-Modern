@@ -26,7 +26,7 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -163,7 +163,7 @@ public class ModularUI {
         }
     }
 
-    private void onRegisterDataReloadListener(AddReloadListenerEvent event) {
+    private void onRegisterDataReloadListener(AddServerReloadListenersEvent event) {
         RegistryAccessContainer.update(event.getRegistryAccess(), event.getConditionContext());
     }
 

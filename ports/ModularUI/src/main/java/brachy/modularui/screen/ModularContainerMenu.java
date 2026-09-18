@@ -16,7 +16,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -248,16 +248,16 @@ public class ModularContainerMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int slotId, int mouseButton, @NotNull ClickType clickTypeIn, @NotNull Player player) {
+    public void clicked(int slotId, int mouseButton, @NotNull ContainerInput clickTypeIn, @NotNull Player player) {
         ItemStack returnable = ItemStack.EMPTY;
         Inventory inventory = player.getInventory();
 
-        if (clickTypeIn == ClickType.QUICK_CRAFT) {
+        if (clickTypeIn == ContainerInput.QUICK_CRAFT) {
             superClicked(slotId, mouseButton, clickTypeIn, player);
             return;
         }
 
-        if ((clickTypeIn == ClickType.PICKUP || clickTypeIn == ClickType.QUICK_MOVE) &&
+        if ((clickTypeIn == ContainerInput.PICKUP || clickTypeIn == ContainerInput.QUICK_MOVE) &&
                 (mouseButton == InputConstants.MOUSE_BUTTON_LEFT || mouseButton == InputConstants.MOUSE_BUTTON_RIGHT)) {
             if (slotId == SLOT_CLICKED_OUTSIDE) {
                 superClicked(slotId, mouseButton, clickTypeIn, player);
@@ -267,7 +267,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
             // early return
             if (slotId < 0) return;
 
-            if (clickTypeIn == ClickType.QUICK_MOVE) {
+            if (clickTypeIn == ContainerInput.QUICK_MOVE) {
                 Slot fromSlot = getSlot(slotId);
 
                 if (!fromSlot.mayPickup(player)) {
@@ -341,7 +341,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                 clickedSlot.setChanged();
             }
             broadcastChanges();
-        } else if (clickTypeIn == ClickType.PICKUP_ALL && slotId >= 0) {
+        } else if (clickTypeIn == ContainerInput.PICKUP_ALL && slotId >= 0) {
             Slot slot = slots.get(slotId);
             ItemStack carried = this.getCarried();
 
@@ -379,7 +379,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
             }
 
             broadcastChanges();
-        } else if (clickTypeIn == ClickType.SWAP && mouseButton >= 0 && mouseButton < 9) {
+        } else if (clickTypeIn == ContainerInput.SWAP && mouseButton >= 0 && mouseButton < 9) {
             // minecraft does not check if the hotbar slot can actually take and put items
             Slot hotbarSlot = findPlayerSlot(player, mouseButton); // mouseButton is the slot index here
             if (hotbarSlot != null && slotId >= 0) {
@@ -426,7 +426,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
                     hotbarSlot.setChanged();
                 }
             }
-        } else if (clickTypeIn == ClickType.THROW && getCarried().isEmpty() && slotId >= 0) {
+        } else if (clickTypeIn == ContainerInput.THROW && getCarried().isEmpty() && slotId >= 0) {
             Slot slot = getSlot(slotId);
 
             if (slot.hasItem() && slot.mayPickup(player)) {
@@ -449,7 +449,7 @@ public class ModularContainerMenu extends AbstractContainerMenu {
         }
     }
 
-    protected final void superClicked(int slotId, int mouseButton, @NotNull ClickType clickTypeIn, @NotNull Player player) {
+    protected final void superClicked(int slotId, int mouseButton, @NotNull ContainerInput clickTypeIn, @NotNull Player player) {
         super.clicked(slotId, mouseButton, clickTypeIn, player);
     }
 

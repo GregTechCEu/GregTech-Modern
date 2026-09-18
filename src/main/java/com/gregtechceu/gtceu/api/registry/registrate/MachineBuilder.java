@@ -34,7 +34,7 @@ import com.gregtechceu.gtceu.integration.kjs.events.ModifyMachineEventJS;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
 
 import org.jspecify.annotations.NullMarked;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;

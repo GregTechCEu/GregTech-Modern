@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;

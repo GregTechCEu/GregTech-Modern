@@ -2,11 +2,8 @@ package brachy.modularui.core.mixins.common;
 
 import brachy.modularui.utils.RegistryAccessContainer;
 
-import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
-import net.minecraft.tags.TagManager;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import org.spongepowered.asm.mixin.Final;
@@ -21,15 +18,13 @@ public abstract class ReloadableServerResourcesMixin {
 
     @Shadow
     @Final
-    private TagManager tagManager;
+    private RegistryAccess registryAccess;
 
     @Shadow
     public abstract ICondition.IContext getConditionContext();
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void mui$hookResourceLoad(RegistryAccess.Frozen registryAccess, FeatureFlagSet enabledFeatures,
-                                      Commands.CommandSelection commandSelection, int functionCompilationLevel,
-                                      CallbackInfo ci) {
+    private void mui$hookResourceLoad(CallbackInfo ci) {
         RegistryAccessContainer.update(registryAccess, getConditionContext());
     }
 }

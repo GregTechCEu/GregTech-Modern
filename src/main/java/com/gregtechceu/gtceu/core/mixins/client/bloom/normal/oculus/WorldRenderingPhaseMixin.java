@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
 import net.irisshaders.iris.pipeline.WorldRenderingPhase;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.asm.mixin.*;

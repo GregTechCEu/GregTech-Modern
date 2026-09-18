@@ -34,7 +34,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
@@ -97,9 +97,9 @@ public class ModularUIClient {
         event.register(TooltipComponentIcon.class, TooltipComponentIcon::clientComponent);
     }
 
-    public void onRegisterAssetReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(ThemeManager.INSTANCE);
-        event.registerReloadListener(new GuiSpriteManager(Minecraft.getInstance().getTextureManager()));
+    public void onRegisterAssetReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(ModularUI.id("themes"), ThemeManager.INSTANCE);
+        event.addListener(ModularUI.id("gui_sprites"), new GuiSpriteManager(Minecraft.getInstance().getTextureManager()));
     }
 
     private void onUnloadWorld(LevelEvent.Unload event) {

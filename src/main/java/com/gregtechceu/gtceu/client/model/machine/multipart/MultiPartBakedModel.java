@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import net.minecraft.util.Util;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.cuboid.ItemTransforms;
@@ -173,7 +173,7 @@ public class MultiPartBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean useAmbientOcclusion(BlockState state, net.minecraft.client.renderer.RenderType renderType) {
+    public boolean useAmbientOcclusion(BlockState state, net.minecraft.client.renderer.rendertype.RenderType renderType) {
         return this.defaultModel.useAmbientOcclusion(state, renderType);
     }
 

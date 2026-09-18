@@ -29,7 +29,7 @@ import brachy.modularui.ModularUI;
 import brachy.modularui.drawable.schema.*;
 import brachy.modularui.integration.embeddium.SodiumCompat;
 import brachy.modularui.utils.FluidTextureType;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
