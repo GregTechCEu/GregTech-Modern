@@ -16,8 +16,8 @@ import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.value.sync.PanelSyncManager;
