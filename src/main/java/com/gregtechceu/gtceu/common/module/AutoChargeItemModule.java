@@ -113,6 +113,8 @@ public class AutoChargeItemModule extends TieredItemModule {
     @Override
     public InteractionResult onItemUseFirst(ModuleContext moduleContext, UseOnContext context) {
         BlockPos pos = context.getClickedPos();
+        if (context.getLevel().isClientSide()) return super.onItemUseFirst(moduleContext, context);
+
         MetaMachine machine = MetaMachine.getMachine(context.getLevel(), pos);
         if (machine instanceof PowerSubstationMachine || machine instanceof BatteryBufferMachine) {
             PlayerOwner owner = machine.getPlayerOwner();
