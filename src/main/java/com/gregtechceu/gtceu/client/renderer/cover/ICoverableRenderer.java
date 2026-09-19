@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
@@ -46,6 +46,10 @@ public interface ICoverableRenderer {
         Map<Direction, ModelData> coverModelData = modelData.get(GTModelProperties.COVER_MODEL_DATA);
         double thickness = coverable.getCoverPlateThickness();
 
+        if (thickness <= 0) {
+            removeOpaqueFullBlockFacadeBacking(quads, coverable, pos, level, coverModelData);
+        }
+
         byte coverMask = 0;
         for (Direction face : GTUtil.DIRECTIONS) {
             if (coverable.hasCover(face)) {
@@ -64,14 +68,7 @@ public interface ICoverableRenderer {
                     cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
                 // All faces are slightly under a full block's size to never show the beginning of
                 // the second row of pixels of the block's texture and to combat Z-fighting.
-                AABB cube = switch (face) {
-                    case DOWN -> StaticFaceBakery.COVER_OVERLAY.setMaxY(thickness);
-                    case UP -> StaticFaceBakery.COVER_OVERLAY.setMinY(1.0 - thickness);
-                    case NORTH -> StaticFaceBakery.COVER_OVERLAY.setMaxZ(thickness);
-                    case SOUTH -> StaticFaceBakery.COVER_OVERLAY.setMinZ(1.0 - thickness);
-                    case WEST -> StaticFaceBakery.COVER_OVERLAY.setMaxX(thickness);
-                    case EAST -> StaticFaceBakery.COVER_OVERLAY.setMinX(1.0 - thickness);
-                };
+                var cube = StaticFaceBakery.createFaceCube(face, thickness);
 
                 if (side == null) { // render back
                     quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0], true));
@@ -84,8 +81,41 @@ public interface ICoverableRenderer {
             ModelData coverData = coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) :
                     ModelData.EMPTY;
             ChunkRenderTypeSet coverRenderTypes = coverRenderer.getRenderTypes(cover, pos, level, rand, coverData);
+            if (thickness <= 0 && cover instanceof FacadeCover facade &&
+                    FacadeCoverRenderer.rendersDynamically(facade, coverRenderTypes)) {
+                continue;
+            }
             if (renderType == null || coverRenderTypes.contains(renderType)) {
                 coverRenderer.renderCover(quads, side, rand, cover, pos, level, coverData, renderType);
+            }
+        }
+    }
+
+    private static void removeOpaqueFullBlockFacadeBacking(List<BakedQuad> quads, ICoverable coverable, BlockPos pos,
+                                                           BlockAndTintGetter level,
+                                                           @Nullable Map<Direction, ModelData> coverModelData) {
+        EnumSet<Direction> opaqueFacadeFaces = EnumSet.noneOf(Direction.class);
+        for (Direction face : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = coverable.getCoverAtSide(face);
+            if (!(cover instanceof FacadeCover facade)) continue;
+
+            RandomSource rand = RandomSource.create(facade.getFacadeState().getSeed(pos));
+            ModelData coverData = coverModelData != null ?
+                    coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY;
+            ChunkRenderTypeSet facadeRenderTypes = cover.getCoverRenderer().get()
+                    .getRenderTypes(cover, pos, level, rand, coverData);
+            if (FacadeCoverRenderer.occludesFullBlockFace(facade, facadeRenderTypes)) {
+                opaqueFacadeFaces.add(face);
+            }
+        }
+
+        if (opaqueFacadeFaces.isEmpty()) return;
+
+        ListIterator<BakedQuad> iterator = quads.listIterator();
+        while (iterator.hasNext()) {
+            BakedQuad quad = iterator.next();
+            if (opaqueFacadeFaces.contains(quad.getDirection())) {
+                iterator.remove();
             }
         }
     }
@@ -94,8 +124,13 @@ public interface ICoverableRenderer {
     default void renderDynamicCovers(MetaMachine machine, float partialTick, PoseStack poseStack,
                                      MultiBufferSource buffer, int packedLight, int packedOverlay) {
         ICoverable coverable = machine.getCoverContainer();
+        boolean fullBlockHolder = coverable.getCoverPlateThickness() <= 0;
         for (Direction face : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(face);
+            if (fullBlockHolder && cover instanceof FacadeCover facade) {
+                FacadeCoverRenderer.INSTANCE.renderDynamicFullBlockFacade(facade, machine.getBlockPos(),
+                        machine.getLevel(), poseStack, buffer, packedOverlay);
+            }
             IDynamicCoverRenderer renderer = cover != null ? cover.getDynamicRenderer().get() : null;
             if (renderer != null) {
                 poseStack.pushPose();
@@ -124,6 +159,10 @@ public interface ICoverableRenderer {
             // noinspection DataFlowIssue
             ChunkRenderTypeSet renderTypes = cover.getCoverRenderer().get()
                     .getRenderTypes(cover, pos, level, rand, coverModelData.get(side));
+            if (coverable.getCoverPlateThickness() <= 0 && cover instanceof FacadeCover facade &&
+                    FacadeCoverRenderer.rendersDynamically(facade, renderTypes)) {
+                continue;
+            }
             renderTypeSets.add(renderTypes);
         }
 

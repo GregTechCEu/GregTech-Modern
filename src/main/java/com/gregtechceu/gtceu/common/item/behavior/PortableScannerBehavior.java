@@ -108,7 +108,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 player.sendSystemMessage(line);
             }
 
-            GTSoundEntries.PORTABLE_SCANNER.play(level, null, player.position(), 1.0f, 1.0f);
+            GTSoundEntries.PORTABLE_SCANNER.value().play(level, null, player.position(), 1.0f, 1.0f);
 
             return InteractionResult.CONSUME;
         }
@@ -461,13 +461,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             list.add(Component.translatable("behavior.portable_scanner.divider"));
             list.add(Component.literal("Save data"));
-            list.add(NbtUtils.toPrettyComponent(
-                    syncBlockEntity.getSyncDataHolder().serializeNBT(level.registryAccess(), false)));
-
-            list.add(Component.translatable("behavior.portable_scanner.divider"));
-            list.add(Component.literal("Update packet"));
-            list.add(NbtUtils.toPrettyComponent(
-                    syncBlockEntity.getSyncDataHolder().serializeNBT(level.registryAccess(), true, true)));
+            nbtFormat(list, syncBlockEntity.getSyncDataHolder().serializeNBT(level.registryAccess()));
         }
 
         return energyCost;

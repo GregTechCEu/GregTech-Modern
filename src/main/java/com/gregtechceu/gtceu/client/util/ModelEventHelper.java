@@ -153,8 +153,8 @@ public class ModelEventHelper {
             for (ResourceLocation location : atlas.getTextures().keySet()) {
                 var sec = TextureMetadataHelper.getMetadataFromRelativeLocation(location);
                 sec.ifPresent(section -> {
-                    if (section.connectionTexture() != null) {
-                        TextureAtlasSprite ctmSprite = atlas.getSprite(section.connectionTexture());
+                    if (section.connectionTexture().isPresent()) {
+                        TextureAtlasSprite ctmSprite = atlas.getSprite(section.connectionTexture().get());
                         CTM_SPRITE_CACHE.put(location, ctmSprite);
                     }
                 });
@@ -168,10 +168,6 @@ public class ModelEventHelper {
         ModelEventHelper.registerBakeEventListener(false, (mrl, baked, rootModel, modelBakery) -> {
             if (baked.isCustomRenderer()) {
                 // Nothing we can add to builtin models
-                return baked;
-            }
-            // do not register automatic CTM for machine models, they handle it themselves
-            if (baked instanceof MachineModel) {
                 return baked;
             }
 

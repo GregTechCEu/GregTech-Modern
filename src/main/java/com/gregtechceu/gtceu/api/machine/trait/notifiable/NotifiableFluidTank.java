@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
@@ -112,7 +112,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
     }
 
     @Override
-    public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
+    public List<SizedFluidIngredient> handleRecipeInner(IO io, @Nullable GTRecipe recipe,
                                                         List<SizedFluidIngredient> left,
                                                         boolean simulate) {
         if (io != handlerIO) return left;
@@ -192,11 +192,30 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
                         if (!drained.isEmpty()) {
                             visited[tank] = drained.copyWithAmount(count - drained.getAmount());
                             changed = true;
+                            if (!simulate) {
+                                FluidStack copied = drained.copy();
+                                if (getMachine() instanceof MultiblockPartMachine partMachine) {
+                                    for (MultiblockControllerMachine controller : partMachine.getControllers()) {
+                                        RecipeLogic logic = controller.getTrait(RecipeLogic.class);
+                                        if (logic != null && logic.getStartingRecipe() == recipe) {
+                                            logic.getConsumedInputs().addConsumedInput(FluidRecipeCapability.CAP,
+                                                    SizedFluidIngredient.of(copied));
+                                        }
+                                    }
+                                } else {
+                                    getMachine().getTraitOptional(RecipeLogic.class)
+                                            .map(RecipeLogic::getConsumedInputs)
+                                            .ifPresent(inputs -> inputs.addConsumedInput(FluidRecipeCapability.CAP,
+                                                    SizedFluidIngredient.of(copied)));
+                                }
+                            }
                         }
                         amount -= drained.getAmount();
                     }
                 } else { // IO.OUT && allow same fluids
-                    FluidStack output = fluids[0].copyWithAmount(amount);
+                    FluidStack output = fluids[0].copy();
+                    if (recipe != null) recipe.mutateOutput(output);
+                    output.setAmount(amount);
                     if (visited[tank] == null || FluidStack.isSameFluidSameComponents(visited[tank], output)) {
                         if (count < storages[tank].getCapacity()) {
                             int filled = storages[tank].fill(output, action);

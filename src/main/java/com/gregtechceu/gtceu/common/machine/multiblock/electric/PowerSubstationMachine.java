@@ -460,6 +460,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 maximums[i] = batteries.get(i).getCapacity();
             }
             capacity = summarize(maximums);
+            index = 0;
         }
 
         public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag storageTag) {
@@ -474,6 +475,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 maximums[i] = subtag.getLong(NBT_MAX);
             }
             capacity = summarize(maximums);
+            index = 0;
+            for (int i = 0; i < size; i++) {
+                if (storage[i] > 0) index = i;
+            }
         }
 
         public CompoundTag serializeNBT(HolderLookup.Provider lookup) {

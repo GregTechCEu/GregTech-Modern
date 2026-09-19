@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredientType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -11,9 +12,9 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class GTIngredientTypes {
 
-    public static final DeferredRegister<IngredientType<?>> ITEM_INGREDIENT_TYPES = DeferredRegister
+    private static final DeferredRegister<IngredientType<?>> ITEM_INGREDIENT_TYPES = DeferredRegister
             .create(NeoForgeRegistries.INGREDIENT_TYPES, GTCEu.MOD_ID);
-    public static final DeferredRegister<FluidIngredientType<?>> FLUID_INGREDIENT_TYPES = DeferredRegister
+    private static final DeferredRegister<FluidIngredientType<?>> FLUID_INGREDIENT_TYPES = DeferredRegister
             .create(NeoForgeRegistries.FLUID_INGREDIENT_TYPES, GTCEu.MOD_ID);
 
     public static final DeferredHolder<IngredientType<?>, IngredientType<IntCircuitIngredient>> INT_CIRCUIT_INGREDIENT = ITEM_INGREDIENT_TYPES
@@ -33,4 +34,9 @@ public class GTIngredientTypes {
 
     public static final DeferredHolder<FluidIngredientType<?>, FluidIngredientType<IntProviderFluidIngredient>> INT_PROVIDER_FLUID_INGREDIENT = FLUID_INGREDIENT_TYPES
             .register("int_provider", () -> new FluidIngredientType<>(IntProviderFluidIngredient.CODEC));
+
+    public static void init(IEventBus modBus) {
+        ITEM_INGREDIENT_TYPES.register(modBus);
+        FLUID_INGREDIENT_TYPES.register(modBus);
+    }
 }

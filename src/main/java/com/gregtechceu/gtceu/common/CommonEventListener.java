@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
@@ -21,6 +22,8 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -102,9 +105,12 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import com.mojang.datafixers.util.Either;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class CommonEventListener {
@@ -144,18 +150,23 @@ public class CommonEventListener {
 
         for (int i = 0; i < inventory.getSlots(); ++i) {
             ItemStack stack = inventory.getStackInSlot(i);
-            MaterialEntry entry = HazardProperty.getValidHazardMaterial(stack);
-            if (entry.material().isNull()) {
+            Either<Material, MaterialEntry> hazardMaterial = HazardProperty.getValidHazardMaterial(stack);
+            if (hazardMaterial == null) {
                 continue;
             }
-            HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+            var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+            HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+
             if (property.hazardTrigger.protectionType().isProtected(player)) {
                 // entity has proper safety equipment, so damage it per material every 5 seconds.
                 property.hazardTrigger.protectionType().damageEquipment(player, 1);
                 // don't progress this material condition if entity is protected
                 continue;
             }
-            tracker.progressRelatedCondition(entry, stack.getCount());
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, stack.getCount()));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, stack.getCount()));
         }
     }
 
@@ -202,13 +213,17 @@ public class CommonEventListener {
         }
         MedicalConditionTracker tracker = GTCapabilityHelper.getMedicalConditionTracker(player);
 
-        MaterialEntry entry = HazardProperty.getValidHazardMaterial(usedItem);
-        if (entry.material().isNull()) {
+        var hazardMaterial = HazardProperty.getValidHazardMaterial(usedItem);
+        if (hazardMaterial == null) {
             return;
         }
-        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
+
+        var material = hazardMaterial.map(UnaryOperator.identity(), MaterialEntry::material);
+
+        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
         if (property.hazardTrigger == HazardProperty.HazardTrigger.CONSUMPTION) {
-            tracker.progressRelatedCondition(entry, 1);
+            hazardMaterial.ifLeft(m -> tracker.progressRelatedCondition(m, 1));
+            hazardMaterial.ifRight(m -> tracker.progressRelatedCondition(m, 1));
         }
     }
 
@@ -502,6 +517,14 @@ public class CommonEventListener {
         if (!stack.has(GTDataComponents.DATA_COPY_POS)) {
             stack.addToTooltip(GTDataComponents.RESEARCH_ITEM, event.getContext(),
                     event::addTooltipLines, event.getContext().flag());
+        }
+        if (stack.has(GTDataComponents.SPOILABLE)) {
+            ISpoilableItem spoilable = stack.getCapability(GTCapability.CAPABILITY_SPOILABLE_ITEM);
+            if (spoilable instanceof IAddInformation tooltipProvider) {
+                List<Component> tmp = new ArrayList<>();
+                tooltipProvider.appendHoverText(stack, event.getContext(), tmp, event.getContext().flag());
+                event.addTooltipLines(tmp.toArray(Component[]::new));
+            }
         }
     }
 

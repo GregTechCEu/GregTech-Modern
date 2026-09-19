@@ -29,6 +29,9 @@ public class ResourceReloadDetector {
         if (!ConfigHolder.INSTANCE.dev.autoRebuildResources || !GTCEu.isDev() || gradleDir == null) {
             return reloadFuture.get();
         }
+
+        Minecraft.getInstance().player.sendSystemMessage(Component.translatable("gtceu.debug.resource_rebuild.start"));
+
         ProcessBuilder builder = switch (Util.getPlatform()) {
             case WINDOWS -> new ProcessBuilder("cmd.exe", "/c", "gradlew.bat", ":processResources");
             default -> new ProcessBuilder("./gradlew", ":processResources");
@@ -43,12 +46,12 @@ public class ResourceReloadDetector {
             GTCEu.LOGGER.error("Message the GTCEu developers about this!");
             return reloadFuture.get();
         }
-        Minecraft.getInstance().player.sendSystemMessage(Component.translatable("gtceu.debug.resource_rebuild.start"));
+
         Instant start = Instant.now();
         // wait for the resource reload to finish, then send chat message, then let MC actually reload resources
         return process.toHandle().onExit()
                 .thenRun(() -> Minecraft.getInstance().player
-                        .sendSystemMessage(Component.translatable("gtceu.debug.resource_rebuild.done",
+                        .sendSystemMessage(Component.translatableEscape("gtceu.debug.resource_rebuild.done",
                                 Duration.between(start, Instant.now()))))
                 .thenCompose($ -> reloadFuture.get());
     }

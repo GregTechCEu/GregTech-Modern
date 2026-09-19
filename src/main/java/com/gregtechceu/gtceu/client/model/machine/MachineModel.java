@@ -7,12 +7,15 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
+import com.gregtechceu.gtceu.client.model.FaceLayer;
+import com.gregtechceu.gtceu.client.model.FaceLayerCompositor;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.TextureOverrideModel;
 import com.gregtechceu.gtceu.client.model.ctm.CTMMeshBuilder;
 import com.gregtechceu.gtceu.client.model.machine.multipart.MultiPartBakedModel;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
@@ -246,13 +249,15 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             postTransform = UnbakedGeometryHelper.applyRootTransform(modelState, rootTransform);
         }
 
+        boolean blockRender = modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS);
         List<BakedQuad> quads;
-        if (modelData.has(GTModelProperties.LEVEL) && modelData.has(GTModelProperties.POS)) {
+        if (blockRender) {
             quads = getMachineQuads(state, side, rand, modelData, renderType);
         } else {
             // if it doesn't have either of those properties, we're rendering an item.
             quads = renderMachine(null, null, null, state, side, rand, modelData, renderType);
         }
+        FaceLayerCompositor.compose(quads);
         postTransform.processInPlace(quads);
         return quads;
     }
@@ -269,25 +274,29 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             return quads;
         }
 
-        // render output overlays
-        var outputTrait = machine.getTrait(AutoOutputTrait.class);
-        if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
-            var itemFace = outputTrait.getItemOutputDirection();
-            if (itemFace != null && side == itemFace) {
-                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (outputTrait.isAutoOutputItems()) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            itemOutputOverlaySprite));
+        if (renderType == null || renderType == RenderType.solid()) {
+            // render output overlays
+            var outputTrait = machine.getTrait(AutoOutputTrait.class);
+            if (outputTrait != null && outputTrait.supportsAutoOutputItems()) {
+                var itemFace = outputTrait.getItemOutputDirection();
+                if (itemFace != null && side == itemFace) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite)
+                            .gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
+                    if (outputTrait.isAutoOutputItems()) {
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                                itemOutputOverlaySprite).gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
+                    }
                 }
             }
-        }
-        if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
-            var fluidFace = outputTrait.getFluidOutputDirection();
-            if (fluidFace != null && side == fluidFace) {
-                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite));
-                if (outputTrait.isAutoOutputFluids()) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
-                            fluidOutputOverlaySprite));
+            if (outputTrait != null && outputTrait.supportsAutoOutputFluids()) {
+                var fluidFace = outputTrait.getFluidOutputDirection();
+                if (fluidFace != null && side == fluidFace) {
+                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.OUTPUT_OVERLAY, side, pipeOverlaySprite)
+                            .gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
+                    if (outputTrait.isAutoOutputFluids()) {
+                        quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.AUTO_OUTPUT_OVERLAY, side,
+                                fluidOutputOverlaySprite).gtceu$setFaceLayer(FaceLayer.MACHINE_FACE));
+                    }
                 }
             }
         }
@@ -316,8 +325,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             quads = replacePartBaseModel(quads, part, machine.getFrontFacing(), side, rand, modelData, renderType);
         }
 
-        // we have to recalculate CTM ourselves.
-        // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
+        // we have to recalculate CTM ourselves
         if (level != null && pos != null && blockState != null && side != null) {
             return CTMMeshBuilder.buildCTMQuads(level, pos, blockState, quads, side);
         }
@@ -332,7 +340,11 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                     side, rand, modelData, renderType));
         }
         if (modelsByState.containsKey(renderState)) {
-            quads.addAll(modelsByState.get(renderState).getQuads(blockState, side, rand, modelData, renderType));
+            BakedModel model = modelsByState.get(renderState);
+            if (renderType == null || blockState == null ||
+                    model.getRenderTypes(blockState, rand, modelData).contains(renderType)) {
+                quads.addAll(model.getQuads(blockState, side, rand, modelData, renderType));
+            }
         }
     }
 
@@ -490,6 +502,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public boolean shouldRender(MetaMachine machine, Vec3 cameraPos) {
         if (machine.getDefinition() != getDefinition()) return false;
         if (machine.getCoverContainer().hasDynamicCovers()) return true;
+        if (FacadeCoverRenderer.hasDynamicFullBlockFacade(machine)) return true;
         if (dynamicRenders.isEmpty()) return false;
 
         for (DynamicRender model : dynamicRenders) {

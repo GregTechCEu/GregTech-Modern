@@ -176,7 +176,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                     pipeTile.setConnection(facing, true, false);
                 if (open && !canConnect)
                     pipeTile.setConnection(facing, false, false);
-                updateActiveNodeStatus(pipeTile.getLevel(), pos, pipeTile);
+                updateActiveNodeStatus((Level) level, pos, pipeTile);
             }
             PipeNet<NodeDataType> net = pipeTile.getPipeNet();
             if (net != null) {
@@ -206,7 +206,11 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     protected void onActiveModeChange(Level world, BlockPos pos, boolean isActiveNow, boolean isInitialChange) {}
 
     public boolean canConnect(IPipeNode<PipeType, NodeDataType> selfTile, Direction facing) {
-        if (selfTile.getLevel().getBlockState(selfTile.getBlockPos().relative(facing)).getBlock() == Blocks.AIR)
+        Level level = selfTile.self().getLevel();
+        BlockPos pos = selfTile.self().getBlockPos();
+        if (level == null) return false;
+
+        if (level.getBlockState(pos.relative(facing)).isAir())
             return false;
         CoverBehavior cover = selfTile.getCoverContainer().getCoverAtSide(facing);
         if (cover != null && !cover.canPipePassThrough()) {
@@ -219,7 +223,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 return false;
             return canPipesConnect(selfTile, facing, (IPipeNode<PipeType, NodeDataType>) other);
         }
-        return canPipeConnectToBlock(selfTile, facing, selfTile.getLevel(), selfTile.getBlockPos().relative(facing));
+        return canPipeConnectToBlock(selfTile, facing, selfTile.self().getLevel(),
+                selfTile.self().getBlockPos().relative(facing));
     }
 
     public abstract boolean canPipesConnect(IPipeNode<PipeType, NodeDataType> selfTile, Direction side,
@@ -321,7 +326,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return ItemInteractionResult.FAIL;
         }
 
-        if (pipeBlockEntity.getFrameMaterial().isNull() && pipeType.getThickness() < 1) {
+        if (pipeBlockEntity.getFrameMaterial() == null && pipeType.getThickness() < 1) {
             var frameBlock = MaterialBlock.getFrameboxFromItem(stack);
             if (frameBlock != null) {
                 pipeBlockEntity.setFrameMaterial(frameBlock.material);
@@ -372,7 +377,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (!pipeNode.getFrameMaterial().isNull()) {
+        if (pipeNode.getFrameMaterial() != null) {
             BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS
                     .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
                     .getDefaultState();
@@ -384,16 +389,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         var pipeNode = getPipeTile(level, pos);
-        if (pipeNode != null && !pipeNode.getFrameMaterial().isNull()) {
-            return false;
-        }
-        return false;
+        return pipeNode != null && pipeNode.getFrameMaterial() != null;
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         var pipeNode = getPipeTile(level, pos);
-        if (pipeNode != null && !pipeNode.getFrameMaterial().isNull()) {
+        if (pipeNode != null && pipeNode.getFrameMaterial() != null) {
             return MaterialBlock.FRAME_COLLISION_BOX;
         }
         return super.getCollisionShape(state, level, pos, context);
@@ -406,7 +408,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         if (pipeNode == null) {
             return getShapes(connections);
         }
-        if (!pipeNode.getFrameMaterial().isNull()) {
+        if (pipeNode.getFrameMaterial() != null) {
             return Shapes.block();
         }
         connections = pipeNode.getVisualConnections();
@@ -471,7 +473,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         BlockEntity blockEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (blockEntity instanceof IPipeNode<?, ?> pipeTile) {
-            if (!pipeTile.getFrameMaterial().isNull()) {
+            if (pipeTile.getFrameMaterial() != null) {
                 drops.addAll(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial())
                         .getDefaultState().getDrops(builder));
             }

@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -41,7 +40,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     protected IO handlerIO;
     @Getter
     @SaveField
-    @SyncToClient
     protected long energyStored;
     @Getter
     private long energyCapacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage;
@@ -141,7 +139,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             energyOutputPerSec += this.energyStored - energyStored;
         }
         this.energyStored = energyStored;
-        syncDataHolder.markClientSyncFieldDirty("energyStored");
         checkOutputSubscription();
         notifyListeners();
     }

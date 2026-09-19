@@ -43,6 +43,19 @@ public class ModelBlockRendererMixin {
         }
     }
 
+    // also capture renderModel(), which is used for dynamic block model rendering among other things
+    @WrapMethod(method = "renderModel(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/client/resources/model/BakedModel;FFFIILnet/neoforged/neoforge/client/model/data/ModelData;Lnet/minecraft/client/renderer/RenderType;)V",
+                remap = false)
+    private void gtceu$copyBloomQuads$1(PoseStack.Pose pose, VertexConsumer consumer, BlockState state,
+                                        BakedModel model, float red, float green, float blue,
+                                        int packedLight, int packedOverlay, ModelData modelData, RenderType renderType,
+                                        Operation<Void> original) {
+        try (var $ = gtceu$currentRenderType.with(renderType)) {
+            original.call(pose, consumer, state, model, red, green, blue, packedLight, packedOverlay,
+                    modelData, renderType);
+        }
+    }
+
     // The arguments don't have locals, so there's no good way to capture them except a @WarpWith(Condition) injector
     @WrapOperation(method = "putQuadData",
                    at = @At(value = "INVOKE",

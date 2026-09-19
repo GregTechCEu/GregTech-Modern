@@ -183,7 +183,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (first == null || !handleSpecialBlockEntities(first, maxBlocksToRecolor, context)) {
             handleBlocks(pos, maxBlocksToRecolor, context);
         }
-        GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
+        GTSoundEntries.SPRAY_CAN_TOOL.value().play(level, null, player.position(), 1.0f, 1.0f);
         return InteractionResult.SUCCESS;
     }
 
@@ -226,7 +226,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             }
         } else if (first instanceof IPipeNode pipe) {
             var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, pipe,
-                    first.getLevel(), IPipeNode::getBlockPos,
+                    first.getLevel(), (p) -> p.self().getBlockPos(),
                     gtPipePredicate, limit, limit * 6);
             paintPaintables(collected, context);
         } else if (first instanceof IPaintable paintable) {

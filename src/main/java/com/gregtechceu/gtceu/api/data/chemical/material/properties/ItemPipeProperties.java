@@ -43,9 +43,7 @@ public class ItemPipeProperties implements IMaterialProperty {
     }
 
     /**
-     * Retrieve the transfer rate of the item pipe
-     *
-     * @return The transfer rate of the item pipe
+     * {@return the transfer rate of the item pipe in stacks/second}
      */
     public float getTransferRate() {
         return transferRate;
@@ -54,10 +52,10 @@ public class ItemPipeProperties implements IMaterialProperty {
     /**
      * Sets the transfer rate of the item pipe
      *
-     * @param transferRate The transfer rate
+     * @param stacksPerSec The transfer rate
      */
-    public void setTransferRate(float transferRate) {
-        this.transferRate = transferRate;
+    public void setTransferRate(float stacksPerSec) {
+        this.transferRate = stacksPerSec;
     }
 
     @Override

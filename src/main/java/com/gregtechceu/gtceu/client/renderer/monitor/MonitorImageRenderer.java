@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.monitor;
 
-import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.ClientImageCache;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -10,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
+import brachy.modularui.utils.MUIRenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
@@ -35,7 +35,7 @@ public class MonitorImageRenderer implements IMonitorRenderer {
         ResourceLocation textureId = ClientImageCache.getOrLoadTexture(url);
         if (textureId == null) return;
 
-        VertexConsumer consumer = buffer.getBuffer(GTRenderTypes.guiTexture(textureId));
+        VertexConsumer consumer = buffer.getBuffer(MUIRenderTypes.guiTexture(textureId));
         Matrix4f pose = poseStack.last().pose();
 
         float minX = 0, maxX = size.getX();

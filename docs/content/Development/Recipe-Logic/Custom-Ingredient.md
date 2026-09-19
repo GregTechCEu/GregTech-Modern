@@ -132,7 +132,7 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
     public final static BonkRecipeCapability CAP = new BonkRecipeCapability();
 
     protected BonkRecipeCapability() {
-        super(new ResourceLocation("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
+        super(ResourceLocation.fromNamespaceAndPath("MOD_ID", "bonk"), 0x777777, false, 5, BonkIngredient.Serializer.INSTANCE);
     }
 
     @Override
@@ -300,10 +300,10 @@ public class BonkMachines {
                 var abilities = Predicates.autoAbilities(definition.getRecipeTypes())
                         .and(Predicates.autoAbilities(true, false, false))
                         .and(Predicates.abilities(BonkPartAbilities.BONK_HATCH));
-                return FactoryBlockPattern.start()
-                        .aisle("XXX", "XCX", "XXX")
-                        .aisle("XCX", "CPC", "XCX")
-                        .aisle("XXX", "XSX", "XXX")
+                return MultiblockPatternBuilder.start()
+                        .slice("XXX", "XSX", "XXX")
+                        .slice("XCX", "CPC", "XCX")
+                        .slice("XXX", "XCX", "XXX")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('X', casing.and(abilities))
                         .where('P', blocks(CASING_POLYTETRAFLUOROETHYLENE_PIPE.get()))
@@ -331,7 +331,7 @@ public class BonkPartAbilities {
 ## Creating the RecipeType
 ```java title="BonkRecipeTypes.java"
 public class BonkRecipeTypes {
-    public static final GTRecipeType LARGE_BONK_RECIPES = register("large_bonk_reactor", MULTIBLOCK)
+    public static final GTRecipeType LARGE_BONK_RECIPES = register(AddonMod.id("large_bonk_reactor"), MULTIBLOCK)
             .setMaxIOSize(3, 3, 5, 4)
             .setMaxSize(IO.IN, BonkRecipeCapability.CAP, 1)
             .setEUIO(IO.IN);
@@ -381,13 +381,11 @@ The following parts, you would do in your main java class and your main GTAddon 
 ```java title="Bonk.java"
 @Mod(Bonk.MOD_ID)
 public class Bonk {
-    // ...
-    private void registerRecipeTypes(GTCEuAPI.RegisterEvent<ResourceLocation, GTRecipeType> event) {
-        BonkRecipeTypes.init();
-    }
 
-    private void registerMachines(GTCEuAPI.RegisterEvent<ResourceLocation, MachineDefinition> event) {
+    public BonkMod(IEventBus modBus) {
+        BonkRecipeTypes.init();
         BonkMachines.init();
+        BonkRecipeCapabilities.init();
     }
 }
 ```
@@ -403,11 +401,6 @@ public class BonkGTAddon implements IGTAddon {
     @Override
     public void addRecipes(Consumer<FinishedRecipe> provider) {
         BonkRecipes.init(provider);
-    }
-
-    @Override
-    public void registerRecipeCapabilities() {
-        BonkRecipeCapabilities.init();
     }
 }
 

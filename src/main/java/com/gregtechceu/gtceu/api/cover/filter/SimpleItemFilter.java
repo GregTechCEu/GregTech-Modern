@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -30,12 +34,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter extends Filter<ItemStack> {
 
+    // spotless:off
     public static final Codec<SimpleItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("is_blacklist").forGetter(val -> val.isBlackList),
             Codec.BOOL.fieldOf("ignore_components").forGetter(val -> val.ignoreNbt),
             ItemStack.OPTIONAL_CODEC.listOf().fieldOf("matches").forGetter(val -> Arrays.stream(val.matches).toList()))
-            .apply(instance, SimpleItemFilter::new));
-
+    .apply(instance, SimpleItemFilter::new));
+    //spotless:on
     @Getter
     protected boolean isBlackList;
     @Getter
@@ -44,7 +49,7 @@ public class SimpleItemFilter extends Filter<ItemStack> {
     protected ItemStack[] matches = new ItemStack[9];
 
     @Getter
-    protected int maxStackSize;
+    protected int maxStackSize = TransferMode.MAX_SIZE_STACK;
 
     public SimpleItemFilter() {
         Arrays.fill(matches, ItemStack.EMPTY);
@@ -55,6 +60,19 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         this.isBlackList = isBlackList;
         this.ignoreNbt = ignoreNbt;
         this.matches = matches.toArray(ItemStack[]::new);
+    }
+
+    public static SimpleItemFilter forItems(boolean ignoreNbt, ItemStack... items) {
+        SimpleItemFilter filter = new SimpleItemFilter(false, ignoreNbt, List.of(GTItems.ITEM_FILTER.asStack()));
+        int i = 0;
+        for (ItemStack item : items) {
+            filter.matches[i] = item.copy();
+            ISpoilableItem spoilable = GTCapabilityHelper.getSpoilable(filter.matches[i]);
+            if (spoilable != null) spoilable.freezeSpoiling();
+            i++;
+        }
+        filter.updateAndSaveFilter();
+        return filter;
     }
 
     @Override
@@ -120,7 +138,7 @@ public class SimpleItemFilter extends Filter<ItemStack> {
 
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return 1;
+            return TransferMode.MAX_SIZE_STACK;
         }
 
         @Override
@@ -139,7 +157,7 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         @Override
         public void setStackInSlot(int slot, ItemStack stack) {
             super.setStackInSlot(slot, stack);
-            matches[slot] = stack.copyWithCount(1);
+            matches[slot] = stack.copy();
             filter.updateAndSaveFilter();
         }
     }
