@@ -29,10 +29,10 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.neoforge.items.IItemHandler;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -129,7 +129,8 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        ModuleContext moduleData = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV].value(), ItemStack.EMPTY, false);
+        ModuleContext moduleData = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV].value(), ItemStack.EMPTY,
+                false);
         if (moduleData == null) {
             helper.fail("Module was null after attaching");
             return;
@@ -217,7 +218,8 @@ public class ModularItemTest {
         IElectricItem bufferBatteryElectricItem = GTCapabilityHelper.getElectricItem(bufferBattery);
         assert bufferBatteryElectricItem != null;
 
-        var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV].value(), GTItems.SENSOR_LuV.asStack(), false);
+        var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV].value(),
+                GTItems.SENSOR_LuV.asStack(), false);
         modular.attach(GTItemModules.BATTERY.value(), GTItems.BATTERY_MV_LITHIUM.asStack(), false);
 
         assert wirelessModule != null;

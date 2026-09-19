@@ -2236,7 +2236,8 @@ public class GTItems {
     }
 
     @SuppressWarnings("removal")
-    public static <I extends Item, S2 extends ItemBuilder<I, GTRegistrate>> NonNullFunction<S2, S2> addArmorClientExtensions() {
+    public static <I extends Item,
+            S2 extends ItemBuilder<I, GTRegistrate>> NonNullFunction<S2, S2> addArmorClientExtensions() {
         return builder -> {
             builder.clientExtension(item -> () -> () -> new IClientItemExtensions() {
 

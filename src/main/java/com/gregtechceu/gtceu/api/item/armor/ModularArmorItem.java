@@ -16,10 +16,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,7 +84,8 @@ public class ModularArmorItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag tooltipFlag) {
         for (IItemComponent component : components) {
             if (component instanceof IAddInformation addInformation) {
                 addInformation.appendHoverText(stack, context, tooltipComponents, tooltipFlag);

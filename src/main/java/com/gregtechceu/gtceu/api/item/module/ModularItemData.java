@@ -14,7 +14,7 @@ import java.util.List;
 @Accessors(fluent = true)
 public class ModularItemData {
 
-    //spotless:off
+    // spotless:off
     public static final Codec<ModularItemData> DATA_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(ModuleData.DISPATCH_CODEC).fieldOf("modules").forGetter(ModularItemData::getModules)
     ).apply(instance, ModularItemData::new));
@@ -29,7 +29,7 @@ public class ModularItemData {
 
     public ModularItemData(List<ModuleData> modules) {
         Int2ObjectMap<ModuleData> map = new Int2ObjectArrayMap<>();
-        for (var module: modules) {
+        for (var module : modules) {
             map.put(module.getSlot(), module);
         }
         moduleMap = Int2ObjectMaps.unmodifiable(map);
@@ -49,7 +49,7 @@ public class ModularItemData {
 
     public Int2ObjectMap<ModuleData> copyData() {
         Int2ObjectMap<ModuleData> newModules = new Int2ObjectArrayMap<>();
-        for (var entry: moduleMap.int2ObjectEntrySet()) {
+        for (var entry : moduleMap.int2ObjectEntrySet()) {
             newModules.put(entry.getIntKey(), entry.getValue().copy());
         }
         return newModules;
@@ -70,7 +70,8 @@ public class ModularItemData {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ModularItemData modularItemData) {
-            return moduleMap.size() == modularItemData.moduleMap.size() && moduleMap.int2ObjectEntrySet().stream().allMatch(v -> v.getValue().equals(modularItemData.moduleMap.get(v.getIntKey())));
+            return moduleMap.size() == modularItemData.moduleMap.size() && moduleMap.int2ObjectEntrySet().stream()
+                    .allMatch(v -> v.getValue().equals(modularItemData.moduleMap.get(v.getIntKey())));
         }
         return super.equals(obj);
     }

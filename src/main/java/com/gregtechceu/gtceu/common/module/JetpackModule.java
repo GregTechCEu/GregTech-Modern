@@ -15,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -62,7 +61,9 @@ public class JetpackModule extends ArmorLogicItemModule implements ITieredItemMo
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
                 .bool(Text.lang("metaarmor.hud.hover_mode"),
-                        () -> moduleContext.getAppliedTo().getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).hover(),
-                        b -> moduleContext.getAppliedTo().update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY, v -> v.setHover(b)));
+                        () -> moduleContext.getAppliedTo().getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY)
+                                .hover(),
+                        b -> moduleContext.getAppliedTo().update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY,
+                                v -> v.setHover(b)));
     }
 }

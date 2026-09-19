@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -12,13 +11,14 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -54,7 +54,8 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
 
         var modifiers = moduleContext.getAppliedTo().get(DataComponents.ATTRIBUTE_MODIFIERS);
         if (modifiers == null) modifiers = new ItemAttributeModifiers(List.of(), true);
-        modifiers = modifiers.withModifierAdded(getAttribute(moduleContext), attributeModifier, EquipmentSlotGroup.bySlot(getSlot(moduleContext.getAppliedTo())));
+        modifiers = modifiers.withModifierAdded(getAttribute(moduleContext), attributeModifier,
+                EquipmentSlotGroup.bySlot(getSlot(moduleContext.getAppliedTo())));
         moduleContext.getAppliedTo().set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
 
         moduleContext.setData(moduleContext.getData(TieredAttributeModuleData.class));

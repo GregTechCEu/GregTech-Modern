@@ -34,7 +34,6 @@ public interface IModularItem {
     @Nullable
     ModuleContext attach(ItemModule module, ItemStack itemToApply, boolean simulate);
 
-
     void detach(ModuleContext data);
 
     void detach(int slot);

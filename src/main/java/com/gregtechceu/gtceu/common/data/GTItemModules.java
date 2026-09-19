@@ -6,10 +6,11 @@ import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.module.*;
-
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.resources.ResourceLocation;
+
+import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import java.util.Locale;
 import java.util.function.BiFunction;
@@ -45,14 +46,17 @@ public class GTItemModules {
     public static final RegistryEntry<ItemModule, FluidStorageModule> FLUID_STORAGE = register(GTCEu.id("fluid_storage"), FluidStorageModule::new);
     // spotless:on
 
-    private static <T extends ItemModule> RegistryEntry<ItemModule, T> register(ResourceLocation id, Function<ResourceLocation, T> factory) {
+    private static <T extends ItemModule> RegistryEntry<ItemModule, T> register(ResourceLocation id,
+                                                                                Function<ResourceLocation, T> factory) {
         return GTRegistration.REGISTRATE.simple(id.getPath(), GTRegistries.Keys.ITEM_MODULE, () -> factory.apply(id));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends TieredItemModule> RegistryEntry<ItemModule, T>[] registerTiered(GTRegistrate registrate, ResourceLocation id,
-                                                    BiFunction<ResourceLocation, Integer, T> constructor,
-                                                    int... tiers) {
+    public static <
+            T extends TieredItemModule> RegistryEntry<ItemModule, T>[] registerTiered(GTRegistrate registrate,
+                                                                                      ResourceLocation id,
+                                                                                      BiFunction<ResourceLocation, Integer, T> constructor,
+                                                                                      int... tiers) {
         RegistryEntry<ItemModule, T>[] result = new RegistryEntry[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             ResourceLocation resourceLocation = id.withPrefix(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_");
@@ -65,14 +69,17 @@ public class GTItemModules {
         return result;
     }
 
-    public static <T extends TieredItemModule> RegistryEntry<ItemModule, T>[] registerTiered(GTRegistrate registrate, ResourceLocation id,
-                                                    BiFunction<ResourceLocation, Integer, T> constructor) {
+    public static <
+            T extends TieredItemModule> RegistryEntry<ItemModule, T>[] registerTiered(GTRegistrate registrate,
+                                                                                      ResourceLocation id,
+                                                                                      BiFunction<ResourceLocation, Integer, T> constructor) {
         return registerTiered(registrate, id, constructor, GTValues.tiersBetween(GTValues.LV, GTValues.OpV));
     }
 
     private static <T extends TieredItemModule> RegistryEntry<ItemModule, T>[] registerTiered(ResourceLocation id,
-                                                    BiFunction<ResourceLocation, Integer, T> constructor) {
-        return registerTiered(GTRegistration.REGISTRATE, id, constructor, GTValues.tiersBetween(GTValues.LV, GTValues.OpV));
+                                                                                              BiFunction<ResourceLocation, Integer, T> constructor) {
+        return registerTiered(GTRegistration.REGISTRATE, id, constructor,
+                GTValues.tiersBetween(GTValues.LV, GTValues.OpV));
     }
 
     public static void init() {}

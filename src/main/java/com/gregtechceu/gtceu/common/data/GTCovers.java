@@ -125,13 +125,14 @@ public class GTCovers {
 
     @SuppressWarnings("unchecked")
     public static RegistryEntry<CoverDefinition, CoverDefinition>[] registerTiered(GTRegistrate registrate, String id,
-                                                           CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
-                                                           Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
-                                                           int... tiers) {
+                                                                                   CoverDefinition.TieredCoverBehaviourProvider behaviorCreator,
+                                                                                   Supplier<Int2ObjectFunction<ICoverRenderer>> coverRenderer,
+                                                                                   int... tiers) {
         RegistryEntry<CoverDefinition, CoverDefinition>[] covers = new RegistryEntry[GTValues.TIER_COUNT];
-        for (int tier: tiers) {
+        for (int tier : tiers) {
             var name = id + "." + GTValues.VN[tier].toLowerCase();
-            covers[tier] = registrate.cover(name, (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
+            covers[tier] = registrate.cover(name,
+                    (def, coverable, side) -> behaviorCreator.create(def, coverable, side, tier),
                     () -> () -> coverRenderer.get().apply(tier));
         }
         return covers;

@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.ArrayList;
@@ -43,14 +42,16 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(GTCapability.CAPABILITY_MODULAR_ITEM, (s, $) -> new ModularItemStack(s, defaultSlotGetter), item);
-        for (var module: GTRegistries.ITEM_MODULES) {
+        event.registerItem(GTCapability.CAPABILITY_MODULAR_ITEM, (s, $) -> new ModularItemStack(s, defaultSlotGetter),
+                item);
+        for (var module : GTRegistries.ITEM_MODULES) {
             module.attachCapabilities(event, item);
         }
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(player.getItemInHand(usedHand));
         if (modularItem != null) {
             for (ModuleContext module : modularItem.getAllModuleInstances()) {
@@ -100,7 +101,8 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem == null) return;
 

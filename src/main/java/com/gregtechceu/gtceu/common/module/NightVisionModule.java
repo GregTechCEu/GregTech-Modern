@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,9 +17,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
@@ -127,7 +126,7 @@ public class NightVisionModule extends ItemModule {
             super(slot, module, moduleItem, true);
             this.nightVision = false;
             this.toggleTimer = 0;
-            this.nightVisionTimer=  ArmorUtils.NIGHTVISION_DURATION;
+            this.nightVisionTimer = ArmorUtils.NIGHTVISION_DURATION;
         }
 
         public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
@@ -146,7 +145,8 @@ public class NightVisionModule extends ItemModule {
 
         @Override
         public ModuleData copy() {
-            return new NightVisionModuleData(slot, module, moduleItem.copy(), enabled, nightVision, toggleTimer, nightVisionTimer);
+            return new NightVisionModuleData(slot, module, moduleItem.copy(), enabled, nightVision, toggleTimer,
+                    nightVisionTimer);
         }
     }
 }

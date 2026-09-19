@@ -8,12 +8,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
-
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
@@ -28,6 +24,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -116,13 +115,13 @@ public class AutoChargeItemModule extends TieredItemModule {
             PlayerOwner owner = machine.getPlayerOwner();
             Player player = context.getPlayer();
             if (owner == null || player != null && owner.isPlayerFriendly(player.getUUID())) {
-                moduleContext.setData(moduleContext.getData(AutoChargeModuleData.class).withLinkedPos(GlobalPos.of(context.getLevel().dimension(), pos)));
+                moduleContext.setData(moduleContext.getData(AutoChargeModuleData.class)
+                        .withLinkedPos(GlobalPos.of(context.getLevel().dimension(), pos)));
                 if (player != null) player.sendSystemMessage(Component.translatable("behaviour.charger_linked"));
             }
         }
         return super.onItemUseFirst(moduleContext, context);
     }
-
 
     private double getRange() {
         return (8 << getTier());
@@ -147,12 +146,14 @@ public class AutoChargeItemModule extends TieredItemModule {
         private final @Nullable GlobalPos linkedPos;
 
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-        public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, Optional<GlobalPos> globalPos) {
+        public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
+                                    Optional<GlobalPos> globalPos) {
             super(slot, module, moduleItem, enabled);
             this.linkedPos = globalPos.orElse(null);
         }
 
-        public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, @Nullable GlobalPos globalPos) {
+        public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
+                                    @Nullable GlobalPos globalPos) {
             super(slot, module, moduleItem, enabled);
             this.linkedPos = globalPos;
         }

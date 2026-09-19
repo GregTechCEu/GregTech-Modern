@@ -7,13 +7,13 @@ import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.ModuleRecipeWidget;
 
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 import java.util.List;

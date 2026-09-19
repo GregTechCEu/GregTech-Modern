@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.api.item.capability;
 
 import com.gregtechceu.gtceu.api.item.module.*;
-
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
-import net.minecraft.network.codec.StreamCodec;
+
 import net.minecraft.world.item.ItemStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class ModularItemStack implements IModularItem {
-    
+
     private final ItemStack stack;
     private final List<ItemModuleSlot> slots;
 

@@ -53,7 +53,8 @@ public class GTArmorMaterials {
                         map.put(ArmorItem.Type.HELMET, 2);
                     }), 10, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 0.0F, 0.0F));
 
-    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NANO_MUSCLE = ARMOR_MATERIALS.register("nano_muscle",
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> NANO_MUSCLE = ARMOR_MATERIALS.register(
+            "nano_muscle",
             () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
                 map.put(ArmorItem.Type.BOOTS, 3);
                 map.put(ArmorItem.Type.LEGGINGS, 4);
@@ -61,7 +62,8 @@ public class GTArmorMaterials {
                 map.put(ArmorItem.Type.HELMET, 2);
             }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 1.0F, 0.0F));
 
-    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ADVANCED_NANO_MUSCLE = ARMOR_MATERIALS.register("advanced_nano_muscle",
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ADVANCED_NANO_MUSCLE = ARMOR_MATERIALS.register(
+            "advanced_nano_muscle",
             () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
                 map.put(ArmorItem.Type.BOOTS, 0);
                 map.put(ArmorItem.Type.LEGGINGS, 0);
@@ -77,14 +79,14 @@ public class GTArmorMaterials {
                 map.put(ArmorItem.Type.HELMET, 0);
             }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 5.0F, 0.0F));
 
-    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ADVANCED_QUARK_TECH = ARMOR_MATERIALS.register("advanced_quark_tech",
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ADVANCED_QUARK_TECH = ARMOR_MATERIALS.register(
+            "advanced_quark_tech",
             () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
                 map.put(ArmorItem.Type.BOOTS, 0);
                 map.put(ArmorItem.Type.LEGGINGS, 0);
                 map.put(ArmorItem.Type.CHESTPLATE, 0);
                 map.put(ArmorItem.Type.HELMET, 0);
             }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 5.0F, 0.0F));
-
 
     public static void init(IEventBus modBus) {
         ARMOR_MATERIALS.register(modBus);

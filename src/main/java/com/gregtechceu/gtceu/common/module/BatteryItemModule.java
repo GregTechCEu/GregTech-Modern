@@ -20,10 +20,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
 
@@ -81,7 +81,8 @@ public class BatteryItemModule extends ItemModule implements IHUDProviderItemMod
         event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (s, v) -> {
             var modular = GTCapabilityHelper.getModularItem(s);
             if (modular == null) return null;
-            var cap = modular.getAllModuleInstances().stream().filter(ctx -> ctx.getModule() instanceof BatteryItemModule).findFirst().orElse(null);
+            var cap = modular.getAllModuleInstances().stream()
+                    .filter(ctx -> ctx.getModule() instanceof BatteryItemModule).findFirst().orElse(null);
             if (cap == null) return null;
             else return cap.getModuleItem().getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
         }, item);

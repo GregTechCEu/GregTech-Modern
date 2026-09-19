@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.mui.modular_item;
 
 import com.gregtechceu.gtceu.GTCEu;
 
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;

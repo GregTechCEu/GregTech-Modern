@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -32,7 +31,8 @@ public class FluidStorageModule extends ItemModule {
         event.registerItem(Capabilities.FluidHandler.ITEM, (s, v) -> {
             var modular = GTCapabilityHelper.getModularItem(s);
             if (modular == null) return null;
-            var cap = modular.getAllModuleInstances().stream().filter(ctx -> ctx.getModule() instanceof FluidStorageModule).findFirst().orElse(null);
+            var cap = modular.getAllModuleInstances().stream()
+                    .filter(ctx -> ctx.getModule() instanceof FluidStorageModule).findFirst().orElse(null);
             if (cap == null) return null;
             else return cap.getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
         }, item);

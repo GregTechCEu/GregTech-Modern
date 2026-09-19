@@ -2,17 +2,18 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 /**
  * The data for an item module attached to a specific item.<br>
- * This class and its inheritors must be immutable.
+ * This class and its inheritors must be immutable.<br>
+ * Equals and hashcode must be implemented by inheritors.
  */
 public abstract class ModuleData {
 

@@ -8,9 +8,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -24,9 +21,12 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-
-import lombok.Getter;
 import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
-    //spotless:off
+    // spotless:off
     public static final MapCodec<EquipmentFoundryRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(EquipmentFoundryRecipe::getId),
             Ingredient.CODEC.fieldOf("equipment").forGetter(EquipmentFoundryRecipe::getEquipment),
@@ -152,7 +152,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
 
     public record TierEntry(Ingredient ingredient, Holder<ItemModule> moduleForTier) {
 
-        //spotless:off
+        // spotless:off
         public static final Codec<TierEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Ingredient.CODEC.fieldOf("ingredient").forGetter(TierEntry::ingredient),
                 RegistryFixedCodec.create(GTRegistries.Keys.ITEM_MODULE).fieldOf("module").forGetter(TierEntry::moduleForTier)
@@ -164,8 +164,6 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
                 TierEntry::new
         );
         //spotless:on
-
-
     }
 
     public static class Serializer implements RecipeSerializer<EquipmentFoundryRecipe> {

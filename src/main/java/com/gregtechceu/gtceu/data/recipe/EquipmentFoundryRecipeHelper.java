@@ -15,7 +15,6 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 public class EquipmentFoundryRecipeHelper {
 

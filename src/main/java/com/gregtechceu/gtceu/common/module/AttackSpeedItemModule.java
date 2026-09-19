@@ -12,10 +12,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 import java.util.List;
-import java.util.UUID;
 
 public class AttackSpeedItemModule extends TieredAttributeItemModule {
 
