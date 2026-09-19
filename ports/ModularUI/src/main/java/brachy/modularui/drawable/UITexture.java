@@ -177,8 +177,8 @@ public class UITexture implements IDrawable {
     }
 
     public void draw(GuiContext context, float x, float y, float width, float height) {
-        GuiDraw.drawTexture(context.getLastGraphicsPose(), this.location, x, y, x + width, y + height, this.u0, this.v0,
-                this.u1, this.v1);
+        GuiDraw.drawTexture(context.getGraphics(), this.location, x, y, x + width, y + height, this.u0, this.v0,
+                this.u1, this.v1, this.nonOpaque);
     }
 
     public void drawSubArea(GuiContext context, float x, float y, float width, float height, float uStart, float vStart,
@@ -186,7 +186,7 @@ public class UITexture implements IDrawable {
                             float vEnd, WidgetTheme widgetTheme) {
         applyColor(this.colorType != null ? this.colorType.getColor(widgetTheme) :
                 ColorType.DEFAULT.getColor(widgetTheme));
-        GuiDraw.drawTexture(context.getLastGraphicsPose(), this.location, x, y, x + width, y + height, lerpU(uStart),
+        GuiDraw.drawTexture(context.getGraphics(), this.location, x, y, x + width, y + height, lerpU(uStart),
                 lerpV(vStart), lerpU(uEnd),
                 lerpV(vEnd), this.nonOpaque);
     }

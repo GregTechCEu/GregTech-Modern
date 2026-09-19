@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -196,9 +196,9 @@ public abstract class LevelRendererMixin {
         VoxelShape blockShape = state.getShape(level, pos, CollisionContext.of(entity));
 
         if (renderColoredOutline) {
-            float red = FastColor.ARGB32.red(rgb) / 255f;
-            float green = FastColor.ARGB32.green(rgb) / 255f;
-            float blue = FastColor.ARGB32.blue(rgb) / 255f;
+            float red = ARGB.red(rgb) / 255f;
+            float green = ARGB.green(rgb) / 255f;
+            float blue = ARGB.blue(rgb) / 255f;
             renderShape(poseStack, consumer, blockShape,
                     pos.getX() - camX, pos.getY() - camY, pos.getZ() - camZ,
                     red, green, blue, 0.4f);

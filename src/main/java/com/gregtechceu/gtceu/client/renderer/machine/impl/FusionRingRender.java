@@ -24,7 +24,7 @@ import com.mojang.serialization.Codec;
 import lombok.RequiredArgsConstructor;
 import org.lwjgl.opengl.GL11;
 
-import static net.minecraft.util.FastColor.ARGB32.*;
+import static net.minecraft.util.ARGB.*;
 
 public class FusionRingRender extends DynamicRender<FusionReactorMachine, FusionRingRender> {
 

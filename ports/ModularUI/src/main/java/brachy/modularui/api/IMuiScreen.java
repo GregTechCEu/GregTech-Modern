@@ -51,7 +51,7 @@ public interface IMuiScreen {
         if (ClientScreenHandler.shouldDrawWorldBackground()) {
             drawFunction.render(guiGraphics, mouseX, mouseY, partialTick);
         }
-        ClientScreenHandler.drawDarkBackground(wrappedScreen(), guiGraphics);
+        ClientScreenHandler.drawDarkBackground(wrappedScreen(), guiGraphics, mouseX, mouseY, partialTick);
     }
 
     /**

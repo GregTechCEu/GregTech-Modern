@@ -14,7 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -212,7 +212,7 @@ public abstract class SpoilableItemStack implements ISpoilableItem, IAddInformat
 
     @Override
     public int getBarColor(ItemStack stack) {
-        return FastColor.ARGB32.color(255, 255, 255, 255);
+        return ARGB.color(255, 255, 255, 255);
     }
 
     @Override

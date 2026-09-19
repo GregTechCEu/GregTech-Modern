@@ -505,8 +505,8 @@ public class TestGuis extends CustomModularScreen {
         IDrawable gradient = (context1, x, y, width, height, widgetTheme) -> GuiDraw.drawHorizontalGradientRect(context1.getGraphics(), x, y, width, height, color1.getColor(), color2.getColor());
         IDrawable correctedGradient = (context1, x, y, width, height, widgetTheme) -> {
             int points = 500;
-            Matrix4f pose = context1.graphicsPose().last().pose();
-            VertexConsumer buffer = context1.getGraphics().bufferSource().getBuffer(MUIRenderTypes.guiTriangleStrip());
+            Matrix4f pose = new Matrix4f();
+            var buffer = MUIRenderTypes.guiTriangleStrip();
 
             float x0 = x;
             float w = (float) width / points;
@@ -517,6 +517,7 @@ public class TestGuis extends CustomModularScreen {
                 buffer.addVertex(pose, x0, y + height, 0).setColor(r, g, b, a);
                 x0 += w;
             }
+            buffer.submit(context1.getGraphics());
         };
 
         ModularPanel<?> panel = new ModularPanel<>("colors").width(300).coverChildrenHeight().padding(7);

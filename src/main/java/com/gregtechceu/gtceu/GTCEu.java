@@ -76,7 +76,7 @@ public class GTCEu {
      * @return if we're running in a production environment
      */
     public static boolean isProd() {
-        return FMLLoader.isProduction();
+        return FMLEnvironment.isProduction();
     }
 
     /**
@@ -128,7 +128,7 @@ public class GTCEu {
      * @see #isClientThread()
      */
     public static boolean isClientSide() {
-        return FMLEnvironment.dist.isClient();
+        return FMLEnvironment.getDist().isClient();
     }
 
     /**

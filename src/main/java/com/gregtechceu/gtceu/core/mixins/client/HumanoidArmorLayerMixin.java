@@ -6,7 +6,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 
@@ -34,7 +34,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
     private float gtceu$modifyArmorTintR(float oldR, @Local ArmorItem armorItem) {
         if (armorItem instanceof GTArmorItem gtArmorItem) {
             int argb = gtArmorItem.material.getMaterialARGB();
-            float r = FastColor.ARGB32.red(argb) / 255.0F;
+            float r = ARGB.red(argb) / 255.0F;
 
             if (oldR != 1.0f) {
                 return (r + oldR) / 2.0f;
@@ -54,7 +54,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
     private float gtceu$modifyArmorTintsG(float oldG, @Local ArmorItem armorItem) {
         if (armorItem instanceof GTArmorItem gtArmorItem) {
             int argb = gtArmorItem.material.getMaterialARGB();
-            float g = FastColor.ARGB32.green(argb) / 255.0F;
+            float g = ARGB.green(argb) / 255.0F;
 
             if (oldG != 1.0f) {
                 return (g + oldG) / 2.0f;
@@ -74,7 +74,7 @@ public abstract class HumanoidArmorLayerMixin<T extends LivingEntity, M extends 
     private float gtceu$modifyArmorTintsB(float oldB, @Local ArmorItem armorItem) {
         if (armorItem instanceof GTArmorItem gtArmorItem) {
             int argb = gtArmorItem.material.getMaterialARGB();
-            float b = FastColor.ARGB32.blue(argb) / 255.0F;
+            float b = ARGB.blue(argb) / 255.0F;
 
             if (oldB != 1.0f) {
                 return (b + oldB) / 2.0f;

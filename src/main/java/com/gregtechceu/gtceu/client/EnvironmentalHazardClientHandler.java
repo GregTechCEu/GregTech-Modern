@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.core.mixins.client.ClientLevelAccessor;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -189,10 +189,10 @@ public class EnvironmentalHazardClientHandler {
 
         float complement = 1 - ratio;
 
-        r = ((int) (r * complement + ratio * FastColor.ARGB32.red(newColor))) & 0xFF;
-        g = ((int) (g * complement + ratio * FastColor.ARGB32.green(newColor))) & 0xFF;
-        b = ((int) (b * complement + ratio * FastColor.ARGB32.blue(newColor))) & 0xFF;
+        r = ((int) (r * complement + ratio * ARGB.red(newColor))) & 0xFF;
+        g = ((int) (g * complement + ratio * ARGB.green(newColor))) & 0xFF;
+        b = ((int) (b * complement + ratio * ARGB.blue(newColor))) & 0xFF;
 
-        return FastColor.ARGB32.color(0xFF, r, g, b);
+        return ARGB.color(0xFF, r, g, b);
     }
 }

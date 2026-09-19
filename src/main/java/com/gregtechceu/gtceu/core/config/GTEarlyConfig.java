@@ -39,7 +39,7 @@ public class GTEarlyConfig {
         addDelegateRule("client.bloom.normal", SAFE_MODE, true);
 
         // hidden rules for dev-only mixins
-        addHiddenRule("dev", !FMLLoader.isProduction());
+        addHiddenRule("dev", !FMLEnvironment.isProduction());
         addHiddenRule("dev.datagen", FMLLoader.getLaunchHandler().isData());
 
         // hidden rules for mod dependencies

@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -190,7 +190,7 @@ public abstract class ItemStackMixin implements ISpoilableItemStackExtension {
         if (spoilable instanceof IDurabilityBar durabilityBar) {
             cir.setReturnValue(durabilityBar.getBarColor(gtceu$self()));
         } else if (gtceu$fakeTooltip) {
-            cir.setReturnValue(FastColor.ARGB32.color(255, 255, 255, 255));
+            cir.setReturnValue(ARGB.color(255, 255, 255, 255));
         }
     }
 

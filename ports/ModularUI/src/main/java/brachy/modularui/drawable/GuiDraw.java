@@ -7,18 +7,12 @@ import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
-import brachy.modularui.utils.MUIRenderTypes;
-import brachy.modularui.utils.RectangleF;
 import brachy.modularui.utils.math.NumberFormat;
 import brachy.modularui.widget.sizer.Area;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -27,18 +21,9 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
@@ -47,7 +32,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -64,9 +48,10 @@ public class GuiDraw {
     private static final TextRenderer textRenderer = new TextRenderer();
 
     public static void drawRect(GuiGraphicsExtractor graphics, float x0, float y0, float w, float h, int color) {
-        Matrix4f pose = graphics.pose().last().pose();
-        VertexConsumer builder = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
+        Matrix4f pose = new Matrix4f();
+        var builder = new GuiShapeBuilder(GuiShapeRenderState.Topology.QUADS);
         drawRectRaw(builder, pose, x0, y0, x0 + w, y0 + h, color);
+        builder.submit(graphics);
     }
 
     public static void drawHorizontalGradientRect(GuiGraphicsExtractor graphics, float x0, float y0, float w, float h,
@@ -81,8 +66,8 @@ public class GuiDraw {
 
     public static void drawRect(GuiGraphicsExtractor graphics, float x0, float y0, float w, float h,
                                 int colorTL, int colorTR, int colorBL, int colorBR) {
-        Matrix4f pose = graphics.pose().last().pose();
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(RenderType.guiOverlay());
+        Matrix4f pose = new Matrix4f();
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.QUADS);
 
         float x1 = x0 + w, y1 = y0 + h;
         buffer.addVertex(pose, x0, y0, 0.0f)
@@ -93,6 +78,7 @@ public class GuiDraw {
                 .setColor(Color.getRed(colorBR), Color.getGreen(colorBR), Color.getBlue(colorBR), Color.getAlpha(colorBR));
         buffer.addVertex(pose, x1, y0, 0.0f)
                 .setColor(Color.getRed(colorTR), Color.getGreen(colorTR), Color.getBlue(colorTR), Color.getAlpha(colorTR));
+        buffer.submit(graphics);
     }
 
     public static void drawRectRaw(VertexConsumer buffer, Matrix4f pose, float x0, float y0, float x1, float y1,
@@ -128,8 +114,9 @@ public class GuiDraw {
 
     public static void drawEllipse(GuiGraphicsExtractor graphics, float x0, float y0, float w, float h,
                                    int centerColor, int outerColor, int segments) {
-        Matrix4f pose = graphics.pose().last().pose();
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(MUIRenderTypes.guiOverlayTriangleFan());
+        if (segments < 3) throw new IllegalArgumentException("An ellipse needs at least three segments");
+        Matrix4f pose = new Matrix4f();
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.TRIANGLE_FAN);
 
         float x_2 = x0 + w / 2f, y_2 = y0 + h / 2f;
         // start at center
@@ -145,7 +132,7 @@ public class GuiDraw {
             float y = Mth.cos(angle) * (h / 2) + y_2;
             buffer.addVertex(x, y, 0.0f).setColor(r, g, b, a);
         }
-        RenderSystem.disableBlend();
+        buffer.submit(graphics);
     }
 
     public static void drawRoundedRect(GuiGraphicsExtractor graphics, float x0, float y0, float w, float h, int color,
@@ -166,8 +153,10 @@ public class GuiDraw {
     public static void drawRoundedRect(GuiGraphicsExtractor graphics, float x0, float y0, float w, float h,
                                        int colorTL, int colorTR, int colorBL, int colorBR,
                                        int cornerRadius, int segments) {
-        Matrix4f pose = graphics.pose().last().pose();
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(MUIRenderTypes.guiOverlayTriangleFan());
+        if (segments < 1) throw new IllegalArgumentException("A rounded corner needs at least one segment");
+        cornerRadius = Math.max(0, Math.min(cornerRadius, (int) (Math.min(w, h) / 2)));
+        Matrix4f pose = new Matrix4f();
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.TRIANGLE_FAN);
 
         float x1 = x0 + w, y1 = y0 + h;
         int color = Color.average(colorBL, colorBR, colorTR, colorTL);
@@ -208,434 +197,197 @@ public class GuiDraw {
             buffer.addVertex(pose, x, y, 0.0f).setColor(colorTL);
         }
         buffer.addVertex(pose, x0, y0 + cornerRadius, 0.0f).setColor(colorTL);
+        buffer.submit(graphics);
     }
 
-    /**
-     * Set up the texture as a sampler differently depending on if it's part of the GUI atlas or not.
-     * <p>
-     * If the texture is part of the GUI atlas, the atlas will be used for drawing and the UV coordinates will be scaled to the atlas texture.<br>
-     * If it's not part of the GUI atlas, nothing special is done.
-     *
-     * @param location the texture <i>file's</i> location, e.g. {@code "modularui:textures/gui/slot/item.png"}
-     * @param u0       u0 UV coordinate
-     * @param v0       v0 UV coordinate
-     * @param u1       u1 UV coordinate
-     * @param v1       v1 UV coordinate
-     * @return If texture is in the GUI atlas, rescaled UV coordinates {@code u0, v0, u1, v1}.<br>
-     * If not, the same coordinates that were passed in.
-     */
-    public static RectangleF setupTexture(Identifier location, float u0, float v0, float u1, float v1) {
-        TextureAtlasSprite sprite = Minecraft.getInstance().getGuiSprites()
+    /** Resolves the atlas and UVs together, without changing global texture bindings. */
+    private record TextureRegion(Identifier texture, float u0, float v0, float u1, float v1) {}
+
+    private static TextureRegion resolveTexture(Identifier location, float u0, float v0, float u1, float v1) {
+        TextureAtlasSprite sprite = GuiSpriteManager.getInstance()
                 .getSprite(GUI_TEXTURE_ID_CONVERTER.fileToId(location));
-
-        // check if the atlas doesn't have this sprite, default to using the resloc as is if so
         if (!sprite.contents().name().equals(MissingTextureAtlasSprite.getLocation())) {
-            RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-
-            return new RectangleF(sprite.getU(u0), sprite.getV(v0), sprite.getU(u1), sprite.getV(v1));
-        } else {
-            RenderSystem.setShaderTexture(0, location);
-            return new RectangleF(u0, v0, u1, v1);
+            return new TextureRegion(sprite.atlasLocation(), sprite.getU(u0), sprite.getV(v0),
+                    sprite.getU(u1), sprite.getV(v1));
         }
+        return new TextureRegion(location, u0, v0, u1, v1);
     }
 
     public static boolean isGuiAtlasSprite(Identifier location) {
-        location = GUI_TEXTURE_ID_CONVERTER.fileToId(location);
-        return GuiSpriteManager.getInstance().getSprite(location).atlasLocation() != MissingTextureAtlasSprite.getLocation();
+        TextureAtlasSprite sprite = GuiSpriteManager.getInstance()
+                .getSprite(GUI_TEXTURE_ID_CONVERTER.fileToId(location));
+        return !sprite.contents().name().equals(MissingTextureAtlasSprite.getLocation());
     }
 
-    public static void drawTexture(Matrix4f pose, Identifier location, float x, float y, float w, float h,
-                                   int u, int v, int textureWidth, int textureHeight) {
-        if (!isGuiAtlasSprite(location)) {
-            RenderSystem.setShaderTexture(0, location);
-            drawTexture(pose, x, y, u, v, w, h, textureWidth, textureHeight);
-            return;
-        }
-
-        float tw = 1F / textureWidth;
-        float th = 1F / textureHeight;
-        RectangleF newUvs = setupTexture(location, u * tw, v * th, (u + w) * tw, (v + h) * th);
-
-        drawTexture(pose, x, y, x + w, y + h, newUvs.u0(), newUvs.v0(), newUvs.u1(), newUvs.v1());
+    public static void drawTexture(GuiGraphicsExtractor graphics, Identifier location,
+                                    float x0, float y0, float x1, float y1,
+                                    float u0, float v0, float u1, float v1) {
+        drawTexture(graphics, location, x0, y0, x1, y1, u0, v0, u1, v1, true);
     }
 
-    public static void drawTexture(Matrix4f pose, float x, float y, int u, int v, float w, float h,
-                                   int textureW, int textureH) {
-        drawTexture(pose, x, y, u, v, w, h, textureW, textureH, 0);
+    public static void drawTexture(GuiGraphicsExtractor graphics, Identifier location,
+                                    float x0, float y0, float x1, float y1,
+                                    float u0, float v0, float u1, float v1, boolean blend) {
+        TextureRegion region = resolveTexture(location, u0, v0, u1, v1);
+        GuiTextureRenderState.submit(graphics, region.texture(), x0, y0, x1, y1,
+                region.u0(), region.v0(), region.u1(), region.v1(), blend);
     }
 
-    /**
-     * Draw a textured quad with given UV, dimensions and custom texture size
-     */
-    public static void drawTexture(Matrix4f pose, float x, float y, int u, int v, float w, float h,
-                                   int textureW, int textureH, float z) {
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        drawTexture(pose, buffer, x, y, u, v, w, h, textureW, textureH, z);
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+    /** Draws a texture using pixel UV coordinates. */
+    public static void drawTexture(GuiGraphicsExtractor graphics, Identifier location,
+                                    float x, float y, float w, float h,
+                                    int u, int v, int textureWidth, int textureHeight) {
+        drawTexture(graphics, location, x, y, x + w, y + h,
+                (float) u / textureWidth, (float) v / textureHeight,
+                (u + w) / textureWidth, (v + h) / textureHeight);
     }
 
-    public static void drawTexture(Matrix4f pose, VertexConsumer buffer, float x, float y, int u, int v,
-                                   float w, float h, int textureW, int textureH, float z) {
-        float tw = 1F / textureW;
-        float th = 1F / textureH;
-
-        buffer.addVertex(pose, x, y + h, z).setUv(u * tw, (v + h) * th);
-        buffer.addVertex(pose, x + w, y + h, z).setUv((u + w) * tw, (v + h) * th);
-        buffer.addVertex(pose, x + w, y, z).setUv((u + w) * tw, v * th);
-        buffer.addVertex(pose, x, y, z).setUv(u * tw, v * th);
+    public static void drawTiledTexture(GuiGraphicsExtractor graphics, Identifier location,
+                                         float x, float y, float w, float h,
+                                         int u, int v, int tileWidth, int tileHeight,
+                                         int textureWidth, int textureHeight, float z) {
+        drawTiledTexture(graphics, location, x, y, w, h,
+                (float) u / textureWidth, (float) v / textureHeight,
+                (float) (u + tileWidth) / textureWidth, (float) (v + tileHeight) / textureHeight,
+                tileWidth, tileHeight, z);
     }
 
-    public static void drawTexture(Matrix4f pose, float x, float y, int u, int v, float w, float h,
-                                   int textureW, int textureH, int tu, int tv) {
-        drawTexture(pose, x, y, u, v, w, h, textureW, textureH, tu, tv, 0);
+    public static void drawTiledTexture(GuiGraphicsExtractor graphics, Identifier location,
+                                         float x, float y, float w, float h,
+                                         float u0, float v0, float u1, float v1,
+                                         int tileWidth, int tileHeight, float z) {
+        drawTiledTexture(graphics, location, x, y, w, h, u0, v0, u1, v1, tileWidth, tileHeight, true);
     }
 
-    /**
-     * Draw a textured quad with given UV, dimensions and custom texture size
-     */
-    public static void drawTexture(Matrix4f pose, float x, float y, int u, int v, float w, float h,
-                                   int textureW, int textureH, int tu, int tv, float z) {
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        drawTexture(pose, buffer, x, y, u, v, w, h, textureW, textureH, tu, tv, z);
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-    }
-
-    public static void drawTexture(Matrix4f pose, VertexConsumer buffer, float x, float y, int u, int v,
-                                   float w, float h, int textureW, int textureH, int tu, int tv, float z) {
-        float tw = 1F / textureW;
-        float th = 1F / textureH;
-
-        buffer.addVertex(pose, x, y + h, z).setUv(u * tw, tv * th);
-        buffer.addVertex(pose, x + w, y + h, z).setUv(tu * tw, tv * th);
-        buffer.addVertex(pose, x + w, y, z).setUv(tu * tw, v * th);
-        buffer.addVertex(pose, x, y, z).setUv(u * tw, v * th);
-    }
-
-    public static void drawTexture(Matrix4f pose, Identifier location, float x0, float y0, float x1, float y1,
-                                   float u0, float v0, float u1, float v1) {
-        drawTexture(pose, location, x0, y0, x1, y1, u0, v0, u1, v1, false);
-    }
-
-    public static void drawTexture(Matrix4f pose, Identifier location, float x0, float y0, float x1, float y1,
-                                   float u0, float v0, float u1, float v1, boolean withBlend) {
-        RectangleF newUvs = setupTexture(location, u0, v0, u1, v1);
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        if (withBlend) {
-            RenderSystem.enableBlend();
-        } else {
-            RenderSystem.disableBlend();
-        }
-        drawTexture(pose, x0, y0, x1, y1, newUvs.u0(), newUvs.v0(), newUvs.u1(), newUvs.v1(), 0);
-    }
-
-    public static void drawTexture(Matrix4f pose, float x0, float y0, float x1, float y1,
-                                   float u0, float v0, float u1, float v1) {
-        drawTexture(pose, x0, y0, x1, y1, u0, v0, u1, v1, 0);
-    }
-
-    public static void drawTexture(Matrix4f pose, float x0, float y0, float x1, float y1,
-                                   float u0, float v0, float u1, float v1, float z) {
-        RenderSystem.disableDepthTest();
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        drawTexture(pose, buffer, x0, y0, x1, y1, u0, v0, u1, v1, z);
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-    }
-
-    public static void drawTexture(Matrix4f pose, VertexConsumer buffer, float x0, float y0, float x1, float y1,
-                                   float u0, float v0, float u1, float v1, float z) {
-        buffer.addVertex(pose, x0, y1, z).setUv(u0, v1);
-        buffer.addVertex(pose, x1, y1, z).setUv(u1, v1);
-        buffer.addVertex(pose, x1, y0, z).setUv(u1, v0);
-        buffer.addVertex(pose, x0, y0, z).setUv(u0, v0);
-    }
-
-    public static void drawTiledTexture(Matrix4f pose, Identifier location, float x, float y, float w, float h,
-                                        int u, int v, int tileWidth, int tileHeight, int textureWidth, int textureHeight, float z) {
-        if (!isGuiAtlasSprite(location)) {
-            RenderSystem.setShaderTexture(0, location);
-            drawTiledTexture(pose, x, y, w, h, u, v, tileWidth, tileHeight, textureWidth, textureHeight, z);
-            return;
-        }
-
-        float wRatio = 1f / textureWidth;
-        float hRatio = 1f / textureHeight;
-        RectangleF newUvs = setupTexture(location, u * wRatio, v * hRatio, (u + w) * wRatio, (v + h) * hRatio);
-
-        drawTiledTexture(pose, x, y, x + w, y + h, newUvs.u0(), newUvs.v0(),
-                newUvs.u1(), newUvs.v1(), tileWidth, tileHeight, z);
-    }
-
-    public static void drawTiledTexture(Matrix4f pose, float x, float y, float w, float h,
-                                        int u, int v, int tileW, int tileH, int tw, int th, float z) {
-        int countX = (((int) w - 1) / tileW) + 1;
-        int countY = (((int) h - 1) / tileH) + 1;
-        float fillerX = w - (countX - 1) * tileW;
-        float fillerY = h - (countY - 1) * tileH;
-
-        RenderSystem.disableDepthTest();
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-
-        for (int i = 0, c = countX * countY; i < c; i++) {
-            int ix = i % countX;
-            int iy = i / countX;
-            float xx = x + ix * tileW;
-            float yy = y + iy * tileH;
-            float xw = ix == countX - 1 ? fillerX : tileW;
-            float yh = iy == countY - 1 ? fillerY : tileH;
-
-            drawTexture(pose, buffer, xx, yy, u, v, xw, yh, tw, th, z);
-        }
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-    }
-
-    public static void drawTiledTexture(Matrix4f pose, Identifier location, float x, float y, float w, float h,
-                                        float u0, float v0, float u1, float v1,
-                                        int textureWidth, int textureHeight, float z) {
-        RenderSystem.enableBlend();
-
-        RectangleF newUvs = setupTexture(location, u0, v0, u1, v1);
-
-        drawTiledTexture(pose, x, y, w, h, newUvs.u0(), newUvs.v0(), newUvs.u1(), newUvs.v1(), textureWidth, textureHeight, z);
-        RenderSystem.disableBlend();
-    }
-
-    public static void drawTiledTexture(Matrix4f pose, float x, float y, float w, float h,
-                                        float u0, float v0, float u1, float v1,
-                                        int tileWidth, int tileHeight, float z) {
-        int countX = (((int) w - 1) / tileWidth) + 1;
-        int countY = (((int) h - 1) / tileHeight) + 1;
-        float fillerX = w - (countX - 1) * tileWidth;
-        float fillerY = h - (countY - 1) * tileHeight;
-        float fillerU = u0 + (u1 - u0) * fillerX / tileWidth;
-        float fillerV = v0 + (v1 - v0) * fillerY / tileHeight;
-
-        RenderSystem.disableDepthTest();
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-
-        for (int i = 0, c = countX * countY; i < c; i++) {
-            int ix = i % countX;
-            int iy = i / countX;
-            float xx = x + ix * tileWidth;
-            float yy = y + iy * tileHeight;
-            float xw = tileWidth, yh = tileHeight, uEnd = u1, vEnd = v1;
-            if (ix == countX - 1) {
-                xw = fillerX;
-                uEnd = fillerU;
+    /** Tiles a region, clipping the final row and column in both position and UV space. */
+    public static void drawTiledTexture(GuiGraphicsExtractor graphics, Identifier location,
+                                         float x, float y, float w, float h,
+                                         float u0, float v0, float u1, float v1,
+                                         int tileWidth, int tileHeight, boolean blend) {
+        if (tileWidth <= 0 || tileHeight <= 0) throw new IllegalArgumentException("Tile dimensions must be positive");
+        if (w <= 0 || h <= 0) return;
+        TextureRegion region = resolveTexture(location, u0, v0, u1, v1);
+        int columns = (int) Math.ceil(w / tileWidth);
+        int rows = (int) Math.ceil(h / tileHeight);
+        for (int row = 0; row < rows; row++) {
+            float dy = row * (float) tileHeight;
+            float dh = Math.min(tileHeight, h - dy);
+            float endV = region.v0() + (region.v1() - region.v0()) * dh / tileHeight;
+            for (int column = 0; column < columns; column++) {
+                float dx = column * (float) tileWidth;
+                float dw = Math.min(tileWidth, w - dx);
+                float endU = region.u0() + (region.u1() - region.u0()) * dw / tileWidth;
+                GuiTextureRenderState.submit(graphics, region.texture(), x + dx, y + dy, x + dx + dw, y + dy + dh,
+                        region.u0(), region.v0(), endU, endV, blend);
             }
-            if (iy == countY - 1) {
-                yh = fillerY;
-                vEnd = fillerV;
-            }
-
-            drawTexture(pose, buffer, xx, yy, xx + xw, yy + yh, u0, v0, uEnd, vEnd, z);
         }
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
     }
 
-    /**
-     * Draws an entity. Note that this does NOT do any necessary setup for rendering the entity. Please see
-     * {@link #drawEntity(GuiGraphicsExtractor, Entity, float, float, float, float, float, BiConsumer, BiConsumer)} for a full
-     * draw method.
-     *
-     * @param graphics the current {@link GuiGraphicsExtractor} instance.
-     * @param entity   entity to draw.
-     * @see #drawEntity(GuiGraphicsExtractor, Entity, float, float, float, float, float, BiConsumer, BiConsumer)
-     */
-    public static void drawEntityRaw(GuiGraphicsExtractor graphics, Entity entity) {
-        EntityRenderDispatcher entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher();
-        entityRenderer.setRenderShadow(false);
-
-        RenderSystem.runAsFancy(() -> {
-            entityRenderer.render(entity, 0.0d, 0.0d, 0.0d, 0.0f, 1.0f,
-                    graphics.pose(), graphics.bufferSource(), LightTexture.FULL_BRIGHT);
-        });
-        graphics.flush();
-        entityRenderer.setRenderShadow(true);
-    }
-
-    /**
-     * A simple method to a draw an entity in a GUI. Using the consumers is not always ideal to modify and restore
-     * entity state. In those cases just copy and paste this method and put your code where the consumers would be
-     * called. The entity will be scaled so that it fits right in the given size when untransformed (default). When
-     * transforming during pre draw, you may need to manually correct the scale and offset.
-     *
-     * @param graphics the current {@link GuiGraphicsExtractor} instance.
-     * @param entity   entity to draw
-     * @param x        x pos
-     * @param y        y pos
-     * @param w        the width of the area where the entity should be drawn
-     * @param h        the height of the area where the entity should be drawn
-     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI screen)
-     * @param preDraw  a function to call before rendering. Transform or modify the entity here.
-     * @param postDraw a function to call after rendering. Restore old entity state here if needed.
-     * @param <T>      type of the entity to render
-     */
+    /** Extracts an entity preview now; the entity itself is never retained for deferred rendering. */
     public static <T extends Entity> void drawEntity(GuiGraphicsExtractor graphics, T entity,
-                                                     float x, float y, float w, float h, float z,
-                                                     @Nullable BiConsumer<GuiGraphicsExtractor, T> preDraw,
-                                                     @Nullable BiConsumer<GuiGraphicsExtractor, T> postDraw) {
-        graphics.pose().pushPose();
-        setupDrawEntity(graphics, entity, x, y, w, h, z);
-        if (preDraw != null) preDraw.accept(graphics, entity);
-        drawEntityRaw(graphics, entity);
-        if (postDraw != null) postDraw.accept(graphics, entity);
-        endDrawEntity();
-        graphics.pose().popPose();
+                                                      float x, float y, float w, float h, float z,
+                                                      @Nullable BiConsumer<GuiGraphicsExtractor, T> preDraw,
+                                                      @Nullable BiConsumer<GuiGraphicsExtractor, T> postDraw) {
+        extractEntityPreview(graphics, entity, x, y, w, h, null, null, preDraw, postDraw);
     }
 
-    /**
-     * Draws an entity which looks in the direction of the mouse like the player render in the player inventory does.
-     * The code was copied from
-     * {@link net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsMouse
-     * InventoryScreen.renderEntityInInventoryFollowsMouse}.
-     *
-     * @param graphics the current {@link GuiGraphicsExtractor} instance.
-     * @param entity   entity to draw
-     * @param x        x pos
-     * @param y        y pos
-     * @param w        the width of the area where the entity should be drawn
-     * @param h        the height of the area where the entity should be drawn
-     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI screen)
-     * @param mouseX   current x pos of the mouse
-     * @param mouseY   current y pos of the mouse
-     */
     public static <T extends Entity> void drawEntityLookingAtMouse(GuiGraphicsExtractor graphics, T entity,
-                                                                   float x, float y, float w, float h, float z,
-                                                                   int mouseX, int mouseY,
-                                                                   @Nullable BiConsumer<GuiGraphicsExtractor, T> preDraw,
-                                                                   @Nullable BiConsumer<GuiGraphicsExtractor, T> postDraw) {
+                                                                    float x, float y, float w, float h, float z,
+                                                                    int mouseX, int mouseY,
+                                                                    @Nullable BiConsumer<GuiGraphicsExtractor, T> preDraw,
+                                                                    @Nullable BiConsumer<GuiGraphicsExtractor, T> postDraw) {
+        if (w <= 0 || h <= 0) return;
         float xAngle = (float) Math.atan((x + w / 2 - mouseX) / h);
         float yAngle = (float) Math.atan((y + h / 2 - mouseY) / h);
         drawEntityLookingAtAngle(graphics, entity, x, y, w, h, z, xAngle, yAngle, preDraw, postDraw);
     }
 
-    /**
-     * Draws an entity which looks toward a specific angle.
-     * The code was copied from
-     * {@link net.minecraft.client.gui.screens.inventory.InventoryScreen#renderEntityInInventoryFollowsAngle
-     * InventoryScreen.renderEntityInInventoryFollowsAngle}.
-     *
-     * @param graphics the current {@link GuiGraphicsExtractor} instance.
-     * @param entity   entity to draw
-     * @param x        x pos
-     * @param y        y pos
-     * @param w        the width of the area where the entity should be drawn
-     * @param h        the height of the area where the entity should be drawn
-     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI screen)
-     * @param xAngle   the x angle to look toward
-     * @param yAngle   the y angle to look toward
-     */
     public static <T extends Entity> void drawEntityLookingAtAngle(GuiGraphicsExtractor graphics, T entity,
-                                                                   float x, float y, float w, float h, float z,
-                                                                   float xAngle, float yAngle,
-                                                                   @Nullable BiConsumer<GuiGraphicsExtractor, T> preDraw,
-                                                                   @Nullable BiConsumer<GuiGraphicsExtractor, T> postDraw) {
-        graphics.pose().pushPose();
-        setupDrawEntity(graphics, entity, x, y, w, h, z);
-
-        // pre draw
-        float oldYRot = entity.getYRot();
-        float oldYRotO = entity.yRotO;
-        float oldXRot = entity.getXRot();
-        float oldXRotO = entity.xRotO;
-        float oldYBodyRot = 0.0f;
-        float oldYBodyRotO = 0.0f;
-        float oldYHeadRotO = 0.0f;
-        float oldYHeadRot = 0.0f;
-
-        entity.setYRot(entity.yRotO = 180.0f + xAngle * 40.0f);
-        entity.setXRot(entity.xRotO = -yAngle * 20.0f);
-        // made this method more generic by only updating these if the entity is a LivingEntity
-        if (entity instanceof LivingEntity livingEntity) {
-            oldYBodyRot = livingEntity.yBodyRot;
-            oldYBodyRotO = livingEntity.yBodyRotO;
-            oldYHeadRotO = livingEntity.yHeadRotO;
-            oldYHeadRot = livingEntity.yHeadRot;
-
-            livingEntity.yBodyRot = 180.0f + xAngle * 20.0f;
-            livingEntity.yHeadRot = entity.getYRot();
-            livingEntity.yBodyRotO = livingEntity.yBodyRot;
-            livingEntity.yHeadRotO = livingEntity.yHeadRot;
-        }
-
-        // skip rotating the render by 180° on the Z axis here, because we always do that in setupDrawEntity
-        Quaternionf cameraRot = new Quaternionf().rotateX(yAngle * 20.0f * Mth.DEG_TO_RAD);
-        graphics.pose().mulPose(cameraRot);
-        // set the camera orientation (vanilla also does this)
-        cameraRot.conjugate();
-        Minecraft.getInstance().getEntityRenderDispatcher().overrideCameraOrientation(cameraRot);
-
-        if (preDraw != null) preDraw.accept(graphics, entity);
-        drawEntityRaw(graphics, entity);
-        if (postDraw != null) postDraw.accept(graphics, entity);
-
-        // post draw
-        entity.setYRot(oldYRot);
-        entity.yRotO = oldYRotO;
-        entity.setXRot(oldXRot);
-        entity.xRotO = oldXRotO;
-        if (entity instanceof LivingEntity livingEntity) {
-            livingEntity.yBodyRot = oldYBodyRot;
-            livingEntity.yBodyRotO = oldYBodyRotO;
-            livingEntity.yHeadRotO = oldYHeadRotO;
-            livingEntity.yHeadRot = oldYHeadRot;
-        }
-
-        endDrawEntity();
-        graphics.pose().popPose();
+                                                                    float x, float y, float w, float h, float z,
+                                                                    float xAngle, float yAngle,
+                                                                    @Nullable BiConsumer<GuiGraphicsExtractor, T> preDraw,
+                                                                    @Nullable BiConsumer<GuiGraphicsExtractor, T> postDraw) {
+        extractEntityPreview(graphics, entity, x, y, w, h, xAngle, yAngle, preDraw, postDraw);
     }
 
-    /**
-     * Sets up the gl state for rendering an entity. The entity will be scaled so that it fits right in the given size
-     * when untransformed.
-     *
-     * @param graphics the current {@link GuiGraphicsExtractor} instance.
-     * @param entity   entity to set up drawing for
-     * @param x        x pos
-     * @param y        y pos
-     * @param w        the width of the area where the entity should be drawn
-     * @param h        the height of the area where the entity should be drawn
-     * @param z        the z layer ({@link GuiContext#getCurrentDrawingZ()} if drawn in a MUI)
-     */
-    public static void setupDrawEntity(GuiGraphicsExtractor graphics, Entity entity, float x, float y,
-                                       float w, float h, float z) {
-        float size;
-        float scale;
-        if (h / entity.getBbHeight() < w / entity.getBbWidth()) {
-            size = entity.getBbHeight();
-            scale = h / size;
-        } else {
-            size = entity.getBbWidth();
-            scale = w / size;
+    private static <T extends Entity> void extractEntityPreview(GuiGraphicsExtractor graphics, T entity,
+                                                                float x, float y, float w, float h,
+                                                                @Nullable Float xAngle, @Nullable Float yAngle,
+                                                                @Nullable BiConsumer<GuiGraphicsExtractor, T> preDraw,
+                                                                @Nullable BiConsumer<GuiGraphicsExtractor, T> postDraw) {
+        if (w <= 0 || h <= 0) return;
+        float oldYRot = entity.getYRot(), oldYRotO = entity.yRotO;
+        float oldXRot = entity.getXRot(), oldXRotO = entity.xRotO;
+        LivingEntity living = entity instanceof LivingEntity l ? l : null;
+        float oldBody = living == null ? 0 : living.yBodyRot;
+        float oldBodyO = living == null ? 0 : living.yBodyRotO;
+        float oldHead = living == null ? 0 : living.yHeadRot;
+        float oldHeadO = living == null ? 0 : living.yHeadRotO;
+        graphics.pose().pushMatrix();
+        try {
+            graphics.pose().translate(x, y);
+            if (xAngle != null && yAngle != null) {
+                entity.setYRot(entity.yRotO = 180 + xAngle * 40);
+                entity.setXRot(entity.xRotO = -yAngle * 20);
+                if (living != null) {
+                    living.yBodyRot = living.yBodyRotO = 180 + xAngle * 20;
+                    living.yHeadRot = living.yHeadRotO = entity.getYRot();
+                }
+            }
+            try {
+                if (preDraw != null) preDraw.accept(graphics, entity);
+                var renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
+                var state = renderer.createRenderState(entity, 1);
+                state.shadowPieces.clear();
+                state.outlineColor = 0;
+                state.lightCoords = 15728880;
+                float scale = Math.min(w / Math.max(0.001f, state.boundingBoxWidth),
+                        h / Math.max(0.001f, state.boundingBoxHeight));
+                Quaternionf camera = yAngle == null ? null : new Quaternionf().rotateX(yAngle * 20 * Mth.DEG_TO_RAD);
+                Quaternionf rotation = new Quaternionf().rotateZ(Mth.PI);
+                if (camera != null) rotation.mul(camera);
+                int right = (int) Math.ceil(w), bottom = (int) Math.ceil(h);
+                var bounds = new net.minecraft.client.gui.navigation.ScreenRectangle(0, 0, right, bottom)
+                        .transformMaxBounds(graphics.pose());
+                var scissor = graphics.peekScissorStack();
+                if (scissor != null) bounds = bounds.intersection(scissor);
+                if (bounds != null) {
+                    graphics.submitPictureInPictureRenderState(new GuiEntityPreviewState(state,
+                            new Vector3f((w - right) / (2 * scale),
+                                    state.boundingBoxHeight / 2 + (h - bottom) / (2 * scale), 0),
+                            rotation, camera, graphics.pose(), 0, 0, right, bottom, scale, scissor, bounds));
+                }
+            } finally {
+                if (postDraw != null) postDraw.accept(graphics, entity);
+            }
+        } finally {
+            if (xAngle != null) {
+                entity.setYRot(oldYRot);
+                entity.yRotO = oldYRotO;
+                entity.setXRot(oldXRot);
+                entity.xRotO = oldXRotO;
+                if (living != null) {
+                    living.yBodyRot = oldBody;
+                    living.yBodyRotO = oldBodyO;
+                    living.yHeadRot = oldHead;
+                    living.yHeadRotO = oldHeadO;
+                }
+            }
+            graphics.pose().popMatrix();
         }
-        graphics.pose().translate(x + w / 2, y + h / 2, z + 50.0f);
-        graphics.pose().scale(scale, scale, -scale);
-        graphics.pose().translate(0, size / 2f, 0);
-        graphics.pose().mulPose(new Quaternionf().rotateZ(Mth.PI));
-
-        Lighting.setupForEntityInInventory();
-    }
-
-    public static void endDrawEntity() {
-        Lighting.setupFor3DItems();
     }
 
     public static void drawItem(GuiGraphicsExtractor graphics, ItemStack item, int x, int y, float width, float height, int z) {
         if (item.isEmpty()) return;
-        graphics.pose().pushPose();
-        graphics.pose().translate(x, y, z);
-        graphics.pose().scale(width / 16f, height / 16f, 1);
-        graphics.renderItem(item, 0, 0);
-        graphics.renderItemDecorations(Minecraft.getInstance().font, item, 0, 0);
-        graphics.pose().popPose();
+        graphics.pose().pushMatrix();
+        try {
+            graphics.pose().translate(x, y);
+            graphics.pose().scale(width / 16f, height / 16f);
+            graphics.item(item, 0, 0);
+            graphics.itemDecorations(Minecraft.getInstance().font, item, 0, 0);
+        } finally {
+            graphics.pose().popMatrix();
+        }
     }
 
     public static void drawFluidTexture(GuiGraphicsExtractor graphics, FluidStack content,
@@ -645,16 +397,18 @@ public class GuiDraw {
         }
         Fluid fluid = content.getFluid();
         Identifier fluidStill = IClientFluidTypeExtensions.of(fluid).getStillTexture(content);
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-                .apply(fluidStill);
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager()
+                .getAtlasOrThrow(net.minecraft.data.AtlasIds.BLOCKS).getSprite(fluidStill);
         int fluidColor = IClientFluidTypeExtensions.of(fluid).getTintColor(content);
-        graphics.setColor(Color.getRedF(fluidColor), Color.getGreenF(fluidColor), Color.getBlueF(fluidColor),
-                Color.getAlphaF(fluidColor));
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        drawTiledTexture(graphics.pose().last().pose(), InventoryMenu.BLOCK_ATLAS, x0, y0, width, height,
-                sprite.getU0(), sprite.getV0(),
-                sprite.getU1(), sprite.getV1(), sprite.contents().width(), sprite.contents().height(), z);
-        graphics.setColor(1f, 1f, 1f, 1f);
+        int previousTint = GuiTint.get();
+        try {
+            GuiTint.set(net.minecraft.util.ARGB.multiply(previousTint, fluidColor));
+            drawTiledTexture(graphics, sprite.atlasLocation(), x0, y0, width, height,
+                    sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(),
+                    sprite.contents().width(), sprite.contents().height(), z);
+        } finally {
+            GuiTint.set(previousTint);
+        }
     }
 
     public static void drawStandardSlotAmountText(GuiContext context, int amount, String format, Area area,
@@ -688,8 +442,6 @@ public class GuiDraw {
         textRenderer.setAlignment(alignment, width, height);
         textRenderer.setPos(x, y);
         textRenderer.setHardWrapOnBorder(false);
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
         if (amountText.length() > 2 && width > 16) { // we know that numbers below 100 will always fit in standard slots
             // simulate and calculate scale with width
             textRenderer.setSimulate(true);
@@ -697,26 +449,19 @@ public class GuiDraw {
             textRenderer.setSimulate(false);
             textRenderer.setScale(Math.min(maxScale, width / textRenderer.getLastWidth()));
         }
-        context.graphicsPose().translate(0, 0, 100 + z);
+        context.getGraphics().nextStratum();
         textRenderer.draw(context.getGraphics(), amountText);
         textRenderer.setHardWrapOnBorder(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
     }
 
-    public static void drawSprite(Matrix4f pose, TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-        drawTexture(pose, x0, y0, x0 + w, y0 + h, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
-        RenderSystem.disableBlend();
+    public static void drawSprite(GuiGraphicsExtractor graphics, TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
+        GuiTextureRenderState.submit(graphics, sprite.atlasLocation(), x0, y0, x0 + w, y0 + h,
+                sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), true);
     }
 
-    public static void drawTiledSprite(Matrix4f pose, TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderTexture(0, sprite.atlasLocation());
-        drawTiledTexture(pose, sprite.atlasLocation(), x0, y0, x0 + w, y0 + h, sprite.getU0(), sprite.getV0(),
+    public static void drawTiledSprite(GuiGraphicsExtractor graphics, TextureAtlasSprite sprite, float x0, float y0, float w, float h) {
+        drawTiledTexture(graphics, sprite.atlasLocation(), x0, y0, w, h, sprite.getU0(), sprite.getV0(),
                 sprite.getU1(), sprite.getV1(), sprite.contents().width(), sprite.contents().height(), 0);
-        RenderSystem.disableBlend();
     }
 
     public static void drawOutlineCenter(GuiGraphicsExtractor graphics, int x, int y, int offset, int color) {
@@ -752,8 +497,8 @@ public class GuiDraw {
         }
         float x0 = left, y0 = top, x1 = right, y1 = bottom, d = border;
 
-        var buffer = graphics.bufferSource().getBuffer(MUIRenderTypes.guiTriangleStrip());
-        var pose = graphics.pose().last().pose();
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.TRIANGLE_STRIP);
+        var pose = new Matrix4f();
         pc(buffer, pose, x0, y0, color);
         pc(buffer, pose, x1 - d, y0 + d, color);
         pc(buffer, pose, x1, y0, color);
@@ -764,6 +509,7 @@ public class GuiDraw {
         pc(buffer, pose, x0 + d, y0 + d, color);
         pc(buffer, pose, x0, y0, color);
         pc(buffer, pose, x1 - d, y0 + d, color);
+        buffer.submit(graphics);
     }
 
     public static void drawBorderOutsideLTRB(GuiGraphicsExtractor graphics, float left, float top, float right, float bottom,
@@ -825,8 +571,9 @@ public class GuiDraw {
      * @param opaque solid shadow color
      * @param shadow gradient end color
      */
-    public static void drawDropShadow(Matrix4f pose, int x, int y, int w, int h, int oX, int oY,
+    public static void drawDropShadow(GuiGraphicsExtractor graphics, int x, int y, int w, int h, int oX, int oY,
                                       int opaque, int shadow) {
+        Matrix4f pose = new Matrix4f();
         float a1 = Color.getAlphaF(opaque);
         float r1 = Color.getRedF(opaque);
         float g1 = Color.getGreenF(opaque);
@@ -836,15 +583,7 @@ public class GuiDraw {
         float g2 = Color.getGreenF(shadow);
         float b2 = Color.getBlueF(shadow);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.QUADS);
 
         float x1 = x + w, y1 = y + h;
 
@@ -877,15 +616,13 @@ public class GuiDraw {
         buffer.addVertex(pose, x1, y, 0).setColor(r1, g1, b1, a1);
         buffer.addVertex(pose, x1, y1, 0).setColor(r1, g1, b1, a1);
         buffer.addVertex(pose, x1 + oX, y1 + oY, 0).setColor(r2, g2, b2, a2);
-
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.disableBlend();
+        buffer.submit(graphics);
     }
 
     public static void drawDropCircleShadow(GuiGraphicsExtractor graphics, int x, int y, int radius, int segments,
                                             int opaque, int shadow) {
-        Matrix4f pose = graphics.pose().last().pose();
-        Matrix4d poseD = new Matrix4d(pose);
+        if (segments < 3) throw new IllegalArgumentException("A circle needs at least three segments");
+        Matrix4f pose = new Matrix4f();
 
         float a1 = Color.getAlphaF(opaque);
         float r1 = Color.getRedF(opaque);
@@ -896,7 +633,7 @@ public class GuiDraw {
         float g2 = Color.getGreenF(shadow);
         float b2 = Color.getBlueF(shadow);
 
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(MUIRenderTypes.guiOverlayTriangleFan());
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.TRIANGLE_FAN);
         buffer.addVertex(pose, x, y, 0).setColor(r1, g1, b1, a1);
 
         Vector3f pos = new Vector3f();
@@ -904,6 +641,7 @@ public class GuiDraw {
             float a = i / (float) segments * TWO_PI - HALF_PI;
             circleVertex(buffer, pose, pos, x, Mth.cos(a), y, Mth.sin(a), radius).setColor(r2, g2, b2, a2);
         }
+        buffer.submit(graphics);
     }
 
     public static void drawDropCircleShadow(GuiGraphicsExtractor graphics, int x, int y, int radius, int offset, int segments,
@@ -912,7 +650,8 @@ public class GuiDraw {
             drawDropCircleShadow(graphics, x, y, radius, segments, opaque, shadow);
             return;
         }
-        Matrix4f pose = graphics.pose().last().pose();
+        if (segments < 3) throw new IllegalArgumentException("A circle needs at least three segments");
+        Matrix4f pose = new Matrix4f();
 
         float a1 = Color.getAlphaF(opaque);
         float r1 = Color.getRedF(opaque);
@@ -923,7 +662,7 @@ public class GuiDraw {
         float g2 = Color.getGreenF(shadow);
         float b2 = Color.getBlueF(shadow);
 
-        VertexConsumer buffer = graphics.bufferSource().getBuffer(MUIRenderTypes.guiOverlayTriangleFan());
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.TRIANGLE_FAN);
         /* Draw opaque base */
         buffer.addVertex(pose, x, y, 0).setColor(r1, g1, b1, a1);
 
@@ -934,7 +673,8 @@ public class GuiDraw {
         }
 
         /* Draw outer shadow */
-        buffer = graphics.bufferSource().getBuffer(RenderType.gui());
+        buffer.submit(graphics);
+        buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.QUADS);
 
         for (int i = 0; i < segments; i++) {
             float alpha1 = i / (float) segments * TWO_PI - HALF_PI;
@@ -950,6 +690,7 @@ public class GuiDraw {
             circleVertex(buffer, pose, pos, x, cosA1, y, sinA1, radius).setColor(r2, g2, b2, a2);
             circleVertex(buffer, pose, pos, x, cosA2, y, sinA2, radius).setColor(r2, g2, b2, a2);
         }
+        buffer.submit(graphics);
     }
 
     private static VertexConsumer circleVertex(VertexConsumer buffer, Matrix4f pose, Vector3f pos,
@@ -969,11 +710,14 @@ public class GuiDraw {
     @OnlyIn(Dist.CLIENT)
     public static void drawText(GuiGraphicsExtractor graphics, String text, float x, float y,
                                 float scale, int color, boolean shadow) {
-        graphics.pose().pushPose();
-        graphics.pose().scale(scale, scale, 0f);
-        float sf = 1 / scale;
-        graphics.drawString(Minecraft.getInstance().font, text, x * sf, y * sf, color, shadow);
-        graphics.pose().popPose();
+        graphics.pose().pushMatrix();
+        try {
+            graphics.pose().translate(x, y);
+            graphics.pose().scale(scale, scale);
+            graphics.text(Minecraft.getInstance().font, text, 0, 0, color, shadow);
+        } finally {
+            graphics.pose().popMatrix();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -985,11 +729,14 @@ public class GuiDraw {
     @OnlyIn(Dist.CLIENT)
     public static void drawText(GuiGraphicsExtractor graphics, FormattedCharSequence text, float x, float y, float scale,
                                 int color, boolean shadow) {
-        graphics.pose().pushPose();
-        graphics.pose().scale(scale, scale, 0f);
-        float sf = 1 / scale;
-        graphics.drawString(Minecraft.getInstance().font, text, x * sf, y * sf, color, shadow);
-        graphics.pose().popPose();
+        graphics.pose().pushMatrix();
+        try {
+            graphics.pose().translate(x, y);
+            graphics.pose().scale(scale, scale);
+            graphics.text(Minecraft.getInstance().font, text, 0, 0, color, shadow);
+        } finally {
+            graphics.pose().popMatrix();
+        }
     }
 
     @SuppressWarnings("UnstableApiUsage")

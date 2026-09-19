@@ -2,13 +2,10 @@ package brachy.modularui.drawable;
 
 import brachy.modularui.screen.viewport.GuiContext;
 
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.Identifier;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.joml.Matrix4f;
 
 import java.util.Objects;
 
@@ -63,146 +60,40 @@ public class AdaptableUITexture extends UITexture {
     }
 
     public void drawStretched(GuiContext context, float x, float y, float width, float height) {
-        Matrix4f pose = context.getLastGraphicsPose();
-
-        if (this.bl <= 0 && this.bt <= 0 && this.br <= 0 && this.bb <= 0) {
-            super.draw(context, x, y, width, height);
-            return;
-        }
-        if (this.nonOpaque) {
-            RenderSystem.enableBlend();
-        } else {
-            RenderSystem.disableBlend();
-        }
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.location);
-
-        float uBl = this.bl * 1f / this.imageWidth, uBr = this.br * 1f / this.imageWidth;
-        float vBt = this.bt * 1f / this.imageHeight, vBb = this.bb * 1f / this.imageHeight;
-        float x1 = x + width, y1 = y + height;
-        float uInnerStart = this.u0 + uBl, vInnerStart = this.v0 + vBt, uInnerEnd = this.u1 - uBr,
-                vInnerEnd = this.v1 - vBb;
-
-        if ((this.bl > 0 || this.br > 0) && this.bt <= 0 && this.bb <= 0) {
-            // left border
-            GuiDraw.drawTexture(pose, x, y, x + this.bl, y1, this.u0, this.v0, uInnerStart, this.v1);
-            // right border
-            GuiDraw.drawTexture(pose, x1 - this.br, y, x1, y1, uInnerEnd, this.v0, this.u1, this.v1);
-            // center
-            GuiDraw.drawTexture(pose, x + this.bl, y, x1 - this.br, y1, uInnerStart, this.v0, uInnerEnd, this.v1);
-        } else if (this.bl <= 0 && this.br <= 0) {
-            // top border
-            GuiDraw.drawTexture(pose, x, y, x1, y + this.bt, this.u0, this.v0, this.u1, vInnerStart);
-            // bottom border
-            GuiDraw.drawTexture(pose, x, y1 - this.bb, x1, y1, this.u0, vInnerEnd, this.u1, this.v1);
-            // center
-            GuiDraw.drawTexture(pose, x, y + this.bt, x1, y1 - this.bb, this.u0, vInnerStart, this.u1, vInnerEnd);
-        } else {
-            // top left corner
-            GuiDraw.drawTexture(pose, x, y, x + this.bl, y + this.bt, this.u0, this.v0, uInnerStart, vInnerStart);
-            // top right corner
-            GuiDraw.drawTexture(pose, x1 - this.br, y, x1, y + this.bt, uInnerEnd, this.v0, this.u1, vInnerStart);
-            // bottom left corner
-            GuiDraw.drawTexture(pose, x, y1 - this.bb, x + this.bl, y1, this.u0, vInnerEnd, uInnerStart, this.v1);
-            // bottom right corner
-            GuiDraw.drawTexture(pose, x1 - this.br, y1 - this.bb, x1, y1, uInnerEnd, vInnerEnd, this.u1, this.v1);
-
-            // left border
-            GuiDraw.drawTexture(pose, x, y + this.bt, x + this.bl, y1 - this.bb, this.u0, vInnerStart, uInnerStart,
-                    vInnerEnd);
-            // top border
-            GuiDraw.drawTexture(pose, x + this.bl, y, x1 - this.br, y + this.bt, uInnerStart, this.v0, uInnerEnd,
-                    vInnerStart);
-            // right border
-            GuiDraw.drawTexture(pose, x1 - this.br, y + this.bt, x1, y1 - this.bb, uInnerEnd, vInnerStart, this.u1,
-                    vInnerEnd);
-            // bottom border
-            GuiDraw.drawTexture(pose, x + this.bl, y1 - this.bb, x1 - this.br, y1, uInnerStart, vInnerEnd, uInnerEnd,
-                    this.v1);
-
-            // center
-            GuiDraw.drawTexture(pose, x + this.bl, y + this.bt, x1 - this.br, y1 - this.bb, uInnerStart, vInnerStart,
-                    uInnerEnd, vInnerEnd);
-        }
-        RenderSystem.disableBlend();
+        drawSlices(context, x, y, width, height, false);
     }
 
     public void drawTiled(GuiContext context, float x, float y, float width, float height) {
-        Matrix4f pose = context.getLastGraphicsPose();
+        drawSlices(context, x, y, width, height, true);
+    }
 
-        if (this.bl <= 0 && this.bt <= 0 && this.br <= 0 && this.bb <= 0) {
-            GuiDraw.drawTiledTexture(pose, this.location, x, y, width, height, this.u0, this.v0, this.u1, this.v1,
-                    this.imageWidth, this.imageHeight, 0);
-            return;
+    private void drawSlices(GuiContext context, float x, float y, float width, float height, boolean tile) {
+        if (width <= 0 || height <= 0) return;
+        float horizontalScale = this.bl + this.br == 0 ? 1 : Math.min(1, width / (this.bl + this.br));
+        float verticalScale = this.bt + this.bb == 0 ? 1 : Math.min(1, height / (this.bt + this.bb));
+        float[] xs = {x, x + this.bl * horizontalScale, x + width - this.br * horizontalScale, x + width};
+        float[] ys = {y, y + this.bt * verticalScale, y + height - this.bb * verticalScale, y + height};
+        float[] us = {this.u0, this.u0 + (float) this.bl / this.imageWidth,
+                this.u1 - (float) this.br / this.imageWidth, this.u1};
+        float[] vs = {this.v0, this.v0 + (float) this.bt / this.imageHeight,
+                this.v1 - (float) this.bb / this.imageHeight, this.v1};
+        var graphics = context.getGraphics();
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 3; column++) {
+                float sliceWidth = xs[column + 1] - xs[column];
+                float sliceHeight = ys[row + 1] - ys[row];
+                if (sliceWidth <= 0 || sliceHeight <= 0) continue;
+                if (tile) {
+                    int tileWidth = Math.max(1, Math.round((us[column + 1] - us[column]) * this.imageWidth));
+                    int tileHeight = Math.max(1, Math.round((vs[row + 1] - vs[row]) * this.imageHeight));
+                    GuiDraw.drawTiledTexture(graphics, this.location, xs[column], ys[row], sliceWidth, sliceHeight,
+                            us[column], vs[row], us[column + 1], vs[row + 1], tileWidth, tileHeight, this.nonOpaque);
+                } else {
+                    GuiDraw.drawTexture(graphics, this.location, xs[column], ys[row], xs[column + 1], ys[row + 1],
+                            us[column], vs[row], us[column + 1], vs[row + 1], this.nonOpaque);
+                }
+            }
         }
-        if (this.nonOpaque) {
-            RenderSystem.enableBlend();
-        } else {
-            RenderSystem.disableBlend();
-        }
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.location);
-
-        float uBl = this.bl * 1f / this.imageWidth, uBr = this.br * 1f / this.imageWidth;
-        float vBt = this.bt * 1f / this.imageHeight, vBb = this.bb * 1f / this.imageHeight;
-        float x1 = x + width, y1 = y + height;
-        float uInnerStart = this.u0 + uBl, vInnerStart = this.v0 + vBt, uInnerEnd = this.u1 - uBr,
-                vInnerEnd = this.v1 - vBb;
-
-        int tw = (int) (this.imageWidth * (this.u1 - this.u0));
-        int th = (int) (this.imageHeight * (this.v1 - this.v0));
-
-        if ((this.bl > 0 || this.br > 0) && this.bt <= 0 && this.bb <= 0) {
-            // left border
-            GuiDraw.drawTiledTexture(pose, x, y, this.bl, height, this.u0, this.v0, uInnerStart, this.v1, this.bl, th, 0);
-            // right border
-            GuiDraw.drawTiledTexture(pose, x1 - this.br, y, this.br, height, uInnerEnd, this.v0, this.u1, this.v1, this.br, th, 0);
-            // center
-            GuiDraw.drawTiledTexture(pose, x + this.bl, y, width - this.bl - this.br, height, uInnerStart, this.v0,
-                    uInnerEnd, this.v1, tw - this.bl - this.br, th, 0);
-        } else if (this.bl <= 0 && this.br <= 0) {
-            // top border
-            GuiDraw.drawTiledTexture(pose, x, y, width, this.bt, this.u0, this.v0, this.u1, vInnerStart, tw, this.bt,
-                    0);
-            // bottom border
-            GuiDraw.drawTiledTexture(pose, x, y1 - this.bb, width, this.bb, this.u0, vInnerEnd, this.u1, this.v1, tw,
-                    this.bb, 0);
-            // center
-            GuiDraw.drawTiledTexture(pose, x, y + this.bt, width, height - this.bt - this.bb, this.u0, vInnerStart,
-                    this.u1, vInnerEnd, tw, th - this.bt - this.bb, 0);
-        } else {
-            // top left corner
-            GuiDraw.drawTiledTexture(pose, x, y, this.bl, this.bt, this.u0, this.v0, uInnerStart, vInnerStart, this.bl,
-                    this.bt, 0);
-            // top right corner
-            GuiDraw.drawTiledTexture(pose, x1 - this.br, y, this.br, this.bt, uInnerEnd, this.v0, this.u1, vInnerStart,
-                    this.br, this.bt, 0);
-            // bottom left corner
-            GuiDraw.drawTiledTexture(pose, x, y1 - this.bb, this.bl, this.bb, this.u0, vInnerEnd, uInnerStart, this.v1,
-                    this.bl, this.bb, 0);
-            // bottom right corner
-            GuiDraw.drawTiledTexture(pose, x1 - this.br, y1 - this.bb, this.br, this.bb, uInnerEnd, vInnerEnd, this.u1,
-                    this.v1, this.br, this.bb, 0);
-
-            // left border
-            GuiDraw.drawTiledTexture(pose, x, y + this.bt, this.bl, height - this.bt - this.bb, this.u0, vInnerStart,
-                    uInnerStart, vInnerEnd, this.bl, th - this.bt - this.bb, 0);
-            // top border
-            GuiDraw.drawTiledTexture(pose, x + this.bl, y, width - this.bl - this.br, this.bt, uInnerStart, this.v0,
-                    uInnerEnd, vInnerStart, tw - this.bl - this.bb, this.bt, 0);
-            // right border
-            GuiDraw.drawTiledTexture(pose, x1 - this.br, y + this.bt, this.br, height - this.bt - this.bb, uInnerEnd,
-                    vInnerStart, this.u1, vInnerEnd, this.br, th - this.bt - this.bb, 0);
-            // bottom border
-            GuiDraw.drawTiledTexture(pose, x + this.bl, y1 - this.bb, width - this.bl - this.br, this.bb, uInnerStart,
-                    vInnerEnd, uInnerEnd, this.v1, tw - this.bl - this.br, this.bb, 0);
-
-            // center
-            GuiDraw.drawTiledTexture(pose, x + this.bl, y + this.bt, width - this.bl - this.br,
-                    height - this.bt - this.bb, uInnerStart, vInnerStart, uInnerEnd, vInnerEnd,
-                    tw - this.bl - this.br, th - this.bt - this.bb, 0);
-        }
-        RenderSystem.disableBlend();
     }
 
     @Override

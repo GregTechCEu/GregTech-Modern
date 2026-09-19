@@ -127,9 +127,8 @@ public class Rectangle implements IDrawable, IAnimatable<Rectangle> {
             float d = this.borderThickness;
             float x1 = x0 + width, y1 = y0 + height;
 
-            Matrix4f pose = context.getGraphics().pose().last().pose();
-            VertexConsumer bufferbuilder = context.getGraphics().bufferSource()
-                    .getBuffer(MUIRenderTypes.guiTriangleStrip());
+            Matrix4f pose = new Matrix4f();
+            var bufferbuilder = MUIRenderTypes.guiTriangleStrip();
             v(pose, bufferbuilder, x0, y0, this.colorTL);
             v(pose, bufferbuilder, x1 - d, y0 + d, this.colorTR);
             v(pose, bufferbuilder, x1, y0, this.colorTR);
@@ -140,6 +139,7 @@ public class Rectangle implements IDrawable, IAnimatable<Rectangle> {
             v(pose, bufferbuilder, x0 + d, y0 + d, this.colorTL);
             v(pose, bufferbuilder, x0, y0, this.colorTL);
             v(pose, bufferbuilder, x1 - d, y0 + d, this.colorTR);
+            bufferbuilder.submit(context.getGraphics());
         }
     }
 

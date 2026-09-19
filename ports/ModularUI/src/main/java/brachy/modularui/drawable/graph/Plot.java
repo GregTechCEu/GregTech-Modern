@@ -1,6 +1,5 @@
 package brachy.modularui.drawable.graph;
 
-import brachy.modularui.utils.MUIRenderTypes;
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.drawable.GuiDraw;
 import brachy.modularui.utils.Color;
@@ -8,9 +7,9 @@ import brachy.modularui.utils.Interpolations;
 import brachy.modularui.utils.math.DAM;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
-import com.mojang.blaze3d.systems.RenderSystem;
+import brachy.modularui.drawable.GuiShapeBuilder;
+import brachy.modularui.drawable.GuiShapeRenderState;
 
 import lombok.Getter;
 
@@ -170,12 +169,11 @@ public class Plot {
         int b = Color.getBlue(color);
         int a = Color.getAlpha(color);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        var pose = graphics.pose().last().pose();
-        var buffer = graphics.bufferSource().getBuffer(MUIRenderTypes.guiTriangleStrip());
+        var buffer = new GuiShapeBuilder(GuiShapeRenderState.Topology.TRIANGLE_STRIP);
         for (int i = 0; i < this.vertexBuffer.length; i += 2) {
-            buffer.addVertex(pose, this.vertexBuffer[i], this.vertexBuffer[i + 1], 0).setColor(r, g, b, a);
+            buffer.addVertex(this.vertexBuffer[i], this.vertexBuffer[i + 1], 0).setColor(r, g, b, a);
         }
+        buffer.submit(graphics);
     }
 
     public double[] getX() {

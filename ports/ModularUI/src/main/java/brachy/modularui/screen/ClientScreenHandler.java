@@ -53,7 +53,6 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ContainerScreenEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -422,7 +421,8 @@ public class ClientScreenHandler {
         return /* ModularUI.isBlurLoaded() || */Minecraft.getInstance().level == null;
     }
 
-    public static void drawDarkBackground(Screen screen, GuiGraphicsExtractor guiGraphics) {
+    public static void drawDarkBackground(Screen screen, GuiGraphicsExtractor guiGraphics,
+                                          int mouseX, int mouseY, float partialTick) {
         if (hasScreen()) {
             float alpha = currentScreen.getMainPanel().getAlpha();
             // vanilla color values as hex
@@ -434,7 +434,7 @@ public class ClientScreenHandler {
                     Color.withAlpha(color, (int) (startAlpha * alpha)),
                     Color.withAlpha(color, (int) (endAlpha * alpha)));
             // noinspection removal,UnstableApiUsage
-            NeoForge.EVENT_BUS.post(new ScreenEvent.BackgroundRendered(screen, guiGraphics));
+            NeoForge.EVENT_BUS.post(new ScreenEvent.Render.Background(screen, guiGraphics, mouseX, mouseY, partialTick));
         }
     }
 
@@ -454,7 +454,7 @@ public class ClientScreenHandler {
         muiScreen.render(graphics, mouseX, mouseY, partialTicks);
         RenderSystem.disableDepthTest();
         drawVanillaElements(graphics, mcScreen, mouseX, mouseY, partialTicks);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        Color.resetGlColor();
         Lighting.setupForFlatItems();
         muiScreen.drawForeground(graphics);
         RenderSystem.enableDepthTest();
@@ -494,7 +494,7 @@ public class ClientScreenHandler {
         graphics.pose().pushPose();
         graphics.pose().translate(x, y, 0);
         // noinspection UnstableApiUsage
-        NeoForge.EVENT_BUS.post(new ContainerScreenEvent.Render.Foreground(mcScreen, graphics, mouseX, mouseY));
+        NeoForge.EVENT_BUS.post(new ScreenEvent.Render.Foreground(mcScreen, graphics, mouseX, mouseY, partialTicks));
 
         AbstractContainerMenu menu = mcScreen.getMenu();
         ItemStack draggingItem = acc.getDraggingItem().isEmpty() ? menu.getCarried() : acc.getDraggingItem();

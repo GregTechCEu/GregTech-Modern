@@ -20,7 +20,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -148,11 +148,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         int r = 0, g = 0, b = 0;
         ratio = ratio * (1.0f / colors.length);
         for (int color : colors) {
-            r += FastColor.ARGB32.red(color) * ratio;
-            g += FastColor.ARGB32.green(color) * ratio;
-            b += FastColor.ARGB32.blue(color) * ratio;
+            r += ARGB.red(color) * ratio;
+            g += ARGB.green(color) * ratio;
+            b += ARGB.blue(color) * ratio;
         }
-        return FastColor.ARGB32.color(255, r, g, b);
+        return ARGB.color(255, r, g, b);
     }
 
     @Override

@@ -804,13 +804,7 @@ public class Color {
      */
     @OnlyIn(Dist.CLIENT)
     public static void setGlColor(int color) {
-        if (color == 0) {
-            RenderSystem.setShaderColor(0, 0, 0, 0);
-            return;
-        }
-        float a = getAlphaF(color);
-        if (a == 0) a = 1f;
-        RenderSystem.setShaderColor(getRedF(color), getGreenF(color), getBlueF(color), a);
+        brachy.modularui.drawable.GuiTint.set(color != 0 && getAlpha(color) == 0 ? color | 0xFF000000 : color);
     }
 
     /**
@@ -820,11 +814,7 @@ public class Color {
      */
     @OnlyIn(Dist.CLIENT)
     public static void setGlColorOpaque(int color) {
-        if (color == 0) {
-            RenderSystem.setShaderColor(0, 0, 0, 0);
-            return;
-        }
-        RenderSystem.setShaderColor(getRedF(color), getGreenF(color), getBlueF(color), 1f);
+        brachy.modularui.drawable.GuiTint.set(color == 0 ? 0 : color | 0xFF000000);
     }
 
     /**

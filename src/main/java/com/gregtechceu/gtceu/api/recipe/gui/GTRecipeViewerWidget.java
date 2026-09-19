@@ -181,7 +181,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     }
 
     private void attachDebugRecipeIDButton() {
-        childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
+        childIf(!FMLEnvironment.isProduction(), () -> new ButtonWidget<>()
                 .overlay(Text.str("ID"))
                 .decoration()
                 .bottom(3).right(3)

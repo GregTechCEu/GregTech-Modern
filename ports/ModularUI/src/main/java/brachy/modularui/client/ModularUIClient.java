@@ -37,6 +37,12 @@ import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterTextureAtlasesEvent;
+import net.minecraft.client.resources.model.AtlasManager;
+import net.minecraft.client.resources.metadata.gui.GuiMetadataSection;
+import java.util.Set;
+import brachy.modularui.drawable.GuiEntityPreviewState;
 
 import it.unimi.dsi.fastutil.floats.FloatUnaryOperator;
 import lombok.Getter;
@@ -58,6 +64,8 @@ public class ModularUIClient {
         modBus.addListener(this::registerScreens);
         modBus.addListener(this::onRegisterClientTooltipComponents);
         modBus.addListener(this::onRegisterAssetReloadListeners);
+        modBus.addListener(this::registerPreviewRenderers);
+        modBus.addListener(this::registerAtlases);
 
         IEventBus forgeBus = NeoForge.EVENT_BUS;
         forgeBus.addListener(this::onUnloadWorld);
@@ -70,6 +78,15 @@ public class ModularUIClient {
 
     protected void onPreInit(FMLConstructModEvent event) {
         TestHandler.onPreInit();
+    }
+
+    private void registerPreviewRenderers(RegisterPictureInPictureRenderersEvent event) {
+        event.register(GuiEntityPreviewState.class, GuiEntityPreviewRenderer::new);
+    }
+
+    private void registerAtlases(RegisterTextureAtlasesEvent event) {
+        event.register(new AtlasManager.AtlasConfig(GuiSpriteManager.LOCATION_GUI, GuiSpriteManager.ATLAS_ID,
+                false, Set.of(GuiMetadataSection.TYPE)));
     }
 
     protected void onInit(FMLCommonSetupEvent event) {
@@ -99,7 +116,6 @@ public class ModularUIClient {
 
     public void onRegisterAssetReloadListeners(AddClientReloadListenersEvent event) {
         event.addListener(ModularUI.id("themes"), ThemeManager.INSTANCE);
-        event.addListener(ModularUI.id("gui_sprites"), new GuiSpriteManager(Minecraft.getInstance().getTextureManager()));
     }
 
     private void onUnloadWorld(LevelEvent.Unload event) {

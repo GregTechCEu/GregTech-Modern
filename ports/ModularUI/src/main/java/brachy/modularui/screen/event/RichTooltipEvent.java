@@ -85,7 +85,16 @@ public class RichTooltipEvent {
         }
     }
 
-    public static class Color extends RenderTooltipEvent.Color {
+    public static class Color extends RenderTooltipEvent {
+
+        @Getter @Setter
+        private int backgroundStart;
+        @Getter @Setter
+        private int backgroundEnd;
+        @Getter @Setter
+        private int borderStart;
+        @Getter @Setter
+        private int borderEnd;
 
         @Getter
         private final IRichTextBuilder<?> tooltip;
@@ -93,7 +102,11 @@ public class RichTooltipEvent {
         public Color(@NotNull ItemStack stack, @NotNull GuiGraphicsExtractor graphics,
                      int x, int y, @NotNull Font font, int background, int borderStart, int borderEnd,
                      @NotNull List<ClientTooltipComponent> components, IRichTextBuilder<?> tooltip) {
-            super(stack, graphics, x, y, font, background, borderStart, borderEnd, components);
+            super(stack, graphics, x, y, font, components);
+            this.backgroundStart = background;
+            this.backgroundEnd = background;
+            this.borderStart = borderStart;
+            this.borderEnd = borderEnd;
             this.tooltip = tooltip;
         }
     }
