@@ -58,17 +58,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
             }
 
             @Override
-            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                ItemStack itemStack = super.insertItem(slot, stack, simulate);
-                if (!simulate) onEquipmentSlotChanged(null, List.of());
-                return itemStack;
-            }
-
-            @Override
-            public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                ItemStack itemStack = super.extractItem(slot, amount, simulate);
-                if (!simulate) onEquipmentSlotChanged(null, List.of());
-                return itemStack;
+            public void onContentsChanged(int slot) {
+                onEquipmentSlotChanged();
             }
         };
 
@@ -129,7 +120,16 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
                         .singletonSlotGroup()
                         .changeListener((oldStack, newStack, client, init) -> {
                             if (ItemStack.isSameItem(oldStack, newStack)) return;
-                            onEquipmentSlotChanged(guiData.getPlayer(), moduleSlots);
+                            var modular = GTCapabilityHelper.getModularItem(newStack);
+                            if (modular == null) {
+                                moduleSlots.forEach(Widget::background);
+                                return;
+                            };
+                            List<ItemModuleSlot> slots = modular.getSlots();
+                            for (int i = 0; i < slots.size() && i < moduleSlots.size(); i++) {
+                                ItemSlot slotWidget = moduleSlots.get(i);
+                                slotWidget.background(slots.get(i).getSlotTexture());
+                            }
                         })))
                 .child(new Grid()
                         .background()
@@ -151,34 +151,16 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         return modularItem.getSlots().size() <= slot;
     }
 
-    public void onEquipmentSlotChanged(@Nullable Player player, List<ItemSlot> slotWidgets) {
+    public void onEquipmentSlotChanged() {
         ItemStack stack = equipmentSlot.getStackInSlot(0);
         if (stack.isEmpty()) {
-            for (int i = 0; i < moduleSlots.getSlots(); i++) {
-                ItemStack out = moduleSlots.extractItem(i, Integer.MAX_VALUE, true);
-                if (out.isEmpty()) {
-                    continue;
-                }
-                out = moduleSlots.extractItem(i, Integer.MAX_VALUE, false);
-                out.shrink(1);
-                if (player != null && !player.getInventory().add(out)) {
-                    player.drop(out, true);
-                } else if (!out.isEmpty() && getLevel() != null) {
-                    Block.popResource(getLevel(), getBlockPos(), out);
-                }
-            }
-            slotWidgets.forEach(Widget::background);
+            moduleSlots.clear();
         } else {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) return;
             for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
                 var data = modularItem.getModuleContextForSlot(i);
                 moduleSlots.setStackInSlot(i, data == null ? ItemStack.EMPTY : data.getModuleItem());
-            }
-            List<ItemModuleSlot> slots = modularItem.getSlots();
-            for (int i = 0; i < slots.size() && i < slotWidgets.size(); i++) {
-                ItemSlot slotWidget = slotWidgets.get(i);
-                slotWidget.background(slots.get(i).getSlotTexture());
             }
         }
     }
