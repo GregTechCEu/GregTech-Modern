@@ -11,13 +11,13 @@ public class ModuleContext {
      * If this module is not applied to anything, this field is {@code null}.
      */
     @Getter
-    private ItemStack appliedTo;
+    private final ItemStack appliedTo;
 
     /**
      * The {@link IModularItem} capability of the item this module is attached to.
      */
     @Getter
-    private IModularItem modularItemStack;
+    private final IModularItem modularItemStack;
 
     /**
      * The persistent data for this module.<br>
@@ -53,6 +53,6 @@ public class ModuleContext {
                     .formatted(getModule().moduleDataClass(), data.getClass()));
         }
         this.data = data;
-        modularItemStack.saveModuleData();
+        modularItemStack.setData(modularItemStack.getData().withModuleInSlot(getData().getSlot(), getData()));
     }
 }

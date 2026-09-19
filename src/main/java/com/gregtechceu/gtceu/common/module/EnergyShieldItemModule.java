@@ -26,6 +26,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EnergyShieldItemModule extends TieredItemModule {
 
@@ -142,8 +143,24 @@ public class EnergyShieldItemModule extends TieredItemModule {
         }
 
         @Override
+        public ModuleData copy() {
+            return new EnergyShieldModuleData(slot, module, moduleItem.copy(), enabled, energyPercent);
+        }
+
+        @Override
         public ModuleData withEnabled(boolean enabled) {
             return new EnergyShieldModuleData(slot, module, moduleItem, enabled, energyPercent);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof EnergyShieldModuleData other)) return false;
+            return super.equals(obj) && energyPercent == other.energyPercent;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, energyPercent);
         }
     }
 }

@@ -17,6 +17,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostItemModule {
 
@@ -95,8 +96,24 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
         }
 
         @Override
+        public ModuleData copy() {
+            return new JumpBoostModuleData(slot, module, moduleItem.copy(), enabled, jumpBoost);
+        }
+
+        @Override
         public ModuleData withEnabled(boolean enabled) {
             return new JumpBoostModuleData(slot, module, moduleItem, enabled, jumpBoost);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof JumpBoostModuleData other)) return false;
+            return super.equals(obj) && jumpBoost == other.jumpBoost;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, jumpBoost);
         }
     }
 }

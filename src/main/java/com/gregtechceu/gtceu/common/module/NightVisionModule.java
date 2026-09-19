@@ -23,6 +23,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class NightVisionModule extends ItemModule {
 
@@ -139,19 +140,22 @@ public class NightVisionModule extends ItemModule {
                     nightVisionTimer);
         }
 
-        public ModuleData withNightVision(boolean nightVision) {
-            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
+        @Override
+        public ModuleData copy() {
+            return new NightVisionModuleData(slot, module, moduleItem.copy(), enabled, nightVision, toggleTimer,
                     nightVisionTimer);
         }
 
-        public ModuleData withToggleTimer(byte toggleTimer) {
-            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof NightVisionModuleData other)) return false;
+            return super.equals(obj) && nightVision == other.nightVision && toggleTimer == other.toggleTimer &&
+                    nightVisionTimer == other.nightVisionTimer;
         }
 
-        public ModuleData withNightVisionTimer(int nightVisionTimer) {
-            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, nightVision, toggleTimer, nightVisionTimer);
         }
     }
 }

@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.item.module.ItemModule;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -491,11 +491,9 @@ public class CommonEventListener {
             float amount = event.getAmount();
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            for (ItemModule module : modularItem.getModules()) {
-                var data = modularItem.getModuleContext(module);
-                if (data == null) continue;
-                if (!module.isEnabled(data)) continue;
-                amount = module.changeDamage(data, entity, amount, source);
+            for (ModuleContext data : modularItem.getAllModuleInstances()) {
+                if (!data.getModule().isEnabled(data)) continue;
+                amount = data.getModule().changeDamage(data, entity, amount, source);
             }
             event.setAmount(amount);
         }

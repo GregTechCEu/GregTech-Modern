@@ -14,14 +14,14 @@ public interface IModularItem {
      */
     List<ItemModuleSlot> getSlots();
 
-    void clearModules();
-
     @Nullable
     ModuleContext getModuleContextForSlot(int slot);
 
     List<ModuleContext> getAllModuleInstances();
 
-    List<ItemModule> getModules();
+    ModularItemData getData();
+
+    void setData(ModularItemData data);
 
     @Nullable
     ModuleContext getModuleContext(ItemModule module);
@@ -37,8 +37,6 @@ public interface IModularItem {
     void detach(ModuleContext data);
 
     void detach(int slot);
-
-    void saveModuleData();
 
     default void runForEachModule(BiConsumer<ItemModule, ModuleContext> consumer) {
         getAllModuleInstances().forEach(v -> consumer.accept(v.getModule(), v));

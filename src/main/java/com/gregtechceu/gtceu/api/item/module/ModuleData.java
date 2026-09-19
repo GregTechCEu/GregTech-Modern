@@ -9,9 +9,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
+import java.util.Objects;
+
 /**
  * The data for an item module attached to a specific item.<br>
- * This class and its inheritors must be immutable.
+ * This class and its inheritors must be immutable.<br>
+ * Equals and hashcode must be implemented by inheritors.
  */
 public abstract class ModuleData {
 
@@ -19,7 +22,7 @@ public abstract class ModuleData {
     public static final Codec<ModuleData> DISPATCH_CODEC = GTRegistries.ITEM_MODULES.codec()
             .dispatch("module", ModuleData::getModule, ItemModule::moduleDataCodec);
 
-    public static final Codec<ModuleData.BaseData> BASE_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).apply(instance, ModuleData.BaseData::new));
+    public static final Codec<BaseData> BASE_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).apply(instance, ModuleData.BaseData::new));
 
     public static <T extends ModuleData> Products.P4<RecordCodecBuilder.Mu<T>, Integer, ItemModule, ItemStack, Boolean> baseCodec(RecordCodecBuilder.Instance<T> instance) {
         return instance.group(
@@ -37,6 +40,9 @@ public abstract class ModuleData {
     @Getter
     protected final ItemModule module;
 
+    /**
+     * The ItemStack currently in this module slot. Should not be modified.
+     */
     @Getter
     protected final ItemStack moduleItem;
 
@@ -44,6 +50,23 @@ public abstract class ModuleData {
     protected final boolean enabled;
 
     public abstract ModuleData withEnabled(boolean enabled);
+
+    /**
+     * Must create a copy of most object fields, rather than using the same reference.
+     */
+    public abstract ModuleData copy();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ModuleData other)) return false;
+        return slot == other.slot && module.equals(other.module) && moduleItem.equals(other.moduleItem) &&
+                enabled == other.enabled;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(slot, module, moduleItem, enabled);
+    }
 
     public ModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
         this.slot = slot;
@@ -56,6 +79,11 @@ public abstract class ModuleData {
 
         public BaseData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
             super(slot, module, moduleItem, enabled);
+        }
+
+        @Override
+        public ModuleData copy() {
+            return new BaseData(slot, module, moduleItem.copy(), enabled);
         }
 
         @Override

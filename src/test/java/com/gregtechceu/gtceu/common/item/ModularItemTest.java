@@ -20,7 +20,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -28,10 +27,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
@@ -217,7 +214,8 @@ public class ModularItemTest {
         IElectricItem bufferBatteryElectricItem = GTCapabilityHelper.getElectricItem(bufferBattery);
         assert bufferBatteryElectricItem != null;
 
-        var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], GTItems.SENSOR_LuV.asStack(), false);
+        var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], GTItems.SENSOR_LuV.asStack(),
+                false);
         modular.attach(GTItemModules.BATTERY, GTItems.BATTERY_MV_LITHIUM.asStack(), false);
 
         assert wirelessModule != null;

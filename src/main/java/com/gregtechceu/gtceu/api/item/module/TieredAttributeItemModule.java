@@ -21,6 +21,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -204,6 +205,24 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
         @Override
         public ModuleData withEnabled(boolean enabled) {
             return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
+        }
+
+        @Override
+        public ModuleData copy() {
+            return new TieredAttributeModuleData(slot, module, moduleItem.copy(), enabled, modifierUUID,
+                    modifierAmount);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof TieredAttributeModuleData other)) return false;
+            return super.equals(obj) && modifierAmount == other.modifierAmount &&
+                    Objects.equals(modifierUUID, other.modifierUUID);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, modifierUUID, modifierAmount);
         }
     }
 }
