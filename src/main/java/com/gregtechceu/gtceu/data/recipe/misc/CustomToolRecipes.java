@@ -201,7 +201,7 @@ public final class CustomToolRecipes {
                         ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
                         "xPP", " SP", "S f",
                         'P', new MaterialEntry(TagPrefix.plate, material),
-                        'S', rod);
+                        'S', stick);
             }
         }
     }
