@@ -38,13 +38,6 @@ public class CreativeFlightModule extends ItemModule implements ITieredItemModul
         return Component.translatable("gtceu.module.creative_flight", 2048);
     }
 
-    private void setMayFly(LivingEntity entity, boolean mayFly) {
-        if (entity instanceof Player player) {
-            player.getAbilities().mayfly = mayFly;
-            if (!mayFly) player.getAbilities().flying = false;
-        }
-    }
-
     private boolean isFlying(LivingEntity entity) {
         if (entity instanceof Player player) {
             return player.getAbilities().flying;
