@@ -44,6 +44,9 @@ public abstract class ModuleData {
     @Getter
     protected final ItemModule module;
 
+    /**
+     * The ItemStack currently in this module slot. Should not be modified.
+     */
     @Getter
     protected final ItemStack moduleItem;
 
