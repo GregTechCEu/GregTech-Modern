@@ -4,8 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
+import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import appeng.api.stacks.AEFluidKey;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.addon.universal.FluidStorageProvider;
 import snownee.jade.api.Accessor;
@@ -72,11 +77,33 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
                 int capacity = storage.getCapacity();
                 list.add(JadeForgeUtils.fromFluidStack(stack, capacity));
             }
-            return list.isEmpty() ? List.of() : List.of(new ViewGroup<>(list));
+            return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
         } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferProxyPartMachine proxy) {
             var buffer = proxy.getBuffer();
             if (buffer == null) return Collections.emptyList();
             return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, proxy, b);
+        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEInputHatchPartMachine buffer) {
+            var tanks = ((ExportOnlyAEFluidList) buffer.tank).getInventory();
+            List<CompoundTag> list = new ArrayList<>(tanks.length);
+            for (var storage : tanks) {
+                var stack = storage.getFluid();
+                if (stack.isEmpty()) continue;
+                int capacity = storage.getFluidConfig().getAmount();
+                capacity = (capacity == 1 ? stack.getAmount() : capacity);
+                list.add(JadeForgeUtils.fromFluidStack(stack, capacity));
+            }
+            return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
+        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEOutputHatchPartMachine hatch) {
+            List<CompoundTag> list = new ArrayList<>();
+            var iterator = hatch.storageIterator();
+            while (iterator.hasNext()) {
+                var entry = iterator.next();
+                if (entry.getKey() instanceof AEFluidKey fluidKey) {
+                    FluidStack stack = fluidKey.toStack(GTMath.saturatedCast(entry.getLongValue()));
+                    list.add(JadeForgeUtils.fromFluidStack(stack, entry.getLongValue()));
+                }
+            }
+            return list.isEmpty() ? Collections.emptyList() : List.of(new ViewGroup<>(list));
         }
 
         return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, machine, b);
