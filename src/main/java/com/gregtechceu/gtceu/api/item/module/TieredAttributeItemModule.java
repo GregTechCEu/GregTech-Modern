@@ -19,10 +19,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 public abstract class TieredAttributeItemModule extends TieredItemModule {
 
@@ -46,20 +44,15 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     }
 
     private void attachAttribute(ModuleContext moduleContext) {
-        var data = moduleContext.getData(TieredAttributeModuleData.class);
-
-        if (data.getModifierID() != null) return;
-
         AttributeModifier attributeModifier = getAttributeModifier(moduleContext);
+        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
 
-        var modifiers = moduleContext.getAppliedTo().get(DataComponents.ATTRIBUTE_MODIFIERS);
-        if (modifiers == null) modifiers = new ItemAttributeModifiers(List.of(), true);
+        if (modifiers.modifiers().stream().anyMatch(v -> v.modifier().id().equals(getId()))) return;
+
         modifiers = modifiers.withModifierAdded(getAttribute(moduleContext), attributeModifier,
                 EquipmentSlotGroup.bySlot(getSlot(moduleContext.getAppliedTo())));
-        moduleContext.getAppliedTo().set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
 
-        moduleContext.setData(moduleContext.getData(TieredAttributeModuleData.class));
-        moduleContext.setData(data.withModifierID(attributeModifier.id()));
+        moduleContext.getAppliedTo().set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
     }
 
     private EquipmentSlot getSlot(ItemStack stack) {
@@ -69,21 +62,15 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     }
 
     private void detachAttribute(ModuleContext moduleContext) {
-        var data = moduleContext.getData(TieredAttributeModuleData.class);
-
-        ResourceLocation id = data.getModifierID();
-
-        var modifiers = moduleContext.getAppliedTo().get(DataComponents.ATTRIBUTE_MODIFIERS);
+        var modifiers = moduleContext.getAppliedTo().getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
 
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-        if (modifiers != null) modifiers.modifiers().forEach(v -> {
-            if (v.modifier().id().equals(id)) return;
+        modifiers.modifiers().forEach(v -> {
+            if (v.modifier().id().equals(getId())) return;
             builder.add(v.attribute(), v.modifier(), v.slot());
         });
 
         moduleContext.getAppliedTo().set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
-
-        moduleContext.setData(data.withModifierID(null));
     }
 
     protected double getNeutralModifier(ModuleContext moduleContext) {
@@ -167,59 +154,48 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     public static class TieredAttributeModuleData extends ModuleData {
 
         // spotless:off
-        public static final MapCodec<TieredAttributeModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(instance.group(
-                ResourceLocation.CODEC.optionalFieldOf("modifier_uuid").forGetter(TieredAttributeModuleData::getModifierIDOptional),
+        public static final MapCodec<TieredAttributeModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(
                 Codec.DOUBLE.fieldOf("modifier_amount").forGetter(TieredAttributeModuleData::getModifierAmount)
-        )).apply(instance, TieredAttributeModuleData::new));
+        ).apply(instance, TieredAttributeModuleData::new));
         //spotless:on
-
-        @Getter
-        private final @Nullable ResourceLocation modifierID;
 
         @Getter
         private final double modifierAmount;
 
-        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
-                                         Optional<ResourceLocation> modifierID, double modifierAmount) {
-            super(slot, module, moduleItem, enabled);
-            this.modifierID = modifierID.orElse(null);
-            this.modifierAmount = modifierAmount;
-        }
 
-        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
-                                         @Nullable ResourceLocation modifierID, double modifierAmount) {
+        public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, double modifierAmount) {
             super(slot, module, moduleItem, enabled);
-            this.modifierID = modifierID;
             this.modifierAmount = modifierAmount;
         }
 
         public TieredAttributeModuleData(int slot, ItemModule module, ItemStack moduleItem, double modifierAmount) {
             super(slot, module, moduleItem, true);
-            this.modifierID = null;
             this.modifierAmount = modifierAmount;
         }
 
-        public Optional<ResourceLocation> getModifierIDOptional() {
-            return Optional.ofNullable(modifierID);
-        }
-
-        public TieredAttributeModuleData withModifierID(@Nullable ResourceLocation modifierID) {
-            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierID, modifierAmount);
-        }
-
         public TieredAttributeModuleData withModifierAmount(double modifierAmount) {
-            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierID, modifierAmount);
+            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
         }
 
         @Override
         public ModuleData copy() {
-            return new TieredAttributeModuleData(slot, module, moduleItem.copy(), enabled, modifierID, modifierAmount);
+            return new TieredAttributeModuleData(slot, module, moduleItem.copy(), enabled, modifierAmount);
         }
 
         @Override
         public ModuleData withEnabled(boolean enabled) {
-            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierID, modifierAmount);
+            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof TieredAttributeModuleData other)) return false;
+            return super.equals(obj) && modifierAmount == other.modifierAmount;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, modifierAmount);
         }
     }
 }

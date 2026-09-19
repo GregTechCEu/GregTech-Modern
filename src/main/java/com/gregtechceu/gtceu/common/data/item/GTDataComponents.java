@@ -75,7 +75,7 @@ public class GTDataComponents {
                     .networkSynchronized(ItemEnchantments.STREAM_CODEC)
                     .cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModularItemData>> MODULAR_ITEM_DATA = DATA_COMPONENTS
-            .registerComponentType("modular_item_data", builder -> builder.persistent(ModularItemData.DATA_CODEC));
+            .registerComponentType("modular_item_data", builder -> builder.persistent(ModularItemData.CODEC));
 
     // Material-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Material>> ITEM_MATERIAL = DATA_COMPONENTS

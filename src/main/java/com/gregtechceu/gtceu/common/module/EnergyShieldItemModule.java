@@ -27,6 +27,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EnergyShieldItemModule extends TieredItemModule {
 
@@ -127,15 +128,17 @@ public class EnergyShieldItemModule extends TieredItemModule {
          * A double from 0 to 1. Determines the max percentage of energy the shield will deplete.
          */
         @Getter
-        private final double energyPercent = 0.75d;
+        private final double energyPercent;
 
         public EnergyShieldModuleData(int slot, ItemModule module, ItemStack moduleItem) {
             super(slot, module, moduleItem, true);
+            this.energyPercent = 0.75d;
         }
 
         public EnergyShieldModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
                                       double energyPercent) {
             super(slot, module, moduleItem, enabled);
+            this.energyPercent = energyPercent;
         }
 
         public EnergyShieldModuleData withEnergyPercent(double percent) {
@@ -150,6 +153,17 @@ public class EnergyShieldItemModule extends TieredItemModule {
         @Override
         public ModuleData withEnabled(boolean enabled) {
             return new EnergyShieldModuleData(slot, module, moduleItem, enabled, energyPercent);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof EnergyShieldModuleData other)) return false;
+            return super.equals(obj) && energyPercent == other.energyPercent;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, energyPercent);
         }
     }
 }

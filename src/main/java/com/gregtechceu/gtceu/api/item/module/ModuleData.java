@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.Products;
@@ -9,6 +12,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+
+import java.util.Objects;
 
 /**
  * The data for an item module attached to a specific item.<br>
@@ -27,7 +32,7 @@ public abstract class ModuleData {
         return instance.group(
                 Codec.INT.fieldOf("slot").forGetter(ModuleData::getSlot),
                 GTRegistries.ITEM_MODULES.byNameCodec().fieldOf("module").forGetter(ModuleData::getModule),
-                ItemStack.CODEC.fieldOf("moduleItem").forGetter(ModuleData::getModuleItem),
+                ItemStack.OPTIONAL_CODEC.fieldOf("moduleItem").forGetter(ModuleData::getModuleItem),
                 Codec.BOOL.fieldOf("enabled").forGetter(ModuleData::isEnabled)
         );
     }
@@ -51,6 +56,17 @@ public abstract class ModuleData {
      * Must create a copy of most object fields, rather than using the same reference.
      */
     public abstract ModuleData copy();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ModuleData other)) return false;
+        return slot == other.slot && module.equals(other.module) && moduleItem.equals(other.moduleItem) && enabled == other.enabled;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(slot, module, moduleItem, enabled);
+    }
 
     public ModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
         this.slot = slot;

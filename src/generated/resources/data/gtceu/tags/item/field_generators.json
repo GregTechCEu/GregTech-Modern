@@ -9,23 +9,23 @@
     "gtceu:zpm_field_generator",
     "gtceu:uv_field_generator",
     {
-      "id": "gtceu:uhv_field_generator",
+      "id": "gtceu:uhv_electric_piston",
       "required": false
     },
     {
-      "id": "gtceu:uev_field_generator",
+      "id": "gtceu:uev_electric_piston",
       "required": false
     },
     {
-      "id": "gtceu:uiv_field_generator",
+      "id": "gtceu:uiv_electric_piston",
       "required": false
     },
     {
-      "id": "gtceu:uxv_field_generator",
+      "id": "gtceu:uxv_electric_piston",
       "required": false
     },
     {
-      "id": "gtceu:opv_field_generator",
+      "id": "gtceu:opv_electric_piston",
       "required": false
     }
   ]

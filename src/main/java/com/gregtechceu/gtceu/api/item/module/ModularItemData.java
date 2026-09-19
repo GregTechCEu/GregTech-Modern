@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ModularItemData {
 
     // spotless:off
-    public static final Codec<ModularItemData> DATA_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<ModularItemData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(ModuleData.DISPATCH_CODEC).fieldOf("modules").forGetter(ModularItemData::getModules)
     ).apply(instance, ModularItemData::new));
     //spotless:on

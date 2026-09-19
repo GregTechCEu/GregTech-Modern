@@ -30,6 +30,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class AutoChargeItemModule extends TieredItemModule {
@@ -85,9 +86,11 @@ public class AutoChargeItemModule extends TieredItemModule {
         MetaMachine machine = getLinkedMachine(player.getServer(), moduleContext);
         if (machine == null) return 0;
         int interdimensionalTier = -1;
-        Holder<ItemModule>[] damageBlock = GTItemModules.DAMAGE_BLOCK;
+        @Nullable Holder<ItemModule>[] damageBlock = GTItemModules.DAMAGE_BLOCK;
         for (int i = 0; i < damageBlock.length; i++) {
-            ItemModule shieldModule = damageBlock[i].value();
+            var module = damageBlock[i];
+            if (module == null) continue;
+            ItemModule shieldModule = module.value();
             IModularItem modularItem = GTCapabilityHelper.getModularItem(moduleContext.getAppliedTo());
             if (modularItem != null && modularItem.getModuleContext(shieldModule) != null)
                 interdimensionalTier = i + 1;
@@ -179,6 +182,17 @@ public class AutoChargeItemModule extends TieredItemModule {
         @Override
         public ModuleData copy() {
             return new AutoChargeModuleData(slot, module, moduleItem.copy(), enabled, linkedPos);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof AutoChargeModuleData other)) return false;
+            return super.equals(obj) && Objects.equals(linkedPos, other.linkedPos);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slot, module, moduleItem, enabled, linkedPos);
         }
     }
 }

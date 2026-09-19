@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TieredItemModule extends ItemModule implements ITieredItemModule {
 
@@ -16,7 +17,7 @@ public abstract class TieredItemModule extends ItemModule implements ITieredItem
     private final int tier;
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
-    private Holder<ItemModule>[] otherTierModules;
+    private @Nullable Holder<ItemModule>[] otherTierModules;
 
     public TieredItemModule(ResourceLocation id, int tier) {
         super(id);
@@ -27,8 +28,10 @@ public abstract class TieredItemModule extends ItemModule implements ITieredItem
     public boolean canApplyTo(ItemStack stack) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
         if (modularItem == null) return false;
-        for (Holder<ItemModule> module : otherTierModules)
+        for (Holder<ItemModule> module : otherTierModules) {
+            if (module == null) continue;
             if (modularItem.getModuleContext(module.value()) != null) return false;
+        }
         return super.canApplyTo(stack);
     }
 }

@@ -64,14 +64,13 @@ public class ModuleRecipeWidget extends Flow {
 
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.getFirst());
         assert defaultModularItem != null;
-        defaultModularItem.attach(module, moduleItems[0], false);
         ModuleContext defaultAppliedModule = defaultModularItem.getModuleContext(module);
         if (defaultAppliedModule == null) {
             GTCEu.LOGGER.error("Failed to attach default module to modular item preview in EMI for module {}. " +
                     "This means that the module's attachment predicate doesn't allow it to be attached to a completely empty modular item.",
                     module.getId());
             return Flow.col();
-        } ;
+        }
         // noinspection UnstableApiUsage
         return Flow.col()
                 .coverChildrenHeight()
@@ -111,7 +110,10 @@ public class ModuleRecipeWidget extends Flow {
 
     private static ItemStack[] getEquipment(EquipmentFoundryRecipe recipe, ItemModule module) {
         return Arrays.stream(recipe.getEquipment().getItems())
-                .filter(stack -> stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM) != null)
+                .filter(stack -> {
+                    var cap = stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM);
+                    return cap != null && cap.attach(module, ItemStack.EMPTY, true) != null;
+                })
                 .toArray(ItemStack[]::new);
     }
 
