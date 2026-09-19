@@ -39,7 +39,7 @@ public class FTBChunksClientMixin {
                            to = @At(value = "INVOKE",
                                     target = "Ldev/ftb/mods/ftbchunks/api/client/icon/MapIcon;draw(Ldev/ftb/mods/ftbchunks/api/client/icon/MapType;Lnet/minecraft/client/gui/GuiGraphics;IIIIZI)V")))
     private void gtceu$injectRenderHud(GuiGraphics graphics, DeltaTracker tickDelta, CallbackInfo ci,
-                                       @Local MapIcon icon) {
+                                       @Local(name = "icon") MapIcon icon) {
         if (gtceu$iconCheck) {
             RenderSystem.enableDepthTest();
             RenderSystem.depthFunc(GL11.GL_GEQUAL);
@@ -56,8 +56,8 @@ public class FTBChunksClientMixin {
             remap = false)
     private void gtceu$saveLocals(GuiGraphics graphics, DeltaTracker tickDelta, CallbackInfo ci,
                                   @Local(name = "icon") MapIcon icon,
-                                  @Local(ordinal = 6, name = "minimapRotation") float minimapRotation,
-                                  @Local(ordinal = 1, name = "d") double d) {
+                                  @Local(name = "minimapRotation") float minimapRotation,
+                                  @Local(name = "d") double d) {
         gtceu$iconCheck = icon instanceof FluidVeinIcon;
         gtceu$d = d;
         gtceu$minimapRotation = minimapRotation;
@@ -84,7 +84,7 @@ public class FTBChunksClientMixin {
                      shift = At.Shift.AFTER),
             remap = false)
     private void gtceu$injectRenderHudPost(GuiGraphics graphics, DeltaTracker tickDelta, CallbackInfo ci,
-                                           @Local MapIcon icon) {
+                                           @Local(name = "icon") MapIcon icon) {
         if (gtceu$iconCheck) {
             RenderSystem.disableDepthTest();
             RenderSystem.depthFunc(GL11.GL_LEQUAL);

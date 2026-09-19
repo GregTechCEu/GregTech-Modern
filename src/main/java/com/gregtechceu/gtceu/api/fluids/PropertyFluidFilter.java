@@ -38,7 +38,7 @@ public class PropertyFluidFilter implements IPropertyFluidFilter {
     }
 
     @Override
-    public boolean canContain(@NotNull FluidState state) {
+    public boolean canContain(@NotNull MaterialFluidState state) {
         return switch (state) {
             case LIQUID -> true;
             case GAS -> gasProof;

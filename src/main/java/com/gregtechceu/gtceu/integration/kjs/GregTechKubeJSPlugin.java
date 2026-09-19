@@ -32,7 +32,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndic
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -259,7 +259,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("GTFluidAttributes", FluidAttributes.class);
         event.add("GTFluidBuilder", FluidBuilder.class);
         event.add("GTFluidStorageKeys", FluidStorageKeys.class);
-        event.add("GTFluidState", FluidState.class);
+        event.add("GTFluidState", MaterialFluidState.class);
+        event.add("MaterialFluidState", MaterialFluidState.class);
         event.add("GTMaterialIconSet", MaterialIconSet.class);
         event.add("GTMaterialIconType", MaterialIconType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);

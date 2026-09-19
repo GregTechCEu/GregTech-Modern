@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
@@ -238,7 +238,7 @@ public class MixinHelpers {
                     fluidIdTag = ResourceLocation.fromNamespaceAndPath("c", fluidIdTag.getPath());
                     tagMap.computeIfAbsent(fluidIdTag, path -> new ArrayList<>()).add(entry);
 
-                    FluidState state;
+                    MaterialFluidState state;
                     if (fluid instanceof GTFluid gtFluid) {
                         state = gtFluid.getState();
                     } else {
