@@ -68,7 +68,7 @@ public class FluidBuilder {
     private final Collection<FluidAttribute> attributes = new ArrayList<>();
 
     @Setter
-    private FluidState state = FluidState.LIQUID;
+    private MaterialFluidState state = MaterialFluidState.LIQUID;
     private int temperature = INFER_TEMPERATURE;
     private int color = INFER_COLOR;
     private boolean isColorEnabled = true;
@@ -303,7 +303,7 @@ public class FluidBuilder {
             if (key.getDefaultFluidState() != null) {
                 state = key.getDefaultFluidState();
             } else {
-                state = FluidState.LIQUID; // default fallback
+                state = MaterialFluidState.LIQUID; // default fallback
             }
         }
 
@@ -450,12 +450,12 @@ public class FluidBuilder {
 
     private void determineLuminosity(Material material) {
         if (luminosity != INFER_LUMINOSITY) return;
-        if (state == FluidState.PLASMA) {
+        if (state == MaterialFluidState.PLASMA) {
             luminosity = 15;
         } else {
             if (material.hasFlag(MaterialFlags.PHOSPHORESCENT)) {
                 luminosity = 15;
-            } else if (state == FluidState.LIQUID && material.hasProperty(PropertyKey.DUST)) {
+            } else if (state == MaterialFluidState.LIQUID && material.hasProperty(PropertyKey.DUST)) {
                 // liquids only glow if not phosphorescent
                 luminosity = 10;
             } else {

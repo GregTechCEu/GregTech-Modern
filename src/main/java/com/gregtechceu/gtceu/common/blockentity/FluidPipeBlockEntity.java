@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -260,14 +260,14 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         boolean melting = false;
 
         if (fluid instanceof GTFluid attributedFluid) {
-            FluidState state = attributedFluid.getState();
+            MaterialFluidState state = attributedFluid.getState();
             if (!prop.canContain(state)) {
-                leaking = state == FluidState.GAS;
-                melting = state == FluidState.PLASMA;
+                leaking = state == MaterialFluidState.GAS;
+                melting = state == MaterialFluidState.PLASMA;
             }
 
             // carrying plasmas which are too hot when plasma proof does not burn pipes
-            if (burning && state == FluidState.PLASMA && prop.canContain(FluidState.PLASMA)) {
+            if (burning && state == MaterialFluidState.PLASMA && prop.canContain(MaterialFluidState.PLASMA)) {
                 burning = false;
             }
 

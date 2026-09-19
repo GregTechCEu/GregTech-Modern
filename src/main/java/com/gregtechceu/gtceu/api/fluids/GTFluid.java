@@ -42,11 +42,11 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
     @Getter
     private final Collection<FluidAttribute> attributes = new ObjectLinkedOpenHashSet<>();
     @Getter
-    private final com.gregtechceu.gtceu.api.fluids.FluidState state;
+    private final MaterialFluidState state;
     @Getter
     private final int burnTime;
 
-    public GTFluid(com.gregtechceu.gtceu.api.fluids.FluidState state, int burnTime,
+    public GTFluid(MaterialFluidState state, int burnTime,
                    BaseFlowingFluid.Properties properties) {
         super(properties);
         this.state = state;
@@ -378,7 +378,7 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
 
     public static class Source extends GTFluid {
 
-        public Source(com.gregtechceu.gtceu.api.fluids.FluidState state, int burnTime,
+        public Source(MaterialFluidState state, int burnTime,
                       BaseFlowingFluid.Properties properties) {
             super(state, burnTime, properties);
         }
@@ -396,7 +396,7 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
 
     public static class Flowing extends GTFluid {
 
-        public Flowing(com.gregtechceu.gtceu.api.fluids.FluidState state, int burnTime,
+        public Flowing(MaterialFluidState state, int burnTime,
                        BaseFlowingFluid.Properties properties) {
             super(state, burnTime, properties);
             registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));

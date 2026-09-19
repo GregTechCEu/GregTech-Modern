@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.fluids.store;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.MaterialFluidState;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +32,7 @@ public final class FluidStorageKey {
     private final Function<Material, String> translationKeyFunction;
     private final int hashCode;
     @Getter
-    private final @Nullable FluidState defaultFluidState;
+    private final @Nullable MaterialFluidState defaultFluidState;
     @Getter
     private final int registrationPriority;
 
@@ -40,7 +40,7 @@ public final class FluidStorageKey {
                            MaterialIconType iconType,
                            Function<@NotNull Material, @NotNull String> registryNameFunction,
                            Function<@NotNull Material, @NotNull String> translationKeyFunction,
-                           @Nullable FluidState defaultFluidState, int registrationPriority) {
+                           @Nullable MaterialFluidState defaultFluidState, int registrationPriority) {
         this.resourceLocation = resourceLocation;
         this.extraTag = extraTag;
         this.iconType = iconType;
@@ -59,7 +59,7 @@ public final class FluidStorageKey {
                            MaterialIconType iconType,
                            Function<@NotNull Material, @NotNull String> registryNameFunction,
                            Function<@NotNull Material, @NotNull String> translationKeyFunction,
-                           @Nullable FluidState defaultFluidState, int registrationPriority) {
+                           @Nullable MaterialFluidState defaultFluidState, int registrationPriority) {
         this(resourceLocation, TagUtil.createFluidTag(tagKey), iconType,
                 registryNameFunction, translationKeyFunction,
                 defaultFluidState, registrationPriority);
@@ -68,7 +68,7 @@ public final class FluidStorageKey {
     public FluidStorageKey(ResourceLocation resourceLocation, MaterialIconType iconType,
                            Function<@NotNull Material, @NotNull String> registryNameFunction,
                            Function<@NotNull Material, @NotNull String> translationKeyFunction,
-                           @Nullable FluidState defaultFluidState, int registrationPriority) {
+                           @Nullable MaterialFluidState defaultFluidState, int registrationPriority) {
         this(resourceLocation, (TagKey<Fluid>) null, iconType,
                 registryNameFunction, translationKeyFunction,
                 defaultFluidState, registrationPriority);
