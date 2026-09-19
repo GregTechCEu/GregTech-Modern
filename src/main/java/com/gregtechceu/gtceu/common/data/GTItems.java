@@ -1889,7 +1889,7 @@ public class GTItems {
 
     public static ItemEntry<ModularArmorItem> NANO_CHESTPLATE = REGISTRATE
             .item("nanomuscle_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE.value(), ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
             .lang("NanoMuscle™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
@@ -1898,7 +1898,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> NANO_LEGGINGS = REGISTRATE
             .item("nanomuscle_leggings",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE.value(), ArmorItem.Type.LEGGINGS, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.LEGGINGS, p))
             .lang("NanoMuscle™ Suite Leggings")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
@@ -1907,7 +1907,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> NANO_BOOTS = REGISTRATE
             .item("nanomuscle_boots",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE.value(), ArmorItem.Type.BOOTS, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.BOOTS, p))
             .lang("NanoMuscle™ Suite Boots")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .tag(ItemTags.FOOT_ARMOR)
@@ -1916,7 +1916,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> NANO_HELMET = REGISTRATE
             .item("nanomuscle_helmet",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE.value(), ArmorItem.Type.HELMET, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.NANO_MUSCLE, ArmorItem.Type.HELMET, p))
             .lang("NanoMuscle™ Suite Helmet")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .transform(addArmorClientExtensions())
@@ -1993,7 +1993,7 @@ public class GTItems {
 
     public static ItemEntry<ModularArmorItem> QUANTUM_CHESTPLATE = REGISTRATE
             .item("quarktech_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH.value(), ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
             .lang("QuarkTech™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -2004,7 +2004,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> QUANTUM_LEGGINGS = REGISTRATE
             .item("quarktech_leggings",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH.value(), ArmorItem.Type.LEGGINGS, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.LEGGINGS, p))
             .lang("QuarkTech™ Suite Leggings")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -2014,7 +2014,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> QUANTUM_BOOTS = REGISTRATE
             .item("quarktech_boots",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH.value(), ArmorItem.Type.BOOTS, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.BOOTS, p))
             .lang("QuarkTech™ Suite Boots")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -2025,7 +2025,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> QUANTUM_HELMET = REGISTRATE
             .item("quarktech_helmet",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH.value(), ArmorItem.Type.HELMET, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.QUARK_TECH, ArmorItem.Type.HELMET, p))
             .lang("QuarkTech™ Suite Helmet")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -2072,7 +2072,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
             .item("advanced_nanomuscle_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.ADVANCED_NANO_MUSCLE.value(), ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.ADVANCED_NANO_MUSCLE, ArmorItem.Type.CHESTPLATE, p))
             .lang("Advanced NanoMuscle™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.RARE))
             .transform(addArmorClientExtensions())
@@ -2082,7 +2082,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ModularArmorItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE
             .item("advanced_quarktech_chestplate",
-                    (p) -> new ModularArmorItem(GTArmorMaterials.ADVANCED_QUARK_TECH.value(), ArmorItem.Type.CHESTPLATE, p))
+                    (p) -> new ModularArmorItem(GTArmorMaterials.ADVANCED_QUARK_TECH, ArmorItem.Type.CHESTPLATE, p))
             .lang("Advanced QuarkTech™ Suite Chestplate")
             .properties(p -> p.rarity(Rarity.EPIC))
             .transform(addArmorClientExtensions())

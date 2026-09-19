@@ -9,12 +9,14 @@ import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -30,7 +32,7 @@ import java.util.List;
 public class EnergyShieldItemModule extends TieredItemModule {
 
     @Override
-    public Codec<? extends ModuleData> moduleDataCodec() {
+    public MapCodec<? extends ModuleData> moduleDataCodec() {
         return EnergyShieldModuleData.CODEC;
     }
 
@@ -92,9 +94,9 @@ public class EnergyShieldItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.damage_block",
                 GTValues.VNF[getTier()]));
     }
@@ -117,7 +119,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
     public static class EnergyShieldModuleData extends ModuleData {
 
         // spotless:off
-        public static final Codec<EnergyShieldModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
+        public static final MapCodec<EnergyShieldModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(
                 Codec.DOUBLE.fieldOf("energyPercent").forGetter(EnergyShieldModuleData::getEnergyPercent)
         ).apply(instance, EnergyShieldModuleData::new));
         //spotless:on
@@ -126,7 +128,7 @@ public class EnergyShieldItemModule extends TieredItemModule {
          * A double from 0 to 1. Determines the max percentage of energy the shield will deplete.
          */
         @Getter
-        private double energyPercent = 0.75d;
+        private final double energyPercent = 0.75d;
 
         public EnergyShieldModuleData(int slot, ItemModule module, ItemStack moduleItem) {
             super(slot, module, moduleItem, true);
@@ -139,6 +141,11 @@ public class EnergyShieldItemModule extends TieredItemModule {
 
         public EnergyShieldModuleData withEnergyPercent(double percent) {
             return new EnergyShieldModuleData(slot, module, moduleItem, enabled, percent);
+        }
+
+        @Override
+        public ModuleData copy() {
+            return new EnergyShieldModuleData(slot, module, moduleItem.copy(), enabled, energyPercent);
         }
 
         @Override

@@ -2,15 +2,18 @@ package com.gregtechceu.gtceu.common.module;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
+import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.api.item.module.ArmorLogicItemModule;
 import com.gregtechceu.gtceu.api.item.module.ITieredItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.armor.AdvancedJetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
@@ -47,9 +50,9 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.jetpack",
                         moduleContext.getModuleItem().getHoverName()));
@@ -59,7 +62,7 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {
         return super.getSettings(moduleContext, psm, id)
                 .bool(Text.lang("metaarmor.hud.hover_mode"),
-                        () -> moduleContext.getAppliedTo().getOrCreateTag().getBoolean("hover"),
-                        b -> moduleContext.getAppliedTo().getOrCreateTag().putBoolean("hover", b));
+                        () -> moduleContext.getAppliedTo().getOrDefault(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY).hover(),
+                        b -> moduleContext.getAppliedTo().update(GTDataComponents.ARMOR_DATA, GTArmor.EMPTY, v -> v.setHover(b)));
     }
 }

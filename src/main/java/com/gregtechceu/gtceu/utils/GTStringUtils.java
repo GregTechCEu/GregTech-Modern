@@ -3,10 +3,7 @@ package com.gregtechceu.gtceu.utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -192,15 +189,6 @@ public class GTStringUtils {
             if (n >= i && max < i) max = i;
         }
         return "%.2f%s".formatted(((double) n) / max, suffixes.get(max));
-    }
-
-    public static MutableComponent toComponent(FormattedCharSequence charSequence) {
-        MutableComponent component = MutableComponent.create(ComponentContents.EMPTY);
-        charSequence.accept((pos, style, codePoint) -> {
-            component.append(Component.literal(Character.toString(codePoint)).withStyle(style));
-            return true;
-        });
-        return component;
     }
 
     public static String getPropertyValueString(Map.Entry<Property<?>, Comparable<?>> entry) {

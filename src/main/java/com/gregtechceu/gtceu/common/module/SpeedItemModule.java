@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -56,9 +57,9 @@ public class SpeedItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.speed", GTValues.VNF[getTier()]));
     }
 

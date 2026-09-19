@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.module.*;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -25,7 +27,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     }
 
     @Override
-    public Codec<? extends ModuleData> moduleDataCodec() {
+    public MapCodec<? extends ModuleData> moduleDataCodec() {
         return JumpBoostModuleData.CODEC;
     }
 
@@ -45,9 +47,9 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.jump", GTValues.VNF[getTier()]));
     }
 
@@ -76,13 +78,13 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     public static class JumpBoostModuleData extends ModuleData {
 
         // spotless:off
-        public static final Codec<JumpBoostModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
+        public static final MapCodec<JumpBoostModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(
                 Codec.FLOAT.fieldOf("jump_boost").forGetter(JumpBoostModuleData::getJumpBoost)
         ).apply(instance, JumpBoostModuleData::new));
         //spotless:on
 
         @Getter
-        private float jumpBoost;
+        private final float jumpBoost;
 
         public JumpBoostModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
                                    float jumpBoost) {
@@ -92,6 +94,11 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
 
         public JumpBoostModuleData withJumpBoost(float jumpBoost) {
             return new JumpBoostModuleData(slot, module, moduleItem, enabled, jumpBoost);
+        }
+
+        @Override
+        public ModuleData copy() {
+            return new JumpBoostModuleData(slot, module, moduleItem.copy(), enabled, jumpBoost);
         }
 
         @Override

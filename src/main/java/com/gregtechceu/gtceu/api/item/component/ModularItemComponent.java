@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.capability.ModularItemStack;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.module.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
@@ -20,11 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,26 +42,15 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ItemStack stack, @NotNull Capability<T> cap) {
-        if (cap == GTCapability.CAPABILITY_MODULAR_ITEM)
-            return GTCapability.CAPABILITY_MODULAR_ITEM.orEmpty(cap,
-                    LazyOptional.of(() -> new ModularItemStack(stack, defaultSlotGetter)));
-        else {
-            IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-            if (modularItem != null) {
-                for (ModuleContext module : modularItem.getAllModuleInstances()) {
-                    if (module.getModule() instanceof ICapabilityModule capabilityModule) {
-                        LazyOptional<T> optional = capabilityModule.getCapability(module, cap);
-                        if (optional.isPresent()) return optional;
-                    }
-                }
-            }
-            return LazyOptional.empty();
+    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(GTCapability.CAPABILITY_MODULAR_ITEM, (s, $) -> new ModularItemStack(s, defaultSlotGetter), item);
+        for (var module: GTRegistries.ITEM_MODULES) {
+            module.attachCapabilities(event, item);
         }
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(player.getItemInHand(usedHand));
         if (modularItem != null) {
             for (ModuleContext module : modularItem.getAllModuleInstances()) {
@@ -114,38 +100,37 @@ public class ModularItemComponent implements IItemComponent, IComponentCapabilit
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
-        if (modularItem != null) {
-            tooltipComponents.add(Component
-                    .translatable("tooltip.gtceu.configure_modular_armor",
-                            SyncedKeyMappings.MODULAR_ITEM_GUI.getKeyMapping().getKey().getDisplayName())
-                    .withStyle(ChatFormatting.GRAY));
-            List<ItemModuleSlot> slots = modularItem.getSlots();
-            if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("metaarmor.tooltip.modifiers"));
-            for (int slotI = 0; slotI < slots.size(); slotI++) {
-                ItemModuleSlot slot = slots.get(slotI);
-                if (slot == null) continue;
-                ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
-                if (moduleData != null) {
-                    int prevIndex = tooltipComponents.size();
-                    moduleData.getModule().appendHoverText(moduleData, level, isAdvanced, tooltipComponents);
-                    if (tooltipComponents.size() > prevIndex) {
-                        tooltipComponents.set(prevIndex, Component.translatable(
-                                "metaarmor.tooltip.modifier",
-                                slot.getDisplayName(),
-                                tooltipComponents.get(prevIndex)));
-                        for (int i = prevIndex + 1; i < tooltipComponents.size(); i++) {
-                            tooltipComponents.set(i, Component.literal("    ").append(tooltipComponents.get(i)));
-                        }
-                    }
-                } else {
-                    tooltipComponents.add(Component.translatable(
+        if (modularItem == null) return;
+
+        tooltipComponents.add(Component
+                .translatable("tooltip.gtceu.configure_modular_armor",
+                        SyncedKeyMappings.MODULAR_ITEM_GUI.getKeyMapping().getKey().getDisplayName())
+                .withStyle(ChatFormatting.GRAY));
+        List<ItemModuleSlot> slots = modularItem.getSlots();
+        if (!slots.isEmpty()) tooltipComponents.add(Component.translatable("metaarmor.tooltip.modifiers"));
+        for (int slotI = 0; slotI < slots.size(); slotI++) {
+            ItemModuleSlot slot = slots.get(slotI);
+            if (slot == null) continue;
+            ModuleContext moduleData = modularItem.getModuleContextForSlot(slotI);
+            if (moduleData != null) {
+                int prevIndex = tooltipComponents.size();
+                moduleData.getModule().appendHoverText(moduleData, context, isAdvanced, tooltipComponents);
+                if (tooltipComponents.size() > prevIndex) {
+                    tooltipComponents.set(prevIndex, Component.translatable(
                             "metaarmor.tooltip.modifier",
                             slot.getDisplayName(),
-                            Component.translatable("metaarmor.tooltip.modifier.empty").withStyle(ChatFormatting.GRAY)));
+                            tooltipComponents.get(prevIndex)));
+                    for (int i = prevIndex + 1; i < tooltipComponents.size(); i++) {
+                        tooltipComponents.set(i, Component.literal("    ").append(tooltipComponents.get(i)));
+                    }
                 }
+            } else {
+                tooltipComponents.add(Component.translatable(
+                        "metaarmor.tooltip.modifier",
+                        slot.getDisplayName(),
+                        Component.translatable("metaarmor.tooltip.modifier.empty").withStyle(ChatFormatting.GRAY)));
             }
         }
     }

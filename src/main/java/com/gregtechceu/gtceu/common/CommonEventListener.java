@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.ISpoilableItem;
+import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
@@ -445,11 +446,9 @@ public class CommonEventListener {
             float amount = event.getAmount();
             IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
             if (modularItem == null) continue;
-            for (ItemModule module : modularItem.getModules()) {
-                var data = modularItem.getModuleContext(module);
-                if (data == null) continue;
-                if (!module.isEnabled(data)) continue;
-                amount = module.changeDamage(data, entity, amount, source);
+            for (ModuleContext context : modularItem.getAllModuleInstances()) {
+                if (!context.getModule().isEnabled(context)) continue;
+                amount = context.getModule().changeDamage(context, entity, amount, source);
             }
             event.setAmount(amount);
         }

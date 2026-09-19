@@ -14,22 +14,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Equipable;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.List;
 
-public class BatteryItemModule extends ItemModule implements ICapabilityModule, IHUDProviderItemModule {
+public class BatteryItemModule extends ItemModule implements IHUDProviderItemModule {
 
     private static final double PERCENTAGE = 80.0d;
 
@@ -68,31 +66,35 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.battery",
                         moduleContext.getModuleItem().getHoverName()));
-        moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), level, tooltips,
+        moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), context, tooltips,
                 isAdvanced);
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ModuleContext module, @NotNull Capability<T> cap) {
-        if (cap == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
-            return module.getModuleItem().getCapability(cap);
-        } else return LazyOptional.empty();
+    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (s, v) -> {
+            var modular = GTCapabilityHelper.getModularItem(s);
+            if (modular == null) return null;
+            var cap = modular.getAllModuleInstances().stream().filter(ctx -> ctx.getModule() instanceof BatteryItemModule).findFirst().orElse(null);
+            if (cap == null) return null;
+            else return cap.getModuleItem().getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
+        }, item);
     }
 
     @Override
     public void drawHUD(ModuleContext moduleContext, GuiGraphics graphics) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(moduleContext.getModuleItem());
         if (electricItem == null) return;
-        EquipmentSlot slot = LivingEntity.getEquipmentSlotForItem(moduleContext.getAppliedTo());
+        Equipable equipable = Equipable.get(moduleContext.getAppliedTo());
         Component displayName = moduleContext.getModuleItem().getHoverName();
         int x = 10, y;
-        switch (slot) {
+        switch (equipable.getEquipmentSlot()) {
             case HEAD -> {
                 y = 20;
                 graphics.drawString(

@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.Tags;
 
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class PPEModule extends ItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         if (moduleContext.getAppliedTo().is(ItemTags.FOOT_ARMOR))
             tooltips.add(Component.translatable("item.gtceu.hazmat_boots"));
         if (moduleContext.getAppliedTo().is(ItemTags.LEG_ARMOR))

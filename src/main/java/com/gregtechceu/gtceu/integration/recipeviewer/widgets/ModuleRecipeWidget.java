@@ -53,7 +53,7 @@ public class ModuleRecipeWidget extends Flow {
     }
 
     private IWidget getUIForTier(EquipmentFoundryRecipe.TierEntry entry) {
-        ItemModule module = entry.moduleForTier();
+        ItemModule module = entry.moduleForTier().value();
 
         ItemStack[] moduleItems = entry.ingredient().getItems();
         ItemStack[] allEquipment = getEquipment(recipe, module);
@@ -62,7 +62,7 @@ public class ModuleRecipeWidget extends Flow {
                 .map(equipment -> getResult(recipe, equipment, moduleItems[0]))
                 .toList();
 
-        IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
+        IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.getFirst());
         assert defaultModularItem != null;
         defaultModularItem.attach(module, moduleItems[0], false);
         ModuleContext defaultAppliedModule = defaultModularItem.getModuleContext(module);
@@ -81,22 +81,22 @@ public class ModuleRecipeWidget extends Flow {
                         .coverChildrenHeight()
                         .childPadding(4)
                         .horizontalCenter()
-                        .child(RecipeViewerSlotWidget.create(ItemStack.class)
+                        .child(RecipeViewerSlotWidget.create()
                                 .value(ItemStackList.of(List.of(moduleItems))))
                         .child(new TextWidget<>(module.getDisplayName(defaultAppliedModule))
                                 .scale(0.75f)
                                 .width(100)))
                 .child(Flow.row()
                         .coverChildren()
-                        .child(RecipeViewerSlotWidget.create(ItemStack.class)
+                        .child(RecipeViewerSlotWidget.create()
                                 .value(ItemStackList.of(List.of(allEquipment)))
                                 .recipeSlotRole(RecipeSlotRole.INPUT))
                         .child(GuiTextures.ADD.asWidget())
-                        .child(RecipeViewerSlotWidget.create(ItemStack.class)
+                        .child(RecipeViewerSlotWidget.create()
                                 .value(ItemStackList.of(List.of(moduleItems)))
                                 .recipeSlotRole(RecipeSlotRole.INPUT))
                         .child(GuiTextures.RIGHTLOAD.asWidget())
-                        .child(RecipeViewerSlotWidget.create(ItemStack.class)
+                        .child(RecipeViewerSlotWidget.create()
                                 .value(ItemStackList.of(allResults))
                                 .recipeSlotRole(RecipeSlotRole.OUTPUT)))
                 .child(new TextWidget<>(module.getInfo()).horizontalCenter())
@@ -111,8 +111,7 @@ public class ModuleRecipeWidget extends Flow {
 
     private static ItemStack[] getEquipment(EquipmentFoundryRecipe recipe, ItemModule module) {
         return Arrays.stream(recipe.getEquipment().getItems())
-                .filter(stack -> stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM).map(
-                        modularItem -> modularItem.attach(module, ItemStack.EMPTY, true) != null).orElse(false))
+                .filter(stack -> stack.getCapability(GTCapability.CAPABILITY_MODULAR_ITEM) != null)
                 .toArray(ItemStack[]::new);
     }
 

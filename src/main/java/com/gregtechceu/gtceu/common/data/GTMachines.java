@@ -1261,7 +1261,7 @@ public class GTMachines {
                     GTCEu.id("block/machine/part/computer_monitor")))
             .register();
 
-    public static final MachineDefinition EQUIPMENT_FOUNDRY = REGISTRATE
+    public static final MachineEntry<MachineDefinition> EQUIPMENT_FOUNDRY = REGISTRATE
             .machine("equipment_foundry", EquipmentFoundryMachine::new)
             .rotationState(RotationState.NONE)
             .themeId(GTGuiTheme.EQUIPMENT_FOUNDRY.getId())

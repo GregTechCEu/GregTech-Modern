@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.Products;
@@ -16,15 +17,15 @@ import lombok.Getter;
 public abstract class ModuleData {
 
     // spotless:off
-    public static final Codec<ModuleData> DISPATCH_CODEC = GTRegistries.ITEM_MODULES.codec()
+    public static final Codec<ModuleData> DISPATCH_CODEC = GTRegistries.ITEM_MODULES.byNameCodec()
             .dispatch("module", ModuleData::getModule, ItemModule::moduleDataCodec);
 
-    public static final Codec<ModuleData.BaseData> BASE_CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).apply(instance, ModuleData.BaseData::new));
+    public static final MapCodec<BaseData> BASE_CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).apply(instance, ModuleData.BaseData::new));
 
     public static <T extends ModuleData> Products.P4<RecordCodecBuilder.Mu<T>, Integer, ItemModule, ItemStack, Boolean> baseCodec(RecordCodecBuilder.Instance<T> instance) {
         return instance.group(
                 Codec.INT.fieldOf("slot").forGetter(ModuleData::getSlot),
-                GTRegistries.ITEM_MODULES.codec().fieldOf("module").forGetter(ModuleData::getModule),
+                GTRegistries.ITEM_MODULES.byNameCodec().fieldOf("module").forGetter(ModuleData::getModule),
                 ItemStack.CODEC.fieldOf("moduleItem").forGetter(ModuleData::getModuleItem),
                 Codec.BOOL.fieldOf("enabled").forGetter(ModuleData::isEnabled)
         );
@@ -45,6 +46,11 @@ public abstract class ModuleData {
 
     public abstract ModuleData withEnabled(boolean enabled);
 
+    /**
+     * Must create a copy of most object fields, rather than using the same reference.
+     */
+    public abstract ModuleData copy();
+
     public ModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
         this.slot = slot;
         this.module = module;
@@ -56,6 +62,11 @@ public abstract class ModuleData {
 
         public BaseData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled) {
             super(slot, module, moduleItem, enabled);
+        }
+
+        @Override
+        public ModuleData copy() {
+            return new BaseData(slot, module, moduleItem.copy(), enabled);
         }
 
         @Override

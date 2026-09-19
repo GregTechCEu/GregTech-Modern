@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.module.ui.ItemModuleSettingsBuilder;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +15,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -22,8 +24,8 @@ import net.minecraft.world.level.Level;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
-import com.mojang.serialization.Codec;
 import lombok.Getter;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public abstract class ItemModule {
     /**
      * A codec used to serialise/deserialise persistent data for this module.<br>
      */
-    public Codec<? extends ModuleData> moduleDataCodec() {
+    public MapCodec<? extends ModuleData> moduleDataCodec() {
         return ModuleData.BASE_CODEC;
     }
 
@@ -107,10 +109,10 @@ public abstract class ItemModule {
     public Component getDisplayName(ModuleContext moduleContext) {
         List<Component> list = new ArrayList<>();
         appendHoverText(moduleContext, null, TooltipFlag.NORMAL, list);
-        return list.isEmpty() ? Component.empty() : list.get(0);
+        return list.isEmpty() ? Component.empty() : list.getFirst();
     }
 
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {}
 
     public boolean useEnergyInInventory(ModuleContext moduleContext, LivingEntity entity) {
@@ -165,6 +167,10 @@ public abstract class ItemModule {
     public InteractionResult interactLivingEntity(ModuleContext moduleContext, Player player,
                                                   LivingEntity interactionTarget, InteractionHand usedHand) {
         return InteractionResult.PASS;
+    }
+
+    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
+
     }
 
     public ItemModuleSettingsBuilder getSettings(ModuleContext moduleContext, PanelSyncManager psm, int id) {

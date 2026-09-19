@@ -11,15 +11,18 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationM
 
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -37,7 +40,7 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     @Override
-    public Codec<? extends ModuleData> moduleDataCodec() {
+    public MapCodec<? extends ModuleData> moduleDataCodec() {
         return AutoChargeModuleData.CODEC;
     }
 
@@ -83,9 +86,9 @@ public class AutoChargeItemModule extends TieredItemModule {
         MetaMachine machine = getLinkedMachine(player.getServer(), moduleContext);
         if (machine == null) return 0;
         int interdimensionalTier = -1;
-        ItemModule[] damageBlock = GTItemModules.DAMAGE_BLOCK;
+        Holder<ItemModule>[] damageBlock = GTItemModules.DAMAGE_BLOCK;
         for (int i = 0; i < damageBlock.length; i++) {
-            ItemModule shieldModule = damageBlock[i];
+            ItemModule shieldModule = damageBlock[i].value();
             IModularItem modularItem = GTCapabilityHelper.getModularItem(moduleContext.getAppliedTo());
             if (modularItem != null && modularItem.getModuleContext(shieldModule) != null)
                 interdimensionalTier = i + 1;
@@ -126,22 +129,22 @@ public class AutoChargeItemModule extends TieredItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.wireless_charging", GTValues.VNF[getTier()]));
     }
 
     public static class AutoChargeModuleData extends ModuleData {
 
         // spotless:off
-        public static final Codec<AutoChargeModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(
+        public static final MapCodec<AutoChargeModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(
                 GlobalPos.CODEC.optionalFieldOf("linked_pos").forGetter(AutoChargeModuleData::getLinkedPosOptional)
         ).apply(instance, AutoChargeModuleData::new));
         //spotless:on
 
         @Getter
-        private @Nullable GlobalPos linkedPos;
+        private final @Nullable GlobalPos linkedPos;
 
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         public AutoChargeModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled, Optional<GlobalPos> globalPos) {
@@ -170,6 +173,11 @@ public class AutoChargeItemModule extends TieredItemModule {
 
         public ModuleData withLinkedPos(GlobalPos linkedPos) {
             return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos);
+        }
+
+        @Override
+        public ModuleData copy() {
+            return new AutoChargeModuleData(slot, module, moduleItem.copy(), enabled, linkedPos);
         }
     }
 }

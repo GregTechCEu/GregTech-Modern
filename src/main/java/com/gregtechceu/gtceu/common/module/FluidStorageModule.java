@@ -1,24 +1,22 @@
 package com.gregtechceu.gtceu.common.module;
 
-import com.gregtechceu.gtceu.api.item.module.ICapabilityModule;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.List;
 
-public class FluidStorageModule extends ItemModule implements ICapabilityModule {
+public class FluidStorageModule extends ItemModule {
 
     public FluidStorageModule(ResourceLocation id) {
         super(id);
@@ -30,25 +28,28 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ModuleContext moduleContext, @NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM)
-            return moduleContext.getModuleItem().getCapability(cap);
-        return LazyOptional.empty();
+    public void attachCapabilities(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(Capabilities.FluidHandler.ITEM, (s, v) -> {
+            var modular = GTCapabilityHelper.getModularItem(s);
+            if (modular == null) return null;
+            var cap = modular.getAllModuleInstances().stream().filter(ctx -> ctx.getModule() instanceof FluidStorageModule).findFirst().orElse(null);
+            if (cap == null) return null;
+            else return cap.getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
+        }, item);
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
                 moduleContext.getModuleItem().getHoverName()));
-        IFluidHandlerItem fluidHandler = getCapability(moduleContext, ForgeCapabilities.FLUID_HANDLER_ITEM).resolve()
-                .orElse(null);
+        IFluidHandlerItem fluidHandler = moduleContext.getModuleItem().getCapability(Capabilities.FluidHandler.ITEM);
         if (fluidHandler != null) {
             FluidStack fluid = fluidHandler.getFluidInTank(0);
             int capacity = fluidHandler.getTankCapacity(0);
             tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage.tooltip", fluid.getAmount(),
-                    capacity, fluid.getDisplayName()));
+                    capacity, fluid.getHoverName()));
         }
     }
 }

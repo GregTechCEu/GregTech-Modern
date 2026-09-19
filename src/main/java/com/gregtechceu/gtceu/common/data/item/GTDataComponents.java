@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.filter.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
+import com.gregtechceu.gtceu.api.item.module.ModularItemData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
@@ -73,6 +74,9 @@ public class GTDataComponents {
                     .persistent(ItemEnchantments.CODEC)
                     .networkSynchronized(ItemEnchantments.STREAM_CODEC)
                     .cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ModularItemData>> MODULAR_ITEM_DATA = DATA_COMPONENTS
+            .registerComponentType("modular_item_data", builder ->
+                    builder.persistent(ModularItemData.DATA_CODEC));
 
     // Material-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Material>> ITEM_MATERIAL = DATA_COMPONENTS

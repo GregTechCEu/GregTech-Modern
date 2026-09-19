@@ -32,7 +32,8 @@ public class EquipmentFoundryRecipeBuilder {
     @Getter
     private final Ingredient[] ingredients = new Ingredient[GTValues.TIER_COUNT];
     @Getter
-    private final Holder<ItemModule>[] modules = new ItemModule[GTValues.TIER_COUNT];
+    @SuppressWarnings("unchecked")
+    private final Holder<ItemModule>[] modules = new Holder[GTValues.TIER_COUNT];
 
     public EquipmentFoundryRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;

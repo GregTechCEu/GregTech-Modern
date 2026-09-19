@@ -14,29 +14,25 @@ import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.module.AutoChargeItemModule;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.core.Vec3i;
+import net.minecraft.core.*;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.gametest.GameTestHolder;
-import net.minecraftforge.gametest.PrefixGameTestTemplate;
-import net.minecraftforge.items.IItemHandler;
 
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -73,7 +69,7 @@ public class ModularItemTest {
     private void attachFullBattery(ItemStack stack) {
         IModularItem modular = GTCapabilityHelper.getModularItem(stack);
         assert modular != null;
-        modular.attach(GTItemModules.BATTERY, chargeToMax(GTItems.ULTIMATE_BATTERY.asStack()), false);
+        modular.attach(GTItemModules.BATTERY.value(), chargeToMax(GTItems.ULTIMATE_BATTERY.asStack()), false);
     }
 
     private ItemStack chargeToMax(ItemStack stack) {
@@ -121,9 +117,9 @@ public class ModularItemTest {
         TestUtils.assertEqual(helper, output, makeModularItem(helper));
         IModularItem modular = getModularItem(helper, output);
 
-        checkModule(helper, modular, 0, GTItemModules.ATTACK_SPEED[GTValues.LuV], GTItems.ELECTRIC_MOTOR_LuV);
-        checkModule(helper, modular, 1, GTItemModules.ATTACK_DAMAGE[GTValues.LuV], GTItems.ELECTRIC_PISTON_LuV);
-        checkModule(helper, modular, 2, GTItemModules.BLOCK_REACH[GTValues.LV], GTItems.ROBOT_ARM_LV);
+        checkModule(helper, modular, 0, GTItemModules.ATTACK_SPEED[GTValues.LuV].value(), GTItems.ELECTRIC_MOTOR_LuV);
+        checkModule(helper, modular, 1, GTItemModules.ATTACK_DAMAGE[GTValues.LuV].value(), GTItems.ELECTRIC_PISTON_LuV);
+        checkModule(helper, modular, 2, GTItemModules.BLOCK_REACH[GTValues.LV].value(), GTItems.ROBOT_ARM_LV);
 
         helper.succeed();
     }
@@ -133,25 +129,25 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        ModuleContext moduleData = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV], ItemStack.EMPTY, false);
+        ModuleContext moduleData = modular.attach(GTItemModules.ATTACK_DAMAGE[GTValues.IV].value(), ItemStack.EMPTY, false);
         if (moduleData == null) {
             helper.fail("Module was null after attaching");
             return;
         }
         var module = moduleData.getModule();
-        helper.assertTrue(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
+        helper.assertTrue(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute");
 
         module.setEnabled(moduleData, false);
-        helper.assertFalse(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
+        helper.assertFalse(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item had damage attribute with disabled module");
 
         module.setEnabled(moduleData, true);
-        helper.assertTrue(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
+        helper.assertTrue(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item did not have damage attribute with re-enabled module");
 
         modular.detach(moduleData);
-        helper.assertFalse(armor.getAttributeModifiers(EquipmentSlot.CHEST).containsKey(Attributes.ATTACK_DAMAGE),
+        helper.assertFalse(checkAttributeModifierPresent(armor, Attributes.ATTACK_DAMAGE),
                 "modular item had damage attribute with detached module");
         TestUtils.assertEqual(helper, modular.getModuleContextForSlot(0), null,
                 "modular item retained module even though it was detached");
@@ -159,13 +155,17 @@ public class ModularItemTest {
         helper.succeed();
     }
 
+    private boolean checkAttributeModifierPresent(ItemStack stack, Holder<Attribute> attributeHolder) {
+        return stack.getAttributeModifiers().modifiers().stream().anyMatch(v -> v.attribute().equals(attributeHolder));
+    }
+
     @GameTest(template = "empty_5x5", batch = "modularItemTests")
     public void testFlightModule(GameTestHelper helper) {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
-        modular.attach(GTItemModules.CREATIVE_FLIGHT, ItemStack.EMPTY, false);
+        modular.attach(GTItemModules.CREATIVE_FLIGHT.value(), ItemStack.EMPTY, false);
         attachFullBattery(armor);
-        Player player = helper.makeMockSurvivalPlayer();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         helper.assertFalse(player.getAbilities().mayfly, "default survival player had ability to fly");
         player.getInventory().setItem(0, armor);
         player.tick();
@@ -179,7 +179,7 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        modular.attach(GTItemModules.DAMAGE_BLOCK[GTValues.LuV], ItemStack.EMPTY, false);
+        modular.attach(GTItemModules.DAMAGE_BLOCK[GTValues.LuV].value(), ItemStack.EMPTY, false);
         attachFullBattery(armor);
 
         helper.setBlock(0, 0, 0, Blocks.SMOOTH_QUARTZ);
@@ -189,7 +189,7 @@ public class ModularItemTest {
         Zombie entity = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 0, 1, 0);
         // noinspection DataFlowIssue
         entity.getAttribute(Attributes.KNOCKBACK_RESISTANCE).addPermanentModifier(
-                new AttributeModifier("no_knockback", 1000, AttributeModifier.Operation.ADDITION));
+                new AttributeModifier(GTCEu.id("no_knockback"), 1000, AttributeModifier.Operation.ADD_VALUE));
         helper.spawn(EntityType.IRON_GOLEM, 2, 1, 0);
         entity.equipItemIfPossible(armor);
 
@@ -205,7 +205,7 @@ public class ModularItemTest {
         ItemStack armor = makeModularItem(helper);
         IModularItem modular = getModularItem(helper, armor);
 
-        Player player = helper.makeMockSurvivalPlayer();
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         player.moveTo(helper.absoluteVec(Vec3.atBottomCenterOf(Vec3i.ZERO)));
         helper.getLevel().addFreshEntity(player);
 
@@ -217,8 +217,8 @@ public class ModularItemTest {
         IElectricItem bufferBatteryElectricItem = GTCapabilityHelper.getElectricItem(bufferBattery);
         assert bufferBatteryElectricItem != null;
 
-        var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV], GTItems.SENSOR_LuV.asStack(), false);
-        modular.attach(GTItemModules.BATTERY, GTItems.BATTERY_MV_LITHIUM.asStack(), false);
+        var wirelessModule = modular.attach(GTItemModules.WIRELESS_CHARGER[GTValues.LuV].value(), GTItems.SENSOR_LuV.asStack(), false);
+        modular.attach(GTItemModules.BATTERY.value(), GTItems.BATTERY_MV_LITHIUM.asStack(), false);
 
         assert wirelessModule != null;
         wirelessModule.setData(wirelessModule.getData(AutoChargeItemModule.AutoChargeModuleData.class).withLinkedPos(

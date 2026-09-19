@@ -8,12 +8,14 @@ import com.gregtechceu.gtceu.api.item.module.ModuleContext;
 import com.gregtechceu.gtceu.api.item.module.ModuleData;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -31,7 +33,7 @@ public class NightVisionModule extends ItemModule {
     }
 
     @Override
-    public Codec<? extends ModuleData> moduleDataCodec() {
+    public MapCodec<? extends ModuleData> moduleDataCodec() {
         return NightVisionModuleData.CODEC;
     }
 
@@ -51,9 +53,9 @@ public class NightVisionModule extends ItemModule {
     }
 
     @Override
-    public void appendHoverText(ModuleContext moduleContext, Level level, TooltipFlag isAdvanced,
+    public void appendHoverText(ModuleContext moduleContext, Item.TooltipContext context, TooltipFlag isAdvanced,
                                 List<Component> tooltips) {
-        super.appendHoverText(moduleContext, level, isAdvanced, tooltips);
+        super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(Component.translatable("metaarmor.message.nightvision.enabled"));
     }
 
@@ -107,7 +109,7 @@ public class NightVisionModule extends ItemModule {
     public static class NightVisionModuleData extends ModuleData {
 
         // spotless:off
-        public static final Codec<NightVisionModuleData> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance).and(instance.group(
+        public static final MapCodec<NightVisionModuleData> CODEC = RecordCodecBuilder.mapCodec(instance -> baseCodec(instance).and(instance.group(
                 Codec.BOOL.fieldOf("night_vision").forGetter(NightVisionModuleData::isNightVision),
                 Codec.BYTE.fieldOf("toggle_timer").forGetter(NightVisionModuleData::getToggleTimer),
                 Codec.INT.fieldOf("night_vision_timer").forGetter(NightVisionModuleData::getNightVisionTimer))
@@ -115,14 +117,17 @@ public class NightVisionModule extends ItemModule {
         //spotless:on
 
         @Getter
-        private boolean nightVision = false;
+        private final boolean nightVision;
         @Getter
-        private byte toggleTimer = 0;
+        private final byte toggleTimer;
         @Getter
-        private int nightVisionTimer = ArmorUtils.NIGHTVISION_DURATION;
+        private final int nightVisionTimer;
 
         public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem) {
             super(slot, module, moduleItem, true);
+            this.nightVision = false;
+            this.toggleTimer = 0;
+            this.nightVisionTimer=  ArmorUtils.NIGHTVISION_DURATION;
         }
 
         public NightVisionModuleData(int slot, ItemModule module, ItemStack moduleItem, boolean enabled,
@@ -139,19 +144,9 @@ public class NightVisionModule extends ItemModule {
                     nightVisionTimer);
         }
 
-        public ModuleData withNightVision(boolean nightVision) {
-            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
-        }
-
-        public ModuleData withToggleTimer(byte toggleTimer) {
-            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
-        }
-
-        public ModuleData withNightVisionTimer(int nightVisionTimer) {
-            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
-                    nightVisionTimer);
+        @Override
+        public ModuleData copy() {
+            return new NightVisionModuleData(slot, module, moduleItem.copy(), enabled, nightVision, toggleTimer, nightVisionTimer);
         }
     }
 }

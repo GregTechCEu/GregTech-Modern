@@ -18,11 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
@@ -34,6 +29,9 @@ import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -103,7 +101,7 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
 
         return getLevel().getRecipeManager()
                 .getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())
-                .stream().anyMatch(recipe -> recipe.matches(equipmentSlot.getStackInSlot(0), stack));
+                .stream().anyMatch(recipe -> recipe.value().matches(equipmentSlot.getStackInSlot(0), stack));
     }
 
     @Override
@@ -202,8 +200,8 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
         var equipmentItem = equipmentSlot.getStackInSlot(0);
         for (var recipe : getLevel().getRecipeManager()
                 .getAllRecipesFor(GTRecipeTypes.EQUIPMENT_FOUNDRY_RECIPES.get())) {
-            if (recipe.matches(equipmentItem, newModule)) {
-                recipe.applyToItem(equipmentItem, newModule, slot);
+            if (recipe.value().matches(equipmentItem, newModule)) {
+                recipe.value().applyToItem(equipmentItem, newModule, slot);
             }
         }
 
@@ -211,14 +209,11 @@ public class EquipmentFoundryMachine extends MetaMachine implements IMuiMachine 
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER && side != null) {
-            if (side.getAxis().isVertical())
-                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> equipmentSlot));
-            if (side.getAxis().isHorizontal())
-                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> moduleSlots));
-        }
-        return super.getCapability(cap, side);
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == null) return super.getItemHandlerCap(null, useCoverCapability);
+        if (side.getAxis().isVertical()) return equipmentSlot;
+        if (side.getAxis().isHorizontal()) return moduleSlots;
+        return null;
     }
 
     @Override

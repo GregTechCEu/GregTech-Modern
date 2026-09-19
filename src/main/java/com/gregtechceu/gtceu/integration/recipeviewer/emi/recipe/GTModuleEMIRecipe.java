@@ -13,6 +13,7 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,9 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
 
     private final EquipmentFoundryRecipe recipe;
 
-    public GTModuleEMIRecipe(EquipmentFoundryRecipe recipe) {
-        super(recipe.getId(), () -> new ModuleRecipeWidget(recipe));
-        this.recipe = recipe;
+    public GTModuleEMIRecipe(RecipeHolder<EquipmentFoundryRecipe> recipe) {
+        super(recipe.value().getId(), () -> new ModuleRecipeWidget(recipe.value()));
+        this.recipe = recipe.value();
     }
 
     @Override
