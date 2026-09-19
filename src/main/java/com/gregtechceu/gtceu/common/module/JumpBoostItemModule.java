@@ -92,13 +92,18 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
             this.jumpBoost = jumpBoost;
         }
 
-        public JumpBoostModuleData withJumpBoost(float jumpBoost) {
-            return new JumpBoostModuleData(slot, module, moduleItem, enabled, jumpBoost);
-        }
-
         @Override
         public ModuleData copy() {
             return new JumpBoostModuleData(slot, module, moduleItem.copy(), enabled, jumpBoost);
+        }
+
+        @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new JumpBoostModuleData(slot, module, moduleItem, enabled, jumpBoost);
+        }
+
+        public JumpBoostModuleData withJumpBoost(float jumpBoost) {
+            return new JumpBoostModuleData(slot, module, moduleItem, enabled, jumpBoost);
         }
 
         @Override

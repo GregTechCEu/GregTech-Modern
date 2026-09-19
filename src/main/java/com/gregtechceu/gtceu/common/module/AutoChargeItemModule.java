@@ -173,6 +173,11 @@ public class AutoChargeItemModule extends TieredItemModule {
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos);
+        }
+
+        @Override
         public ModuleData withEnabled(boolean enabled) {
             return new AutoChargeModuleData(slot, module, moduleItem, enabled, linkedPos);
         }

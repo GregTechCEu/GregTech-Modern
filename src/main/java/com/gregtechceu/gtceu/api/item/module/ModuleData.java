@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.api.item.module;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 import com.mojang.datafixers.Products;
@@ -17,7 +14,7 @@ import java.util.Objects;
 
 /**
  * The data for an item module attached to a specific item.<br>
- * This class and its inheritors must be immutable.<br>
+ * Inheriting classes must be immutable.<br>
  * Equals and hashcode must be implemented by inheritors.
  */
 public abstract class ModuleData {
@@ -38,20 +35,29 @@ public abstract class ModuleData {
     }
     //spotless:on
 
+    /**
+     * The slot this module is in.
+     */
     @Getter
     protected final int slot;
 
+    /**
+     * The {@link ItemModule} class for this module.
+     */
     @Getter
     protected final ItemModule module;
 
     /**
-     * The ItemStack currently in this module slot. Should not be modified.
+     * The ItemStack currently in this module slot.<br>
+     * <b>Do not modify</b>, changes will not be saved.
      */
     @Getter
     protected final ItemStack moduleItem;
 
     @Getter
     protected final boolean enabled;
+
+    public abstract ModuleData withModuleItem(ItemStack moduleItem);
 
     public abstract ModuleData withEnabled(boolean enabled);
 
@@ -87,6 +93,11 @@ public abstract class ModuleData {
         @Override
         public ModuleData copy() {
             return new BaseData(slot, module, moduleItem.copy(), enabled);
+        }
+
+        @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new BaseData(slot, module, moduleItem, enabled);
         }
 
         @Override

@@ -71,7 +71,7 @@ public class BatteryItemModule extends ItemModule implements IHUDProviderItemMod
         super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.battery",
-                        moduleContext.getModuleItem().getHoverName()));
+                        moduleContext.getData().getModuleItem().getHoverName()));
         moduleContext.getModuleItem().getItem().appendHoverText(moduleContext.getModuleItem(), context, tooltips,
                 isAdvanced);
     }

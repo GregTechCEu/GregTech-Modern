@@ -141,18 +141,23 @@ public class EnergyShieldItemModule extends TieredItemModule {
             this.energyPercent = energyPercent;
         }
 
-        public EnergyShieldModuleData withEnergyPercent(double percent) {
-            return new EnergyShieldModuleData(slot, module, moduleItem, enabled, percent);
-        }
-
         @Override
         public ModuleData copy() {
             return new EnergyShieldModuleData(slot, module, moduleItem.copy(), enabled, energyPercent);
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new EnergyShieldModuleData(slot, module, moduleItem, enabled, energyPercent);
+        }
+
+        @Override
         public ModuleData withEnabled(boolean enabled) {
             return new EnergyShieldModuleData(slot, module, moduleItem, enabled, energyPercent);
+        }
+
+        public EnergyShieldModuleData withEnergyPercent(double percent) {
+            return new EnergyShieldModuleData(slot, module, moduleItem, enabled, percent);
         }
 
         @Override

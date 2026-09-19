@@ -139,6 +139,11 @@ public class NightVisionModule extends ItemModule {
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer, nightVisionTimer);
+        }
+
+        @Override
         public ModuleData withEnabled(boolean enabled) {
             return new NightVisionModuleData(slot, module, moduleItem, enabled, nightVision, toggleTimer,
                     nightVisionTimer);

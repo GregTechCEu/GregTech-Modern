@@ -80,7 +80,7 @@ public class ModularItemManagerUI implements IUIHolder<PlayerInventoryGuiData<?>
     private ModularPanel<?> createPanelForModule(PanelSyncManager psm, IModularItem modularItem, int index) {
         ModuleContext appliedModule = Objects.requireNonNull(modularItem.getModuleContextForSlot(index));
         ItemModule module = appliedModule.getModule();
-        ItemStack moduleItem = appliedModule.getModuleItem();
+        ItemStack moduleItem = appliedModule.getData().getModuleItem();
 
         return new ModularPanel<>("module" + index)
                 .coverChildren()

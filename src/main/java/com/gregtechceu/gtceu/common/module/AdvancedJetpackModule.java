@@ -54,7 +54,7 @@ public class AdvancedJetpackModule extends ArmorLogicItemModule implements ITier
         super.appendHoverText(moduleContext, context, isAdvanced, tooltips);
         tooltips.add(
                 Component.translatable("metaarmor.tooltip.modifier.jetpack",
-                        moduleContext.getModuleItem().getHoverName()));
+                        moduleContext.getData().getModuleItem().getHoverName()));
     }
 
     @Override

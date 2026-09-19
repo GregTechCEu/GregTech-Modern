@@ -183,6 +183,11 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
         }
 
         @Override
+        public ModuleData withModuleItem(ItemStack moduleItem) {
+            return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
+        }
+
+        @Override
         public ModuleData withEnabled(boolean enabled) {
             return new TieredAttributeModuleData(slot, module, moduleItem, enabled, modifierAmount);
         }
