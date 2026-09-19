@@ -12,13 +12,14 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -236,21 +237,37 @@ public class ChemicalHelper {
                     items.add(itemHolder::value);
                 }
             }
-            if (items.isEmpty() && prefix.hasItemTable() && prefix.doGenerateItem(entry.material())) {
-                return List.of(() -> prefix.getItemFromTable(entry.material()).get().asItem());
+            if (!items.isEmpty()) return items;
+
+            if (GTMaterialItems.MATERIAL_ITEMS.contains(entry.tagPrefix(), entry.material())) {
+                return Collections.singletonList(Objects
+                        .requireNonNull(GTMaterialItems.MATERIAL_ITEMS.get(entry.tagPrefix(), entry.material())));
             }
-            return items;
+            if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
+                return Collections.singletonList(Objects.requireNonNull(
+                        GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material()))::asItem);
+            }
+
+            Supplier<? extends ItemLike> fromTable = prefix.getItemFromTable(entry.material());
+            if (fromTable != null) return Collections.singletonList(fromTable.get()::asItem);
+            return List.of();
+
         }).stream().map(Supplier::get).collect(Collectors.toList());
     }
 
-    public static Item getItem(MaterialEntry materialEntry) {
+    public static @Nullable Item getItem(MaterialEntry materialEntry) {
         List<ItemLike> items = getItems(materialEntry);
-        if (items.isEmpty()) return Items.AIR;
+        if (items.isEmpty()) return null;
         return items.get(0).asItem();
     }
 
-    public static Item getItem(TagPrefix tagPrefix, Material material) {
+    public static @Nullable Item getItem(TagPrefix tagPrefix, Material material) {
         return getItem(new MaterialEntry(tagPrefix, material));
+    }
+
+    public static Item getItemOrThrow(TagPrefix tagPrefix, Material material) {
+        return Objects.requireNonNull(getItem(tagPrefix, material),
+                "Item for (%s %s) was null".formatted(tagPrefix, material));
     }
 
     public static ItemStack get(MaterialEntry materialEntry, int size) {
@@ -278,13 +295,15 @@ public class ChemicalHelper {
                     blocks.add(itemHolder::value);
                 }
             }
-            if (blocks.isEmpty() && prefix.hasItemTable() && prefix.doGenerateBlock(entry.material())) {
-                var blockSupplier = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
-                if (blockSupplier != null) {
-                    return Collections.singletonList(blockSupplier);
-                }
+            if (!blocks.isEmpty()) return blocks;
+
+            if (GTMaterialBlocks.MATERIAL_BLOCKS.contains(entry.tagPrefix(), entry.material())) {
+                return Collections.singletonList(Objects
+                        .requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(entry.tagPrefix(), entry.material())));
             }
-            return blocks;
+            var fromTable = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
+            if (fromTable != null) return Collections.singletonList(fromTable);
+            return List.of();
         }).stream().map(Supplier::get).collect(Collectors.toList());
     }
 
