@@ -20,7 +20,11 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
@@ -44,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.fluids.FluidConstants.*;
@@ -97,7 +102,9 @@ public class FluidBuilder {
     private @Nullable MaterialIconSet customIconSet = null;
 
     private boolean hasFluidBlock = ConfigHolder.INSTANCE.gameplay.allFluidsHaveBlocks;
+    private BiFunction<GTFluid, BlockBehaviour.Properties, ? extends LiquidBlock> blockFactory = MaterialFluidBlock::new;
     private boolean hasBucket = true;
+    private BiFunction<GTFluid, Item.Properties, ? extends BucketItem> bucketFactory = GTBucketItem::new;
 
     public FluidBuilder() {}
 
@@ -269,12 +276,36 @@ public class FluidBuilder {
     }
 
     /**
+     * Generate a fluid block for the fluid with a custom implementation.
+     *
+     * @param blockFactory a custom fluid block constructor
+     * @return this
+     */
+    public <B extends LiquidBlock> FluidBuilder block(BiFunction<GTFluid, BlockBehaviour.Properties, B> blockFactory) {
+        this.hasFluidBlock = true;
+        this.blockFactory = blockFactory;
+        return this;
+    }
+
+    /**
      * Disables the auto-generated fluid block for the fluid
      *
      * @return this
      */
     public FluidBuilder disableBlock() {
         this.hasFluidBlock = false;
+        return this;
+    }
+
+    /**
+     * Generate a fluid bucket for the fluid with a custom implementation.
+     *
+     * @param bucketFactory a custom fluid bucket constructor
+     * @return this
+     */
+    public <I extends BucketItem> FluidBuilder bucket(BiFunction<GTFluid, Item.Properties, I> bucketFactory) {
+        this.hasBucket = true;
+        this.bucketFactory = bucketFactory;
         return this;
     }
 
@@ -323,7 +354,7 @@ public class FluidBuilder {
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .renderType(() -> RenderType::translucent);
         if (this.hasFluidBlock) {
-            builder.block(MaterialFluidBlock::new)
+            builder.block(this.blockFactory::apply)
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                     .properties(p -> p.liquid().mapColor(GTUtil.determineMapColor(material.getMaterialRGB())))
@@ -339,7 +370,7 @@ public class FluidBuilder {
             builder.noBlock();
         }
         if (this.hasBucket) {
-            builder.bucket(GTBucketItem::new)
+            builder.bucket((source, p) -> this.bucketFactory.apply((GTFluid) source, p))
                     .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
