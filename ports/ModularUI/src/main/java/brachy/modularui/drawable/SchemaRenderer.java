@@ -80,7 +80,7 @@ public class SchemaRenderer extends BaseSchemaRenderer {
     @Override
     protected void onSuccessfulRayTrace(PoseStack poseStack, @NotNull BlockHitResult result) {
         if (this.highlight != null) {
-            this.highlight.get().renderHighlight(poseStack, result, camera().pos());
+            queueHighlight(this.highlight.get(), result);
         }
     }
 
@@ -122,3 +122,4 @@ public class SchemaRenderer extends BaseSchemaRenderer {
         return result;
     }
 }
+

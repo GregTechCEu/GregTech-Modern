@@ -81,6 +81,7 @@ public class ModularUIClient {
 
     private void registerPreviewRenderers(RegisterPictureInPictureRenderersEvent event) {
         event.register(GuiEntityPreviewState.class, GuiEntityPreviewRenderer::new);
+        event.register(brachy.modularui.drawable.schema.SchemaRenderState.class, SchemaPreviewRenderer::new);
     }
 
     private void registerAtlases(RegisterTextureAtlasesEvent event) {

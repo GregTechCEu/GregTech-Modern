@@ -1,189 +1,64 @@
 package brachy.modularui.drawable.schema;
 
-import brachy.modularui.utils.Color;
-
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import java.util.List;
 
+/** Extracts selection overlays without touching global rendering state. */
 @Accessors(fluent = true, chain = true)
 public class BlockHighlight {
-
-    // rendnering magic
-
-    protected static final float[][] vertices = new float[6][12];
-
-    static {
-        int[][] intVertices = {
-                {1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0},
-                {0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0},
-                {0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0},
-                {0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1},
-                {0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0},
-                {1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0}
-        };
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 12; j++) {
-                int v = intVertices[i][j];
-                vertices[i][j] = v == 1 ? 1.005f : -0.005f;
-            }
-        }
-    }
-
-    @Getter
-    @Setter
-    private int color;
-
-    @Getter
-    @Setter
-    private boolean allSides;
-
-    @Getter
-    @Setter
-    private float thickness;
-
-    public BlockHighlight(int color) {
-        this(color, true);
-    }
-
-    public BlockHighlight(int color, float frameThickness) {
-        this(color, true, frameThickness);
-    }
-
-    public BlockHighlight(int color, boolean allSides) {
-        this(color, allSides, 0.0f);
-    }
-
-    public BlockHighlight(int color, boolean allSides, float frameThickness) {
+    private static final float[][] VERTICES = {
+            {1,0,0, 1,0,1, 0,0,1, 0,0,0}, {0,1,0, 0,1,1, 1,1,1, 1,1,0},
+            {0,1,0, 1,1,0, 1,0,0, 0,0,0}, {0,0,1, 1,0,1, 1,1,1, 0,1,1},
+            {0,0,0, 0,0,1, 0,1,1, 0,1,0}, {1,1,0, 1,1,1, 1,0,1, 1,0,0}
+    };
+    @Getter @Setter private int color;
+    @Getter @Setter private boolean allSides;
+    @Getter @Setter private float thickness;
+    public BlockHighlight(int color) { this(color, true); }
+    public BlockHighlight(int color, float thickness) { this(color, true, thickness); }
+    public BlockHighlight(int color, boolean allSides) { this(color, allSides, 0); }
+    public BlockHighlight(int color, boolean allSides, float thickness) {
         this.color = color;
         this.allSides = allSides;
-        this.thickness = frameThickness;
+        this.thickness = thickness;
     }
-
-    public final void renderHighlight(PoseStack pose, @Nullable BlockHitResult result, Vector3f camera) {
-        if (result != null && result.getType() == HitResult.Type.BLOCK) {
-            renderHighlight(pose, result.getBlockPos(), result.getDirection(), camera);
-        }
-    }
-
-    public void renderHighlight(PoseStack poseStack, BlockPos pos, Direction direction, Vector3f camera) {
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        Color.setGlColor(this.color);
-        poseStack.pushPose();
-        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-
-        float distance = camera.distance(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-        doRender(poseStack, direction, distance);
-        poseStack.popPose();
-        RenderSystem.enableCull();
-        RenderSystem.enableDepthTest();
-    }
-
-    protected void doRender(PoseStack poseStack, @Nullable Direction direction, float distance) {
-        if (this.allSides) direction = null;
-        Matrix4f pose = poseStack.last().pose();
-        if (this.thickness >= 0) {
-            // scale frame thickness with distance to camera
-            float offset = (float) (this.thickness * (1 + Math.max(0, Math.sqrt(distance) - 3) / 5.0f));
-            renderFrame(pose, direction, offset);
-        } else {
-            renderSolid(pose, direction);
-        }
-    }
-
-    public static void renderSolid(Matrix4f pose, @Nullable Direction direction) {
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-        if (direction == null) {
-            for (Direction dir : Direction.values()) {
-                buildFace(pose, builder, dir);
+    public List<SchemaGeometry.Vertex> extract(BlockHitResult hit, Vector3f camera) {
+        if (hit == null || hit.getType() != HitResult.Type.BLOCK) return List.of();
+        var pos = hit.getBlockPos();
+        var builder = new SchemaGeometry.Builder().offset(pos.getX(), pos.getY(), pos.getZ());
+        float distance = camera.distance(pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f);
+        float inset = Math.min(.505f, (float) (thickness * (1 + Math.max(0, Math.sqrt(distance) - 3) / 5)));
+        for (Direction side : Direction.values()) {
+            if (!allSides && side != hit.getDirection()) continue;
+            Vector3f[] outer = new Vector3f[4], inner = new Vector3f[4];
+            float[] coordinates = VERTICES[side.get3DDataValue()];
+            for (int i = 0; i < 4; i++) {
+                outer[i] = new Vector3f(coordinates[i*3], coordinates[i*3+1], coordinates[i*3+2]).mul(1.01f).sub(.005f,.005f,.005f);
+                inner[i] = new Vector3f(outer[i]);
+                for (int axis = 0; axis < 3; axis++) {
+                    if (side.getAxis().ordinal() != axis) inner[i].setComponent(axis,
+                            inner[i].get(axis) + (inner[i].get(axis) > .5f ? -inset : inset));
+                }
             }
-        } else {
-            buildFace(pose, builder, direction);
-        }
-    }
-
-    protected static void renderFrame(Matrix4f pose, @Nullable Direction side, float offset) {
-        if (side == null) {
-            for (Direction dir : Direction.values()) {
-                buildFrameFace(pose, dir, offset);
+            if (thickness < 0) {
+                for (var vertex : outer) vertex(builder, vertex);
+            } else if (inset > 0) {
+                for (int i = 0; i < 4; i++) {
+                    int next = (i + 1) % 4;
+                    vertex(builder, outer[i]); vertex(builder, outer[next]);
+                    vertex(builder, inner[next]); vertex(builder, inner[i]);
+                }
             }
-        } else {
-            buildFrameFace(pose, side, offset);
         }
+        return builder.build();
     }
-
-    protected static void buildFrameFace(Matrix4f pose, @NotNull Direction side, float offset) {
-        float[] vert = vertices[side.get3DDataValue()];
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder builder = tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
-        buildVertex(pose, builder, vert, 9);
-        buildInnerVertex(pose, builder, vert, 9, side, offset);
-        buildVertex(pose, builder, vert, 6);
-        buildInnerVertex(pose, builder, vert, 6, side, offset);
-        buildVertex(pose, builder, vert, 3);
-        buildInnerVertex(pose, builder, vert, 3, side, offset);
-        buildVertex(pose, builder, vert, 0);
-        buildInnerVertex(pose, builder, vert, 0, side, offset);
-        buildVertex(pose, builder, vert, 9);
-        buildInnerVertex(pose, builder, vert, 9, side, offset);
-
-        BufferUploader.drawWithShader(builder.buildOrThrow());
-    }
-
-    protected static void buildVertex(Matrix4f pose, BufferBuilder builder, float[] vertices, int vertexIndex) {
-        float x = vertices[vertexIndex];
-        float y = vertices[vertexIndex + 1];
-        float z = vertices[vertexIndex + 2];
-        builder.addVertex(pose, x, y, z);
-    }
-
-    private static void buildInnerVertex(Matrix4f pose, BufferBuilder builder, float[] vertices, int vertexIndex,
-                                         @NotNull Direction side, float offset) {
-        float x = vertices[vertexIndex];
-        float y = vertices[vertexIndex + 1];
-        float z = vertices[vertexIndex + 2];
-        if (side.getAxis() != Direction.Axis.X) {
-            if (x >= 1) x -= offset;
-            else x += offset;
-        }
-        if (side.getAxis() != Direction.Axis.Y) {
-            if (y >= 1) y -= offset;
-            else y += offset;
-        }
-        if (side.getAxis() != Direction.Axis.Z) {
-            if (z >= 1) z -= offset;
-            else z += offset;
-        }
-        builder.addVertex(pose, x, y, z);
-    }
-
-    protected static void buildFace(Matrix4f pose, BufferBuilder builder, @NotNull Direction side) {
-        float[] vert = vertices[side.ordinal()];
-        buildVertex(pose, builder, vert, 0);
-        buildVertex(pose, builder, vert, 3);
-        buildVertex(pose, builder, vert, 6);
-        buildVertex(pose, builder, vert, 9);
+    private void vertex(SchemaGeometry.Builder builder, Vector3f vertex) {
+        builder.addVertex(vertex.x, vertex.y, vertex.z).setColor(color);
     }
 }

@@ -5,6 +5,7 @@
     "compatibilityLevel": "JAVA_25",
     "plugin": "brachy.modularui.core.ModularUIMixinPlugin",
     "client": [
+        "client.PreviewLightmapMixin",
         "client.GuiRenderStateMixin",
         "client.AbstractContainerScreenAccessor",
         "client.AbstractContainerScreenMixin",

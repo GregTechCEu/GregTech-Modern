@@ -75,6 +75,11 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << "-Xlint:-removal"
     options.compilerArgs << "-Aquiet=true" // Suppress mixin notes
     if (providers.gradleProperty('portDiagnostics').isPresent()) {
+        // Gradle's incremental symbol collector crashes on missing types from old mod APIs.
+        // A complete compile reports the actual migration errors instead.
+        options.incremental = false
+        options.fork = true
+        options.forkOptions.executable = javaCompiler.get().executablePath.asFile.absolutePath
         options.compilerArgs.addAll(['-Xmaxerrs', '10000', '-Xmaxwarns', '20'])
     }
 }
