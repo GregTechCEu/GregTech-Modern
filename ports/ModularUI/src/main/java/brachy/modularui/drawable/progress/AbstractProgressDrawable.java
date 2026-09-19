@@ -19,8 +19,11 @@ public abstract class AbstractProgressDrawable<D extends AbstractProgressDrawabl
         float p = getCurrentProgress(width, height);
         if (p == 0f) return;
         if (p < 1f) pushProgressStencil(p, context, x, y, width, height, widgetTheme);
-        getFilledTexture().draw(context, x, y, width, height, widgetTheme);
-        if (p < 1f) context.getStencil().pop();
+        try {
+            getFilledTexture().draw(context, x, y, width, height, widgetTheme);
+        } finally {
+            if (p < 1f) context.getStencil().pop();
+        }
     }
 
     protected abstract void pushProgressStencil(float progress, GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme);

@@ -26,7 +26,6 @@ import net.minecraft.world.level.material.Fluid;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -749,15 +748,8 @@ public class GuiDraw {
         int backgroundBottom = backgroundTop;
         int borderColorStart = 0x505000FF;
         int borderColorEnd = (borderColorStart & 0xFEFEFE) >> 1 | borderColorStart & 0xFF000000;
-        RenderTooltipEvent.Color colorEvent;
-
-        if (tooltip != null) {
-            colorEvent = new RichTooltipEvent.Color(stack, graphics, x, y, context.getFont(),
-                    backgroundTop, borderColorStart, borderColorEnd, lines, tooltip);
-        } else {
-            colorEvent = new RenderTooltipEvent.Color(stack, graphics, x, y, context.getFont(),
-                    backgroundTop, borderColorStart, borderColorEnd, lines);
-        }
+        RichTooltipEvent.Color colorEvent = new RichTooltipEvent.Color(stack, graphics, x, y, context.getFont(),
+                backgroundTop, borderColorStart, borderColorEnd, lines, tooltip);
 
         NeoForge.EVENT_BUS.post(colorEvent);
         backgroundTop = colorEvent.getBackgroundStart();

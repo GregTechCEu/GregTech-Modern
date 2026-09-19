@@ -267,10 +267,14 @@ public class TextRenderer {
 
     protected void draw(GuiGraphicsExtractor graphics, FormattedCharSequence text, float x, float y) {
         if (this.simulate || graphics == null) return;
-        graphics.pose().pushPose();
-        graphics.pose().scale(this.scale, this.scale, 0f);
-        graphics.drawString(getFont(), text, (int) (x / this.scale), (int) (y / this.scale), this.color, this.shadow);
-        graphics.pose().popPose();
+        graphics.pose().pushMatrix();
+        try {
+            graphics.pose().translate(x, y);
+            graphics.pose().scale(this.scale, this.scale);
+            graphics.text(getFont(), text, 0, 0, this.color, this.shadow);
+        } finally {
+            graphics.pose().popMatrix();
+        }
     }
 
     public float getFontHeight() {

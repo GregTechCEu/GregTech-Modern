@@ -9,7 +9,11 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelTimeAccess;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.CardinalLighting;
+import net.minecraft.world.level.ColorResolver;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.world.attribute.EnvironmentAttributeReader;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Blocks;
@@ -34,7 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @NullMarked
-public class RenderLevel implements LevelTimeAccess {
+public class RenderLevel implements LevelReader, BlockAndTintGetter {
 
     @Getter private final ISchema schema;
     private final Level level;
@@ -143,8 +147,29 @@ public class RenderLevel implements LevelTimeAccess {
     }
 
     @Override
-    public float getShade(Direction direction, boolean shade) {
-        return level.getShade(direction, shade);
+    public CardinalLighting cardinalLighting() {
+        return level.dimensionType().cardinalLightType().get();
+    }
+
+    @Override
+    public int getBlockTint(BlockPos pos, ColorResolver resolver) {
+        if (level instanceof BlockAndTintGetter tintGetter) return tintGetter.getBlockTint(pos, resolver);
+        return resolver.getColor(level.getBiome(pos).value(), pos.getX(), pos.getZ());
+    }
+
+    @Override
+    public EnvironmentAttributeReader environmentAttributes() {
+        return level.environmentAttributes();
+    }
+
+    @Override
+    public int getHeight() {
+        return level.getHeight();
+    }
+
+    @Override
+    public int getMinY() {
+        return level.getMinY();
     }
 
     @Override
@@ -162,8 +187,7 @@ public class RenderLevel implements LevelTimeAccess {
         return level.getEntityCollisions(entity, collisionBox);
     }
 
-    @Override
     public long dayTime() {
-        return level.dayTime();
+        return level.getOverworldClockTime();
     }
 }

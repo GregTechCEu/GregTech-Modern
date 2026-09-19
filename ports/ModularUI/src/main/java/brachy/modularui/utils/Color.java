@@ -5,7 +5,6 @@ import brachy.modularui.api.drawable.IInterpolation;
 import brachy.modularui.utils.serialization.codec.CodecUtil;
 
 import net.minecraft.util.Mth;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

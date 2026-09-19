@@ -25,21 +25,20 @@ import net.minecraft.client.Minecraft;
 
 import brachy.modularui.utils.CursorHandler;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.ConfigureMainRenderTargetEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterTextureAtlasesEvent;
-import net.minecraft.client.resources.model.AtlasManager;
+import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.client.resources.metadata.gui.GuiMetadataSection;
 import java.util.Set;
 import brachy.modularui.drawable.GuiEntityPreviewState;
@@ -60,7 +59,7 @@ public class ModularUIClient {
 
     public ModularUIClient(IEventBus modBus, ModContainer modContainer) {
         modBus.addListener(this::onPreInit);
-        modBus.addListener(this::onInit);
+        modBus.addListener(this::configureRenderTarget);
         modBus.addListener(this::registerScreens);
         modBus.addListener(this::onRegisterClientTooltipComponents);
         modBus.addListener(this::onRegisterAssetReloadListeners);
@@ -89,11 +88,8 @@ public class ModularUIClient {
                 false, Set.of(GuiMetadataSection.TYPE)));
     }
 
-    protected void onInit(FMLCommonSetupEvent event) {
-        if (!ModularUI.isDataGen()) {
-            // enable stencil bits, must call on render thread
-            RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
-        }
+    private void configureRenderTarget(ConfigureMainRenderTargetEvent event) {
+        event.enableStencil();
     }
 
     @SuppressWarnings("deprecation")

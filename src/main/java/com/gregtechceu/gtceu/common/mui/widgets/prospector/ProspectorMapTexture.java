@@ -2,11 +2,9 @@ package com.gregtechceu.gtceu.common.mui.widgets.prospector;
 
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectingUpdatePacket;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
-import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import org.jspecify.annotations.NullMarked;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
@@ -20,15 +18,13 @@ import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.theme.WidgetTheme;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.platform.TextureUtil;
+import com.mojang.blaze3d.GpuFormat;
+import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
-import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,7 +35,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawable {
 
     private static final UITexture ARROW = GuiTextures.PLAY.withColorOverride(0xFFFF0000);
-    private static final Quaternionf rotationQuat = new Quaternionf();
 
     private final ProspectorMapHandler<T> mapHandler;
     @Getter
@@ -122,7 +117,7 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
                         if (mapHandler.getSelected() == null ||
                                 mapHandler.getSelected().equals(mode.getUniqueId(item))) {
                             int color = mode.getItemColor(item);
-                            image.setPixelRGBA(x, z, GradientUtil.argbToAbgr(color) | 0xFF000000);
+                            image.setPixel(x, z, color | 0xFF000000);
 
                             drewColor = true;
                             break;
@@ -131,10 +126,10 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
                 }
                 if (!drewColor) {
                     // draw background color
-                    image.setPixelRGBA(x, z, (mapHandler.isDarkMode() ? 0xFF666666 : 0xFFFFFFFF));
+                    image.setPixel(x, z, (mapHandler.isDarkMode() ? 0xFF666666 : 0xFFFFFFFF));
                 }
                 if (x % 16 == 0 || z % 16 == 0) {
-                    image.blendPixel(x, z, 0xFF000000);
+                    image.setPixel(x, z, 0xFF000000);
                 }
             }
         }
@@ -143,21 +138,24 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
     }
 
     public void loadToImage() {
-        NativeImage image = getImage();
-        TextureUtil.prepareImage(this.getId(), image.getWidth(), image.getHeight());
-        // the last parameter is actually autoClose, it's named wrong.
-        image.upload(0, 0, 0, true);
+        try (NativeImage image = getImage()) {
+            var device = RenderSystem.getDevice();
+            if (this.texture == null) {
+                this.texture = device.createTexture("GTCEu prospector map",
+                        GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_TEXTURE_BINDING,
+                        GpuFormat.RGBA8_UNORM, imageWidth, imageHeight, 1, 1);
+                this.textureView = device.createTextureView(this.texture);
+                this.sampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST);
+            }
+            device.createCommandEncoder().writeToTexture(this.texture, image);
+        }
     }
 
     @Override
     public void draw(GuiContext context, int x, int y, int width, int height, WidgetTheme widgetTheme) {
-        // getId() generates a new texture ID if it's NOT_ASSIGNED, so we shouldn't use that.
-        if (this.id == NOT_ASSIGNED) return;
-
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderTexture(0, this.getId());
-        GuiDraw.drawTexture(context.getLastGraphicsPose(), x, y, x + width, y + height, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-        RenderSystem.disableBlend();
+        if (this.textureView == null) return;
+        context.getGraphics().blit(this.textureView, this.sampler, x, y, x + width, y + height,
+                0, 1, 0, 1);
 
         // draw special grid (e.g. fluid)
         final ProspectorMode<T> mode = mapHandler.getMode();
@@ -183,23 +181,18 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
             return;
         }
 
-        PoseStack poseStack = context.graphicsPose();
-
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
-
-        poseStack.pushPose();
-        poseStack.translate(x + playerXGui, y + playerYGui, 0f);
-        poseStack.mulPose(rotationQuat.rotationZ(Mth.DEG_TO_RAD * playerRotationDeg));
-        poseStack.translate(-5.f, -5.f, 0.0f);
-
-        ARROW.draw(context, 0, 0, 10, 10, widgetTheme);
-        poseStack.popPose();
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        var graphics = context.getGraphics();
+        var poseStack = graphics.pose();
+        graphics.nextStratum();
+        poseStack.pushMatrix();
+        try {
+            poseStack.translate(x + playerXGui, y + playerYGui);
+            poseStack.rotate(Mth.DEG_TO_RAD * playerRotationDeg);
+            poseStack.translate(-5f, -5f);
+            ARROW.draw(context, 0, 0, 10, 10, widgetTheme);
+        } finally {
+            poseStack.popMatrix();
+        }
     }
 
-    @Override
-    public void load(ResourceManager resourceManager) throws IOException {}
 }
