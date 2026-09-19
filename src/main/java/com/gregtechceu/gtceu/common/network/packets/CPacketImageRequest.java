@@ -31,6 +31,6 @@ public class CPacketImageRequest implements GTNetwork.INetPacket {
             try {
                 SPacketImageResponse.sendImage(url, image, context);
             } catch (IOException ignored) {}
-        });
+        }, () -> GTNetwork.reply(context, new SPacketImageResponse(url)));
     }
 }

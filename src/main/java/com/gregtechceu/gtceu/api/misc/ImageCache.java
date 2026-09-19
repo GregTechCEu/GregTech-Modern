@@ -67,7 +67,7 @@ public class ImageCache {
                 }
             }));
 
-    public static void queryServerImage(String url, Consumer<byte[]> callback) {
+    public static void queryServerImage(String url, Consumer<byte[]> callback, Runnable failureCallback) {
         try {
             if (downloading) return;
 
@@ -76,6 +76,7 @@ public class ImageCache {
                 callback.accept(image);
             } else {
                 CACHE.invalidate(url);
+                failureCallback.run();
             }
         } catch (ExecutionException e) {
             Throwable t = e;
@@ -83,6 +84,7 @@ public class ImageCache {
                 t = t.getCause();
             }
             GTCEu.LOGGER.error("Could not load image {}", url, t);
+            failureCallback.run();
         }
     }
 }
