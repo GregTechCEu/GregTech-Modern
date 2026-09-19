@@ -64,7 +64,6 @@ public class ModuleRecipeWidget extends Flow {
 
         IModularItem defaultModularItem = GTCapabilityHelper.getModularItem(allResults.get(0));
         assert defaultModularItem != null;
-        defaultModularItem.attach(module, moduleItems[0], false);
         ModuleContext defaultAppliedModule = defaultModularItem.getModuleContext(module);
         if (defaultAppliedModule == null) {
             GTCEu.LOGGER.error("Failed to attach default module to modular item preview in EMI for module {}. " +
