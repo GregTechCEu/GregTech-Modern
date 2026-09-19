@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 // TODO implement burning/acid/etc. damage when standing in a fluid block
 public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFluid {
@@ -40,7 +41,7 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
     private static final double MAX_FLUID_HEIGHT = 8.0D / 9.0D;
 
     @Getter
-    private final Collection<FluidAttribute> attributes = new ObjectLinkedOpenHashSet<>();
+    private final Set<FluidAttribute> attributes = new ObjectLinkedOpenHashSet<>();
     @Getter
     private final MaterialFluidState state;
     @Getter
