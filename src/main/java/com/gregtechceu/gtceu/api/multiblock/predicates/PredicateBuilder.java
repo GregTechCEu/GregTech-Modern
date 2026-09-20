@@ -89,7 +89,7 @@ public class PredicateBuilder {
     }
 
     public MultiPredicate toMultiPredicate() {
-        return MultiPredicate.of(build());
+        return MultiPredicate.ofSingle(build());
     }
 
     public BasePredicate build() {
