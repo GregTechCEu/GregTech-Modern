@@ -8,13 +8,12 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
@@ -52,7 +51,6 @@ public class GTLootModifications extends GlobalLootModifierProvider {
         addAddTableModifier(BuiltInLootTables.VILLAGE_WEAPONSMITH, GTLootTables.VILLAGE_WEAPONSMITH_EXTRA);
         addAddTableModifier(BuiltInLootTables.STRONGHOLD_CROSSING, GTLootTables.STRONGHOLD_CROSSING_EXTRA);
         addAddTableModifier(BuiltInLootTables.STRONGHOLD_CORRIDOR, GTLootTables.STRONGHOLD_CORRIDOR_EXTRA);
-
 
         add("hard_hammer_enchant", ApplyHardHammerEnchantmentModifier.of(
                 // disallow any tool enchanted with #gtceu:prevents_hammer_crushing (e.g. silk touch)
