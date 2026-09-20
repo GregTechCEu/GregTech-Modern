@@ -34,6 +34,11 @@ import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.ModularSlot;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.CombinedResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -71,9 +76,15 @@ public class TestMachine {
 
     public static class BE extends AbstractBlockEntity implements IUIHolder<PosGuiData> {
 
-        private final ItemStackHandler input = new ItemStackHandler(4);
-        private final ItemStackHandler output = new ItemStackHandler(4);
+        private final NonNullList<ItemStack> inputStacks = NonNullList.withSize(4, ItemStack.EMPTY);
+        private final NonNullList<ItemStack> outputStacks = NonNullList.withSize(4, ItemStack.EMPTY);
+        private final ItemStackHandler input = new ItemStackHandler(inputStacks);
+        private final ItemStackHandler output = new ItemStackHandler(outputStacks);
         private final IItemHandlerModifiable inv = new CombinedInvWrapper(input, output);
+        // Both APIs reference the same storage; automation transactions can roll back their changes.
+        @Getter
+        private final ResourceHandler<ItemResource> resourceInventory = new CombinedResourceHandler<>(
+                new ItemStacksResourceHandler(inputStacks), new ItemStacksResourceHandler(outputStacks));
 
         private int ticks = 0;
         private boolean running = false, paused = false;
@@ -139,7 +150,7 @@ public class TestMachine {
 
         @Override
         public void update() {
-            if (hasLevel() && !getLevel().isClientSide) {
+            if (hasLevel() && !getLevel().isClientSide()) {
                 if (this.running && this.lastRecipe != null && !this.paused) {
                     if (++this.recipeProgress == this.lastRecipe.ticks) {
                         this.lastRecipe.finishRecipe(this.output);

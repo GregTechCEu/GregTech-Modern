@@ -10,10 +10,9 @@ import brachy.modularui.theme.WidgetThemeEntry;
 
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.TankWidget;
 import lombok.Getter;
@@ -40,7 +39,7 @@ public class EmiRecipeViewerSlot extends RecipeViewerSlotWidget<EmiRecipeViewerS
 
     public EmiRecipeViewerSlot() {
         super();
-        slotWidget = new SlotWidget(EmiIngredient.of(Ingredient.EMPTY), 0, 0);
+        slotWidget = new SlotWidget(EmiStack.EMPTY, 0, 0);
         recipeSlotRole = RecipeSlotRole.RENDER_ONLY;
 
         size(18, 18);
@@ -84,9 +83,13 @@ public class EmiRecipeViewerSlot extends RecipeViewerSlotWidget<EmiRecipeViewerS
 
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
-        context.getGraphics().pose().translate(-this.x, -this.y, 0);
-        this.slotWidget.render(context.getGraphics(), context.getMouseX(), context.getMouseY(), context.getRenderPartialTicks());
-        context.getGraphics().pose().translate(this.x, this.y, 0);
+        context.getGraphics().pose().pushMatrix();
+        try {
+            context.getGraphics().pose().translate(-this.x, -this.y);
+            this.slotWidget.render(context.getGraphics(), context.getMouseX(), context.getMouseY(), context.getRenderPartialTicks());
+        } finally {
+            context.getGraphics().pose().popMatrix();
+        }
     }
 
     @Override

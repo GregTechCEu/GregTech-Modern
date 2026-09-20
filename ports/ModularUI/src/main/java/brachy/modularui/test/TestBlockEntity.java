@@ -51,9 +51,9 @@ import brachy.modularui.widgets.slot.SlotGroup;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.VarInt;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -401,7 +401,7 @@ public class TestBlockEntity extends AbstractBlockEntity implements IUIHolder<Po
 
     @Override
     public void update() {
-        if (!getLevel().isClientSide) {
+        if (!getLevel().isClientSide()) {
             if (this.time++ % 20 == 0) {
                 this.displayItem = TestHandler.getRandomItem();
                 this.displayItem.setCount(26735987);
@@ -420,14 +420,14 @@ public class TestBlockEntity extends AbstractBlockEntity implements IUIHolder<Po
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        tag.put("item_inv", this.storage.serializeNBT(registries));
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        this.storage.serialize(output.child("item_inv"));
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.storage.deserializeNBT(registries, tag.getCompound("item_inv"));
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        this.storage.deserialize(input.childOrEmpty("item_inv"));
     }
 }

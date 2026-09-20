@@ -89,7 +89,7 @@ public class TestHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onItemUse(PlayerInteractEvent.RightClickItem event) {
-        if (event.getEntity().level().isClientSide && ModularUI.isDev()) {
+        if (event.getEntity().level().isClientSide() && ModularUI.isDev()) {
             ItemStack itemStack = event.getItemStack();
             if (itemStack.getItem() == Items.DIAMOND) {
                 ClientGUI.open(new TestGuis());

@@ -224,7 +224,7 @@ public class CodecUtil {
     public static <K, V> MapCodec<V> partialDispatchMap(String key, Codec<K> keyCodec,
                                                         Function<? super V, ? extends DataResult<? extends K>> type,
                                                         Function<? super K, ? extends DataResult<? extends MapCodec<? extends V>>> codec) {
-        return new KeyDispatchCodec<>(key, keyCodec, type, codec);
+        return new KeyDispatchCodec<>(keyCodec.fieldOf(key), type, codec);
 
     }
 

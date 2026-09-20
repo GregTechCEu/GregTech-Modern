@@ -2,11 +2,11 @@
 # Recipe viewers
 emi = "1.1.24+1.21.1"
 
-jei = "19.25.1.328"
+jei = "30.32.0.222"
 
-rei = "16.0.799"
-architectury = "13.0.8"
-clothConfig = "15.0.140"
+rei = "26.2.821"
+architectury = "21.0.2"
+clothConfig = "26.2.155"
 
 # Curios
 curios = "9.4.2+1.21.1"
@@ -25,9 +25,9 @@ mousetweaks = "5637846" # cursemaven
 # Recipe viewers
 emi = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
 
-jei-common-api = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
-jei-forge-api = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
-jei-forge-impl = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
+jei-common-api = { module = "mezz.jei:jei-26.2-common-api", version.ref = "jei" }
+jei-forge-api = { module = "mezz.jei:jei-26.2-neoforge-api", version.ref = "jei" }
+jei-forge-impl = { module = "mezz.jei:jei-26.2-neoforge", version.ref = "jei" }
 
 rei-plugin = { module = "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge", version.ref = "rei" }
 rei-api = { module = "me.shedaniel:RoughlyEnoughItems-api-neoforge", version.ref = "rei" }

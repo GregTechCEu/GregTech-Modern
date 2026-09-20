@@ -48,6 +48,10 @@ The isolated check now also compiles `SchemaGeometry`, `RadialMask` and `GuiPose
 
 ## Next implementation work
 
+The subsequent capability/projection/integration pass reduced compilation to **4 errors**, all from the incompatible EMI 1.21.1 dependency. JEI 30.32.0.222 and REI 26.2.821 now compile, with their 26.2 supporting dependencies. The official EMI NeoForge Maven metadata checked on 2026-09-20 lists no 26.x artifact. EMI integration remains present. Fifteen isolated checks pass, including three new projection tests. Projection callers now provide explicit matrices/depth; unused global viewport/depth-reading APIs were removed. Test inventories now share persistent component/list storage with the current capabilities. Runtime and full GregTech validation remain outstanding.
+
+Latest verification (2026-09-20): full diagnostic compilation reports 39 errors, down from 76 in the latest pass. All 12 isolated rendering checks pass. Fluid capability lookup now uses NeoForge's compatibility adapter; fluid comparisons include components. Recipe-screen extraction uses GUI strata and restores pose/tint after drawing. Inventory persistence, registry tag lookup, loader environment access and codec dispatch are migrated. Crafting, preview-world and preview-renderer files also report no compiler errors. Full compilation and in-game validation are still outstanding.
+
 1. Verify the implemented deferred stencil clipping and its GUI-state mixin in game, including rotated masks, nested masks, text, items and previews. Stencil allocation now uses the main-render-target configuration event; immediate OpenGL initialization has been removed.
 2. Replace structure rendering, highlights, custom projection/viewport handling, buffer uploads, and block-entity rendering with 26.2 rendering APIs. Preserve fluids, filtering, lighting, ray tracing, and resource disposal.
 3. Finish the graphics-context / widget / screen / input migration, tooltip extraction, reload hooks and mixin targets; then resolve the remaining ModularUI compilation errors.

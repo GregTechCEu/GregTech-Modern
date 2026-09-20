@@ -34,6 +34,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -87,6 +88,8 @@ public class SchemaLevel extends Level implements ISchema {
 
     private final TickRateManager tickRateManager = new TickRateManager();
     @Getter
+    private final WorldBorder worldBorder = new WorldBorder();
+    @Getter
     private final Scoreboard scoreboard = new Scoreboard();
     @Getter
     private final DummyChunkSource chunkSource = new DummyChunkSource(this);
@@ -118,6 +121,12 @@ public class SchemaLevel extends Level implements ISchema {
         // the argument named "size" is actually the default value.
         // We want all blocks to have max light, so we create a pre-filled light data layer
         defaultDataLayer = new DataLayer(LightEngine.MAX_LEVEL);
+    }
+
+    @Override
+    public int getSeaLevel() {
+        // Preview dimensions use the Overworld definition and its standard sea level.
+        return 63;
     }
 
     private static ClientLevel.ClientLevelData createLevelData() {

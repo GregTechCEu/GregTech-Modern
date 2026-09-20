@@ -3,7 +3,6 @@ package brachy.modularui.drawable.schema;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import lombok.Getter;
 import org.joml.Vector3f;
@@ -53,10 +52,6 @@ public class Viewport {
         setY(window.getHeight() - Mth.ceil((y + height) * guiScale));
         setW(Mth.ceil(width * guiScale));
         setH(Mth.ceil(height * guiScale));
-    }
-
-    public void applyViewport() {
-        RenderSystem.viewport(getX(), getY(), getW(), getH());
     }
 
     public float rescaleXToViewport(float x, float width) {

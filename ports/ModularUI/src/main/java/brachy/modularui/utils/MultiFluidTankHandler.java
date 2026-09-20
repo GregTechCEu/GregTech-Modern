@@ -65,7 +65,7 @@ public class MultiFluidTankHandler implements IMultiFluidTankHandler {
         FluidStack toFill = resource.copy();
         // first find tanks with matching fluid
         for (IFluidTank tank : this.tanks) {
-            if (!tank.getFluid().isEmpty() && resource.isFluidEqual(tank.getFluid())) {
+            if (!tank.getFluid().isEmpty() && FluidStack.isSameFluidSameComponents(resource, tank.getFluid())) {
                 fillAmount -= tank.fill(toFill, action);
                 toFill.setAmount(fillAmount);
                 if (fillAmount <= 0) return resource.getAmount();
@@ -93,7 +93,7 @@ public class MultiFluidTankHandler implements IMultiFluidTankHandler {
         int drainAmount = resource.getAmount();
         for (int i = startIndex; i < this.tanks.length; i++) {
             IFluidTank tank = this.tanks[i];
-            if (tank.getFluid().isEmpty() || !resource.isFluidEqual(tank.getFluid())) continue;
+            if (tank.getFluid().isEmpty() || !FluidStack.isSameFluidSameComponents(resource, tank.getFluid())) continue;
             FluidStack d = this.tanks[i].drain(drainAmount, action);
             if (!d.isEmpty()) {
                 drainAmount -= d.getAmount();

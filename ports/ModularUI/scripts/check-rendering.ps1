@@ -47,11 +47,13 @@ $sourceFiles = @(
     'src/main/java/brachy/modularui/client/GuiEntityPreviewRenderer.java',
     'src/main/java/brachy/modularui/utils/MUIRenderTypes.java',
     'src/main/java/brachy/modularui/utils/GuiPoseTransforms.java',
+    'src/main/java/brachy/modularui/utils/MatrixUtils.java',
     'src/main/java/brachy/modularui/utils/SpriteHelper.java',
     'src/main/java/brachy/modularui/drawable/schema/DummyLightTexture.java',
     'src/test/java/brachy/modularui/GuiShapeRenderStateTest.java',
     'src/test/java/brachy/modularui/SchemaGeometryTest.java',
-    'src/test/java/brachy/modularui/GuiPoseTransformsTest.java'
+    'src/test/java/brachy/modularui/GuiPoseTransformsTest.java',
+    'src/test/java/brachy/modularui/MatrixProjectionTest.java'
 ) | ForEach-Object { Join-Path $libraryRoot $_ }
 
 # An explicit source path prevents javac from silently compiling dependency source jars.
@@ -64,4 +66,6 @@ if ($LASTEXITCODE -ne 0) { throw "GUI geometry checks failed ($LASTEXITCODE)." }
 if ($LASTEXITCODE -ne 0) { throw "Structure geometry checks failed ($LASTEXITCODE)." }
 & (Join-Path $JavaHome 'bin/java.exe') -cp ($renderClasspath -join ';') brachy.modularui.GuiPoseTransformsTest
 if ($LASTEXITCODE -ne 0) { throw "GUI pose checks failed ($LASTEXITCODE)." }
+& (Join-Path $JavaHome 'bin/java.exe') -cp ($renderClasspath -join ';') brachy.modularui.MatrixProjectionTest
+if ($LASTEXITCODE -ne 0) { throw "Projection checks failed ($LASTEXITCODE)." }
 Write-Output 'Isolated renderer checks passed. This does not verify the full library build or in-game rendering.'

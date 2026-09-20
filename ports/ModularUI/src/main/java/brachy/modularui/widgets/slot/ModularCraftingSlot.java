@@ -2,17 +2,16 @@ package brachy.modularui.widgets.slot;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.gamerules.GameRules;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -160,7 +159,7 @@ public class ModularCraftingSlot extends ModularSlot {
     @Override
     protected void checkTakeAchievements(@NotNull ItemStack stack) {
         if (this.amountCrafted > 0) {
-            stack.onCraftedBy(getPlayer().level(), getPlayer(), this.amountCrafted);
+            stack.onCraftedBy(getPlayer(), this.amountCrafted);
             EventHooks.firePlayerCraftingEvent(getPlayer(), stack, this.getCraftSlots());
         }
 
@@ -182,14 +181,31 @@ public class ModularCraftingSlot extends ModularSlot {
     public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
         this.checkTakeAchievements(stack);
 
+        CraftingInput.Positioned positioned = this.getCraftSlots().asPositionedCraftInput();
+        CraftingInput input = positioned.input();
+        NonNullList<ItemStack> recipeInputs;
         CommonHooks.setCraftingPlayer(player);
-        NonNullList<ItemStack> recipeInputs = player.level().getRecipeManager()
-                .getRemainingItemsFor(RecipeType.CRAFTING, this.getCraftSlots().asCraftInput(), player.level());
-        CommonHooks.setCraftingPlayer(null);
+        try {
+            if (player.level() instanceof ServerLevel level) {
+                recipeInputs = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level)
+                        .map(recipe -> recipe.value().getRemainingItems(input))
+                        .orElseGet(() -> {
+                            NonNullList<ItemStack> remaining = NonNullList.withSize(input.size(), ItemStack.EMPTY);
+                            for (int i = 0; i < input.size(); i++) remaining.set(i, input.getItem(i).copy());
+                            return remaining;
+                        });
+            } else {
+                recipeInputs = CraftingRecipe.defaultCraftingReminder(input);
+            }
+        } finally {
+            CommonHooks.setCraftingPlayer(null);
+        }
 
-        for (int i = 0; i < recipeInputs.size(); ++i) {
+        for (int inputIndex = 0; inputIndex < recipeInputs.size(); ++inputIndex) {
+            int i = inputIndex % input.width() + positioned.left() +
+                    (inputIndex / input.width() + positioned.top()) * this.getCraftSlots().getWidth();
             ItemStack slotItem = this.getCraftSlots().getItem(i);
-            ItemStack recipeItem = recipeInputs.get(i);
+            ItemStack recipeItem = recipeInputs.get(inputIndex);
 
             if (!slotItem.isEmpty()) {
                 this.getCraftSlots().removeItem(i, 1);
@@ -221,15 +237,15 @@ public class ModularCraftingSlot extends ModularSlot {
             return;
         }
 
-        Level level = player.level();
+        ServerLevel level = player.level();
         ItemStack result = ItemStack.EMPTY;
 
-        Optional<RecipeHolder<CraftingRecipe>> possibleRecipe = player.getServer().getRecipeManager()
+        Optional<RecipeHolder<CraftingRecipe>> possibleRecipe = level.recipeAccess()
                 .getRecipeFor(RecipeType.CRAFTING, getCraftSlots().asCraftInput(), level);
         if (possibleRecipe.isPresent()) {
             RecipeHolder<CraftingRecipe> recipe = possibleRecipe.get();
             if (setRecipeUsed(getItemHandler(), player, recipe)) {
-                result = recipe.value().assemble(getCraftSlots().asCraftInput(), level.registryAccess());
+                result = recipe.value().assemble(getCraftSlots().asCraftInput());
                 if (!result.isItemEnabled(level.enabledFeatures())) {
                     result = ItemStack.EMPTY;
                 }
@@ -240,8 +256,8 @@ public class ModularCraftingSlot extends ModularSlot {
     }
 
     protected boolean setRecipeUsed(@Nullable Object possibleRecipeHolder, ServerPlayer player, RecipeHolder<CraftingRecipe> recipe) {
-        if (!recipe.value().isSpecial() && player.level().getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) &&
-                !player.getRecipeBook().contains(recipe)) {
+        if (!recipe.value().isSpecial() && player.level().getGameRules().get(GameRules.LIMITED_CRAFTING) &&
+                !player.getRecipeBook().contains(recipe.id())) {
             return false;
         }
 

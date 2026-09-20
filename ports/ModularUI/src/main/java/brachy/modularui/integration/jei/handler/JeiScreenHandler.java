@@ -24,6 +24,7 @@ import mezz.jei.api.gui.handlers.IScreenHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.runtime.IClickableIngredient;
+import mezz.jei.api.gui.builder.IClickableIngredientFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -148,6 +149,12 @@ public class JeiScreenHandler<T extends Screen & IMuiScreen> extends RecipeViewe
                     .getRecipeViewerSettings().getAllExclusionAreas()
                     .stream().map(Rectangle::asRect2i)
                     .toList();
+        }
+
+        @Override
+        public Optional<? extends IClickableIngredient<?>> getClickableIngredientUnderMouse(
+                IClickableIngredientFactory factory, T1 screen, double mouseX, double mouseY) {
+            return getClickableIngredientUnderMouse(screen, mouseX, mouseY);
         }
 
         @Override

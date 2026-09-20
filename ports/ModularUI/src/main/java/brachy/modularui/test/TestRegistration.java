@@ -12,16 +12,15 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraft.core.component.DataComponents;
+import net.neoforged.neoforge.transfer.item.ItemAccessItemHandler;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Function;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Set;
 
 public class TestRegistration {
 
@@ -38,15 +37,15 @@ public class TestRegistration {
         return TestItem::new;
     }
 
-    public static final DeferredItem<TestItem> TEST_ITEM = ITEMS.registerItem("test_item", testItemFactory());
+    public static final DeferredItem<TestItem> TEST_ITEM = ITEMS.registerItem("test_item", testItemFactory(), () -> new Item.Properties().stacksTo(1));
 
-    public static final DeferredBlock<TestBlock> TEST_BLOCK = BLOCKS.register("test_block", () -> new TestBlock(TestBlockEntity::new));
+    public static final DeferredBlock<TestBlock> TEST_BLOCK = BLOCKS.registerBlock("test_block", properties -> new TestBlock(properties, TestBlockEntity::new));
     public static final DeferredItem<BlockItem> TEST_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(TEST_BLOCK);
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TestBlockEntity>> TEST_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("test_block", () -> BlockEntityType.Builder.of(TestBlockEntity::new, TEST_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TestBlockEntity>> TEST_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("test_block", () -> new BlockEntityType<>(TestBlockEntity::new, Set.of(TEST_BLOCK.get())));
 
-    public static final DeferredBlock<TestBlock> TEST_MACHINE_BLOCK = BLOCKS.register("machine_block", () -> new TestBlock(TestMachine.BE::new));
-    public static final DeferredItem<BlockItem> TEST_MACHINE_BLOCK_ITEM = ITEMS.register("machine_block", () -> new BlockItem(TEST_MACHINE_BLOCK.get(), new Item.Properties()));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TestMachine.BE>> TEST_MACHINE_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("machine_block", () -> BlockEntityType.Builder.of(TestMachine.BE::new, TEST_MACHINE_BLOCK.get()).build(null));
+    public static final DeferredBlock<TestBlock> TEST_MACHINE_BLOCK = BLOCKS.registerBlock("machine_block", properties -> new TestBlock(properties, TestMachine.BE::new));
+    public static final DeferredItem<BlockItem> TEST_MACHINE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(TEST_MACHINE_BLOCK);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TestMachine.BE>> TEST_MACHINE_BLOCK_ENTITY = BLOCK_ENTITY_TYPES.register("machine_block", () -> new BlockEntityType<>(TestMachine.BE::new, Set.of(TEST_MACHINE_BLOCK.get())));
     // @formatter:on
 
     @SubscribeEvent
@@ -58,11 +57,10 @@ public class TestRegistration {
 
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.ItemHandler.ITEM, (stack, ctx) -> {
-            return new ItemStackHandler(4);
-        }, TestRegistration.TEST_ITEM.get());
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TestRegistration.TEST_MACHINE_BLOCK_ENTITY.get(), (machine, dir) -> {
-            return machine.getInventory();
+        event.registerItem(Capabilities.Item.ITEM, (stack, access) ->
+                new ItemAccessItemHandler(access, DataComponents.CONTAINER, 4), TestRegistration.TEST_ITEM.get());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, TestRegistration.TEST_MACHINE_BLOCK_ENTITY.get(), (machine, dir) -> {
+            return machine.getResourceInventory();
         });
     }
 

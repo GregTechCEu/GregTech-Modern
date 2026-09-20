@@ -2,10 +2,9 @@ package brachy.modularui.integration.recipeviewer.util;
 
 import brachy.modularui.screen.ClientScreenHandler;
 import brachy.modularui.screen.ModularScreen;
+import brachy.modularui.drawable.GuiTint;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
@@ -27,27 +26,17 @@ public class RecipeScreenRenderingUtil {
                                             int mouseX, int mouseY, float partialTick) {
         screen.getContext().setGraphics(guiGraphics);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
-        screen.getContext().graphicsPose().pushMatrix();
-        RenderSystem.applyModelViewMatrix();
-
-        // copied from ClientScreenHandler#drawScreenInternal to
-        // let us draw foreground elements separately after everything else.
-        //Stencil.reset();
-        //screen.getContext().getStencil().push(screen.getScreenArea());
-
-        screen.render(guiGraphics, mouseX, mouseY, partialTick);
-
-        RenderSystem.disableDepthTest();
-
-        ClientScreenHandler.drawVanillaElements(guiGraphics, screen.getScreenWrapper().wrappedScreen(),
-                mouseX, mouseY, partialTick);
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        //screen.getContext().getStencil().pop();
-        screen.getContext().graphicsPose().popMatrix();
-        RenderSystem.applyModelViewMatrix();
+        guiGraphics.pose().pushMatrix();
+        int previousTint = GuiTint.get();
+        try {
+            screen.render(guiGraphics, mouseX, mouseY, partialTick);
+            guiGraphics.nextStratum();
+            ClientScreenHandler.drawVanillaElements(guiGraphics, screen.getScreenWrapper().wrappedScreen(),
+                    mouseX, mouseY, partialTick);
+        } finally {
+            GuiTint.set(previousTint);
+            guiGraphics.pose().popMatrix();
+        }
     }
 
     @ApiStatus.Internal
@@ -55,21 +44,15 @@ public class RecipeScreenRenderingUtil {
                                             int mouseX, int mouseY, float partialTick) {
         screen.getContext().setGraphics(guiGraphics);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
-        //screen.getContext().graphicsPose().pushMatrix();
-
-        // copied from ClientScreenHandler#drawScreenInternal to
-        // let us draw foreground elements separately after everything else.
-        //screen.getContext().getStencil().push(screen.getScreenArea());
-        RenderSystem.disableDepthTest();
-        Lighting.setupForFlatItems();
-
-        screen.drawForeground(guiGraphics);
-
-        RenderSystem.enableDepthTest();
-        Lighting.setupFor3DItems();
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-        //screen.getContext().getStencil().pop();
-        //screen.getContext().graphicsPose().popMatrix();
+        guiGraphics.nextStratum();
+        guiGraphics.pose().pushMatrix();
+        int previousTint = GuiTint.get();
+        try {
+            // Item lighting is selected by the deferred item renderer from its model state.
+            screen.drawForeground(guiGraphics);
+        } finally {
+            GuiTint.set(previousTint);
+            guiGraphics.pose().popMatrix();
+        }
     }
 }

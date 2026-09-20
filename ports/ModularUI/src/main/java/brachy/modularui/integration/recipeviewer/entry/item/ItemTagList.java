@@ -55,7 +55,7 @@ public final class ItemTagList implements ItemEntryList {
     public record ItemTagEntry(@NotNull TagKey<Item> tag, int amount, @NotNull DataComponentPatch componentPatch) {
 
         public Stream<ItemStack> stacks() {
-            return BuiltInRegistries.ITEM.getTag(tag).map(HolderSet.ListBacked::stream).orElseGet(Stream::empty)
+            return BuiltInRegistries.ITEM.get(tag).map(HolderSet.ListBacked::stream).orElseGet(Stream::empty)
                     .map(holder -> stackWithComponents(holder, amount, componentPatch));
         }
     }

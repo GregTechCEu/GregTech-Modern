@@ -18,8 +18,9 @@ import brachy.modularui.widgets.slot.ModularSlot;
 
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.minecraft.core.component.DataComponents;
+import net.neoforged.neoforge.items.ComponentItemHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class TestItem extends Item implements IUIHolder<PlayerInventoryGuiData<?>> {
 
@@ -34,8 +35,7 @@ public class TestItem extends Item implements IUIHolder<PlayerInventoryGuiData<?
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        IItemHandler itemHandler = data.getUsedItemStack().getCapability(Capabilities.ItemHandler.ITEM);
-        if (!(itemHandler instanceof IItemHandlerModifiable ihm)) return null;
+        var ihm = new ComponentItemHandler(data.getUsedItemStack(), DataComponents.CONTAINER, 4);
 
         syncManager.registerSlotGroup("mixer_items", 2);
         // if the player slot is the slot with this item, then disallow any interaction
@@ -59,7 +59,7 @@ public class TestItem extends Item implements IUIHolder<PlayerInventoryGuiData<?
                                                 .slotGroup("mixer_items")
                                                 // do not allow putting items which can hold other items into the item
                                                 // some mods don't do this on their backpacks, so it won't catch those cases
-                                                .filter(stack -> stack.getCapability(Capabilities.ItemHandler.ITEM) == null)))
+                                                .filter(stack -> stack.isEmpty() || ItemAccess.forStack(stack).getCapability(Capabilities.Item.ITEM) == null)))
                                         .build()))
                         .child(SlotGroupWidget.playerInventory(false)))
                 .child(GuiTextures.ANIMATED_TEXTURE_TEST.asWidget().size(32).leftRel(1f).topRel(0f).margin(7));

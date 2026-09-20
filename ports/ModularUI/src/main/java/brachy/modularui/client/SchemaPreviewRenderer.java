@@ -81,8 +81,8 @@ public final class SchemaPreviewRenderer extends PictureInPictureRenderer<Schema
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
         for (var layer : state.layers()) {
-            collector.submitCustomGeometry(pose, layer.type(), (transform, consumer) ->
-                    layer.vertices().forEach(vertex -> vertex.write(transform, consumer)));
+            collector.submitCustomGeometry(pose, layer.renderType(), (transform, consumer) ->
+                    layer.vertices().forEach(vertex -> vertex.emit(consumer, transform)));
         }
         CameraRenderState camera = new CameraRenderState();
         camera.pos = new Vec3(state.camera());
@@ -96,7 +96,7 @@ public final class SchemaPreviewRenderer extends PictureInPictureRenderer<Schema
         }
         if (!state.highlight().isEmpty()) {
             collector.order(1).submitCustomGeometry(pose, HIGHLIGHT, (transform, consumer) ->
-                    state.highlight().forEach(vertex -> vertex.write(transform, consumer)));
+                    state.highlight().forEach(vertex -> vertex.emit(consumer, transform)));
         }
     }
 

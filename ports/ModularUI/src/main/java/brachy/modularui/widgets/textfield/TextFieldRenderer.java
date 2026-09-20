@@ -9,7 +9,6 @@ import brachy.modularui.utils.PointF;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -140,7 +139,6 @@ public class TextFieldRenderer extends TextRenderer {
     @OnlyIn(Dist.CLIENT)
     public void drawMarked(GuiGraphicsExtractor graphics, float y0, float x0, float x1) {
         y0 -= 1;
-        RenderSystem.enableBlend();
         GuiDraw.drawRect(graphics, x0, y0, x1 - x0, getFontHeight(), this.markedColor);
     }
 
@@ -150,7 +148,7 @@ public class TextFieldRenderer extends TextRenderer {
         y0 = (y0 - 1) / this.scale;
 
         graphics.pose().pushMatrix();
-        graphics.pose().scale(this.scale, this.scale, 1);
+        graphics.pose().scale(this.scale, this.scale);
         GuiDraw.drawRect(graphics, x0, y0, 0.6f, 9, this.cursorColor);
         graphics.pose().popMatrix();
     }

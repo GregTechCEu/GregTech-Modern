@@ -21,7 +21,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.NeoForge;
@@ -78,7 +77,7 @@ public class ModularUI {
      * @return whether we're running in a production environment
      */
     public static boolean isProd() {
-        return FMLLoader.isProduction();
+        return FMLEnvironment.isProduction();
     }
 
     /**
@@ -126,7 +125,7 @@ public class ModularUI {
      * @see #isClientThread()
      */
     public static boolean isClientSide() {
-        return isTestEnv() || FMLEnvironment.dist.isClient();
+        return isTestEnv() || FMLEnvironment.getDist().isClient();
     }
 
     /**

@@ -1,6 +1,6 @@
 package brachy.modularui.widgets.slot;
 
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -63,7 +63,7 @@ public class CraftingContainerWrapper extends TransientCraftingContainer {
     @Override
     public void setItem(int slot, @NotNull ItemStack stack) {
         if (slot < 0 || slot >= this.size) return;
-        this.setSlot(slot + this.startIndex, stack, true);
+        this.setSlot(slot, stack, true);
     }
 
     public void setSlot(int slot, @NotNull ItemStack stack, boolean notify) {
@@ -112,7 +112,7 @@ public class CraftingContainerWrapper extends TransientCraftingContainer {
     }
 
     @Override
-    public void fillStackedContents(@NotNull StackedContents contents) {
+    public void fillStackedContents(@NotNull StackedItemContents contents) {
         for (int i = 0; i < this.size; i++) {
             contents.accountStack(this.getItem(i));
         }

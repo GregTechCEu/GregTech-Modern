@@ -20,7 +20,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
@@ -83,7 +83,7 @@ public class EmiStackConverter {
             }
             var item = ITEM.convertFrom(stack);
             if (item != null) {
-                IFluidHandlerItem fluidHandler = item.getCapability(Capabilities.FluidHandler.ITEM);
+                IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(item).orElse(null);
                 if(fluidHandler != null && fluidHandler.getTanks() == 1) {
                     return fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
                 }

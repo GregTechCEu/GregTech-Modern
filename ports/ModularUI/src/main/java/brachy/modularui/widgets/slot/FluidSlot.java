@@ -20,9 +20,8 @@ import brachy.modularui.widgets.AbstractFluidDisplayWidget;
 
 import net.minecraft.world.item.ItemStack;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
@@ -151,9 +150,7 @@ public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
     public void drawOverlay(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         super.drawOverlay(context, widgetTheme);
         if (isHovering()) {
-            RenderSystem.colorMask(true, true, true, false);
             GuiDraw.drawRect(context.getGraphics(), 1, 1, getArea().w() - 2, getArea().h() - 2, getSlotHoverColor());
-            RenderSystem.colorMask(true, true, true, true);
         }
     }
 
@@ -175,7 +172,7 @@ public class FluidSlot extends AbstractFluidDisplayWidget<FluidSlot>
         }
         ItemStack cursorStack = MCHelper.getPlayer().containerMenu.getCarried();
         if (this.syncHandler.phantom() ||
-                (!cursorStack.isEmpty() && cursorStack.getCapability(Capabilities.FluidHandler.ITEM) != null)) {
+                (!cursorStack.isEmpty() && FluidUtil.getFluidHandler(cursorStack).isPresent())) {
             MouseData mouseData = MouseData.create(button);
             this.syncHandler.syncToServer(FluidSlotSyncHandler.SYNC_CLICK, mouseData::writeToPacket);
         }

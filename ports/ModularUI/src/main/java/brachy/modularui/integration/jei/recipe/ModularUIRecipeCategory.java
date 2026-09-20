@@ -131,7 +131,7 @@ public abstract class ModularUIRecipeCategory<T> implements IRecipeCategory<T> {
         ModularScreen screen = getModularScreen(recipe);
 
         RecipeScreenRenderingUtil.drawScreenBackground(guiGraphics, screen, (int) mouseX, (int) mouseY,
-                Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+                Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
     }
 
     @Override
@@ -143,7 +143,7 @@ public abstract class ModularUIRecipeCategory<T> implements IRecipeCategory<T> {
         return switch (slotRole) {
             case INPUT -> RecipeIngredientRole.INPUT;
             case OUTPUT -> RecipeIngredientRole.OUTPUT;
-            case CATALYST -> RecipeIngredientRole.CATALYST;
+            case CATALYST -> RecipeIngredientRole.CRAFTING_STATION;
             case RENDER_ONLY -> RecipeIngredientRole.RENDER_ONLY;
         };
     }
@@ -208,7 +208,7 @@ public abstract class ModularUIRecipeCategory<T> implements IRecipeCategory<T> {
         public void drawWidget(GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
             ModularScreen screen = getModularScreen(this.recipe);
             RecipeScreenRenderingUtil.drawScreenForeground(guiGraphics, screen, (int) mouseX, (int) mouseY,
-                    Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+                    Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false));
         }
     }
 }

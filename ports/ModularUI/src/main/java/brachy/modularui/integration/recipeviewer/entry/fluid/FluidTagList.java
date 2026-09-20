@@ -48,7 +48,7 @@ public final class FluidTagList implements FluidEntryList {
     public record FluidTagEntry(@NotNull TagKey<Fluid> tag, int amount, @NotNull DataComponentPatch componentPatch) {
 
         public Stream<FluidStack> stacks() {
-            return BuiltInRegistries.FLUID.getTag(tag).map(HolderSet.ListBacked::stream).orElseGet(Stream::empty)
+            return BuiltInRegistries.FLUID.get(tag).map(HolderSet.ListBacked::stream).orElseGet(Stream::empty)
                     .map(holder -> new FluidStack(holder, amount, componentPatch));
         }
     }

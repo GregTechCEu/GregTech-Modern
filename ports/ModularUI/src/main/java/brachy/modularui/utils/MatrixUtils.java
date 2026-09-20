@@ -1,14 +1,9 @@
 package brachy.modularui.utils;
 
-import brachy.modularui.utils.math.MathUtils;
 import org.jspecify.annotations.NullMarked;
 import net.minecraft.util.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import com.mojang.blaze3d.opengl.GlUtil;
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import com.google.common.collect.HashBasedTable;
@@ -21,9 +16,7 @@ import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
-import org.lwjgl.opengl.GL11;
 
-import java.nio.ByteBuffer;
 import java.security.InvalidParameterException;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,6 +24,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @NullMarked
 public class MatrixUtils {
+
+    private static final Vector3fc UP = new Vector3f(0, 1, 0);
 
     private static final ImmutableMap<Direction, Vector3fc> directionAxises = Util.make(() -> {
         ImmutableMap.Builder<Direction, Vector3fc> map = ImmutableMap.builderWithExpectedSize(6);
@@ -42,8 +37,6 @@ public class MatrixUtils {
     private static final Table<Direction, Direction, Matrix4fc> rotations = Tables
             .synchronizedTable(HashBasedTable.create());
 
-    private static final ByteBuffer PIXEL_DEPTH_BUFFER = GlUtil.allocateMemory(4);
-    private static final int[] VIEWPORT_COORDS = {0, 0, 0, 0};
 
     /**
      * @param from the original vector
@@ -181,7 +174,7 @@ public class MatrixUtils {
      * @see Matrix4f#lookAt(Vector3fc, Vector3fc, Vector3fc)
      */
     public static Matrix4f lookAt(Vector3fc eyePos, Vector3fc target) {
-        return new Matrix4f().lookAt(eyePos, target, MathUtils.UNIT_Y);
+        return new Matrix4f().lookAt(eyePos, target, UP);
     }
 
     /**
@@ -204,7 +197,7 @@ public class MatrixUtils {
      */
     public static void lookAt(PoseStack.Pose pose, Vector3fc eyePos, Vector3fc target) {
         lookAt(pose.pose(), eyePos, target);
-        pose.normal().lookAlong(target.sub(eyePos, new Vector3f()), MathUtils.UNIT_Y);
+        pose.normal().lookAlong(target.sub(eyePos, new Vector3f()), UP);
     }
 
     /**
@@ -215,100 +208,33 @@ public class MatrixUtils {
      * @param target the point to look at
      */
     public static void lookAt(Matrix4f matrix, Vector3fc eyePos, Vector3fc target) {
-        matrix.lookAt(eyePos, target, MathUtils.UNIT_Y);
+        matrix.lookAt(eyePos, target, UP);
     }
 
     /**
-     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
-     * applying it to the deprecated OpenGL transformation stack.
-     *
-     * @param worldPos world space position
-     * @apiNote the Z component of the return value is the distance from the screen.
+     * Projects into a bottom-left-origin pixel viewport using an extraction-time matrix snapshot.
+     * The combined matrix must use OpenGL-style [-1, 1] clip depth; the returned depth is [0, 1].
+     * GPU projection buffers cannot be read synchronously during GUI extraction.
      */
-    public static Vector3f projectWorldToScreen(Vector3fc worldPos) {
-        Window window = Minecraft.getInstance().getWindow();
-        return projectWorldToScreen(worldPos, window.getWidth(), window.getHeight());
+    public static Vector3f projectWorldToScreen(Vector3fc worldPos, Matrix4fc projectionView, int[] viewport) {
+        validateViewport(viewport);
+        return projectionView.project(worldPos, viewport, new Vector3f());
     }
 
     /**
-     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
-     * applying it to the deprecated OpenGL transformation stack.
-     *
-     * @param worldPos   world space position
-     * @param viewWidth  the viewport's width
-     * @param viewHeight the viewport's height
-     * @apiNote the Z component of the return value is the distance from the screen.
+     * Unprojects a pixel and explicit normalized depth using the same matrix used for projection.
+     * Picking callers should supply ray endpoints (depth 0 and 1) and intersect the scene,
+     * rather than reading the depth of an unrelated, previously rendered framebuffer.
      */
-    public static Vector3f projectWorldToScreen(Vector3fc worldPos, int viewWidth, int viewHeight) {
-        // read projection and model view matrices
-        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
-        Vector3f screenPos = new Vector3f(worldPos).mulPosition(transform);
-        screenPos.x = viewWidth * (screenPos.x + 1.0f) / 2.0f;
-        screenPos.y = viewHeight * (screenPos.y + 1.0f) / 2.0f;
-        screenPos.z = (screenPos.z + 1.0f) / 2.0f;
-
-        return screenPos;
+    public static Vector3f projectScreenToWorld(float x, float y, float depth,
+                                                Matrix4fc projectionView, int[] viewport) {
+        validateViewport(viewport);
+        return projectionView.unproject(x, y, depth, viewport, new Vector3f());
     }
 
-    /**
-     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
-     * applying it to the deprecated OpenGL transformation stack.
-     *
-     * @param x X-coordinate in pixels
-     * @param y Y-coordinate in pixels
-     * @return world pos
-     */
-    public static Vector3f projectScreenToWorld(int x, int y) {
-        Window window = Minecraft.getInstance().getWindow();
-        return projectScreenToWorld(x, y, window.getWidth(), window.getHeight());
-    }
-
-    /**
-     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
-     * applying it to the deprecated OpenGL transformation stack.
-     *
-     * @param x          X-coordinate in pixels
-     * @param y          Y-coordinate in pixels
-     * @param viewWidth  the viewport's width
-     * @param viewHeight the viewport's height
-     * @return world pos
-     */
-    public static Vector3f projectScreenToWorld(int x, int y, int viewWidth, int viewHeight) {
-        // update the viewport size array
-        VIEWPORT_COORDS[2] = viewWidth;
-        VIEWPORT_COORDS[3] = viewHeight;
-        return projectScreenToWorld(x, y, VIEWPORT_COORDS);
-    }
-
-    /**
-     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrixinstead of
-     * applying it to the deprecated OpenGL transformation stack.
-     *
-     * @param x          X-coordinate in pixels
-     * @param y          Y-coordinate in pixels
-     * @param viewport   the viewport described by {@code [x, y, width, height]}
-     * @return world pos
-     */
-    public static Vector3f projectScreenToWorld(int x, int y, int[] viewport) {
-       return projectScreenToWorld(x, y, viewport, 0, true);
-    }
-
-    public static Vector3f projectScreenToWorld(int x, int y, int[] viewport, float depth) {
-        return projectScreenToWorld(x, y, viewport, depth, false);
-    }
-
-    private static Vector3f projectScreenToWorld(int x, int y, int[] viewport, float depth, boolean checkDepth) {
-        // read projection and model view matrices
-        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
-        if (checkDepth) depth = readDepth(x, y);
-        return transform.unproject(x, y, depth, viewport, new Vector3f());
-    }
-
-    public static float readDepth(int x, int y) {
-        RenderSystem.readPixels(x, y, 1, 1, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, PIXEL_DEPTH_BUFFER);
-        PIXEL_DEPTH_BUFFER.rewind();
-        float depth = PIXEL_DEPTH_BUFFER.getFloat();
-        PIXEL_DEPTH_BUFFER.rewind();
-        return depth;
+    private static void validateViewport(int[] viewport) {
+        if (viewport.length != 4 || viewport[2] <= 0 || viewport[3] <= 0) {
+            throw new IllegalArgumentException("Viewport must contain x, y and positive width, height");
+        }
     }
 }

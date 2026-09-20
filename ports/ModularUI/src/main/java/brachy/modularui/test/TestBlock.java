@@ -27,8 +27,8 @@ public class TestBlock extends BaseEntityBlock {
 
     private final BiFunction<BlockPos, BlockState, BlockEntity> blockEntityCreator;
 
-    public TestBlock(BiFunction<BlockPos, BlockState, BlockEntity> blockEntityCreator) {
-        super(Properties.of());
+    public TestBlock(Properties properties, BiFunction<BlockPos, BlockState, BlockEntity> blockEntityCreator) {
+        super(properties);
         this.blockEntityCreator = blockEntityCreator;
     }
 
@@ -39,7 +39,7 @@ public class TestBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             UIFactories.blockEntity().open(player, pos);
         }
         return InteractionResult.SUCCESS;
