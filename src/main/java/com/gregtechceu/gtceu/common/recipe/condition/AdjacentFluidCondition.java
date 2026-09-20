@@ -27,7 +27,7 @@ import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
 import brachy.modularui.widgets.layout.Flow;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ import java.util.function.Supplier;
 public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidCondition> {
 
     // spotless:off
-    public static final Codec<AdjacentFluidCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+    public static final MapCodec<AdjacentFluidCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             GTCodecUtils.lazyParsingCodec(RegistryCodecs.homogeneousList(Registries.FLUID)).listOf()
                     .fieldOf("fluids").forGetter(AdjacentFluidCondition::getFluidSuppliers)
     ).apply(instance, AdjacentFluidCondition::new));

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.network.chat.Component;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
 
     // spotless:off
-    public static final Codec<CleanroomCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+    public static final MapCodec<CleanroomCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom)
     ).apply(instance, CleanroomCondition::new));
     // spotless:on

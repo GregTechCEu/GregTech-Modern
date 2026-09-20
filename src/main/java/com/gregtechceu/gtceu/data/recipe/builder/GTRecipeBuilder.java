@@ -1445,7 +1445,7 @@ public class GTRecipeBuilder {
     public void toJson(JsonObject json) {
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         JsonObject serialized = GTRecipeSerializer.CODEC.encodeStart(ops, buildRawRecipe())
-                .getOrThrow(false, GTCEu.LOGGER::error).getAsJsonObject();
+                .getOrThrow().getAsJsonObject();
         for (String key : serialized.keySet()) {
             json.add(key, serialized.get(key));
         }
@@ -1488,7 +1488,7 @@ public class GTRecipeBuilder {
 
             @Override
             public RecipeSerializer<?> getType() {
-                return GTRecipeSerializer.SERIALIZER;
+                return GTRecipeSerializer.serializerFor(recipeType);
             }
 
             @Nullable

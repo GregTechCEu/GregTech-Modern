@@ -44,7 +44,7 @@ public class GTByteBufAdapters {
                 return;
             }
             buffer.writeBoolean(true);
-            GTRecipeSerializer.SERIALIZER.toNetwork(buffer, u);
+            GTRecipeSerializer.toNetwork(buffer, u);
         }
 
         @Override

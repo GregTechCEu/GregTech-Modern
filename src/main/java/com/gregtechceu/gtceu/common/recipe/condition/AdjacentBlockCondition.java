@@ -26,7 +26,7 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.widgets.layout.Flow;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ import java.util.function.Supplier;
 public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockCondition> {
 
     // spotless:off
-    public static final Codec<AdjacentBlockCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+    public static final MapCodec<AdjacentBlockCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             GTCodecUtils.lazyParsingCodec(RegistryCodecs.homogeneousList(Registries.BLOCK)).listOf()
                     .fieldOf("blocks").forGetter(AdjacentBlockCondition::getBlockSuppliers)
     ).apply(instance, AdjacentBlockCondition::new));

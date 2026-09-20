@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
 
@@ -15,6 +16,7 @@ import brachy.modularui.api.drawable.Text;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -36,8 +38,8 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
     }
     // spotless:on
 
-    public static <RC extends RecipeCondition<RC>> Codec<RC> simpleCodec(Function<Boolean, RC> function) {
-        return RecordCodecBuilder.create(instance -> isReverse(instance).apply(instance, function));
+    public static <RC extends RecipeCondition<RC>> MapCodec<RC> simpleCodec(Function<Boolean, RC> function) {
+        return RecordCodecBuilder.mapCodec(instance -> isReverse(instance).apply(instance, function));
     }
 
     @Getter
@@ -76,23 +78,25 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
     @NotNull
     public final JsonObject serialize() {
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        return CODEC.encodeStart(ops, this).getOrThrow(false, GTCEu.LOGGER::error).getAsJsonObject();
+        return CODEC.encodeStart(ops, this).getOrThrow().getAsJsonObject();
     }
 
     public static RecipeCondition<?> deserialize(@NotNull JsonObject config) {
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        return CODEC.parse(ops, config).getOrThrow(false, GTCEu.LOGGER::error);
+        return CODEC.parse(ops, config).getOrThrow();
     }
 
     @SuppressWarnings("deprecation")
     public final void toNetwork(FriendlyByteBuf buf) {
-        var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
+        var ops = RegistryOps.create(NbtOps.INSTANCE, buf instanceof RegistryFriendlyByteBuf registryBuf
+                ? registryBuf.registryAccess() : GTRegistries.builtinRegistry());
         buf.writeWithCodec(ops, CODEC, this);
     }
 
     @SuppressWarnings("deprecation")
     public static RecipeCondition<?> fromNetwork(FriendlyByteBuf buf) {
-        var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
-        return buf.readWithCodec(ops, CODEC);
+        var ops = RegistryOps.create(NbtOps.INSTANCE, buf instanceof RegistryFriendlyByteBuf registryBuf
+                ? registryBuf.registryAccess() : GTRegistries.builtinRegistry());
+        return buf.readWithCodec(ops, CODEC, NbtAccounter.defaultQuota());
     }
 }

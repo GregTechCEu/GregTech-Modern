@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
-
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.ItemStack;
 
 import com.google.gson.JsonArray;
@@ -10,24 +12,27 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@AllArgsConstructor
 public final class ResearchData implements Iterable<ResearchData.ResearchEntry> {
 
     public static final Codec<ResearchData> CODEC = ResearchEntry.CODEC.listOf().xmap(ResearchData::new,
             data -> data.entries);
+    public static final StreamCodec<RegistryFriendlyByteBuf, ResearchData> STREAM_CODEC = ResearchEntry.STREAM_CODEC
+            .apply(ByteBufCodecs.list()).map(ResearchData::new, data -> data.entries);
 
     private final List<ResearchEntry> entries;
 
     public ResearchData() {
         entries = new ArrayList<>();
+    }
+
+    public ResearchData(List<ResearchEntry> entries) {
+        this.entries = new ArrayList<>(entries);
     }
 
     /**
@@ -43,32 +48,20 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
         return this.entries.iterator();
     }
 
-    public static ResearchData fromJson(JsonArray array) {
-        List<ResearchEntry> entries = new ArrayList<>();
-        for (int i = 0; i < array.size(); ++i) {
-            entries.add(ResearchEntry.fromJson(array.get(i).getAsJsonObject()));
-        }
-        return new ResearchData(entries);
+    public static ResearchData fromJson(JsonArray array, HolderLookup.Provider registries) {
+        return CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, registries), array).getOrThrow();
     }
 
-    public JsonArray toJson() {
-        JsonArray json = new JsonArray();
-        this.entries.forEach(entry -> json.add(entry.toJson()));
-        return json;
+    public JsonArray toJson(HolderLookup.Provider registries) {
+        return CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, registries), this).getOrThrow().getAsJsonArray();
     }
 
-    public static ResearchData fromNetwork(FriendlyByteBuf buf) {
-        List<ResearchEntry> entries = new ArrayList<>();
-        int size = buf.readVarInt();
-        for (int i = 0; i < size; ++i) {
-            entries.add(ResearchEntry.fromNetwork(buf));
-        }
-        return new ResearchData(entries);
+    public static ResearchData fromNetwork(RegistryFriendlyByteBuf buf) {
+        return STREAM_CODEC.decode(buf);
     }
 
-    public void toNetwork(FriendlyByteBuf buf) {
-        buf.writeVarInt(this.entries.size());
-        this.entries.forEach(entry -> entry.toNetwork(buf));
+    public void toNetwork(RegistryFriendlyByteBuf buf) {
+        STREAM_CODEC.encode(buf, this);
     }
 
     /**
@@ -82,12 +75,14 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
                 Codec.STRING.fieldOf("researchId").forGetter(val -> val.researchId),
                 ItemStack.CODEC.fieldOf("dataItem").forGetter(val -> val.dataItem))
                 .apply(instance, ResearchEntry::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, ResearchEntry> STREAM_CODEC = StreamCodec.composite(
+                ByteBufCodecs.STRING_UTF8, ResearchEntry::getResearchId,
+                ItemStack.STREAM_CODEC, ResearchEntry::getDataItem,
+                ResearchEntry::new);
 
         @NotNull
-        @Getter
         private final String researchId;
         @NotNull
-        @Getter
         private final ItemStack dataItem;
 
         /**
@@ -99,28 +94,28 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
             this.dataItem = dataItem;
         }
 
-        public static ResearchEntry fromJson(JsonObject tag) {
-            return new ResearchEntry(tag.get("researchId").getAsString(), ItemStack.CODEC
-                    .parse(JsonOps.INSTANCE, tag.get("dataItem")).getOrThrow(false, GTCEu.LOGGER::error));
+        public String getResearchId() {
+            return researchId;
         }
 
-        public JsonObject toJson() {
-            JsonObject json = new JsonObject();
-            json.addProperty("researchId", researchId);
-            json.add("dataItem",
-                    ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, dataItem).getOrThrow(false, GTCEu.LOGGER::error));
-            return json;
+        public ItemStack getDataItem() {
+            return dataItem;
         }
 
-        public static ResearchEntry fromNetwork(FriendlyByteBuf buf) {
-            String researchId = buf.readUtf();
-            ItemStack dataItem = buf.readItem();
-            return new ResearchEntry(researchId, dataItem);
+        public static ResearchEntry fromJson(JsonObject tag, HolderLookup.Provider registries) {
+            return CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, registries), tag).getOrThrow();
         }
 
-        public void toNetwork(FriendlyByteBuf buf) {
-            buf.writeUtf(this.researchId);
-            buf.writeItem(this.dataItem);
+        public JsonObject toJson(HolderLookup.Provider registries) {
+            return CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, registries), this).getOrThrow().getAsJsonObject();
+        }
+
+        public static ResearchEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            return STREAM_CODEC.decode(buf);
+        }
+
+        public void toNetwork(RegistryFriendlyByteBuf buf) {
+            STREAM_CODEC.encode(buf, this);
         }
     }
 }

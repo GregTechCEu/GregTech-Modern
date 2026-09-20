@@ -2,6 +2,7 @@
 # Recipe viewers
 # Unofficial NeoForge 26.2 alpha, approved for development; runtime validation required.
 emi = "8616659"
+emiMod = "1.1.24-b60b8f8+26.2+neoforge"
 
 jei = "30.32.0.222"
 

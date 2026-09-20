@@ -43,7 +43,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             forge_version        : neoVersion,
 
             jei_version          : forge.versions.jei.get(),
-            emi_version          : forge.versions.emi.get(),
+            emi_version          : forge.versions.emiMod.get(),
             rei_version          : forge.versions.rei.get(),
             modernfix_version    : forge.versions.modernFix.get(),
             curios_version       : forge.versions.curios.get(),

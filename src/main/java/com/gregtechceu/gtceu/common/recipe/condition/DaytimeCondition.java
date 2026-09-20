@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
 
     // spotless:off
-    public static final Codec<DaytimeCondition> CODEC = RecipeCondition.simpleCodec(DaytimeCondition::new);
+    public static final MapCodec<DaytimeCondition> CODEC = RecipeCondition.simpleCodec(DaytimeCondition::new);
     // spotless:on
 
     public DaytimeCondition(boolean isReverse) {

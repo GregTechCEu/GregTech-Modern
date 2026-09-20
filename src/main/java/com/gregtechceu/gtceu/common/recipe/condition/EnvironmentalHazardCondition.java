@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalHazardCondition> {
 
     // spotless:off
-    public static final Codec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+    public static final MapCodec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             MedicalCondition.CODEC.fieldOf("condition").forGetter(EnvironmentalHazardCondition::getCondition)
     ).apply(instance, EnvironmentalHazardCondition::new));
     // spotless:on

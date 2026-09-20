@@ -8,11 +8,25 @@ gradle.projectsEvaluated {
         'brachy/**',
         'com/gregtechceu/gtceu/api/recipe/StrictShapedRecipe.java',
         'com/gregtechceu/gtceu/api/recipe/CraftingGridOrigin.java',
+        'com/gregtechceu/gtceu/api/recipe/RecipeIdAware.java',
+        'com/gregtechceu/gtceu/api/recipe/ResearchData.java',
+        'com/gregtechceu/gtceu/api/recipe/ResearchDataPortTest.java',
+        'com/gregtechceu/gtceu/api/recipe/RecipeContentCodecPortTest.java',
+        'com/gregtechceu/gtceu/api/recipe/content/RecipeContentCodec.java',
         'com/gregtechceu/gtceu/api/recipe/StrictShapedRecipePortTest.java',
-        'com/gregtechceu/gtceu/core/mixins/CraftingInputMixin.java'
+        'com/gregtechceu/gtceu/core/mixins/CraftingInputMixin.java',
+        'com/gregtechceu/gtceu/core/mixins/RecipeHolderMixin.java',
+        'com/gregtechceu/gtceu/core/mixins/PlaceRecipeHelperMixin.java'
     ])
     project.sourceSets.test.resources.srcDir(new File(gtRoot, 'scripts/port-recipe-test-resources'))
-    project.tasks.named('test') {
-        systemProperty 'mixin.config', 'gtceu-port-recipes.mixins.json'
+    project.tasks.named('processResources') {
+        inputs.property('gtRecipePortTests', true)
+        from(new File(gtRoot, 'scripts/port-recipe-test-resources'))
+        filesMatching('META-INF/neoforge.mods.toml') {
+            filter { line ->
+                line == 'config = "modularui.mixins.json"' ?
+                    line + '\n[[mixins]]\nconfig = "gtceu-port-recipes.mixins.json"' : line
+            }
+        }
     }
 }

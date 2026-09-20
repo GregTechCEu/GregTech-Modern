@@ -7,6 +7,7 @@ jei = "30.32.0.222"
 rei = "12.1.785"
 # Unofficial NeoForge 26.2 alpha, approved for development; runtime validation required.
 emi = "8616659"
+emiMod = "1.1.24-b60b8f8+26.2+neoforge"
 ae2 = "15.4.10"
 guideme = "20.1.14"
 mui = "3.3.1"

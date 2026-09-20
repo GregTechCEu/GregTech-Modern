@@ -71,7 +71,7 @@ public class GTRecipeTransformer implements ValueTransformer<GTRecipe> {
 
     @Override
     public void writeToPacket(FriendlyByteBuf buf, GTRecipe value, TransformerContext<GTRecipe> context) {
-        GTRecipeSerializer.SERIALIZER.toNetwork(buf, value);
+        GTRecipeSerializer.toNetwork(buf, value);
     }
 
     @Override

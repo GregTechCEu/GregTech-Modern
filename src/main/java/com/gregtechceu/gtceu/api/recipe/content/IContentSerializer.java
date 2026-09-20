@@ -1,34 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 
-public interface IContentSerializer<T> {
-
-    default void toNetwork(FriendlyByteBuf buf, T content) {
-        buf.writeJsonWithCodec(codec(), content);
-    }
-
-    default T fromNetwork(FriendlyByteBuf buf) {
-        return buf.readJsonWithCodec(codec());
-    }
-
-    default T fromJson(JsonElement json) {
-        return codec().parse(JsonOps.INSTANCE, json).getOrThrow(false, GTCEu.LOGGER::error);
-    }
-
-    default JsonElement toJson(T content) {
-        return codec().encodeStart(JsonOps.INSTANCE, content).getOrThrow(false, GTCEu.LOGGER::error);
-    }
+public interface IContentSerializer<T> extends RecipeContentCodec<T> {
 
     T of(Object o);
 
@@ -51,8 +30,6 @@ public interface IContentSerializer<T> {
 
     Class<T> contentClass();
 
-    Codec<T> codec();
-
     @SuppressWarnings("unchecked")
     default JsonElement toJsonContent(Content content) {
         JsonObject json = new JsonObject();
@@ -71,11 +48,4 @@ public interface IContentSerializer<T> {
         return new Content(inner, chance, maxChance);
     }
 
-    default Tag toNbt(T content) {
-        return codec().encodeStart(NbtOps.INSTANCE, content).getOrThrow(false, GTCEu.LOGGER::error);
-    }
-
-    default T fromNbt(Tag tag) {
-        return codec().parse(NbtOps.INSTANCE, tag).getOrThrow(false, GTCEu.LOGGER::error);
-    }
 }

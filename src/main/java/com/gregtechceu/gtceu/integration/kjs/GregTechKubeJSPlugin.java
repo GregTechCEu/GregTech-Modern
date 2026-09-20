@@ -507,9 +507,9 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         PowerlessJetpack.FUELS.clear();
         // Must run recycling recipes very last
         RecyclingRecipes.init(builtRecipe -> recipesByName.put(builtRecipe.getId(),
-                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+                GTRecipeSerializer.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
         ItemMaterialData.resolveItemMaterialInfos(builtRecipe -> recipesByName.put(builtRecipe.getId(),
-                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+                GTRecipeSerializer.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
 
         // clone vanilla recipes for stuff like electric furnaces, etc
         for (RecipeType<?> recipeType : ForgeRegistries.RECIPE_TYPES) {
@@ -620,7 +620,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         }
 
         builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
-                GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+                GTRecipeSerializer.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
     }
 
     private static void handleGTShaped(GTShapedRecipeSchema.ShapedRecipeJS shaped) {

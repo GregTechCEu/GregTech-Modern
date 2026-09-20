@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.recipe.condition.*;
 
 import net.neoforged.fml.ModLoader;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 public final class GTRecipeConditions {
 
@@ -60,7 +60,7 @@ public final class GTRecipeConditions {
 
     private static <T extends RecipeCondition<T>> RecipeConditionType<T> register(String name,
                                                                                   RecipeConditionType.ConditionFactory<T> factory,
-                                                                                  Codec<T> codec) {
+                                                                                  MapCodec<T> codec) {
         return GTRegistries.RECIPE_CONDITIONS.register(GTCEu.id(name), new RecipeConditionType<>(factory, codec));
     }
 }

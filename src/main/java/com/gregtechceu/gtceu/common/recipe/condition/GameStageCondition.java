@@ -11,6 +11,7 @@ import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.minecraft.network.chat.Component;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public class GameStageCondition extends RecipeCondition<GameStageCondition> {
 
     // spotless:off
-    public static final Codec<GameStageCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+    public static final MapCodec<GameStageCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             Codec.STRING.fieldOf("stageName").forGetter(GameStageCondition::getStageName)
     ).apply(instance, GameStageCondition::new));
     // spotless:on

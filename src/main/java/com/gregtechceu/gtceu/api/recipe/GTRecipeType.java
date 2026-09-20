@@ -276,7 +276,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (recipe instanceof SmeltingRecipe smeltingRecipe) {
             builder.duration(smeltingRecipe.getCookingTime());
         }
-        return GTRecipeSerializer.SERIALIZER.fromJson(id, builder.build().serializeRecipe());
+        return GTRecipeSerializer.fromJson(id, builder.build().serializeRecipe());
     }
 
     public void buildRepresentativeRecipes() {

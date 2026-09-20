@@ -20,6 +20,34 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StrictShapedRecipePortTest {
+    private static final class IdentifiedRecipe extends StrictShapedRecipe implements RecipeIdAware {
+        private net.minecraft.resources.Identifier recipeId;
+
+        private IdentifiedRecipe() {
+            super(new Recipe.CommonInfo(false),
+                    new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, "test"),
+                    new ShapedRecipePattern.Data(Map.of('A', Ingredient.of(Items.STONE)), List.of("A")),
+                    new ItemStackTemplate(Items.DIAMOND), false);
+        }
+
+        @Override
+        public void setRecipeId(net.minecraft.resources.Identifier id) {
+            recipeId = id;
+        }
+    }
+
+    @Test void recipeHolderBindsIdentityWithoutChangingOrdinaryRecipes() {
+        var id = net.minecraft.resources.Identifier.parse("gtceu:test/holder_identity");
+        var key = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, id);
+        var identified = new IdentifiedRecipe();
+        assertNull(identified.recipeId);
+        var holder = new RecipeHolder<>(key, identified);
+        assertSame(identified, holder.value());
+        assertEquals(id, identified.recipeId);
+        var ordinary = recipe(false, "AB");
+        assertSame(ordinary, new RecipeHolder<>(key, ordinary).value());
+    }
+
     @org.junit.jupiter.api.BeforeAll
     static void bindDefaultComponents() {
         // Isolated fixture: the unit loader does not perform a server's component reload.
@@ -62,6 +90,13 @@ class StrictShapedRecipePortTest {
         var recipe = recipe(false, "AB");
         assertTrue(recipe.matches(grid(3, 3, 7, 8), null));
         assertFalse(recipe.matches(grid(3, 3, 8, 7), null));
+    }
+
+    @Test void recipeBookUsesStrictPatternDimensions() {
+        var slots = new ArrayList<Integer>();
+        net.minecraft.recipebook.PlaceRecipeHelper.placeRecipe(3, 3, recipe(false, "AB", "BA"),
+                List.of(0, 1, 2, 3), (entry, slot, x, y) -> slots.add(slot));
+        assertEquals(List.of(0, 1, 3, 4), slots);
     }
 
     @Test void explicitEmptyBordersAndExactSizeArePreserved() {

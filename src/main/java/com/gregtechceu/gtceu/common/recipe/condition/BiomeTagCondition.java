@@ -14,7 +14,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +23,7 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class BiomeTagCondition extends RecipeCondition<BiomeTagCondition> {
 
-    public static final Codec<BiomeTagCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<BiomeTagCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
                     .and(TagKey.codec(Registries.BIOME).fieldOf("biome_tag").forGetter(val -> val.biome))
                     .apply(instance, BiomeTagCondition::new));
 

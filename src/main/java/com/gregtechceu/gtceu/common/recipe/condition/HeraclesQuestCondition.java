@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestCondition> {
 
     // spotless:off
-    public static final Codec<HeraclesQuestCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+    public static final MapCodec<HeraclesQuestCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
             Codec.STRING.fieldOf("questId").forGetter(val -> val.questId)
     ).apply(instance, HeraclesQuestCondition::new));
     // spotless:on

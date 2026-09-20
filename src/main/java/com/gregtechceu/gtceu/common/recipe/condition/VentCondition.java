@@ -9,14 +9,14 @@ import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 
 import net.minecraft.network.chat.Component;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 public class VentCondition extends RecipeCondition<VentCondition> {
 
-    public static final Codec<VentCondition> CODEC = RecipeCondition.simpleCodec(VentCondition::new);
+    public static final MapCodec<VentCondition> CODEC = RecipeCondition.simpleCodec(VentCondition::new);
     public final static VentCondition INSTANCE = new VentCondition();
 
     public VentCondition(boolean isReverse) {

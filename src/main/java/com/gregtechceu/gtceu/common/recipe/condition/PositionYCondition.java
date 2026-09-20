@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import net.minecraft.network.chat.Component;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public class PositionYCondition extends RecipeCondition<PositionYCondition> {
 
     // spotless:off
-    public static final Codec<PositionYCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(instance.group(
+    public static final MapCodec<PositionYCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(instance.group(
             Codec.INT.fieldOf("min").forGetter(val -> val.min),
             Codec.INT.fieldOf("max").forGetter(val -> val.max)
     )).apply(instance, PositionYCondition::new));
