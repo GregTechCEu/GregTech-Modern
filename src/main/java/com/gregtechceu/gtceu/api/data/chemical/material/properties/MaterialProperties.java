@@ -45,7 +45,7 @@ public class MaterialProperties {
         return propertyMap.containsKey(key);
     }
 
-    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty value) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, T value) {
         if (value == null) throw new IllegalArgumentException("Material Property must not be null!");
         if (!key.getType().isInstance(value))
             throw new IllegalArgumentException("Material Property must be of the same type as the property key!");
