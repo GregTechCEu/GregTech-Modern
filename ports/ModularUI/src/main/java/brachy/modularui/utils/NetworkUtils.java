@@ -19,7 +19,7 @@ public class NetworkUtils {
 
     public static boolean isClient(Player player) {
         if (player == null) return ModularUI.isClientThread();
-        return player.level().isClientSide;
+        return player.level().isClientSide();
     }
 
     public static void writeByteBuf(ByteBuf writeTo, ByteBuf writeFrom) {

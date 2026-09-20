@@ -210,6 +210,13 @@ public interface IViewportStack {
      */
     void applyTo(PoseStack poseStack);
 
+    /** Applies the GUI-plane transform to the deferred renderer's 2D pose stack. */
+    default void applyTo(org.joml.Matrix3x2f pose) {
+        var top = peek();
+        if (top == null) return;
+        brachy.modularui.utils.GuiPoseTransforms.apply(pose, top.getMatrix());
+    }
+
     /**
      * @return the top matrix or null if stack is empty
      */

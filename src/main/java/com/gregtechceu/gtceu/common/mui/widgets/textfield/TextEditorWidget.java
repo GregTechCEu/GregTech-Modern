@@ -63,7 +63,7 @@ public class TextEditorWidget<W extends TextEditorWidget<W>> extends BaseTextFie
     }
 
     @Override
-    public @NotNull Result onCharTyped(char codePoint, int modifiers) {
+    public @NotNull Result onCharTyped(int codePoint, int modifiers) {
         if (codePoint == '\t') {
             if (this.handler.hasTextMarked()) {
                 int startY = this.handler.getStartCursor().y;

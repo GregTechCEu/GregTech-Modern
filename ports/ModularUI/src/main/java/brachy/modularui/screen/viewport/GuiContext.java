@@ -12,7 +12,6 @@ import brachy.modularui.widget.sizer.Area;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -58,7 +57,7 @@ public class GuiContext extends GuiViewportStack {
     @Getter private int lastKeyCode;
     @Getter private int lastScanCode;
     @Getter private int lastKeyModifiers;
-    @Getter private char lastCodePoint;
+    @Getter private int lastCodePoint;
     @Getter private boolean lastKeyPress; // key pressed = true, key released = false
 
     /* Render states */
@@ -116,7 +115,7 @@ public class GuiContext extends GuiViewportStack {
     }
 
     @ApiStatus.Internal
-    public void updateTypedChar(char codePoint, int modifiers) {
+    public void updateTypedChar(int codePoint, int modifiers) {
         this.lastCodePoint = codePoint;
         this.lastKeyModifiers = modifiers;
     }
@@ -160,11 +159,11 @@ public class GuiContext extends GuiViewportStack {
 
     public Matrix4f getLastGraphicsPose() {
         if (graphics == null) return new Matrix4f();
-        return graphics.pose().last().pose();
+        return brachy.modularui.utils.GuiPoseTransforms.snapshot(graphics.pose());
     }
 
-    public PoseStack graphicsPose() {
-        if (graphics == null) return new PoseStack();
+    public org.joml.Matrix3x2fStack graphicsPose() {
+        if (graphics == null) throw new IllegalStateException("No GUI graphics extractor is active");
         return graphics.pose();
     }
 

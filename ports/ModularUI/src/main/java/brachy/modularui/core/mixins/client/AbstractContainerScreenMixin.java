@@ -27,7 +27,7 @@ public class AbstractContainerScreenMixin implements IClickableContainerScreen {
      * The method is private and only the mouse pos is ever passed to this method.
      * That's why we can just return the current hovered slot.
      */
-    @Inject(method = "findSlot", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getHoveredSlot(DD)Lnet/minecraft/world/inventory/Slot;", at = @At("HEAD"), cancellable = true)
     public void modularui$getSlot(double mouseX, double mouseY, CallbackInfoReturnable<Slot> cir) {
         if (this.modularui$clickedSlot != null) {
             cir.setReturnValue(this.modularui$clickedSlot);

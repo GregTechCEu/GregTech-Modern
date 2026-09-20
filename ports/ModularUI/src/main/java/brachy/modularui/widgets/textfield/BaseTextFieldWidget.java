@@ -15,7 +15,6 @@ import brachy.modularui.widgets.VoidWidget;
 
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import com.mojang.blaze3d.platform.InputConstants;
 
@@ -266,11 +265,12 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
                 this.handler.delete();
                 return Result.SUCCESS;
         }
-        if (Screen.isCopy(keyCode)) {
+        var keyEvent = new net.minecraft.client.input.KeyEvent(keyCode, scanCode, modifiers);
+        if (keyEvent.isCopy()) {
             // copy marked text
             Minecraft.getInstance().keyboardHandler.setClipboard(this.handler.getSelectedText());
             return Result.SUCCESS;
-        } else if (Screen.isPaste(keyCode)) {
+        } else if (keyEvent.isPaste()) {
             if (this.handler.hasTextMarked()) {
                 this.handler.delete();
             }
@@ -278,12 +278,12 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
             this.handler.insert(Minecraft.getInstance().keyboardHandler.getClipboard().replace("§", ""),
                     canScrollHorizontally());
             return Result.SUCCESS;
-        } else if (Screen.isCut(keyCode) && this.handler.hasTextMarked()) {
+        } else if (keyEvent.isCut() && this.handler.hasTextMarked()) {
             // copy and delete copied text
             Minecraft.getInstance().keyboardHandler.setClipboard(this.handler.getSelectedText());
             this.handler.delete();
             return Result.SUCCESS;
-        } else if (Screen.isSelectAll(keyCode)) {
+        } else if (keyEvent.isSelectAll()) {
             // mark whole text
             this.handler.markAll();
             return Result.SUCCESS;
@@ -292,20 +292,20 @@ public class BaseTextFieldWidget<W extends BaseTextFieldWidget<W>> extends Abstr
     }
 
     @Override
-    public @NotNull Result onCharTyped(char codePoint, int modifiers) {
+    public @NotNull Result onCharTyped(int codePoint, int modifiers) {
         if (!isFocused()) {
             return Result.IGNORE;
         }
         if (codePoint == Character.MIN_VALUE) {
             return Result.STOP;
         }
-        if (BASE_PATTERN.matcher(String.valueOf(codePoint)).matches() &&
-                handler.test(String.valueOf(codePoint))) {
+        if (BASE_PATTERN.matcher(Character.toString(codePoint)).matches() &&
+                handler.test(Character.toString(codePoint))) {
             if (this.handler.hasTextMarked()) {
                 this.handler.delete();
             }
             // insert typed char
-            this.handler.insert(String.valueOf(codePoint), canScrollHorizontally());
+            this.handler.insert(Character.toString(codePoint), canScrollHorizontally());
             return Result.SUCCESS;
         }
         return Result.STOP;

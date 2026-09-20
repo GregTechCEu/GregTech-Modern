@@ -29,7 +29,7 @@ public class TextLine implements ITextLine {
     @Override
     public void draw(GuiContext context, Font font, float x, float y, int color, boolean shadow,
                      int availableWidth, int availableHeight) {
-        context.getGraphics().drawString(font, this.text, x, y, color, shadow);
+        brachy.modularui.drawable.GuiDraw.drawText(context.getGraphics(), font, this.text, x, y, 1, color, shadow);
         this.lastX = x;
         this.lastY = y;
     }

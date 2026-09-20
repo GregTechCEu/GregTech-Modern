@@ -27,7 +27,7 @@ public class RecipeScreenRenderingUtil {
                                             int mouseX, int mouseY, float partialTick) {
         screen.getContext().setGraphics(guiGraphics);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
-        screen.getContext().graphicsPose().pushPose();
+        screen.getContext().graphicsPose().pushMatrix();
         RenderSystem.applyModelViewMatrix();
 
         // copied from ClientScreenHandler#drawScreenInternal to
@@ -46,7 +46,7 @@ public class RecipeScreenRenderingUtil {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         //screen.getContext().getStencil().pop();
-        screen.getContext().graphicsPose().popPose();
+        screen.getContext().graphicsPose().popMatrix();
         RenderSystem.applyModelViewMatrix();
     }
 
@@ -55,7 +55,7 @@ public class RecipeScreenRenderingUtil {
                                             int mouseX, int mouseY, float partialTick) {
         screen.getContext().setGraphics(guiGraphics);
         screen.getContext().updateState(mouseX, mouseY, partialTick);
-        //screen.getContext().graphicsPose().pushPose();
+        //screen.getContext().graphicsPose().pushMatrix();
 
         // copied from ClientScreenHandler#drawScreenInternal to
         // let us draw foreground elements separately after everything else.
@@ -70,6 +70,6 @@ public class RecipeScreenRenderingUtil {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         //screen.getContext().getStencil().pop();
-        //screen.getContext().graphicsPose().popPose();
+        //screen.getContext().graphicsPose().popMatrix();
     }
 }

@@ -1,11 +1,10 @@
 package brachy.modularui.core.mixins.client;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -15,9 +14,11 @@ import java.util.Set;
 public interface AbstractContainerScreenAccessor {
 
     @Accessor
+    @Mutable
     void setImageWidth(int v);
 
     @Accessor
+    @Mutable
     void setImageHeight(int v);
 
     @Accessor
@@ -31,15 +32,6 @@ public interface AbstractContainerScreenAccessor {
 
     @Accessor
     Slot getHoveredSlot();
-
-    @Accessor
-    Slot getClickedSlot();
-
-    @Accessor
-    ItemStack getDraggingItem();
-
-    @Accessor
-    boolean getIsSplittingStack();
 
     @Accessor
     boolean getIsQuickCrafting();
@@ -56,27 +48,4 @@ public interface AbstractContainerScreenAccessor {
     @Accessor
     int getQuickCraftingRemainder();
 
-    @Accessor
-    ItemStack getSnapbackItem();
-
-    @Accessor
-    void setSnapbackItem(ItemStack stack);
-
-    @Accessor
-    Slot getSnapbackEnd();
-
-    @Accessor
-    int getSnapbackStartX();
-
-    @Accessor
-    int getSnapbackStartY();
-
-    @Accessor
-    long getSnapbackTime();
-
-    @Invoker
-    void invokeRenderLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY);
-
-    @Invoker
-    void invokeRenderBg(GuiGraphicsExtractor guiGraphics, float partialTicks, int mouseX, int mouseY);
 }

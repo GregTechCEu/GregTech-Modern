@@ -25,8 +25,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -97,7 +95,6 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         if (this.syncHandler == null) return;
-        Lighting.setupFor3DItems();
         drawSlot(context, getSlot());
         drawOverlay(context);
     }
@@ -231,18 +228,13 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
         AbstractContainerScreenAccessor acc = (AbstractContainerScreenAccessor) containerScreen;
         ItemStack slotStack = slot.getItem();
         boolean isDragPreview = false;
-        boolean doDrawItem = slot == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() &&
-                !acc.getIsSplittingStack();
 
         ItemStack carried = containerScreen.getMenu().getCarried();
         int amount = -1;
         String format = null;
 
         if (!getSyncHandler().isPhantom()) {
-            if (slot == acc.getClickedSlot() && !acc.getDraggingItem().isEmpty() && acc.getIsSplittingStack() && !slotStack.isEmpty()) {
-                slotStack = slotStack.copy();
-                slotStack.setCount(slotStack.getCount() / 2);
-            } else if (acc.getIsQuickCrafting() && acc.getQuickCraftSlots().contains(slot) && !carried.isEmpty()) {
+            if (acc.getIsQuickCrafting() && acc.getQuickCraftSlots().contains(slot) && !carried.isEmpty()) {
                 if (acc.getQuickCraftSlots().size() == 1) {
                     return;
                 }
@@ -253,7 +245,7 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
                     int maxSize = Math.min(slotStack.getMaxStackSize(), slot.getMaxStackSize(slotStack));
                     amount = slot.getItem().getCount();
-                    amount += AbstractContainerMenu.getQuickCraftPlaceCount(acc.getQuickCraftSlots(), acc.getQuickCraftingType(), slotStack);
+                    amount += AbstractContainerMenu.getQuickCraftPlaceCount(acc.getQuickCraftSlots().size(), acc.getQuickCraftingType(), slotStack);
                     if (amount > maxSize) {
                         amount = maxSize;
                         format = ChatFormatting.YELLOW.toString();
@@ -267,34 +259,25 @@ public class ItemSlot extends Widget<ItemSlot> implements IVanillaSlot, Interact
 
         // makes sure items of different layers don't interfere with each other visually
         float z = context.getCurrentDrawingZ() + 100;
-        context.graphicsPose().pushPose();
-        context.graphicsPose().translate(0, 0, z);
+        context.graphicsPose().pushMatrix();
+        context.getGraphics().nextStratum();
 
-        if (!doDrawItem) {
+        try {
             if (isDragPreview) {
                 GuiDraw.drawRect(context.getGraphics(), 1, 1, 16, 16, 0x80FFFFFF);
             }
-
             if (!slotStack.isEmpty()) {
-                RenderSystem.enableDepthTest();
-                // render the item itself
-
-                context.getGraphics().renderItem(slotStack, 1, 1);
-                if (amount < 0) {
-                    amount = slotStack.getCount();
-                }
+                context.getGraphics().item(slotStack, 1, 1);
+                if (amount < 0) amount = slotStack.getCount();
                 GuiDraw.drawStandardSlotAmountText(context, amount, format, getArea(), z);
-
-                int cachedCount = slotStack.getCount();
-                slotStack.setCount(1); // required to not render the amount overlay
-                // render other overlays like durability bar
-                context.getGraphics().renderItemDecorations(((ScreenAccessor) screen).getFont(), slotStack, 1, 1,
-                        null);
-                slotStack.setCount(cachedCount);
-                RenderSystem.disableDepthTest();
+                // A copied stack avoids mutating the live inventory during deferred extraction.
+                context.getGraphics().itemDecorations(((ScreenAccessor) screen).getFont(),
+                        slotStack.copyWithCount(1), 1, 1, "");
             }
+        } finally {
+            context.graphicsPose().popMatrix();
         }
-        context.graphicsPose().popPose();
+
     }
 
     @Override

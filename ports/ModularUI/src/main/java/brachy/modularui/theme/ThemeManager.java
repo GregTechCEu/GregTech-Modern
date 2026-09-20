@@ -59,7 +59,7 @@ public class ThemeManager extends SimplePreparableReloadListener<Map<String, Lis
         // usually resources are loaded off-thread to not block the main thread
         // but this should be fine since it is currently not expected to take longer than a second
         ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
+        ProfilerFiller profiler = net.minecraft.util.profiling.Profiler.get();
         NeoForge.EVENT_BUS.post(new ReloadThemeEvent());
         INSTANCE.apply(INSTANCE.prepare(resourceManager, profiler), resourceManager, profiler);
     }

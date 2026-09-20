@@ -31,11 +31,24 @@ $env:JAVA_HOME = 'C:/Program Files/Java/jdk-25.0.4'
 
 The isolated renderer check compiles the new geometry, texture, entity-preview, sprite-lookup, and lightmap classes against the real cached 26.2 libraries. Five geometry regression checks pass. It requires previously generated Minecraft artifacts and cached JUnit dependencies. It is **not** a substitute for the full build or in-game tests.
 
-The full ModularUI build still fails. The current first compiler barrier is missing legacy rendering types in `Stencil`, `CircularProgressDrawable`, `BaseSchemaRenderer`, and `BlockHighlight`. Once these type-resolution errors are resolved, further method-level errors may become visible. Do not interpret the current diagnostic count as the total work remaining.
+The full ModularUI build still fails. After the September 19 pull (`172940e31`), adding the missing `SchemaGeometry` exposed 277 method-level/API errors. Subsequent passes reduced this to 213, then 160 reported errors. This count is not a completion percentage and does not include a successful GregTech compile or runtime verification.
+
+The pulled structure renderer also references files absent from this checkout: `SchemaRenderState`, `SchemaCameraTransform`, `SchemaPreviewRenderer`, and the configured `PreviewLightmapMixin`. Check whether these were left untracked in the other checkout before reimplementing them.
+
+The isolated check now also compiles `SchemaGeometry`, `RadialMask` and `GuiPoseTransforms`. Ten checks pass in total, including vertex attribute/offset snapshots, attribute reset, radial coverage at eighth-turn boundaries in both directions on non-square rectangles, and rotated/scaled/transformed GUI pose snapshots and composition.
+
+## Latest screen/input migration pass
+
+- Screen wrappers use the extraction lifecycle. Embedded screens snapshot their 2D transform before resetting the pose and restore pose/tint in a finally block.
+- Container rendering delegates carried items to Minecraft's current renderer. Obsolete drag/snapback field accessors were removed; quick-craft previews and custom ModularUI slot amounts remain. Item overlays use copied stacks rather than temporarily mutating live inventory stacks.
+- Slot lookup mixin targets the exact `getHoveredSlot(double, double)` method. Resizable container dimensions use mutable accessors for the newly final fields.
+- Mouse forwarding preserves event modifiers and double-click state. Text entry carries integer Unicode code points through ModularUI and the two GregTech text-editor overrides. Clipboard shortcuts use the native key-event predicates.
+- Screen close tracking now targets `Gui.setScreen`, while the Minecraft timer hook uses `advanceGameTime`. Raw GL stencil enabling was removed; backgrounds/blur are extracted before stencil masks.
+- The latest compile reports no errors in ClientScreenHandler, screen wrappers, EmbedHandler, ItemSlot, BaseTextFieldWidget or the updated lifecycle mixins. This does not prove mixin application or in-game behavior; those checks remain required.
 
 ## Next implementation work
 
-1. Replace stencil clipping while retaining rotated masks and circular-progress masks, including text, items and entity previews. Axis-aligned scissors alone are insufficient. The existing stencil initialization in ModularUIClient also needs replacement.
+1. Verify the implemented deferred stencil clipping and its GUI-state mixin in game, including rotated masks, nested masks, text, items and previews. Stencil allocation now uses the main-render-target configuration event; immediate OpenGL initialization has been removed.
 2. Replace structure rendering, highlights, custom projection/viewport handling, buffer uploads, and block-entity rendering with 26.2 rendering APIs. Preserve fluids, filtering, lighting, ray tracing, and resource disposal.
 3. Finish the graphics-context / widget / screen / input migration, tooltip extraction, reload hooks and mixin targets; then resolve the remaining ModularUI compilation errors.
 4. Compile GregTech and migrate its remaining capabilities, item components, serialization, recipes, networking, rendering, and mixins. Audit integration dependencies individually; do not silently remove functionality to force a build.

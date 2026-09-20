@@ -74,7 +74,7 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
     }
 
     @Override
-    public @NotNull Result onCharTyped(char codePoint, int modifiers) {
+    public @NotNull Result onCharTyped(int codePoint, int modifiers) {
         lastEdited = Util.getEpochMillis();
         return super.onCharTyped(codePoint, modifiers);
     }

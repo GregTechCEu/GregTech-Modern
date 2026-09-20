@@ -92,7 +92,7 @@ public class UISettings {
     }
 
     public void canInteractWithinRange(BlockPos pos, double range) {
-        canInteractWithinRange(pos.getCenter(), range);
+        canInteractWithinRange(net.minecraft.world.phys.Vec3.atCenterOf(pos), range);
     }
 
     public void canInteractWithinRange(PosGuiData guiData, double range) {

@@ -492,9 +492,8 @@ public class PatternPreviewRenderer {
         protected static void markFluidSpritesActive(RenderCompileResults compileResults, FluidState fluidState) {
             // For Sodium compatibility, ensure the sprites actually animate
             // even if no block is on-screen that would cause them to otherwise.
-            var props = IClientFluidTypeExtensions.of(fluidState);
-            compileResults.activeFluidSprites.add(FluidTextureType.STILL.map(props));
-            compileResults.activeFluidSprites.add(FluidTextureType.FLOWING.map(props));
+            compileResults.activeFluidSprites.add(FluidTextureType.STILL.map(fluidState));
+            compileResults.activeFluidSprites.add(FluidTextureType.FLOWING.map(fluidState));
         }
     }
 

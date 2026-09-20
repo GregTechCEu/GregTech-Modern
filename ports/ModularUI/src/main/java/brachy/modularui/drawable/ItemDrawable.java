@@ -50,7 +50,7 @@ public class ItemDrawable implements IDrawable {
     }
 
     public ItemDrawable(Ingredient ingredient) {
-        this(ingredient.getItems());
+        this(ingredient.items().map(holder -> holder.value().getDefaultInstance()).toArray(ItemStack[]::new));
     }
 
     public ItemDrawable(ItemStack... items) {
@@ -103,7 +103,7 @@ public class ItemDrawable implements IDrawable {
     }
 
     public void ingredient(Ingredient ingredient) {
-        items(ingredient.getItems());
+        items(ingredient.items().map(holder -> holder.value().getDefaultInstance()).toArray(ItemStack[]::new));
     }
 
     public ItemDrawable items(Collection<ItemStack> items) {

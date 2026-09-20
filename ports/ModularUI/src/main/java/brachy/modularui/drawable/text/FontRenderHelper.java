@@ -40,7 +40,7 @@ public class FontRenderHelper {
 
     static {
         for (ChatFormatting formatting : ChatFormatting.values()) {
-            char c = formatting.getChar();
+            char c = formatting.toString().charAt(1);
             formattingMap[c - min] = formatting;
             if (Character.isLetter(c)) {
                 formattingMap[Character.toUpperCase(c) - min] = formatting;

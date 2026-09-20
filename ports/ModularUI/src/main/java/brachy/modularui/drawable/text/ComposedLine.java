@@ -41,7 +41,7 @@ public class ComposedLine implements ITextLine {
         for (Object o : this.elements) {
             if (o instanceof FormattedCharSequence s) {
                 float drawY = getHeight(font) / 2f - font.lineHeight / 2f;
-                context.getGraphics().drawString(font, s, x, y + drawY, color, shadow);
+                brachy.modularui.drawable.GuiDraw.drawText(context.getGraphics(), font, s, x, y + drawY, 1, color, shadow);
                 x += font.width(s);
             } else if (o instanceof IIcon icon) {
                 float drawY = getHeight(font) / 2f - icon.getHeight() / 2f;

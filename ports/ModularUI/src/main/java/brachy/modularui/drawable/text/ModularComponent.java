@@ -18,10 +18,12 @@ import net.minecraft.network.chat.contents.data.DataSource;
 import net.minecraft.network.chat.contents.KeybindContents;
 import net.minecraft.network.chat.contents.NbtContents;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.network.chat.contents.ScoreContents;
 import net.minecraft.network.chat.contents.SelectorContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.google.gson.JsonPrimitive;
+import net.minecraft.commands.arguments.selector.EntitySelector;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -73,15 +75,20 @@ public class ModularComponent extends MutableComponent implements Text {
     }
 
     public static ModularComponent nbt(String nbtPathPattern, boolean interpreting, Optional<Component> separator, DataSource dataSource) {
-        return ModularComponent.create(new NbtContents(nbtPathPattern, interpreting, separator, dataSource));
+        var path = NbtContents.NBT_PATH_CODEC.parse(JsonOps.INSTANCE, new JsonPrimitive(nbtPathPattern)).getOrThrow();
+        return ModularComponent.create(new NbtContents(path, interpreting, false, separator, dataSource));
     }
 
     public static ModularComponent score(String name, String objective) {
-        return ModularComponent.create(new ScoreContents(name, objective));
+        // The old string API accepted either a selector or a literal score holder.
+        var selector = EntitySelector.COMPILABLE_CODEC.parse(JsonOps.INSTANCE, new JsonPrimitive(name));
+        return ModularComponent.of(selector.result().isPresent()
+                ? Component.score(selector.getOrThrow(), objective) : Component.score(name, objective));
     }
 
     public static ModularComponent selector(String pattern, Optional<Component> separator) {
-        return ModularComponent.create(new SelectorContents(pattern, separator));
+        var selector = EntitySelector.COMPILABLE_CODEC.parse(JsonOps.INSTANCE, new JsonPrimitive(pattern)).getOrThrow();
+        return ModularComponent.create(new SelectorContents(selector, separator));
     }
 
     public static ModularComponent create(@NotNull ComponentContents contents) {

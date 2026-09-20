@@ -1,7 +1,6 @@
 package brachy.modularui.api.widget;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -108,7 +107,7 @@ public interface Interactable {
      * {@link Result#SUCCESS}
      */
     @NotNull
-    default Result onCharTyped(char codePoint, int modifiers) {
+    default Result onCharTyped(int codePoint, int modifiers) {
         return Result.IGNORE;
     }
 
@@ -141,7 +140,9 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean hasControlDown() {
-        return Screen.hasControlDown();
+        return net.minecraft.client.input.InputQuirks.EDIT_SHORTCUT_KEY_MODIFIER == GLFW.GLFW_MOD_SUPER
+                ? isKeyPressed(GLFW.GLFW_KEY_LEFT_SUPER) || isKeyPressed(GLFW.GLFW_KEY_RIGHT_SUPER)
+                : Minecraft.getInstance().hasControlDown();
     }
 
     /**
@@ -149,7 +150,7 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean hasShiftDown() {
-        return Screen.hasShiftDown();
+        return net.minecraft.client.Minecraft.getInstance().hasShiftDown();
     }
 
     /**
@@ -157,11 +158,25 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean hasAltDown() {
-        return Screen.hasAltDown();
+        return net.minecraft.client.Minecraft.getInstance().hasAltDown();
     }
 
     static boolean isModifierActive(int mod, int key) {
         return (mod & key) != 0;
+    }
+
+    /** Character events no longer carry modifiers; sample physical modifier keys when dispatched. */
+    @OnlyIn(Dist.CLIENT)
+    static int currentModifiers() {
+        Minecraft minecraft = Minecraft.getInstance();
+        int modifiers = 0;
+        if (minecraft.hasShiftDown()) modifiers |= GLFW.GLFW_MOD_SHIFT;
+        if (minecraft.hasControlDown()) modifiers |= GLFW.GLFW_MOD_CONTROL;
+        if (minecraft.hasAltDown()) modifiers |= GLFW.GLFW_MOD_ALT;
+        if (isKeyPressed(GLFW.GLFW_KEY_LEFT_SUPER) || isKeyPressed(GLFW.GLFW_KEY_RIGHT_SUPER)) {
+            modifiers |= GLFW.GLFW_MOD_SUPER;
+        }
+        return modifiers;
     }
 
     static boolean isControl(int mod) {
@@ -182,7 +197,7 @@ public interface Interactable {
      */
     @OnlyIn(Dist.CLIENT)
     static boolean isKeyPressed(int key) {
-        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key);
+        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), key);
     }
 
     /**

@@ -27,7 +27,7 @@ public class MUIOverlayDecider implements OverlayDecider {
     public boolean shouldRecalculateArea(DisplayPanelLocation location, Rectangle rectangle) {
         // thanks for giving me no information about the screen here, REI
 
-        // the screen is Minecraft.getInstance().screen you nerd
+        // the screen is Minecraft.getInstance().gui.screen() you nerd
         // - screret
 
         return true;
